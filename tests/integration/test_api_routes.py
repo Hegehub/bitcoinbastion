@@ -20,6 +20,16 @@ def test_new_api_groups_exist() -> None:
             "/api/v1/fees/recommendation",
             json={"mempool_congestion": 0.5, "target_blocks": 6},
         ).status_code == 200
+        assert client.post(
+            "/api/v1/policy/check",
+            json={"policy_name": "default", "wallet_health_score": 82, "transaction_amount_sats": 250000},
+        ).status_code == 200
+        assert client.post(
+            "/api/v1/privacy/assess",
+            json={"reused_addresses": 2, "known_kyc_exposure": False, "utxo_fragmentation_score": 0.2},
+        ).status_code == 200
+        assert client.get("/api/v1/education/snippets").status_code == 200
+        assert client.get("/api/v1/observability/snapshot").status_code == 200
         assert client.get("/metrics").status_code == 200
     finally:
         app.dependency_overrides.clear()

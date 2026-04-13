@@ -41,6 +41,10 @@ make run
 - treasury
 - admin
 - users
+- policy
+- privacy
+- education
+- observability
 
 ## Operations endpoints
 - `GET /api/v1/health/live`
