@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.api.dependencies import db_session, get_admin_user
 from app.db.models.auth import User
 from app.db.repositories.job_run_repository import JobRunRepository
-from app.schemas.admin import JobRunOut
+from app.schemas.admin import JobRetryRequest, JobRetryResponse, JobRunOut
 from app.schemas.base import ResponseEnvelope
 from app.tasks.celery_app import celery_app
 
@@ -30,3 +30,12 @@ def admin_job_runs(
 ) -> ResponseEnvelope[list[JobRunOut]]:
     rows = JobRunRepository(db).list_recent(limit=limit)
     return ResponseEnvelope(data=[JobRunOut.model_validate(r) for r in rows])
+
+
+@router.post("/jobs/retry", response_model=ResponseEnvelope[JobRetryResponse])
+def admin_retry_job(
+    payload: JobRetryRequest,
+    _: User = Depends(get_admin_user),
+) -> ResponseEnvelope[JobRetryResponse]:
+    result = celery_app.send_task(payload.task_name)
+    return ResponseEnvelope(data=JobRetryResponse(task_name=payload.task_name, task_id=result.id))

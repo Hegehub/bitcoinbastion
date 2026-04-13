@@ -21,6 +21,7 @@ Additional production endpoints:
 - `/api/v1/health/live` and `/api/v1/health/ready`
 - `/api/v1/admin/jobs` (admin, Celery task visibility)
 - `/api/v1/admin/jobs/runs` (admin, persisted job run history)
+- `/api/v1/admin/jobs/retry` (admin, re-dispatch failed/stuck task by name)
 - `/metrics` (Prometheus format)
 
 Error envelope:
