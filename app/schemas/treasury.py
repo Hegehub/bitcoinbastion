@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 
@@ -12,5 +14,6 @@ class TreasuryRequestOut(BaseModel):
     title: str
     amount_sats: int
     status: str
+    created_at: datetime
 
     model_config = {"from_attributes": True}

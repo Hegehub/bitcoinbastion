@@ -14,3 +14,8 @@ Main groups:
 - `/api/v1/treasury`
 - `/api/v1/admin`
 - `/api/v1/users`
+
+Additional production endpoints:
+- `/api/v1/wallet/profiles` (auth, paginated)
+- `/api/v1/treasury/requests` GET/POST (auth, paginated for GET)
+- `/api/v1/health/live` and `/api/v1/health/ready`

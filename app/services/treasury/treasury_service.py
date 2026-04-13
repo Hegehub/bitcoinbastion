@@ -1,12 +1,11 @@
-from sqlalchemy.orm import Session
-
 from app.db.models.treasury import TreasuryRequest
+from app.db.repositories.treasury_repository import TreasuryRepository
 from app.schemas.treasury import TreasuryRequestIn
 
 
 class TreasuryService:
-    def __init__(self, db: Session) -> None:
-        self.db = db
+    def __init__(self, repo: TreasuryRepository) -> None:
+        self.repo = repo
 
     def create_request(self, payload: TreasuryRequestIn, requested_by: int | None = None) -> TreasuryRequest:
         request = TreasuryRequest(
@@ -15,7 +14,10 @@ class TreasuryService:
             destination_reference=payload.destination_reference,
             requested_by=requested_by,
         )
-        self.db.add(request)
-        self.db.commit()
-        self.db.refresh(request)
-        return request
+        return self.repo.create(request)
+
+    def list_requests(self, limit: int, offset: int, status: str | None = None) -> list[TreasuryRequest]:
+        return self.repo.list(limit=limit, offset=offset, status=status)
+
+    def count_requests(self, status: str | None = None) -> int:
+        return self.repo.count(status=status)

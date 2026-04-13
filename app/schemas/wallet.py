@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 
@@ -13,3 +15,13 @@ class WalletHealthResponse(BaseModel):
     privacy_score: float
     fee_exposure_score: float
     recommendations: list[str]
+
+
+class WalletProfileOut(BaseModel):
+    id: int
+    name: str
+    wallet_type: str
+    watch_only: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
