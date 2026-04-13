@@ -15,8 +15,11 @@ class NewsSource(Base):
     base_url: Mapped[str] = mapped_column(String(255), default="")
     rss_url: Mapped[str] = mapped_column(String(255), nullable=False)
     credibility_weight: Mapped[float] = mapped_column(Float, default=1.0)
+    language: Mapped[str] = mapped_column(String(8), default="en")
+    category: Mapped[str] = mapped_column(String(80), default="general")
     is_active: Mapped[bool] = mapped_column(default=True)
     fetch_interval_minutes: Mapped[int] = mapped_column(Integer, default=15)
+    last_fetched_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -34,6 +37,7 @@ class NewsArticle(Base):
     summary: Mapped[str] = mapped_column(Text, default="")
     language: Mapped[str] = mapped_column(String(8), default="en")
     content_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    canonical_hash: Mapped[str] = mapped_column(String(64), default="")
     duplicate_of_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True)
 
     published_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
@@ -45,4 +49,7 @@ class NewsArticle(Base):
     impact_score: Mapped[float] = mapped_column(Float, default=0.0)
     confidence_score: Mapped[float] = mapped_column(Float, default=0.0)
     credibility_score: Mapped[float] = mapped_column(Float, default=0.0)
+    explainability_json: Mapped[str] = mapped_column(Text, default="{}")
     metadata_json: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
