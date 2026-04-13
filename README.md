@@ -41,3 +41,8 @@ make run
 - treasury
 - admin
 - users
+
+## Operations endpoints
+- `GET /api/v1/health/live`
+- `GET /api/v1/health/ready`
+- `GET /metrics`

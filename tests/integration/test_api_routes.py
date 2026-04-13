@@ -13,11 +13,13 @@ def test_new_api_groups_exist() -> None:
     client = TestClient(app)
     try:
         assert client.get("/api/v1/admin/status").status_code == 200
+        assert client.get("/api/v1/admin/jobs").status_code == 200
         assert client.get("/api/v1/onchain/events").status_code == 200
         assert client.get("/api/v1/entities").status_code == 200
         assert client.post(
             "/api/v1/fees/recommendation",
             json={"mempool_congestion": 0.5, "target_blocks": 6},
         ).status_code == 200
+        assert client.get("/metrics").status_code == 200
     finally:
         app.dependency_overrides.clear()

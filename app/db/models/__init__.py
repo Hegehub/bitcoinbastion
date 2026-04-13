@@ -2,6 +2,7 @@ from app.db.models.audit import AuditLog
 from app.db.models.auth import SubscriptionPlan, User, UserSubscription
 from app.db.models.delivery import DeliveryLog
 from app.db.models.entity import Entity, EntityAddress
+from app.db.models.job_run import JobRun
 from app.db.models.news import NewsArticle, NewsSource
 from app.db.models.onchain import OnchainEvent
 from app.db.models.signal import Signal
@@ -18,6 +19,7 @@ __all__ = [
     "UserSubscription",
     "Entity",
     "EntityAddress",
+    "JobRun",
     "NewsSource",
     "NewsArticle",
     "OnchainEvent",

@@ -14,3 +14,16 @@ def test_signal_formatter_contains_key_fields() -> None:
     text = TelegramFormatter.format_signal(signal)
     assert "Big Bitcoin move" in text
     assert "Severity" in text
+
+
+def test_signal_formatter_escapes_markdown() -> None:
+    signal = Signal(
+        signal_type="news",
+        severity="high",
+        score=0.9,
+        confidence=0.8,
+        title="[Alert]_v1",
+        summary="unsafe *markdown*",
+    )
+    text = TelegramFormatter.format_signal(signal)
+    assert "\\[Alert\\]\\_v1" in text

@@ -19,3 +19,10 @@ Additional production endpoints:
 - `/api/v1/wallet/profiles` (auth, paginated)
 - `/api/v1/treasury/requests` GET/POST (auth, paginated for GET)
 - `/api/v1/health/live` and `/api/v1/health/ready`
+- `/api/v1/admin/jobs` (admin, Celery task visibility)
+- `/api/v1/admin/jobs/runs` (admin, persisted job run history)
+- `/metrics` (Prometheus format)
+
+Error envelope:
+- `{"success": false, "error": {"code": "...", "message": "...", "request_id": "..."}}`
+- Rate limit errors return HTTP 429 with `code=rate_limited`.
