@@ -23,6 +23,9 @@ dependencies = [
   "feedparser>=6.0.11",
   "aiogram>=3.13.1",
   "celery>=5.4.0",
+  "passlib[argon2]>=1.7.4",
+  "python-jose>=3.3.0",
+  "email-validator>=2.2.0",
 ]
 
 [project.optional-dependencies]

@@ -4,8 +4,10 @@ from app.db.models.news import NewsSource
 from app.db.session import SessionLocal
 from app.integrations.rss.client import RSSClient
 from app.services.ingestion.news_ingestion import NewsIngestionService
+from app.tasks.celery_app import celery_app
 
 
+@celery_app.task(name="news.fetch")
 def fetch_news_task() -> dict[str, int]:
     rss = RSSClient()
     service = NewsIngestionService(rss)

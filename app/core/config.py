@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     telegram_default_chat_id: str = Field(default="", alias="TELEGRAM_DEFAULT_CHAT_ID")
     admin_chat_ids: str = Field(default="", alias="ADMIN_CHAT_IDS")
 
+    jwt_secret_key: str = Field(default="change-me-in-prod", alias="JWT_SECRET_KEY")
+    jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
+
     news_fetch_interval_seconds: int = Field(default=300, alias="NEWS_FETCH_INTERVAL_SECONDS")
     onchain_large_transfer_sats: int = Field(default=1_000_000_000, alias="ONCHAIN_LARGE_TRANSFER_SATS")
 

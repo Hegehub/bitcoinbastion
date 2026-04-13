@@ -1,25 +1,38 @@
 # Bitcoin Bastion
 
-Bitcoin Bastion is a Bitcoin-native intelligence and operations platform.
+Production-minded Bitcoin-native intelligence and operations platform.
 
-## MVP capabilities
-- RSS news ingestion and deduplication
-- Bitcoin relevance scoring
-- On-chain event abstraction with rule-based alerts
-- Signal generation and API exposure
-- Telegram formatting and delivery service abstraction
+## Included production baseline
+- Modular monolith with strict service/repository boundaries
+- Versioned FastAPI API (`/api/v1/*`) with request ID middleware and standardized error handling
+- Auth foundation (register/login + JWT)
+- SQLAlchemy domain models for intelligence + auth + entities + audit logs
+- Celery orchestration baseline with worker/beat services
+- RSS ingestion, deduplication, scoring, signal engine, Telegram formatter
+- Docker compose stack for app + db + redis + worker + beat
 
 ## Quick start
 ```bash
+cp .env.example .env
 make up
-make migrate
 make test
 ```
 
-## Run locally
+## Local run
 ```bash
-python -m venv .venv
-source .venv/bin/activate
 pip install -e '.[dev]'
 uvicorn app.main:app --reload
 ```
+
+## API groups
+- health
+- auth
+- news
+- signals
+- onchain
+- entities
+- wallet
+- fees
+- treasury
+- admin
+- users
