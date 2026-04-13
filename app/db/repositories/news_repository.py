@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db.models.news import NewsArticle
@@ -18,6 +18,10 @@ class NewsRepository:
         self.db.refresh(article)
         return article
 
-    def latest(self, limit: int = 20) -> list[NewsArticle]:
-        stmt = select(NewsArticle).order_by(NewsArticle.published_at.desc()).limit(limit)
+    def latest(self, limit: int = 20, offset: int = 0) -> list[NewsArticle]:
+        stmt = select(NewsArticle).order_by(NewsArticle.published_at.desc()).limit(limit).offset(offset)
         return list(self.db.execute(stmt).scalars())
+
+    def count(self) -> int:
+        stmt = select(func.count()).select_from(NewsArticle)
+        return int(self.db.execute(stmt).scalar_one())

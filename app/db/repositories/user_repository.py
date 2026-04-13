@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db.models.auth import User
@@ -18,7 +18,6 @@ class UserRepository:
         stmt = select(User).where(User.username == username)
         return self.db.execute(stmt).scalar_one_or_none()
 
-
     def by_id(self, user_id: int) -> User | None:
         stmt = select(User).where(User.id == user_id)
         return self.db.execute(stmt).scalar_one_or_none()
@@ -26,3 +25,7 @@ class UserRepository:
     def list_users(self, limit: int, offset: int) -> list[User]:
         stmt = select(User).order_by(User.id.desc()).limit(limit).offset(offset)
         return list(self.db.execute(stmt).scalars())
+
+    def count(self) -> int:
+        stmt = select(func.count()).select_from(User)
+        return int(self.db.execute(stmt).scalar_one())

@@ -1,20 +1,23 @@
-.PHONY: install test lint format up down run dev worker bot migrate
+.PHONY: install install-dev test lint format up down run dev worker bot migrate
 
 install:
-	pip install -e '.[dev]'
+	python -m pip install -e .
 
-test:
-	pytest -q
+install-dev:
+	python -m pip install -e '.[dev]'
+
+test: install-dev
+	python -m pytest -q
 
 lint:
-	ruff check app tests
-	mypy app
+	python -m ruff check app tests
+	python -m mypy app
 
 format:
-	black app tests
+	python -m black app tests
 
 run:
-	uvicorn app.main:app --reload
+	python -m uvicorn app.main:app --reload
 
 dev: run
 
@@ -25,10 +28,10 @@ down:
 	docker compose down
 
 migrate:
-	alembic upgrade head
+	python -m alembic upgrade head
 
 worker:
-	celery -A app.tasks.celery_app.celery_app worker --loglevel=info
+	python -m celery -A app.tasks.celery_app.celery_app worker --loglevel=info
 
 bot:
 	python -m app.bot.runner

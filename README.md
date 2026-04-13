@@ -14,14 +14,19 @@ Production-minded Bitcoin-native intelligence and operations platform.
 ## Quick start
 ```bash
 cp .env.example .env
-make up
+make install-dev
 make test
+make up
 ```
+
+## Why `make test` failed with `pytest: No such file or directory`
+This happens when `pytest` is not installed in the active Python environment.
+The Makefile now calls `python -m pytest` and includes `make install-dev` to install test dependencies first.
 
 ## Local run
 ```bash
-pip install -e '.[dev]'
-uvicorn app.main:app --reload
+make install-dev
+make run
 ```
 
 ## API groups
