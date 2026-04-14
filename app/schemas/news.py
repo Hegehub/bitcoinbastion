@@ -25,3 +25,14 @@ class NewsArticleOut(BaseModel):
     confidence_score: float
 
     model_config = {"from_attributes": True}
+
+
+class SourceReputationProfileOut(BaseModel):
+    source_id: int
+    reliability_score: float
+    consistency_score: float
+    signal_quality_score: float
+    sample_size: int
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}

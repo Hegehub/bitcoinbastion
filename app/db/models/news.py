@@ -53,3 +53,15 @@ class NewsArticle(Base):
     metadata_json: Mapped[str] = mapped_column(Text, default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class SourceReputationProfile(Base):
+    __tablename__ = "source_reputation_profiles"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    source_id: Mapped[int] = mapped_column(ForeignKey("news_sources.id"), unique=True, index=True)
+    reliability_score: Mapped[float] = mapped_column(Float, default=0.0)
+    consistency_score: Mapped[float] = mapped_column(Float, default=0.0)
+    signal_quality_score: Mapped[float] = mapped_column(Float, default=0.0)
+    sample_size: Mapped[int] = mapped_column(Integer, default=0)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

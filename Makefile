@@ -1,4 +1,4 @@
-.PHONY: install install-dev test lint format up down run dev worker bot migrate
+.PHONY: install install-dev test lint format up down run dev worker bot migrate alembic-repro
 
 install:
 	python -m pip install -e .
@@ -35,3 +35,7 @@ worker:
 
 bot:
 	python -m app.bot.runner
+
+
+alembic-repro:
+	bash scripts/check_alembic_reproducibility.sh

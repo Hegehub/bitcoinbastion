@@ -1,11 +1,20 @@
 from functools import lru_cache
+from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+ENV_FILE_PATH = REPO_ROOT / ".env"
+PRODUCTION_ENVIRONMENTS = {"prod", "production"}
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=str(ENV_FILE_PATH),
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
     app_name: str = Field(default="Bitcoin Bastion", alias="APP_NAME")
     environment: str = Field(default="dev", alias="ENVIRONMENT")
@@ -25,6 +34,27 @@ class Settings(BaseSettings):
 
     news_fetch_interval_seconds: int = Field(default=300, alias="NEWS_FETCH_INTERVAL_SECONDS")
     onchain_large_transfer_sats: int = Field(default=1_000_000_000, alias="ONCHAIN_LARGE_TRANSFER_SATS")
+
+    @model_validator(mode="after")
+    def validate_production_secret_guards(self) -> "Settings":
+        if self.environment.lower() not in PRODUCTION_ENVIRONMENTS:
+            return self
+
+        weak_secret_values = {
+            "",
+            "change-me-in-prod",
+            "changeme",
+            "default",
+            "secret",
+            "insecure",
+        }
+        secret = self.jwt_secret_key.strip()
+        if secret.lower() in weak_secret_values or len(secret) < 32:
+            raise ValueError(
+                "JWT_SECRET_KEY must be non-default and at least 32 characters in production."
+            )
+
+        return self
 
 
 @lru_cache(maxsize=1)
