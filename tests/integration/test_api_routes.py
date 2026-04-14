@@ -1,0 +1,40 @@
+from fastapi.testclient import TestClient
+
+from app.api.dependencies import get_admin_user
+from app.main import app
+
+
+class FakeAdminUser:
+    is_admin = True
+
+
+def test_new_api_groups_exist() -> None:
+    app.dependency_overrides[get_admin_user] = lambda: FakeAdminUser()
+    client = TestClient(app)
+    try:
+        assert client.get("/api/v1/admin/status").status_code == 200
+        assert client.get("/api/v1/admin/jobs").status_code == 200
+        assert client.get("/api/v1/onchain/events").status_code == 200
+        assert client.get("/api/v1/entities").status_code == 200
+        assert client.post(
+            "/api/v1/fees/recommendation",
+            json={"mempool_congestion": 0.5, "target_blocks": 6},
+        ).status_code == 200
+        assert client.post(
+            "/api/v1/policy/check",
+            json={"policy_name": "default", "wallet_health_score": 82, "transaction_amount_sats": 250000},
+        ).status_code == 200
+        assert client.get("/api/v1/policy/executions").status_code == 200
+        assert client.get("/api/v1/policy/catalog").status_code == 200
+        assert client.post(
+            "/api/v1/privacy/assess",
+            json={"reused_addresses": 2, "known_kyc_exposure": False, "utxo_fragmentation_score": 0.2},
+        ).status_code == 200
+        assert client.get("/api/v1/education/snippets").status_code == 200
+        assert client.get("/api/v1/observability/snapshot").status_code == 200
+        assert client.get("/api/v1/signals/999999/explanation").status_code in {404, 503}
+        assert client.post("/api/v1/news/sources/reputation/refresh").status_code == 200
+        assert client.get("/api/v1/news/sources/reputation").status_code == 200
+        assert client.get("/metrics").status_code == 200
+    finally:
+        app.dependency_overrides.clear()
