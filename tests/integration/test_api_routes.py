@@ -14,6 +14,7 @@ def test_new_api_groups_exist() -> None:
     try:
         assert client.get("/api/v1/admin/status").status_code == 200
         assert client.get("/api/v1/admin/jobs").status_code == 200
+        assert client.get("/api/v1/admin/audit-logs").status_code == 200
         assert client.get("/api/v1/onchain/events").status_code == 200
         assert client.get("/api/v1/entities").status_code == 200
         assert client.post(
@@ -27,12 +28,22 @@ def test_new_api_groups_exist() -> None:
         assert client.get("/api/v1/policy/executions").status_code == 200
         assert client.get("/api/v1/policy/catalog").status_code == 200
         assert client.post(
+            "/api/v1/policy/catalog",
+            json={
+                "name": "ops_strict",
+                "description": "Strict policy profile",
+                "min_wallet_health_score": 85,
+                "max_single_tx_sats": 700000,
+            },
+        ).status_code == 200
+        assert client.post(
             "/api/v1/privacy/assess",
             json={"reused_addresses": 2, "known_kyc_exposure": False, "utxo_fragmentation_score": 0.2},
         ).status_code == 200
         assert client.get("/api/v1/education/snippets").status_code == 200
         assert client.get("/api/v1/observability/snapshot").status_code == 200
         assert client.get("/api/v1/signals/999999/explanation").status_code in {404, 503}
+        assert client.get("/api/v1/signals/999999/recommendations").status_code in {404, 503}
         assert client.post("/api/v1/news/sources/reputation/refresh").status_code == 200
         assert client.get("/api/v1/news/sources/reputation").status_code == 200
         assert client.get("/metrics").status_code == 200

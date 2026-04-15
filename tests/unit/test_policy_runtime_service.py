@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.db.base import Base
 from app.db.models.treasury import PolicyRule, TreasuryPolicy
-from app.schemas.policy import PolicyCheckRequest
+from app.schemas.policy import PolicyCatalogUpsertIn, PolicyCheckRequest
 from app.services.policy.policy_service import TreasuryPolicyService
 
 
@@ -47,8 +47,8 @@ def test_policy_rules_override_thresholds() -> None:
 
         db.add_all(
             [
-                PolicyRule(policy_id=policy.id, rule_key="min_wallet_health_score", rule_value="95", severity="error"),
-                PolicyRule(policy_id=policy.id, rule_key="max_single_tx_sats", rule_value="400", severity="error"),
+                PolicyRule(policy_id=policy.id, rule_key="min_wallet_health_score", rule_value="gte:95", severity="error"),
+                PolicyRule(policy_id=policy.id, rule_key="max_single_tx_sats", rule_value="lte:400", severity="error"),
             ]
         )
         db.commit()
@@ -59,3 +59,29 @@ def test_policy_rules_override_thresholds() -> None:
     assert result.allowed is False
     assert any("95" in item for item in result.violations)
     assert any("400" in item for item in result.violations)
+
+
+def test_policy_catalog_upsert_rewrites_threshold_rules() -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
+    Base.metadata.create_all(bind=engine)
+
+    with Session(engine) as db:
+        catalog_item = TreasuryPolicyService().upsert_catalog_entry(
+            db=db,
+            payload=PolicyCatalogUpsertIn(
+                name="ops_strict",
+                description="Strict policy for high-volatility sessions",
+                min_wallet_health_score=88,
+                max_single_tx_sats=700_000,
+            ),
+        )
+
+        payload = PolicyCheckRequest(policy_name="ops_strict", wallet_health_score=87, transaction_amount_sats=800_000)
+        result = TreasuryPolicyService().evaluate(db=db, payload=payload)
+
+    assert catalog_item.name == "ops_strict"
+    assert catalog_item.min_wallet_health_score == 88
+    assert catalog_item.max_single_tx_sats == 700_000
+    assert result.allowed is False
+    assert any("88" in item for item in result.violations)
+    assert any("700000" in item for item in result.violations)

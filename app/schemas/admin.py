@@ -15,6 +15,19 @@ class JobRunOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class AuditLogOut(BaseModel):
+    id: int
+    actor_user_id: int | None
+    action: str
+    resource_type: str
+    resource_id: str
+    before_json: str
+    after_json: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class JobRetryRequest(BaseModel):
     task_name: str = Field(min_length=3)
 
