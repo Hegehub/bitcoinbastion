@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import db_session
+from app.api.dependencies import db_session, get_admin_user
+from app.db.models.auth import User
 from app.schemas.base import ResponseEnvelope
 from app.schemas.policy import (
     PolicyCatalogOut,
+    PolicyCatalogUpsertIn,
     PolicyCheckRequest,
     PolicyCheckResponse,
     PolicyExecutionLogOut,
@@ -30,6 +32,16 @@ def list_policy_executions(
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[PolicyExecutionLogOut]]:
     data = TreasuryPolicyService().list_executions(db=db, limit=limit, offset=offset)
+    return ResponseEnvelope(data=data)
+
+
+@router.post("/catalog", response_model=ResponseEnvelope[PolicyCatalogOut])
+def upsert_policy_catalog(
+    payload: PolicyCatalogUpsertIn,
+    _: User = Depends(get_admin_user),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[PolicyCatalogOut]:
+    data = TreasuryPolicyService().upsert_catalog_entry(db=db, payload=payload)
     return ResponseEnvelope(data=data)
 
 
