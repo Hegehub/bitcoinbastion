@@ -1,4 +1,4 @@
-.PHONY: install install-dev test lint format up down run dev worker bot migrate alembic-repro
+.PHONY: install install-dev test test-contract test-integration lint format up down run dev worker bot migrate alembic-repro ci-smoke
 
 install:
 	python -m pip install -e .
@@ -8,6 +8,12 @@ install-dev:
 
 test: install-dev
 	python -m pytest -q
+
+test-contract: install-dev
+	python -m pytest -q tests/contract
+
+test-integration: install-dev
+	python -m pytest -q tests/integration
 
 lint:
 	python -m ruff check app tests
@@ -39,3 +45,8 @@ bot:
 
 alembic-repro:
 	bash scripts/check_alembic_reproducibility.sh
+
+ci-smoke: install-dev
+	python -m alembic upgrade head
+	bash scripts/check_alembic_reproducibility.sh
+	python -m pytest -q tests/contract
