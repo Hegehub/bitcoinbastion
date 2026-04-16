@@ -7,6 +7,11 @@ class WalletHealthRequest(BaseModel):
     utxo_count: int = Field(ge=0)
     largest_utxo_share: float = Field(ge=0.0, le=1.0)
     avg_fee_rate_sat_vb: float = Field(ge=0.0)
+    utxo_values_sats: list[int] = Field(default_factory=list)
+    script_hint: str = Field(default="")
+    has_descriptor: bool | None = None
+    has_recovery_instructions: bool | None = None
+    has_backup_reference: bool | None = None
 
 
 class WalletHealthResponse(BaseModel):
