@@ -70,6 +70,15 @@ def test_new_api_groups_exist() -> None:
         ).status_code == 200
         assert client.get("/api/v1/education/snippets").status_code == 200
         assert client.get("/api/v1/observability/snapshot").status_code == 200
+        assert client.get("/api/v1/citadel/overview").status_code == 200
+        assert client.get("/api/v1/citadel/assessment").status_code == 200
+        assert client.get("/api/v1/citadel/dependencies").status_code == 200
+        assert client.get("/api/v1/citadel/recovery").status_code == 200
+        assert client.post("/api/v1/citadel/simulations", json={"owner_id": 9, "scenario_code": "loss_signer"}).status_code == 200
+        assert client.get("/api/v1/citadel/simulations").status_code == 200
+        assert client.get("/api/v1/citadel/repair-plan").status_code == 200
+        assert client.get("/api/v1/citadel/policy-checks").status_code == 200
+        assert client.post("/api/v1/citadel/recalculate", json={"owner_type": "user", "owner_id": 9}).status_code == 200
         assert client.get("/api/v1/signals/999999/explanation").status_code in {404, 503}
         assert client.get("/api/v1/signals/999999/recommendations").status_code in {404, 503}
         assert client.post("/api/v1/news/sources/reputation/refresh").status_code == 200

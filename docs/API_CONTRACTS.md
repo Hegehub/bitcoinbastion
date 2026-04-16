@@ -52,6 +52,17 @@
 - `POST /api/v1/policy/catalog/compare` (admin; threshold/rule diff between two policy profiles)
 - `GET /api/v1/education/snippets`
 
+## Citadel
+- `GET /api/v1/citadel/overview`
+- `GET /api/v1/citadel/assessment`
+- `POST /api/v1/citadel/recalculate`
+- `GET /api/v1/citadel/dependencies`
+- `GET /api/v1/citadel/recovery`
+- `POST /api/v1/citadel/simulations`
+- `GET /api/v1/citadel/simulations`
+- `GET /api/v1/citadel/repair-plan`
+- `GET /api/v1/citadel/policy-checks`
+
 ## Admin operations
 - `GET /api/v1/admin/status`
 - `GET /api/v1/admin/jobs`
