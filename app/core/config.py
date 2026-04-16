@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     telegram_bot_token: str = Field(default="", alias="TELEGRAM_BOT_TOKEN")
     telegram_default_chat_id: str = Field(default="", alias="TELEGRAM_DEFAULT_CHAT_ID")
     admin_chat_ids: str = Field(default="", alias="ADMIN_CHAT_IDS")
+    bot_api_base_url: str = Field(default="http://localhost:8000", alias="BOT_API_BASE_URL")
+    bot_api_bearer_token: str = Field(default="", alias="BOT_API_BEARER_TOKEN")
 
     jwt_secret_key: str = Field(default="change-me-in-prod", alias="JWT_SECRET_KEY")
     jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")

@@ -8,9 +8,12 @@ def test_health_endpoint() -> None:
     response = client.get("/api/v1/health")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
+    assert "details" in response.json()
 
 
 def test_live_and_ready_endpoints() -> None:
     client = TestClient(app)
     assert client.get("/api/v1/health/live").status_code == 200
-    assert client.get("/api/v1/health/ready").status_code == 200
+    ready = client.get("/api/v1/health/ready")
+    assert ready.status_code == 200
+    assert ready.json()["status"] in {"ready", "degraded"}
