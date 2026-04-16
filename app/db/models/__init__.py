@@ -1,5 +1,6 @@
 from app.db.models.audit import AuditLog
 from app.db.models.auth import SubscriptionPlan, User, UserSubscription
+from app.db.models.citadel_assessment import CitadelAssessment
 from app.db.models.delivery import DeliveryLog
 from app.db.models.entity import Entity, EntityAddress
 from app.db.models.explainability import EvidenceEdge, EvidenceNode, SignalExplanation
@@ -15,6 +16,7 @@ from app.db.models.watched_entity import WatchedEntity
 
 __all__ = [
     "AuditLog",
+    "CitadelAssessment",
     "User",
     "SubscriptionPlan",
     "UserSubscription",
