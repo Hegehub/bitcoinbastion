@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -7,12 +8,29 @@ class PolicyCheckRequest(BaseModel):
     policy_name: str = Field(min_length=1)
     wallet_health_score: float = Field(ge=0.0, le=100.0)
     transaction_amount_sats: int = Field(gt=0)
+    required_approvals: int = Field(default=1, ge=1)
 
 
 class PolicyRuleOut(BaseModel):
     rule_key: str
     rule_value: str
     severity: str
+
+
+class PolicyRuleUpsertIn(BaseModel):
+    rule_key: Literal["min_wallet_health_score", "max_single_tx_sats", "min_required_approvals"]
+    comparator: Literal["gte", "lte", "eq"]
+    threshold: int = Field(ge=0)
+    severity: Literal["warning", "error"] = "error"
+
+
+class PolicyCatalogUpsertIn(BaseModel):
+    name: str = Field(min_length=1, max_length=120)
+    description: str = Field(default="", max_length=2000)
+    min_wallet_health_score: int = Field(ge=0, le=100)
+    max_single_tx_sats: int = Field(gt=0)
+    rules: list[PolicyRuleUpsertIn] = []
+    change_justification: str | None = Field(default=None, max_length=2000)
 
 
 class PolicyCheckResponse(BaseModel):
@@ -38,3 +56,43 @@ class PolicyExecutionLogOut(BaseModel):
     violations: list[str]
     next_actions: list[str]
     executed_at: datetime
+
+
+class PolicySimulationRequest(BaseModel):
+    baseline_policy_name: str = Field(min_length=1)
+    candidate_policy_name: str = Field(min_length=1)
+    wallet_health_score: float = Field(ge=0.0, le=100.0)
+    transaction_amount_sats: int = Field(gt=0)
+    required_approvals: int = Field(default=1, ge=1)
+
+
+class PolicySimulationDiffOut(BaseModel):
+    baseline_allowed: bool
+    candidate_allowed: bool
+    changed: bool
+    added_violations: list[str]
+    removed_violations: list[str]
+    changed_rules: list[str]
+    risk_level: Literal["low", "medium", "high"]
+    required_approvals_suggested: int
+    governance_actions: list[str]
+
+
+class PolicySimulationOut(BaseModel):
+    baseline: PolicyCheckResponse
+    candidate: PolicyCheckResponse
+    diff: PolicySimulationDiffOut
+
+
+class PolicyCatalogCompareRequest(BaseModel):
+    baseline_policy_name: str = Field(min_length=1)
+    candidate_policy_name: str = Field(min_length=1)
+
+
+class PolicyCatalogCompareOut(BaseModel):
+    baseline_policy_name: str
+    candidate_policy_name: str
+    changed_thresholds: list[str]
+    changed_rules: list[str]
+    risk_level: Literal["low", "medium", "high"]
+
