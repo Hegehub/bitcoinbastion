@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from app.api.errors import register_exception_handlers
 from app.api.middleware import RateLimitMiddleware, RequestIDMiddleware
 from app.api.v1.admin import router as admin_router
+from app.api.v1.citadel import router as citadel_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.education import router as education_router
 from app.api.v1.entities import router as entities_router
@@ -45,3 +46,4 @@ app.include_router(policy_router, prefix=settings.api_prefix)
 app.include_router(privacy_router, prefix=settings.api_prefix)
 app.include_router(education_router, prefix=settings.api_prefix)
 app.include_router(observability_router, prefix=settings.api_prefix)
+app.include_router(citadel_router, prefix=settings.api_prefix)

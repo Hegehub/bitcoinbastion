@@ -1,6 +1,7 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import select
+from sqlalchemy import func, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.db.models.job_run import JobRun
@@ -29,3 +30,37 @@ class JobRunRepository:
     def list_recent(self, limit: int = 50) -> list[JobRun]:
         stmt = select(JobRun).order_by(JobRun.started_at.desc()).limit(limit)
         return list(self.db.execute(stmt).scalars())
+
+
+    def list_recent_failures(self, limit: int = 20) -> list[JobRun]:
+        stmt = (
+            select(JobRun)
+            .where(JobRun.status.in_(["failed", "error"]))
+            .order_by(JobRun.started_at.desc())
+            .limit(limit)
+        )
+        try:
+            return list(self.db.execute(stmt).scalars())
+        except SQLAlchemyError:
+            return []
+
+    def started_count_last_24h(self) -> int:
+        since = datetime.now(UTC) - timedelta(hours=24)
+        stmt = select(func.count()).select_from(JobRun).where(JobRun.started_at >= since)
+        try:
+            return int(self.db.execute(stmt).scalar_one())
+        except SQLAlchemyError:
+            return 0
+
+    def failed_count_last_24h(self) -> int:
+        since = datetime.now(UTC) - timedelta(hours=24)
+        stmt = (
+            select(func.count())
+            .select_from(JobRun)
+            .where(JobRun.started_at >= since)
+            .where(JobRun.status.in_(["failed", "error"]))
+        )
+        try:
+            return int(self.db.execute(stmt).scalar_one())
+        except SQLAlchemyError:
+            return 0

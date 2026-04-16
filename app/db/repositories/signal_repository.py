@@ -1,6 +1,8 @@
 import json
+from datetime import UTC, datetime
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.db.models.explainability import EvidenceEdge, EvidenceNode, SignalExplanation
@@ -19,15 +21,50 @@ class SignalRepository:
 
     def get(self, signal_id: int) -> Signal | None:
         stmt = select(Signal).where(Signal.id == signal_id)
-        return self.db.execute(stmt).scalar_one_or_none()
+        try:
+            return self.db.execute(stmt).scalar_one_or_none()
+        except SQLAlchemyError:
+            return None
 
-    def top(self, limit: int = 10, offset: int = 0) -> list[Signal]:
-        stmt = select(Signal).order_by(Signal.score.desc()).limit(limit).offset(offset)
-        return list(self.db.execute(stmt).scalars())
+    def top(self, limit: int = 10, offset: int = 0, horizon: str | None = None) -> list[Signal]:
+        stmt = select(Signal).order_by(Signal.score.desc())
+        try:
+            if horizon is None:
+                stmt = stmt.limit(limit).offset(offset)
+                return list(self.db.execute(stmt).scalars())
+
+            # Horizon is currently persisted in explainability_json; filter in-memory.
+            candidates = list(self.db.execute(stmt.limit(500)).scalars())
+            filtered = [item for item in candidates if self._dominant_horizon(item) == horizon]
+            return filtered[offset : offset + limit]
+        except SQLAlchemyError:
+            return []
 
     def count(self) -> int:
         stmt = select(func.count()).select_from(Signal)
-        return int(self.db.execute(stmt).scalar_one())
+        try:
+            return int(self.db.execute(stmt).scalar_one())
+        except SQLAlchemyError:
+            return 0
+
+    def unpublished(self, limit: int = 20) -> list[Signal]:
+        stmt = (
+            select(Signal)
+            .where(Signal.is_published.is_(False))
+            .order_by(Signal.score.desc(), Signal.created_at.asc())
+            .limit(limit)
+        )
+        return list(self.db.execute(stmt).scalars())
+
+    def mark_published(self, signal_id: int) -> None:
+        signal = self.get(signal_id)
+        if signal is None:
+            return
+
+        signal.is_published = True
+        signal.status = "published"
+        signal.published_at = datetime.now(UTC)
+        self.db.commit()
 
     def latest_explanation(self, signal_id: int) -> SignalExplanation | None:
         stmt = (
@@ -74,3 +111,18 @@ class SignalRepository:
         self.db.commit()
         self.db.refresh(explanation)
         return explanation
+
+    @staticmethod
+    def _dominant_horizon(signal: Signal) -> str | None:
+        try:
+            parsed = json.loads(signal.explainability_json or "{}")
+        except json.JSONDecodeError:
+            return None
+        if isinstance(parsed, dict):
+            horizons = parsed.get("horizons")
+            if isinstance(horizons, dict) and isinstance(horizons.get("dominant"), str):
+                return str(horizons.get("dominant"))
+            raw = parsed.get("horizon")
+            if isinstance(raw, str):
+                return raw
+        return None
