@@ -1,4 +1,7 @@
-from app.schemas.wallet import WalletHealthRequest, WalletHealthResponse
+import json
+
+from app.db.models.wallet import WalletHealthReport
+from app.schemas.wallet import WalletHealthReportOut, WalletHealthRequest, WalletHealthResponse
 
 
 class WalletHealthService:
@@ -22,4 +25,24 @@ class WalletHealthService:
             privacy_score=privacy,
             fee_exposure_score=fee_exposure,
             recommendations=recommendations,
+        )
+
+    def to_report_out(self, report: WalletHealthReport) -> WalletHealthReportOut:
+        recommendations: list[str] = []
+        try:
+            parsed = json.loads(report.recommendations_json)
+            if isinstance(parsed, list):
+                recommendations = [str(item) for item in parsed]
+        except json.JSONDecodeError:
+            recommendations = []
+
+        return WalletHealthReportOut(
+            id=report.id,
+            wallet_profile_id=report.wallet_profile_id,
+            health_score=report.health_score,
+            utxo_fragmentation_score=report.utxo_fragmentation_score,
+            privacy_score=report.privacy_score,
+            fee_exposure_score=report.fee_exposure_score,
+            recommendations=recommendations,
+            generated_at=report.generated_at,
         )

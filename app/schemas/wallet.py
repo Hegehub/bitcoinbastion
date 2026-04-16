@@ -25,3 +25,16 @@ class WalletProfileOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class WalletHealthReportOut(BaseModel):
+    id: int
+    wallet_profile_id: int
+    health_score: float
+    utxo_fragmentation_score: float
+    privacy_score: float
+    fee_exposure_score: float
+    recommendations: list[str]
+    generated_at: datetime
+
+    model_config = {"from_attributes": True}
