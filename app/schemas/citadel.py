@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CitadelFindingOut(BaseModel):
@@ -8,6 +8,15 @@ class CitadelFindingOut(BaseModel):
     severity: str
     domain: str
     detail: str
+
+
+class CitadelFreshnessOut(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    assessment_generated_at: str | None = None
+    cache_source: str | None = None
+    cache_age_seconds: int | None = None
+    recompute_reason: str | None = None
 
 
 class CitadelScoreBreakdownOut(BaseModel):
@@ -31,7 +40,7 @@ class CitadelAssessmentOut(CitadelScoreBreakdownOut):
     warnings: list[CitadelFindingOut] = Field(default_factory=list)
     recommendations: list[str] = Field(default_factory=list)
     explainability: dict[str, object] = Field(default_factory=dict)
-    freshness: dict[str, object] = Field(default_factory=dict)
+    freshness: CitadelFreshnessOut = Field(default_factory=CitadelFreshnessOut)
     generated_at: datetime
     created_at: datetime
     updated_at: datetime
@@ -66,7 +75,7 @@ class CitadelOverviewOut(BaseModel):
     overall_score: float = Field(ge=0.0, le=100.0)
     recovery_readiness_score: float = Field(ge=0.0, le=1.0)
     top_findings: list[str] = Field(default_factory=list)
-    freshness: dict[str, object] = Field(default_factory=dict)
+    freshness: CitadelFreshnessOut = Field(default_factory=CitadelFreshnessOut)
 
 
 class CitadelDependencyGraphOut(BaseModel):
@@ -110,6 +119,19 @@ class CitadelPolicyChecksOut(BaseModel):
     policy_maturity_score: float = Field(ge=0.0, le=100.0)
     maturity: str
     gaps: list[str] = Field(default_factory=list)
+    freshness: dict[str, object] = Field(default_factory=dict)
+    confidence: float = Field(ge=0.0, le=1.0)
+    explainability: dict[str, object] = Field(default_factory=dict)
+
+
+class CitadelInheritanceOut(BaseModel):
+    owner_id: int
+    status: str
+    completeness_score: float = Field(ge=0.0, le=1.0)
+    human_dependency_score: float = Field(ge=0.0, le=1.0)
+    operational_readability_score: float = Field(ge=0.0, le=1.0)
+    critical_gaps: list[str] = Field(default_factory=list)
+    recommendations: list[str] = Field(default_factory=list)
     freshness: dict[str, object] = Field(default_factory=dict)
     confidence: float = Field(ge=0.0, le=1.0)
     explainability: dict[str, object] = Field(default_factory=dict)

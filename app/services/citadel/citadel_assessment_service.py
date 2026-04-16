@@ -6,11 +6,28 @@ from app.schemas.citadel import (
     RecoveryArtifactOut,
     RecoveryReadinessOut,
 )
+from app.services.citadel.inheritance_verification_service import InheritanceVerificationService
+from app.services.citadel.policy_maturity_service import CitadelPolicyService
 from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecord
 from app.services.citadel.recovery_readiness_engine import RecoveryReadinessEngine
+from app.services.citadel.sovereignty_graph_service import SovereigntyGraphService
 
 
 class CitadelAssessmentService:
+    @staticmethod
+    def _safe_float(value: object, *, default: float = 0.0) -> float:
+        if isinstance(value, (int, float)):
+            return float(value)
+        try:
+            return float(str(value))
+        except (TypeError, ValueError):
+            return default
+
+    @staticmethod
+    def _clamp_percent(value: float, *, default: float = 0.0) -> float:
+        normalized = value if isinstance(value, (int, float)) else default
+        return round(max(0.0, min(100.0, float(normalized))), 2)
+
     def recovery_report(self, *, owner_id: int) -> RecoveryReadinessOut:
         artifacts = [
             RecoveryArtifactRecord(
@@ -42,16 +59,25 @@ class CitadelAssessmentService:
 
     def build_assessment(self, *, owner_type: str, owner_id: int) -> CitadelAssessmentOut:
         recovery = self.recovery_report(owner_id=owner_id)
+        inheritance = InheritanceVerificationService().evaluate(owner_id=owner_id)
+        policy = CitadelPolicyService().evaluate(owner_id=owner_id)
+        graph = SovereigntyGraphService().build(owner_id=owner_id)
 
-        recovery_score_100 = round(recovery.recovery_readiness_score * 100, 2)
-        operational = 74.0 if recovery.recovery_readiness_score >= 0.7 else 58.0
-        policy_maturity = 68.0 if recovery.recovery_readiness_score >= 0.7 else 55.0
+        spof_count = len(graph.get("single_points_of_failure", []))
+        custody = self._clamp_percent(max(35.0, 78.0 - (spof_count * 12.0)))
+        vendor = self._clamp_percent(max(40.0, 72.0 - (spof_count * 8.0)))
+        recovery_score_100 = self._clamp_percent(recovery.recovery_readiness_score * 100)
+        inheritance_score_100 = self._clamp_percent(
+            self._safe_float(inheritance.get("completeness_score"), default=0.0) * 100
+        )
+
         privacy = 71.0
         treasury = 66.0
-        custody = 72.0
-        vendor = 64.0
-        inheritance = 62.0 if recovery.recovery_readiness_score >= 0.7 else 48.0
         fee_survivability = 69.0
+        policy_maturity = self._clamp_percent(
+            self._safe_float(policy.get("policy_maturity_score"), default=0.0)
+        )
+        operational = self._clamp_percent(74.0 if recovery.recovery_readiness_score >= 0.7 else 58.0)
 
         overall = round(
             (
@@ -60,7 +86,7 @@ class CitadelAssessmentService:
                 + privacy
                 + treasury
                 + vendor
-                + inheritance
+                + inheritance_score_100
                 + fee_survivability
                 + policy_maturity
                 + operational
@@ -79,6 +105,31 @@ class CitadelAssessmentService:
                     detail="Not all required recovery artifacts are verified.",
                 )
             )
+        if spof_count > 0:
+            findings.append(
+                CitadelFindingOut(
+                    title="Single points of failure detected",
+                    severity="warning",
+                    domain="sovereignty_graph",
+                    detail=f"Detected {spof_count} SPOF edge(s) in dependency graph.",
+                )
+            )
+
+        recommendations = ["Verify backup artifacts and refresh recovery drills quarterly."]
+        if spof_count > 0:
+            recommendations.append("Reduce signer concentration by adding independent signing path.")
+        recommendations.extend(str(item) for item in inheritance.get("recommendations", []) if item)
+
+        warnings: list[CitadelFindingOut] = []
+        for gap in policy.get("gaps", []):
+            warnings.append(
+                CitadelFindingOut(
+                    title="Policy maturity gap",
+                    severity="warning",
+                    domain="policy",
+                    detail=str(gap),
+                )
+            )
 
         now = datetime.now(UTC)
         return CitadelAssessmentOut(
@@ -91,15 +142,21 @@ class CitadelAssessmentService:
             privacy_resilience_score=privacy,
             treasury_resilience_score=treasury,
             vendor_independence_score=vendor,
-            inheritance_readiness_score=inheritance,
+            inheritance_readiness_score=inheritance_score_100,
             fee_survivability_score=fee_survivability,
             policy_maturity_score=policy_maturity,
             operational_hygiene_score=operational,
             critical_findings=findings,
-            warnings=[],
-            recommendations=["Verify backup artifacts and refresh recovery drills quarterly."],
+            warnings=warnings,
+            recommendations=recommendations,
             explainability={
                 "recovery": recovery.model_dump(),
+                "inheritance": inheritance,
+                "policy": policy,
+                "sovereignty_graph": {
+                    "spof_count": spof_count,
+                    "findings": graph.get("findings", []),
+                },
                 "scoring_weights": {
                     "uniform": True,
                     "domains": 9,

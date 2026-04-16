@@ -76,6 +76,7 @@ def test_new_api_groups_exist() -> None:
         assert client.get("/api/v1/citadel/recovery").status_code == 200
         assert client.post("/api/v1/citadel/simulations", json={"owner_id": 9, "scenario_code": "loss_signer"}).status_code == 200
         assert client.get("/api/v1/citadel/simulations").status_code == 200
+        assert client.get("/api/v1/citadel/inheritance").status_code == 200
         assert client.get("/api/v1/citadel/repair-plan").status_code == 200
         assert client.get("/api/v1/citadel/policy-checks").status_code == 200
         assert client.post("/api/v1/citadel/recalculate", json={"owner_type": "user", "owner_id": 9}).status_code == 200

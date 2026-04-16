@@ -60,6 +60,7 @@
 - `GET /api/v1/citadel/recovery`
 - `POST /api/v1/citadel/simulations`
 - `GET /api/v1/citadel/simulations`
+- `GET /api/v1/citadel/inheritance`
 - `GET /api/v1/citadel/repair-plan`
 - `GET /api/v1/citadel/policy-checks`
 
