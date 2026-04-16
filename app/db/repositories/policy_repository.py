@@ -1,9 +1,10 @@
 import json
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.db.models.treasury import PolicyExecutionLog, PolicyRule, TreasuryPolicy
+from app.schemas.policy import PolicyRuleUpsertIn
 
 
 class PolicyExecutionRepository:
@@ -71,18 +72,59 @@ class PolicyRepository:
                 PolicyRule(
                     policy_id=policy.id,
                     rule_key="min_wallet_health_score",
-                    rule_value=str(policy.min_wallet_health_score),
+                    rule_value="gte:60",
                     severity="error",
                 ),
                 PolicyRule(
                     policy_id=policy.id,
                     rule_key="max_single_tx_sats",
-                    rule_value=str(policy.max_single_tx_sats),
+                    rule_value="lte:10000000",
                     severity="error",
                 ),
             ]
         )
         self.db.commit()
+        return policy
+
+    def upsert_policy(
+        self,
+        *,
+        name: str,
+        description: str,
+        min_wallet_health_score: int,
+        max_single_tx_sats: int,
+        rules: list[PolicyRuleUpsertIn] | None = None,
+    ) -> TreasuryPolicy:
+        policy = self.get_policy(name)
+        if policy is None:
+            policy = TreasuryPolicy(name=name)
+            self.db.add(policy)
+            self.db.flush()
+
+        policy.description = description
+        policy.min_wallet_health_score = min_wallet_health_score
+        policy.max_single_tx_sats = max_single_tx_sats
+        self.db.flush()
+
+        resolved_rules = rules or [
+            PolicyRuleUpsertIn(rule_key="min_wallet_health_score", comparator="gte", threshold=min_wallet_health_score),
+            PolicyRuleUpsertIn(rule_key="max_single_tx_sats", comparator="lte", threshold=max_single_tx_sats),
+        ]
+
+        self.db.execute(delete(PolicyRule).where(PolicyRule.policy_id == policy.id))
+        self.db.add_all(
+            [
+                PolicyRule(
+                    policy_id=policy.id,
+                    rule_key=rule.rule_key,
+                    rule_value=f"{rule.comparator}:{rule.threshold}",
+                    severity=rule.severity,
+                )
+                for rule in resolved_rules
+            ]
+        )
+        self.db.commit()
+        self.db.refresh(policy)
         return policy
 
     def list_rules(self, policy_id: int) -> list[PolicyRule]:
