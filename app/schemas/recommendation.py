@@ -8,6 +8,8 @@ class RecommendationItemOut(BaseModel):
     rationale: str
     evidence_refs: list[str] = Field(default_factory=list)
     policy_refs: list[str] = Field(default_factory=list)
+    evidence_paths: list[str] = Field(default_factory=list)
+    action_confidence: float = 0.0
 
 
 class SignalRecommendationOut(BaseModel):

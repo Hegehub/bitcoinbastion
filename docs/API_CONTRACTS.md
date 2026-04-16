@@ -27,8 +27,9 @@
 ## Signals, entities, on-chain
 - `GET /api/v1/signals/top` (supports `horizon=short|medium|long`)
 - `GET /api/v1/signals/{signal_id}/explanation`
-- `GET /api/v1/signals/{signal_id}/recommendations`
-- `GET /api/v1/entities`
+- `GET /api/v1/signals/{signal_id}/recommendations` (includes `evidence_refs`, `evidence_paths`, `policy_refs`)
+- `GET /api/v1/entities` (includes `source_ref_count`, `provenance_score`, `provenance_tier`)
+- `POST /api/v1/entities/provenance/refresh` (admin; drift-aware confidence refresh + per-entity delta summary)
 - `GET /api/v1/onchain/events`
 
 ## Wallet, fees, privacy, treasury
@@ -45,8 +46,10 @@
 ## Policy & education
 - `POST /api/v1/policy/check`
 - `GET /api/v1/policy/executions`
-- `POST /api/v1/policy/catalog` (admin)
+- `POST /api/v1/policy/catalog` (admin; high-risk tightening requires `change_justification`)
 - `GET /api/v1/policy/catalog`
+- `POST /api/v1/policy/simulate` (admin, returns risk classification + governance actions)
+- `POST /api/v1/policy/catalog/compare` (admin; threshold/rule diff between two policy profiles)
 - `GET /api/v1/education/snippets`
 
 ## Admin operations
@@ -54,6 +57,7 @@
 - `GET /api/v1/admin/jobs`
 - `GET /api/v1/admin/audit-logs`
 - `GET /api/v1/admin/jobs/runs`
+- `GET /api/v1/admin/jobs/recovery-check` (returns `severity=ok|warning|critical`)
 - `POST /api/v1/admin/jobs/retry`
 
 ## Guards and operational behavior

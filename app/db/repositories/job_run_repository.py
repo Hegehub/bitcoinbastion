@@ -31,6 +31,19 @@ class JobRunRepository:
         stmt = select(JobRun).order_by(JobRun.started_at.desc()).limit(limit)
         return list(self.db.execute(stmt).scalars())
 
+
+    def list_recent_failures(self, limit: int = 20) -> list[JobRun]:
+        stmt = (
+            select(JobRun)
+            .where(JobRun.status.in_(["failed", "error"]))
+            .order_by(JobRun.started_at.desc())
+            .limit(limit)
+        )
+        try:
+            return list(self.db.execute(stmt).scalars())
+        except SQLAlchemyError:
+            return []
+
     def started_count_last_24h(self) -> int:
         since = datetime.now(UTC) - timedelta(hours=24)
         stmt = select(func.count()).select_from(JobRun).where(JobRun.started_at >= since)

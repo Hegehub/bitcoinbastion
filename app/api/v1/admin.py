@@ -5,8 +5,9 @@ from app.api.dependencies import db_session, get_admin_user
 from app.db.models.auth import User
 from app.db.repositories.audit_repository import AuditRepository
 from app.db.repositories.job_run_repository import JobRunRepository
-from app.schemas.admin import AuditLogOut, JobRetryRequest, JobRetryResponse, JobRunOut
+from app.schemas.admin import AuditLogOut, JobRetryRequest, JobRetryResponse, JobRunOut, RecoveryCheckOut
 from app.schemas.base import ResponseEnvelope
+from app.services.observability.recovery_service import RecoveryCheckService
 from app.tasks.celery_app import celery_app
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -51,3 +52,12 @@ def admin_retry_job(
 ) -> ResponseEnvelope[JobRetryResponse]:
     result = celery_app.send_task(payload.task_name)
     return ResponseEnvelope(data=JobRetryResponse(task_name=payload.task_name, task_id=result.id))
+
+
+@router.get("/jobs/recovery-check", response_model=ResponseEnvelope[RecoveryCheckOut])
+def admin_jobs_recovery_check(
+    _: User = Depends(get_admin_user),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[RecoveryCheckOut]:
+    data = RecoveryCheckService().evaluate(db=db)
+    return ResponseEnvelope(data=data)

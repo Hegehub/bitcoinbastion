@@ -1,4 +1,4 @@
-from app.db.models.explainability import EvidenceNode
+from app.db.models.explainability import EvidenceEdge, EvidenceNode
 from app.db.models.signal import Signal
 from app.services.agentic.recommendation_service import SignalRecommendationService
 
@@ -25,6 +25,7 @@ def test_signal_recommendation_service_returns_high_priority_for_high_severity()
     assert result.recommendations[0].priority == "high"
     assert result.recommendations[0].evidence_refs == ["news:1", "onchain:2"]
     assert result.recommendations[0].policy_refs == ["default", "min_wallet_health_score"]
+    assert result.recommendations[0].action_confidence > 0.8
 
 
 def test_signal_recommendation_service_returns_monitoring_for_low_impact() -> None:
@@ -43,6 +44,7 @@ def test_signal_recommendation_service_returns_monitoring_for_low_impact() -> No
 
     assert len(result.recommendations) == 1
     assert "Monitor" in result.recommendations[0].action
+    assert 0 <= result.recommendations[0].action_confidence <= 1
 
 
 def test_signal_recommendation_service_prefers_weighted_evidence_nodes() -> None:
@@ -63,6 +65,16 @@ def test_signal_recommendation_service_prefers_weighted_evidence_nodes() -> None
         EvidenceNode(signal_id=3, node_key="n:mid", weight=0.5),
     ]
 
-    result = SignalRecommendationService().build(signal=signal, evidence_nodes=nodes)
+    edges = [
+        EvidenceEdge(signal_id=3, from_node_key="n:high", to_node_key="n:mid", relation="supports", weight=0.8),
+        EvidenceEdge(signal_id=3, from_node_key="n:mid", to_node_key="n:low", relation="correlates", weight=0.4),
+    ]
+
+    result = SignalRecommendationService().build(signal=signal, evidence_nodes=nodes, evidence_edges=edges)
 
     assert result.recommendations[0].evidence_refs == ["n:high", "n:mid", "n:low"]
+    assert result.recommendations[0].evidence_paths == [
+        "n:high --supports--> n:mid",
+        "n:mid --correlates--> n:low",
+    ]
+    assert result.recommendations[0].action_confidence >= 0.8

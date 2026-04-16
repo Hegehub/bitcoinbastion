@@ -1,6 +1,6 @@
 import json
 
-from app.db.models.explainability import EvidenceNode
+from app.db.models.explainability import EvidenceEdge, EvidenceNode
 from app.db.models.signal import Signal
 from app.schemas.recommendation import RecommendationItemOut, SignalRecommendationOut
 
@@ -10,12 +10,15 @@ class SignalRecommendationService:
         self,
         signal: Signal,
         evidence_nodes: list[EvidenceNode] | None = None,
+        evidence_edges: list[EvidenceEdge] | None = None,
         policy_refs: list[str] | None = None,
     ) -> SignalRecommendationOut:
         horizons = self._extract_horizons(signal)
         dominant = str(horizons.get("dominant", "short"))
         evidence_refs = self._extract_evidence_refs(signal=signal, evidence_nodes=evidence_nodes)
+        evidence_paths = self._extract_evidence_paths(evidence_refs=evidence_refs, evidence_edges=evidence_edges)
         effective_policy_refs = policy_refs or self._extract_policy_refs(signal)
+        action_confidence = self._action_confidence(signal=signal, evidence_refs=evidence_refs)
 
         recs: list[RecommendationItemOut] = []
         if signal.severity == "high":
@@ -27,6 +30,8 @@ class SignalRecommendationService:
                     rationale="High-severity signals require rapid human validation and communication.",
                     evidence_refs=evidence_refs,
                     policy_refs=effective_policy_refs,
+                    evidence_paths=evidence_paths,
+                    action_confidence=action_confidence,
                 )
             )
         if float(horizons.get("short", 0.0)) >= 0.6:
@@ -38,6 +43,8 @@ class SignalRecommendationService:
                     rationale="Short-horizon pressure indicates near-term execution risk.",
                     evidence_refs=evidence_refs,
                     policy_refs=effective_policy_refs,
+                    evidence_paths=evidence_paths,
+                    action_confidence=action_confidence,
                 )
             )
         if float(horizons.get("long", 0.0)) >= 0.6:
@@ -49,6 +56,8 @@ class SignalRecommendationService:
                     rationale="Long-horizon significance suggests durable structural impact.",
                     evidence_refs=evidence_refs,
                     policy_refs=effective_policy_refs,
+                    evidence_paths=evidence_paths,
+                    action_confidence=action_confidence,
                 )
             )
 
@@ -61,6 +70,8 @@ class SignalRecommendationService:
                     rationale="Current signal does not cross action threshold but should remain tracked.",
                     evidence_refs=evidence_refs,
                     policy_refs=effective_policy_refs,
+                    evidence_paths=evidence_paths,
+                    action_confidence=action_confidence,
                 )
             )
 
@@ -95,6 +106,32 @@ class SignalRecommendationService:
         if isinstance(refs, list):
             return [str(item) for item in refs[:3]]
         return []
+
+
+    @staticmethod
+    def _extract_evidence_paths(
+        *,
+        evidence_refs: list[str],
+        evidence_edges: list[EvidenceEdge] | None = None,
+    ) -> list[str]:
+        if not evidence_edges or not evidence_refs:
+            return []
+
+        allowed = set(evidence_refs)
+        paths: list[str] = []
+        for edge in evidence_edges:
+            if edge.from_node_key in allowed or edge.to_node_key in allowed:
+                paths.append(f"{edge.from_node_key} --{edge.relation}--> {edge.to_node_key}")
+            if len(paths) >= 3:
+                break
+        return paths
+
+
+    @staticmethod
+    def _action_confidence(signal: Signal, evidence_refs: list[str]) -> float:
+        base = float(getattr(signal, "confidence", 0.0))
+        evidence_boost = min(len(evidence_refs), 3) * 0.05
+        return round(min(1.0, base + evidence_boost), 3)
 
     @staticmethod
     def _extract_policy_refs(signal: Signal) -> list[str]:

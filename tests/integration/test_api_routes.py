@@ -14,9 +14,11 @@ def test_new_api_groups_exist() -> None:
     try:
         assert client.get("/api/v1/admin/status").status_code == 200
         assert client.get("/api/v1/admin/jobs").status_code == 200
+        assert client.get("/api/v1/admin/jobs/recovery-check").status_code == 200
         assert client.get("/api/v1/admin/audit-logs").status_code == 200
         assert client.get("/api/v1/onchain/events").status_code == 200
         assert client.get("/api/v1/entities").status_code == 200
+        assert client.post("/api/v1/entities/provenance/refresh").status_code == 200
         assert client.post(
             "/api/v1/fees/recommendation",
             json={"mempool_congestion": 0.5, "target_blocks": 6},
@@ -34,6 +36,32 @@ def test_new_api_groups_exist() -> None:
                 "description": "Strict policy profile",
                 "min_wallet_health_score": 85,
                 "max_single_tx_sats": 700000,
+            },
+        ).status_code == 200
+        assert client.post(
+            "/api/v1/policy/catalog",
+            json={
+                "name": "ops_strict",
+                "description": "Tightened without governance note",
+                "min_wallet_health_score": 99,
+                "max_single_tx_sats": 100000,
+            },
+        ).status_code in {200, 400}
+        assert client.post(
+            "/api/v1/policy/catalog/compare",
+            json={
+                "baseline_policy_name": "default",
+                "candidate_policy_name": "ops_strict",
+            },
+        ).status_code == 200
+        assert client.post(
+            "/api/v1/policy/simulate",
+            json={
+                "baseline_policy_name": "default",
+                "candidate_policy_name": "ops_strict",
+                "wallet_health_score": 82,
+                "transaction_amount_sats": 250000,
+                "required_approvals": 1,
             },
         ).status_code == 200
         assert client.post(

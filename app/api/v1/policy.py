@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import db_session, get_admin_user
@@ -7,9 +7,13 @@ from app.schemas.base import ResponseEnvelope
 from app.schemas.policy import (
     PolicyCatalogOut,
     PolicyCatalogUpsertIn,
+    PolicyCatalogCompareRequest,
+    PolicyCatalogCompareOut,
     PolicyCheckRequest,
     PolicyCheckResponse,
     PolicyExecutionLogOut,
+    PolicySimulationOut,
+    PolicySimulationRequest,
 )
 from app.services.policy.policy_service import TreasuryPolicyService
 
@@ -23,6 +27,18 @@ def check_policy(
 ) -> ResponseEnvelope[PolicyCheckResponse]:
     result = TreasuryPolicyService().evaluate_and_log(db=db, payload=payload)
     return ResponseEnvelope(data=result)
+
+
+
+
+@router.post("/simulate", response_model=ResponseEnvelope[PolicySimulationOut])
+def simulate_policy(
+    payload: PolicySimulationRequest,
+    _: User = Depends(get_admin_user),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[PolicySimulationOut]:
+    data = TreasuryPolicyService().simulate_compare(db=db, payload=payload)
+    return ResponseEnvelope(data=data)
 
 
 @router.get("/executions", response_model=ResponseEnvelope[list[PolicyExecutionLogOut]])
@@ -41,7 +57,22 @@ def upsert_policy_catalog(
     _: User = Depends(get_admin_user),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[PolicyCatalogOut]:
-    data = TreasuryPolicyService().upsert_catalog_entry(db=db, payload=payload)
+    try:
+        data = TreasuryPolicyService().upsert_catalog_entry(db=db, payload=payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return ResponseEnvelope(data=data)
+
+
+
+
+@router.post("/catalog/compare", response_model=ResponseEnvelope[PolicyCatalogCompareOut])
+def compare_policy_catalog(
+    payload: PolicyCatalogCompareRequest,
+    _: User = Depends(get_admin_user),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[PolicyCatalogCompareOut]:
+    data = TreasuryPolicyService().compare_catalog_profiles(db=db, payload=payload)
     return ResponseEnvelope(data=data)
 
 

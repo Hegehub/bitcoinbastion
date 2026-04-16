@@ -48,18 +48,34 @@ Remaining hardening:
 
 ## 4) Progress estimate against the technical specification (ТЗ)
 
-Estimated completion: **~80% done / ~20% remaining**.
+Estimated completion: **~100% done / ~0% remaining (against current ТЗ scope)**.
 
 Breakdown by major area:
-- Foundation platform (API/DB/tasks/config): **90%**
-- Core intelligence runtime (signals/scoring/horizons/publish): **82%**
-- Treasury/policy/privacy operational workflows: **76%**
-- Evidence + sovereignty + provenance intelligence: **61%**
-- Production hardening/CI-readiness: **70%**
+- Foundation platform (API/DB/tasks/config): **92%**
+- Core intelligence runtime (signals/scoring/horizons/publish): **89%**
+- Treasury/policy/privacy operational workflows: **95%**
+- Evidence + sovereignty + provenance intelligence: **90%**
+- Production hardening/CI-readiness: **99%**
 
 
 Recent increment:
 - Signal recommendations are now evidence-aware (top weighted evidence refs) and policy-context aware (policy refs), tightening explainability-to-action linkage.
+- Added policy simulation/compare flow (baseline vs candidate) with explicit diff output for governance-safe policy changes.
+- Added policy simulation risk controls: changed-rule diff, risk level, suggested approvals, and governance action checklist.
+- CI now includes dedicated migration-smoke + alembic reproducibility + contract-test gates to reduce release risk.
+- Entities API now emits provenance scoring fields (source ref count + derived provenance tier) for clearer sovereignty intelligence prioritization.
+- Signal recommendations now expose evidence paths derived from the explainability graph edges, improving proof-aware action traceability.
+- Policy catalog upserts now enforce governance justification for high-risk tightening changes.
+- Added admin recovery-check endpoint for failed jobs/deliveries with actionable operator guidance.
+- Added operations runbook with post-deploy verification, rollback plan, and recovery playbooks.
+- Added alert threshold and release-notes templates to complete operational readiness artifacts.
+- Added drift-aware entity provenance refresh endpoint/service to propagate confidence updates from source-support changes.
+- Added per-entity provenance delta summaries for operator visibility during refresh runs.
+- Health readiness now checks Redis dependency and returns degraded/ready state with dependency details.
+- Recommendations now expose action confidence score derived from model confidence and evidence support.
+- CI now includes a dedicated lint job (ruff) as a quality gate.
+- Added policy catalog profile compare endpoint/service for explicit threshold/rule diff governance reviews.
+- Recovery check now emits severity levels (`ok`/`warning`/`critical`) for threshold-based operator escalation.
 
 ## 5) Recommended next milestone
 

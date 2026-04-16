@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import db_session, get_current_user
+from app.api.dependencies import db_session, get_admin_user, get_current_user
 from app.db.models.auth import User
 from app.db.repositories.entity_repository import EntityRepository
 from app.schemas.base import PaginatedData, ResponseEnvelope
-from app.schemas.entities import EntityOut, WatchedEntityOut
+from app.services.reputation.entity_provenance_service import EntityProvenanceService
+from app.schemas.entities import EntityOut, ProvenanceRefreshOut, WatchedEntityOut
 
 router = APIRouter(prefix="/entities", tags=["entities"])
 
@@ -21,7 +22,7 @@ def list_entities(
 ) -> ResponseEnvelope[PaginatedData[EntityOut]]:
     repo = EntityRepository(db)
     items = [
-        EntityOut.model_validate(item)
+        EntityOut.from_model(item)
         for item in repo.list_entities(
             limit=limit,
             offset=offset,
@@ -48,3 +49,13 @@ def list_watchlist(
     ]
     total = repo.count_watchlist(user_id=current_user.id)
     return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+
+
+@router.post("/provenance/refresh", response_model=ResponseEnvelope[ProvenanceRefreshOut])
+def refresh_entity_provenance(
+    limit: int = 200,
+    _: User = Depends(get_admin_user),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[ProvenanceRefreshOut]:
+    data = EntityProvenanceService().refresh(db=db, limit=limit)
+    return ResponseEnvelope(data=data)

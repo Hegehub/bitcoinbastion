@@ -43,6 +43,19 @@ class DeliveryRepository:
         self.db.refresh(item)
         return item
 
+
+    def list_recent_failures(self, limit: int = 20) -> list[DeliveryLog]:
+        stmt = (
+            select(DeliveryLog)
+            .where(DeliveryLog.delivery_status.in_(["failed", "error"]))
+            .order_by(DeliveryLog.sent_at.desc())
+            .limit(limit)
+        )
+        try:
+            return list(self.db.execute(stmt).scalars())
+        except SQLAlchemyError:
+            return []
+
     def sent_count_last_24h(self) -> int:
         since = datetime.now(UTC) - timedelta(hours=24)
         stmt = (

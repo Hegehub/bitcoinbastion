@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -35,3 +37,19 @@ class JobRetryRequest(BaseModel):
 class JobRetryResponse(BaseModel):
     task_name: str
     task_id: str
+
+
+class RecoveryIssueOut(BaseModel):
+    issue_type: str
+    reference: str
+    occurred_at: datetime | None
+    detail: str
+
+
+class RecoveryCheckOut(BaseModel):
+    ok: bool
+    severity: Literal["ok", "warning", "critical"]
+    failed_jobs_24h: int
+    failed_deliveries_24h: int
+    issues: list[RecoveryIssueOut]
+    recommended_actions: list[str]

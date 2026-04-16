@@ -33,7 +33,11 @@ def signal_recommendations(
     signal = repo.get(signal_id)
     if signal is None:
         raise HTTPException(status_code=404, detail="Signal not found")
-    data = SignalRecommendationService().build(signal=signal, evidence_nodes=repo.list_nodes(signal_id))
+    data = SignalRecommendationService().build(
+        signal=signal,
+        evidence_nodes=repo.list_nodes(signal_id),
+        evidence_edges=repo.list_edges(signal_id),
+    )
     return ResponseEnvelope(data=data)
 
 
