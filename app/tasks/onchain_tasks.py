@@ -9,7 +9,12 @@ from app.services.ingestion.onchain_ingestion import OnchainIngestionService
 from app.tasks.celery_app import celery_app
 
 
-@celery_app.task(name="onchain.fetch", autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 3})
+@celery_app.task(  # type: ignore[untyped-decorator]
+    name="onchain.fetch",
+    autoretry_for=(Exception,),
+    retry_backoff=True,
+    retry_kwargs={"max_retries": 3},
+)
 def fetch_onchain_task() -> dict[str, int]:
     settings = get_settings()
     with SessionLocal() as db:

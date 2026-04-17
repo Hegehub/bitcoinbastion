@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from app.schemas.citadel import (
     CitadelAssessmentOut,
     CitadelFindingOut,
+    CitadelFreshnessOut,
     RecoveryArtifactOut,
     RecoveryReadinessOut,
 )
@@ -27,6 +28,10 @@ class CitadelAssessmentService:
     def _clamp_percent(value: float, *, default: float = 0.0) -> float:
         normalized = value if isinstance(value, (int, float)) else default
         return round(max(0.0, min(100.0, float(normalized))), 2)
+
+    @staticmethod
+    def _as_object_list(value: object) -> list[object]:
+        return value if isinstance(value, list) else []
 
     def recovery_report(self, *, owner_id: int) -> RecoveryReadinessOut:
         artifacts = [
@@ -63,7 +68,8 @@ class CitadelAssessmentService:
         policy = CitadelPolicyService().evaluate(owner_id=owner_id)
         graph = SovereigntyGraphService().build(owner_id=owner_id)
 
-        spof_count = len(graph.get("single_points_of_failure", []))
+        spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
+        spof_count = len(spof_items)
         custody = self._clamp_percent(max(35.0, 78.0 - (spof_count * 12.0)))
         vendor = self._clamp_percent(max(40.0, 72.0 - (spof_count * 8.0)))
         recovery_score_100 = self._clamp_percent(recovery.recovery_readiness_score * 100)
@@ -118,10 +124,12 @@ class CitadelAssessmentService:
         recommendations = ["Verify backup artifacts and refresh recovery drills quarterly."]
         if spof_count > 0:
             recommendations.append("Reduce signer concentration by adding independent signing path.")
-        recommendations.extend(str(item) for item in inheritance.get("recommendations", []) if item)
+        recommendations.extend(
+            str(item) for item in self._as_object_list(inheritance.get("recommendations", [])) if item
+        )
 
         warnings: list[CitadelFindingOut] = []
-        for gap in policy.get("gaps", []):
+        for gap in self._as_object_list(policy.get("gaps", [])):
             warnings.append(
                 CitadelFindingOut(
                     title="Policy maturity gap",
@@ -162,7 +170,7 @@ class CitadelAssessmentService:
                     "domains": 9,
                 },
             },
-            freshness={"assessment_generated_at": now.isoformat()},
+            freshness=CitadelFreshnessOut(assessment_generated_at=now.isoformat()),
             generated_at=now,
             created_at=now,
             updated_at=now,

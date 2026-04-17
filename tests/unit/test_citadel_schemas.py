@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -43,9 +43,9 @@ def test_citadel_assessment_schema_validates_and_serializes() -> None:
         recommendations=["Rotate signer backup drills quarterly"],
         explainability={"drivers": ["recovery_artifacts", "signer_diversity"]},
         freshness={"wallet_health_hours": 4},
-        generated_at=datetime.utcnow(),
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        generated_at=datetime.now(UTC),
+        created_at=datetime.now(UTC),
+        updated_at=datetime.now(UTC),
     )
 
     dumped = payload.model_dump()

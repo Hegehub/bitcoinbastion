@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.db.models.citadel_assessment import CitadelAssessment
-from app.schemas.citadel import CitadelAssessmentOut, CitadelFindingOut
+from app.schemas.citadel import CitadelAssessmentOut, CitadelFindingOut, CitadelFreshnessOut
 
 
 class CitadelAssessmentRepository:
@@ -77,7 +77,7 @@ class CitadelAssessmentRepository:
             warnings=[CitadelFindingOut.model_validate(item) for item in json.loads(row.warnings_json)],
             recommendations=list(json.loads(row.recommendations_json)),
             explainability=dict(json.loads(row.explainability_json)),
-            freshness=dict(json.loads(row.freshness_json)),
+            freshness=CitadelFreshnessOut.model_validate(json.loads(row.freshness_json)),
             generated_at=row.generated_at,
             created_at=row.created_at,
             updated_at=row.updated_at,

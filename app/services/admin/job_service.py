@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 from time import perf_counter
+from typing import Iterator
 from uuid import uuid4
 
 import structlog
@@ -15,7 +16,7 @@ class JobTrackingService:
         self.logger = structlog.get_logger("job_tracking")
 
     @contextmanager
-    def track(self, task_name: str):
+    def track(self, task_name: str) -> Iterator[JobRun]:
         correlation_id = str(uuid4())
         base_logger = self.logger.bind(
             domain="operations",

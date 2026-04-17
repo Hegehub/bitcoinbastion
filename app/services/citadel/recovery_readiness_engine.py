@@ -2,6 +2,12 @@ from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecor
 
 
 class RecoveryReadinessEngine:
+    @staticmethod
+    def _score_from_summary(value: object) -> float:
+        if isinstance(value, (int, float)):
+            return float(value)
+        return 0.0
+
     def evaluate(
         self,
         *,
@@ -12,7 +18,7 @@ class RecoveryReadinessEngine:
     ) -> dict[str, object]:
         artifact_summary = RecoveryArtifactService().summarize(artifacts=artifacts)
 
-        score = float(artifact_summary["completeness_score"]) * 0.5
+        score = self._score_from_summary(artifact_summary.get("completeness_score")) * 0.5
         score += 0.25 if has_descriptor else 0.0
         score += 0.15 if has_instructions else 0.0
         score += max(0.0, (1 - human_dependency_score)) * 0.1

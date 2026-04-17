@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
+from app.db.models.time_utils import utcnow
 
 
 class SignalExplanation(Base):
@@ -14,7 +15,7 @@ class SignalExplanation(Base):
     explanation_text: Mapped[str] = mapped_column(Text, default="")
     confidence_reasoning: Mapped[str] = mapped_column(Text, default="")
     horizon: Mapped[str] = mapped_column(String(40), default="short")
-    generated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    generated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
 class EvidenceNode(Base):

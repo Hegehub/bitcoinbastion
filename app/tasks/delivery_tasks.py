@@ -7,7 +7,12 @@ from app.services.delivery.publish_service import SignalPublishService
 from app.tasks.celery_app import celery_app
 
 
-@celery_app.task(name="delivery.publish", autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 3})
+@celery_app.task(  # type: ignore[untyped-decorator]
+    name="delivery.publish",
+    autoretry_for=(Exception,),
+    retry_backoff=True,
+    retry_kwargs={"max_retries": 3},
+)
 def publish_signals_task() -> dict[str, int]:
     with SessionLocal() as db:
         with JobTrackingService(JobRunRepository(db)).track("delivery.publish"):

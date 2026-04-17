@@ -64,7 +64,8 @@ class TreasuryRequestOut(BaseModel):
             except json.JSONDecodeError:
                 snapshot = {}
 
-        parsed.policy_allowed = snapshot.get("allowed") if isinstance(snapshot.get("allowed"), bool) else None
+        allowed_flag = snapshot.get("allowed")
+        parsed.policy_allowed = allowed_flag if isinstance(allowed_flag, bool) else None
         raw_violations = snapshot.get("violations", [])
         parsed.policy_violations = [str(item) for item in raw_violations] if isinstance(raw_violations, list) else []
 

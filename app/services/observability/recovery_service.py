@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from typing import Literal
 
 from app.db.repositories.delivery_repository import DeliveryRepository
 from app.db.repositories.job_run_repository import JobRunRepository
@@ -54,7 +55,9 @@ class RecoveryCheckService:
         )
 
     @staticmethod
-    def _severity(*, failed_jobs: int, failed_deliveries: int) -> str:
+    def _severity(
+        *, failed_jobs: int, failed_deliveries: int
+    ) -> Literal["ok", "warning", "critical"]:
         if failed_jobs >= 10 or failed_deliveries >= 6:
             return "critical"
         if failed_jobs > 0 or failed_deliveries > 0:

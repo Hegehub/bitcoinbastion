@@ -1,4 +1,5 @@
 import json
+from typing import Literal
 
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
@@ -237,7 +238,7 @@ class TreasuryPolicyService:
         baseline_allowed: bool,
         candidate_allowed: bool,
         changed_rules: list[str],
-    ) -> tuple[str, int, list[str]]:
+    ) -> tuple[Literal["low", "medium", "high"], int, list[str]]:
         if baseline_allowed and not candidate_allowed:
             return (
                 "high",
@@ -286,7 +287,7 @@ class TreasuryPolicyService:
             candidate_rules = {rule.rule_key: rule.rule_value for rule in repo.list_rules(candidate.id)}
             changed_rules = self._changed_rules(baseline_rules=baseline_rules, candidate_rules=candidate_rules)
 
-            risk_level = "low"
+            risk_level: Literal["low", "medium", "high"] = "low"
             if len(changed_thresholds) + len(changed_rules) >= 3:
                 risk_level = "high"
             elif changed_thresholds or changed_rules:

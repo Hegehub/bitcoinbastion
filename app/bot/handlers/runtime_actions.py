@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import httpx
 from tenacity import retry, stop_after_attempt, wait_fixed
@@ -23,7 +23,7 @@ async def _request_with_retry(method: str, path: str, payload: dict[str, Any] | 
     async with httpx.AsyncClient(timeout=5.0) as client:
         response = await client.request(method, f"{_api_base_url()}{path}", json=payload, headers=_auth_headers())
         response.raise_for_status()
-        return response.json()
+        return cast(dict[str, Any], response.json())
 
 
 async def _get(path: str) -> dict[str, Any]:

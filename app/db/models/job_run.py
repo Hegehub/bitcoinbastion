@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
+from app.db.models.time_utils import utcnow
 
 
 class JobRun(Base):
@@ -13,6 +14,6 @@ class JobRun(Base):
     task_name: Mapped[str] = mapped_column(String(120), index=True)
     status: Mapped[str] = mapped_column(String(30), index=True)
     correlation_id: Mapped[str] = mapped_column(String(120), default="")
-    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     error_message: Mapped[str] = mapped_column(Text, default="")

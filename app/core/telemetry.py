@@ -2,7 +2,7 @@ import time
 
 from fastapi import APIRouter, FastAPI
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -14,9 +14,9 @@ TASK_FAILURES = Counter("task_failures_total", "Task failure count", ["task_name
 
 
 class MetricsMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):  # type: ignore[override]
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         start = time.perf_counter()
-        response = await call_next(request)
+        response: Response = await call_next(request)
         duration = time.perf_counter() - start
 
         method = request.method

@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, Float, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
+from app.db.models.time_utils import utcnow
 
 
 class CitadelAssessment(Base):
@@ -30,6 +31,6 @@ class CitadelAssessment(Base):
     explainability_json: Mapped[str] = mapped_column(Text, default="{}")
     freshness_json: Mapped[str] = mapped_column(Text, default="{}")
 
-    generated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    generated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
