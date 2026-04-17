@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
+from app.db.models.time_utils import utcnow
 
 
 class TreasuryRequest(Base):
@@ -21,8 +22,8 @@ class TreasuryRequest(Base):
     approved_by_json: Mapped[str] = mapped_column(Text, default="[]")
     required_approvals: Mapped[int] = mapped_column(Integer, default=1)
     policy_snapshot_json: Mapped[str] = mapped_column(Text, default="{}")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
 
 class PsbtWorkflow(Base):
@@ -34,8 +35,8 @@ class PsbtWorkflow(Base):
     status: Mapped[str] = mapped_column(String(40), default="draft")
     signer_requirements_json: Mapped[str] = mapped_column(Text, default="{}")
     metadata_json: Mapped[str] = mapped_column(Text, default="{}")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
 
 class TreasuryPolicy(Base):
@@ -46,8 +47,8 @@ class TreasuryPolicy(Base):
     description: Mapped[str] = mapped_column(Text, default="")
     min_wallet_health_score: Mapped[int] = mapped_column(Integer, default=60)
     max_single_tx_sats: Mapped[int] = mapped_column(Integer, default=10_000_000)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
 
 class PolicyRule(Base):
@@ -58,7 +59,7 @@ class PolicyRule(Base):
     rule_key: Mapped[str] = mapped_column(String(120), index=True)
     rule_value: Mapped[str] = mapped_column(String(255), default="")
     severity: Mapped[str] = mapped_column(String(30), default="warning")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
 class PolicyExecutionLog(Base):
@@ -71,4 +72,4 @@ class PolicyExecutionLog(Base):
     allowed: Mapped[bool] = mapped_column(default=False)
     violations_json: Mapped[str] = mapped_column(Text, default="[]")
     next_actions_json: Mapped[str] = mapped_column(Text, default="[]")
-    executed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    executed_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)

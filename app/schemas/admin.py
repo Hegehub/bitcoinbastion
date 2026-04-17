@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -15,6 +17,19 @@ class JobRunOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class AuditLogOut(BaseModel):
+    id: int
+    actor_user_id: int | None
+    action: str
+    resource_type: str
+    resource_id: str
+    before_json: str
+    after_json: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class JobRetryRequest(BaseModel):
     task_name: str = Field(min_length=3)
 
@@ -22,3 +37,19 @@ class JobRetryRequest(BaseModel):
 class JobRetryResponse(BaseModel):
     task_name: str
     task_id: str
+
+
+class RecoveryIssueOut(BaseModel):
+    issue_type: str
+    reference: str
+    occurred_at: datetime | None
+    detail: str
+
+
+class RecoveryCheckOut(BaseModel):
+    ok: bool
+    severity: Literal["ok", "warning", "critical"]
+    failed_jobs_24h: int
+    failed_deliveries_24h: int
+    issues: list[RecoveryIssueOut]
+    recommended_actions: list[str]

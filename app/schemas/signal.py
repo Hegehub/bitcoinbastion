@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -13,8 +14,21 @@ class SignalOut(BaseModel):
     summary: str
     is_published: bool
     created_at: datetime
+    horizons: dict[str, float | str] = {}
 
     model_config = {"from_attributes": True}
+
+    @classmethod
+    def from_model_with_horizons(cls, obj: object) -> "SignalOut":
+        data = cls.model_validate(obj)
+        raw_explainability = getattr(obj, "explainability_json", "{}")
+        try:
+            parsed = json.loads(raw_explainability) if isinstance(raw_explainability, str) else {}
+        except json.JSONDecodeError:
+            parsed = {}
+        horizons = parsed.get("horizons") if isinstance(parsed, dict) else {}
+        data.horizons = horizons if isinstance(horizons, dict) else {}
+        return data
 
 
 class EvidenceNodeOut(BaseModel):

@@ -4,7 +4,7 @@ from app.db.session import SessionLocal
 from app.services.reputation.source_reputation_service import SourceReputationService
 
 
-@shared_task(name="tasks.reputation.refresh")
+@shared_task(name="tasks.reputation.refresh")  # type: ignore[untyped-decorator]
 def refresh_source_reputation() -> str:
     with SessionLocal() as db:
         updated = SourceReputationService().refresh_profiles(db=db)

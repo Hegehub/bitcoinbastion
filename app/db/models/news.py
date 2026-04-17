@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
+from app.db.models.time_utils import utcnow
 
 
 class NewsSource(Base):
@@ -20,8 +21,8 @@ class NewsSource(Base):
     is_active: Mapped[bool] = mapped_column(default=True)
     fetch_interval_minutes: Mapped[int] = mapped_column(Integer, default=15)
     last_fetched_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
 
 class NewsArticle(Base):
@@ -41,7 +42,7 @@ class NewsArticle(Base):
     duplicate_of_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True)
 
     published_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     processed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     btc_relevance_score: Mapped[float] = mapped_column(Float, default=0.0)
@@ -51,8 +52,8 @@ class NewsArticle(Base):
     credibility_score: Mapped[float] = mapped_column(Float, default=0.0)
     explainability_json: Mapped[str] = mapped_column(Text, default="{}")
     metadata_json: Mapped[str] = mapped_column(Text, default="{}")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
 
 class SourceReputationProfile(Base):
@@ -64,4 +65,4 @@ class SourceReputationProfile(Base):
     consistency_score: Mapped[float] = mapped_column(Float, default=0.0)
     signal_quality_score: Mapped[float] = mapped_column(Float, default=0.0)
     sample_size: Mapped[int] = mapped_column(Integer, default=0)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
