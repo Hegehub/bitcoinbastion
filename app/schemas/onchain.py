@@ -15,3 +15,14 @@ class OnchainEventOut(BaseModel):
     confidence_score: float
 
     model_config = {"from_attributes": True}
+
+
+class OnchainChainStateOut(BaseModel):
+    tip_height: int
+    observed_block_height: int
+    headers_height: int
+    confirmation_depth: int
+    reorg_risk_score: float
+    finality_score: float
+    finality_band: str
+    explainability: dict[str, object]

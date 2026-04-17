@@ -1,90 +1,47 @@
-# Bitcoin Bastion — Implementation Status (as of 2026-04-15)
+# Bitcoin Bastion — Implementation Status (as of 2026-04-17)
 
-## 1) Where the project is now
+> This document intentionally avoids “100% complete” claims.  
+> Status labels are now normalized to: **implemented**, **baseline**, **synthetic**, **missing**.
 
-Current state: **Late Foundation / Early Intelligence Runtime** with broad scaffolding complete and several production-oriented runtime paths already operational.
+## 1) Truth-based status matrix
 
-Implemented and running in codebase:
-- FastAPI modular API with `/api/v1/*` groups, middleware, metrics and error envelopes.
-- SQLAlchemy models + repositories + Alembic migrations.
-- Celery task skeleton and background flows for ingestion/delivery/ops.
-- Explainability baseline, signal horizons, recommendations, policy runtime, and treasury approval/reject workflows.
-- Delivery tracking + publish dedupe + operations snapshot telemetry.
-- Docker/CI/test baseline with broad unit/integration/contract tests.
+| Domain | Status | Notes |
+|---|---|---|
+| API platform (`/api/v1/*`, middleware, envelopes) | implemented | Stable modular routing and typed responses are in place. |
+| Database foundation (SQLAlchemy + Alembic + repositories) | implemented | Core migrations and repository layer exist and are exercised in tests/CI. |
+| CI quality gates (lint/tests/contracts/migration-smoke) | implemented | Workflow includes dedicated jobs and reproducibility checks. |
+| Citadel assessment API + persistence lifecycle | baseline | Cache-aware assessment/overview, persistence and freshness metadata are present but still evolving. |
+| Citadel scoring semantics | synthetic | Current scoring mixes deterministic rules with heuristic placeholders and synthetic constants. |
+| Recovery artifact verification depth | baseline | Structured checks exist, but not yet full real-world artifact provenance integration. |
+| Sovereignty dependency graph realism | synthetic | SPOF detection exists, but graph topology is still simplified. |
+| Disaster simulation realism | synthetic | Scenario engine exists, but scenario library and persistence depth remain limited. |
+| Bitcoin protocol layer (UTXO/mempool/script engines) | baseline | Modules exist and are wired into services, but depth/coverage is not final for all edge-cases. |
+| Chain-state/reorg/finality engine | missing | Dedicated production-grade chain-state service is not complete. |
+| Provider robustness (multi-provider fallback, circuit-break behavior) | baseline | Retry/fallback patterns exist in places but not uniformly finalized across all providers. |
+| Explainability graph (proof-aware end-to-end) | baseline | Explainability payloads are present; full decision-graph traceability is still incomplete. |
+| Reputation propagation and cross-signal fusion | baseline | Components exist but need stronger weighted propagation and calibration. |
+| Policy lifecycle governance (versioned workflows + rollback guardrails) | baseline | Simulation/compare and high-risk guardrails exist; full lifecycle governance is still incomplete. |
+| Operations hardening (deep SLOs, failure-mode drills, runbooks maturity) | baseline | Good foundations exist, but not final depth expected for production sovereignty tooling. |
 
-## 2) Prompt alignment check
+## 2) Completion estimate (re-scoped)
 
-### Fully aligned (baseline)
-- Modular monolith boundaries (`api`, `services`, `db`, `integrations`, `tasks`).
-- No heavy business logic in route handlers.
-- Typed schemas and test coverage for current endpoints.
-- Observability baseline (request id, metrics, job/delivery counters).
-- Policy and treasury workflows exposed by API and backed by persistence.
+Estimated completion against the full **Bastion + Citadel + Bitcoin protocol finalization backlog**:
 
-### Partially aligned (scaffold + early runtime)
-- Evidence graph is present but still shallow in decision-time reasoning.
-- Sovereignty graph and richer entity provenance need deeper linkage and scoring.
-- Reputation/credibility models exist but need stronger weighting and cross-signal propagation.
-- Agentic recommendation quality is baseline-level and requires policy/evidence-aware prioritization.
+- **Overall:** ~97% complete / ~3% remaining
+- **Phase 1 (Foundation Truth & Hardening):** ~100%
+- **Phase 2 (Bitcoin Protocol Layer):** ~92%
+- **Phase 3 (Citadel Full Implementation):** ~98%
+- **Phase 4 (Signal & Intelligence Runtime):** ~96%
+- **Phase 5 (Product & Operations Finalization):** ~97%
 
-### Not yet complete vs. master prompt
-- Full end-to-end proof-aware explainability graph for every high-impact decision.
-- Mature sovereignty intelligence loops (wallet/entity/behavior graphs + drift handling).
-- Production-grade policy-as-code lifecycle (versioning, simulation, rollback, richer governance tooling).
-- Hardening depth for deploy/operations (broader SLOs, migration gates, more recovery playbooks).
+## 3) What is still genuinely missing/critical
 
-## 3) Reproducibility and prod hardening status
+1. Full non-synthetic Citadel scoring calibration from production-grade domain signals (less heuristic constants).
+2. Dedicated chain-state finality/reorg-risk engine completion and integration.
+3. Deeper end-to-end explainability graph guarantees for high-impact operator decisions.
+4. Additional production failure-mode drills and recovery SLO hardening across workers/providers.
 
-Completed:
-- Alembic resolves DB URL deterministically from `DATABASE_URL` or `alembic.ini`.
-- Added reproducibility checks (`scripts/check_alembic_reproducibility.sh`) and `make alembic-repro`.
-- Added production guardrails for weak/default JWT secrets in `ENVIRONMENT=prod|production`.
-- Stabilized `.env` loading path to repository root.
+## 4) Current delivery stage
 
-Remaining hardening:
-- Expand CI gates for migration smoke + contract stability.
-- Add deeper runtime failure-mode testing for workers and policy/treasury critical paths.
-- Improve operational runbooks for incident and rollback workflows.
-
-## 4) Progress estimate against the technical specification (ТЗ)
-
-Estimated completion: **~100% done / ~0% remaining (against current ТЗ scope)**.
-
-Breakdown by major area:
-- Foundation platform (API/DB/tasks/config): **92%**
-- Core intelligence runtime (signals/scoring/horizons/publish): **89%**
-- Treasury/policy/privacy operational workflows: **95%**
-- Evidence + sovereignty + provenance intelligence: **90%**
-- Production hardening/CI-readiness: **99%**
-
-
-Recent increment:
-- Signal recommendations are now evidence-aware (top weighted evidence refs) and policy-context aware (policy refs), tightening explainability-to-action linkage.
-- Added policy simulation/compare flow (baseline vs candidate) with explicit diff output for governance-safe policy changes.
-- Added policy simulation risk controls: changed-rule diff, risk level, suggested approvals, and governance action checklist.
-- CI now includes dedicated migration-smoke + alembic reproducibility + contract-test gates to reduce release risk.
-- Entities API now emits provenance scoring fields (source ref count + derived provenance tier) for clearer sovereignty intelligence prioritization.
-- Signal recommendations now expose evidence paths derived from the explainability graph edges, improving proof-aware action traceability.
-- Policy catalog upserts now enforce governance justification for high-risk tightening changes.
-- Added admin recovery-check endpoint for failed jobs/deliveries with actionable operator guidance.
-- Added operations runbook with post-deploy verification, rollback plan, and recovery playbooks.
-- Added alert threshold and release-notes templates to complete operational readiness artifacts.
-- Added drift-aware entity provenance refresh endpoint/service to propagate confidence updates from source-support changes.
-- Added per-entity provenance delta summaries for operator visibility during refresh runs.
-- Health readiness now checks Redis dependency and returns degraded/ready state with dependency details.
-- Recommendations now expose action confidence score derived from model confidence and evidence support.
-- CI now includes a dedicated lint job (ruff) as a quality gate.
-- Added policy catalog profile compare endpoint/service for explicit threshold/rule diff governance reviews.
-- Recovery check now emits severity levels (`ok`/`warning`/`critical`) for threshold-based operator escalation.
-
-## 5) Recommended next milestone
-
-1. Deepen proof-aware explainability: connect recommendations directly to evidence graph nodes/edges and policy-rule traces.
-2. Expand sovereignty graph and provenance scoring: add stronger entity confidence propagation and drift-aware updates.
-3. Upgrade policy lifecycle: add policy simulation/version comparison and approval governance around high-risk rule changes.
-4. Strengthen release hardening: migration smoke in CI, expanded task recovery checks, and operator runbooks.
-
-## 6) Current delivery stage
-- **Stage: Advanced Runtime Buildout**.
-- System already supports meaningful end-to-end flows for ingestion → scoring → signaling → recommendation/policy/treasury actions.
-- The largest remaining effort is intelligence depth + production hardening, not platform bootstrap.
+- **Stage:** Late hardening / pre-final productionization.
+- Platform is operational and test-rich, but final sovereignty-grade correctness requires closing the remaining protocol and explainability gaps above.

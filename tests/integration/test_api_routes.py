@@ -17,6 +17,7 @@ def test_new_api_groups_exist() -> None:
         assert client.get("/api/v1/admin/jobs/recovery-check").status_code == 200
         assert client.get("/api/v1/admin/audit-logs").status_code == 200
         assert client.get("/api/v1/onchain/events").status_code == 200
+        assert client.get("/api/v1/onchain/state").status_code == 200
         assert client.get("/api/v1/entities").status_code == 200
         assert client.post("/api/v1/entities/provenance/refresh").status_code == 200
         assert client.post(

@@ -355,4 +355,48 @@ Bitcoin Bastion evolves into:
 
 ---
 
-## 
+
+## Core documentation
+- `docs/SPEC.md`
+- `docs/SYSTEM_PROMPT.md`
+- `docs/ARCHITECTURE.md`
+- `docs/ROADMAP.md`
+- `docs/DOMAIN_MODELS.md`
+- `docs/API_CONTRACTS.md`
+- `docs/CODEX_WORKFLOW.md`
+- `docs/PRODUCTION_READINESS.md`
+
+## API groups
+- health
+- auth
+- news
+- signals
+- onchain
+- entities
+- wallet
+- fees
+- treasury
+- admin
+- users
+- policy
+- privacy
+- education
+- observability
+
+## Operations endpoints
+- `GET /api/v1/health/live`
+- `GET /api/v1/health/ready`
+- `GET /metrics`
+- `GET /api/v1/policy/executions`
+- `GET /api/v1/policy/catalog`
+- `POST /api/v1/news/sources/reputation/refresh`
+- `GET /api/v1/news/sources/reputation`
+- `GET /api/v1/signals/{signal_id}/explanation`
+
+
+## Production guardrails
+- `ENVIRONMENT=prod|production` rejects weak/default `JWT_SECRET_KEY` values.
+- Alembic supports deterministic DB URL resolution via `DATABASE_URL` override.
+- Reproducibility check: `make alembic-repro`.
+
+See `docs/STATUS.md` for current implementation status vs roadmap prompt.

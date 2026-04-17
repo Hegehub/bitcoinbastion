@@ -36,6 +36,8 @@ class Settings(BaseSettings):
 
     news_fetch_interval_seconds: int = Field(default=300, alias="NEWS_FETCH_INTERVAL_SECONDS")
     onchain_large_transfer_sats: int = Field(default=1_000_000_000, alias="ONCHAIN_LARGE_TRANSFER_SATS")
+    bitcoin_esplora_url: str = Field(default="", alias="BITCOIN_ESPLORA_URL")
+    bitcoin_provider_timeout_seconds: float = Field(default=6.0, alias="BITCOIN_PROVIDER_TIMEOUT_SECONDS")
 
     @model_validator(mode="after")
     def validate_production_secret_guards(self) -> "Settings":
