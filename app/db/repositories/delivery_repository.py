@@ -43,6 +43,28 @@ class DeliveryRepository:
         self.db.refresh(item)
         return item
 
+    def record_failed(
+        self,
+        *,
+        signal_id: int,
+        destination: str,
+        payload_snapshot: dict[str, str | int | float],
+        error_message: str,
+    ) -> DeliveryLog:
+        item = DeliveryLog(
+            signal_id=signal_id,
+            channel_type="telegram",
+            destination=destination,
+            provider_message_id="",
+            delivery_status="failed",
+            error_message=error_message[:1000],
+            payload_snapshot_json=json.dumps(payload_snapshot),
+        )
+        self.db.add(item)
+        self.db.commit()
+        self.db.refresh(item)
+        return item
+
 
     def list_recent_failures(self, limit: int = 20) -> list[DeliveryLog]:
         stmt = (

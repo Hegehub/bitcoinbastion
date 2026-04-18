@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.db.models.explainability import EvidenceEdge, EvidenceNode, SignalExplanation
 from app.db.models.signal import Signal
+from app.db.models.signal_link import SignalSourceLink
 
 
 class SignalRepository:
@@ -18,6 +19,32 @@ class SignalRepository:
         self.db.commit()
         self.db.refresh(signal)
         return signal
+
+    def add_with_source(self, *, signal: Signal, source_type: str, source_id: str, weight: float = 1.0) -> Signal:
+        self.db.add(signal)
+        self.db.flush()
+        self.db.add(
+            SignalSourceLink(
+                signal_id=signal.id,
+                source_type=source_type,
+                source_id=source_id,
+                weight=weight,
+            )
+        )
+        self.db.commit()
+        self.db.refresh(signal)
+        return signal
+
+    def has_source_link(self, *, source_type: str, source_id: str) -> bool:
+        stmt = (
+            select(func.count(SignalSourceLink.id))
+            .where(SignalSourceLink.source_type == source_type)
+            .where(SignalSourceLink.source_id == source_id)
+        )
+        try:
+            return int(self.db.execute(stmt).scalar_one()) > 0
+        except SQLAlchemyError:
+            return False
 
     def get(self, signal_id: int) -> Signal | None:
         stmt = select(Signal).where(Signal.id == signal_id)

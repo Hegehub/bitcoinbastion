@@ -39,3 +39,8 @@ Core runtime components:
 - Explainability-first for scores and recommendations.
 - Retry-safe and idempotency-aware background tasks.
 - Security baseline through JWT auth, RBAC-oriented dependencies, and audit logs.
+
+## Schema governance notes
+- Alembic is the source of schema evolution truth; `create_all()` is not a deployment path.
+- Current schema truth audit confirms complete table coverage for all SQLAlchemy model tables (27/27 mapped through migrations).
+- SQLite-specific migration behavior (batch mode, default/constraint representation) can produce autogenerate drift signals that require explicit review before accepting migration deltas.

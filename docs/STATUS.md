@@ -45,3 +45,23 @@ Estimated completion against the full **Bastion + Citadel + Bitcoin protocol fin
 
 - **Stage:** Late hardening / pre-final productionization.
 - Platform is operational and test-rich, but final sovereignty-grade correctness requires closing the remaining protocol and explainability gaps above.
+
+## 5) Schema truth audit (P0-02)
+
+Audit date: **2026-04-18**
+
+- Model tables discovered in `app/db/models/*`: **27**
+- Tables created across Alembic revisions: **27**
+- Orphan models (model table missing from migrations): **0**
+- Missing model coverage in migrations: **0**
+
+### Current inconsistencies (non-blocking for roundtrip, but tracked)
+
+1. `alembic check` still reports server-default drift on SQLite for many columns because metadata defaults and DB-level defaults are represented differently.
+2. Constraint naming and FK reconstruction in SQLite batch contexts can report drift (and can be fragile if interrupted).
+3. Previous interrupted batch operations can leave temporary `_alembic_tmp_*` tables in local dev DBs; this is environmental drift and should be cleaned in local DB reset flows.
+
+### Outcome
+
+- **Schema coverage is complete** (no missing tables, no orphan model tables).
+- **Drift remains at DDL-detail level** (defaults/constraints), documented for follow-up hardening.

@@ -19,5 +19,9 @@ def publish_signals_task() -> dict[str, int]:
             published = SignalPublishService(
                 signals=SignalRepository(db),
                 deliveries=DeliveryRepository(db),
-            ).publish_pending(limit=30)
-            return {"published": published}
+            ).publish_pending_with_stats(limit=30)
+            return {
+                "published": published.published,
+                "failed": published.failed,
+                "skipped": published.skipped,
+            }

@@ -11,6 +11,11 @@ REQUEST_LATENCY = Histogram("http_request_duration_seconds", "HTTP request durat
 SIGNAL_LATENCY = Histogram("signal_generation_latency_seconds", "Signal generation latency", ["source"])
 TASK_DURATION = Histogram("task_duration_seconds", "Task runtime duration", ["task_name", "status"])
 TASK_FAILURES = Counter("task_failures_total", "Task failure count", ["task_name"])
+DELIVERY_PUBLISH_EVENTS = Counter(
+    "delivery_publish_events_total",
+    "Delivery publish events by status/reason",
+    ["status", "reason"],
+)
 
 
 class MetricsMiddleware(BaseHTTPMiddleware):
@@ -49,3 +54,7 @@ def observe_task_duration(*, task_name: str, status: str, duration_seconds: floa
 
 def increment_task_failure(*, task_name: str) -> None:
     TASK_FAILURES.labels(task_name=task_name).inc()
+
+
+def increment_delivery_publish_event(*, status: str, reason: str = "none") -> None:
+    DELIVERY_PUBLISH_EVENTS.labels(status=status, reason=reason).inc()
