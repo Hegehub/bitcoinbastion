@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
+from app.db.models.time_utils import utcnow
 
 
 class DeliveryLog(Base):
@@ -19,5 +20,5 @@ class DeliveryLog(Base):
     delivery_status: Mapped[str] = mapped_column(String(40), default="sent")
     error_message: Mapped[str] = mapped_column(Text, default="")
     payload_snapshot_json: Mapped[str] = mapped_column(Text, default="{}")
-    sent_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    sent_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

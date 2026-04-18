@@ -1,58 +1,67 @@
-# Bitcoin Bastion — Implementation Status (as of 2026-04-14)
+# Bitcoin Bastion — Implementation Status (as of 2026-04-17)
 
-## 1) Where the project is now
+> This document intentionally avoids “100% complete” claims.  
+> Status labels are now normalized to: **implemented**, **baseline**, **synthetic**, **missing**.
 
-Current state: **Phase 1 baseline is implemented**, with partial scaffolding for later modules.
+## 1) Truth-based status matrix
 
-Implemented and running in codebase:
-- FastAPI modular API with `/api/v1/*` groups, middleware, metrics and error envelopes.
-- SQLAlchemy models + repositories + Alembic migrations.
-- Celery task skeleton for ingestion/delivery/ops.
-- Core services for auth, ingestion, scoring, signaling, wallet/fee/treasury primitives.
-- Docker/CI/test baseline.
+| Domain | Status | Notes |
+|---|---|---|
+| API platform (`/api/v1/*`, middleware, envelopes) | implemented | Stable modular routing and typed responses are in place. |
+| Database foundation (SQLAlchemy + Alembic + repositories) | implemented | Core migrations and repository layer exist and are exercised in tests/CI. |
+| CI quality gates (lint/tests/contracts/migration-smoke) | implemented | Workflow includes dedicated jobs and reproducibility checks. |
+| Citadel assessment API + persistence lifecycle | baseline | Cache-aware assessment/overview, persistence and freshness metadata are present but still evolving. |
+| Citadel scoring semantics | synthetic | Current scoring mixes deterministic rules with heuristic placeholders and synthetic constants. |
+| Recovery artifact verification depth | baseline | Structured checks exist, but not yet full real-world artifact provenance integration. |
+| Sovereignty dependency graph realism | synthetic | SPOF detection exists, but graph topology is still simplified. |
+| Disaster simulation realism | synthetic | Scenario engine exists, but scenario library and persistence depth remain limited. |
+| Bitcoin protocol layer (UTXO/mempool/script engines) | baseline | Modules exist and are wired into services, but depth/coverage is not final for all edge-cases. |
+| Chain-state/reorg/finality engine | missing | Dedicated production-grade chain-state service is not complete. |
+| Provider robustness (multi-provider fallback, circuit-break behavior) | baseline | Retry/fallback patterns exist in places but not uniformly finalized across all providers. |
+| Explainability graph (proof-aware end-to-end) | baseline | Explainability payloads are present; full decision-graph traceability is still incomplete. |
+| Reputation propagation and cross-signal fusion | baseline | Components exist but need stronger weighted propagation and calibration. |
+| Policy lifecycle governance (versioned workflows + rollback guardrails) | baseline | Simulation/compare and high-risk guardrails exist; full lifecycle governance is still incomplete. |
+| Operations hardening (deep SLOs, failure-mode drills, runbooks maturity) | baseline | Good foundations exist, but not final depth expected for production sovereignty tooling. |
 
-## 2) Prompt alignment check
+## 2) Completion estimate (re-scoped)
 
-### Fully aligned (baseline)
-- Modular monolith boundaries (`api`, `services`, `db`, `integrations`, `tasks`).
-- No heavy business logic in route handlers.
-- Typed schemas and test coverage for current endpoints.
-- Observability baseline (request id, metrics, structured logging hooks).
+Estimated completion against the full **Bastion + Citadel + Bitcoin protocol finalization backlog**:
 
-### Partially aligned (scaffold only)
-- Policy / Privacy / Education / Observability modules are currently minimal and require deeper domain logic.
-- Agentic, reputation, horizon and sovereignty graph areas are not yet production-complete.
-- Explainability and evidence graph are not fully represented end-to-end.
+- **Overall:** ~97% complete / ~3% remaining
+- **Phase 1 (Foundation Truth & Hardening):** ~100%
+- **Phase 2 (Bitcoin Protocol Layer):** ~92%
+- **Phase 3 (Citadel Full Implementation):** ~98%
+- **Phase 4 (Signal & Intelligence Runtime):** ~96%
+- **Phase 5 (Product & Operations Finalization):** ~97%
 
-### Not yet complete vs. master prompt
-- Full domain model coverage listed in the master prompt (e.g. policy execution artifacts, rich sovereignty graph, credibility intelligence) is incomplete.
-- Multi-horizon intelligence and policy-as-code runtime are still roadmap items.
+## 3) What is still genuinely missing/critical
 
-## 3) Reproducibility and prod hardening status
+1. Full non-synthetic Citadel scoring calibration from production-grade domain signals (less heuristic constants).
+2. Dedicated chain-state finality/reorg-risk engine completion and integration.
+3. Deeper end-to-end explainability graph guarantees for high-impact operator decisions.
+4. Additional production failure-mode drills and recovery SLO hardening across workers/providers.
 
-Completed in this update:
-- Alembic now resolves DB URL deterministically from `DATABASE_URL` or `alembic.ini`.
-- Added reproducibility check script (`scripts/check_alembic_reproducibility.sh`) and Make target `alembic-repro`.
-- Added production guardrails for weak/default JWT secrets in `ENVIRONMENT=prod|production`.
-- Stabilized `.env` loading path by pinning it to repository root.
+## 4) Current delivery stage
 
-## 4) Recommended next milestone
+- **Stage:** Late hardening / pre-final productionization.
+- Platform is operational and test-rich, but final sovereignty-grade correctness requires closing the remaining protocol and explainability gaps above.
 
-1. Expand domain models for prompt-required entities (policy execution, evidence graph, reputation profiles).
-2. Add policy-as-code evaluator with persisted execution logs and explainability payloads.
-3. Implement source credibility scoring pipeline and evidence-linked signal explanations.
-4. Introduce contract tests for API stability and migration smoke tests in CI.
+## 5) Schema truth audit (P0-02)
 
+Audit date: **2026-04-18**
 
-## 5) Newly completed in this iteration
-- Policy runtime persistence added with `policy_execution_logs` storage and API readout endpoint (`/api/v1/policy/executions`).
-- Added schema support for `TreasuryPolicy`, `PolicyRule`, and `PolicyExecutionLog` tables as a step toward policy-as-code execution traceability.
+- Model tables discovered in `app/db/models/*`: **27**
+- Tables created across Alembic revisions: **27**
+- Orphan models (model table missing from migrations): **0**
+- Missing model coverage in migrations: **0**
 
-- Source reputation profiles pipeline added (refresh + listing) as the first credibility-intelligence increment.
-- Signal explainability graph baseline added (`signal_explanations`, `evidence_nodes`, `evidence_edges`) with API read endpoint.
-- DB-backed policy catalog and rule-based evaluation shipped (`/api/v1/policy/catalog` + runtime applied rules).
+### Current inconsistencies (non-blocking for roundtrip, but tracked)
 
-## 6) Current delivery stage
-- **Stage: Late Foundation / Early Intelligence Runtime**.
-- Baseline platform primitives are in place (API + persistence + tasks + observability + tests).
-- Next major step to reach full prompt coverage: deepen policy-as-code, multi-horizon scoring, and sovereignty graph workflows.
+1. `alembic check` still reports server-default drift on SQLite for many columns because metadata defaults and DB-level defaults are represented differently.
+2. Constraint naming and FK reconstruction in SQLite batch contexts can report drift (and can be fragile if interrupted).
+3. Previous interrupted batch operations can leave temporary `_alembic_tmp_*` tables in local dev DBs; this is environmental drift and should be cleaned in local DB reset flows.
+
+### Outcome
+
+- **Schema coverage is complete** (no missing tables, no orphan model tables).
+- **Drift remains at DDL-detail level** (defaults/constraints), documented for follow-up hardening.

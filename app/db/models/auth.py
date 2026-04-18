@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.enums import UserRole
 from app.db.base import Base
+from app.db.models.time_utils import utcnow
 
 
 class User(Base):
@@ -19,8 +20,8 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(20), default=UserRole.USER.value)
     timezone: Mapped[str] = mapped_column(String(64), default="UTC")
     preferences_json: Mapped[str] = mapped_column(Text, default="{}")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
@@ -42,7 +43,7 @@ class UserSubscription(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     plan_id: Mapped[int] = mapped_column(ForeignKey("subscription_plans.id"), index=True)
     status: Mapped[str] = mapped_column(String(30), default="active")
-    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     billing_provider: Mapped[str] = mapped_column(String(40), default="manual")
     external_subscription_id: Mapped[str] = mapped_column(String(120), default="")
