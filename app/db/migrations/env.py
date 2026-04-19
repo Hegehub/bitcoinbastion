@@ -18,7 +18,10 @@ def _resolve_database_url() -> str:
     env_database_url = os.getenv("DATABASE_URL")
     if env_database_url:
         return env_database_url
-    return config.get_main_option("sqlalchemy.url")
+    configured_database_url = config.get_main_option("sqlalchemy.url")
+    if not configured_database_url:
+        raise RuntimeError("sqlalchemy.url is not configured")
+    return configured_database_url
 
 
 database_url = _resolve_database_url()
@@ -34,6 +37,7 @@ def run_migrations_offline() -> None:
         literal_binds=True,
         compare_type=True,
         compare_server_default=True,
+        render_as_batch=True,
     )
 
     with context.begin_transaction():
@@ -56,6 +60,7 @@ def run_migrations_online() -> None:
             target_metadata=target_metadata,
             compare_type=True,
             compare_server_default=True,
+            render_as_batch=True,
         )
 
         with context.begin_transaction():

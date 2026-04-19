@@ -17,6 +17,9 @@ class SignalExplainabilityService:
             explanation = repo.latest_explanation(signal_id)
             if explanation is None:
                 explanation = repo.create_default_explanation(signal)
+            else:
+                repo.ensure_evidence_graph(signal=signal)
+                db.commit()
 
             nodes = [
                 EvidenceNodeOut(
