@@ -10,6 +10,7 @@ def test_citadel_assessment_service_returns_assessment_with_explainability() -> 
     assert out.explainability
     assert explainability["scoring_weights"]["calibration_version"] == "citadel_v2_weighted"
     assert explainability["guarantees"]["coverage_score"] == 1.0
+    assert explainability["calibration_input_quality"]["score"] >= 0.5
 
 
 def test_citadel_recovery_report_returns_structured_payload() -> None:
@@ -145,6 +146,7 @@ def test_citadel_assessment_applies_external_signal_factors(monkeypatch) -> None
     assert adjusted < base
     assert explainability["external_signal_factors"]["recovery_readiness_score"] == 0.5
     assert explainability["external_signal_factor_source"] == "configured_valid"
+    assert explainability["calibration_input_quality"]["score"] >= 0.75
 
 
 def test_citadel_assessment_warns_on_invalid_external_factors(monkeypatch) -> None:

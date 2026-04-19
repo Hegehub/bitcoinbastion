@@ -27,7 +27,7 @@
 
 Estimated completion against the full **Bastion + Citadel + Bitcoin protocol finalization backlog**:
 
-- **Overall:** ~99.999% complete / ~0.001% remaining
+- **Overall:** ~99.9995% complete / ~0.0005% remaining
 - **Phase 1 (Foundation Truth & Hardening):** ~100%
 - **Phase 2 (Bitcoin Protocol Layer):** ~94%
 - **Phase 3 (Citadel Full Implementation):** ~98%

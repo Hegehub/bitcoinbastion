@@ -252,6 +252,18 @@ class CitadelAssessmentService:
             "external_signal_factors": external_factors,
             "external_signal_factor_source": external_factor_source,
             "score_weight_source": score_weight_source,
+            "calibration_input_quality": {
+                "score": round(
+                    (
+                        (1.0 if score_weight_source == "configured_valid" else 0.5)
+                        + (1.0 if external_factor_source == "configured_valid" else 0.5)
+                    )
+                    / 2,
+                    3,
+                ),
+                "score_weight_source": score_weight_source,
+                "external_signal_factor_source": external_factor_source,
+            },
         }
         explainability_payload["guarantees"] = self._coverage_summary(
             explainability=explainability_payload,
