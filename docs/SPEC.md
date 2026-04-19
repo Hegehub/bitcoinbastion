@@ -1,4 +1,4 @@
-# Bitcoin Bastion SPEC
+Build Bitcoin Bastion — a production-grade Bitcoin-native Sovereign Intelligence & Operations Platform.
 
 ## Product statement
 Bitcoin Bastion is a **Bitcoin Sovereign Intelligence, Decision, and Operations Platform**. It is designed as a modular monolith that ingests ecosystem signals, interprets them with explainability artifacts, and delivers actionable recommendations for self-custody users, analysts, and treasury operators.
