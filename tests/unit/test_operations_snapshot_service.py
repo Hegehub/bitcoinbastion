@@ -40,3 +40,8 @@ def test_operations_snapshot_includes_job_and_delivery_stats() -> None:
     assert snapshot.jobs.failed_24h >= 1
     assert snapshot.deliveries.sent_24h >= 1
     assert any(item.provider == "delivery" for item in snapshot.providers)
+    assert snapshot.chain_state.tip_height >= snapshot.chain_state.observed_block_height
+    assert snapshot.chain_state.finality_band in {"weak", "moderate", "strong"}
+    onchain = next(item for item in snapshot.providers if item.provider == "onchain")
+    assert onchain.healthy is False
+    assert "degraded" in onchain.details

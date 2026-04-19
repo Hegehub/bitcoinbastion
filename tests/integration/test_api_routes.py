@@ -29,6 +29,7 @@ def test_new_api_groups_exist() -> None:
             json={"policy_name": "default", "wallet_health_score": 82, "transaction_amount_sats": 250000},
         ).status_code == 200
         assert client.get("/api/v1/policy/executions").status_code == 200
+        assert client.get("/api/v1/policy/executions/summary").status_code == 200
         assert client.get("/api/v1/policy/catalog").status_code == 200
         assert client.post(
             "/api/v1/policy/catalog",

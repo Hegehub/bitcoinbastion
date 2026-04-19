@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
 
+from app.schemas.common import ExplainabilityOut, FreshnessOut
+
 
 class FeeRecommendationRequest(BaseModel):
     mempool_congestion: float = Field(ge=0.0, le=1.0)
@@ -12,5 +14,6 @@ class FeeRecommendationResponse(BaseModel):
     congestion_state: str
     high_fee_scenario_sat_vb: int
     confidence: float = Field(ge=0.0, le=1.0)
-    freshness: dict[str, object] = Field(default_factory=dict)
-    explainability: dict[str, object] = Field(default_factory=dict)
+    freshness: FreshnessOut = Field(default_factory=FreshnessOut)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)

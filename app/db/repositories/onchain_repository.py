@@ -52,3 +52,13 @@ class OnchainRepository:
             return list(self.db.execute(stmt).scalars())
         except SQLAlchemyError:
             return []
+
+    def latest_block_height(self) -> int | None:
+        stmt = select(func.max(OnchainEvent.block_height))
+        try:
+            value = self.db.execute(stmt).scalar_one()
+        except SQLAlchemyError:
+            return None
+        if value is None:
+            return None
+        return int(value)

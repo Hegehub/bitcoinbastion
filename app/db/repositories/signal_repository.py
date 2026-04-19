@@ -111,15 +111,29 @@ class SignalRepository:
 
     def create_default_explanation(self, signal: Signal) -> SignalExplanation:
         payload = json.loads(signal.explainability_json or "{}")
+        source_counts = self.source_type_counts(signal.id)
+        source_summary = ", ".join(f"{source_type}({count})" for source_type, count in source_counts)
+        source_total = sum(count for _, count in source_counts)
         explanation = SignalExplanation(
             signal_id=signal.id,
             explanation_text=payload.get(
                 "reason",
-                f"Signal '{signal.title}' was generated from current scoring inputs.",
+                (
+                    f"Signal '{signal.title}' was generated from current scoring inputs."
+                    if not source_summary
+                    else f"Signal '{signal.title}' was generated from current scoring inputs with evidence from {source_summary}."
+                ),
             ),
             confidence_reasoning=payload.get(
                 "confidence_reasoning",
-                "Confidence combines relevance, impact and source quality features.",
+                (
+                    "Confidence combines relevance, impact and source quality features."
+                    if source_total == 0
+                    else (
+                        "Confidence combines relevance, impact and source quality features "
+                        f"with {source_total} linked source reference(s)."
+                    )
+                ),
             ),
             horizon=payload.get("horizon", "short"),
         )
@@ -135,9 +149,39 @@ class SignalRepository:
                     weight=signal.score,
                 )
             )
+            for source_type, count in source_counts:
+                source_key = f"source:{source_type}"
+                self.db.add(
+                    EvidenceNode(
+                        signal_id=signal.id,
+                        node_key=source_key,
+                        node_type="source",
+                        label=f"{source_type} source(s)",
+                        weight=float(count),
+                    )
+                )
+                self.db.add(
+                    EvidenceEdge(
+                        signal_id=signal.id,
+                        from_node_key=source_key,
+                        to_node_key=f"signal:{signal.id}",
+                        relation="supports",
+                        weight=float(count),
+                    )
+                )
         self.db.commit()
         self.db.refresh(explanation)
         return explanation
+
+    def source_type_counts(self, signal_id: int) -> list[tuple[str, int]]:
+        stmt = (
+            select(SignalSourceLink.source_type, func.count(SignalSourceLink.id))
+            .where(SignalSourceLink.signal_id == signal_id)
+            .group_by(SignalSourceLink.source_type)
+            .order_by(SignalSourceLink.source_type.asc())
+        )
+        rows = self.db.execute(stmt).all()
+        return [(str(source_type), int(count)) for source_type, count in rows]
 
     @staticmethod
     def _dominant_horizon(signal: Signal) -> str | None:

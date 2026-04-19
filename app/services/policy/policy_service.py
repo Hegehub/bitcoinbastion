@@ -14,6 +14,8 @@ from app.schemas.policy import (
     PolicyCheckRequest,
     PolicyCheckResponse,
     PolicyExecutionLogOut,
+    PolicyExecutionSummaryOut,
+    PolicyExecutionPolicyBreakdownOut,
     PolicyRuleOut,
     PolicySimulationDiffOut,
     PolicySimulationOut,
@@ -114,6 +116,46 @@ class TreasuryPolicyService:
         except OperationalError:
             db.rollback()
             return []
+
+    def execution_summary(self, db: Session, limit: int = 200) -> PolicyExecutionSummaryOut:
+        repo = PolicyExecutionRepository(db)
+        try:
+            rows = repo.list_recent(limit=limit, offset=0)
+        except OperationalError:
+            db.rollback()
+            rows = []
+
+        allowed = sum(1 for item in rows if item.allowed)
+        blocked = len(rows) - allowed
+        by_policy_map: dict[str, dict[str, int]] = {}
+        for item in rows:
+            bucket = by_policy_map.setdefault(item.policy_name, {"total": 0, "allowed": 0, "blocked": 0})
+            bucket["total"] += 1
+            if item.allowed:
+                bucket["allowed"] += 1
+            else:
+                bucket["blocked"] += 1
+
+        by_policy = [
+            PolicyExecutionPolicyBreakdownOut(
+                policy_name=policy_name,
+                total=stats["total"],
+                allowed=stats["allowed"],
+                blocked=stats["blocked"],
+            )
+            for policy_name, stats in sorted(
+                by_policy_map.items(),
+                key=lambda item: (-item[1]["total"], item[0]),
+            )
+        ]
+        allow_rate = float(allowed / len(rows)) if rows else 0.0
+        return PolicyExecutionSummaryOut(
+            total=len(rows),
+            allowed=allowed,
+            blocked=blocked,
+            allow_rate=round(allow_rate, 4),
+            by_policy=by_policy,
+        )
 
     def upsert_catalog_entry(self, db: Session, payload: PolicyCatalogUpsertIn) -> PolicyCatalogOut:
         repo = PolicyRepository(db)

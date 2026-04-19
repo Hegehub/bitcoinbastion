@@ -42,7 +42,7 @@ class CitadelAssessmentRepository:
             critical_findings_json=json.dumps([item.model_dump() for item in assessment.critical_findings]),
             warnings_json=json.dumps([item.model_dump() for item in assessment.warnings]),
             recommendations_json=json.dumps(assessment.recommendations),
-            explainability_json=json.dumps(assessment.explainability),
+            explainability_json=json.dumps(assessment.explainability.model_dump()),
             freshness_json=json.dumps(assessment.freshness.model_dump(exclude_none=True)),
             generated_at=assessment.generated_at,
             created_at=assessment.created_at,

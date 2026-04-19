@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.common import ExplainabilityOut
+
 
 class CitadelFindingOut(BaseModel):
     title: str
@@ -17,6 +19,9 @@ class CitadelFreshnessOut(BaseModel):
     cache_source: str | None = None
     cache_age_seconds: int | None = None
     recompute_reason: str | None = None
+    ttl_seconds: int | None = Field(default=None, ge=0)
+    is_stale: bool = False
+    stale_reason: str = ""
 
 
 class CitadelScoreBreakdownOut(BaseModel):
@@ -39,7 +44,8 @@ class CitadelAssessmentOut(CitadelScoreBreakdownOut):
     critical_findings: list[CitadelFindingOut] = Field(default_factory=list)
     warnings: list[CitadelFindingOut] = Field(default_factory=list)
     recommendations: list[str] = Field(default_factory=list)
-    explainability: dict[str, object] = Field(default_factory=dict)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
     freshness: CitadelFreshnessOut = Field(default_factory=CitadelFreshnessOut)
     generated_at: datetime
     created_at: datetime
@@ -66,7 +72,8 @@ class RecoveryReadinessOut(BaseModel):
     human_dependency_score: float = Field(ge=0.0, le=1.0)
     freshness: dict[str, object] = Field(default_factory=dict)
     confidence: float = Field(ge=0.0, le=1.0)
-    explainability: dict[str, object] = Field(default_factory=dict)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
 
 
 class CitadelOverviewOut(BaseModel):
@@ -76,6 +83,9 @@ class CitadelOverviewOut(BaseModel):
     recovery_readiness_score: float = Field(ge=0.0, le=1.0)
     top_findings: list[str] = Field(default_factory=list)
     freshness: CitadelFreshnessOut = Field(default_factory=CitadelFreshnessOut)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
 
 
 class CitadelDependencyGraphOut(BaseModel):
@@ -85,7 +95,8 @@ class CitadelDependencyGraphOut(BaseModel):
     findings: list[dict[str, object]] = Field(default_factory=list)
     freshness: dict[str, object] = Field(default_factory=dict)
     confidence: float = Field(ge=0.0, le=1.0)
-    explainability: dict[str, object] = Field(default_factory=dict)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
 
 
 class CitadelSimulationIn(BaseModel):
@@ -103,7 +114,8 @@ class CitadelSimulationOut(BaseModel):
     recommended_remediations: list[str] = Field(default_factory=list)
     freshness: dict[str, object] = Field(default_factory=dict)
     confidence: float = Field(ge=0.0, le=1.0)
-    explainability: dict[str, object] = Field(default_factory=dict)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
 
 
 class CitadelRepairPlanOut(BaseModel):
@@ -111,7 +123,8 @@ class CitadelRepairPlanOut(BaseModel):
     items: list[dict[str, object]] = Field(default_factory=list)
     freshness: dict[str, object] = Field(default_factory=dict)
     confidence: float = Field(ge=0.0, le=1.0)
-    explainability: dict[str, object] = Field(default_factory=dict)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
 
 
 class CitadelPolicyChecksOut(BaseModel):
@@ -121,7 +134,8 @@ class CitadelPolicyChecksOut(BaseModel):
     gaps: list[str] = Field(default_factory=list)
     freshness: dict[str, object] = Field(default_factory=dict)
     confidence: float = Field(ge=0.0, le=1.0)
-    explainability: dict[str, object] = Field(default_factory=dict)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
 
 
 class CitadelInheritanceOut(BaseModel):
@@ -134,4 +148,5 @@ class CitadelInheritanceOut(BaseModel):
     recommendations: list[str] = Field(default_factory=list)
     freshness: dict[str, object] = Field(default_factory=dict)
     confidence: float = Field(ge=0.0, le=1.0)
-    explainability: dict[str, object] = Field(default_factory=dict)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)

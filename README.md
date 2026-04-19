@@ -388,6 +388,17 @@ Bitcoin Bastion evolves into:
 - `docs/CODEX_WORKFLOW.md`
 - `docs/PRODUCTION_READINESS.md`
 
+
+## Core documentation
+- `docs/SPEC.md`
+- `docs/SYSTEM_PROMPT.md`
+- `docs/ARCHITECTURE.md`
+- `docs/ROADMAP.md`
+- `docs/DOMAIN_MODELS.md`
+- `docs/API_CONTRACTS.md`
+- `docs/CODEX_WORKFLOW.md`
+- `docs/PRODUCTION_READINESS.md`
+
 ## API groups
 - health
 - auth

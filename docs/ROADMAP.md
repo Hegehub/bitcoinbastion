@@ -33,4 +33,4 @@ This roadmap follows the repository's master prompt structure and maps it onto p
 ## Immediate next focus
 1. Improve contract tests for integrations (`rss`, `bitcoin provider`).
 2. Strengthen signal explainability payload for cross-source evidence narratives.
-3. Expand policy execution visibility for treasury-sensitive flows.
+3. Expand policy execution visibility for treasury-sensitive flows (execution summary endpoint delivered; continue dashboard-level aggregation).

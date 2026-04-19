@@ -12,6 +12,7 @@ from app.schemas.policy import (
     PolicyCheckRequest,
     PolicyCheckResponse,
     PolicyExecutionLogOut,
+    PolicyExecutionSummaryOut,
     PolicySimulationOut,
     PolicySimulationRequest,
 )
@@ -48,6 +49,16 @@ def list_policy_executions(
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[PolicyExecutionLogOut]]:
     data = TreasuryPolicyService().list_executions(db=db, limit=limit, offset=offset)
+    return ResponseEnvelope(data=data)
+
+
+@router.get("/executions/summary", response_model=ResponseEnvelope[PolicyExecutionSummaryOut])
+def policy_execution_summary(
+    limit: int = 200,
+    _: User = Depends(get_admin_user),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[PolicyExecutionSummaryOut]:
+    data = TreasuryPolicyService().execution_summary(db=db, limit=limit)
     return ResponseEnvelope(data=data)
 
 

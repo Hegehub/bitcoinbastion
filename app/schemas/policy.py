@@ -3,6 +3,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from app.schemas.common import ExplainabilityOut, FreshnessOut
+
 
 class PolicyCheckRequest(BaseModel):
     policy_name: str = Field(min_length=1)
@@ -39,6 +41,10 @@ class PolicyCheckResponse(BaseModel):
     next_actions: list[str]
     evaluated_policy: str
     applied_rules: list[PolicyRuleOut]
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
+    freshness: FreshnessOut = Field(default_factory=FreshnessOut)
 
 
 class PolicyCatalogOut(BaseModel):
@@ -56,6 +62,21 @@ class PolicyExecutionLogOut(BaseModel):
     violations: list[str]
     next_actions: list[str]
     executed_at: datetime
+
+
+class PolicyExecutionPolicyBreakdownOut(BaseModel):
+    policy_name: str
+    total: int
+    allowed: int
+    blocked: int
+
+
+class PolicyExecutionSummaryOut(BaseModel):
+    total: int
+    allowed: int
+    blocked: int
+    allow_rate: float = Field(ge=0.0, le=1.0)
+    by_policy: list[PolicyExecutionPolicyBreakdownOut]
 
 
 class PolicySimulationRequest(BaseModel):
@@ -82,6 +103,10 @@ class PolicySimulationOut(BaseModel):
     baseline: PolicyCheckResponse
     candidate: PolicyCheckResponse
     diff: PolicySimulationDiffOut
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
+    freshness: FreshnessOut = Field(default_factory=FreshnessOut)
 
 
 class PolicyCatalogCompareRequest(BaseModel):
@@ -95,4 +120,7 @@ class PolicyCatalogCompareOut(BaseModel):
     changed_thresholds: list[str]
     changed_rules: list[str]
     risk_level: Literal["low", "medium", "high"]
-
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
+    freshness: FreshnessOut = Field(default_factory=FreshnessOut)

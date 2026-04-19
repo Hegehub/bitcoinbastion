@@ -2,6 +2,9 @@ import json
 from datetime import datetime
 
 from pydantic import BaseModel
+from pydantic import Field
+
+from app.schemas.common import ExplainabilityOut, FreshnessOut
 
 
 class SignalOut(BaseModel):
@@ -15,6 +18,8 @@ class SignalOut(BaseModel):
     is_published: bool
     created_at: datetime
     horizons: dict[str, float | str] = {}
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    freshness: FreshnessOut = Field(default_factory=FreshnessOut)
 
     model_config = {"from_attributes": True}
 
@@ -53,3 +58,4 @@ class SignalExplanationOut(BaseModel):
     generated_at: datetime
     nodes: list[EvidenceNodeOut]
     edges: list[EvidenceEdgeOut]
+    data_sources: list[str] = Field(default_factory=list)

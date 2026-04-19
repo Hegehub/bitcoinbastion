@@ -31,6 +31,37 @@ def test_policy_evaluation_and_execution_log_persistence() -> None:
     assert catalog[0].name == "default"
 
 
+def test_policy_execution_summary_returns_policy_breakdown() -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
+    Base.metadata.create_all(bind=engine)
+
+    with Session(engine) as db:
+        service = TreasuryPolicyService()
+        service.evaluate_and_log(
+            db=db,
+            payload=PolicyCheckRequest(
+                policy_name="default",
+                wallet_health_score=85,
+                transaction_amount_sats=200_000,
+            ),
+        )
+        service.evaluate_and_log(
+            db=db,
+            payload=PolicyCheckRequest(
+                policy_name="strict",
+                wallet_health_score=40,
+                transaction_amount_sats=20_000_000,
+            ),
+        )
+        summary = service.execution_summary(db=db, limit=50)
+
+    assert summary.total == 2
+    assert summary.allowed == 1
+    assert summary.blocked == 1
+    assert summary.allow_rate == 0.5
+    assert len(summary.by_policy) == 2
+
+
 def test_policy_rules_override_thresholds() -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
     Base.metadata.create_all(bind=engine)

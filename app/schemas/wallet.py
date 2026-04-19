@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from app.schemas.common import ExplainabilityOut, FreshnessOut
+
 
 class WalletHealthRequest(BaseModel):
     utxo_count: int = Field(ge=0)
@@ -20,6 +22,9 @@ class WalletHealthResponse(BaseModel):
     privacy_score: float
     fee_exposure_score: float
     recommendations: list[str]
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    freshness: FreshnessOut = Field(default_factory=FreshnessOut)
 
 
 class WalletProfileOut(BaseModel):
@@ -41,5 +46,9 @@ class WalletHealthReportOut(BaseModel):
     fee_exposure_score: float
     recommendations: list[str]
     generated_at: datetime
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
+    data_sources: list[str] = Field(default_factory=list)
+    freshness: FreshnessOut = Field(default_factory=FreshnessOut)
 
     model_config = {"from_attributes": True}
