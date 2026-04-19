@@ -1,5 +1,7 @@
+import json
 from datetime import UTC, datetime
 
+from app.core.config import get_settings
 from app.schemas.citadel import (
     CitadelAssessmentOut,
     CitadelFindingOut,
@@ -15,6 +17,18 @@ from app.services.citadel.sovereignty_graph_service import SovereigntyGraphServi
 
 
 class CitadelAssessmentService:
+    DEFAULT_SCORE_WEIGHTS: dict[str, float] = {
+        "custody_resilience_score": 0.16,
+        "recovery_readiness_score": 0.18,
+        "privacy_resilience_score": 0.1,
+        "treasury_resilience_score": 0.1,
+        "vendor_independence_score": 0.08,
+        "inheritance_readiness_score": 0.12,
+        "fee_survivability_score": 0.08,
+        "policy_maturity_score": 0.08,
+        "operational_hygiene_score": 0.1,
+    }
+
     @staticmethod
     def _safe_float(value: object, *, default: float = 0.0) -> float:
         if isinstance(value, (int, float)):
@@ -32,6 +46,65 @@ class CitadelAssessmentService:
     @staticmethod
     def _as_object_list(value: object) -> list[object]:
         return value if isinstance(value, list) else []
+
+    @staticmethod
+    def _coverage_summary(*, explainability: dict[str, object], required_domains: list[str]) -> dict[str, object]:
+        present = [domain for domain in required_domains if domain in explainability]
+        missing = [domain for domain in required_domains if domain not in explainability]
+        coverage = round(len(present) / len(required_domains), 3) if required_domains else 1.0
+        return {
+            "required_domains": required_domains,
+            "present_domains": present,
+            "missing_domains": missing,
+            "coverage_score": coverage,
+            "guarantee": "pass" if not missing else "partial",
+        }
+
+    def _score_weights(self) -> tuple[dict[str, float], str, str]:
+        base = dict(self.DEFAULT_SCORE_WEIGHTS)
+        raw = (get_settings().citadel_score_weights_json or "").strip()
+        if not raw:
+            return base, "citadel_v2_weighted", "default"
+        try:
+            parsed = json.loads(raw)
+        except json.JSONDecodeError:
+            return base, "citadel_v2_weighted", "configured_invalid"
+        if not isinstance(parsed, dict):
+            return base, "citadel_v2_weighted", "configured_invalid"
+
+        updated = False
+        for key in base:
+            value = parsed.get(key)
+            if isinstance(value, (int, float)) and float(value) >= 0:
+                base[key] = float(value)
+                updated = True
+        total = sum(base.values())
+        if total <= 0:
+            return dict(self.DEFAULT_SCORE_WEIGHTS), "citadel_v2_weighted", "configured_invalid"
+
+        normalized = {key: round(value / total, 6) for key, value in base.items()}
+        if not updated:
+            return dict(self.DEFAULT_SCORE_WEIGHTS), "citadel_v2_weighted", "configured_invalid"
+        return normalized, "citadel_v2_weighted_custom", "configured_valid"
+
+    def _external_signal_factors(self) -> tuple[dict[str, float], str]:
+        raw = (get_settings().citadel_external_signal_factors_json or "").strip()
+        if not raw:
+            return {}, "none"
+        try:
+            parsed = json.loads(raw)
+        except json.JSONDecodeError:
+            return {}, "configured_invalid"
+        if not isinstance(parsed, dict):
+            return {}, "configured_invalid"
+        factors: dict[str, float] = {}
+        for key in self.DEFAULT_SCORE_WEIGHTS:
+            value = parsed.get(key)
+            if isinstance(value, (int, float)):
+                factors[key] = max(0.5, min(1.5, float(value)))
+        if not factors:
+            return {}, "configured_invalid"
+        return factors, "configured_valid"
 
     def recovery_report(self, *, owner_id: int) -> RecoveryReadinessOut:
         artifacts = [
@@ -77,29 +150,32 @@ class CitadelAssessmentService:
             self._safe_float(inheritance.get("completeness_score"), default=0.0) * 100
         )
 
-        privacy = 71.0
-        treasury = 66.0
-        fee_survivability = 69.0
         policy_maturity = self._clamp_percent(
             self._safe_float(policy.get("policy_maturity_score"), default=0.0)
         )
-        operational = self._clamp_percent(74.0 if recovery.recovery_readiness_score >= 0.7 else 58.0)
+        privacy = self._clamp_percent(45.0 + (inheritance_score_100 * 0.35) + (policy_maturity * 0.2))
+        treasury = self._clamp_percent(48.0 + (policy_maturity * 0.3) + (recovery_score_100 * 0.22))
+        fee_survivability = self._clamp_percent(50.0 + (recovery_score_100 * 0.3) + (inheritance_score_100 * 0.2))
+        operational = self._clamp_percent(35.0 + (recovery_score_100 * 0.45) + (policy_maturity * 0.2))
 
-        overall = round(
-            (
-                custody
-                + recovery_score_100
-                + privacy
-                + treasury
-                + vendor
-                + inheritance_score_100
-                + fee_survivability
-                + policy_maturity
-                + operational
-            )
-            / 9,
-            2,
-        )
+        weights, calibration_version, score_weight_source = self._score_weights()
+        weighted_inputs = {
+            "custody_resilience_score": custody,
+            "recovery_readiness_score": recovery_score_100,
+            "privacy_resilience_score": privacy,
+            "treasury_resilience_score": treasury,
+            "vendor_independence_score": vendor,
+            "inheritance_readiness_score": inheritance_score_100,
+            "fee_survivability_score": fee_survivability,
+            "policy_maturity_score": policy_maturity,
+            "operational_hygiene_score": operational,
+        }
+        external_factors, external_factor_source = self._external_signal_factors()
+        adjusted_inputs = {
+            key: self._clamp_percent(value * external_factors.get(key, 1.0))
+            for key, value in weighted_inputs.items()
+        }
+        overall = round(sum(adjusted_inputs[key] * weight for key, weight in weights.items()), 2)
 
         findings: list[CitadelFindingOut] = []
         if recovery.recovery_readiness_score < 0.7:
@@ -138,8 +214,57 @@ class CitadelAssessmentService:
                     detail=str(gap),
                 )
             )
+        if external_factor_source == "configured_invalid":
+            warnings.append(
+                CitadelFindingOut(
+                    title="Calibration override ignored",
+                    severity="warning",
+                    domain="calibration",
+                    detail="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON is set but invalid; defaults were used.",
+                )
+            )
+        if score_weight_source == "configured_invalid":
+            warnings.append(
+                CitadelFindingOut(
+                    title="Weight override ignored",
+                    severity="warning",
+                    domain="calibration",
+                    detail="CITADEL_SCORE_WEIGHTS_JSON is set but invalid; defaults were used.",
+                )
+            )
 
         now = datetime.now(UTC)
+        explainability_payload: dict[str, object] = {
+            "recovery": recovery.model_dump(),
+            "inheritance": inheritance,
+            "policy": policy,
+            "sovereignty_graph": {
+                "spof_count": spof_count,
+                "findings": graph.get("findings", []),
+            },
+            "scoring_weights": {
+                "uniform": False,
+                "weights": weights,
+                "calibration_version": calibration_version,
+            },
+            "score_inputs": weighted_inputs,
+            "score_inputs_adjusted": adjusted_inputs,
+            "external_signal_factors": external_factors,
+            "external_signal_factor_source": external_factor_source,
+            "score_weight_source": score_weight_source,
+        }
+        explainability_payload["guarantees"] = self._coverage_summary(
+            explainability=explainability_payload,
+            required_domains=[
+                "recovery",
+                "inheritance",
+                "policy",
+                "sovereignty_graph",
+                "score_inputs",
+                "score_inputs_adjusted",
+            ],
+        )
+
         return CitadelAssessmentOut(
             id=0,
             owner_type=owner_type,
@@ -157,19 +282,7 @@ class CitadelAssessmentService:
             critical_findings=findings,
             warnings=warnings,
             recommendations=recommendations,
-            explainability={
-                "recovery": recovery.model_dump(),
-                "inheritance": inheritance,
-                "policy": policy,
-                "sovereignty_graph": {
-                    "spof_count": spof_count,
-                    "findings": graph.get("findings", []),
-                },
-                "scoring_weights": {
-                    "uniform": True,
-                    "domains": 9,
-                },
-            },
+            explainability=explainability_payload,
             freshness=CitadelFreshnessOut(assessment_generated_at=now.isoformat()),
             generated_at=now,
             created_at=now,

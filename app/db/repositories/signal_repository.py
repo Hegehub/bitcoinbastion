@@ -138,19 +138,32 @@ class SignalRepository:
             horizon=payload.get("horizon", "short"),
         )
         self.db.add(explanation)
+        self.ensure_evidence_graph(signal=signal)
+        self.db.commit()
+        self.db.refresh(explanation)
+        return explanation
 
-        if not self.list_nodes(signal.id):
+    def ensure_evidence_graph(self, *, signal: Signal) -> None:
+        existing_nodes = {item.node_key for item in self.list_nodes(signal.id)}
+        existing_edges = {(item.from_node_key, item.to_node_key, item.relation) for item in self.list_edges(signal.id)}
+        signal_node_key = f"signal:{signal.id}"
+
+        if signal_node_key not in existing_nodes:
             self.db.add(
                 EvidenceNode(
                     signal_id=signal.id,
-                    node_key=f"signal:{signal.id}",
+                    node_key=signal_node_key,
                     node_type="signal",
                     label=signal.title,
                     weight=signal.score,
                 )
             )
-            for source_type, count in source_counts:
-                source_key = f"source:{source_type}"
+            existing_nodes.add(signal_node_key)
+
+        source_counts = self.source_type_counts(signal.id)
+        for source_type, count in source_counts:
+            source_key = f"source:{source_type}"
+            if source_key not in existing_nodes:
                 self.db.add(
                     EvidenceNode(
                         signal_id=signal.id,
@@ -160,18 +173,30 @@ class SignalRepository:
                         weight=float(count),
                     )
                 )
+                existing_nodes.add(source_key)
+            supports_edge = (source_key, signal_node_key, "supports")
+            if supports_edge not in existing_edges:
                 self.db.add(
                     EvidenceEdge(
                         signal_id=signal.id,
                         from_node_key=source_key,
-                        to_node_key=f"signal:{signal.id}",
+                        to_node_key=signal_node_key,
                         relation="supports",
                         weight=float(count),
                     )
                 )
-        self.db.commit()
-        self.db.refresh(explanation)
-        return explanation
+                existing_edges.add(supports_edge)
+
+        if not source_counts and (signal_node_key, signal_node_key, "self") not in existing_edges:
+            self.db.add(
+                EvidenceEdge(
+                    signal_id=signal.id,
+                    from_node_key=signal_node_key,
+                    to_node_key=signal_node_key,
+                    relation="self",
+                    weight=1.0,
+                )
+            )
 
     def source_type_counts(self, signal_id: int) -> list[tuple[str, int]]:
         stmt = (

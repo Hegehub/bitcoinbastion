@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import db_session, get_admin_user
@@ -54,7 +54,7 @@ def list_policy_executions(
 
 @router.get("/executions/summary", response_model=ResponseEnvelope[PolicyExecutionSummaryOut])
 def policy_execution_summary(
-    limit: int = 200,
+    limit: int = Query(default=200, ge=1, le=1000),
     _: User = Depends(get_admin_user),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[PolicyExecutionSummaryOut]:

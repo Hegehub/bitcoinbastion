@@ -103,3 +103,18 @@ class DeliveryRepository:
             return int(self.db.execute(stmt).scalar_one())
         except SQLAlchemyError:
             return 0
+
+    def top_failed_destinations_last_24h(self, limit: int = 5) -> list[tuple[str, int]]:
+        since = datetime.now(UTC) - timedelta(hours=24)
+        stmt = (
+            select(DeliveryLog.destination, func.count().label("failure_count"))
+            .where(DeliveryLog.sent_at >= since)
+            .where(DeliveryLog.delivery_status.in_(["failed", "error"]))
+            .group_by(DeliveryLog.destination)
+            .order_by(func.count().desc(), DeliveryLog.destination.asc())
+            .limit(limit)
+        )
+        try:
+            return [(destination, int(count)) for destination, count in self.db.execute(stmt).all()]
+        except SQLAlchemyError:
+            return []

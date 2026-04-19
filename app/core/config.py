@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     onchain_large_transfer_sats: int = Field(default=1_000_000_000, alias="ONCHAIN_LARGE_TRANSFER_SATS")
     bitcoin_esplora_url: str = Field(default="", alias="BITCOIN_ESPLORA_URL")
     bitcoin_provider_timeout_seconds: float = Field(default=6.0, alias="BITCOIN_PROVIDER_TIMEOUT_SECONDS")
+    citadel_score_weights_json: str = Field(default="", alias="CITADEL_SCORE_WEIGHTS_JSON")
+    citadel_external_signal_factors_json: str = Field(default="", alias="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON")
 
     @model_validator(mode="after")
     def validate_production_secret_guards(self) -> "Settings":

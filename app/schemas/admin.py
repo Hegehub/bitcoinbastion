@@ -46,10 +46,27 @@ class RecoveryIssueOut(BaseModel):
     detail: str
 
 
+class RecoveryHotspotOut(BaseModel):
+    issue_type: str
+    reference: str
+    failures_24h: int
+
+
+class RecoveryDrillOut(BaseModel):
+    drill_code: str
+    title: str
+    priority: Literal["low", "medium", "high"]
+    target_reference: str
+    run_within_hours: int
+    automation_ready: bool
+
+
 class RecoveryCheckOut(BaseModel):
     ok: bool
     severity: Literal["ok", "warning", "critical"]
     failed_jobs_24h: int
     failed_deliveries_24h: int
     issues: list[RecoveryIssueOut]
+    hotspots: list[RecoveryHotspotOut]
+    drills: list[RecoveryDrillOut]
     recommended_actions: list[str]

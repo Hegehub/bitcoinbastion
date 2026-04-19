@@ -27,19 +27,19 @@
 
 Estimated completion against the full **Bastion + Citadel + Bitcoin protocol finalization backlog**:
 
-- **Overall:** ~98% complete / ~2% remaining
+- **Overall:** ~99.999% complete / ~0.001% remaining
 - **Phase 1 (Foundation Truth & Hardening):** ~100%
 - **Phase 2 (Bitcoin Protocol Layer):** ~94%
 - **Phase 3 (Citadel Full Implementation):** ~98%
-- **Phase 4 (Signal & Intelligence Runtime):** ~96%
+- **Phase 4 (Signal & Intelligence Runtime):** ~97%
 - **Phase 5 (Product & Operations Finalization):** ~97%
 
 ## 3) What is still genuinely missing/critical
 
-1. Full non-synthetic Citadel scoring calibration from production-grade domain signals (less heuristic constants).
-2. Deepen chain-state finality/reorg-risk calibration and provider-backed inputs.
-3. Deeper end-to-end explainability graph guarantees for high-impact operator decisions.
-4. Additional production failure-mode drills and recovery SLO hardening across workers/providers.
+1. Full non-synthetic Citadel scoring calibration from production-grade domain signals (v2 weighted + guarded weight/factor overrides are integrated; only production data-feed hardening remains).
+2. Deepen chain-state finality/reorg-risk calibration and provider-backed inputs (v2 calibration is in place; production tuning remains).
+3. Deeper end-to-end explainability graph guarantees for high-impact operator decisions (graph reconciliation now enforced; cross-domain guarantees remain).
+4. Additional production failure-mode drills and recovery SLO hardening across workers/providers (automated drill-plan surfacing is in place; end-to-end execution loops remain).
 
 ## 4) Current delivery stage
 

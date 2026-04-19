@@ -64,3 +64,18 @@ class JobRunRepository:
             return int(self.db.execute(stmt).scalar_one())
         except SQLAlchemyError:
             return 0
+
+    def top_failed_tasks_last_24h(self, limit: int = 5) -> list[tuple[str, int]]:
+        since = datetime.now(UTC) - timedelta(hours=24)
+        stmt = (
+            select(JobRun.task_name, func.count().label("failure_count"))
+            .where(JobRun.started_at >= since)
+            .where(JobRun.status.in_(["failed", "error"]))
+            .group_by(JobRun.task_name)
+            .order_by(func.count().desc(), JobRun.task_name.asc())
+            .limit(limit)
+        )
+        try:
+            return [(task_name, int(count)) for task_name, count in self.db.execute(stmt).all()]
+        except SQLAlchemyError:
+            return []

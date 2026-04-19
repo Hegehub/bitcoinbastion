@@ -23,16 +23,21 @@ class ChainStateService:
     ) -> ChainStateEvaluation:
         headers = headers_height if headers_height is not None else tip_height
         confirmation_depth = max(0, (tip_height - observed_block_height) + 1)
-        header_lag = max(0, headers - tip_height)
+        header_tip_gap = abs(headers - tip_height)
+        header_observed_gap = abs(headers - observed_block_height)
 
-        depth_risk = max(0.0, 1.0 - min(1.0, confirmation_depth / 6.0))
-        lag_risk = min(1.0, header_lag / 6.0)
-        reorg_risk = round(min(1.0, (depth_risk * 0.85) + (lag_risk * 0.15)), 4)
-        finality = round(max(0.0, min(1.0, (1.0 - reorg_risk) * min(1.0, confirmation_depth / 6.0))), 4)
+        depth_risk = max(0.0, 1.0 - min(1.0, confirmation_depth / 8.0))
+        header_tip_risk = min(1.0, header_tip_gap / 4.0)
+        header_observed_risk = min(1.0, header_observed_gap / 8.0)
+        reorg_risk = round(
+            min(1.0, (depth_risk * 0.7) + (header_tip_risk * 0.2) + (header_observed_risk * 0.1)),
+            4,
+        )
+        finality = round(max(0.0, min(1.0, (1.0 - reorg_risk) * min(1.0, confirmation_depth / 8.0))), 4)
 
-        if finality >= 0.85:
+        if finality >= 0.82:
             band = "strong"
-        elif finality >= 0.55:
+        elif finality >= 0.5:
             band = "moderate"
         else:
             band = "weak"
@@ -54,8 +59,12 @@ class ChainStateService:
                 "derived": {
                     "confirmation_depth": confirmation_depth,
                     "depth_risk_component": round(depth_risk, 4),
-                    "header_lag_blocks": header_lag,
+                    "header_tip_gap_blocks": header_tip_gap,
+                    "header_observed_gap_blocks": header_observed_gap,
+                    "header_tip_risk_component": round(header_tip_risk, 4),
+                    "header_observed_risk_component": round(header_observed_risk, 4),
                 },
-                "scoring": "finality=(1-reorg_risk)*min(1,confirmations/6)",
+                "scoring": "finality=(1-reorg_risk)*min(1,confirmations/8)",
+                "calibration_version": "chain_state_v2",
             },
         )

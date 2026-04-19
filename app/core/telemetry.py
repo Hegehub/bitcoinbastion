@@ -16,6 +16,11 @@ DELIVERY_PUBLISH_EVENTS = Counter(
     "Delivery publish events by status/reason",
     ["status", "reason"],
 )
+ONCHAIN_PROVIDER_PROBE_EVENTS = Counter(
+    "onchain_provider_probe_events_total",
+    "On-chain provider probe outcomes",
+    ["outcome"],
+)
 
 
 class MetricsMiddleware(BaseHTTPMiddleware):
@@ -58,3 +63,7 @@ def increment_task_failure(*, task_name: str) -> None:
 
 def increment_delivery_publish_event(*, status: str, reason: str = "none") -> None:
     DELIVERY_PUBLISH_EVENTS.labels(status=status, reason=reason).inc()
+
+
+def increment_onchain_provider_probe_event(*, outcome: str) -> None:
+    ONCHAIN_PROVIDER_PROBE_EVENTS.labels(outcome=outcome).inc()
