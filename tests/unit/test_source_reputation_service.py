@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -26,7 +26,7 @@ def test_refresh_source_reputation_profiles() -> None:
                     title="A",
                     url="https://example.com/a",
                     content_hash="h1",
-                    published_at=datetime.utcnow(),
+                    published_at=datetime.now(UTC),
                     credibility_score=0.8,
                     impact_score=0.6,
                 ),
@@ -35,7 +35,7 @@ def test_refresh_source_reputation_profiles() -> None:
                     title="B",
                     url="https://example.com/b",
                     content_hash="h2",
-                    published_at=datetime.utcnow(),
+                    published_at=datetime.now(UTC),
                     credibility_score=0.7,
                     impact_score=0.5,
                 ),

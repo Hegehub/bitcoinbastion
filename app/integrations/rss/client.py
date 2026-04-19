@@ -33,7 +33,21 @@ class RSSClient:
                 content = str(entry.summary)
             published = datetime.now(UTC)
             if hasattr(entry, "published_parsed") and entry.published_parsed:
-                published = datetime(*entry.published_parsed[:6], tzinfo=UTC)
+                year = int(entry.published_parsed.tm_year)
+                month = int(entry.published_parsed.tm_mon)
+                day = int(entry.published_parsed.tm_mday)
+                hour = int(entry.published_parsed.tm_hour)
+                minute = int(entry.published_parsed.tm_min)
+                second = int(entry.published_parsed.tm_sec)
+                published = datetime(
+                    year,
+                    month,
+                    day,
+                    hour,
+                    minute,
+                    second,
+                    tzinfo=UTC,
+                )
             items.append(
                 RSSItem(
                     title=str(getattr(entry, "title", "")),

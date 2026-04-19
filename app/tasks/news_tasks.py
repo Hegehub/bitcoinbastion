@@ -1,3 +1,5 @@
+from typing import Any
+
 from sqlalchemy import select
 
 from app.db.models.news import NewsSource
@@ -9,14 +11,14 @@ from app.services.ingestion.news_ingestion import NewsIngestionService
 from app.tasks.celery_app import celery_app
 
 
-@celery_app.task(
+@celery_app.task(  # type: ignore[untyped-decorator]
     name="news.fetch",
     bind=True,
     autoretry_for=(Exception,),
     retry_backoff=True,
     retry_kwargs={"max_retries": 3},
 )
-def fetch_news_task(self) -> dict[str, int]:
+def fetch_news_task(self: Any) -> dict[str, int]:
     with SessionLocal() as db:
         tracker = JobTrackingService(JobRunRepository(db))
         with tracker.track("news.fetch"):

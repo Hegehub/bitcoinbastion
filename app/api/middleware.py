@@ -1,9 +1,10 @@
 import time
 import uuid
 from collections import defaultdict
+from typing import cast
 
 from redis import RedisError
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
@@ -13,7 +14,7 @@ from app.schemas.error import ErrorEnvelope, ErrorPayload
 
 
 class RequestIDMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):  # type: ignore[override]
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
         request.state.request_id = request_id
         response: Response = await call_next(request)
@@ -24,7 +25,7 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
 class RateLimitMiddleware(BaseHTTPMiddleware):
     _fallback_buckets: dict[str, int] = defaultdict(int)
 
-    async def dispatch(self, request: Request, call_next):  # type: ignore[override]
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         settings = get_settings()
         now_min = int(time.time() // 60)
         path = request.url.path
@@ -34,7 +35,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         limited = False
         try:
             redis_client = get_redis_client()
-            value = redis_client.incr(key)
+            value = cast(int, redis_client.incr(key))
             if value == 1:
                 redis_client.expire(key, 70)
             limited = value > settings.rate_limit_per_minute
