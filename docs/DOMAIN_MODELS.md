@@ -27,6 +27,9 @@ Below is the current implemented model baseline aligned to `app/db/models`.
 - `EvidenceNode`
 - `EvidenceEdge`
 
+## Citadel
+- `CitadelAssessment`
+
 ## Wallet / sovereignty baseline
 - `WalletProfile`
 - `WalletHealthReport`
@@ -45,5 +48,6 @@ Below is the current implemented model baseline aligned to `app/db/models`.
 - `JobRun`
 
 ## Notes
-- The model graph already supports first-level explainability and policy execution traceability.
+- The model graph supports first-level explainability and policy execution traceability.
+- Citadel persistence is currently assessment-centric (`citadel_assessments`), not full sovereignty graph state storage.
 - Future iterations should extend provenance depth, sovereignty graph snapshots, and richer privacy telemetry.

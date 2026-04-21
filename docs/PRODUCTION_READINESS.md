@@ -1,6 +1,9 @@
 # PRODUCTION READINESS CHECKLIST
 
-This checklist is the deployment baseline for Bitcoin Bastion environments.
+This checklist is a release-time gate for Bitcoin Bastion environments.
+
+> Use this as an execution checklist per release/deploy cycle.
+> Do not treat checked items as permanently true across future releases.
 
 ## Runtime and infrastructure
 - [ ] Docker image builds reproducibly.
@@ -15,8 +18,8 @@ This checklist is the deployment baseline for Bitcoin Bastion environments.
 - [ ] Sensitive actions emit audit logs.
 
 ## Data and schema safety
-- [x] Alembic head is current and migration chain validated (CI `migration-smoke` job).
-- [x] Migration reproducibility check passes (CI runs `scripts/check_alembic_reproducibility.sh`).
+- [ ] Alembic head is current and migration chain validated.
+- [ ] Migration reproducibility check passes (for current release branch).
 - [ ] Backward compatibility assessed for schema/API changes.
 
 ## Reliability
@@ -34,12 +37,12 @@ This checklist is the deployment baseline for Bitcoin Bastion environments.
 
 ## Quality gates
 - [ ] Lint + format checks pass.
-- [x] Unit and integration tests pass for modified scope (validated in CI/local runs).
-- [x] Contract tests pass for provider adapters touched by release (CI `contracts` job).
-- [x] Release notes include operationally relevant changes (`docs/RELEASE_NOTES_TEMPLATE.md`).
+- [ ] Unit and integration tests pass for modified scope.
+- [ ] Contract tests pass for provider adapters touched by release.
+- [ ] Release notes include operationally relevant changes.
 
 ## Operations
-- [x] Rollback plan documented (`docs/OPERATIONS_RUNBOOK.md`).
-- [x] On-call runbook updated for new background jobs (`docs/OPERATIONS_RUNBOOK.md`).
-- [x] Alert thresholds tuned for new metrics (`docs/ALERT_THRESHOLDS.md`).
-- [x] Post-deploy verification steps documented (`docs/OPERATIONS_RUNBOOK.md`).
+- [ ] Rollback plan documented.
+- [ ] On-call runbook updated for new background jobs.
+- [ ] Alert thresholds tuned for new metrics.
+- [ ] Post-deploy verification steps documented.
