@@ -31,7 +31,7 @@ def generate_signals_for_sources(db: Session, *, limit_per_source: int = 25) -> 
         generated += 1
 
     for event in OnchainRepository(db).recent(limit=limit_per_source):
-        source_id = str(event.id)
+        source_id = SignalEngine.onchain_source_id(event)
         if signal_repo.has_source_link(source_type="onchain_event", source_id=source_id):
             continue
         signal = engine.from_onchain_event(event)

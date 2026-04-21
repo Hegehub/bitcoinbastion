@@ -61,3 +61,44 @@ def test_generate_signals_for_sources_persists_and_links_news_and_onchain() -> N
 
         generated_second_run = generate_signals_for_sources(db, limit_per_source=10)
         assert generated_second_run == 0
+
+
+def test_generate_signals_for_sources_deduplicates_onchain_identity() -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
+    Base.metadata.create_all(bind=engine)
+
+    with Session(engine) as db:
+        now = datetime.now(UTC)
+        db.add(
+            OnchainEvent(
+                event_type="large_transfer",
+                txid="dup-tx-1",
+                address="bc1qdup",
+                value_sats=50_000_000,
+                significance_score=0.91,
+                confidence_score=0.9,
+                block_height=900_000,
+                observed_at=now,
+            )
+        )
+        db.add(
+            OnchainEvent(
+                event_type="large_transfer",
+                txid="dup-tx-1",
+                address="bc1qdup",
+                value_sats=50_000_000,
+                significance_score=0.91,
+                confidence_score=0.9,
+                block_height=900_000,
+                observed_at=now,
+            )
+        )
+        db.commit()
+
+        generated = generate_signals_for_sources(db, limit_per_source=10)
+        assert generated == 1
+
+        links = list(db.execute(select(SignalSourceLink)).scalars())
+        onchain_links = [item for item in links if item.source_type == "onchain_event"]
+        assert len(onchain_links) == 1
+        assert onchain_links[0].source_id.startswith("dup-tx-1:large_transfer:900000")
