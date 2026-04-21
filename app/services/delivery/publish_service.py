@@ -1,5 +1,6 @@
 import structlog
 from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 
 from app.core.config import get_settings
 from app.core.telemetry import increment_delivery_publish_event
@@ -34,6 +35,24 @@ class SignalPublishService:
     def publish_pending(self, limit: int = 20) -> int:
         return self.publish_pending_with_stats(limit=limit).published
 
+    def _retry_guard(self, *, signal_id: int, destination: str) -> tuple[bool, str | None]:
+        settings = get_settings()
+        attempts, last_failed_at = self.deliveries.failed_attempts_and_last_failed_at(
+            signal_id=signal_id,
+            destination=destination,
+        )
+        max_attempts = max(1, settings.delivery_max_failed_attempts_per_signal_destination)
+        if attempts >= max_attempts:
+            return False, "retry_limit_exceeded"
+
+        cooldown_seconds = max(0, settings.delivery_retry_cooldown_seconds)
+        if cooldown_seconds > 0 and last_failed_at is not None:
+            retry_after = last_failed_at + timedelta(seconds=cooldown_seconds)
+            if retry_after > datetime.now(UTC):
+                return False, "retry_cooldown_active"
+
+        return True, None
+
     def publish_pending_with_stats(self, limit: int = 20) -> PublishResult:
         settings = get_settings()
         pending_signals = self.signals.unpublished(limit=limit)
@@ -56,6 +75,20 @@ class SignalPublishService:
             if self.deliveries.already_sent(signal_id=signal.id, destination=destination):
                 increment_delivery_publish_event(status="skipped", reason="duplicate_already_sent")
                 self.signals.mark_published(signal.id)
+                skipped += 1
+                continue
+
+            can_attempt, skip_reason = self._retry_guard(
+                signal_id=signal.id, destination=destination
+            )
+            if not can_attempt:
+                self.logger.warning(
+                    "signal_publish.skipped_retry_guard",
+                    signal_id=signal.id,
+                    destination=destination,
+                    reason=skip_reason,
+                )
+                increment_delivery_publish_event(status="skipped", reason=str(skip_reason))
                 skipped += 1
                 continue
 
