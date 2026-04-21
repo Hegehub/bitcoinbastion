@@ -2,92 +2,108 @@
 
 Audit date: **2026-04-21**
 
-This status file is intentionally evidence-driven from the current repository state under:
-- docs (`README.md`, `docs/*.md`)
-- runtime/API (`app/main.py`, `app/api/v1/*`)
-- models/migrations (`app/db/models/*`, `app/db/migrations/versions/*`)
-- protocol/citadel services (`app/services/citadel/*`, `app/services/utxo/*`, `app/services/mempool/*`, `app/services/script/*`)
+This status document is evidence-based from repository code/docs at audit time.
 
 ---
 
-## 1) Layer classification (IMPLEMENTED / BASELINE / SYNTHETIC / MISSING / BROKEN)
+## Step 1 — Fresh repository audit
 
-| Layer | Classification | Why |
-|---|---|---|
-| Bastion API/platform layer | **IMPLEMENTED** | Main app wiring, middleware, metrics attachment, and route modules are present and active. |
-| Bastion domain/API coverage depth | **BASELINE** | Core endpoints exist, but docs contract coverage is incomplete and several surfaces are lightly modeled. |
-| Citadel endpoints + persistence lifecycle | **IMPLEMENTED** | Assessment endpoints, caching/persistence path (`citadel_assessments`) and read/write flow are in place. |
-| Citadel scoring semantics | **SYNTHETIC** | Scoring relies on heuristics/constants and owner-id-dependent branches rather than production evidence pipelines. |
-| Citadel dependency/simulation realism | **SYNTHETIC** | Graph and simulation services return deterministic demo-style structures/rules. |
-| Bitcoin protocol service layer (UTXO/mempool/script) | **BASELINE** | Functional analyzers and schemas exist, but they are heuristic/snapshot driven and not full node-state engines. |
-| Migration ↔ model table coverage | **IMPLEMENTED** | 27 model tables and 27 Alembic-created tables align; no orphan or missing tables found. |
-| Reorg/finality/chain-state claims | **BASELINE** | Chain-state endpoint/service exists, but includes fallback defaults and optional provider probe behavior. |
+### Bastion core
+- **API platform:** **IMPLEMENTED**
+- **Domain execution depth:** **BASELINE**
+- **Reasoning:** FastAPI routing/middleware/metrics/auth/admin/observability are wired and operational at baseline depth; some domain features remain partial.
 
----
+### Citadel
+- **API + persistence lifecycle:** **IMPLEMENTED**
+- **Scoring/graph/simulation realism:** **SYNTHETIC**
+- **Reasoning:** Endpoint surface and assessment persistence exist; several outputs are deterministic heuristic placeholders.
 
-## 2) Doc ↔ code mismatches (current)
+### Bitcoin protocol-aware layers
+- **UTXO/mempool/script/descriptor services:** **BASELINE**
+- **Chain-state/finality/reorg maturity:** **BASELINE**
+- **Reasoning:** analyzers and route exposure exist; calibration/edge-case depth remains incomplete.
 
-### A) API contract drift
+### Migrations/schema truth
+- **Table coverage:** **IMPLEMENTED**
+- **Reasoning:** SQLAlchemy model tables and Alembic-created tables match (27/27, no missing/extra).
 
-`docs/API_CONTRACTS.md` omits currently implemented endpoints:
-- `GET /api/v1/onchain/state`
-- `GET /api/v1/entities/watchlist`
-- `GET /api/v1/policy/executions/summary`
-- `POST /api/v1/wallet/profiles/{wallet_profile_id}/health`
-- `GET /api/v1/wallet/profiles/{wallet_profile_id}/health/reports`
-
-### B) Response envelope overstatement
-
-`docs/API_CONTRACTS.md` says “Most endpoints return ResponseEnvelope[T]”, but specific health/auth routes are not wrapped and return direct models:
-- `GET /api/v1/health`, `/live`, `/ready` return `HealthOut`
-- `POST /api/v1/auth/register` returns `UserOut`
-- `POST /api/v1/auth/login` returns `TokenResponse`
-
-This is acceptable as an exception pattern, but should be explicitly documented.
-
-### C) Domain model documentation drift
-
-`docs/DOMAIN_MODELS.md` does not list `CitadelAssessment`, even though it is part of `app/db/models/__init__.py` and has a dedicated migration lineage.
-
-### D) README optimism vs runtime reality
-
-`README.md` still presents broad capability framing (“interprets Bitcoin reality”, sovereignty survivability, etc.). Current Citadel/protocol implementations are partly synthetic/baseline and should be described as such to avoid overclaiming.
+### Runtime truth snapshot
+- **Signal pipeline:** **BASELINE** (implemented scoring paths from news/on-chain with explainability payloads).
+- **Telegram runtime:** **BASELINE** (implemented client/retries/publish flow, runtime depends on token/destination env).
+- **Observability/admin runtime surfaces:** **IMPLEMENTED** for endpoint exposure, **BASELINE** for production-depth operational semantics.
 
 ---
 
-## 3) Migration ↔ model audit
+## Step 2 — Documentation drift report
 
-Result from direct repository audit:
-- Model tables discovered from SQLAlchemy metadata: **27**
-- `op.create_table(...)` occurrences in Alembic revisions: **27 unique**
-- Model tables missing in migrations: **0**
-- Migration-created tables missing in models: **0**
+### Outdated / contradicted docs
+1. `README.md` previously stated key protocol-aware services as missing while services exist (UTXO/mempool/script/descriptor).
+2. `README.md` previously duplicated the **Core documentation** section multiple times.
+3. `docs/API_CONTRACTS.md` previously omitted implemented endpoints:
+   - `GET /api/v1/onchain/state`
+   - `GET /api/v1/entities/watchlist`
+   - `GET /api/v1/policy/executions/summary`
+   - `POST /api/v1/wallet/profiles/{wallet_profile_id}/health`
+   - `GET /api/v1/wallet/profiles/{wallet_profile_id}/health/reports`
+4. `docs/API_CONTRACTS.md` previously did not explicitly document non-envelope route exceptions (health/auth direct models).
+5. `docs/DOMAIN_MODELS.md` previously omitted `CitadelAssessment`.
 
-Conclusion:
-- **Table-level migration/model coverage is IMPLEMENTED.**
-- This audit does **not** claim perfect column/default/constraint parity beyond table presence.
-
----
-
-## 4) Honest progress percentages (evidence-based)
-
-These percentages reflect **production-readiness toward stated docs ambitions**, not mere file existence.
-
-- **Bastion API/platform core:** **86%**
-  - Strong routing/foundation present; some contract documentation drift remains.
-- **Bitcoin protocol intelligence layer (UTXO/mempool/script + chain-state):** **61%**
-  - Baseline analyzers implemented; depth and real-world calibration are incomplete.
-- **Citadel sovereignty layer:** **58%**
-  - Endpoint surface and persistence exist; scoring/graph/simulation logic is still significantly synthetic.
-- **Model/migration governance:** **92%**
-  - Table coverage is complete; deeper DDL/operational drift checks still separate.
-- **Overall (repo truth vs target narrative):** **67%**
+### Missing docs files
+- None identified for core surfaces requested in ENV-01.
 
 ---
 
-## 5) Priority cleanup list
+## Step 3 — Progress baseline (honest percentages)
 
-1. Update `docs/API_CONTRACTS.md` to include all currently exposed endpoints and explicit non-envelope exceptions.
-2. Update `docs/DOMAIN_MODELS.md` to include `CitadelAssessment`.
-3. Add explicit “synthetic/baseline” labels in `README.md` and architecture docs for Citadel/protocol components.
-4. Add automated contract extraction or route-vs-doc validation in CI to prevent drift recurrence.
+These represent production-readiness toward sovereign-grade goals, not mere file presence.
+
+- **Bastion core:** **84%**
+- **Citadel:** **57%**
+- **Bitcoin protocol maturity:** **62%**
+- **Explainability E2E:** **63%**
+- **Operations hardening:** **66%**
+- **Overall finalization:** **66%**
+
+---
+
+## Step 4 — Safe phased execution plan
+
+### Phase 1 — Truth and drift fixes
+- Keep README/API/domain docs synchronized with implemented routes/models/services.
+- Maintain evidence-based status language; avoid synthetic-overclaiming.
+- Add automated route-vs-contract and model-vs-doc drift checks in CI.
+
+### Phase 2 — Runtime hardening
+- Harden Telegram and delivery workflows with clearer failure visibility and retry observability.
+- Expand admin/observability semantics for production incident triage.
+- Validate dependency readiness in deployment runbooks and checks.
+
+### Phase 3 — Protocol depth
+- Improve mempool/fee/UTXO calibration and edge-case handling.
+- Deepen chain-state reorg/finality modeling with higher-fidelity provider data.
+
+### Phase 4 — Citadel realism
+- Replace synthetic scoring constants with evidence-backed weighted inputs.
+- Expand sovereignty dependency graph realism and scenario persistence.
+- Tighten cross-domain explainability linkage.
+
+### Phase 5 — Final production readiness
+- Close-loop SLO/runbook drills.
+- Add regression suites for migration/schema drift and explainability guarantees.
+- Gate release promotion on objective readiness checks.
+
+---
+
+## Step 5 — Highest-risk truth issues addressed first
+
+1. **Migration/model truthfulness re-verified** (27/27 table coverage).
+2. **README correction + duplication cleanup** completed.
+3. **API/docs mismatch correction** completed.
+4. **Domain model docs correction** completed.
+
+---
+
+## Verification notes
+
+- Alembic remains the schema-evolution source of truth; deployment should not rely on `create_all()`.
+- Current schema audit is table-level; detailed default/constraint parity should remain a tracked follow-up.
