@@ -1,4 +1,3 @@
-
 # 🏰 Bitcoin Bastion
 
 > **Sovereign Intelligence Layer for Bitcoin**
@@ -18,7 +17,7 @@ It transforms raw network state into:
 
 ---
 
-> Most systems *consume Bitcoin data*.  
+> Most systems *consume Bitcoin data*.
 > Bitcoin Bastion **interprets Bitcoin reality**.
 
 ---
@@ -27,11 +26,11 @@ It transforms raw network state into:
 
 Bitcoin users, treasuries, and operators face a fragmented landscape:
 
-- on-chain data is noisy and hard to interpret  
-- wallet structure risks are invisible  
-- treasury operations are manual and error-prone  
-- privacy exposure is poorly understood  
-- recovery readiness is rarely verified  
+- on-chain data is noisy and hard to interpret
+- wallet structure risks are invisible
+- treasury operations are manual and error-prone
+- privacy exposure is poorly understood
+- recovery readiness is rarely verified
 - no unified system exists for **sovereignty assurance**
 
 ---
@@ -40,26 +39,26 @@ Bitcoin users, treasuries, and operators face a fragmented landscape:
 
 Bitcoin Bastion provides a unified system that:
 
-### 1. Understands Bitcoin state
-- on-chain activity  
-- news and narratives  
-- entity behavior  
+### 1) Understands Bitcoin state
+- on-chain activity
+- news and narratives
+- entity behavior
 
-### 2. Interprets it
-- explainable signal generation  
-- risk scoring  
-- contextual recommendations  
+### 2) Interprets it
+- explainable signal generation
+- risk scoring
+- contextual recommendations
 
-### 3. Enables action
-- treasury workflows  
-- policy enforcement  
-- operational visibility  
+### 3) Enables action
+- treasury workflows
+- policy enforcement
+- operational visibility
 
-### 4. Ensures survivability (Citadel)
-- recovery readiness  
-- dependency mapping  
-- disaster simulation  
-- repair planning  
+### 4) Ensures survivability (Citadel)
+- recovery readiness
+- dependency mapping
+- disaster simulation
+- repair planning
 
 ---
 
@@ -93,7 +92,7 @@ Delivery Layer
   - API
   - Telegram
   - Operator Tools
-````
+```
 
 ---
 
@@ -103,10 +102,10 @@ Citadel is the defining layer of the system.
 
 It answers critical questions:
 
-* Can your Bitcoin be recovered?
-* What dependencies can break your system?
-* What happens under failure conditions?
-* What must be fixed immediately?
+- Can your Bitcoin be recovered?
+- What dependencies can break your system?
+- What happens under failure conditions?
+- What must be fixed immediately?
 
 ---
 
@@ -118,194 +117,161 @@ It answers critical questions:
 ## ⚙️ Core Capabilities
 
 ### Intelligence
-
-* News ingestion and reputation tracking
-* Explainable signal generation
-* Entity tracking and watchlists
+- News ingestion and reputation tracking
+- Explainable signal generation
+- Entity tracking and watchlists
 
 ### On-chain Monitoring
-
-* Transaction activity
-* Large transfer detection
-* Event-based signals
+- Transaction activity
+- Large transfer detection
+- Event-based signals
+- Chain-state baseline endpoint (`/api/v1/onchain/state`)
 
 ### Wallet & Treasury
-
-* Wallet health evaluation
-* Treasury request workflows
-* Policy-based approvals
+- Wallet health evaluation
+- Treasury request workflows
+- Policy-based approvals
+- UTXO structure analysis (baseline)
+- Descriptor awareness checks (baseline)
 
 ### Policy & Privacy
-
-* Policy simulation and enforcement
-* Privacy risk scoring
+- Policy simulation and enforcement
+- Privacy risk scoring
 
 ### Observability
-
-* Metrics and health probes
-* Job tracking and audit logs
+- Metrics and health probes
+- Job tracking and audit logs
 
 ### Sovereignty (Citadel)
-
-* Assessment scoring
-* Dependency graph
-* Recovery readiness
-* Disaster simulations
-* Inheritance verification
-* Repair plans
+- Assessment scoring (baseline with synthetic components)
+- Dependency graph (synthetic/baseline)
+- Recovery readiness
+- Disaster simulations (synthetic/baseline)
+- Inheritance verification (baseline)
+- Repair plans (baseline)
 
 ---
 
 ## 🧰 Technology
 
-* **Backend**: FastAPI
-* **Language**: Python 3.12
-* **Database**: PostgreSQL
-* **ORM**: SQLAlchemy 2.x
-* **Queue**: Celery + Redis
-* **Migrations**: Alembic
-* **Auth**: JWT + Argon2
-* **Metrics**: Prometheus
-* **Telegram**: aiogram
+- **Backend**: FastAPI
+- **Language**: Python 3.12
+- **Database**: PostgreSQL
+- **ORM**: SQLAlchemy 2.x
+- **Queue**: Celery + Redis
+- **Migrations**: Alembic
+- **Auth**: JWT + Argon2
+- **Metrics**: Prometheus
+- **Telegram**: aiogram + Telegram Bot API
 
 ---
 
 ## 📊 Roadmap & Execution Status
 
 > ✔ = Implemented
-> ❌ = Not yet complete
-
----
+> ◐ = Baseline / partial
+> ◌ = Synthetic placeholder behavior present
+> ❌ = Missing
 
 ### 🧱 Foundation
 
-* ✔ Modular FastAPI backend
-* ✔ Database models & repositories
-* ✔ Auth system (JWT)
-* ✔ Middleware / logging / metrics
-* ✔ Docker infrastructure
-* ❌ Full migration consistency enforcement
-* ❌ CI-level schema validation
-
----
+- ✔ Modular FastAPI backend
+- ✔ Database models & repositories
+- ✔ Auth system (JWT)
+- ✔ Middleware / logging / metrics
+- ✔ Docker infrastructure
+- ◐ Full migration consistency enforcement
+- ◐ CI-level schema validation hardening
 
 ### 📰 Intelligence Layer
 
-* ✔ News ingestion
-* ✔ Signal engine (baseline)
-* ✔ Explainability models
-* ❌ Full signal pipeline maturity
-* ❌ Evidence graph depth
-
----
+- ✔ News ingestion
+- ◐ Signal engine (baseline)
+- ◐ Explainability models (baseline graph depth)
+- ◐ Full signal pipeline maturity
 
 ### ⛓ On-chain Layer
 
-* ✔ On-chain ingestion baseline
-* ✔ Provider abstraction
-* ❌ Real Bitcoin node integration
-* ❌ Chain-state awareness
-* ❌ Reorg/finality modeling
-
----
+- ✔ On-chain ingestion baseline
+- ✔ Provider abstraction
+- ◐ Chain-state awareness endpoint + service
+- ◐ Reorg/finality modeling calibration
+- ❌ Proven production-grade full-node depth
 
 ### 👛 Wallet & Treasury
 
-* ✔ Wallet health evaluation
-* ✔ Treasury workflows
-* ✔ Policy engine
-* ✔ Privacy scoring
-* ❌ UTXO intelligence
-* ❌ Descriptor awareness
-* ❌ Spend simulation
-
----
+- ✔ Wallet health evaluation
+- ✔ Treasury workflows
+- ✔ Policy engine
+- ✔ Privacy scoring
+- ◐ UTXO intelligence
+- ◐ Descriptor awareness
+- ◐ Spend simulation depth
 
 ### 🏰 Citadel (Sovereignty)
 
-* ✔ Citadel API surface
-* ✔ Assessment baseline
-* ✔ Recovery & simulation endpoints
-* ❌ Persistent sovereignty models
-* ❌ Recovery proof engine
-* ❌ Deterministic simulations
-* ❌ Full dependency graph
-* ❌ Real scoring system
-
----
+- ✔ Citadel API surface
+- ✔ Assessment persistence lifecycle
+- ◐ Recovery/inheritance/policy checks
+- ◌ Dependency graph realism
+- ◌ Disaster simulation realism
+- ◌ Scoring realism/calibration
 
 ### ⚡ Bitcoin-native Depth
 
-* ❌ UTXO Engine
-* ❌ Mempool Engine
-* ❌ Fee market modeling
-* ❌ Script awareness
-* ❌ Descriptor system
-* ❌ Chain state engine
-
----
+- ◐ UTXO engine
+- ◐ Mempool analyzer
+- ◐ Fee market modeling
+- ◐ Script awareness
+- ◐ Descriptor system
+- ◐ Chain-state engine
 
 ### 📡 Delivery & Ops
 
-* ✔ Admin endpoints
-* ✔ Job tracking
-* ✔ Observability snapshot
-* ❌ Telegram runtime (full)
-* ❌ Delivery orchestration
-* ❌ Operator tooling
+- ✔ Admin endpoints
+- ✔ Job tracking
+- ✔ Observability snapshot
+- ◐ Telegram runtime (config + external dependency gated)
+- ◐ Delivery orchestration
+- ❌ Operator tooling UI
 
 ---
 
 ## 🧠 Design Principles
 
 ### Bitcoin-native
-
-The system is built on:
-
-* UTXO model
-* transaction structure
-* fee market dynamics
-* script system
-
----
+- UTXO model
+- transaction structure
+- fee market dynamics
+- script system
 
 ### Explainability-first
-
-All outputs must:
-
-* include reasoning
-* show evidence
-* provide confidence
-
----
+All outputs should:
+- include reasoning
+- show evidence
+- provide confidence
 
 ### Sovereignty-first
-
 The system assumes:
-
-* no custody
-* no trust
-* no assumptions about user setup
-
----
+- no custody
+- no trust
+- no assumptions about user setup
 
 ### Modular evolution
-
 Each layer can evolve independently:
-
-* ingestion
-* signals
-* policy
-* Citadel
+- ingestion
+- signals
+- policy
+- Citadel
 
 ---
 
 ## 🔐 Security Model
 
-* No private keys stored
-* No seed phrase handling
-* Authenticated API access
-* Role-based access control (baseline)
+- No private keys stored
+- No seed phrase handling
+- Authenticated API access
+- Role-based access control (baseline)
 
 ---
 
@@ -317,45 +283,34 @@ docker compose up --build
 
 Docs:
 
-```
+```text
 http://localhost:8000/docs
 ```
 
 Metrics:
 
-```
+```text
 http://localhost:8000/metrics
 ```
 
 ---
 
-## 🚧 Status
+## 🚧 Current Reality
 
 Bitcoin Bastion is currently:
 
-* a **strong backend platform**
-* a **functional intelligence system**
-* an **early-stage sovereignty engine**
+- a **strong backend platform**
+- a **functional intelligence baseline**
+- an **early-stage sovereignty engine**
 
 It is not yet:
 
-* fully Bitcoin-protocol-aware
-* fully deterministic
-* fully production-hardened
+- fully deterministic for Citadel scoring/graph/simulation
+- fully production-hardened for all failure modes
+- fully validated for deep protocol edge cases
 
 ---
 
-## 🧭 Vision
-
-Bitcoin Bastion evolves into:
-
-> A system that understands Bitcoin
->
-> and ensures you survive it.
-
----
-
-
 ## Core documentation
 - `docs/SPEC.md`
 - `docs/SYSTEM_PROMPT.md`
@@ -365,61 +320,7 @@ Bitcoin Bastion evolves into:
 - `docs/API_CONTRACTS.md`
 - `docs/CODEX_WORKFLOW.md`
 - `docs/PRODUCTION_READINESS.md`
-
-
-## Core documentation
-- `docs/SPEC.md`
-- `docs/SYSTEM_PROMPT.md`
-- `docs/ARCHITECTURE.md`
-- `docs/ROADMAP.md`
-- `docs/DOMAIN_MODELS.md`
-- `docs/API_CONTRACTS.md`
-- `docs/CODEX_WORKFLOW.md`
-- `docs/PRODUCTION_READINESS.md`
-
-
-## Core documentation
-- `docs/SPEC.md`
-- `docs/SYSTEM_PROMPT.md`
-- `docs/ARCHITECTURE.md`
-- `docs/ROADMAP.md`
-- `docs/DOMAIN_MODELS.md`
-- `docs/API_CONTRACTS.md`
-- `docs/CODEX_WORKFLOW.md`
-- `docs/PRODUCTION_READINESS.md`
-
-
-## Core documentation
-- `docs/SPEC.md`
-- `docs/SYSTEM_PROMPT.md`
-- `docs/ARCHITECTURE.md`
-- `docs/ROADMAP.md`
-- `docs/DOMAIN_MODELS.md`
-- `docs/API_CONTRACTS.md`
-- `docs/CODEX_WORKFLOW.md`
-- `docs/PRODUCTION_READINESS.md`
-
-
-## Core documentation
-- `docs/SPEC.md`
-- `docs/SYSTEM_PROMPT.md`
-- `docs/ARCHITECTURE.md`
-- `docs/ROADMAP.md`
-- `docs/DOMAIN_MODELS.md`
-- `docs/API_CONTRACTS.md`
-- `docs/CODEX_WORKFLOW.md`
-- `docs/PRODUCTION_READINESS.md`
-
-
-## Core documentation
-- `docs/SPEC.md`
-- `docs/SYSTEM_PROMPT.md`
-- `docs/ARCHITECTURE.md`
-- `docs/ROADMAP.md`
-- `docs/DOMAIN_MODELS.md`
-- `docs/API_CONTRACTS.md`
-- `docs/CODEX_WORKFLOW.md`
-- `docs/PRODUCTION_READINESS.md`
+- `docs/STATUS.md`
 
 ## API groups
 - health
@@ -437,6 +338,7 @@ Bitcoin Bastion evolves into:
 - privacy
 - education
 - observability
+- citadel
 
 ## Operations endpoints
 - `GET /api/v1/health/live`
@@ -448,10 +350,9 @@ Bitcoin Bastion evolves into:
 - `GET /api/v1/news/sources/reputation`
 - `GET /api/v1/signals/{signal_id}/explanation`
 
-
 ## Production guardrails
 - `ENVIRONMENT=prod|production` rejects weak/default `JWT_SECRET_KEY` values.
 - Alembic supports deterministic DB URL resolution via `DATABASE_URL` override.
 - Reproducibility check: `make alembic-repro`.
 
-See `docs/STATUS.md` for current implementation status vs roadmap prompt.
+See `docs/STATUS.md` for current implementation status and truth-audit baseline.
