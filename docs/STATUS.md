@@ -47,9 +47,10 @@ This status document is evidence-based from repository code/docs at audit time.
    - `GET /api/v1/wallet/profiles/{wallet_profile_id}/health/reports`
 4. `docs/API_CONTRACTS.md` previously did not explicitly document non-envelope route exceptions (health/auth direct models).
 5. `docs/DOMAIN_MODELS.md` previously omitted `CitadelAssessment`.
+6. `docs/PRODUCTION_READINESS.md` previously contained static checked boxes that could be misread as permanently true release state.
 
 ### Missing docs files
-- None identified for core surfaces requested in ENV-01.
+- None identified for core surfaces requested in ENV-01 core set.
 
 ---
 
@@ -100,6 +101,7 @@ These represent production-readiness toward sovereign-grade goals, not mere file
 2. **README correction + duplication cleanup** completed.
 3. **API/docs mismatch correction** completed.
 4. **Domain model docs correction** completed.
+5. **Production readiness checklist normalization** completed (release-time checklist semantics restored).
 
 ---
 
