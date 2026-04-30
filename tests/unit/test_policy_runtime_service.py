@@ -224,6 +224,8 @@ def test_policy_catalog_high_risk_tightening_requires_justification() -> None:
                 min_wallet_health_score=85,
                 max_single_tx_sats=2_000_000,
                 change_justification="Volatility spike requires stricter treasury risk posture.",
+                governance_ticket="GOV-245",
+                required_peer_review_approvals=2,
             ),
         )
 
@@ -254,6 +256,8 @@ def test_policy_catalog_compare_reports_threshold_and_rule_deltas() -> None:
                 min_wallet_health_score=85,
                 max_single_tx_sats=1_000_000,
                 change_justification="stress regime",
+                governance_ticket="GOV-777",
+                required_peer_review_approvals=2,
             ),
         )
 
@@ -268,3 +272,34 @@ def test_policy_catalog_compare_reports_threshold_and_rule_deltas() -> None:
     assert out.changed_thresholds
     assert out.changed_rules
     assert out.risk_level in {"medium", "high"}
+
+
+def test_policy_catalog_high_risk_requires_governance_ticket_and_peer_approvals() -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
+    Base.metadata.create_all(bind=engine)
+    with Session(engine) as db:
+        service = TreasuryPolicyService()
+        service.upsert_catalog_entry(
+            db=db,
+            payload=PolicyCatalogUpsertIn(
+                name="ops_policy_2",
+                description="baseline",
+                min_wallet_health_score=60,
+                max_single_tx_sats=10_000_000,
+            ),
+        )
+        try:
+            service.upsert_catalog_entry(
+                db=db,
+                payload=PolicyCatalogUpsertIn(
+                    name="ops_policy_2",
+                    description="tightened",
+                    min_wallet_health_score=80,
+                    max_single_tx_sats=2_000_000,
+                    change_justification="risk regime shift",
+                    required_peer_review_approvals=1,
+                ),
+            )
+            assert False, "Expected governance_ticket requirement"
+        except ValueError as exc:
+            assert "governance_ticket" in str(exc) or "peer review approvals" in str(exc)

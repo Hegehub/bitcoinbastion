@@ -35,6 +35,8 @@ def test_recovery_check_service_reports_failures_and_actions() -> None:
     assert out.drills
     assert all(item.automation_ready for item in out.drills)
     assert len(out.recommended_actions) >= 2
+    assert "slo_breached" in out.recovery_slo
+    assert out.drill_execution["automated_drills_ready"] is True
 
 
 def test_recovery_check_service_reports_ok_when_no_failures() -> None:
@@ -52,6 +54,7 @@ def test_recovery_check_service_reports_ok_when_no_failures() -> None:
     assert out.drills and out.drills[0].drill_code == "routine_recovery_probe"
     assert out.drills[0].run_within_hours == 24
     assert out.recommended_actions == ["No recovery action required. Continue routine observability checks."]
+    assert out.recovery_slo["slo_breached"] is False
 
 
 def test_recovery_check_service_reports_critical_when_thresholds_exceed() -> None:
