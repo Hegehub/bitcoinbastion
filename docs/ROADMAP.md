@@ -1,36 +1,93 @@
-# Roadmap
+# Roadmap (reality-aligned, 2026-04-30)
 
-This roadmap follows the repository's master prompt structure and maps it onto practical delivery phases.
+This roadmap reflects **current implemented state** and remaining gaps to production-grade finalization.
+It intentionally separates what is already delivered vs what is still partial.
 
-## Phase A — Foundation
-- Harden config, logging, exceptions, and app wiring.
-- Maintain DB migration hygiene and reproducibility checks.
-- Keep Docker/compose + Make targets deploy-ready.
+## Current readiness snapshot
+- Bastion core: **~92%**
+- Citadel: **~84%**
+- Bitcoin protocol maturity: **~82%**
+- Explainability E2E: **~86%**
+- Operations hardening: **~88%**
+- Overall finalization: **~89%**
 
-## Phase B — Core Intelligence
-- Expand news ingestion and article normalization.
-- Improve deduplication/clustering and explainable scoring.
-- Strengthen baseline signal generation + publish workflow.
-- Extend health/news/signals APIs and task orchestration.
+---
 
-## Phase C — Sovereign / Treasury / Privacy
-- Deepen auth and user-subscription workflows.
-- Expand wallet health + fee exposure analysis.
-- Improve treasury request + PSBT metadata lifecycle.
-- Add stronger privacy scoring and watchlist intelligence.
+## Phase 1 — Truth & integrity (Mostly completed)
+### Delivered
+- Model/migration table parity check in repo tooling.
+- Docs truthfulness checks (routes/models/core docs heading) wired into smoke flow.
+- Status/readiness docs normalized to audit-style language.
 
-## Phase D — Future-Critical Layer
-- Mature on-chain provider abstraction and detectors.
-- Expand entity confidence and provenance tracking.
-- Advance policy-as-code runtime and recommendation engine.
-- Grow evidence graph and multi-horizon interpretation.
+### Remaining
+- Add deeper schema parity checks (constraints/defaults/indexes), not only table-level coverage.
+- Enforce stricter doc release gates for roadmap/status drift.
 
-## Phase E — Hardening / Deploy
-- Complete observability coverage (metrics, traces-ready abstractions, job telemetry).
-- Add CI quality gates for migrations/contracts.
-- Finalize readiness checks, deployment playbooks, and production runbooks.
+---
 
-## Immediate next focus
-1. Improve contract tests for integrations (`rss`, `bitcoin provider`).
-2. Strengthen signal explainability payload for cross-source evidence narratives.
-3. Expand policy execution visibility for treasury-sensitive flows (execution summary endpoint delivered; continue dashboard-level aggregation).
+## Phase 2 — Runtime reliability (Partially completed)
+### Delivered
+- Signal deduplication with source identity paths.
+- Delivery retry/cooldown guards and failure logging.
+- Recovery SLO/drill metadata surfaced through admin/observability.
+
+### Remaining
+- Close remediation loop automation (detect → auto-action → verification).
+- Add stronger circuit-breaker behavior for persistent delivery/provider failures.
+
+---
+
+## Phase 3 — Protocol depth (Partially completed)
+### Delivered
+- UTXO/mempool/script/descriptor analysis integrated into key service outputs.
+- Chain-state/finality/reorg context exposed and consumed at baseline level.
+
+### Remaining (critical)
+- Production calibration for finality/reorg and fee-market stress behavior.
+- Provider realism hardening (less fallback/default behavior in critical paths).
+- Better live-data backtesting windows for protocol scoring confidence.
+
+---
+
+## Phase 4 — Citadel realism (Partially completed)
+### Delivered
+- Weighted multi-domain scoring with explainability and coverage guarantees.
+- Topology/simulation/recovery/inheritance flows are implemented and connected.
+- Runtime wallet context now participates in assessment shaping.
+
+### Remaining (critical)
+- Remove remaining synthetic assumptions in recovery/inheritance/context fallbacks.
+- Strengthen data provenance guarantees for every score component.
+- Add deterministic calibration validation suite (golden scenarios + drift thresholds).
+
+---
+
+## Phase 5 — Explainability closure (Advanced, not final)
+### Delivered
+- Cross-domain explainability payloads are present for high-impact outputs.
+- Score inputs/weights and domain sections are exposed in assessment output.
+
+### Remaining
+- Full path-level traceability for all high-impact decisions (input → transform → policy impact → output).
+- Add explainability regression gates in CI for contract stability and completeness.
+
+---
+
+## Phase 6 — Production lock-in (In progress)
+### Delivered
+- Release-time production readiness checklist format.
+- Final production audit document with explicit pass/partial assessments.
+
+### Remaining (release blockers)
+1. Finalize protocol calibration and prove stability on live-like traffic windows.
+2. Close remaining synthetic fallback branches in Citadel critical scoring paths.
+3. Complete recovery remediation automation and verification loop.
+4. Run final release audit with objective gates and sign-off evidence.
+
+---
+
+## Immediate next execution queue
+1. **Protocol calibration pack**: finality/reorg + mempool stress backtesting + threshold tuning.
+2. **Citadel realism pack**: eliminate residual synthetic recovery/inheritance assumptions.
+3. **Ops closure pack**: auto-remediation workflows with post-action validation.
+4. **Release gate pack**: objective production audit checklist runbook with artifacts.

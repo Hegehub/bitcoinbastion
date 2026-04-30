@@ -25,7 +25,7 @@ This status document is evidence-based from repository code/docs at audit time.
 
 ### Migrations/schema truth
 - **Table coverage:** **IMPLEMENTED**
-- **Reasoning:** SQLAlchemy model tables and Alembic-created tables match (27/27, no missing/extra).
+- **Reasoning:** SQLAlchemy model tables and Alembic-created tables match (27/27, no missing/extra); runtime migrated-schema parity checks now validate table/column/nullability alignment.
 
 ### Runtime truth snapshot
 - **Signal pipeline:** **BASELINE** (implemented scoring paths from news/on-chain with explainability payloads).
@@ -98,14 +98,15 @@ These represent production-readiness toward sovereign-grade goals, not mere file
 ## Step 5 — Highest-risk truth issues addressed first
 
 1. **Migration/model truthfulness re-verified** (27/27 table coverage).
-2. **README correction + duplication cleanup** completed.
-3. **API/docs mismatch correction** completed.
-4. **Domain model docs correction** completed.
-5. **Production readiness checklist normalization** completed (release-time checklist semantics restored).
+2. **Runtime schema parity gate added** (table/column/nullability checks against migrated DB).
+3. **README correction + duplication cleanup** completed.
+4. **API/docs mismatch correction** completed.
+5. **Domain model docs correction** completed.
+6. **Production readiness checklist normalization** completed (release-time checklist semantics restored).
 
 ---
 
 ## Verification notes
 
 - Alembic remains the schema-evolution source of truth; deployment should not rely on `create_all()`.
-- Current schema audit is table-level; detailed default/constraint parity should remain a tracked follow-up.
+- Schema gates now cover model↔migration table parity and runtime migrated-schema table/column/nullability parity; defaults/indexes/constraints parity remains a tracked follow-up.
