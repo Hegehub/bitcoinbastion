@@ -11,6 +11,7 @@ from app.schemas.observability import (
     ProviderHealthOut,
 )
 from app.services.blockchain.chain_state_service import ChainStateService
+from app.services.observability.recovery_service import RecoveryCheckService
 
 
 class OperationsSnapshotService:
@@ -21,7 +22,11 @@ class OperationsSnapshotService:
 
         failed_jobs = jobs.failed_count_last_24h()
         failed_deliveries = deliveries.failed_count_last_24h()
+        started_jobs = max(1, jobs.started_count_last_24h())
+        job_success_rate = (started_jobs - failed_jobs) / started_jobs
         observed_block_height = onchain.latest_block_height() or 899_995
+        provider_counts = onchain.provider_counts_last_24h()
+        provider_count_total = sum(count for _, count in provider_counts)
         chain_state = ChainStateService().evaluate(
             tip_height=observed_block_height + 1,
             observed_block_height=observed_block_height,
@@ -33,6 +38,13 @@ class OperationsSnapshotService:
             if onchain_healthy
             else "On-chain health degraded due to failed jobs or weak finality."
         )
+        recovery = RecoveryCheckService().evaluate(db=db)
+        provider_name = provider_counts[0][0] if provider_counts else "unknown"
+        provider_share = (
+            round(provider_counts[0][1] / provider_count_total, 3)
+            if provider_counts and provider_count_total > 0
+            else 0.0
+        )
 
         return OperationsSnapshotOut(
             queue_depth=0,
@@ -42,12 +54,19 @@ class OperationsSnapshotService:
                 ProviderHealthOut(
                     provider="onchain",
                     healthy=onchain_healthy,
-                    details=onchain_details,
+                    details=f"{onchain_details} dominant_provider={provider_name} share={provider_share}",
+                    confidence=max(0.0, min(1.0, 1.0 - chain_state.reorg_risk_score)),
+                    freshness_seconds=300,
                 ),
                 ProviderHealthOut(
                     provider="delivery",
                     healthy=failed_deliveries == 0,
-                    details="Delivery health derived from last-24h delivery logs.",
+                    details=(
+                        "Delivery health derived from last-24h delivery logs."
+                        f" recovery_slo_breached={recovery.recovery_slo.get('slo_breached', False)}"
+                    ),
+                    confidence=max(0.0, min(1.0, job_success_rate)),
+                    freshness_seconds=300,
                 ),
             ],
             jobs=JobStatsOut(

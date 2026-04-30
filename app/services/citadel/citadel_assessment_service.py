@@ -1,5 +1,6 @@
 import json
 from datetime import UTC, datetime
+from dataclasses import dataclass
 
 from app.core.config import get_settings
 from app.schemas.citadel import (
@@ -14,9 +15,22 @@ from app.services.citadel.policy_maturity_service import CitadelPolicyService
 from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecord
 from app.services.citadel.recovery_readiness_engine import RecoveryReadinessEngine
 from app.services.citadel.sovereignty_graph_service import SovereigntyGraphService
+from app.services.mempool.fee_market_model import FeeMarketModel
+from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService, MempoolSnapshot
+from app.services.script.descriptor_awareness_service import DescriptorAwarenessService
+from app.services.script.script_analyzer_service import ScriptAnalyzerService
+from app.services.utxo.utxo_analyzer_service import UTXOAnalyzerService
 
 
 class CitadelAssessmentService:
+    @dataclass
+    class WalletRuntimeContext:
+        wallet_type: str = "single-sig"
+        descriptor_hint: str = ""
+        fee_exposure_score: float = 0.5
+        utxo_values_sats: list[int] | None = None
+        has_recent_health_report: bool = False
+
     DEFAULT_SCORE_WEIGHTS: dict[str, float] = {
         "custody_resilience_score": 0.16,
         "recovery_readiness_score": 0.18,
@@ -48,7 +62,9 @@ class CitadelAssessmentService:
         return value if isinstance(value, list) else []
 
     @staticmethod
-    def _coverage_summary(*, explainability: dict[str, object], required_domains: list[str]) -> dict[str, object]:
+    def _coverage_summary(
+        *, explainability: dict[str, object], required_domains: list[str]
+    ) -> dict[str, object]:
         present = [domain for domain in required_domains if domain in explainability]
         missing = [domain for domain in required_domains if domain not in explainability]
         coverage = round(len(present) / len(required_domains), 3) if required_domains else 1.0
@@ -106,6 +122,73 @@ class CitadelAssessmentService:
             return {}, "configured_invalid"
         return factors, "configured_valid"
 
+    def _utxo_signal(self, *, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+        utxo_values = context.utxo_values_sats or []
+        if not utxo_values:
+            # Conservative fallback for missing runtime context.
+            utxo_values = [1_000, 10_000, 100_000]
+        analysis = UTXOAnalyzerService().analyze(utxo_values_sats=utxo_values)
+        high_fee_projection = None
+        for item in analysis.fee_projections:
+            if item.scenario == "stress_high_fee":
+                high_fee_projection = item
+                break
+        if high_fee_projection is None and analysis.fee_projections:
+            high_fee_projection = analysis.fee_projections[-1]
+
+        high_fee_score = 0.0
+        if high_fee_projection is not None:
+            high_fee_score = min(100.0, (high_fee_projection.estimated_fee_sats / 200_000) * 100)
+
+        return {
+            "analysis": analysis,
+            "fragmentation_score_100": round(analysis.fragmentation_score * 100, 2),
+            "dust_ratio_100": round(analysis.dust_ratio * 100, 2),
+            "high_fee_exposure_score_100": round(high_fee_score, 2),
+        }
+
+    @staticmethod
+    def _mempool_signal(*, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+        fee_exposure = max(0.0, min(1.0, context.fee_exposure_score))
+        backlog_scale = int(30_000 + fee_exposure * 120_000)
+        snapshot = MempoolSnapshot(
+            backlog_tx_count=backlog_scale,
+            backlog_vbytes=backlog_scale * 900,
+            median_fee_rate_sat_vb=8.0 + fee_exposure * 64.0,
+            high_priority_fee_rate_sat_vb=20.0 + fee_exposure * 110.0,
+        )
+        state = MempoolAnalyzerService().analyze(snapshot)
+        market = FeeMarketModel().estimate(mempool=state, target_blocks=3)
+        return {"snapshot": snapshot, "state": state, "market": market}
+
+    @staticmethod
+    def _script_descriptor_signal(*, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+        hint = (context.descriptor_hint or context.wallet_type or "single-sig").strip()
+        script = ScriptAnalyzerService().analyze(script_hint=hint)
+        descriptor = DescriptorAwarenessService().evaluate(
+            has_descriptor=bool(context.descriptor_hint),
+            has_recovery_instructions=context.has_recent_health_report,
+            has_backup_reference=context.has_recent_health_report,
+        )
+        return {"script": script, "descriptor": descriptor}
+
+    @staticmethod
+    def build_wallet_context(
+        *,
+        wallet_type: str = "",
+        descriptor_hint: str = "",
+        fee_exposure_score: float | None = None,
+        utxo_values_sats: list[int] | None = None,
+        has_recent_health_report: bool = False,
+    ) -> "CitadelAssessmentService.WalletRuntimeContext":
+        return CitadelAssessmentService.WalletRuntimeContext(
+            wallet_type=wallet_type or "single-sig",
+            descriptor_hint=descriptor_hint or "",
+            fee_exposure_score=max(0.0, min(1.0, float(fee_exposure_score or 0.5))),
+            utxo_values_sats=utxo_values_sats or [],
+            has_recent_health_report=has_recent_health_report,
+        )
+
     def recovery_report(self, *, owner_id: int) -> RecoveryReadinessOut:
         artifacts = [
             RecoveryArtifactRecord(
@@ -135,15 +218,27 @@ class CitadelAssessmentService:
         )
         return RecoveryReadinessOut.model_validate(raw)
 
-    def build_assessment(self, *, owner_type: str, owner_id: int) -> CitadelAssessmentOut:
+    def build_assessment(
+        self,
+        *,
+        owner_type: str,
+        owner_id: int,
+        wallet_context: "CitadelAssessmentService.WalletRuntimeContext | None" = None,
+    ) -> CitadelAssessmentOut:
+        context = wallet_context or self.build_wallet_context()
         recovery = self.recovery_report(owner_id=owner_id)
         inheritance = InheritanceVerificationService().evaluate(owner_id=owner_id)
         policy = CitadelPolicyService().evaluate(owner_id=owner_id)
         graph = SovereigntyGraphService().build(owner_id=owner_id)
+        utxo = self._utxo_signal(context=context)
+        mempool = self._mempool_signal(context=context)
+        script_descriptor = self._script_descriptor_signal(context=context)
 
         spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
         spof_count = len(spof_items)
-        custody = self._clamp_percent(max(35.0, 78.0 - (spof_count * 12.0)))
+        custody = self._clamp_percent(
+            max(35.0, 78.0 - (spof_count * 12.0) - (utxo["fragmentation_score_100"] * 0.2))
+        )
         vendor = self._clamp_percent(max(40.0, 72.0 - (spof_count * 8.0)))
         recovery_score_100 = self._clamp_percent(recovery.recovery_readiness_score * 100)
         inheritance_score_100 = self._clamp_percent(
@@ -153,10 +248,26 @@ class CitadelAssessmentService:
         policy_maturity = self._clamp_percent(
             self._safe_float(policy.get("policy_maturity_score"), default=0.0)
         )
-        privacy = self._clamp_percent(45.0 + (inheritance_score_100 * 0.35) + (policy_maturity * 0.2))
+        privacy = self._clamp_percent(
+            45.0
+            + (inheritance_score_100 * 0.35)
+            + (policy_maturity * 0.2)
+            - (script_descriptor["script"].complexity_score * 12)
+        )
         treasury = self._clamp_percent(48.0 + (policy_maturity * 0.3) + (recovery_score_100 * 0.22))
-        fee_survivability = self._clamp_percent(50.0 + (recovery_score_100 * 0.3) + (inheritance_score_100 * 0.2))
-        operational = self._clamp_percent(35.0 + (recovery_score_100 * 0.45) + (policy_maturity * 0.2))
+        fee_survivability = self._clamp_percent(
+            50.0
+            + (recovery_score_100 * 0.3)
+            + (inheritance_score_100 * 0.2)
+            - (utxo["high_fee_exposure_score_100"] * 0.25)
+            - (min(100.0, mempool["market"].high_fee_scenario_sat_vb) * 0.15)
+        )
+        operational = self._clamp_percent(
+            35.0
+            + (recovery_score_100 * 0.45)
+            + (policy_maturity * 0.2)
+            + (script_descriptor["descriptor"].completeness_score * 10)
+        )
 
         weights, calibration_version, score_weight_source = self._score_weights()
         weighted_inputs = {
@@ -198,10 +309,18 @@ class CitadelAssessmentService:
             )
 
         recommendations = ["Verify backup artifacts and refresh recovery drills quarterly."]
+        if utxo["fragmentation_score_100"] > 60:
+            recommendations.append(
+                "Prioritize UTXO consolidation window planning to reduce fragmentation drag."
+            )
         if spof_count > 0:
-            recommendations.append("Reduce signer concentration by adding independent signing path.")
+            recommendations.append(
+                "Reduce signer concentration by adding independent signing path."
+            )
         recommendations.extend(
-            str(item) for item in self._as_object_list(inheritance.get("recommendations", [])) if item
+            str(item)
+            for item in self._as_object_list(inheritance.get("recommendations", []))
+            if item
         )
 
         warnings: list[CitadelFindingOut] = []
@@ -223,6 +342,15 @@ class CitadelAssessmentService:
                     detail="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON is set but invalid; defaults were used.",
                 )
             )
+        if utxo["dust_ratio_100"] > 20:
+            warnings.append(
+                CitadelFindingOut(
+                    title="Elevated UTXO dust ratio",
+                    severity="warning",
+                    domain="utxo",
+                    detail="Dust-heavy UTXO distribution may reduce fee survivability during stress windows.",
+                )
+            )
         if score_weight_source == "configured_invalid":
             warnings.append(
                 CitadelFindingOut(
@@ -230,6 +358,24 @@ class CitadelAssessmentService:
                     severity="warning",
                     domain="calibration",
                     detail="CITADEL_SCORE_WEIGHTS_JSON is set but invalid; defaults were used.",
+                )
+            )
+        if script_descriptor["script"].risk_level == "high":
+            warnings.append(
+                CitadelFindingOut(
+                    title="High script complexity risk",
+                    severity="warning",
+                    domain="script",
+                    detail="Script profile indicates elevated operational fragility; verify signer flow.",
+                )
+            )
+        for item in script_descriptor["descriptor"].warnings:
+            warnings.append(
+                CitadelFindingOut(
+                    title="Descriptor readiness gap",
+                    severity="warning",
+                    domain="descriptor",
+                    detail=str(item),
                 )
             )
 
@@ -242,6 +388,22 @@ class CitadelAssessmentService:
                 "spof_count": spof_count,
                 "findings": graph.get("findings", []),
             },
+            "utxo": {
+                "fragmentation_score_100": utxo["fragmentation_score_100"],
+                "dust_ratio_100": utxo["dust_ratio_100"],
+                "high_fee_exposure_score_100": utxo["high_fee_exposure_score_100"],
+                "analysis": utxo["analysis"].model_dump(),
+            },
+            "mempool": {
+                "congestion_state": mempool["state"].congestion_state,
+                "suggested_fee_rate_sat_vb": mempool["market"].suggested_fee_rate_sat_vb,
+                "high_fee_scenario_sat_vb": mempool["market"].high_fee_scenario_sat_vb,
+                "confidence": mempool["market"].confidence,
+                "freshness": mempool["market"].freshness,
+                "explainability": mempool["market"].explainability,
+            },
+            "script": script_descriptor["script"].model_dump(),
+            "descriptor_awareness": script_descriptor["descriptor"].model_dump(),
             "scoring_weights": {
                 "uniform": False,
                 "weights": weights,
@@ -264,6 +426,13 @@ class CitadelAssessmentService:
                 "score_weight_source": score_weight_source,
                 "external_signal_factor_source": external_factor_source,
             },
+            "runtime_context": {
+                "wallet_type": context.wallet_type,
+                "has_descriptor_hint": bool(context.descriptor_hint),
+                "has_recent_health_report": context.has_recent_health_report,
+                "utxo_values_provided": bool(context.utxo_values_sats),
+                "fee_exposure_score": context.fee_exposure_score,
+            },
         }
         explainability_payload["guarantees"] = self._coverage_summary(
             explainability=explainability_payload,
@@ -274,6 +443,10 @@ class CitadelAssessmentService:
                 "sovereignty_graph",
                 "score_inputs",
                 "score_inputs_adjusted",
+                "utxo",
+                "mempool",
+                "script",
+                "descriptor_awareness",
             ],
         )
 

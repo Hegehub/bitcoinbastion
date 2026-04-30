@@ -19,9 +19,21 @@ def fetch_onchain_task() -> dict[str, int]:
     settings = get_settings()
     with SessionLocal() as db:
         with JobTrackingService(JobRunRepository(db)).track("onchain.fetch"):
-            service = OnchainIngestionService(build_bitcoin_provider(settings), OnchainRepository(db))
-            signals = service.ingest_and_generate_signals()
+            service = OnchainIngestionService(
+                build_bitcoin_provider(settings), OnchainRepository(db)
+            )
+            generated_signals = service.ingest_and_generate_signals()
             signal_repo = SignalRepository(db)
-            for signal in signals:
-                signal_repo.add(signal)
-            return {"events": len(signals)}
+            persisted = 0
+            for item in generated_signals:
+                if signal_repo.has_source_link(
+                    source_type=item.source_type, source_id=item.source_id
+                ):
+                    continue
+                signal_repo.add_with_source(
+                    signal=item.signal,
+                    source_type=item.source_type,
+                    source_id=item.source_id,
+                )
+                persisted += 1
+            return {"events": len(generated_signals), "generated": persisted}

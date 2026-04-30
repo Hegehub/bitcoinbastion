@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime
 
 from app.db.models.wallet import WalletHealthReport
 from app.schemas.wallet import WalletHealthReportOut, WalletHealthRequest, WalletHealthResponse
@@ -10,11 +11,15 @@ from app.services.utxo.utxo_analyzer_service import UTXOAnalyzerService
 class WalletHealthService:
     def evaluate(self, payload: WalletHealthRequest) -> WalletHealthResponse:
         utxo_analysis = None
+        data_sources = ["wallet_input"]
         if payload.utxo_values_sats:
             utxo_analysis = UTXOAnalyzerService().analyze(utxo_values_sats=payload.utxo_values_sats)
+            data_sources.append("utxo_analyzer")
 
         fragmentation = (
-            utxo_analysis.fragmentation_score if utxo_analysis else min(1.0, payload.utxo_count / 200)
+            utxo_analysis.fragmentation_score
+            if utxo_analysis
+            else min(1.0, payload.utxo_count / 200)
         )
         privacy = max(0.0, 1.0 - payload.largest_utxo_share)
         fee_exposure = min(1.0, payload.avg_fee_rate_sat_vb / 100)
@@ -36,12 +41,17 @@ class WalletHealthService:
         if privacy < 0.4:
             recommendations.append("Improve coin control and avoid address reuse.")
         if utxo_analysis and utxo_analysis.dust_ratio > 0.2:
-            recommendations.append("Dust outputs detected; prioritize cleanup transactions in low-fee windows.")
+            recommendations.append(
+                "Dust outputs detected; prioritize cleanup transactions in low-fee windows."
+            )
 
         if payload.script_hint:
             script = ScriptAnalyzerService().analyze(script_hint=payload.script_hint)
+            data_sources.append("script_analyzer")
             if script.risk_level == "high":
-                recommendations.append("Script setup looks fragile; validate script path and signer operations.")
+                recommendations.append(
+                    "Script setup looks fragile; validate script path and signer operations."
+                )
 
         if payload.has_descriptor is not None:
             descriptor = DescriptorAwarenessService().evaluate(
@@ -49,7 +59,29 @@ class WalletHealthService:
                 has_recovery_instructions=bool(payload.has_recovery_instructions),
                 has_backup_reference=bool(payload.has_backup_reference),
             )
+            data_sources.append("descriptor_awareness")
             recommendations.extend(descriptor.warnings)
+
+        explainability = {
+            "explanation": "Wallet health combines UTXO fragmentation, fee survivability, and privacy posture.",
+            "confidence": 0.82 if utxo_analysis is not None else 0.66,
+            "data_sources": data_sources,
+            "score_components": {
+                "fragmentation": round(fragmentation, 4),
+                "fee_exposure": round(fee_exposure, 4),
+                "privacy": round(privacy, 4),
+            },
+            "weights": {
+                "fragmentation": 0.4,
+                "fee_exposure": 0.3,
+                "privacy": 0.3,
+            },
+            "utxo_analysis": (
+                utxo_analysis.model_dump()
+                if utxo_analysis is not None
+                else {"state": "not_provided"}
+            ),
+        }
 
         return WalletHealthResponse(
             health_score=health,
@@ -57,6 +89,13 @@ class WalletHealthService:
             privacy_score=privacy,
             fee_exposure_score=fee_exposure,
             recommendations=recommendations,
+            confidence=explainability["confidence"],
+            explainability=explainability,
+            freshness={
+                "computed_at": datetime.now(UTC).isoformat(),
+                "ttl_seconds": 300,
+                "is_stale": False,
+            },
         )
 
     def to_report_out(self, report: WalletHealthReport) -> WalletHealthReportOut:
