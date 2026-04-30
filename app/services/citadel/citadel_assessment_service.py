@@ -1,5 +1,6 @@
 import json
 from datetime import UTC, datetime
+from dataclasses import dataclass
 
 from app.core.config import get_settings
 from app.schemas.citadel import (
@@ -22,6 +23,14 @@ from app.services.utxo.utxo_analyzer_service import UTXOAnalyzerService
 
 
 class CitadelAssessmentService:
+    @dataclass
+    class WalletRuntimeContext:
+        wallet_type: str = "single-sig"
+        descriptor_hint: str = ""
+        fee_exposure_score: float = 0.5
+        utxo_values_sats: list[int] | None = None
+        has_recent_health_report: bool = False
+
     DEFAULT_SCORE_WEIGHTS: dict[str, float] = {
         "custody_resilience_score": 0.16,
         "recovery_readiness_score": 0.18,
@@ -113,22 +122,12 @@ class CitadelAssessmentService:
             return {}, "configured_invalid"
         return factors, "configured_valid"
 
-    @staticmethod
-    def _owner_utxo_snapshot(owner_id: int) -> list[int]:
-        base = max(1, owner_id)
-        return [
-            750 + (base % 5) * 120,
-            1_200 + (base % 7) * 180,
-            12_000 + (base % 11) * 900,
-            65_000 + (base % 13) * 2_500,
-            480_000 + (base % 17) * 10_000,
-            1_400_000 + (base % 19) * 20_000,
-        ]
-
-    def _utxo_signal(self, *, owner_id: int) -> dict[str, object]:
-        analysis = UTXOAnalyzerService().analyze(
-            utxo_values_sats=self._owner_utxo_snapshot(owner_id)
-        )
+    def _utxo_signal(self, *, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+        utxo_values = context.utxo_values_sats or []
+        if not utxo_values:
+            # Conservative fallback for missing runtime context.
+            utxo_values = [1_000, 10_000, 100_000]
+        analysis = UTXOAnalyzerService().analyze(utxo_values_sats=utxo_values)
         high_fee_projection = None
         for item in analysis.fee_projections:
             if item.scenario == "stress_high_fee":
@@ -149,28 +148,46 @@ class CitadelAssessmentService:
         }
 
     @staticmethod
-    def _mempool_signal(*, owner_id: int) -> dict[str, object]:
-        base = max(1, owner_id)
+    def _mempool_signal(*, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+        fee_exposure = max(0.0, min(1.0, context.fee_exposure_score))
+        backlog_scale = int(30_000 + fee_exposure * 120_000)
         snapshot = MempoolSnapshot(
-            backlog_tx_count=90_000 + (base % 9) * 12_000,
-            backlog_vbytes=70_000_000 + (base % 7) * 15_000_000,
-            median_fee_rate_sat_vb=12.0 + (base % 8) * 3.5,
-            high_priority_fee_rate_sat_vb=28.0 + (base % 10) * 5.0,
+            backlog_tx_count=backlog_scale,
+            backlog_vbytes=backlog_scale * 900,
+            median_fee_rate_sat_vb=8.0 + fee_exposure * 64.0,
+            high_priority_fee_rate_sat_vb=20.0 + fee_exposure * 110.0,
         )
         state = MempoolAnalyzerService().analyze(snapshot)
         market = FeeMarketModel().estimate(mempool=state, target_blocks=3)
         return {"snapshot": snapshot, "state": state, "market": market}
 
     @staticmethod
-    def _script_descriptor_signal(*, owner_id: int) -> dict[str, object]:
-        hint = "tr(multi_a(...))" if owner_id % 2 == 0 else "3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC"
+    def _script_descriptor_signal(*, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+        hint = (context.descriptor_hint or context.wallet_type or "single-sig").strip()
         script = ScriptAnalyzerService().analyze(script_hint=hint)
         descriptor = DescriptorAwarenessService().evaluate(
-            has_descriptor=(owner_id % 3 != 0),
-            has_recovery_instructions=(owner_id % 2 == 0),
-            has_backup_reference=(owner_id % 5 != 0),
+            has_descriptor=bool(context.descriptor_hint),
+            has_recovery_instructions=context.has_recent_health_report,
+            has_backup_reference=context.has_recent_health_report,
         )
         return {"script": script, "descriptor": descriptor}
+
+    @staticmethod
+    def build_wallet_context(
+        *,
+        wallet_type: str = "",
+        descriptor_hint: str = "",
+        fee_exposure_score: float | None = None,
+        utxo_values_sats: list[int] | None = None,
+        has_recent_health_report: bool = False,
+    ) -> "CitadelAssessmentService.WalletRuntimeContext":
+        return CitadelAssessmentService.WalletRuntimeContext(
+            wallet_type=wallet_type or "single-sig",
+            descriptor_hint=descriptor_hint or "",
+            fee_exposure_score=max(0.0, min(1.0, float(fee_exposure_score or 0.5))),
+            utxo_values_sats=utxo_values_sats or [],
+            has_recent_health_report=has_recent_health_report,
+        )
 
     def recovery_report(self, *, owner_id: int) -> RecoveryReadinessOut:
         artifacts = [
@@ -201,14 +218,21 @@ class CitadelAssessmentService:
         )
         return RecoveryReadinessOut.model_validate(raw)
 
-    def build_assessment(self, *, owner_type: str, owner_id: int) -> CitadelAssessmentOut:
+    def build_assessment(
+        self,
+        *,
+        owner_type: str,
+        owner_id: int,
+        wallet_context: "CitadelAssessmentService.WalletRuntimeContext | None" = None,
+    ) -> CitadelAssessmentOut:
+        context = wallet_context or self.build_wallet_context()
         recovery = self.recovery_report(owner_id=owner_id)
         inheritance = InheritanceVerificationService().evaluate(owner_id=owner_id)
         policy = CitadelPolicyService().evaluate(owner_id=owner_id)
         graph = SovereigntyGraphService().build(owner_id=owner_id)
-        utxo = self._utxo_signal(owner_id=owner_id)
-        mempool = self._mempool_signal(owner_id=owner_id)
-        script_descriptor = self._script_descriptor_signal(owner_id=owner_id)
+        utxo = self._utxo_signal(context=context)
+        mempool = self._mempool_signal(context=context)
+        script_descriptor = self._script_descriptor_signal(context=context)
 
         spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
         spof_count = len(spof_items)
@@ -401,6 +425,13 @@ class CitadelAssessmentService:
                 ),
                 "score_weight_source": score_weight_source,
                 "external_signal_factor_source": external_factor_source,
+            },
+            "runtime_context": {
+                "wallet_type": context.wallet_type,
+                "has_descriptor_hint": bool(context.descriptor_hint),
+                "has_recent_health_report": context.has_recent_health_report,
+                "utxo_values_provided": bool(context.utxo_values_sats),
+                "fee_exposure_score": context.fee_exposure_score,
             },
         }
         explainability_payload["guarantees"] = self._coverage_summary(
