@@ -5,6 +5,8 @@ class ProviderHealthOut(BaseModel):
     provider: str
     healthy: bool
     details: str
+    confidence: float = 0.0
+    freshness_seconds: int = 0
 
 
 class DeliveryStatsOut(BaseModel):

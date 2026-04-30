@@ -33,6 +33,8 @@ class PolicyCatalogUpsertIn(BaseModel):
     max_single_tx_sats: int = Field(gt=0)
     rules: list[PolicyRuleUpsertIn] = []
     change_justification: str | None = Field(default=None, max_length=2000)
+    governance_ticket: str | None = Field(default=None, max_length=120)
+    required_peer_review_approvals: int = Field(default=1, ge=1, le=5)
 
 
 class PolicyCheckResponse(BaseModel):

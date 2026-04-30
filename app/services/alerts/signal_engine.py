@@ -10,9 +10,22 @@ from app.services.horizons.signal_horizon_service import SignalHorizonService
 
 
 class SignalEngine:
+    @staticmethod
+    def onchain_source_id(event: OnchainEvent) -> str:
+        txid = (event.txid or "").strip()
+        event_type = (event.event_type or "unknown").strip()
+        block_height = int(event.block_height or 0)
+        if txid:
+            return f"{txid}:{event_type}:{block_height}"
+        return f"event:{event.id or 0}:{event_type}:{block_height}"
+
     def from_news(self, article: NewsArticle, explainability: dict[str, str | float]) -> Signal:
         started_at = perf_counter()
-        score = (article.btc_relevance_score * 0.5) + (article.impact_score * 0.3) + (article.urgency_score * 0.2)
+        score = (
+            (article.btc_relevance_score * 0.5)
+            + (article.impact_score * 0.3)
+            + (article.urgency_score * 0.2)
+        )
         draft = Signal(
             signal_type="news",
             severity=self._severity(score),
@@ -25,7 +38,9 @@ class SignalEngine:
             created_at=datetime.now(UTC),
         )
         horizons = SignalHorizonService().build(draft)
-        draft.explainability_json = json.dumps({**explainability, "horizons": horizons, "horizon": horizons["dominant"]})
+        draft.explainability_json = json.dumps(
+            {**explainability, "horizons": horizons, "horizon": horizons["dominant"]}
+        )
         observe_signal_latency(source="news", duration_seconds=perf_counter() - started_at)
         return draft
 
@@ -45,8 +60,26 @@ class SignalEngine:
             tags = json.loads(event.tags_json or "[]")
         except json.JSONDecodeError:
             tags = []
+        try:
+            onchain_explainability = json.loads(event.explainability_json or "{}")
+            if not isinstance(onchain_explainability, dict):
+                onchain_explainability = {}
+        except json.JSONDecodeError:
+            onchain_explainability = {}
+
+        source_id = self.onchain_source_id(event)
         horizons = SignalHorizonService().build(draft)
-        draft.explainability_json = json.dumps({"tags": tags, "horizons": horizons, "horizon": horizons["dominant"]})
+        draft.explainability_json = json.dumps(
+            {
+                "reason": "onchain_scoring_pipeline",
+                "source_type": "onchain_event",
+                "source_id": source_id,
+                "onchain_score_explainability": onchain_explainability,
+                "tags": tags,
+                "horizons": horizons,
+                "horizon": horizons["dominant"],
+            }
+        )
         observe_signal_latency(source="onchain", duration_seconds=perf_counter() - started_at)
         return draft
 

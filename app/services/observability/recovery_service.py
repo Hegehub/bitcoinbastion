@@ -69,6 +69,10 @@ class RecoveryCheckService:
             recommended_actions.append("No recovery action required. Continue routine observability checks.")
 
         severity = self._severity(failed_jobs=failed_jobs, failed_deliveries=failed_deliveries)
+        job_runs_24h = max(1, job_repo.started_count_last_24h())
+        recovery_success_rate = round(((job_runs_24h - failed_jobs) / job_runs_24h), 3)
+        slo_target = 0.99
+        slo_breached = recovery_success_rate < slo_target
 
         return RecoveryCheckOut(
             ok=(severity == "ok"),
@@ -79,6 +83,17 @@ class RecoveryCheckService:
             hotspots=hotspots[:10],
             drills=drills,
             recommended_actions=recommended_actions,
+            drill_execution={
+                "automated_drills_ready": all(item.automation_ready for item in drills),
+                "next_drill_priority": drills[0].priority if drills else "low",
+                "next_drill_code": drills[0].drill_code if drills else "routine_recovery_probe",
+            },
+            recovery_slo={
+                "target_success_rate_24h": slo_target,
+                "actual_success_rate_24h": recovery_success_rate,
+                "slo_breached": slo_breached,
+                "evaluation_window_hours": 24,
+            },
         )
 
     @staticmethod
