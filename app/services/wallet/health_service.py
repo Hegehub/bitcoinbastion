@@ -30,8 +30,14 @@ class WalletHealthService:
                 utxo_analysis.fee_projections[-1],
             )
             fee_exposure = min(1.0, high_fee_projection.estimated_fee_sats / 200_000)
+        spend_complexity = 0.0
+        if utxo_analysis is not None:
+            spend_complexity = min(1.0, utxo_analysis.estimated_inputs_to_spend_1m_sats / 20)
 
-        health = max(0.0, min(1.0, 1 - (0.4 * fragmentation + 0.3 * fee_exposure) + 0.3 * privacy))
+        health = max(
+            0.0,
+            min(1.0, 1 - (0.35 * fragmentation + 0.25 * fee_exposure + 0.15 * spend_complexity) + 0.25 * privacy),
+        )
 
         recommendations: list[str] = []
         if fragmentation > 0.6:
@@ -43,6 +49,10 @@ class WalletHealthService:
         if utxo_analysis and utxo_analysis.dust_ratio > 0.2:
             recommendations.append(
                 "Dust outputs detected; prioritize cleanup transactions in low-fee windows."
+            )
+        if spend_complexity > 0.6:
+            recommendations.append(
+                "High spend complexity detected; reduce input count concentration before urgent spends."
             )
 
         if payload.script_hint:
@@ -69,12 +79,14 @@ class WalletHealthService:
             "score_components": {
                 "fragmentation": round(fragmentation, 4),
                 "fee_exposure": round(fee_exposure, 4),
+                "spend_complexity": round(spend_complexity, 4),
                 "privacy": round(privacy, 4),
             },
             "weights": {
-                "fragmentation": 0.4,
-                "fee_exposure": 0.3,
-                "privacy": 0.3,
+                "fragmentation": 0.35,
+                "fee_exposure": 0.25,
+                "spend_complexity": 0.15,
+                "privacy": 0.25,
             },
             "utxo_analysis": (
                 utxo_analysis.model_dump()

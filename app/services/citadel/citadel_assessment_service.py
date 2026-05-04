@@ -28,6 +28,7 @@ class CitadelAssessmentService:
         wallet_type: str = "single-sig"
         descriptor_hint: str = ""
         fee_exposure_score: float = 0.5
+        wallet_health_score: float | None = None
         utxo_values_sats: list[int] | None = None
         has_recent_health_report: bool = False
 
@@ -144,6 +145,10 @@ class CitadelAssessmentService:
             "analysis": analysis,
             "fragmentation_score_100": round(analysis.fragmentation_score * 100, 2),
             "dust_ratio_100": round(analysis.dust_ratio * 100, 2),
+            "spend_complexity_score_100": round(
+                min(100.0, (analysis.estimated_inputs_to_spend_1m_sats / 20) * 100),
+                2,
+            ),
             "high_fee_exposure_score_100": round(high_fee_score, 2),
         }
 
@@ -178,6 +183,7 @@ class CitadelAssessmentService:
         wallet_type: str = "",
         descriptor_hint: str = "",
         fee_exposure_score: float | None = None,
+        wallet_health_score: float | None = None,
         utxo_values_sats: list[int] | None = None,
         has_recent_health_report: bool = False,
     ) -> "CitadelAssessmentService.WalletRuntimeContext":
@@ -185,36 +191,66 @@ class CitadelAssessmentService:
             wallet_type=wallet_type or "single-sig",
             descriptor_hint=descriptor_hint or "",
             fee_exposure_score=max(0.0, min(1.0, float(fee_exposure_score or 0.5))),
+            wallet_health_score=(
+                None if wallet_health_score is None else max(0.0, min(1.0, float(wallet_health_score)))
+            ),
             utxo_values_sats=utxo_values_sats or [],
             has_recent_health_report=has_recent_health_report,
         )
 
-    def recovery_report(self, *, owner_id: int) -> RecoveryReadinessOut:
+    def recovery_report(
+        self,
+        *,
+        owner_id: int,
+        wallet_context: "CitadelAssessmentService.WalletRuntimeContext | None" = None,
+    ) -> RecoveryReadinessOut:
+        context = wallet_context or self.build_wallet_context()
+        has_descriptor = bool(context.descriptor_hint)
+        has_recent_health = context.has_recent_health_report
+        script_profile = ScriptAnalyzerService().analyze(
+            script_hint=context.descriptor_hint or context.wallet_type or "single-sig"
+        )
+        descriptor_profile = DescriptorAwarenessService().evaluate(
+            has_descriptor=has_descriptor,
+            has_recovery_instructions=has_recent_health,
+            has_backup_reference=has_recent_health,
+        )
         artifacts = [
             RecoveryArtifactRecord(
                 artifact_type="descriptor",
                 label=f"owner-{owner_id}-descriptor",
-                is_verified=True,
+                is_verified=has_descriptor,
                 required_for_recovery=True,
+                verification_age_days=14 if has_recent_health else 180,
             ),
             RecoveryArtifactRecord(
                 artifact_type="backup",
                 label=f"owner-{owner_id}-backup",
-                is_verified=(owner_id % 2 == 0),
+                is_verified=has_recent_health,
                 required_for_recovery=True,
+                verification_age_days=30 if has_recent_health else 210,
             ),
             RecoveryArtifactRecord(
                 artifact_type="instructions",
                 label=f"owner-{owner_id}-runbook",
-                is_verified=(owner_id % 3 != 0),
+                is_verified=has_recent_health,
                 required_for_recovery=False,
+                verification_age_days=30 if has_recent_health else 180,
             ),
         ]
+        wallet_type = (context.wallet_type or "").lower()
+        if "multi" in wallet_type:
+            human_dependency_score = 0.45
+        elif "watch" in wallet_type:
+            human_dependency_score = 0.7
+        else:
+            human_dependency_score = 0.6
         raw = RecoveryReadinessEngine().evaluate(
             artifacts=artifacts,
-            has_descriptor=True,
-            has_instructions=(owner_id % 3 != 0),
-            human_dependency_score=0.4 if owner_id % 2 == 0 else 0.75,
+            has_descriptor=has_descriptor,
+            has_instructions=has_recent_health and not descriptor_profile.warnings,
+            human_dependency_score=human_dependency_score,
+            script_risk_score=max(0.0, min(1.0, script_profile.complexity_score)),
         )
         return RecoveryReadinessOut.model_validate(raw)
 
@@ -226,10 +262,19 @@ class CitadelAssessmentService:
         wallet_context: "CitadelAssessmentService.WalletRuntimeContext | None" = None,
     ) -> CitadelAssessmentOut:
         context = wallet_context or self.build_wallet_context()
-        recovery = self.recovery_report(owner_id=owner_id)
+        recovery = self.recovery_report(owner_id=owner_id, wallet_context=context)
         inheritance = InheritanceVerificationService().evaluate(owner_id=owner_id)
-        policy = CitadelPolicyService().evaluate(owner_id=owner_id)
-        graph = SovereigntyGraphService().build(owner_id=owner_id)
+        policy = CitadelPolicyService().evaluate(
+            owner_id=owner_id,
+            wallet_health_score=context.wallet_health_score,
+            has_recent_health_report=context.has_recent_health_report,
+        )
+        graph = SovereigntyGraphService().build(
+            owner_id=owner_id,
+            wallet_type=context.wallet_type,
+            has_descriptor=bool(context.descriptor_hint),
+            has_recent_health_report=context.has_recent_health_report,
+        )
         utxo = self._utxo_signal(context=context)
         mempool = self._mempool_signal(context=context)
         script_descriptor = self._script_descriptor_signal(context=context)
@@ -260,6 +305,7 @@ class CitadelAssessmentService:
             + (recovery_score_100 * 0.3)
             + (inheritance_score_100 * 0.2)
             - (utxo["high_fee_exposure_score_100"] * 0.25)
+            - (utxo["spend_complexity_score_100"] * 0.15)
             - (min(100.0, mempool["market"].high_fee_scenario_sat_vb) * 0.15)
         )
         operational = self._clamp_percent(
@@ -313,6 +359,10 @@ class CitadelAssessmentService:
             recommendations.append(
                 "Prioritize UTXO consolidation window planning to reduce fragmentation drag."
             )
+        if utxo["spend_complexity_score_100"] > 60:
+            recommendations.append(
+                "Reduce spend-path input complexity to improve high-fee survivability."
+            )
         if spof_count > 0:
             recommendations.append(
                 "Reduce signer concentration by adding independent signing path."
@@ -349,6 +399,15 @@ class CitadelAssessmentService:
                     severity="warning",
                     domain="utxo",
                     detail="Dust-heavy UTXO distribution may reduce fee survivability during stress windows.",
+                )
+            )
+        if utxo["spend_complexity_score_100"] > 70:
+            warnings.append(
+                CitadelFindingOut(
+                    title="Elevated UTXO spend complexity",
+                    severity="warning",
+                    domain="utxo",
+                    detail="High input-count dependency may degrade survivability under urgent spend conditions.",
                 )
             )
         if score_weight_source == "configured_invalid":
@@ -391,6 +450,7 @@ class CitadelAssessmentService:
             "utxo": {
                 "fragmentation_score_100": utxo["fragmentation_score_100"],
                 "dust_ratio_100": utxo["dust_ratio_100"],
+                "spend_complexity_score_100": utxo["spend_complexity_score_100"],
                 "high_fee_exposure_score_100": utxo["high_fee_exposure_score_100"],
                 "analysis": utxo["analysis"].model_dump(),
             },

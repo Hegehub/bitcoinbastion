@@ -31,3 +31,4 @@ def test_wallet_health_explainability_embeds_utxo_analysis() -> None:
     assert explainability["utxo_analysis"]["utxo_count"] == 4
     assert "utxo_analyzer" in explainability["data_sources"]
     assert out.confidence >= 0.8
+    assert "spend_complexity" in explainability["score_components"]

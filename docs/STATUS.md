@@ -1,6 +1,6 @@
 # Bitcoin Bastion — Truth Audit Status (Task ENV-01)
 
-Audit date: **2026-04-21**
+Audit date: **2026-05-03**
 
 This status document is evidence-based from repository code/docs at audit time.
 
@@ -103,6 +103,7 @@ These represent production-readiness toward sovereign-grade goals, not mere file
 4. **API/docs mismatch correction** completed.
 5. **Domain model docs correction** completed.
 6. **Production readiness checklist normalization** completed (release-time checklist semantics restored).
+7. **P1-02 doc truth re-audit completed** (`README.md`, `docs/API_CONTRACTS.md`, `docs/DOMAIN_MODELS.md`, `docs/STATUS.md` re-verified against code and route/model checks).
 
 ---
 

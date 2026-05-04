@@ -20,24 +20,44 @@ class ChainStateService:
         tip_height: int,
         observed_block_height: int,
         headers_height: int | None = None,
+        provider_tip_height: int | None = None,
+        provider_confidence: float | None = None,
     ) -> ChainStateEvaluation:
         headers = headers_height if headers_height is not None else tip_height
         confirmation_depth = max(0, (tip_height - observed_block_height) + 1)
         header_tip_gap = abs(headers - tip_height)
         header_observed_gap = abs(headers - observed_block_height)
+        provider_gap = (
+            abs(provider_tip_height - tip_height)
+            if provider_tip_height is not None
+            else 0
+        )
+        provider_risk = 0.0
+        if provider_tip_height is not None:
+            confidence = max(0.0, min(1.0, float(provider_confidence or 0.6)))
+            provider_risk = min(1.0, (provider_gap / 3.0) * confidence)
 
-        depth_risk = max(0.0, 1.0 - min(1.0, confirmation_depth / 8.0))
+        depth_risk = max(0.0, 1.0 - min(1.0, confirmation_depth / 10.0))
         header_tip_risk = min(1.0, header_tip_gap / 4.0)
         header_observed_risk = min(1.0, header_observed_gap / 8.0)
         reorg_risk = round(
-            min(1.0, (depth_risk * 0.7) + (header_tip_risk * 0.2) + (header_observed_risk * 0.1)),
+            min(
+                1.0,
+                (depth_risk * 0.6)
+                + (header_tip_risk * 0.18)
+                + (header_observed_risk * 0.12)
+                + (provider_risk * 0.1),
+            ),
             4,
         )
-        finality = round(max(0.0, min(1.0, (1.0 - reorg_risk) * min(1.0, confirmation_depth / 8.0))), 4)
+        finality = round(
+            max(0.0, min(1.0, (1.0 - reorg_risk) * min(1.0, confirmation_depth / 10.0))),
+            4,
+        )
 
-        if finality >= 0.82:
+        if finality >= 0.88:
             band = "strong"
-        elif finality >= 0.5:
+        elif finality >= 0.58:
             band = "moderate"
         else:
             band = "weak"
@@ -63,8 +83,11 @@ class ChainStateService:
                     "header_observed_gap_blocks": header_observed_gap,
                     "header_tip_risk_component": round(header_tip_risk, 4),
                     "header_observed_risk_component": round(header_observed_risk, 4),
+                    "provider_tip_height": provider_tip_height,
+                    "provider_tip_gap_blocks": provider_gap,
+                    "provider_risk_component": round(provider_risk, 4),
                 },
-                "scoring": "finality=(1-reorg_risk)*min(1,confirmations/8)",
-                "calibration_version": "chain_state_v2",
+                "scoring": "finality=(1-reorg_risk)*min(1,confirmations/10)",
+                "calibration_version": "chain_state_v3",
             },
         )

@@ -51,6 +51,7 @@ def _load_wallet_context(*, owner_id: int, db: Session) -> CitadelAssessmentServ
         wallet_type=(profile.wallet_type if profile else "single-sig"),
         descriptor_hint=(profile.descriptor_or_reference if profile else ""),
         fee_exposure_score=(report.fee_exposure_score if report else None),
+        wallet_health_score=(report.health_score if report else None),
         has_recent_health_report=report is not None,
     )
 

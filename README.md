@@ -114,6 +114,24 @@ It answers critical questions:
 
 ---
 
+## 🛠️ Developer Quickstart
+
+```bash
+make install-dev
+make migrate
+make run
+```
+
+Useful checks before opening a PR:
+
+```bash
+make lint
+make test-contract
+make docs-truthfulness
+```
+
+---
+
 ## ⚙️ Core Capabilities
 
 ### Intelligence

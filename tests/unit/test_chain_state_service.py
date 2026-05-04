@@ -12,7 +12,7 @@ def test_chain_state_service_marks_strong_finality_for_deep_confirmation() -> No
     assert out.reorg_risk_score <= 0.2
     assert out.finality_score >= 0.8
     assert out.finality_band == "strong"
-    assert out.explainability["calibration_version"] == "chain_state_v2"
+    assert out.explainability["calibration_version"] == "chain_state_v3"
 
 
 def test_chain_state_service_marks_weak_finality_for_unconfirmed_tip() -> None:
@@ -42,3 +42,15 @@ def test_chain_state_service_penalizes_header_lag_both_directions() -> None:
 
     assert ahead.reorg_risk_score > 0.0
     assert behind.reorg_risk_score > 0.0
+
+
+def test_chain_state_service_includes_provider_risk_when_probe_data_present() -> None:
+    out = ChainStateService().evaluate(
+        tip_height=900_000,
+        observed_block_height=899_998,
+        headers_height=900_000,
+        provider_tip_height=899_996,
+        provider_confidence=0.9,
+    )
+    assert out.explainability["derived"]["provider_tip_height"] == 899_996
+    assert out.explainability["derived"]["provider_risk_component"] > 0

@@ -40,14 +40,23 @@ def test_citadel_assessment_clamps_inheritance_and_policy_scores(monkeypatch) ->
     )
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.CitadelPolicyService.evaluate",
-        lambda self, owner_id: {"policy_maturity_score": 180.0},
+        lambda self, owner_id, **kwargs: {"policy_maturity_score": 180.0},
     )
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.SovereigntyGraphService.build",
-        lambda self, owner_id: {"single_points_of_failure": [], "findings": []},
+        lambda self, owner_id, **kwargs: {"single_points_of_failure": [], "findings": []},
     )
 
-    out = service.build_assessment(owner_type="user", owner_id=2)
+    out = service.build_assessment(
+        owner_type="user",
+        owner_id=2,
+        wallet_context=service.build_wallet_context(
+            wallet_type="multisig-2of3",
+            descriptor_hint="tr(sortedmulti(2,...))",
+            wallet_health_score=0.8,
+            has_recent_health_report=True,
+        ),
+    )
 
     assert out.inheritance_readiness_score == 100.0
     assert out.policy_maturity_score == 100.0
@@ -67,17 +76,26 @@ def test_citadel_assessment_handles_non_numeric_scores_and_conditional_recommend
     )
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.CitadelPolicyService.evaluate",
-        lambda self, owner_id: {
+        lambda self, owner_id, **kwargs: {
             "policy_maturity_score": None,
             "gaps": ["Missing simulation cadence"],
         },
     )
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.SovereigntyGraphService.build",
-        lambda self, owner_id: {"single_points_of_failure": [], "findings": []},
+        lambda self, owner_id, **kwargs: {"single_points_of_failure": [], "findings": []},
     )
 
-    out = service.build_assessment(owner_type="user", owner_id=2)
+    out = service.build_assessment(
+        owner_type="user",
+        owner_id=2,
+        wallet_context=service.build_wallet_context(
+            wallet_type="multisig-2of3",
+            descriptor_hint="tr(sortedmulti(2,...))",
+            wallet_health_score=0.8,
+            has_recent_health_report=True,
+        ),
+    )
 
     assert out.inheritance_readiness_score == 0.0
     assert out.policy_maturity_score == 0.0
@@ -97,14 +115,23 @@ def test_citadel_assessment_uses_weighted_score_inputs(monkeypatch) -> None:
     )
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.CitadelPolicyService.evaluate",
-        lambda self, owner_id: {"policy_maturity_score": 100.0},
+        lambda self, owner_id, **kwargs: {"policy_maturity_score": 100.0},
     )
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.SovereigntyGraphService.build",
-        lambda self, owner_id: {"single_points_of_failure": [], "findings": []},
+        lambda self, owner_id, **kwargs: {"single_points_of_failure": [], "findings": []},
     )
 
-    out = service.build_assessment(owner_type="user", owner_id=2)
+    out = service.build_assessment(
+        owner_type="user",
+        owner_id=2,
+        wallet_context=service.build_wallet_context(
+            wallet_type="multisig-2of3",
+            descriptor_hint="tr(sortedmulti(2,...))",
+            wallet_health_score=0.8,
+            has_recent_health_report=True,
+        ),
+    )
     explainability = out.explainability.model_dump()
     weights = explainability["scoring_weights"]["weights"]
     score_inputs_adjusted = explainability["score_inputs_adjusted"]
@@ -148,7 +175,16 @@ def test_citadel_assessment_applies_external_signal_factors(monkeypatch) -> None
         lambda: FakeSettings(),
     )
 
-    out = service.build_assessment(owner_type="user", owner_id=2)
+    out = service.build_assessment(
+        owner_type="user",
+        owner_id=2,
+        wallet_context=service.build_wallet_context(
+            wallet_type="multisig-2of3",
+            descriptor_hint="tr(sortedmulti(2,...))",
+            wallet_health_score=0.8,
+            has_recent_health_report=True,
+        ),
+    )
     explainability = out.explainability.model_dump()
     base = explainability["score_inputs"]["recovery_readiness_score"]
     adjusted = explainability["score_inputs_adjusted"]["recovery_readiness_score"]
@@ -201,6 +237,7 @@ def test_citadel_assessment_includes_utxo_domain_in_explainability() -> None:
 
     assert "utxo" in explainability
     assert explainability["utxo"]["fragmentation_score_100"] >= 0
+    assert explainability["utxo"]["spend_complexity_score_100"] >= 0
     assert "utxo" in explainability["guarantees"]["present_domains"]
     assert "mempool" in explainability
     assert explainability["mempool"]["high_fee_scenario_sat_vb"] >= explainability["mempool"]["suggested_fee_rate_sat_vb"]
