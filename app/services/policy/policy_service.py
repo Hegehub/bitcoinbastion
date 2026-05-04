@@ -198,10 +198,20 @@ class TreasuryPolicyService:
 
         high_risk_tightening = min_health_delta >= 15 or tx_limit_drop_ratio >= 0.5
         has_justification = bool((payload.change_justification or "").strip())
+        has_ticket = bool((payload.governance_ticket or "").strip())
+        has_peer_approvals = payload.required_peer_review_approvals >= 2
 
         if high_risk_tightening and not has_justification:
             raise ValueError(
                 "High-risk policy tightening requires change_justification for governance traceability."
+            )
+        if high_risk_tightening and not has_ticket:
+            raise ValueError(
+                "High-risk policy tightening requires governance_ticket for lifecycle auditability."
+            )
+        if high_risk_tightening and not has_peer_approvals:
+            raise ValueError(
+                "High-risk policy tightening requires at least 2 peer review approvals."
             )
 
     def simulate_compare(self, db: Session, payload: PolicySimulationRequest) -> PolicySimulationOut:

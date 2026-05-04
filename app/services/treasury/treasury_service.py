@@ -4,6 +4,7 @@ from app.db.models.treasury import TreasuryRequest
 from app.db.repositories.audit_repository import AuditRepository
 from app.db.repositories.treasury_repository import TreasuryRepository
 from app.schemas.policy import PolicyCheckRequest
+from app.schemas.fees import FeeRecommendationRequest
 from app.schemas.treasury import (
     TreasuryApprovalActionIn,
     TreasuryApprovalOut,
@@ -12,6 +13,7 @@ from app.schemas.treasury import (
     TreasuryRequestIn,
 )
 from app.services.admin.audit_service import AuditService
+from app.services.analytics.fee_service import FeeAnalyticsService
 from app.services.policy.policy_service import TreasuryPolicyService
 
 
@@ -22,6 +24,12 @@ class TreasuryService:
         self.audit_service = AuditService(AuditRepository(repo.db))
 
     def create_request(self, payload: TreasuryRequestIn, requested_by: int | None = None) -> TreasuryRequest:
+        fee_model = FeeAnalyticsService().recommend(
+            FeeRecommendationRequest(
+                mempool_congestion=min(1.0, max(0.0, 1.0 - payload.wallet_health_score)),
+                target_blocks=3,
+            )
+        )
         policy_result = self.policy_service.evaluate_and_log(
             db=self.repo.db,
             payload=PolicyCheckRequest(
@@ -50,6 +58,11 @@ class TreasuryService:
                     "next_actions": policy_result.next_actions,
                     "applied_rules": [rule.model_dump() for rule in policy_result.applied_rules],
                     "wallet_health_score": payload.wallet_health_score,
+                    "fee_risk_context": {
+                        "congestion_state": fee_model.congestion_state,
+                        "suggested_fee_rate_sat_vb": fee_model.suggested_fee_rate_sat_vb,
+                        "high_fee_scenario_sat_vb": fee_model.high_fee_scenario_sat_vb,
+                    },
                 }
             ),
         )
