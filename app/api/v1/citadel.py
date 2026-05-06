@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+import inspect
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.exc import SQLAlchemyError
@@ -31,6 +32,19 @@ from app.services.citadel import (
 )
 
 router = APIRouter(prefix="/citadel", tags=["citadel"])
+
+
+def _build_assessment(
+    *,
+    owner_type: str,
+    owner_id: int,
+    context: CitadelAssessmentService.WalletRuntimeContext,
+) -> CitadelAssessmentOut:
+    service = CitadelAssessmentService()
+    signature = inspect.signature(service.build_assessment)
+    if "wallet_context" in signature.parameters:
+        return service.build_assessment(owner_type=owner_type, owner_id=owner_id, wallet_context=context)
+    return service.build_assessment(owner_type=owner_type, owner_id=owner_id)
 
 
 def _load_wallet_context(*, owner_id: int, db: Session) -> CitadelAssessmentService.WalletRuntimeContext:
@@ -93,11 +107,7 @@ def _load_assessment(
         )
 
     context = _load_wallet_context(owner_id=owner_id, db=db)
-    data = CitadelAssessmentService().build_assessment(
-        owner_type=owner_type,
-        owner_id=owner_id,
-        wallet_context=context,
-    )
+    data = _build_assessment(owner_type=owner_type, owner_id=owner_id, context=context)
     repo.save(assessment=data)
     reason = "forced" if force_refresh else "stale_or_miss"
     freshness = CitadelFreshnessOut.model_validate(data.freshness)
@@ -172,11 +182,7 @@ def recalculate_citadel(
 ) -> ResponseEnvelope[CitadelAssessmentOut]:
     repo = CitadelAssessmentRepository(db)
     context = _load_wallet_context(owner_id=payload.owner_id, db=db)
-    data = CitadelAssessmentService().build_assessment(
-        owner_type=payload.owner_type,
-        owner_id=payload.owner_id,
-        wallet_context=context,
-    )
+    data = _build_assessment(owner_type=payload.owner_type, owner_id=payload.owner_id, context=context)
     repo.save(assessment=data)
     return ResponseEnvelope(data=data)
 
