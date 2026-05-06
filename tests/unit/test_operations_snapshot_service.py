@@ -45,3 +45,6 @@ def test_operations_snapshot_includes_job_and_delivery_stats() -> None:
     onchain = next(item for item in snapshot.providers if item.provider == "onchain")
     assert onchain.healthy is False
     assert "degraded" in onchain.details
+    assert 0.0 <= onchain.confidence <= 1.0
+    delivery = next(item for item in snapshot.providers if item.provider == "delivery")
+    assert "recovery_slo_breached" in delivery.details

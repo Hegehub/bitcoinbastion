@@ -70,3 +70,5 @@ class RecoveryCheckOut(BaseModel):
     hotspots: list[RecoveryHotspotOut]
     drills: list[RecoveryDrillOut]
     recommended_actions: list[str]
+    drill_execution: dict[str, object] = Field(default_factory=dict)
+    recovery_slo: dict[str, object] = Field(default_factory=dict)

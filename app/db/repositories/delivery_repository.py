@@ -43,6 +43,26 @@ class DeliveryRepository:
         self.db.refresh(item)
         return item
 
+    def failed_attempts_and_last_failed_at(
+        self,
+        *,
+        signal_id: int,
+        destination: str,
+    ) -> tuple[int, datetime | None]:
+        stmt = (
+            select(func.count(DeliveryLog.id), func.max(DeliveryLog.sent_at))
+            .where(DeliveryLog.signal_id == signal_id)
+            .where(DeliveryLog.destination == destination)
+            .where(DeliveryLog.delivery_status.in_(["failed", "error"]))
+        )
+        count_value, last_failed_at = self.db.execute(stmt).one()
+        attempts = int(count_value or 0)
+        if last_failed_at is None:
+            return attempts, None
+        if isinstance(last_failed_at, datetime) and last_failed_at.tzinfo is None:
+            last_failed_at = last_failed_at.replace(tzinfo=UTC)
+        return attempts, last_failed_at
+
     def record_failed(
         self,
         *,
@@ -64,7 +84,6 @@ class DeliveryRepository:
         self.db.commit()
         self.db.refresh(item)
         return item
-
 
     def list_recent_failures(self, limit: int = 20) -> list[DeliveryLog]:
         stmt = (
