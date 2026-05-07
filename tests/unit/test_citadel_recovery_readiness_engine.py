@@ -4,7 +4,13 @@ from app.services.citadel.recovery_readiness_engine import RecoveryReadinessEngi
 
 def test_recovery_artifact_summary_counts_required_and_missing() -> None:
     artifacts = [
-        RecoveryArtifactRecord(artifact_type="descriptor", label="primary descriptor", is_verified=True, required_for_recovery=True),
+        RecoveryArtifactRecord(
+            artifact_type="descriptor",
+            label="primary descriptor",
+            is_verified=True,
+            required_for_recovery=True,
+            verification_age_days=10,
+        ),
         RecoveryArtifactRecord(artifact_type="backup", label="metal backup", is_verified=False, required_for_recovery=True),
     ]
 
@@ -13,6 +19,7 @@ def test_recovery_artifact_summary_counts_required_and_missing() -> None:
     assert out["required_count"] == 2
     assert out["verified_required_count"] == 1
     assert out["missing_required_labels"] == ["metal backup"]
+    assert out["stale_required_labels"] == []
 
 
 def test_recovery_readiness_engine_reports_warnings_for_missing_controls() -> None:
@@ -30,3 +37,65 @@ def test_recovery_readiness_engine_reports_warnings_for_missing_controls() -> No
     assert out["recovery_readiness_score"] < 0.5
     assert out["recoverability_assumption"] == "weak"
     assert out["warnings"]
+
+
+def test_recovery_readiness_engine_flags_stale_required_artifacts() -> None:
+    artifacts = [
+        RecoveryArtifactRecord(
+            artifact_type="descriptor",
+            label="descriptor",
+            is_verified=True,
+            required_for_recovery=True,
+            verification_age_days=140,
+        ),
+        RecoveryArtifactRecord(
+            artifact_type="backup",
+            label="backup",
+            is_verified=True,
+            required_for_recovery=True,
+            verification_age_days=120,
+        ),
+    ]
+    out = RecoveryReadinessEngine().evaluate(
+        artifacts=artifacts,
+        has_descriptor=True,
+        has_instructions=True,
+        human_dependency_score=0.3,
+    )
+    assert out["artifact_summary"]["stale_required_labels"]
+    assert any("stale" in warning.lower() for warning in out["warnings"])
+
+
+def test_recovery_readiness_engine_penalizes_high_script_risk() -> None:
+    artifacts = [
+        RecoveryArtifactRecord(
+            artifact_type="descriptor",
+            label="descriptor",
+            is_verified=True,
+            required_for_recovery=True,
+            verification_age_days=10,
+        ),
+        RecoveryArtifactRecord(
+            artifact_type="backup",
+            label="backup",
+            is_verified=True,
+            required_for_recovery=True,
+            verification_age_days=10,
+        ),
+    ]
+    low = RecoveryReadinessEngine().evaluate(
+        artifacts=artifacts,
+        has_descriptor=True,
+        has_instructions=True,
+        human_dependency_score=0.3,
+        script_risk_score=0.1,
+    )
+    high = RecoveryReadinessEngine().evaluate(
+        artifacts=artifacts,
+        has_descriptor=True,
+        has_instructions=True,
+        human_dependency_score=0.3,
+        script_risk_score=0.9,
+    )
+    assert high["recovery_readiness_score"] < low["recovery_readiness_score"]
+    assert any("script complexity risk" in warning.lower() for warning in high["warnings"])

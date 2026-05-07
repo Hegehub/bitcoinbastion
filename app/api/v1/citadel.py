@@ -1,10 +1,13 @@
 from datetime import UTC, datetime, timedelta
+import inspect
 
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import db_session
 from app.db.repositories.citadel_repository import CitadelAssessmentRepository
+from app.db.repositories.wallet_repository import WalletRepository
 from app.schemas.base import ResponseEnvelope
 from app.schemas.citadel import (
     CitadelAssessmentOut,
@@ -29,6 +32,42 @@ from app.services.citadel import (
 )
 
 router = APIRouter(prefix="/citadel", tags=["citadel"])
+
+
+def _build_assessment(
+    *,
+    owner_type: str,
+    owner_id: int,
+    context: CitadelAssessmentService.WalletRuntimeContext,
+) -> CitadelAssessmentOut:
+    service = CitadelAssessmentService()
+    signature = inspect.signature(service.build_assessment)
+    if "wallet_context" in signature.parameters:
+        return service.build_assessment(owner_type=owner_type, owner_id=owner_id, wallet_context=context)
+    return service.build_assessment(owner_type=owner_type, owner_id=owner_id)
+
+
+def _load_wallet_context(*, owner_id: int, db: Session) -> CitadelAssessmentService.WalletRuntimeContext:
+    wallet_repo = WalletRepository(db)
+    profile = None
+    report = None
+    try:
+        profiles = wallet_repo.list_by_user(user_id=owner_id, limit=1, offset=0)
+        if profiles:
+            profile = profiles[0]
+            reports = wallet_repo.list_health_reports(wallet_profile_id=profile.id, limit=1, offset=0)
+            if reports:
+                report = reports[0]
+    except SQLAlchemyError:
+        profile = None
+        report = None
+    return CitadelAssessmentService.build_wallet_context(
+        wallet_type=(profile.wallet_type if profile else "single-sig"),
+        descriptor_hint=(profile.descriptor_or_reference if profile else ""),
+        fee_exposure_score=(report.fee_exposure_score if report else None),
+        wallet_health_score=(report.health_score if report else None),
+        has_recent_health_report=report is not None,
+    )
 
 
 def _is_snapshot_fresh(*, generated_at: datetime, max_age_hours: int) -> bool:
@@ -67,7 +106,8 @@ def _load_assessment(
             }
         )
 
-    data = CitadelAssessmentService().build_assessment(owner_type=owner_type, owner_id=owner_id)
+    context = _load_wallet_context(owner_id=owner_id, db=db)
+    data = _build_assessment(owner_type=owner_type, owner_id=owner_id, context=context)
     repo.save(assessment=data)
     reason = "forced" if force_refresh else "stale_or_miss"
     freshness = CitadelFreshnessOut.model_validate(data.freshness)
@@ -141,7 +181,8 @@ def recalculate_citadel(
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[CitadelAssessmentOut]:
     repo = CitadelAssessmentRepository(db)
-    data = CitadelAssessmentService().build_assessment(owner_type=payload.owner_type, owner_id=payload.owner_id)
+    context = _load_wallet_context(owner_id=payload.owner_id, db=db)
+    data = _build_assessment(owner_type=payload.owner_type, owner_id=payload.owner_id, context=context)
     repo.save(assessment=data)
     return ResponseEnvelope(data=data)
 

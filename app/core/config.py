@@ -20,7 +20,9 @@ class Settings(BaseSettings):
     environment: str = Field(default="dev", alias="ENVIRONMENT")
     api_prefix: str = Field(default="/api/v1", alias="API_PREFIX")
 
-    database_url: str = Field(default="sqlite+pysqlite:///./bitcoin_bastion.db", alias="DATABASE_URL")
+    database_url: str = Field(
+        default="sqlite+pysqlite:///./bitcoin_bastion.db", alias="DATABASE_URL"
+    )
     redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
 
     telegram_bot_token: str = Field(default="", alias="TELEGRAM_BOT_TOKEN")
@@ -35,11 +37,23 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = Field(default=120, alias="RATE_LIMIT_PER_MINUTE")
 
     news_fetch_interval_seconds: int = Field(default=300, alias="NEWS_FETCH_INTERVAL_SECONDS")
-    onchain_large_transfer_sats: int = Field(default=1_000_000_000, alias="ONCHAIN_LARGE_TRANSFER_SATS")
+    onchain_large_transfer_sats: int = Field(
+        default=1_000_000_000, alias="ONCHAIN_LARGE_TRANSFER_SATS"
+    )
     bitcoin_esplora_url: str = Field(default="", alias="BITCOIN_ESPLORA_URL")
-    bitcoin_provider_timeout_seconds: float = Field(default=6.0, alias="BITCOIN_PROVIDER_TIMEOUT_SECONDS")
+    bitcoin_provider_timeout_seconds: float = Field(
+        default=6.0, alias="BITCOIN_PROVIDER_TIMEOUT_SECONDS"
+    )
+    delivery_max_failed_attempts_per_signal_destination: int = Field(
+        default=5, alias="DELIVERY_MAX_FAILED_ATTEMPTS_PER_SIGNAL_DESTINATION"
+    )
+    delivery_retry_cooldown_seconds: int = Field(
+        default=300, alias="DELIVERY_RETRY_COOLDOWN_SECONDS"
+    )
     citadel_score_weights_json: str = Field(default="", alias="CITADEL_SCORE_WEIGHTS_JSON")
-    citadel_external_signal_factors_json: str = Field(default="", alias="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON")
+    citadel_external_signal_factors_json: str = Field(
+        default="", alias="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON"
+    )
 
     @model_validator(mode="after")
     def validate_production_secret_guards(self) -> "Settings":

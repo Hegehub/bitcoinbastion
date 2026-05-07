@@ -54,6 +54,10 @@ def test_signal_engine_records_onchain_latency(monkeypatch) -> None:
     signal = SignalEngine().from_onchain_event(event)
 
     assert signal.signal_type == "onchain"
+
+    payload = signal.explainability_json
+    assert "onchain_scoring_pipeline" in payload
+    assert "source_type" in payload
     assert observed
     assert observed[0]["source"] == "onchain"
     assert float(observed[0]["duration_seconds"]) >= 0.0

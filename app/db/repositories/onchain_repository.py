@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import func, select
 from sqlalchemy.exc import SQLAlchemyError
@@ -27,7 +28,7 @@ class OnchainRepository:
             value_sats=event.value_sats,
             block_height=event.block_height,
             observed_at=event.observed_at,
-            provider="mock",
+            provider=str(event.payload.get("provider", "mock")),
             raw_payload_json=json.dumps(event.payload),
             significance_score=significance,
             confidence_score=confidence,
@@ -62,3 +63,16 @@ class OnchainRepository:
         if value is None:
             return None
         return int(value)
+
+    def provider_counts_last_24h(self) -> list[tuple[str, int]]:
+        since = datetime.now(UTC) - timedelta(hours=24)
+        stmt = (
+            select(OnchainEvent.provider, func.count().label("cnt"))
+            .where(OnchainEvent.observed_at >= since)
+            .group_by(OnchainEvent.provider)
+            .order_by(func.count().desc(), OnchainEvent.provider.asc())
+        )
+        try:
+            return [(str(provider), int(cnt)) for provider, cnt in self.db.execute(stmt).all()]
+        except SQLAlchemyError:
+            return []

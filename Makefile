@@ -1,4 +1,4 @@
-.PHONY: install install-dev test test-contract test-integration lint format up down run dev worker bot migrate alembic-repro alembic-roundtrip ci-smoke
+.PHONY: install install-dev test test-contract test-integration lint format up down run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity docs-truthfulness ci-smoke
 
 install:
 	python -m pip install -e .
@@ -50,9 +50,21 @@ alembic-roundtrip:
 	python -m alembic downgrade base
 	python -m alembic upgrade head
 
+model-migration-coverage:
+	python scripts/check_model_migration_coverage.py
+
+schema-runtime-parity:
+	python scripts/check_schema_runtime_parity.py
+
+docs-truthfulness:
+	python scripts/check_docs_truthfulness.py
+
 ci-smoke: install-dev
 	python -m alembic upgrade head
 	python -m alembic downgrade base
 	python -m alembic upgrade head
 	bash scripts/check_alembic_reproducibility.sh
+	python scripts/check_model_migration_coverage.py
+	python scripts/check_schema_runtime_parity.py
+	python scripts/check_docs_truthfulness.py
 	python -m pytest -q tests/contract
