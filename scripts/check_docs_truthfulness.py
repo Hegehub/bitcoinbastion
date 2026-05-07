@@ -28,6 +28,7 @@ METHOD_ROUTE_RE = re.compile(r"`(?:GET|POST|PUT|PATCH|DELETE)\s+(/api/v1[^`\s]*)
 ROUTER_PREFIX_RE = re.compile(r'APIRouter\(prefix="([^"]+)"')
 ROUTE_RE = re.compile(r'@router\.(?:get|post|put|delete|patch)\("([^"]*)"')
 MODEL_BULLET_RE = re.compile(r"^- `([A-Za-z][A-Za-z0-9_]*)`$", re.MULTILINE)
+H2_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 
 
 def collect_code_routes() -> set[str]:
@@ -71,6 +72,19 @@ def check_core_docs_heading() -> list[str]:
     return []
 
 
+def check_duplicate_h2_headings(doc: Path) -> list[str]:
+    headings = [match.group(1).strip().lower() for match in H2_RE.finditer(doc.read_text())]
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for heading in headings:
+        if heading in seen:
+            duplicates.add(heading)
+        seen.add(heading)
+    if not duplicates:
+        return []
+    return [f"{doc.relative_to(REPO_ROOT)} duplicate H2 headings: {', '.join(sorted(duplicates))}"]
+
+
 def main() -> int:
     errors: list[str] = []
 
@@ -97,6 +111,8 @@ def main() -> int:
         errors.append(f"DOMAIN_MODELS unknown model names: {', '.join(extra_models)}")
 
     errors.extend(check_core_docs_heading())
+    for doc in (README_DOC, API_DOC, MODELS_DOC, REPO_ROOT / "docs" / "STATUS.md"):
+        errors.extend(check_duplicate_h2_headings(doc))
 
     if errors:
         print("Docs truthfulness check failed:")
