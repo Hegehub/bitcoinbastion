@@ -62,6 +62,13 @@ class RecoveryArtifactOut(BaseModel):
     label: str
     is_verified: bool
     required_for_recovery: bool
+    source_type: str = "unknown"
+    verification_status: str = "unverified"
+    verification_age_days: int | None = None
+    freshness_band: str = "unknown"
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    provenance_notes: str = ""
+    evidence_refs: list[str] = Field(default_factory=list)
 
 
 class RecoveryReadinessOut(BaseModel):
