@@ -250,3 +250,60 @@ def test_citadel_assessment_includes_utxo_domain_in_explainability() -> None:
 def test_citadel_assessment_emits_descriptor_gap_warnings_for_incomplete_metadata() -> None:
     out = CitadelAssessmentService().build_assessment(owner_type="user", owner_id=15)
     assert any(item.domain == "descriptor" for item in out.warnings)
+
+
+def test_citadel_assessment_exposes_input_quality_classification() -> None:
+    service = CitadelAssessmentService()
+    out = service.build_assessment(owner_type="user", owner_id=2)
+    explainability = out.explainability.model_dump()
+
+    quality = explainability["input_quality"]
+    assert quality["mempool"]["quality_classification"] == "SYNTHETIC"
+    assert quality["utxo"]["quality_classification"] == "FALLBACK"
+    assert quality["inheritance"]["quality_classification"] == "SYNTHETIC"
+    assert quality["policy"]["quality_classification"] in {"REAL", "FALLBACK"}
+
+
+def test_citadel_assessment_input_quality_marks_real_runtime_inputs() -> None:
+    service = CitadelAssessmentService()
+    out = service.build_assessment(
+        owner_type="user",
+        owner_id=2,
+        wallet_context=service.build_wallet_context(
+            wallet_type="multisig-2of3",
+            descriptor_hint="tr(sortedmulti(2,...))",
+            wallet_health_score=0.8,
+            utxo_values_sats=[100_000, 250_000],
+            has_recent_health_report=True,
+        ),
+    )
+    explainability = out.explainability.model_dump()
+    quality = explainability["input_quality"]
+
+    assert quality["wallet_runtime_context"]["quality_classification"] == "REAL"
+    assert quality["utxo"]["quality_classification"] == "REAL"
+    assert quality["script"]["quality_classification"] == "REAL"
+    assert quality["descriptor_awareness"]["quality_classification"] == "REAL"
+
+
+def test_recovery_artifacts_do_not_fabricate_owner_based_verification() -> None:
+    artifacts = CitadelAssessmentService().recovery_artifacts(owner_id=2)
+    assert all(not item.is_verified for item in artifacts)
+
+
+def test_recovery_report_uses_runtime_linked_artifact_flags() -> None:
+    service = CitadelAssessmentService()
+    context = service.build_wallet_context(
+        descriptor_hint="wsh(sortedmulti(...))",
+        descriptor_verified=True,
+        backup_verified=False,
+        recovery_instructions_verified=True,
+        signer_count=3,
+        artifact_verification_age_days=7,
+        has_recent_health_report=True,
+    )
+    report = service.recovery_report(owner_id=10, wallet_context=context)
+    summary = report.artifact_summary
+
+    assert summary["verified_required_count"] == 1
+    assert summary["missing_required_labels"] == ["owner-10-backup"]

@@ -22,6 +22,16 @@ from app.services.script.script_analyzer_service import ScriptAnalyzerService
 from app.services.utxo.utxo_analyzer_service import UTXOAnalyzerService
 
 
+
+
+@dataclass
+class InputQualityMeta:
+    source_type: str
+    freshness: str
+    confidence: float
+    quality_classification: str
+    note: str = ""
+
 class CitadelAssessmentService:
     @dataclass
     class WalletRuntimeContext:
@@ -30,7 +40,12 @@ class CitadelAssessmentService:
         fee_exposure_score: float = 0.5
         wallet_health_score: float | None = None
         utxo_values_sats: list[int] | None = None
-        has_recent_health_report: bool = False
+        has_recent_health_report: bool = False,
+        backup_verified: bool | None = None,
+        recovery_instructions_verified: bool | None = None,
+        descriptor_verified: bool | None = None,
+        signer_count: int | None = None,
+        artifact_verification_age_days: int | None = None
 
     DEFAULT_SCORE_WEIGHTS: dict[str, float] = {
         "custody_resilience_score": 0.16,
@@ -177,6 +192,93 @@ class CitadelAssessmentService:
         )
         return {"script": script, "descriptor": descriptor}
 
+
+    @staticmethod
+    def _quality_meta(*, source_type: str, freshness: str, confidence: float, note: str = "") -> dict[str, object]:
+        source = source_type if source_type in {"real", "fallback", "synthetic", "unknown"} else "unknown"
+        classification = {
+            "real": "REAL",
+            "fallback": "FALLBACK",
+            "synthetic": "SYNTHETIC",
+            "unknown": "UNKNOWN",
+        }[source]
+        return InputQualityMeta(
+            source_type=source,
+            freshness=freshness or "unknown",
+            confidence=round(max(0.0, min(1.0, float(confidence))), 3),
+            quality_classification=classification,
+            note=note,
+        ).__dict__
+
+    def _input_quality_matrix(
+        self,
+        *,
+        context: "CitadelAssessmentService.WalletRuntimeContext",
+        recovery: RecoveryReadinessOut,
+        inheritance: dict[str, object],
+        policy: dict[str, object],
+        graph: dict[str, object],
+        utxo: dict[str, object],
+        mempool: dict[str, object],
+        script_descriptor: dict[str, object],
+    ) -> dict[str, dict[str, object]]:
+        return {
+            "wallet_runtime_context": self._quality_meta(
+                source_type="real" if context.has_recent_health_report else "fallback",
+                freshness="runtime_session",
+                confidence=0.8 if context.has_recent_health_report else 0.55,
+                note="Derived from API/runtime-provided wallet context",
+            ),
+            "recovery": self._quality_meta(
+                source_type="fallback" if not context.has_recent_health_report else "real",
+                freshness=str(recovery.freshness.get("source", "unknown")),
+                confidence=float(recovery.confidence),
+                note="Recovery artifacts may be template-derived when evidence is missing",
+            ),
+            "inheritance": self._quality_meta(
+                source_type="synthetic",
+                freshness=str(inheritance.get("freshness", {}).get("source", "unknown")),
+                confidence=float(inheritance.get("confidence", 0.0)),
+                note="Current inheritance scoring includes owner-derived deterministic heuristics",
+            ),
+            "policy": self._quality_meta(
+                source_type="real" if context.wallet_health_score is not None else "fallback",
+                freshness=str(policy.get("freshness", {}).get("source", "unknown")),
+                confidence=float(policy.get("confidence", 0.0)),
+                note="Policy maturity uses runtime health score when available",
+            ),
+            "sovereignty_graph": self._quality_meta(
+                source_type="real" if context.descriptor_hint else "fallback",
+                freshness=str(graph.get("freshness", {}).get("source", "unknown")),
+                confidence=float(graph.get("confidence", 0.0)),
+                note="Topology is deterministic from wallet profile assumptions",
+            ),
+            "utxo": self._quality_meta(
+                source_type="real" if context.utxo_values_sats else "fallback",
+                freshness="runtime_session",
+                confidence=0.82 if context.utxo_values_sats else 0.5,
+                note="Uses fallback UTXO set when runtime values are absent",
+            ),
+            "mempool": self._quality_meta(
+                source_type="synthetic",
+                freshness=str(mempool["market"].freshness),
+                confidence=float(mempool["market"].confidence),
+                note="Mempool snapshot is synthesized from fee exposure context",
+            ),
+            "script": self._quality_meta(
+                source_type="fallback" if not context.descriptor_hint else "real",
+                freshness="runtime_session",
+                confidence=0.8 if context.descriptor_hint else 0.58,
+                note="Script risk inferred from descriptor hint or wallet type",
+            ),
+            "descriptor_awareness": self._quality_meta(
+                source_type="fallback" if not context.descriptor_hint else "real",
+                freshness="runtime_session",
+                confidence=0.78 if context.descriptor_hint else 0.52,
+                note="Completeness depends on descriptor and health-report proxies",
+            ),
+        }
+
     @staticmethod
     def build_wallet_context(
         *,
@@ -186,6 +288,11 @@ class CitadelAssessmentService:
         wallet_health_score: float | None = None,
         utxo_values_sats: list[int] | None = None,
         has_recent_health_report: bool = False,
+        backup_verified: bool | None = None,
+        recovery_instructions_verified: bool | None = None,
+        descriptor_verified: bool | None = None,
+        signer_count: int | None = None,
+        artifact_verification_age_days: int | None = None,
     ) -> "CitadelAssessmentService.WalletRuntimeContext":
         return CitadelAssessmentService.WalletRuntimeContext(
             wallet_type=wallet_type or "single-sig",
@@ -196,6 +303,11 @@ class CitadelAssessmentService:
             ),
             utxo_values_sats=utxo_values_sats or [],
             has_recent_health_report=has_recent_health_report,
+            backup_verified=backup_verified,
+            recovery_instructions_verified=recovery_instructions_verified,
+            descriptor_verified=descriptor_verified,
+            signer_count=signer_count,
+            artifact_verification_age_days=artifact_verification_age_days,
         )
 
     def recovery_report(
@@ -205,7 +317,7 @@ class CitadelAssessmentService:
         wallet_context: "CitadelAssessmentService.WalletRuntimeContext | None" = None,
     ) -> RecoveryReadinessOut:
         context = wallet_context or self.build_wallet_context()
-        has_descriptor = bool(context.descriptor_hint)
+        has_descriptor = bool(context.descriptor_verified) if context.descriptor_verified is not None else bool(context.descriptor_hint)
         has_recent_health = context.has_recent_health_report
         script_profile = ScriptAnalyzerService().analyze(
             script_hint=context.descriptor_hint or context.wallet_type or "single-sig"
@@ -221,25 +333,27 @@ class CitadelAssessmentService:
                 label=f"owner-{owner_id}-descriptor",
                 is_verified=has_descriptor,
                 required_for_recovery=True,
-                verification_age_days=14 if has_recent_health else 180,
+                verification_age_days=context.artifact_verification_age_days if context.artifact_verification_age_days is not None else (14 if has_recent_health else 180),
             ),
             RecoveryArtifactRecord(
                 artifact_type="backup",
                 label=f"owner-{owner_id}-backup",
-                is_verified=has_recent_health,
+                is_verified=(context.backup_verified if context.backup_verified is not None else has_recent_health),
                 required_for_recovery=True,
-                verification_age_days=30 if has_recent_health else 210,
+                verification_age_days=context.artifact_verification_age_days if context.artifact_verification_age_days is not None else (30 if has_recent_health else 210),
             ),
             RecoveryArtifactRecord(
                 artifact_type="instructions",
                 label=f"owner-{owner_id}-runbook",
-                is_verified=has_recent_health,
+                is_verified=(context.backup_verified if context.backup_verified is not None else has_recent_health),
                 required_for_recovery=False,
-                verification_age_days=30 if has_recent_health else 180,
+                verification_age_days=context.artifact_verification_age_days if context.artifact_verification_age_days is not None else (30 if has_recent_health else 180),
             ),
         ]
         wallet_type = (context.wallet_type or "").lower()
-        if "multi" in wallet_type:
+        if context.signer_count is not None:
+            human_dependency_score = 0.35 if context.signer_count >= 3 else 0.55 if context.signer_count == 2 else 0.75
+        elif "multi" in wallet_type:
             human_dependency_score = 0.45
         elif "watch" in wallet_type:
             human_dependency_score = 0.7
@@ -439,6 +553,17 @@ class CitadelAssessmentService:
             )
 
         now = datetime.now(UTC)
+        input_quality = self._input_quality_matrix(
+            context=context,
+            recovery=recovery,
+            inheritance=inheritance,
+            policy=policy,
+            graph=graph,
+            utxo=utxo,
+            mempool=mempool,
+            script_descriptor=script_descriptor,
+        )
+
         explainability_payload: dict[str, object] = {
             "recovery": recovery.model_dump(),
             "inheritance": inheritance,
@@ -492,7 +617,13 @@ class CitadelAssessmentService:
                 "has_recent_health_report": context.has_recent_health_report,
                 "utxo_values_provided": bool(context.utxo_values_sats),
                 "fee_exposure_score": context.fee_exposure_score,
+                "backup_verified": context.backup_verified,
+                "recovery_instructions_verified": context.recovery_instructions_verified,
+                "descriptor_verified": context.descriptor_verified,
+                "signer_count": context.signer_count,
+                "artifact_verification_age_days": context.artifact_verification_age_days,
             },
+            "input_quality": input_quality,
         }
         explainability_payload["guarantees"] = self._coverage_summary(
             explainability=explainability_payload,
@@ -507,6 +638,7 @@ class CitadelAssessmentService:
                 "mempool",
                 "script",
                 "descriptor_awareness",
+                "input_quality",
             ],
         )
 
@@ -539,13 +671,13 @@ class CitadelAssessmentService:
             RecoveryArtifactOut(
                 artifact_type="descriptor",
                 label=f"owner-{owner_id}-descriptor",
-                is_verified=True,
+                is_verified=False,
                 required_for_recovery=True,
             ),
             RecoveryArtifactOut(
                 artifact_type="backup",
                 label=f"owner-{owner_id}-backup",
-                is_verified=(owner_id % 2 == 0),
+                is_verified=False,
                 required_for_recovery=True,
             ),
         ]
