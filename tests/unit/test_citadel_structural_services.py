@@ -28,7 +28,7 @@ def test_disaster_simulation_service_loss_signer_degrades_survivability() -> Non
     out = DisasterSimulationService().simulate(owner_id=5, scenario_code="loss_signer")
     assert out["survivability_score"] < 0.5
     assert out["blocked_paths"]
-    assert out["explainability"]["rule_set"] == "citadel_disaster_v2"
+    assert out["explainability"]["rule_set"] == "citadel_disaster_v3"
 
 
 def test_disaster_simulation_service_is_deterministic_for_same_input() -> None:
@@ -37,6 +37,30 @@ def test_disaster_simulation_service_is_deterministic_for_same_input() -> None:
     assert first["survivability_score"] == second["survivability_score"]
     assert first["blocked_paths"] == second["blocked_paths"]
     assert first["critical_failure_points"] == second["critical_failure_points"]
+
+
+def test_disaster_simulation_service_supports_extended_scenarios() -> None:
+    scenarios = [
+        "descriptor_corruption",
+        "inheritance_trigger",
+        "high_fee_emergency_spend",
+        "provider_outage",
+        "recovery_instruction_loss",
+    ]
+    for scenario in scenarios:
+        out = DisasterSimulationService().simulate(owner_id=11, scenario_code=scenario)
+        assert out["scenario_code"] == scenario
+        assert out["blocked_paths"]
+        assert out["recommended_remediations"]
+        assert out["confidence"] >= 0.52
+        assert out["explainability"]["affected_dependency_types"]
+
+
+def test_disaster_descriptor_corruption_reflects_descriptor_penalty() -> None:
+    out = DisasterSimulationService().simulate(owner_id=12, scenario_code="descriptor_corruption")
+    assert out["explainability"]["descriptor_penalty"] >= 0
+    assert out["explainability"]["descriptor_completeness_score"] <= 1.0
+    assert out["blocked_paths"]
 
 
 def test_repair_plan_service_returns_prioritized_items() -> None:

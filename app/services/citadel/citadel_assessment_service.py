@@ -362,6 +362,7 @@ class CitadelAssessmentService:
         raw = RecoveryReadinessEngine().evaluate(
             artifacts=artifacts,
             has_descriptor=has_descriptor,
+            descriptor_completeness_score=descriptor_profile.completeness_score,
             has_instructions=has_recent_health and not descriptor_profile.warnings,
             human_dependency_score=human_dependency_score,
             script_risk_score=max(0.0, min(1.0, script_profile.complexity_score)),
@@ -395,13 +396,24 @@ class CitadelAssessmentService:
 
         spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
         spof_count = len(spof_items)
+        descriptor_completeness_score_100 = self._clamp_percent(
+            script_descriptor["descriptor"].completeness_score * 100
+        )
+        descriptor_gap_penalty = max(0.0, (100.0 - descriptor_completeness_score_100) * 0.18)
         custody = self._clamp_percent(
-            max(35.0, 78.0 - (spof_count * 12.0) - (utxo["fragmentation_score_100"] * 0.2))
+            max(
+                25.0,
+                78.0
+                - (spof_count * 12.0)
+                - (utxo["fragmentation_score_100"] * 0.2)
+                - descriptor_gap_penalty,
+            )
         )
         vendor = self._clamp_percent(max(40.0, 72.0 - (spof_count * 8.0)))
         recovery_score_100 = self._clamp_percent(recovery.recovery_readiness_score * 100)
         inheritance_score_100 = self._clamp_percent(
-            self._safe_float(inheritance.get("completeness_score"), default=0.0) * 100
+            (self._safe_float(inheritance.get("completeness_score"), default=0.0) * 100)
+            - ((100.0 - descriptor_completeness_score_100) * 0.22)
         )
 
         policy_maturity = self._clamp_percent(
@@ -542,6 +554,24 @@ class CitadelAssessmentService:
                     detail="Script profile indicates elevated operational fragility; verify signer flow.",
                 )
             )
+        if descriptor_completeness_score_100 < 60:
+            warnings.append(
+                CitadelFindingOut(
+                    title="Descriptor completeness degraded",
+                    severity="warning",
+                    domain="descriptor",
+                    detail="Descriptor readiness is below 60%; custody and inheritance resilience are penalized.",
+                )
+            )
+        if descriptor_completeness_score_100 < 25:
+            findings.append(
+                CitadelFindingOut(
+                    title="Descriptor readiness critical gap",
+                    severity="critical",
+                    domain="descriptor",
+                    detail="Descriptor assumptions are weak; deterministic recovery guarantees are not met.",
+                )
+            )
         for item in script_descriptor["descriptor"].warnings:
             warnings.append(
                 CitadelFindingOut(
@@ -588,7 +618,9 @@ class CitadelAssessmentService:
                 "explainability": mempool["market"].explainability,
             },
             "script": script_descriptor["script"].model_dump(),
-            "descriptor_awareness": script_descriptor["descriptor"].model_dump(),
+                "descriptor_awareness": script_descriptor["descriptor"].model_dump(),
+                "descriptor_completeness_score_100": descriptor_completeness_score_100,
+                "descriptor_gap_penalty": round(descriptor_gap_penalty, 2),
             "scoring_weights": {
                 "uniform": False,
                 "weights": weights,

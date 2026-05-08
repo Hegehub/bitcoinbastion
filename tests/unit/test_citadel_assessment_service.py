@@ -252,6 +252,32 @@ def test_citadel_assessment_emits_descriptor_gap_warnings_for_incomplete_metadat
     assert any(item.domain == "descriptor" for item in out.warnings)
 
 
+def test_descriptor_completeness_penalizes_custody_and_inheritance_scores() -> None:
+    service = CitadelAssessmentService()
+    with_descriptor = service.build_assessment(
+        owner_type="user",
+        owner_id=2,
+        wallet_context=service.build_wallet_context(
+            descriptor_hint="tr(sortedmulti(2,...))",
+            descriptor_verified=True,
+            has_recent_health_report=True,
+        ),
+    )
+    without_descriptor = service.build_assessment(
+        owner_type="user",
+        owner_id=2,
+        wallet_context=service.build_wallet_context(
+            descriptor_hint="",
+            descriptor_verified=False,
+            has_recent_health_report=False,
+        ),
+    )
+
+    assert with_descriptor.inheritance_readiness_score > without_descriptor.inheritance_readiness_score
+    assert with_descriptor.recovery_readiness_score > without_descriptor.recovery_readiness_score
+    assert any(item.domain == "descriptor" for item in without_descriptor.warnings)
+
+
 def test_citadel_assessment_exposes_input_quality_classification() -> None:
     service = CitadelAssessmentService()
     out = service.build_assessment(owner_type="user", owner_id=2)
