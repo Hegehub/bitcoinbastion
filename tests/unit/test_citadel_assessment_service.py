@@ -36,7 +36,7 @@ def test_citadel_assessment_clamps_inheritance_and_policy_scores(monkeypatch) ->
 
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.InheritanceVerificationService.evaluate",
-        lambda self, owner_id: {"completeness_score": 1.8},
+        lambda self, owner_id, **kwargs: {"completeness_score": 1.8},
     )
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.CitadelPolicyService.evaluate",
@@ -69,7 +69,7 @@ def test_citadel_assessment_handles_non_numeric_scores_and_conditional_recommend
 
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.InheritanceVerificationService.evaluate",
-        lambda self, owner_id: {
+        lambda self, owner_id, **kwargs: {
             "completeness_score": "not-a-number",
             "recommendations": ["Test rec"],
         },
@@ -111,7 +111,7 @@ def test_citadel_assessment_uses_weighted_score_inputs(monkeypatch) -> None:
 
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.InheritanceVerificationService.evaluate",
-        lambda self, owner_id: {"completeness_score": 1.0},
+        lambda self, owner_id, **kwargs: {"completeness_score": 1.0},
     )
     monkeypatch.setattr(
         "app.services.citadel.citadel_assessment_service.CitadelPolicyService.evaluate",

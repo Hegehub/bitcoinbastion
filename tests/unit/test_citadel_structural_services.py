@@ -67,6 +67,17 @@ def test_repair_plan_service_returns_prioritized_items() -> None:
     out = RepairPlanService().build(owner_id=5)
     assert out["items"]
     assert out["items"][0]["priority_score"] >= out["items"][1]["priority_score"]
+    assert "dependency_area" in out["items"][0]
+    assert "expected_resilience_improvement" in out["items"][0]
+    assert "effort_estimate" in out["items"][0]
+    assert out["items"][0]["evidence_refs"]
+
+
+def test_repair_plan_service_maps_items_to_recovery_and_inheritance_evidence() -> None:
+    out = RepairPlanService().build(owner_id=21)
+    areas = {item["dependency_area"] for item in out["items"]}
+    assert "recovery_artifacts" in areas or "verification_freshness" in areas
+    assert "inheritance" in areas or "operations" in areas or "descriptor" in areas
 
 
 def test_policy_service_returns_maturity_payload() -> None:

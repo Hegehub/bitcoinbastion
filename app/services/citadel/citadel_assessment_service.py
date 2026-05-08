@@ -378,7 +378,6 @@ class CitadelAssessmentService:
     ) -> CitadelAssessmentOut:
         context = wallet_context or self.build_wallet_context()
         recovery = self.recovery_report(owner_id=owner_id, wallet_context=context)
-        inheritance = InheritanceVerificationService().evaluate(owner_id=owner_id)
         policy = CitadelPolicyService().evaluate(
             owner_id=owner_id,
             wallet_health_score=context.wallet_health_score,
@@ -393,6 +392,37 @@ class CitadelAssessmentService:
         utxo = self._utxo_signal(context=context)
         mempool = self._mempool_signal(context=context)
         script_descriptor = self._script_descriptor_signal(context=context)
+        inheritance = InheritanceVerificationService().evaluate(
+            owner_id=owner_id,
+            recovery_readiness_score=recovery.recovery_readiness_score,
+            has_instructions=not recovery.warnings
+            or not any("instructions" in warning.lower() for warning in recovery.warnings),
+            human_dependency_score=recovery.human_dependency_score,
+            descriptor_available=bool(context.descriptor_hint),
+            artifact_completeness_score=self._safe_float(
+                recovery.artifact_summary.get("completeness_score"), default=0.0
+            ),
+            verification_freshness_score=(
+                1.0
+                - min(
+                    1.0,
+                    self._safe_float(
+                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                    )
+                    / max(
+                        1.0,
+                        self._safe_float(
+                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                        ),
+                    ),
+                )
+            ),
+            emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
+            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            operational_readability_score=max(
+                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+            ),
+        )
 
         spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
         spof_count = len(spof_items)
