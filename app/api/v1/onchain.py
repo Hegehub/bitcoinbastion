@@ -58,10 +58,12 @@ def onchain_state(
             else:
                 provider_confidence = 0.55
                 provider_data_age_seconds = 180
+                source = "provider_fallback"
                 increment_onchain_provider_probe_event(outcome="empty")
         except BitcoinProviderError:
             provider_confidence = 0.42
             provider_data_age_seconds = 900
+            source = "provider_fallback"
             increment_onchain_provider_probe_event(outcome="fallback")
             pass
     headers = headers_height if headers_height is not None else tip

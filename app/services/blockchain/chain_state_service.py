@@ -130,6 +130,10 @@ class ChainStateService:
             confidence_score=confidence,
             freshness={
                 "source": data_source,
+                "source_type": "provider" if data_source == "provider_probe" else "runtime",
+                "provider_name": "esplora" if data_source == "provider_probe" else "unknown",
+                "is_mock": data_source == "provider_fallback",
+                "is_fallback": data_source in {"repository_fallback", "provider_fallback"},
                 "provider_data_age_seconds": provider_data_age_seconds,
                 "provider_freshness_band": stale_band,
             },
@@ -162,6 +166,13 @@ class ChainStateService:
                 "scoring": {
                     "note": "Conservative risk model. finality_score is operational confidence, not consensus finality.",
                     "finality_formula": "depth_quality*(1-reorg_risk)",
+                },
+                "source_quality": {
+                    "source_type": "provider" if data_source == "provider_probe" else "runtime",
+                    "provider_name": "esplora" if data_source == "provider_probe" else "unknown",
+                    "is_mock": data_source == "provider_fallback",
+                    "is_fallback": data_source in {"repository_fallback", "provider_fallback"},
+                    "limitations": "Chain-state confidence is operational and conservative; not consensus-finality proof.",
                 },
                 "calibration_version": "chain_state_v4_conservative",
             },

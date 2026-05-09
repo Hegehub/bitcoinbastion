@@ -32,6 +32,8 @@ def test_onchain_state_provider_probe_adds_confidence_and_freshness(monkeypatch)
     data = response.json()["data"]
     assert data["explainability"]["data_source"] == "provider_probe"
     assert data["confidence_score"] <= 0.95
+    assert data["freshness"]["source_type"] == "provider"
+    assert data["freshness"]["is_fallback"] is False
     assert data["freshness"]["provider_freshness_band"] in {"fresh", "aging", "stale", "very_stale", "unknown"}
 
 
@@ -49,6 +51,7 @@ def test_onchain_state_provider_failure_degrades_confidence(monkeypatch) -> None
     response = TestClient(app).get("/api/v1/onchain/state", params={"provider_probe": True})
     assert response.status_code == 200
     data = response.json()["data"]
-    assert data["explainability"]["data_source"] == "repository_fallback"
-    assert data["freshness"]["source"] == "repository_fallback"
+    assert data["explainability"]["data_source"] == "provider_fallback"
+    assert data["freshness"]["source"] == "provider_fallback"
+    assert data["freshness"]["is_fallback"] is True
     assert data["confidence_score"] < 0.7

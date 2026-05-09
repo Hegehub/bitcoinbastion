@@ -164,6 +164,9 @@ class CitadelAssessmentService:
         if high_fee_projection is not None:
             high_fee_score = min(100.0, (high_fee_projection.estimated_fee_sats / 200_000) * 100)
 
+        burden_score = min(100.0, analysis.high_fee_burden_ratio * 220.0)
+        liquidity_penalty = 100.0 if not analysis.urgent_spend_feasible else min(100.0, (analysis.liquidity_shortfall_sats / 50_000) * 100)
+
         return {
             "analysis": analysis,
             "fragmentation_score_100": round(analysis.fragmentation_score * 100, 2),
@@ -172,7 +175,9 @@ class CitadelAssessmentService:
                 min(100.0, (analysis.estimated_inputs_to_spend_1m_sats / 20) * 100),
                 2,
             ),
-            "high_fee_exposure_score_100": round(high_fee_score, 2),
+            "high_fee_exposure_score_100": round(max(high_fee_score, burden_score), 2),
+            "liquidity_penalty_score_100": round(liquidity_penalty, 2),
+            "wallet_profile": analysis.wallet_profile,
         }
 
     @staticmethod
@@ -197,6 +202,11 @@ class CitadelAssessmentService:
             has_descriptor=bool(context.descriptor_hint),
             has_recovery_instructions=context.has_recent_health_report,
             has_backup_reference=context.has_recent_health_report,
+            descriptor_age_days=context.artifact_verification_age_days,
+            script_type=script.script_type,
+            wallet_type=context.wallet_type,
+            is_watch_only="watch" in (context.wallet_type or "").lower(),
+            multisig_signer_count=context.signer_count,
         )
         return {"script": script, "descriptor": descriptor}
 
@@ -262,15 +272,15 @@ class CitadelAssessmentService:
                 note="Topology is deterministic from wallet profile assumptions",
             ),
             "utxo": self._quality_meta(
-                source_type="real" if context.utxo_values_sats else "fallback",
+                source_type="fallback" if bool(utxo["analysis"].freshness.get("is_fallback")) else ("real" if context.utxo_values_sats else "fallback"),
                 freshness="runtime_session",
-                confidence=0.82 if context.utxo_values_sats else 0.5,
+                confidence=0.78 if not bool(utxo["analysis"].freshness.get("is_fallback")) else 0.45,
                 note="Uses fallback UTXO set when runtime values are absent",
             ),
             "mempool": self._quality_meta(
-                source_type="synthetic",
+                source_type="fallback" if bool(mempool["state"].freshness.get("is_fallback")) else "synthetic",
                 freshness=str(mempool["market"].freshness),
-                confidence=float(mempool["market"].confidence),
+                confidence=float(mempool["market"].confidence) * (0.75 if bool(mempool["state"].freshness.get("is_fallback")) else 1.0),
                 note="Mempool snapshot is synthesized from fee exposure context",
             ),
             "script": self._quality_meta(
@@ -348,6 +358,11 @@ class CitadelAssessmentService:
             has_descriptor=has_descriptor,
             has_recovery_instructions=has_recent_health,
             has_backup_reference=has_recent_health,
+            descriptor_age_days=context.artifact_verification_age_days,
+            script_type=script_profile.script_type,
+            wallet_type=context.wallet_type,
+            is_watch_only="watch" in (context.wallet_type or "").lower(),
+            multisig_signer_count=context.signer_count,
         )
         artifacts = [
             RecoveryArtifactRecord(
@@ -490,6 +505,50 @@ class CitadelAssessmentService:
             ),
         )
 
+        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
+        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        chain_state = ChainStateService().evaluate(
+            tip_height=tip_height,
+            observed_block_height=observed_height,
+            headers_height=headers_height,
+            provider_tip_height=context.chain_provider_tip_height,
+            provider_confidence=context.chain_provider_confidence,
+            provider_data_age_seconds=context.chain_provider_data_age_seconds,
+            data_source=context.chain_data_source,
+        )
+        inheritance = InheritanceVerificationService().evaluate(
+            owner_id=owner_id,
+            recovery_readiness_score=recovery.recovery_readiness_score,
+            has_instructions=not recovery.warnings
+            or not any("instructions" in warning.lower() for warning in recovery.warnings),
+            human_dependency_score=recovery.human_dependency_score,
+            descriptor_available=bool(context.descriptor_hint),
+            artifact_completeness_score=self._safe_float(
+                recovery.artifact_summary.get("completeness_score"), default=0.0
+            ),
+            verification_freshness_score=(
+                1.0
+                - min(
+                    1.0,
+                    self._safe_float(
+                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                    )
+                    / max(
+                        1.0,
+                        self._safe_float(
+                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                        ),
+                    ),
+                )
+            ),
+            emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
+            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            operational_readability_score=max(
+                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+            ),
+        )
+
         spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
         spof_count = len(spof_items)
         descriptor_completeness_score_100 = self._clamp_percent(
@@ -530,6 +589,7 @@ class CitadelAssessmentService:
             + (inheritance_score_100 * 0.2)
             - (utxo["high_fee_exposure_score_100"] * 0.25)
             - (utxo["spend_complexity_score_100"] * 0.15)
+            - (utxo["liquidity_penalty_score_100"] * 0.2)
             - (min(100.0, mempool["market"].high_fee_scenario_sat_vb) * 0.15)
             - (chain_reorg_penalty_100 * 0.45)
         )
@@ -716,6 +776,8 @@ class CitadelAssessmentService:
                 "dust_ratio_100": utxo["dust_ratio_100"],
                 "spend_complexity_score_100": utxo["spend_complexity_score_100"],
                 "high_fee_exposure_score_100": utxo["high_fee_exposure_score_100"],
+                "liquidity_penalty_score_100": utxo["liquidity_penalty_score_100"],
+                "wallet_profile": utxo["wallet_profile"],
                 "analysis": utxo["analysis"].model_dump(),
             },
             "chain_state": {
