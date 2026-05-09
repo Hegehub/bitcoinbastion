@@ -1,33 +1,113 @@
 class InheritanceVerificationService:
-    def evaluate(self, *, owner_id: int) -> dict[str, object]:
-        completeness = 0.78 if owner_id % 2 == 0 else 0.52
-        human_dependency = 0.35 if owner_id % 2 == 0 else 0.78
-        readability = 0.72 if owner_id % 3 != 0 else 0.48
+    @staticmethod
+    def _clamp_unit(value: float) -> float:
+        return max(0.0, min(1.0, float(value)))
+
+    def evaluate(
+        self,
+        *,
+        owner_id: int,
+        recovery_readiness_score: float | None = None,
+        has_instructions: bool | None = None,
+        human_dependency_score: float | None = None,
+        descriptor_available: bool | None = None,
+        artifact_completeness_score: float | None = None,
+        verification_freshness_score: float | None = None,
+        emergency_contact_coverage: float | None = None,
+        recovery_path_complexity: float | None = None,
+        operational_readability_score: float | None = None,
+    ) -> dict[str, object]:
+        recovery_score = self._clamp_unit(recovery_readiness_score if recovery_readiness_score is not None else 0.45)
+        instructions_score = 1.0 if bool(has_instructions) else 0.35
+        dependency_score = 1.0 - self._clamp_unit(human_dependency_score if human_dependency_score is not None else 0.75)
+        descriptor_score = 1.0 if bool(descriptor_available) else 0.3
+        artifact_score = self._clamp_unit(artifact_completeness_score if artifact_completeness_score is not None else 0.5)
+        freshness_score = self._clamp_unit(verification_freshness_score if verification_freshness_score is not None else 0.35)
+        emergency_score = self._clamp_unit(emergency_contact_coverage if emergency_contact_coverage is not None else 0.4)
+        complexity_score = 1.0 - self._clamp_unit(recovery_path_complexity if recovery_path_complexity is not None else 0.7)
+        readability_score = self._clamp_unit(operational_readability_score if operational_readability_score is not None else 0.45)
+
+        completeness = round(
+            self._clamp_unit(
+                recovery_score * 0.22
+                + instructions_score * 0.14
+                + dependency_score * 0.12
+                + descriptor_score * 0.1
+                + artifact_score * 0.12
+                + freshness_score * 0.08
+                + emergency_score * 0.12
+                + complexity_score * 0.05
+                + readability_score * 0.05
+            ),
+            3,
+        )
 
         critical_gaps: list[str] = []
-        if completeness < 0.6:
-            critical_gaps.append("Inheritance flow lacks complete custody handoff steps.")
-        if human_dependency > 0.7:
-            critical_gaps.append("Inheritance relies on a single operator's tacit knowledge.")
-        if readability < 0.6:
-            critical_gaps.append("Heir-facing instructions are operationally ambiguous.")
+        if instructions_score < 0.6:
+            critical_gaps.append("Inheritance instructions are incomplete or not validated.")
+        if dependency_score < 0.4:
+            critical_gaps.append("Inheritance flow depends on too few operators.")
+        if descriptor_score < 0.6:
+            critical_gaps.append("Descriptor availability for heirs is missing or weak.")
+        if artifact_score < 0.6:
+            critical_gaps.append("Required recovery artifacts are not sufficiently verified.")
+        if freshness_score < 0.5:
+            critical_gaps.append("Inheritance verification freshness is stale.")
+        if emergency_score < 0.5:
+            critical_gaps.append("Emergency contact/operator coverage is insufficient.")
+        if complexity_score < 0.4:
+            critical_gaps.append("Recovery path complexity is too high for a stressed inheritance event.")
+        if readability_score < 0.5:
+            critical_gaps.append("Operational readability for heirs is low.")
 
-        status = "strong" if not critical_gaps else "weak" if len(critical_gaps) >= 2 else "moderate"
+        status = "strong" if completeness >= 0.75 and not critical_gaps else "moderate" if completeness >= 0.5 else "weak"
+
+        recommendations: list[str] = []
+        if instructions_score < 0.8:
+            recommendations.append("Publish step-by-step inheritance runbook with tested execution checkpoints.")
+        if dependency_score < 0.7:
+            recommendations.append("Add backup operator path to reduce single-human inheritance dependency.")
+        if descriptor_score < 0.8:
+            recommendations.append("Provide verified descriptor package for heir-facing recovery procedures.")
+        if freshness_score < 0.7:
+            recommendations.append("Re-verify inheritance artifacts on a defined recurring cadence.")
+        if emergency_score < 0.7:
+            recommendations.append("Document emergency contact escalation and cross-check operator reachability.")
+        if complexity_score < 0.7:
+            recommendations.append("Simplify recovery path to reduce required manual coordination steps.")
 
         return {
             "owner_id": owner_id,
             "status": status,
-            "completeness_score": round(completeness, 3),
-            "human_dependency_score": round(human_dependency, 3),
-            "operational_readability_score": round(readability, 3),
+            "completeness_score": completeness,
+            "human_dependency_score": round(1.0 - dependency_score, 3),
+            "operational_readability_score": round(readability_score, 3),
             "critical_gaps": critical_gaps,
-            "recommendations": [
-                "Publish explicit inheritance execution checklist.",
-                "Run annual inheritance tabletop exercise.",
-            ],
-            "freshness": {"source": "inheritance_verifier_v1"},
-            "confidence": 0.72,
+            "recommendations": recommendations,
+            "freshness": {"source": "inheritance_operational_model_v2"},
+            "confidence": round(0.62 + (0.22 * min(1.0, artifact_score + freshness_score) / 2), 3),
             "explainability": {
-                "signals": ["artifact completeness", "human dependency", "instruction readability"],
+                "signals": [
+                    "recovery readiness",
+                    "instruction completeness",
+                    "human dependency",
+                    "descriptor availability",
+                    "artifact availability",
+                    "verification freshness",
+                    "emergency coverage",
+                    "recovery complexity",
+                    "operational readability",
+                ],
+                "score_components": {
+                    "recovery_score": recovery_score,
+                    "instructions_score": instructions_score,
+                    "dependency_score": dependency_score,
+                    "descriptor_score": descriptor_score,
+                    "artifact_score": artifact_score,
+                    "freshness_score": freshness_score,
+                    "emergency_score": emergency_score,
+                    "complexity_score": complexity_score,
+                    "readability_score": readability_score,
+                },
             },
         }

@@ -25,6 +25,9 @@ def test_mock_provider_returns_contract_compatible_events() -> None:
     assert event.observed_at.tzinfo == UTC
     assert isinstance(event.payload, dict)
     assert "note" in event.payload
+    assert event.payload["source_type"] == "mock"
+    assert event.payload["is_mock"] is True
+    assert event.payload["is_fallback"] is True
 
 
 def test_fallback_provider_uses_secondary_when_primary_fails() -> None:
@@ -86,6 +89,8 @@ def test_esplora_provider_contract_parses_recent_mempool_rows(monkeypatch) -> No
     assert events[0].block_height == 910001
     assert events[0].payload["provider"] == "esplora"
     assert events[0].payload["fee_sats"] == 4200
+    assert events[0].payload["source_type"] == "provider"
+    assert events[0].payload["is_fallback"] is False
 
 
 def test_esplora_provider_raises_error_on_unavailable_backend(monkeypatch) -> None:

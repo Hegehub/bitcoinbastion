@@ -36,7 +36,14 @@ class MockBitcoinProvider:
                 value_sats=1_500_000_000,
                 block_height=900_000,
                 observed_at=datetime.now(UTC),
-                payload={"note": "mock event"},
+                payload={
+                    "note": "mock event",
+                    "source_type": "mock",
+                    "provider_name": "mock_bitcoin_provider",
+                    "is_mock": True,
+                    "is_fallback": True,
+                    "limitations": "Synthetic mock event for non-provider runtime paths.",
+                },
             )
         ]
 
@@ -73,7 +80,15 @@ class EsploraProvider:
                     value_sats=max(fee_sats * 100, 1),
                     block_height=tip_height,
                     observed_at=datetime.now(UTC),
-                    payload={"provider": "esplora", "fee_sats": fee_sats},
+                    payload={
+                        "provider": "esplora",
+                        "fee_sats": fee_sats,
+                        "source_type": "provider",
+                        "provider_name": "esplora",
+                        "is_mock": False,
+                        "is_fallback": False,
+                        "limitations": "Mempool-derived event; not full transaction interpretation.",
+                    },
                 )
             )
         if events:

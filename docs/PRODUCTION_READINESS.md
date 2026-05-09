@@ -1,48 +1,43 @@
-# PRODUCTION READINESS CHECKLIST
+# Production Readiness Checklist
 
-This checklist is a release-time gate for Bitcoin Bastion environments.
+This checklist is release-time evidence capture. Items must be verified per release.
 
-> Use this as an execution checklist per release/deploy cycle.
-> Do not treat checked items as permanently true across future releases.
+## Label meanings
+- **IMPLEMENTED**: capability exists in repository.
+- **BASELINE**: capability exists but requires deeper operational validation.
+- **SYNTHETIC**: placeholder behavior exists and must not be treated as production-grade.
 
 ## Runtime and infrastructure
-- [ ] Docker image builds reproducibly.
-- [ ] `docker-compose` stack includes app, db, redis, worker, beat.
-- [ ] Health endpoints are wired to orchestration probes.
-- [ ] Database migrations are applied at startup/deploy stage.
+- [ ] Docker image build reproduced for release commit.
+- [ ] Compose/runtime topology validated for API, DB, Redis, worker, beat.
+- [ ] Health/readiness probes validated in target environment.
+- [ ] Migration step executed and logged for deployment.
 
 ## Security and access
-- [ ] Secrets loaded from environment only.
-- [ ] JWT secrets meet production entropy requirements.
-- [ ] Auth and admin guards enforced for privileged endpoints.
-- [ ] Sensitive actions emit audit logs.
+- [ ] Secrets sourced from environment/secret manager.
+- [ ] JWT/admin guard behavior verified in staging.
+- [ ] Audit-log generation verified for privileged actions.
 
-## Data and schema safety
-- [ ] Alembic head is current and migration chain validated.
-- [ ] Migration reproducibility check passes (for current release branch).
-- [ ] Backward compatibility assessed for schema/API changes.
+## Data and migrations
+- [ ] Alembic head and migration chain verified on release commit.
+- [ ] Migration reproducibility smoke passes (`make migration-smoke`).
+- [ ] Schema parity checks pass (`python scripts/check_schema_runtime_parity.py`).
+- [ ] Backward compatibility review completed for schema and API changes.
 
-## Reliability
-- [ ] External integrations have timeouts and retry strategy.
-- [ ] Background jobs are idempotent where practical.
-- [ ] Duplicate suppression exists for delivery/signals where needed.
-- [ ] Provider outages degrade gracefully with visibility.
+## Reliability and observability
+- [ ] Verify protocol source-quality labels are present for on-chain/citadel outputs (provider vs fallback vs mock).
+- [ ] Verify fallback/synthetic protocol domains lower decision confidence in operational runbooks.
+- [ ] Retry/timeout behavior verified for external integrations.
+- [ ] Background job idempotency checks reviewed for touched tasks.
+- [ ] Request IDs, logs, and metrics validated in deployed environment.
+- [ ] Job execution telemetry available for operational triage.
 
-## Observability
-- [ ] Structured JSON logging enabled.
-- [ ] Request ID propagation enabled.
-- [ ] Prometheus metrics exposed and scrapeable.
-- [ ] Job execution telemetry recorded.
-- [ ] Readiness endpoint validates critical dependencies.
+## Truth constraints
+- Do not infer production SLO attainment from implemented endpoints.
+- Treat **SYNTHETIC** and **BASELINE** components as non-final until explicitly hardened.
+- Avoid percentage readiness claims in release documentation.
 
-## Quality gates
-- [ ] Lint + format checks pass.
-- [ ] Unit and integration tests pass for modified scope.
-- [ ] Contract tests pass for provider adapters touched by release.
-- [ ] Release notes include operationally relevant changes.
 
-## Operations
-- [ ] Rollback plan documented.
-- [ ] On-call runbook updated for new background jobs.
-- [ ] Alert thresholds tuned for new metrics.
-- [ ] Post-deploy verification steps documented.
+## Protocol maturity caveats
+- Chain-state confidence is operational and conservative; it is not a consensus finality proof.
+- Mempool/UTXO/script analytics are snapshot/hint-driven and must be treated as advisory unless corroborated by provider-grade evidence.
