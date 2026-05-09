@@ -25,4 +25,6 @@ class OnchainChainStateOut(BaseModel):
     reorg_risk_score: float
     finality_score: float
     finality_band: str
+    confidence_score: float
+    freshness: dict[str, object]
     explainability: dict[str, object]

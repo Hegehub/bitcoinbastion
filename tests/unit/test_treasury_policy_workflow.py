@@ -61,3 +61,23 @@ def test_treasury_request_escalates_when_policy_denies() -> None:
     out = TreasuryRequestOut.from_model_with_policy(created)
     assert out.policy_allowed is False
     assert out.policy_violations
+
+
+def test_treasury_request_adds_chain_state_warning_when_reorg_risk_high(monkeypatch) -> None:
+    service = TreasuryService(FakeRepo())
+    service.policy_service.evaluate_and_log = lambda db, payload: _policy_result(True)  # type: ignore[method-assign]
+    monkeypatch.setattr(
+        TreasuryService,
+        "_chain_state_for_treasury",
+        staticmethod(lambda **kwargs: __import__("app.services.blockchain.chain_state_service", fromlist=["ChainStateService"]).ChainStateService().evaluate(
+            tip_height=900_000, observed_block_height=900_000, headers_height=900_003, data_source="repository_fallback"
+        )),
+    )
+
+    created = service.create_request(
+        TreasuryRequestIn(title="Emergency spend", amount_sats=12_000_000, destination_reference="vault-hot", wallet_health_score=45),
+        requested_by=9,
+    )
+    snapshot = json.loads(created.policy_snapshot_json)
+    assert created.status == "needs_review"
+    assert snapshot["chain_state_context"]["warnings"]
