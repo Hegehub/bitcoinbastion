@@ -16,6 +16,11 @@ class UTXOAnalysisOut(BaseModel):
     fragmentation_score: float = Field(ge=0.0, le=1.0)
     estimated_inputs_to_spend_1m_sats: int
     consolidation_candidate_count: int
+    liquidity_shortfall_sats: int = 0
+    urgent_spend_feasible: bool = False
+    high_fee_burden_ratio: float = Field(default=0.0, ge=0.0)
+    consolidation_candidates_ranked: list[int] = Field(default_factory=list)
+    wallet_profile: str = "unknown"
     confidence: float = Field(ge=0.0, le=1.0)
     freshness: dict[str, object]
     explainability: dict[str, object]
