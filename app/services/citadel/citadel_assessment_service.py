@@ -15,6 +15,7 @@ from app.services.citadel.policy_maturity_service import CitadelPolicyService
 from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecord
 from app.services.citadel.recovery_readiness_engine import RecoveryReadinessEngine
 from app.services.citadel.sovereignty_graph_service import SovereigntyGraphService
+from app.services.blockchain.chain_state_service import ChainStateService
 from app.services.mempool.fee_market_model import FeeMarketModel
 from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService, MempoolSnapshot
 from app.services.script.descriptor_awareness_service import DescriptorAwarenessService
@@ -46,6 +47,13 @@ class CitadelAssessmentService:
         descriptor_verified: bool | None = None,
         signer_count: int | None = None,
         artifact_verification_age_days: int | None = None
+        chain_tip_height: int | None = None
+        chain_observed_height: int | None = None
+        chain_headers_height: int | None = None
+        chain_provider_tip_height: int | None = None
+        chain_provider_confidence: float | None = None
+        chain_provider_data_age_seconds: int | None = None
+        chain_data_source: str = "repository_fallback"
 
     DEFAULT_SCORE_WEIGHTS: dict[str, float] = {
         "custody_resilience_score": 0.16,
@@ -293,6 +301,13 @@ class CitadelAssessmentService:
         descriptor_verified: bool | None = None,
         signer_count: int | None = None,
         artifact_verification_age_days: int | None = None,
+        chain_tip_height: int | None = None,
+        chain_observed_height: int | None = None,
+        chain_headers_height: int | None = None,
+        chain_provider_tip_height: int | None = None,
+        chain_provider_confidence: float | None = None,
+        chain_provider_data_age_seconds: int | None = None,
+        chain_data_source: str = "repository_fallback",
     ) -> "CitadelAssessmentService.WalletRuntimeContext":
         return CitadelAssessmentService.WalletRuntimeContext(
             wallet_type=wallet_type or "single-sig",
@@ -308,6 +323,13 @@ class CitadelAssessmentService:
             descriptor_verified=descriptor_verified,
             signer_count=signer_count,
             artifact_verification_age_days=artifact_verification_age_days,
+            chain_tip_height=chain_tip_height,
+            chain_observed_height=chain_observed_height,
+            chain_headers_height=chain_headers_height,
+            chain_provider_tip_height=chain_provider_tip_height,
+            chain_provider_confidence=chain_provider_confidence,
+            chain_provider_data_age_seconds=chain_provider_data_age_seconds,
+            chain_data_source=chain_data_source,
         )
 
     def recovery_report(
@@ -424,6 +446,50 @@ class CitadelAssessmentService:
             ),
         )
 
+        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
+        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        chain_state = ChainStateService().evaluate(
+            tip_height=tip_height,
+            observed_block_height=observed_height,
+            headers_height=headers_height,
+            provider_tip_height=context.chain_provider_tip_height,
+            provider_confidence=context.chain_provider_confidence,
+            provider_data_age_seconds=context.chain_provider_data_age_seconds,
+            data_source=context.chain_data_source,
+        )
+        inheritance = InheritanceVerificationService().evaluate(
+            owner_id=owner_id,
+            recovery_readiness_score=recovery.recovery_readiness_score,
+            has_instructions=not recovery.warnings
+            or not any("instructions" in warning.lower() for warning in recovery.warnings),
+            human_dependency_score=recovery.human_dependency_score,
+            descriptor_available=bool(context.descriptor_hint),
+            artifact_completeness_score=self._safe_float(
+                recovery.artifact_summary.get("completeness_score"), default=0.0
+            ),
+            verification_freshness_score=(
+                1.0
+                - min(
+                    1.0,
+                    self._safe_float(
+                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                    )
+                    / max(
+                        1.0,
+                        self._safe_float(
+                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                        ),
+                    ),
+                )
+            ),
+            emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
+            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            operational_readability_score=max(
+                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+            ),
+        )
+
         spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
         spof_count = len(spof_items)
         descriptor_completeness_score_100 = self._clamp_percent(
@@ -440,7 +506,9 @@ class CitadelAssessmentService:
             )
         )
         vendor = self._clamp_percent(max(40.0, 72.0 - (spof_count * 8.0)))
-        recovery_score_100 = self._clamp_percent(recovery.recovery_readiness_score * 100)
+        chain_reorg_penalty_100 = round(chain_state.reorg_risk_score * 18.0, 2)
+        chain_operational_penalty_100 = round(chain_state.reorg_risk_score * 16.0, 2)
+        recovery_score_100 = self._clamp_percent((recovery.recovery_readiness_score * 100) - chain_reorg_penalty_100)
         inheritance_score_100 = self._clamp_percent(
             (self._safe_float(inheritance.get("completeness_score"), default=0.0) * 100)
             - ((100.0 - descriptor_completeness_score_100) * 0.22)
@@ -463,12 +531,14 @@ class CitadelAssessmentService:
             - (utxo["high_fee_exposure_score_100"] * 0.25)
             - (utxo["spend_complexity_score_100"] * 0.15)
             - (min(100.0, mempool["market"].high_fee_scenario_sat_vb) * 0.15)
+            - (chain_reorg_penalty_100 * 0.45)
         )
         operational = self._clamp_percent(
             35.0
             + (recovery_score_100 * 0.45)
             + (policy_maturity * 0.2)
             + (script_descriptor["descriptor"].completeness_score * 10)
+            - chain_operational_penalty_100
         )
 
         weights, calibration_version, score_weight_source = self._score_weights()
@@ -593,6 +663,15 @@ class CitadelAssessmentService:
                     detail="Descriptor readiness is below 60%; custody and inheritance resilience are penalized.",
                 )
             )
+        if chain_state.reorg_risk_score >= 0.55:
+            warnings.append(
+                CitadelFindingOut(
+                    title="Elevated chain reorg risk",
+                    severity="warning",
+                    domain="chain_state",
+                    detail="Weak/volatile chain-state context detected; treasury and recovery operations should use extra confirmations.",
+                )
+            )
         if descriptor_completeness_score_100 < 25:
             findings.append(
                 CitadelFindingOut(
@@ -638,6 +717,18 @@ class CitadelAssessmentService:
                 "spend_complexity_score_100": utxo["spend_complexity_score_100"],
                 "high_fee_exposure_score_100": utxo["high_fee_exposure_score_100"],
                 "analysis": utxo["analysis"].model_dump(),
+            },
+            "chain_state": {
+                "finality_band": chain_state.finality_band,
+                "finality_score": chain_state.finality_score,
+                "reorg_risk_score": chain_state.reorg_risk_score,
+                "confidence_score": chain_state.confidence_score,
+                "freshness": chain_state.freshness,
+                "risk_components": chain_state.explainability.get("risk_components", {}),
+                "contribution": {
+                    "recovery_penalty_100": chain_reorg_penalty_100,
+                    "operational_penalty_100": chain_operational_penalty_100,
+                },
             },
             "mempool": {
                 "congestion_state": mempool["state"].congestion_state,
@@ -697,6 +788,7 @@ class CitadelAssessmentService:
                 "score_inputs",
                 "score_inputs_adjusted",
                 "utxo",
+                "chain_state",
                 "mempool",
                 "script",
                 "descriptor_awareness",

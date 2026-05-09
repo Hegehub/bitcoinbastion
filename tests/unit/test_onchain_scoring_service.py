@@ -1,6 +1,7 @@
 from datetime import UTC, datetime
 
 from app.integrations.bitcoin.provider import ChainEvent
+from app.services.blockchain.chain_state_service import ChainStateService
 from app.services.scoring.onchain_scoring import OnchainScoringService
 
 
@@ -40,3 +41,50 @@ def test_onchain_scoring_handles_minimal_payload() -> None:
     assert 0.0 <= score.significance <= 1.0
     assert 0.0 <= score.confidence <= 1.0
     assert score.tags == ["transfer"]
+
+
+def test_onchain_scoring_applies_chain_state_penalty_for_weak_finality() -> None:
+    event = ChainEvent(
+        event_type="large_transfer",
+        txid="weak-finality",
+        address="bc1qweak",
+        value_sats=1_100_000_000,
+        block_height=910010,
+        observed_at=datetime.now(UTC),
+        payload={},
+    )
+    weak_state = ChainStateService().evaluate(
+        tip_height=910010,
+        observed_block_height=910010,
+        headers_height=910013,
+        data_source="repository_fallback",
+    )
+
+    weak_score = OnchainScoringService().score(event, chain_state=weak_state)
+    base_score = OnchainScoringService().score(event)
+
+    assert weak_score.confidence < base_score.confidence
+    assert weak_score.explainability["chain_state_penalty"] > 0
+    assert "finality_weak" in weak_score.tags
+
+
+def test_onchain_scoring_applies_chain_state_bonus_for_strong_finality() -> None:
+    event = ChainEvent(
+        event_type="large_transfer",
+        txid="strong-finality",
+        address="bc1qstrong",
+        value_sats=1_100_000_000,
+        block_height=910010,
+        observed_at=datetime.now(UTC),
+        payload={},
+    )
+    strong_state = ChainStateService().evaluate(
+        tip_height=910022,
+        observed_block_height=910010,
+        headers_height=910022,
+        data_source="query",
+    )
+
+    strong_score = OnchainScoringService().score(event, chain_state=strong_state)
+    assert strong_score.explainability["chain_state_bonus"] >= 0
+    assert "finality_strong" in strong_score.tags

@@ -333,3 +333,21 @@ def test_recovery_report_uses_runtime_linked_artifact_flags() -> None:
 
     assert summary["verified_required_count"] == 1
     assert summary["missing_required_labels"] == ["owner-10-backup"]
+
+
+def test_citadel_assessment_surfaces_chain_state_risk_contribution() -> None:
+    service = CitadelAssessmentService()
+    out = service.build_assessment(
+        owner_type="user",
+        owner_id=33,
+        wallet_context=service.build_wallet_context(
+            chain_tip_height=900_000,
+            chain_observed_height=900_000,
+            chain_headers_height=900_003,
+            chain_data_source="repository_fallback",
+        ),
+    )
+    explainability = out.explainability.model_dump()
+    assert "chain_state" in explainability
+    assert explainability["chain_state"]["reorg_risk_score"] >= 0
+    assert any(item.domain == "chain_state" for item in out.warnings)

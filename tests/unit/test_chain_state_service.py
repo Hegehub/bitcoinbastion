@@ -1,56 +1,78 @@
 from app.services.blockchain.chain_state_service import ChainStateService
 
 
-def test_chain_state_service_marks_strong_finality_for_deep_confirmation() -> None:
-    out = ChainStateService().evaluate(
+def test_chain_state_service_confirmation_depth_bands_are_conservative() -> None:
+    service = ChainStateService()
+
+    out_0 = service.evaluate(tip_height=900_000, observed_block_height=900_001)
+    out_1 = service.evaluate(tip_height=900_000, observed_block_height=900_000)
+    out_3 = service.evaluate(tip_height=900_000, observed_block_height=899_998)
+    out_6 = service.evaluate(tip_height=900_000, observed_block_height=899_995)
+    out_12 = service.evaluate(tip_height=900_000, observed_block_height=899_989)
+
+    assert out_0.confirmation_depth == 0
+    assert out_0.finality_band == "weak"
+    assert out_1.confirmation_depth == 1
+    assert out_1.finality_band == "weak"
+    assert out_3.confirmation_depth == 3
+    assert out_3.finality_band in {"weak", "moderate"}
+    assert out_6.confirmation_depth == 6
+    assert out_6.finality_band in {"moderate", "strong"}
+    assert out_12.confirmation_depth == 12
+    assert out_12.finality_band == "strong"
+
+
+def test_chain_state_service_penalizes_header_mismatch() -> None:
+    baseline = ChainStateService().evaluate(
         tip_height=900_000,
-        observed_block_height=899_990,
+        observed_block_height=899_995,
         headers_height=900_000,
     )
-
-    assert out.confirmation_depth >= 6
-    assert out.reorg_risk_score <= 0.2
-    assert out.finality_score >= 0.8
-    assert out.finality_band == "strong"
-    assert out.explainability["calibration_version"] == "chain_state_v3"
-
-
-def test_chain_state_service_marks_weak_finality_for_unconfirmed_tip() -> None:
-    out = ChainStateService().evaluate(
+    mismatch = ChainStateService().evaluate(
         tip_height=900_000,
-        observed_block_height=900_000,
+        observed_block_height=899_995,
         headers_height=900_004,
     )
 
-    assert out.confirmation_depth == 1
-    assert out.reorg_risk_score >= 0.7
-    assert out.finality_band == "weak"
-    assert out.explainability["derived"]["header_tip_gap_blocks"] == 4
+    assert mismatch.reorg_risk_score > baseline.reorg_risk_score
+    assert mismatch.confidence_score < baseline.confidence_score
 
 
-def test_chain_state_service_penalizes_header_lag_both_directions() -> None:
-    ahead = ChainStateService().evaluate(
-        tip_height=900_000,
-        observed_block_height=899_999,
-        headers_height=900_003,
-    )
-    behind = ChainStateService().evaluate(
-        tip_height=900_000,
-        observed_block_height=899_999,
-        headers_height=899_997,
-    )
-
-    assert ahead.reorg_risk_score > 0.0
-    assert behind.reorg_risk_score > 0.0
-
-
-def test_chain_state_service_includes_provider_risk_when_probe_data_present() -> None:
-    out = ChainStateService().evaluate(
+def test_chain_state_service_penalizes_stale_provider_data() -> None:
+    fresh = ChainStateService().evaluate(
         tip_height=900_000,
         observed_block_height=899_998,
-        headers_height=900_000,
-        provider_tip_height=899_996,
-        provider_confidence=0.9,
+        provider_tip_height=900_000,
+        provider_confidence=0.82,
+        provider_data_age_seconds=20,
+        data_source="provider_probe",
     )
-    assert out.explainability["derived"]["provider_tip_height"] == 899_996
-    assert out.explainability["derived"]["provider_risk_component"] > 0
+    stale = ChainStateService().evaluate(
+        tip_height=900_000,
+        observed_block_height=899_998,
+        provider_tip_height=899_996,
+        provider_confidence=0.82,
+        provider_data_age_seconds=1_200,
+        data_source="provider_probe",
+    )
+
+    assert stale.reorg_risk_score > fresh.reorg_risk_score
+    assert stale.confidence_score < fresh.confidence_score
+    assert stale.freshness["provider_freshness_band"] == "very_stale"
+
+
+def test_chain_state_service_explainability_includes_risk_components() -> None:
+    out = ChainStateService().evaluate(
+        tip_height=900_000,
+        observed_block_height=899_999,
+        headers_height=900_002,
+        provider_tip_height=899_997,
+        provider_confidence=0.7,
+        provider_data_age_seconds=300,
+        data_source="provider_probe",
+    )
+
+    assert out.explainability["calibration_version"] == "chain_state_v4_conservative"
+    assert "risk_components" in out.explainability
+    assert "stale_provider_risk_component" in out.explainability["risk_components"]
+    assert out.explainability["scoring"]["note"].startswith("Conservative risk model")

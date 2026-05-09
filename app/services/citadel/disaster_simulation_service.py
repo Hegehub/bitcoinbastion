@@ -3,6 +3,7 @@ from app.services.citadel.sovereignty_graph_service import SovereigntyGraphServi
 from app.services.mempool.fee_market_model import FeeMarketModel
 from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService, MempoolSnapshot
 from app.services.script.descriptor_awareness_service import DescriptorAwarenessService
+from app.services.blockchain.chain_state_service import ChainStateService
 
 
 class DisasterSimulationService:
@@ -75,6 +76,16 @@ class DisasterSimulationService:
             "remediations": [
                 "Run dual-provider quorum checks and failover validation.",
                 "Pin fallback provider endpoints and monitor divergence alerts.",
+            ],
+        },
+        "weak_finality_stress": {
+            "aliases": {"weak_finality_stress", "reorg_stress"},
+            "affected_dependency_types": {"provider_dependency", "signing"},
+            "base_shock": 0.26,
+            "fee_pressure_multiplier": 1.25,
+            "remediations": [
+                "Wait for stronger confirmation depth before emergency execution.",
+                "Require human approval checkpoint during weak-finality windows.",
             ],
         },
         "recovery_instruction_loss": {
@@ -191,6 +202,14 @@ class DisasterSimulationService:
         mempool_market = FeeMarketModel().estimate(mempool=mempool_state, target_blocks=3)
         mempool_penalty = min(0.2, mempool_market.high_fee_scenario_sat_vb / 900)
 
+        chain_state = ChainStateService().evaluate(
+            tip_height=900_001 if scenario_key in {"weak_finality_stress", "provider_outage"} else 900_008,
+            observed_block_height=900_000,
+            headers_height=900_003 if scenario_key in {"weak_finality_stress", "provider_outage"} else 900_008,
+            data_source="repository_fallback" if scenario_key in {"weak_finality_stress", "provider_outage"} else "query",
+        )
+        chain_state_penalty = min(0.22, chain_state.reorg_risk_score * 0.22)
+
         survivability = round(
             max(
                 0.04,
@@ -200,7 +219,8 @@ class DisasterSimulationService:
                 - blocked_penalty
                 - recovery_penalty
                 - descriptor_penalty
-                - mempool_penalty,
+                - mempool_penalty
+                - chain_state_penalty,
             ),
             3,
         )
@@ -245,6 +265,9 @@ class DisasterSimulationService:
                 "mempool_state": mempool_state.congestion_state,
                 "mempool_high_fee_scenario_sat_vb": mempool_market.high_fee_scenario_sat_vb,
                 "mempool_penalty": mempool_penalty,
+                "chain_state_penalty": chain_state_penalty,
+                "chain_state_finality_band": chain_state.finality_band,
+                "chain_state_reorg_risk_score": chain_state.reorg_risk_score,
                 "confidence_components": {
                     "base": 0.66,
                     "health_bonus": 0.07 if has_recent_health_report else 0.0,

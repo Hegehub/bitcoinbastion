@@ -46,6 +46,7 @@ def test_disaster_simulation_service_supports_extended_scenarios() -> None:
         "high_fee_emergency_spend",
         "provider_outage",
         "recovery_instruction_loss",
+        "weak_finality_stress",
     ]
     for scenario in scenarios:
         out = DisasterSimulationService().simulate(owner_id=11, scenario_code=scenario)
@@ -84,3 +85,10 @@ def test_policy_service_returns_maturity_payload() -> None:
     out = CitadelPolicyService().evaluate(owner_id=5)
     assert out["maturity"] in {"moderate", "weak"}
     assert out["gaps"]
+
+
+def test_disaster_weak_finality_scenario_surfaces_chain_penalty() -> None:
+    out = DisasterSimulationService().simulate(owner_id=15, scenario_code="weak_finality_stress")
+    assert out["scenario_code"] == "weak_finality_stress"
+    assert out["explainability"]["chain_state_penalty"] > 0
+    assert out["explainability"]["chain_state_finality_band"] in {"weak", "moderate", "strong"}
