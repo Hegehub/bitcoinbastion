@@ -22,6 +22,9 @@ from app.services.script.descriptor_awareness_service import DescriptorAwareness
 from app.services.script.script_analyzer_service import ScriptAnalyzerService
 from app.services.utxo.utxo_analyzer_service import UTXOAnalyzerService
 from app.services.explainability.contract import build_explainability_contract
+from app.services.explainability.contract import append_evidence_step
+from app.services.explainability.contract import propagate_confidence
+from app.services.explainability.contract import build_audit_packet
 
 
 
@@ -601,6 +604,50 @@ class CitadelAssessmentService:
             ),
         )
 
+        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
+        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        chain_state = ChainStateService().evaluate(
+            tip_height=tip_height,
+            observed_block_height=observed_height,
+            headers_height=headers_height,
+            provider_tip_height=context.chain_provider_tip_height,
+            provider_confidence=context.chain_provider_confidence,
+            provider_data_age_seconds=context.chain_provider_data_age_seconds,
+            data_source=context.chain_data_source,
+        )
+        inheritance = InheritanceVerificationService().evaluate(
+            owner_id=owner_id,
+            recovery_readiness_score=recovery.recovery_readiness_score,
+            has_instructions=not recovery.warnings
+            or not any("instructions" in warning.lower() for warning in recovery.warnings),
+            human_dependency_score=recovery.human_dependency_score,
+            descriptor_available=bool(context.descriptor_hint),
+            artifact_completeness_score=self._safe_float(
+                recovery.artifact_summary.get("completeness_score"), default=0.0
+            ),
+            verification_freshness_score=(
+                1.0
+                - min(
+                    1.0,
+                    self._safe_float(
+                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                    )
+                    / max(
+                        1.0,
+                        self._safe_float(
+                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                        ),
+                    ),
+                )
+            ),
+            emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
+            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            operational_readability_score=max(
+                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+            ),
+        )
+
         spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
         spof_count = len(spof_items)
         descriptor_completeness_score_100 = self._clamp_percent(
@@ -822,7 +869,7 @@ class CitadelAssessmentService:
             input_quality.get("script", {"confidence": 0.0}),
             input_quality.get("descriptor_awareness", {"confidence": 0.0}),
         ]
-        protocol_confidence = round(
+        protocol_confidence_raw = round(
             sum(self._safe_float(item.get("confidence"), default=0.0) for item in protocol_inputs)
             / max(1, len(protocol_inputs)),
             3,
@@ -832,6 +879,83 @@ class CitadelAssessmentService:
             for name in ("chain_state", "utxo", "mempool", "script", "descriptor_awareness")
             if input_quality.get(name, {}).get("quality_classification") in {"FALLBACK", "SYNTHETIC", "UNKNOWN"}
         ]
+        protocol_confidence = propagate_confidence(
+            base_confidence=protocol_confidence_raw,
+            freshness_band=str(chain_state.freshness.get("provider_freshness_band", "unknown")),
+            is_fallback=bool(chain_state.freshness.get("is_fallback", False)) or bool(protocol_fallback_domains),
+            is_synthetic=bool("mempool" in protocol_fallback_domains),
+        )
+        evidence_chain = append_evidence_step(
+            chain=[],
+            domain="protocol",
+            reference="chain_state",
+            confidence=chain_state.confidence_score,
+            source_type=str(chain_state.freshness.get("source_type", "runtime")),
+            details={"finality_band": chain_state.finality_band},
+        )
+        audit_packets: list[dict[str, object]] = []
+        if findings or warnings:
+            audit_packets.append(
+                build_audit_packet(
+                    packet_type="citadel_findings",
+                    evidence_refs=[f"{item.domain}:{item.title}" for item in findings[:5] + warnings[:5]],
+                    source_quality={
+                        "source_type": "runtime",
+                        "is_fallback": bool(protocol_fallback_domains),
+                        "freshness": chain_state.freshness,
+                    },
+                    confidence=protocol_confidence,
+                    transformations=["citadel_weighted_scoring", "protocol_penalty_application"],
+                    policy_context={"policy_maturity_score": policy_maturity},
+                    recommendation_rationale="Prioritize high-severity findings and weak protocol quality domains first.",
+                    lineage=evidence_chain,
+                )
+            )
+        if recovery.recovery_readiness_score < 0.7:
+            audit_packets.append(
+                build_audit_packet(
+                    packet_type="recovery_failure",
+                    evidence_refs=list(recovery.artifact_summary.get("missing_required_labels", [])),
+                    source_quality={"source_type": "runtime", "is_fallback": True, "freshness": recovery.freshness},
+                    confidence=float(recovery.confidence),
+                    transformations=["recovery_artifact_summarization", "recovery_readiness_scoring"],
+                    policy_context={"human_dependency_score": recovery.human_dependency_score},
+                    recommendation_rationale="Resolve missing or stale required recovery artifacts before risk acceptance.",
+                    lineage=evidence_chain,
+                )
+            )
+        evidence_chain = append_evidence_step(
+            chain=evidence_chain,
+            domain="scoring",
+            reference="citadel_score_inputs",
+            confidence=protocol_confidence,
+            source_type="mixed",
+            details={"fallback_domains": protocol_fallback_domains},
+        )
+        evidence_chain = append_evidence_step(
+            chain=evidence_chain,
+            domain="policy",
+            reference=f"policy_owner:{owner_id}",
+            confidence=self._safe_float(policy.get("confidence"), default=0.0),
+            source_type="runtime" if context.wallet_health_score is not None else "fallback",
+            details={"policy_maturity_score": policy_maturity},
+        )
+        evidence_chain = append_evidence_step(
+            chain=evidence_chain,
+            domain="citadel",
+            reference=f"assessment_owner:{owner_id}",
+            confidence=protocol_confidence,
+            source_type="runtime",
+            details={"overall_score": overall},
+        )
+        evidence_chain = append_evidence_step(
+            chain=evidence_chain,
+            domain="recommendation",
+            reference=f"recommendations_owner:{owner_id}",
+            confidence=max(0.2, protocol_confidence - 0.1),
+            source_type="derived",
+            details={"count": len(recommendations)},
+        )
 
         explainability_payload: dict[str, object] = {
             "recovery": recovery.model_dump(),
@@ -910,13 +1034,17 @@ class CitadelAssessmentService:
             },
             "input_quality": input_quality,
             "protocol_input_quality": {
+                "raw_confidence": protocol_confidence_raw,
                 "confidence": protocol_confidence,
                 "fallback_or_synthetic_domains": protocol_fallback_domains,
+                "freshness": chain_state.freshness,
                 "limitations": [
                     "Protocol quality is metadata-driven and conservative.",
                     "Synthetic/fallback protocol domains reduce operational confidence.",
                 ],
             },
+            "evidence_chain": evidence_chain,
+            "audit_packets": audit_packets,
             "contract": build_explainability_contract(
                 domain="citadel",
                 confidence=protocol_confidence,
@@ -952,6 +1080,8 @@ class CitadelAssessmentService:
                 "descriptor_awareness",
                 "input_quality",
                 "protocol_input_quality",
+                "evidence_chain",
+                "audit_packets",
                 "contract",
             ],
         )

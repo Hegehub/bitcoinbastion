@@ -16,6 +16,7 @@ from app.services.admin.audit_service import AuditService
 from app.services.analytics.fee_service import FeeAnalyticsService
 from app.services.policy.policy_service import TreasuryPolicyService
 from app.services.blockchain.chain_state_service import ChainStateService
+from app.services.explainability.contract import build_audit_packet
 
 
 class TreasuryService:
@@ -95,6 +96,23 @@ class TreasuryService:
                         "freshness": chain_state.freshness,
                         "warnings": chain_warnings,
                     },
+                    "audit_packet": build_audit_packet(
+                        packet_type="treasury_warning" if chain_warnings else "treasury_review",
+                        evidence_refs=[f"policy:{policy_result.evaluated_policy}", "chain_state_context"],
+                        source_quality={
+                            "source_type": chain_state.freshness.get("source_type", "runtime"),
+                            "is_fallback": chain_state.freshness.get("is_fallback", False),
+                            "freshness": chain_state.freshness,
+                        },
+                        confidence=chain_state.confidence_score,
+                        transformations=["treasury_policy_eval", "chain_state_risk_adjustment"],
+                        policy_context={"violations": policy_result.violations},
+                        recommendation_rationale="Increase approval rigor when reorg risk or policy violations are elevated.",
+                        lineage=[
+                            {"domain": "policy", "reference": policy_result.evaluated_policy},
+                            {"domain": "treasury", "reference": payload.policy_name},
+                        ],
+                    ),
                     "fee_risk_context": {
                         "congestion_state": fee_model.congestion_state,
                         "suggested_fee_rate_sat_vb": fee_model.suggested_fee_rate_sat_vb,

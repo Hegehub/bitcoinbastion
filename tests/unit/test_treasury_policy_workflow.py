@@ -81,3 +81,5 @@ def test_treasury_request_adds_chain_state_warning_when_reorg_risk_high(monkeypa
     snapshot = json.loads(created.policy_snapshot_json)
     assert created.status == "needs_review"
     assert snapshot["chain_state_context"]["warnings"]
+    assert snapshot["audit_packet"]["packet_type"] in {"treasury_warning", "treasury_review"}
+    assert snapshot["audit_packet"]["evidence_refs"]

@@ -33,6 +33,7 @@ class OperationsSnapshotService:
             headers_height=observed_block_height + 1,
         )
         onchain_healthy = failed_jobs == 0 and chain_state.finality_band in {"moderate", "strong"}
+        degradation = chain_state.explainability.get("degradation_governance", {})
         onchain_details = (
             "Runtime jobs healthy and chain finality is acceptable."
             if onchain_healthy
@@ -54,7 +55,11 @@ class OperationsSnapshotService:
                 ProviderHealthOut(
                     provider="onchain",
                     healthy=onchain_healthy,
-                    details=f"{onchain_details} dominant_provider={provider_name} share={provider_share}",
+                    details=(
+                        f"{onchain_details} dominant_provider={provider_name} share={provider_share} "
+                        f"degraded_runtime_state={degradation.get('degraded_runtime_state', False)} "
+                        f"fallback_activated={degradation.get('fallback_activated', False)}"
+                    ),
                     confidence=max(0.0, min(1.0, 1.0 - chain_state.reorg_risk_score)),
                     freshness_seconds=300,
                 ),

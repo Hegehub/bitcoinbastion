@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 from app.integrations.bitcoin.provider import ChainEvent
 from app.services.blockchain.chain_state_service import ChainStateEvaluation
+from app.services.explainability.contract import (
+    append_evidence_step,
+    build_audit_packet,
+    build_explainability_contract,
+    propagate_confidence,
+)
 
 
 @dataclass
@@ -47,6 +53,11 @@ class OnchainScoringService:
             else:
                 chain_state_bonus = 0.04
             chain_state_penalty += min(0.15, chain_state.reorg_risk_score * 0.12)
+            confidence = propagate_confidence(
+                base_confidence=confidence,
+                freshness_band=str(chain_state.freshness.get("provider_freshness_band", "unknown")),
+                is_fallback=bool(chain_state.freshness.get("is_fallback", False)),
+            )
 
         confidence = min(0.98, confidence + chain_state_bonus)
         confidence = max(0.1, confidence - chain_state_penalty)
@@ -61,6 +72,58 @@ class OnchainScoringService:
             "chain_state_bonus": round(chain_state_bonus, 4),
             "chain_state_warning": chain_state_warning,
         }
+        evidence_chain = append_evidence_step(
+            chain=[],
+            domain="protocol",
+            reference=f"chain_event:{event.txid}",
+            confidence=confidence,
+            source_type=str(event.payload.get("source_type", "unknown")),
+            details={"event_type": event.event_type, "value_sats": event.value_sats},
+        )
+        if chain_state is not None:
+            evidence_chain = append_evidence_step(
+                chain=evidence_chain,
+                domain="scoring",
+                reference="chain_state_evaluation",
+                confidence=chain_state.confidence_score,
+                source_type=str(chain_state.freshness.get("source_type", "runtime")),
+                details={
+                    "finality_band": chain_state.finality_band,
+                    "reorg_risk_score": chain_state.reorg_risk_score,
+                },
+            )
+        explainability["evidence_chain"] = evidence_chain
+        explainability["contract"] = build_explainability_contract(
+            domain="signals",
+            confidence=confidence,
+            freshness=(chain_state.freshness if chain_state is not None else {"source": "event_payload"}),
+            source_type=(str(chain_state.freshness.get("source_type", "runtime")) if chain_state is not None else str(event.payload.get("source_type", "unknown"))),
+            provider_name=(str(chain_state.freshness.get("provider_name", "unknown")) if chain_state is not None else str(event.payload.get("provider_name", "unknown"))),
+            is_mock=bool(event.payload.get("is_mock", False)),
+            is_fallback=bool(chain_state.freshness.get("is_fallback", False)) if chain_state is not None else bool(event.payload.get("is_fallback", False)),
+            limitations=[
+                "Signal confidence is operational and non-deterministic with respect to settlement guarantees.",
+                "Fallback/stale chain-state lowers trust.",
+            ],
+            signals={"chain_state_penalty": chain_state_penalty, "chain_state_bonus": chain_state_bonus},
+        )
+        if chain_state is not None and (chain_state.finality_band == "weak" or confidence < 0.5):
+            explainability["audit_packet"] = build_audit_packet(
+                packet_type="high_risk_signal",
+                evidence_refs=[f"event:{event.txid}", "chain_state_evaluation"],
+                source_quality={
+                    "source_type": str(chain_state.freshness.get("source_type", "runtime")),
+                    "is_fallback": bool(chain_state.freshness.get("is_fallback", False)),
+                    "freshness": chain_state.freshness,
+                },
+                confidence=confidence,
+                transformations=["onchain_scoring_baseline", "chain_state_penalty_application"],
+                policy_context={"finality_band": chain_state.finality_band},
+                recommendation_rationale=(
+                    "Reduce publishability confidence due to weak/stale/fallback chain-state context."
+                ),
+                lineage=evidence_chain,
+            )
 
         tags = [event.event_type]
         if watched_entity:

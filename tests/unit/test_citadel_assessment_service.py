@@ -359,3 +359,28 @@ def test_citadel_assessment_exposes_protocol_input_quality_summary() -> None:
     assert 0.0 <= protocol_quality["confidence"] <= 1.0
     assert isinstance(protocol_quality["fallback_or_synthetic_domains"], list)
     assert "limitations" in protocol_quality
+
+
+def test_citadel_evidence_chain_spans_protocol_to_recommendation() -> None:
+    out = CitadelAssessmentService().build_assessment(owner_type="user", owner_id=121)
+    chain = out.explainability.model_dump()["evidence_chain"]
+    domains = [item["domain"] for item in chain]
+    assert domains == ["protocol", "scoring", "policy", "citadel", "recommendation"]
+
+
+def test_citadel_protocol_confidence_degrades_under_fallback_chain_state() -> None:
+    service = CitadelAssessmentService()
+    strong = service.build_assessment(owner_type="user", owner_id=150, wallet_context=service.build_wallet_context(chain_data_source="provider_probe", chain_provider_data_age_seconds=10, chain_tip_height=100, chain_observed_height=99, chain_headers_height=100))
+    weak = service.build_assessment(owner_type="user", owner_id=151, wallet_context=service.build_wallet_context(chain_data_source="provider_fallback", chain_provider_data_age_seconds=1800, chain_tip_height=100, chain_observed_height=99, chain_headers_height=102))
+    strong_q = strong.explainability.model_dump()["protocol_input_quality"]
+    weak_q = weak.explainability.model_dump()["protocol_input_quality"]
+    assert weak_q["confidence"] <= strong_q["confidence"]
+    assert weak_q["raw_confidence"] >= weak_q["confidence"]
+
+
+def test_citadel_assessment_generates_audit_packets() -> None:
+    out = CitadelAssessmentService().build_assessment(owner_type="user", owner_id=211)
+    packets = out.explainability.model_dump()["audit_packets"]
+    assert isinstance(packets, list)
+    assert packets
+    assert all("evidence_refs" in p for p in packets)

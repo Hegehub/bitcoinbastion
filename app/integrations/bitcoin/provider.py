@@ -43,6 +43,7 @@ class MockBitcoinProvider:
                     "is_mock": True,
                     "is_fallback": True,
                     "limitations": "Synthetic mock event for non-provider runtime paths.",
+                    "provider_runtime_state": "degraded",
                 },
             )
         ]
@@ -88,6 +89,7 @@ class EsploraProvider:
                         "is_mock": False,
                         "is_fallback": False,
                         "limitations": "Mempool-derived event; not full transaction interpretation.",
+                        "provider_runtime_state": "nominal",
                     },
                 )
             )

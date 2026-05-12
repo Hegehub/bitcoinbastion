@@ -34,6 +34,7 @@ def test_onchain_state_provider_probe_adds_confidence_and_freshness(monkeypatch)
     assert data["confidence_score"] <= 0.95
     assert data["freshness"]["source_type"] == "provider"
     assert data["freshness"]["is_fallback"] is False
+    assert data["freshness"]["degradation_state"] in {"nominal", "degraded"}
     assert data["freshness"]["provider_freshness_band"] in {"fresh", "aging", "stale", "very_stale", "unknown"}
 
 
@@ -54,4 +55,6 @@ def test_onchain_state_provider_failure_degrades_confidence(monkeypatch) -> None
     assert data["explainability"]["data_source"] == "provider_fallback"
     assert data["freshness"]["source"] == "provider_fallback"
     assert data["freshness"]["is_fallback"] is True
+    assert data["freshness"]["degradation_state"] == "degraded"
+    assert data["explainability"]["degradation_governance"]["provider_outage"] is True
     assert data["confidence_score"] < 0.7

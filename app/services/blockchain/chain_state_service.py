@@ -83,6 +83,10 @@ class ChainStateService:
             source_risk = 0.12
         elif data_source == "provider_fallback":
             source_risk = 0.2
+        fallback_activated = data_source in {"repository_fallback", "provider_fallback"}
+        stale_provider_data = stale_band in {"stale", "very_stale"}
+        inconsistent_provider_response = provider_gap > 1 if provider_tip_height is not None else False
+        provider_outage = data_source == "provider_fallback"
 
         reorg_risk = round(
             min(
@@ -137,6 +141,12 @@ class ChainStateService:
                 "is_fallback": data_source in {"repository_fallback", "provider_fallback"},
                 "provider_data_age_seconds": provider_data_age_seconds,
                 "provider_freshness_band": stale_band,
+                "degradation_state": (
+                    "degraded"
+                    if fallback_activated or stale_provider_data or inconsistent_provider_response
+                    else "nominal"
+                ),
+                "fallback_activated": fallback_activated,
             },
             explainability={
                 "inputs": {
@@ -174,6 +184,15 @@ class ChainStateService:
                     "is_mock": data_source == "provider_fallback",
                     "is_fallback": data_source in {"repository_fallback", "provider_fallback"},
                     "limitations": "Chain-state confidence is operational and conservative; not consensus-finality proof.",
+                },
+                "degradation_governance": {
+                    "provider_outage": provider_outage,
+                    "stale_provider_data": stale_provider_data,
+                    "inconsistent_provider_response": inconsistent_provider_response,
+                    "fallback_activated": fallback_activated,
+                    "degraded_runtime_state": bool(
+                        provider_outage or stale_provider_data or inconsistent_provider_response or fallback_activated
+                    ),
                 },
                 "contract": build_explainability_contract(
                     domain="protocol_layer",
