@@ -43,6 +43,7 @@ def onchain_state(
     tip = tip_height if tip_height is not None else observed + 1
     provider_tip: int | None = None
     provider_confidence: float | None = None
+    provider_data_age_seconds: int | None = None
     if tip_height is None and provider_probe:
         try:
             provider = build_bitcoin_provider(get_settings())
@@ -51,13 +52,18 @@ def onchain_state(
                 provider_tip = max(item.block_height for item in events)
                 tip = max(tip, provider_tip)
                 provider_confidence = 0.82
+                provider_data_age_seconds = 15
                 source = "provider_probe"
                 increment_onchain_provider_probe_event(outcome="success")
             else:
                 provider_confidence = 0.55
+                provider_data_age_seconds = 180
+                source = "provider_fallback"
                 increment_onchain_provider_probe_event(outcome="empty")
         except BitcoinProviderError:
             provider_confidence = 0.42
+            provider_data_age_seconds = 900
+            source = "provider_fallback"
             increment_onchain_provider_probe_event(outcome="fallback")
             pass
     headers = headers_height if headers_height is not None else tip
@@ -68,7 +74,10 @@ def onchain_state(
         headers_height=headers,
         provider_tip_height=provider_tip,
         provider_confidence=provider_confidence,
+        provider_data_age_seconds=provider_data_age_seconds,
+        data_source=source,
     )
     state.explainability["data_source"] = source
     state.explainability["provider_confidence"] = provider_confidence
+    state.explainability["provider_data_age_seconds"] = provider_data_age_seconds
     return ResponseEnvelope(data=OnchainChainStateOut.model_validate(state, from_attributes=True))

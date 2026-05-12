@@ -1,13 +1,13 @@
 # Domain Models
 
-Below is the current implemented model baseline aligned to `app/db/models`.
+Model list aligned to `app/db/models`.
 
 ## Auth
 - `User`
 - `SubscriptionPlan`
 - `UserSubscription`
 
-## News & reputation
+## News and reputation
 - `NewsSource`
 - `NewsArticle`
 - `SourceReputationProfile`
@@ -20,7 +20,7 @@ Below is the current implemented model baseline aligned to `app/db/models`.
 ## On-chain
 - `OnchainEvent`
 
-## Signals & explainability
+## Signals and explainability
 - `Signal`
 - `SignalSourceLink`
 - `SignalExplanation`
@@ -30,24 +30,23 @@ Below is the current implemented model baseline aligned to `app/db/models`.
 ## Citadel
 - `CitadelAssessment`
 
-## Wallet / sovereignty baseline
+## Wallet
 - `WalletProfile`
 - `WalletHealthReport`
 
-## Treasury & policy runtime
+## Treasury and policy runtime
 - `TreasuryRequest`
 - `PsbtWorkflow`
 - `TreasuryPolicy`
 - `PolicyRule`
 - `PolicyExecutionLog`
 
-## Delivery / audit / operations
+## Delivery and operations
 - `DeliveryLog`
 - `TelegramDeliveryLog`
 - `AuditLog`
 - `JobRun`
 
-## Notes
-- The model graph supports first-level explainability and policy execution traceability.
-- Citadel persistence is currently assessment-centric (`citadel_assessments`), not full sovereignty graph state storage.
-- Future iterations should extend provenance depth, sovereignty graph snapshots, and richer privacy telemetry.
+## Labeling notes
+- Some service-level outputs using these models are **BASELINE**.
+- Citadel-dependent projections include **SYNTHETIC** elements in selected endpoints.
