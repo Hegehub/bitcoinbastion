@@ -25,3 +25,10 @@ This document reflects repository state from code and tests, not roadmap targets
 - No production SLO attainment is claimed in this file.
 - No completion percentages are used.
 - Readiness claims remain in checklist form in `docs/PRODUCTION_READINESS.md`.
+
+
+## Protocol maturity truth (P3)
+- **IMPLEMENTED**: Chain-state, mempool, UTXO, and provider outputs now expose source-quality metadata (`source_type`, `provider_name`, fallback/mock flags, freshness, confidence, limitations).
+- **BASELINE**: Mempool/UTXO/script analyzers remain deterministic over caller-provided snapshots/hints and are not full node-level verification.
+- **SYNTHETIC**: Citadel scenario simulations and some protocol stress inputs remain deterministic synthetic models.
+- **Constraint**: Protocol confidence values are operational heuristics and must not be interpreted as consensus/finality guarantees.

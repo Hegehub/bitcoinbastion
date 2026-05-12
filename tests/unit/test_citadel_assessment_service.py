@@ -351,3 +351,11 @@ def test_citadel_assessment_surfaces_chain_state_risk_contribution() -> None:
     assert "chain_state" in explainability
     assert explainability["chain_state"]["reorg_risk_score"] >= 0
     assert any(item.domain == "chain_state" for item in out.warnings)
+
+
+def test_citadel_assessment_exposes_protocol_input_quality_summary() -> None:
+    out = CitadelAssessmentService().build_assessment(owner_type="user", owner_id=88)
+    protocol_quality = out.explainability.model_dump()["protocol_input_quality"]
+    assert 0.0 <= protocol_quality["confidence"] <= 1.0
+    assert isinstance(protocol_quality["fallback_or_synthetic_domains"], list)
+    assert "limitations" in protocol_quality

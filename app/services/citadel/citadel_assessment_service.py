@@ -21,6 +21,7 @@ from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService
 from app.services.script.descriptor_awareness_service import DescriptorAwarenessService
 from app.services.script.script_analyzer_service import ScriptAnalyzerService
 from app.services.utxo.utxo_analyzer_service import UTXOAnalyzerService
+from app.services.explainability.contract import build_explainability_contract
 
 
 
@@ -239,6 +240,7 @@ class CitadelAssessmentService:
         utxo: dict[str, object],
         mempool: dict[str, object],
         script_descriptor: dict[str, object],
+        chain_state: object,
     ) -> dict[str, dict[str, object]]:
         return {
             "wallet_runtime_context": self._quality_meta(
@@ -294,6 +296,12 @@ class CitadelAssessmentService:
                 freshness="runtime_session",
                 confidence=0.78 if context.descriptor_hint else 0.52,
                 note="Completeness depends on descriptor and health-report proxies",
+            ),
+            "chain_state": self._quality_meta(
+                source_type="fallback" if bool(getattr(chain_state, "freshness", {}).get("is_fallback")) else "real",
+                freshness=str(getattr(chain_state, "freshness", {}).get("provider_freshness_band", "unknown")),
+                confidence=float(getattr(chain_state, "confidence_score", 0.0)),
+                note="Chain-state quality depends on provider freshness and fallback source path.",
             ),
         }
 
@@ -429,6 +437,50 @@ class CitadelAssessmentService:
         utxo = self._utxo_signal(context=context)
         mempool = self._mempool_signal(context=context)
         script_descriptor = self._script_descriptor_signal(context=context)
+        inheritance = InheritanceVerificationService().evaluate(
+            owner_id=owner_id,
+            recovery_readiness_score=recovery.recovery_readiness_score,
+            has_instructions=not recovery.warnings
+            or not any("instructions" in warning.lower() for warning in recovery.warnings),
+            human_dependency_score=recovery.human_dependency_score,
+            descriptor_available=bool(context.descriptor_hint),
+            artifact_completeness_score=self._safe_float(
+                recovery.artifact_summary.get("completeness_score"), default=0.0
+            ),
+            verification_freshness_score=(
+                1.0
+                - min(
+                    1.0,
+                    self._safe_float(
+                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                    )
+                    / max(
+                        1.0,
+                        self._safe_float(
+                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                        ),
+                    ),
+                )
+            ),
+            emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
+            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            operational_readability_score=max(
+                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+            ),
+        )
+
+        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
+        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        chain_state = ChainStateService().evaluate(
+            tip_height=tip_height,
+            observed_block_height=observed_height,
+            headers_height=headers_height,
+            provider_tip_height=context.chain_provider_tip_height,
+            provider_confidence=context.chain_provider_confidence,
+            provider_data_age_seconds=context.chain_provider_data_age_seconds,
+            data_source=context.chain_data_source,
+        )
         inheritance = InheritanceVerificationService().evaluate(
             owner_id=owner_id,
             recovery_readiness_score=recovery.recovery_readiness_score,
@@ -761,7 +813,25 @@ class CitadelAssessmentService:
             utxo=utxo,
             mempool=mempool,
             script_descriptor=script_descriptor,
+            chain_state=chain_state,
         )
+        protocol_inputs = [
+            input_quality.get("chain_state", {"confidence": 0.0}),
+            input_quality.get("utxo", {"confidence": 0.0}),
+            input_quality.get("mempool", {"confidence": 0.0}),
+            input_quality.get("script", {"confidence": 0.0}),
+            input_quality.get("descriptor_awareness", {"confidence": 0.0}),
+        ]
+        protocol_confidence = round(
+            sum(self._safe_float(item.get("confidence"), default=0.0) for item in protocol_inputs)
+            / max(1, len(protocol_inputs)),
+            3,
+        )
+        protocol_fallback_domains = [
+            name
+            for name in ("chain_state", "utxo", "mempool", "script", "descriptor_awareness")
+            if input_quality.get(name, {}).get("quality_classification") in {"FALLBACK", "SYNTHETIC", "UNKNOWN"}
+        ]
 
         explainability_payload: dict[str, object] = {
             "recovery": recovery.model_dump(),
@@ -839,6 +909,32 @@ class CitadelAssessmentService:
                 "artifact_verification_age_days": context.artifact_verification_age_days,
             },
             "input_quality": input_quality,
+            "protocol_input_quality": {
+                "confidence": protocol_confidence,
+                "fallback_or_synthetic_domains": protocol_fallback_domains,
+                "limitations": [
+                    "Protocol quality is metadata-driven and conservative.",
+                    "Synthetic/fallback protocol domains reduce operational confidence.",
+                ],
+            },
+            "contract": build_explainability_contract(
+                domain="citadel",
+                confidence=protocol_confidence,
+                freshness={"assessment_generated_at": now.isoformat()},
+                source_type="runtime",
+                provider_name="mixed",
+                is_mock=False,
+                is_fallback=bool(protocol_fallback_domains),
+                limitations=[
+                    "Protocol maturity rollup is conservative and metadata-driven.",
+                    "Citadel combines real, fallback, and synthetic domains.",
+                ],
+                signals={
+                    "overall_score": overall,
+                    "protocol_fallback_domains": protocol_fallback_domains,
+                    "chain_finality_band": chain_state.finality_band,
+                },
+            ),
         }
         explainability_payload["guarantees"] = self._coverage_summary(
             explainability=explainability_payload,
@@ -855,6 +951,8 @@ class CitadelAssessmentService:
                 "script",
                 "descriptor_awareness",
                 "input_quality",
+                "protocol_input_quality",
+                "contract",
             ],
         )
 

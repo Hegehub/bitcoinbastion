@@ -25,6 +25,8 @@ This checklist is release-time evidence capture. Items must be verified per rele
 - [ ] Backward compatibility review completed for schema and API changes.
 
 ## Reliability and observability
+- [ ] Verify protocol source-quality labels are present for on-chain/citadel outputs (provider vs fallback vs mock).
+- [ ] Verify fallback/synthetic protocol domains lower decision confidence in operational runbooks.
 - [ ] Retry/timeout behavior verified for external integrations.
 - [ ] Background job idempotency checks reviewed for touched tasks.
 - [ ] Request IDs, logs, and metrics validated in deployed environment.
@@ -34,3 +36,8 @@ This checklist is release-time evidence capture. Items must be verified per rele
 - Do not infer production SLO attainment from implemented endpoints.
 - Treat **SYNTHETIC** and **BASELINE** components as non-final until explicitly hardened.
 - Avoid percentage readiness claims in release documentation.
+
+
+## Protocol maturity caveats
+- Chain-state confidence is operational and conservative; it is not a consensus finality proof.
+- Mempool/UTXO/script analytics are snapshot/hint-driven and must be treated as advisory unless corroborated by provider-grade evidence.

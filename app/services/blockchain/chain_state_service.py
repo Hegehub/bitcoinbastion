@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from app.services.explainability.contract import build_explainability_contract
 
 
 @dataclass(slots=True)
@@ -174,6 +175,27 @@ class ChainStateService:
                     "is_fallback": data_source in {"repository_fallback", "provider_fallback"},
                     "limitations": "Chain-state confidence is operational and conservative; not consensus-finality proof.",
                 },
+                "contract": build_explainability_contract(
+                    domain="protocol_layer",
+                    confidence=confidence,
+                    freshness={
+                        "source": data_source,
+                        "provider_data_age_seconds": provider_data_age_seconds,
+                        "provider_freshness_band": stale_band,
+                    },
+                    source_type="provider" if data_source == "provider_probe" else "runtime",
+                    provider_name="esplora" if data_source == "provider_probe" else "unknown",
+                    is_mock=data_source == "provider_fallback",
+                    is_fallback=data_source in {"repository_fallback", "provider_fallback"},
+                    limitations=[
+                        "Operational confidence only; not consensus finality proof.",
+                        "Provider fallback lowers certainty.",
+                    ],
+                    signals={
+                        "confirmation_depth": confirmation_depth,
+                        "reorg_risk_score": reorg_risk,
+                    },
+                ),
                 "calibration_version": "chain_state_v4_conservative",
             },
         )

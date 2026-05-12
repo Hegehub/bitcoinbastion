@@ -85,3 +85,9 @@
 - `GET /api/v1/admin/audit-logs`
 - `GET /api/v1/admin/jobs/recovery-check`
 - `POST /api/v1/admin/jobs/retry`
+
+
+## Protocol source-quality fields (implemented)
+- `GET /api/v1/onchain/state` includes source-quality metadata in `freshness` and `explainability` (including fallback/mock semantics when applicable).
+- Citadel explainability now includes `input_quality` and `protocol_input_quality` domains to expose protocol data maturity and fallback/synthetic limitations.
+- Mempool/UTXO service-driven outputs include source-quality/freshness limitations in explainability fields; these are advisory and conservative.

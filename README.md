@@ -36,6 +36,7 @@ Prefix: `/api/v1`
 - Telegram and delivery flows are **BASELINE** (environment-dependent runtime behavior).
 - Citadel dependency graph and disaster simulation outputs include **SYNTHETIC** components.
 - Migration reproducibility and schema parity checks are part of repository quality gates.
+- Protocol-aware outputs include explicit source-quality labels; fallback/synthetic domains should be treated as lower-confidence operational signals.
 
 ## Developer commands
 ```bash
