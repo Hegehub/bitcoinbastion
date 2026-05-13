@@ -8,6 +8,52 @@ class RecoveryReadinessEngine:
             return float(value)
         return 0.0
 
+    @staticmethod
+    def _build_recovery_slo(*, artifact_summary: dict[str, object], readiness_score: float, confidence: float) -> dict[str, object]:
+        required_count = int(artifact_summary.get("required_count", 0) or 0)
+        verified_required = int(artifact_summary.get("verified_required_count", 0) or 0)
+        stale_required_labels = list(artifact_summary.get("stale_required_labels", []))
+        missing_required_labels = list(artifact_summary.get("missing_required_labels", []))
+
+        stale_verification = len(stale_required_labels) > 0
+        overdue_recovery_validation = len(missing_required_labels) > 0
+        degraded_recovery_confidence = confidence < 0.7 or readiness_score < 0.65
+        unresolved_critical_findings = len(stale_required_labels) + len(missing_required_labels)
+
+        if unresolved_critical_findings >= 3 or (stale_verification and overdue_recovery_validation):
+            status = "critical"
+        elif stale_verification or overdue_recovery_validation or degraded_recovery_confidence:
+            status = "degraded"
+        else:
+            status = "healthy"
+
+        return {
+            "status": status,
+            "target": {
+                "required_artifacts_verified": "all",
+                "required_artifacts_stale": "none",
+                "minimum_confidence": 0.7,
+            },
+            "actual": {
+                "required_artifacts": required_count,
+                "verified_required_artifacts": verified_required,
+                "stale_required_artifacts": len(stale_required_labels),
+                "recovery_readiness_score": round(readiness_score, 3),
+                "confidence": round(confidence, 3),
+            },
+            "signals": {
+                "stale_verification": stale_verification,
+                "overdue_recovery_validation": overdue_recovery_validation,
+                "degraded_recovery_confidence": degraded_recovery_confidence,
+                "unresolved_critical_findings": unresolved_critical_findings,
+            },
+            "explainability": {
+                "stale_required_labels": stale_required_labels,
+                "missing_required_labels": missing_required_labels,
+                "conservative_semantics": True,
+            },
+        }
+
     def evaluate(
         self,
         *,
@@ -55,6 +101,13 @@ class RecoveryReadinessEngine:
         if fallback_required:
             warnings.append("Recovery readiness includes fallback/synthetic required artifacts; confidence is reduced.")
 
+        confidence = float(artifact_summary.get("confidence", 0.0) or 0.0)
+        recovery_slo = self._build_recovery_slo(
+            artifact_summary=artifact_summary,
+            readiness_score=score,
+            confidence=confidence,
+        )
+
         return {
             "recovery_readiness_score": score,
             "artifact_summary": artifact_summary,
@@ -62,7 +115,8 @@ class RecoveryReadinessEngine:
             "warnings": warnings,
             "recoverability_assumption": "strong" if score >= 0.8 else "moderate" if score >= 0.5 else "weak",
             "freshness": artifact_summary["freshness"],
-            "confidence": 0.76,
+            "confidence": confidence,
+            "recovery_slo": recovery_slo,
             "explainability": {
                 "weights": {
                     "artifacts": 0.5,
@@ -75,5 +129,6 @@ class RecoveryReadinessEngine:
                 "script_risk_score": script_risk_score,
                 "descriptor_completeness_score": round(descriptor_score, 3),
                 "artifact_provenance": artifact_summary.get("provenance", []),
+                "recovery_slo": recovery_slo,
             },
         }

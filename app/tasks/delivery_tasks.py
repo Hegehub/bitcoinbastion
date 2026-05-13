@@ -9,9 +9,9 @@ from app.tasks.celery_app import celery_app
 
 @celery_app.task(  # type: ignore[untyped-decorator]
     name="delivery.publish",
-    autoretry_for=(Exception,),
-    retry_backoff=True,
-    retry_kwargs={"max_retries": 3},
+    autoretry_for=(),
+    retry_backoff=False,
+    retry_kwargs={"max_retries": 0},
 )
 def publish_signals_task() -> dict[str, int]:
     with SessionLocal() as db:

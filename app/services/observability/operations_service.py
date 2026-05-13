@@ -9,6 +9,7 @@ from app.schemas.observability import (
     JobStatsOut,
     OperationsSnapshotOut,
     ProviderHealthOut,
+    RecoverySLOOut,
 )
 from app.services.blockchain.chain_state_service import ChainStateService
 from app.services.observability.recovery_service import RecoveryCheckService
@@ -68,7 +69,8 @@ class OperationsSnapshotService:
                     healthy=failed_deliveries == 0,
                     details=(
                         "Delivery health derived from last-24h delivery logs."
-                        f" recovery_slo_breached={recovery.recovery_slo.get('slo_breached', False)}"
+                        f" recovery_slo_status={recovery.recovery_slo.get('status', 'unknown')}"
+                        f" unresolved_critical_findings={recovery.recovery_slo.get('signals', {}).get('unresolved_critical_findings', 0)}"
                     ),
                     confidence=max(0.0, min(1.0, job_success_rate)),
                     freshness_seconds=300,
@@ -83,4 +85,5 @@ class OperationsSnapshotService:
                 failed_24h=failed_deliveries,
             ),
             chain_state=ChainStateOut.model_validate(chain_state, from_attributes=True),
+            recovery_slo=RecoverySLOOut.model_validate(recovery.recovery_slo),
         )

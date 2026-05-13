@@ -43,6 +43,7 @@ Prefix: `/api/v1`
 make install-dev
 make migrate
 make run
+make lint
 ```
 
 Verification commands:
