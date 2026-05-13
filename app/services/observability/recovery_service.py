@@ -74,6 +74,18 @@ class RecoveryCheckService:
         slo_target = 0.99
         slo_breached = recovery_success_rate < slo_target
 
+        critical_findings = sum(1 for item in hotspots if item.failures_24h >= 3)
+        stale_verification = failed_jobs >= 3
+        overdue_recovery_validation = failed_deliveries >= 2
+        degraded_recovery_confidence = slo_breached or severity != "ok"
+        status = (
+            "critical"
+            if severity == "critical" or critical_findings >= 2
+            else "degraded"
+            if degraded_recovery_confidence or stale_verification or overdue_recovery_validation
+            else "healthy"
+        )
+
         return RecoveryCheckOut(
             ok=(severity == "ok"),
             severity=severity,
@@ -89,10 +101,29 @@ class RecoveryCheckService:
                 "next_drill_code": drills[0].drill_code if drills else "routine_recovery_probe",
             },
             recovery_slo={
-                "target_success_rate_24h": slo_target,
-                "actual_success_rate_24h": recovery_success_rate,
-                "slo_breached": slo_breached,
-                "evaluation_window_hours": 24,
+                "status": status,
+                "target": {
+                    "job_success_rate_24h": slo_target,
+                    "stale_verification": False,
+                    "overdue_recovery_validation": False,
+                },
+                "actual": {
+                    "job_success_rate_24h": recovery_success_rate,
+                    "failed_jobs_24h": failed_jobs,
+                    "failed_deliveries_24h": failed_deliveries,
+                },
+                "signals": {
+                    "slo_breached": slo_breached,
+                    "stale_verification": stale_verification,
+                    "overdue_recovery_validation": overdue_recovery_validation,
+                    "degraded_recovery_confidence": degraded_recovery_confidence,
+                    "unresolved_critical_findings": critical_findings,
+                },
+                "explainability": {
+                    "evaluation_window_hours": 24,
+                    "conservative_semantics": True,
+                    "critical_hotspot_threshold_24h": 3,
+                },
             },
         )
 

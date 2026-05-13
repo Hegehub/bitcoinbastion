@@ -9,6 +9,7 @@ from app.schemas.observability import (
     JobStatsOut,
     OperationsSnapshotOut,
     ProviderHealthOut,
+    RecoverySLOOut,
 )
 from app.services.blockchain.chain_state_service import ChainStateService
 from app.services.observability.recovery_service import RecoveryCheckService
@@ -33,6 +34,7 @@ class OperationsSnapshotService:
             headers_height=observed_block_height + 1,
         )
         onchain_healthy = failed_jobs == 0 and chain_state.finality_band in {"moderate", "strong"}
+        degradation = chain_state.explainability.get("degradation_governance", {})
         onchain_details = (
             "Runtime jobs healthy and chain finality is acceptable."
             if onchain_healthy
@@ -54,7 +56,11 @@ class OperationsSnapshotService:
                 ProviderHealthOut(
                     provider="onchain",
                     healthy=onchain_healthy,
-                    details=f"{onchain_details} dominant_provider={provider_name} share={provider_share}",
+                    details=(
+                        f"{onchain_details} dominant_provider={provider_name} share={provider_share} "
+                        f"degraded_runtime_state={degradation.get('degraded_runtime_state', False)} "
+                        f"fallback_activated={degradation.get('fallback_activated', False)}"
+                    ),
                     confidence=max(0.0, min(1.0, 1.0 - chain_state.reorg_risk_score)),
                     freshness_seconds=300,
                 ),
@@ -63,7 +69,8 @@ class OperationsSnapshotService:
                     healthy=failed_deliveries == 0,
                     details=(
                         "Delivery health derived from last-24h delivery logs."
-                        f" recovery_slo_breached={recovery.recovery_slo.get('slo_breached', False)}"
+                        f" recovery_slo_status={recovery.recovery_slo.get('status', 'unknown')}"
+                        f" unresolved_critical_findings={recovery.recovery_slo.get('signals', {}).get('unresolved_critical_findings', 0)}"
                     ),
                     confidence=max(0.0, min(1.0, job_success_rate)),
                     freshness_seconds=300,
@@ -78,4 +85,5 @@ class OperationsSnapshotService:
                 failed_24h=failed_deliveries,
             ),
             chain_state=ChainStateOut.model_validate(chain_state, from_attributes=True),
+            recovery_slo=RecoverySLOOut.model_validate(recovery.recovery_slo),
         )

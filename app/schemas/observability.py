@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ProviderHealthOut(BaseModel):
@@ -29,6 +29,14 @@ class ChainStateOut(BaseModel):
     finality_band: str
 
 
+class RecoverySLOOut(BaseModel):
+    status: str
+    target: dict[str, object] = Field(default_factory=dict)
+    actual: dict[str, object] = Field(default_factory=dict)
+    signals: dict[str, object] = Field(default_factory=dict)
+    explainability: dict[str, object] = Field(default_factory=dict)
+
+
 class OperationsSnapshotOut(BaseModel):
     queue_depth: int
     stale_jobs: int
@@ -36,3 +44,4 @@ class OperationsSnapshotOut(BaseModel):
     jobs: JobStatsOut
     deliveries: DeliveryStatsOut
     chain_state: ChainStateOut
+    recovery_slo: RecoverySLOOut

@@ -502,3 +502,30 @@ def test_publish_service_skips_when_retry_cooldown_active(monkeypatch: pytest.Mo
     assert result.skipped == 1
     assert stored_signal is not None and stored_signal.is_published is False
     assert events == [{"status": "skipped", "reason": "retry_cooldown_active"}]
+
+
+def test_publish_service_suppresses_duplicate_signals_in_same_batch(monkeypatch: pytest.MonkeyPatch) -> None:
+    _configure_settings()
+    events: list[dict[str, str]] = []
+    monkeypatch.setattr(
+        "app.services.delivery.publish_service.increment_delivery_publish_event",
+        lambda **kwargs: events.append(kwargs),
+    )
+    engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
+    Base.metadata.create_all(bind=engine)
+
+    with Session(engine) as db:
+        signal_repo = SignalRepository(db)
+        signal = signal_repo.add(_build_signal("Dup batch", 0.77))
+        service = SignalPublishService(
+            signals=signal_repo,
+            deliveries=DeliveryRepository(db),
+            telegram_client=StubTelegramClient(),
+        )
+        monkeypatch.setattr(service.signals, "unpublished", lambda limit=20: [signal, signal])
+
+        result = service.publish_pending_with_stats(limit=10)
+
+    assert result.published == 1
+    assert result.skipped == 1
+    assert {"status": "skipped", "reason": "duplicate_in_batch"} in events
