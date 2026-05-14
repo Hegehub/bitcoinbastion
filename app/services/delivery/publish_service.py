@@ -71,7 +71,15 @@ class SignalPublishService:
         failed = 0
         skipped = 0
 
+        seen_signal_ids: set[int] = set()
+
         for signal in pending_signals:
+            if signal.id in seen_signal_ids:
+                self.logger.warning("signal_publish.duplicate_suppressed_in_batch", signal_id=signal.id)
+                increment_delivery_publish_event(status="skipped", reason="duplicate_in_batch")
+                skipped += 1
+                continue
+            seen_signal_ids.add(signal.id)
             if self.deliveries.already_sent(signal_id=signal.id, destination=destination):
                 increment_delivery_publish_event(status="skipped", reason="duplicate_already_sent")
                 self.signals.mark_published(signal.id)
@@ -142,4 +150,14 @@ class SignalPublishService:
                 increment_delivery_publish_event(status="failed", reason="unexpected_exception")
                 failed += 1
 
+        total_attempted = max(1, published + failed)
+        failed_ratio = failed / total_attempted
+        if failed_ratio >= 0.5 and failed > 0:
+            self.logger.warning(
+                "signal_publish.degraded_delivery_state",
+                published=published,
+                failed=failed,
+                skipped=skipped,
+                failed_ratio=round(failed_ratio, 3),
+            )
         return PublishResult(published=published, failed=failed, skipped=skipped)

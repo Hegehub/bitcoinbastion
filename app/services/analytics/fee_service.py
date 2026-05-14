@@ -10,6 +10,7 @@ class FeeAnalyticsService:
             backlog_vbytes=max(1, int(140_000_000 * payload.mempool_congestion)),
             median_fee_rate_sat_vb=max(1.0, 2 + payload.mempool_congestion * 60),
             high_priority_fee_rate_sat_vb=max(2.0, 8 + payload.mempool_congestion * 90),
+            snapshot_age_seconds=int(20 + payload.mempool_congestion * 90),
         )
         mempool_state = MempoolAnalyzerService().analyze(snapshot)
         market = FeeMarketModel().estimate(mempool=mempool_state, target_blocks=payload.target_blocks)
