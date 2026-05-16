@@ -111,3 +111,24 @@ def test_operations_snapshot_surfaces_critical_runtime_severity(monkeypatch) -> 
     assert snapshot.degraded_mode.confidence_penalty > 0
     assert snapshot.operational_evidence.degraded_dependencies
     assert snapshot.operational_evidence.unresolved_critical_findings >= 0
+
+
+def test_operations_snapshot_emits_runtime_metrics(monkeypatch) -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
+    Base.metadata.create_all(bind=engine)
+
+    captured: dict[str, object] = {}
+
+    def _capture(**kwargs):
+        captured.update(kwargs)
+
+    monkeypatch.setattr("app.services.observability.operations_service.set_observability_runtime_metrics", _capture)
+
+    with Session(engine) as db:
+        snapshot = OperationsSnapshotService().snapshot(db=db)
+
+    assert snapshot.runtime_severity.level in {"ok", "warning", "critical"}
+    assert captured["severity_score"] == snapshot.runtime_severity.score
+    assert captured["degraded_mode_active"] == snapshot.degraded_mode.active
+    assert isinstance(captured["provider_name"], str)
+    assert 0.0 <= float(captured["provider_share"]) <= 1.0

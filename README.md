@@ -32,11 +32,13 @@ Prefix: `/api/v1`
 - Observability: `/observability/snapshot`
 - Admin: `/admin/status`, `/admin/jobs`, `/admin/jobs/runs`, `/admin/jobs/recovery-check`, `/admin/jobs/retry`, `/admin/audit-logs`
 
-## Runtime truth notes
-- Telegram and delivery flows are **BASELINE** (environment-dependent runtime behavior).
-- Citadel dependency graph and disaster simulation outputs include **SYNTHETIC** components.
-- Migration reproducibility and schema parity checks are part of repository quality gates.
-- Protocol-aware outputs include explicit source-quality labels; fallback/synthetic domains should be treated as lower-confidence operational signals.
+## Runtime governance truth notes
+- Runtime snapshot exposes `runtime_severity`, `degraded_mode`, and `operational_evidence` for operator triage.
+- Degraded/fallback state is explicit and should be treated as lower-confidence runtime posture.
+- Recovery SLO, drill posture, unresolved findings, and delivery health are surfaced for governance, not as hard production SLO attainment proof.
+- Telegram and delivery flows remain **BASELINE** and environment-dependent.
+- Citadel dependency graph and disaster simulations still include **SYNTHETIC** components.
+- Migration reproducibility and schema parity checks are repository quality gates.
 
 ## Developer commands
 ```bash
@@ -58,3 +60,4 @@ make docs-truthfulness
 - docs/DOMAIN_MODELS.md
 - docs/STATUS.md
 - docs/PRODUCTION_READINESS.md
+- docs/OPERATIONS_RUNBOOK.md

@@ -19,6 +19,7 @@ from app.services.observability.recovery_service import RecoveryCheckService
 from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService, MempoolSnapshot
 from app.services.explainability.contract import build_audit_packet
 from app.services.explainability.contract import propagate_confidence
+from app.core.telemetry import set_observability_runtime_metrics
 
 
 class OperationsSnapshotService:
@@ -343,6 +344,7 @@ class OperationsSnapshotService:
             failed_deliveries=failed_deliveries,
             provider_count_total=provider_count_total,
         )
+        unresolved_findings = int(recovery.recovery_slo.get("signals", {}).get("unresolved_critical_findings", 0) or 0)
         operational_evidence = self._operational_evidence_packet(
             runtime_severity=runtime_severity,
             degraded_mode=degraded_mode,
@@ -352,6 +354,16 @@ class OperationsSnapshotService:
             failed_deliveries=failed_deliveries,
             sent_deliveries=deliveries.sent_count_last_24h(),
             chain_state=chain_state,
+        )
+
+        set_observability_runtime_metrics(
+            severity_score=runtime_severity.score,
+            degraded_mode_active=degraded_mode.active,
+            provider_name=provider_name,
+            provider_share=provider_share,
+            delivery_failures_24h=failed_deliveries,
+            unresolved_critical_findings=unresolved_findings,
+            citadel_runtime_healthy=(recovery.recovery_slo.get("status") == "healthy"),
         )
 
         return OperationsSnapshotOut(

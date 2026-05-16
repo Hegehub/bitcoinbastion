@@ -1,7 +1,7 @@
 import time
 
 from fastapi import APIRouter, FastAPI
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
@@ -20,6 +20,32 @@ ONCHAIN_PROVIDER_PROBE_EVENTS = Counter(
     "onchain_provider_probe_events_total",
     "On-chain provider probe outcomes",
     ["outcome"],
+)
+
+OBS_RUNTIME_SEVERITY_SCORE = Gauge(
+    "obs_runtime_severity_score",
+    "Operational runtime severity score",
+)
+OBS_RUNTIME_DEGRADED_MODE_ACTIVE = Gauge(
+    "obs_runtime_degraded_mode_active",
+    "Whether degraded mode is active (1=yes,0=no)",
+)
+OBS_PROVIDER_SHARE = Gauge(
+    "obs_provider_share",
+    "Dominant provider share for recent onchain observations",
+    ["provider"],
+)
+OBS_DELIVERY_FAILURES_24H = Gauge(
+    "obs_delivery_failures_24h",
+    "Delivery failures in the last 24h",
+)
+OBS_RECOVERY_UNRESOLVED_CRITICAL_FINDINGS = Gauge(
+    "obs_recovery_unresolved_critical_findings",
+    "Unresolved critical recovery findings",
+)
+OBS_CITADEL_RUNTIME_HEALTH = Gauge(
+    "obs_citadel_runtime_health",
+    "Citadel runtime health proxy (1 healthy, 0 degraded)",
 )
 
 
@@ -67,3 +93,21 @@ def increment_delivery_publish_event(*, status: str, reason: str = "none") -> No
 
 def increment_onchain_provider_probe_event(*, outcome: str) -> None:
     ONCHAIN_PROVIDER_PROBE_EVENTS.labels(outcome=outcome).inc()
+
+
+def set_observability_runtime_metrics(
+    *,
+    severity_score: int,
+    degraded_mode_active: bool,
+    provider_name: str,
+    provider_share: float,
+    delivery_failures_24h: int,
+    unresolved_critical_findings: int,
+    citadel_runtime_healthy: bool,
+) -> None:
+    OBS_RUNTIME_SEVERITY_SCORE.set(float(max(0, severity_score)))
+    OBS_RUNTIME_DEGRADED_MODE_ACTIVE.set(1.0 if degraded_mode_active else 0.0)
+    OBS_PROVIDER_SHARE.labels(provider=(provider_name or "unknown")).set(max(0.0, min(1.0, float(provider_share))))
+    OBS_DELIVERY_FAILURES_24H.set(float(max(0, delivery_failures_24h)))
+    OBS_RECOVERY_UNRESOLVED_CRITICAL_FINDINGS.set(float(max(0, unresolved_critical_findings)))
+    OBS_CITADEL_RUNTIME_HEALTH.set(1.0 if citadel_runtime_healthy else 0.0)

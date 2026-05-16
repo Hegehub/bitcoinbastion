@@ -86,8 +86,15 @@
 - `GET /api/v1/admin/jobs/recovery-check`
 - `POST /api/v1/admin/jobs/retry`
 
+## Observability snapshot contract notes (implemented)
+`GET /api/v1/observability/snapshot` includes:
+- `runtime_severity`: deterministic severity score/level, escalation conditions, operator guidance.
+- `degraded_mode`: explicit degraded-runtime marker, degraded reasons, component states, confidence penalty.
+- `operational_evidence`: compact operational audit packet with runtime state, degraded dependencies, provider quality, unresolved findings, delivery health, drill status, and recovery SLO status.
+
+These fields are operational governance aids and not guarantees of external SLO attainment.
 
 ## Protocol source-quality fields (implemented)
 - `GET /api/v1/onchain/state` includes source-quality metadata in `freshness` and `explainability` (including fallback/mock semantics when applicable).
-- Citadel explainability now includes `input_quality` and `protocol_input_quality` domains to expose protocol data maturity and fallback/synthetic limitations.
+- Citadel explainability includes `input_quality` and `protocol_input_quality` domains to expose protocol data maturity and fallback/synthetic limitations.
 - Mempool/UTXO service-driven outputs include source-quality/freshness limitations in explainability fields; these are advisory and conservative.
