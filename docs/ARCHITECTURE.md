@@ -28,7 +28,7 @@ Core runtime components:
 5. Metrics and error handlers provide observability and stable failure contracts.
 
 ## Current intelligence pipeline shape
-- **Ingestion**: RSS ingestion service + on-chain ingestion service.
+- **Ingestion**: RSS ingestion service + on-chain ingestion service + staged mining telemetry ingestion boundary.
 - **Scoring**: News scoring and fee/wallet/privacy scoring services.
 - **Signals**: Signal engine + explainability service with evidence graph persistence.
 - **Delivery**: Telegram formatter/delivery service + delivery logs.
@@ -46,3 +46,9 @@ Core runtime components:
 - SQLite-specific migration behavior (batch mode, default/constraint representation) can produce autogenerate drift signals that require explicit review before accepting migration deltas.
 - Runtime drift checks now validate tables, columns, nullability, type affinity, indexes, unique constraints, foreign keys, and explicit server defaults via `python scripts/check_schema_runtime_parity.py`.
 - Advanced drift checks intentionally degrade gracefully when a dialect does not expose a reflection surface (e.g., unsupported index/constraint APIs) to avoid false positives in CI.
+
+
+## Emerging domain extension: Mining Sovereignty Intelligence
+- M0 foundation defines architecture boundaries and schema contracts without DB migrations.
+- Planned modules: `app/domain/mining`, `app/services/mining`, `app/schemas/mining.py`, and future `app/tasks/mining_tasks.py`.
+- Integration path: mining outputs feed Signal, Policy, Explainability, and Citadel through explicit contracts and provenance tags.
