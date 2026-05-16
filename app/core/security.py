@@ -19,7 +19,14 @@ def verify_password(password: str, hashed_password: str) -> bool:
 
 def create_access_token(subject: str, expires_minutes: int = 60) -> str:
     settings = get_settings()
-    expires_at = datetime.now(UTC) + timedelta(minutes=expires_minutes)
-    payload = {"sub": subject, "exp": int(expires_at.timestamp())}
+    ttl_minutes = max(1, int(expires_minutes or settings.jwt_access_token_expires_minutes))
+    now = datetime.now(UTC)
+    expires_at = now + timedelta(minutes=ttl_minutes)
+    payload = {
+        "sub": subject,
+        "exp": int(expires_at.timestamp()),
+        "iat": int(now.timestamp()),
+        "iss": settings.jwt_issuer,
+    }
     token = jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
     return cast(str, token)

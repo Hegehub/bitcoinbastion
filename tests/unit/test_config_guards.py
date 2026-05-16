@@ -29,3 +29,13 @@ def test_env_file_path_is_stable() -> None:
     get_settings.cache_clear()
     settings = get_settings()
     assert settings.api_prefix.startswith("/")
+
+
+def test_non_hs256_rejected_in_production() -> None:
+    with pytest.raises(ValidationError):
+        Settings(ENVIRONMENT="prod", JWT_SECRET_KEY="bastion-prod-secret-that-is-long-and-random-2026", JWT_ALGORITHM="HS512")
+
+
+def test_blank_issuer_rejected_in_production() -> None:
+    with pytest.raises(ValidationError):
+        Settings(ENVIRONMENT="prod", JWT_SECRET_KEY="bastion-prod-secret-that-is-long-and-random-2026", JWT_ISSUER="")

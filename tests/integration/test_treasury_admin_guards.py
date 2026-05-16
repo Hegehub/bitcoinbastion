@@ -31,3 +31,10 @@ def test_treasury_reject_requires_admin_auth() -> None:
     )
 
     assert response.status_code in {401, 403}
+
+
+def test_policy_sensitive_routes_require_admin_auth() -> None:
+    client = TestClient(app)
+
+    assert client.get("/api/v1/policy/executions").status_code in {401, 403}
+    assert client.get("/api/v1/policy/catalog").status_code in {401, 403}

@@ -29,8 +29,51 @@ def test_model_unique_signature_includes_column_unique_flags() -> None:
         MetaData(),
         Column("id", Integer, primary_key=True),
         Column("slug", String, unique=True),
-        Column("name", String, server_default=text("'anon'")),
+        Column("name", String, server_default="anon"),
     )
 
     uniques = _model_unique_signature(table)
     assert (None, ("slug",)) in uniques
+
+
+class _InspectorStub:
+    def __init__(self) -> None:
+        self._tables = ["example"]
+
+    def get_table_names(self) -> list[str]:
+        return self._tables
+
+    def get_columns(self, table_name: str) -> list[dict[str, object]]:
+        assert table_name == "example"
+        return [
+            {"name": "id", "nullable": False, "type": Integer(), "default": None},
+            {"name": "slug", "nullable": True, "type": String(), "default": "'x'"},
+        ]
+
+    def get_indexes(self, table_name: str) -> list[dict[str, object]]:
+        return [{"name": "ix_example_slug", "column_names": ["slug"], "unique": False}]
+
+    def get_unique_constraints(self, table_name: str) -> list[dict[str, object]]:
+        return [{"name": "uq_example_slug", "column_names": ["slug"]}]
+
+    def get_foreign_keys(self, table_name: str) -> list[dict[str, object]]:
+        return []
+
+
+def test_collect_schema_parity_errors_surfaces_column_nullable_default_and_index_drift(monkeypatch) -> None:
+    from scripts import check_schema_runtime_parity as parity
+
+    metadata = MetaData()
+    Table(
+        "example",
+        metadata,
+        Column("id", Integer, primary_key=True),
+        Column("slug", String, nullable=False, unique=True, server_default="anon"),
+    )
+
+    monkeypatch.setattr(parity.Base, "metadata", metadata)
+    errors = parity.collect_schema_parity_errors(_InspectorStub())
+
+    assert any(err.startswith("nullable parity mismatch:") for err in errors)
+    assert any(err.startswith("default parity mismatch:") for err in errors)
+    assert any(err.startswith("index parity mismatch:") for err in errors)

@@ -18,7 +18,13 @@ def db_session() -> Generator[Session, None, None]:
 def decode_user_id_from_token(token: str) -> int:
     settings = get_settings()
     try:
-        payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+        payload = jwt.decode(
+            token,
+            settings.jwt_secret_key,
+            algorithms=[settings.jwt_algorithm],
+            issuer=settings.jwt_issuer,
+            options={"require_sub": True, "require_exp": True, "require_iat": True, "require_iss": True},
+        )
     except JWTError as exc:
         raise UnauthorizedError("Invalid access token") from exc
 
@@ -50,6 +56,6 @@ def get_current_user(
 
 
 def get_admin_user(current_user: User = Depends(get_current_user)) -> User:
-    if not current_user.is_admin:
+    if not current_user.is_admin or str(current_user.role).lower() != "admin":
         raise UnauthorizedError("Admin privileges required")
     return current_user

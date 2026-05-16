@@ -67,7 +67,39 @@ def test_onchain_state_contract_includes_provenance_marker() -> None:
     data = response.json()["data"]
     assert data["finality_band"] in {"weak", "moderate", "strong"}
     assert "explainability" in data
-    assert data["explainability"]["data_source"] in {"query", "repository_fallback"}
+    assert data["explainability"]["data_source"] in {
+        "query",
+        "repository_fallback",
+        "provider_probe",
+        "provider_fallback",
+    }
+
+
+def test_paginated_envelope_contract_for_top_signals() -> None:
+    client = TestClient(app)
+    response = client.get("/api/v1/signals/top")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["success"] is True
+    assert set(payload.keys()) == {"success", "data"}
+    assert set(payload["data"].keys()) == {"items", "total", "limit", "offset"}
+    assert isinstance(payload["data"]["items"], list)
+    assert isinstance(payload["data"]["total"], int)
+    assert isinstance(payload["data"]["limit"], int)
+    assert isinstance(payload["data"]["offset"], int)
+
+
+def test_health_endpoints_are_intentional_non_envelope_exceptions() -> None:
+    client = TestClient(app)
+
+    for path in ["/api/v1/health", "/api/v1/health/live", "/api/v1/health/ready"]:
+        response = client.get(path)
+        assert response.status_code == 200
+        payload = response.json()
+        assert "status" in payload
+        assert "app" in payload
+        assert "success" not in payload
 
 
 def test_signal_explanation_contract_includes_source_evidence_graph_when_linked() -> None:
