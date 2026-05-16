@@ -21,7 +21,7 @@ All criteria below must be met before promoting an RC to production:
 ## Final P6-10 decision guard
 - Current repository-level sovereignty-grade readiness: **85%** (see `docs/STATUS.md`).
 - **Do not claim 100% readiness** until all residual risks in `docs/STATUS.md` are explicitly closed with deployment evidence.
-- RC promotion is allowed only as **conditional approval** pending environment verification evidence.
+- RC promotion is currently **not declared**; current status is PRE-RC / production-oriented beta pending closure of listed residual risks.
 
 ## Runtime and infrastructure
 - [ ] Docker image build reproduced for release commit.
@@ -79,3 +79,51 @@ All criteria below must be met before promoting an RC to production:
 ## Protocol maturity caveats
 - Chain-state confidence is operational and conservative; it is not a consensus finality proof.
 - Mempool/UTXO/script analytics are snapshot/hint-driven and must be treated as advisory unless corroborated by provider-grade evidence.
+
+
+## Security verification commands (P7-02)
+```bash
+rg -n "seed phrase|seed_phrase|mnemonic|private key|private_key|xprv|xpriv|wif|BEGIN PRIVATE KEY" app tests
+rg -n "Depends\(get_admin_user\)" app/api/v1
+python -m pytest -q tests/unit/test_config_guards.py tests/unit/test_auth_dependencies.py tests/integration/test_treasury_admin_guards.py tests/integration/test_error_envelope.py tests/unit/test_treasury_approval_runtime.py tests/unit/test_policy_runtime_service.py
+python -m pytest -q tests/unit/test_auth_service.py tests/unit/test_audit_repository.py tests/unit/test_signal_publish_service.py
+```
+
+
+## Documentation verification commands (P7-03)
+```bash
+python scripts/check_docs_truthfulness.py
+python -m pytest -q tests/contract/test_runtime_api_contracts.py tests/integration/test_error_envelope.py
+```
+
+
+## Release metadata checklist (P7-04)
+- [ ] Version candidate label recorded in release notes (example: `v0.1.0-rc.1`).
+- [ ] Upgrade notes recorded (JWT/env requirements, migration before traffic).
+- [ ] Migration notes recorded (replay/parity outcomes and dialect caveat).
+- [ ] Known limitations copied from `docs/STATUS.md` into release notes.
+- [ ] Rollback notes completed with prior digest/version and verification evidence.
+
+
+## Post-release incident severity matrix (P7-05)
+
+| Severity | Trigger examples | Required response |
+|---|---|---|
+| Sev-0 (Critical) | Runtime severity critical with unresolved critical findings; sustained health/readiness failures; repeated policy/treasury 5xx | Immediate incident command, freeze high-impact automation, evaluate rollback now |
+| Sev-1 (High) | Degraded mode active with escalating failed jobs/deliveries; persistent provider outage/fallback conditions | Mitigate within same shift, run focused drill/replay, prepare rollback decision packet |
+| Sev-2 (Medium) | Intermittent delivery/provider degradation without hard outage; isolated anomaly requiring human review | Track and remediate in-day, increase monitoring cadence, document residual risk |
+| Sev-3 (Low) | Non-impacting noise, transient warnings resolved quickly | Record in ops log, continue standard cadence |
+
+### Rollback triggers (explicit)
+- Sev-0 condition persisting across two consecutive review intervals.
+- Health/readiness checks repeatedly failing after immediate remediation attempts.
+- Recovery-check trend indicates accelerating critical hotspots despite replay of safe tasks.
+- Policy/treasury critical paths exhibit persistent operational errors that block safe governance actions.
+
+
+## P7-06 final decision gate
+- Current final decision: **PRE-RC / PRODUCTION-ORIENTED BETA**.
+- Promotion to `PRODUCTION RELEASE CANDIDATE` requires explicit closure evidence for:
+  1. protocol maturity realism in operational workflows,
+  2. Citadel synthetic-risk reduction or formal acceptance,
+  3. full target-environment operations/deployment evidence capture.

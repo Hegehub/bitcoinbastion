@@ -148,3 +148,65 @@ For high-impact signals:
 - Treat unresolved critical findings in recovery SLO as release blocker until explicitly waived by operator + owner.
 - For repeated job/delivery hotspot failures (>=3/24h), run focused drill before resuming automation.
 - Any fallback-heavy runtime state during release must be captured as known limitation in release notes.
+
+
+## 11) Post-release monitoring plan
+
+### First 24 hours (high-frequency)
+
+**Cadence:**
+- Manual checks every 30 minutes for first 4 hours, then hourly to 24h.
+- Automated telemetry is expected to update continuously, but operator review is still required.
+
+**Checks:**
+1. `/api/v1/observability/snapshot`
+   - `runtime_severity.level`
+   - `degraded_mode.active`
+   - `operational_evidence.unresolved_critical_findings`
+2. `/api/v1/admin/jobs/recovery-check`
+   - `severity`
+   - `failed_jobs_24h`
+   - `failed_deliveries_24h`
+3. `/metrics`
+   - severity score / degraded mode gauges
+   - provider share / delivery failure gauges
+4. Health endpoints
+   - `/api/v1/health/live`
+   - `/api/v1/health/ready`
+
+### First 7 days (stability window)
+
+**Cadence:**
+- Day 2–3: every 4 hours.
+- Day 4–7: twice daily.
+- Daily incident-review sync for open hotspots.
+
+**Checks:**
+- Trend failed jobs and deliveries across 24h windows.
+- Confirm degraded mode does not persist without mitigation notes.
+- Verify drill posture remains actionable (`next_drill_code`, `next_drill_priority`).
+- Confirm protocol advisory outputs are not treated as consensus guarantees in operator actions.
+
+### Critical monitoring domains
+
+1. **Provider degradation monitoring**
+   - Watch degraded reasons and provider freshness indicators in snapshot outputs.
+   - Escalate if fallback/provider-outage markers persist beyond two consecutive review intervals.
+
+2. **Telegram delivery monitoring**
+   - Watch delivery failure hotspots and repeated destination failures.
+   - Escalate if repeated delivery failures (>=3 in 24h for same destination) continue after retry-safe replay.
+
+3. **Citadel scoring anomaly monitoring**
+   - Watch abrupt score swings without corresponding evidence updates.
+   - Treat unexplained severe downward score shifts as review-required before policy automation decisions.
+
+4. **Chain-state/finality monitoring**
+   - Track weak finality bands, stale provider freshness, and fallback data-source conditions.
+   - Escalate if weak-finality/fallback posture persists across consecutive review windows.
+
+### Manual vs automated responsibility
+
+- **Automated (implemented):** telemetry emission, recovery-check computation, job/delivery counters, snapshot synthesis.
+- **Manual (required):** interval reviews, incident classification, rollback decision, stakeholder communication, and release-risk sign-off.
+- No fully autonomous rollback is assumed or claimed.

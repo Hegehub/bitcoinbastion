@@ -76,7 +76,7 @@ Assessment date: **2026-05-16**
 | Documentation truthfulness | Status/readiness/runbook/contracts updated and docs truth checks present. | **90%** | IMPLEMENTED |
 
 ### Final weighted readiness
-- **Sovereignty-grade readiness: 85%** (evidence-based weighted rollup across the matrix above).
+- **Sovereignty-grade readiness: 83%** (evidence-based weighted rollup across the matrix above, adjusted for unresolved production-candidate blockers).
 - This is a governance and implementation readiness score, **not** a production SLO guarantee.
 
 ### Residual risks (explicit)
@@ -86,11 +86,40 @@ Assessment date: **2026-05-16**
 4. **Delivery runtime risk (BASELINE):** destination/provider behavior can degrade by environment despite retry/idempotency controls.
 
 ### Release decision
-- **RC status: Conditionally approved (not full production sign-off).**
-- Approval is conditional on completing all RC exit criteria in `docs/PRODUCTION_READINESS.md` for the target environment and recording command evidence.
+- **Final decision (P7-06): PRE-RC / PRODUCTION-ORIENTED BETA.**
+- Rationale: repository and test posture are strong, but full production-candidate declaration is blocked by unresolved realism/operational closures in protocol maturity, Citadel synthetic dependence, and environment-verified deployment evidence requirements.
 
 ### Next release tasks if full readiness is required
 - Close protocol-depth hardening for provider-grade corroboration workflows.
 - Reduce synthetic dependence in Citadel disaster/recovery scenario modeling.
 - Add environment-certified deployment evidence pack (staging + pre-prod + production cutover checklist outputs).
 - Complete threshold calibration for escalation/paging per environment.
+
+
+## Documentation lock status (P7-03)
+- **IMPLEMENTED**: README, production readiness checklist, API contracts, operations runbook, release notes template, and status declaration are aligned to current repository behavior and guardrails.
+- **BASELINE**: release evidence capture remains operator-dependent in deployment environments.
+- **Constraint**: no documentation claim in this repository should be interpreted as production SLO attainment proof.
+- **Residual risk visibility**: protocol advisory limits, Citadel synthetic components, and deployment execution risks remain explicitly documented and must be acknowledged at release sign-off.
+
+
+### Version candidate metadata (P7-04)
+- Proposed version candidate: **v0.1.0-rc.1** (metadata prepared only; no git tag created in repository).
+- Release notes template now includes evidence-based RC metadata, upgrade notes, migration notes, rollback notes, and verification commands.
+- Release remains **conditionally approved** pending target-environment evidence capture per `docs/PRODUCTION_READINESS.md`.
+
+
+## Post-release monitoring status (P7-05)
+- **IMPLEMENTED**: first-24h and first-7-day monitoring cadence, rollback triggers, and incident severity matrix are documented in runbook/readiness docs.
+- **BASELINE**: monitoring execution remains operator-driven; no autonomous rollback guarantee is implemented.
+- **Residual risk visibility**: provider degradation, delivery fragility, weak finality posture, and synthetic Citadel influences remain explicit operational risks.
+
+
+## Final production-candidate decision (P7-06)
+- **Decision class:** `PRE-RC / PRODUCTION-ORIENTED BETA`
+- **Why not RC yet:**
+  1. Protocol-depth outputs remain advisory/baseline rather than full consensus-correlated operational guarantees.
+  2. Citadel scenario modeling still includes synthetic deterministic components affecting incident realism.
+  3. Production deployment evidence closure remains environment/operator-dependent and not fully closed in repository artifacts alone.
+- **P0 blocker status:** no direct code P0 regressions detected in repository verification; remaining blockers are realism/evidence closure blockers for RC declaration.
+- **Next promotion condition:** all RC criteria plus explicit closure evidence for protocol realism, Citadel realism, and deployment operations runbook execution in target environment.

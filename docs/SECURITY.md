@@ -32,3 +32,19 @@ Audit date: **2026-05-16**
 ## Accepted limitations
 - CI/schema checks use SQLite for deterministic parity/replay evidence.
 - PostgreSQL-specific semantics still require staged environment verification before production sign-off.
+
+
+## P7-02 verification snapshot (2026-05-16)
+- **No seed phrase storage found** in `app/` or `tests/` paths scanned for mnemonic/seed phrase patterns.
+- **No private key storage found** in API/service/model paths scanned for private key/xprv/wif markers.
+- **No accidental key logging evidence found** in runtime code scan for direct sensitive token/secret logging patterns.
+- **Admin routes protected** by `get_admin_user` dependency and dual admin checks (`is_admin` + `role=admin`).
+- **Sensitive treasury actions audited** via `treasury.request.create|approve|reject` audit events.
+- **Policy sensitive actions audited/governed** through policy execution logging and high-risk change controls.
+- **Env handling safe by design** with production guardrails for JWT secret/issuer/algorithm and fail-fast startup checks.
+- **Debug production posture**: no `debug=True` runtime mode found in API startup path.
+
+### Findings classification
+- **BLOCKER:** none found in repository-level static/runtime test verification.
+- **MAJOR:** none found in this verification pass.
+- **MINOR:** deployment environment secret hygiene still requires operator evidence per release checklist.

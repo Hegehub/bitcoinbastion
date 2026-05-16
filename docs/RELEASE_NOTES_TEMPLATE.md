@@ -1,5 +1,12 @@
 # Release Notes Template
 
+## Release metadata
+- Version candidate: `v0.1.0-rc.1`
+- Release date (UTC): `<YYYY-MM-DD>`
+- Release manager: `<name>`
+- Commit SHA: `<sha>`
+- Scope: Sovereignty-grade RC governance, security hardening, API contract lock, deployment/runbook readiness
+
 ## Release candidate criteria (must be explicitly checked)
 - [ ] `make lint`
 - [ ] `python -m pytest -q tests/unit`
@@ -56,3 +63,21 @@ curl -fsS http://localhost:8000/metrics
 - Rollback executed by:
 - Migration compatibility checks run:
 - Post-rollback verification commands run:
+
+
+## Upgrade notes
+- Apply migrations to head before switching traffic: `python -m alembic upgrade head`.
+- Ensure env includes `JWT_ISSUER` and `JWT_ACCESS_TOKEN_EXPIRES_MINUTES` and uses strong non-default `JWT_SECRET_KEY` for production.
+- For container deployment, use startup scripts that enforce env guards and migration-at-start behavior.
+- Validate admin token flow after deploy because JWT issuer/claim enforcement is strict (`sub`, `exp`, `iat`, `iss`).
+
+## Migration notes
+- Migration replay expectation: `upgrade head -> downgrade base -> upgrade head` remains reproducible on clean artifact.
+- Schema parity/model-migration parity checks are mandatory RC gates.
+- SQLite parity is deterministic CI baseline; PostgreSQL semantics must be verified in staging before production promotion.
+
+## Known limitations (explicit)
+- Protocol confidence remains advisory (not consensus/finality proof).
+- Citadel includes deterministic synthetic simulation components.
+- Telegram/delivery behavior remains environment-dependent.
+- Deployment evidence capture remains operator-driven per release checklist.

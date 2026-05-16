@@ -71,6 +71,17 @@ make docs-truthfulness
 
 
 ## Final readiness declaration
-- Sovereignty-grade readiness (P6-10): **85%** (evidence-based; not an SLO claim).
-- Current release-candidate decision: **Conditionally approved** pending environment verification evidence.
+- Sovereignty-grade readiness (P7-06): **83%** (evidence-based; not an SLO claim).
+- Current release decision: **PRE-RC / PRODUCTION-ORIENTED BETA**.
 - Residual risks and next-release tasks are tracked in `docs/STATUS.md`.
+
+
+## Documentation lock
+- Documentation is locked to current implementation scope for RC (P7-03).
+- Release sign-off must include residual-risk acknowledgement from `docs/STATUS.md` and checklist evidence from `docs/PRODUCTION_READINESS.md`.
+
+
+## Release candidate metadata
+- Candidate label and release-note structure are prepared in `docs/RELEASE_NOTES_TEMPLATE.md` (metadata-only; no tag implied).
+
+- Next promotion requires closure evidence for protocol/Citadel realism and target-environment operational verification.
