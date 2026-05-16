@@ -6,12 +6,22 @@
 - List endpoints use `PaginatedData`
 - Error envelope shape: `{"success": false, "error": {"code": "...", "message": "...", "request_id": "..."}}`
 
+## Compatibility lock (P6-09)
+- Response envelope contract for non-exception endpoints is locked to:
+  - success path: `{"success": true, "data": ...}`
+  - error path: `{"success": false, "error": {"code", "message", "request_id"}}`
+- Paginated route contract is locked to:
+  - `{"success": true, "data": {"items": [...], "total": <int>, "limit": <int>, "offset": <int>}}`
+- Backward compatibility rule: envelope shape changes are disallowed unless explicitly versioned and announced in release notes.
+
 ## Envelope exceptions (implemented)
 - `GET /api/v1/health`
 - `GET /api/v1/health/live`
 - `GET /api/v1/health/ready`
 - `POST /api/v1/auth/register`
 - `POST /api/v1/auth/login`
+
+These endpoints intentionally return direct schema payloads (not `ResponseEnvelope`).
 
 ## Implemented route inventory
 
@@ -98,3 +108,17 @@ These fields are operational governance aids and not guarantees of external SLO 
 - `GET /api/v1/onchain/state` includes source-quality metadata in `freshness` and `explainability` (including fallback/mock semantics when applicable).
 - Citadel explainability includes `input_quality` and `protocol_input_quality` domains to expose protocol data maturity and fallback/synthetic limitations.
 - Mempool/UTXO service-driven outputs include source-quality/freshness limitations in explainability fields; these are advisory and conservative.
+
+### On-chain state data source compatibility
+`GET /api/v1/onchain/state` `data.explainability.data_source` may intentionally be one of:
+- `query`
+- `repository_fallback`
+- `provider_probe`
+- `provider_fallback`
+
+Clients should treat these as source-quality markers and avoid strict assumptions on a single fallback string.
+
+## Backward compatibility notes
+- Envelope exceptions are explicit and stable unless versioned.
+- Pagination fields (`items`, `total`, `limit`, `offset`) are required for paginated endpoints.
+- Error envelope shape is standardized across auth/validation/http/application errors.

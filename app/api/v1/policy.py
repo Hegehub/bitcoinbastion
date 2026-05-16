@@ -46,6 +46,7 @@ def simulate_policy(
 def list_policy_executions(
     limit: int = 20,
     offset: int = 0,
+    _: User = Depends(get_admin_user),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[PolicyExecutionLogOut]]:
     data = TreasuryPolicyService().list_executions(db=db, limit=limit, offset=offset)
@@ -88,6 +89,9 @@ def compare_policy_catalog(
 
 
 @router.get("/catalog", response_model=ResponseEnvelope[list[PolicyCatalogOut]])
-def list_policy_catalog(db: Session = Depends(db_session)) -> ResponseEnvelope[list[PolicyCatalogOut]]:
+def list_policy_catalog(
+    _: User = Depends(get_admin_user),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[list[PolicyCatalogOut]]:
     data = TreasuryPolicyService().list_catalog(db=db)
     return ResponseEnvelope(data=data)

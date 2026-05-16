@@ -33,6 +33,8 @@ class Settings(BaseSettings):
 
     jwt_secret_key: str = Field(default="change-me-in-prod", alias="JWT_SECRET_KEY")
     jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
+    jwt_issuer: str = Field(default="bitcoin-bastion", alias="JWT_ISSUER")
+    jwt_access_token_expires_minutes: int = Field(default=60, ge=5, le=24 * 60, alias="JWT_ACCESS_TOKEN_EXPIRES_MINUTES")
 
     rate_limit_per_minute: int = Field(default=120, alias="RATE_LIMIT_PER_MINUTE")
 
@@ -73,6 +75,12 @@ class Settings(BaseSettings):
             raise ValueError(
                 "JWT_SECRET_KEY must be non-default and at least 32 characters in production."
             )
+
+        if self.jwt_algorithm != "HS256":
+            raise ValueError("JWT_ALGORITHM must remain HS256 unless explicit cryptographic review is completed.")
+
+        if not self.jwt_issuer.strip():
+            raise ValueError("JWT_ISSUER must be set in production.")
 
         return self
 

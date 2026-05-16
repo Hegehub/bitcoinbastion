@@ -61,3 +61,27 @@ make docs-truthfulness
 - docs/STATUS.md
 - docs/PRODUCTION_READINESS.md
 - docs/OPERATIONS_RUNBOOK.md
+
+
+## Release governance
+- Release/RC checklist: `docs/PRODUCTION_READINESS.md`
+- Operational rollback + incident notes: `docs/OPERATIONS_RUNBOOK.md`
+- Release notes + exact verification command template: `docs/RELEASE_NOTES_TEMPLATE.md`
+- Current truth-status and limitations: `docs/STATUS.md`
+
+
+## Final readiness declaration
+- Sovereignty-grade readiness (P7-06): **83%** (evidence-based; not an SLO claim).
+- Current release decision: **PRE-RC / PRODUCTION-ORIENTED BETA**.
+- Residual risks and next-release tasks are tracked in `docs/STATUS.md`.
+
+
+## Documentation lock
+- Documentation is locked to current implementation scope for RC (P7-03).
+- Release sign-off must include residual-risk acknowledgement from `docs/STATUS.md` and checklist evidence from `docs/PRODUCTION_READINESS.md`.
+
+
+## Release candidate metadata
+- Candidate label and release-note structure are prepared in `docs/RELEASE_NOTES_TEMPLATE.md` (metadata-only; no tag implied).
+
+- Next promotion requires closure evidence for protocol/Citadel realism and target-environment operational verification.

@@ -81,7 +81,7 @@ def test_onchain_state_provider_probe_falls_back_when_provider_fails(monkeypatch
     assert response.status_code == 200
     payload = response.json()
     assert payload["data"]["tip_height"] == 333_001
-    assert payload["data"]["explainability"]["data_source"] == "repository_fallback"
+    assert payload["data"]["explainability"]["data_source"] == "provider_fallback"
 
 
 def test_onchain_state_provider_probe_emits_metrics(monkeypatch) -> None:
