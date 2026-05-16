@@ -24,6 +24,14 @@ class TelegramSendResult:
 
 
 class TelegramDeliveryClient:
+    NON_RETRYABLE_HINTS = (
+        "chat not found",
+        "bot was blocked",
+        "have no rights",
+        "can't parse entities",
+        "user is deactivated",
+    )
+
     def __init__(
         self,
         settings: Settings,
@@ -32,6 +40,11 @@ class TelegramDeliveryClient:
     ) -> None:
         self.settings = settings
         self.sleep = sleep or time.sleep
+
+    @classmethod
+    def _is_non_retryable_description(cls, description: str) -> bool:
+        normalized = description.lower().strip()
+        return any(hint in normalized for hint in cls.NON_RETRYABLE_HINTS)
 
     def send_message(self, *, destination: str, message: str) -> TelegramSendResult:
         if not self.settings.telegram_bot_token:
@@ -65,6 +78,13 @@ class TelegramDeliveryClient:
                         response = client.post(url, json=payload)
                         response.raise_for_status()
                         body = response.json()
+                except httpx.HTTPStatusError as exc:
+                    status = exc.response.status_code if exc.response is not None else 0
+                    if 400 <= status < 500 and status != 429:
+                        raise TelegramDeliveryNonRetryableError(
+                            f"Telegram API non-retryable HTTP status: {status}"
+                        ) from exc
+                    raise TelegramDeliveryError(f"Telegram API request failed: {exc}") from exc
                 except Exception as exc:  # noqa: BLE001
                     raise TelegramDeliveryError(f"Telegram API request failed: {exc}") from exc
 
@@ -73,6 +93,10 @@ class TelegramDeliveryClient:
                     if isinstance(body, dict) and isinstance(body.get("description"), str):
                         description = str(body.get("description"))
                     detail = f" Telegram says: {description}" if description else ""
+                    if description and self._is_non_retryable_description(description):
+                        raise TelegramDeliveryNonRetryableError(
+                            f"Telegram API returned non-retryable response.{detail}"
+                        )
                     raise TelegramDeliveryError(f"Telegram API returned non-ok response.{detail}")
 
                 result = body.get("result")

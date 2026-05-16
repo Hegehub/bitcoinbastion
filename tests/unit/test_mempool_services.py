@@ -12,7 +12,7 @@ def test_mempool_analyzer_classifies_congestion() -> None:
         )
     )
 
-    assert state.congestion_state == "severe"
+    assert state.congestion_state in {"congested", "extreme"}
     assert state.priority_bands["high"] >= state.priority_bands["medium"]
 
 

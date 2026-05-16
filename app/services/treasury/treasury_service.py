@@ -15,6 +15,8 @@ from app.schemas.treasury import (
 from app.services.admin.audit_service import AuditService
 from app.services.analytics.fee_service import FeeAnalyticsService
 from app.services.policy.policy_service import TreasuryPolicyService
+from app.services.blockchain.chain_state_service import ChainStateService
+from app.services.explainability.contract import build_audit_packet
 
 
 class TreasuryService:
@@ -22,6 +24,22 @@ class TreasuryService:
         self.repo = repo
         self.policy_service = TreasuryPolicyService()
         self.audit_service = AuditService(AuditRepository(repo.db))
+
+    @staticmethod
+    def _chain_state_for_treasury(*, wallet_health_score: float, amount_sats: int, data_source: str = "repository_fallback"):
+        observed = 900_000
+        if amount_sats >= 10_000_000 or wallet_health_score < 50:
+            tip = observed
+        elif wallet_health_score < 70:
+            tip = observed + 2
+        else:
+            tip = observed + 6
+        return ChainStateService().evaluate(
+            tip_height=tip,
+            observed_block_height=observed,
+            headers_height=tip,
+            data_source=data_source,
+        )
 
     def create_request(self, payload: TreasuryRequestIn, requested_by: int | None = None) -> TreasuryRequest:
         fee_model = FeeAnalyticsService().recommend(
@@ -40,8 +58,20 @@ class TreasuryService:
             ),
         )
 
+        chain_state = self._chain_state_for_treasury(
+            wallet_health_score=payload.wallet_health_score,
+            amount_sats=payload.amount_sats,
+        )
+
         status = "pending" if policy_result.allowed else "needs_review"
         required_approvals = 1 if policy_result.allowed else 2
+        chain_warnings: list[str] = []
+        if chain_state.reorg_risk_score >= 0.55:
+            chain_warnings.append("Elevated chain reorg risk detected; increase confirmation threshold before emergency spend execution.")
+            status = "needs_review"
+            required_approvals = max(required_approvals, 2)
+        elif chain_state.finality_band == "moderate":
+            chain_warnings.append("Moderate finality context; confirm additional blocks before irreversible spend.")
 
         request = TreasuryRequest(
             title=payload.title,
@@ -58,6 +88,31 @@ class TreasuryService:
                     "next_actions": policy_result.next_actions,
                     "applied_rules": [rule.model_dump() for rule in policy_result.applied_rules],
                     "wallet_health_score": payload.wallet_health_score,
+                    "chain_state_context": {
+                        "finality_band": chain_state.finality_band,
+                        "finality_score": chain_state.finality_score,
+                        "reorg_risk_score": chain_state.reorg_risk_score,
+                        "confidence_score": chain_state.confidence_score,
+                        "freshness": chain_state.freshness,
+                        "warnings": chain_warnings,
+                    },
+                    "audit_packet": build_audit_packet(
+                        packet_type="treasury_warning" if chain_warnings else "treasury_review",
+                        evidence_refs=[f"policy:{policy_result.evaluated_policy}", "chain_state_context"],
+                        source_quality={
+                            "source_type": chain_state.freshness.get("source_type", "runtime"),
+                            "is_fallback": chain_state.freshness.get("is_fallback", False),
+                            "freshness": chain_state.freshness,
+                        },
+                        confidence=chain_state.confidence_score,
+                        transformations=["treasury_policy_eval", "chain_state_risk_adjustment"],
+                        policy_context={"violations": policy_result.violations},
+                        recommendation_rationale="Increase approval rigor when reorg risk or policy violations are elevated.",
+                        lineage=[
+                            {"domain": "policy", "reference": policy_result.evaluated_policy},
+                            {"domain": "treasury", "reference": payload.policy_name},
+                        ],
+                    ),
                     "fee_risk_context": {
                         "congestion_state": fee_model.congestion_state,
                         "suggested_fee_rate_sat_vb": fee_model.suggested_fee_rate_sat_vb,
@@ -102,10 +157,17 @@ class TreasuryService:
                 required_approvals=request.required_approvals,
             ),
         )
+        chain_state = self._chain_state_for_treasury(
+            wallet_health_score=payload.wallet_health_score,
+            amount_sats=request.amount_sats,
+            data_source="provider_probe",
+        )
 
         request.approved_by_json = json.dumps(approved_by)
 
-        if policy_result.allowed and len(approved_by) >= request.required_approvals:
+        if chain_state.reorg_risk_score >= 0.65:
+            request.status = "needs_review"
+        elif policy_result.allowed and len(approved_by) >= request.required_approvals:
             request.status = "approved"
         elif policy_result.allowed:
             request.status = "awaiting_approval"
@@ -120,6 +182,13 @@ class TreasuryService:
             "approval_note": payload.note,
             "approved_count": len(approved_by),
             "required_approvals": request.required_approvals,
+            "chain_state_context": {
+                "finality_band": chain_state.finality_band,
+                "reorg_risk_score": chain_state.reorg_risk_score,
+                "confidence_score": chain_state.confidence_score,
+                "freshness": chain_state.freshness,
+                "warning": "Human review required for elevated reorg risk." if chain_state.reorg_risk_score >= 0.65 else "",
+            },
         }
         request.policy_snapshot_json = json.dumps(snapshot)
         saved = self.repo.update(request)

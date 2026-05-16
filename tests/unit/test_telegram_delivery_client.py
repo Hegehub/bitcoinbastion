@@ -124,3 +124,26 @@ def test_send_message_retries_transient_request_errors_three_times(monkeypatch: 
         TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(destination="@alerts", message="hello")
 
     assert counter["calls"] == 3
+
+
+def test_send_message_non_retryable_payload_does_not_retry(monkeypatch: pytest.MonkeyPatch) -> None:
+    _settings()
+    counter = {"calls": 0}
+
+    class _NonRetryableBodyClient:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+            return None
+
+        def post(self, url: str, json: dict[str, Any]) -> _FakeResponse:
+            counter["calls"] += 1
+            return _FakeResponse(payload={"ok": False, "description": "chat not found"})
+
+    monkeypatch.setattr("app.services.delivery.telegram_delivery.httpx.Client", lambda timeout: _NonRetryableBodyClient())
+
+    with pytest.raises(TelegramDeliveryNonRetryableError, match="non-retryable"):
+        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(destination="@alerts", message="hello")
+
+    assert counter["calls"] == 1
