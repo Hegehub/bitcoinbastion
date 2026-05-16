@@ -122,3 +122,53 @@ Clients should treat these as source-quality markers and avoid strict assumption
 - Envelope exceptions are explicit and stable unless versioned.
 - Pagination fields (`items`, `total`, `limit`, `offset`) are required for paginated endpoints.
 - Error envelope shape is standardized across auth/validation/http/application errors.
+
+
+### Mining (planned, not implemented yet)
+Status: **PLANNED** for all routes in this section (not currently implemented runtime endpoints).
+
+- `GET /api/v1/mining/pools`
+- `GET /api/v1/mining/pools/{pool_id}`
+- `GET /api/v1/mining/stratum-v2/adoption`
+- `GET /api/v1/mining/sovereignty-score`
+- `GET /api/v1/mining/censorship-risk`
+- `GET /api/v1/mining/template-control`
+- `GET /api/v1/mining/signals`
+
+#### Envelope contract (planned)
+All planned mining routes follow `ResponseEnvelope[T]`:
+- success: `{"success": true, "data": ...}`
+- error: `{"success": false, "error": {"code", "message", "request_id"}}`
+
+#### Planned response shape requirements (applies to every mining endpoint)
+Each endpoint response payload must include:
+- `freshness`
+- `confidence_score`
+- `source_quality` (`source_type`, `provider_name`, `is_verified`, `is_fallback`, `is_synthetic`)
+- `limitations`
+- `evidence_refs`
+- `explainability` (drivers, factor breakdown, and source-quality impact)
+
+#### Planned endpoint payload drafts
+1. `GET /api/v1/mining/pools`
+   - `data.items[]`: `{pool_id, pool_name, hashrate_share_pct, pool_sovereignty_score_100, confidence_score, source_quality, explainability}`
+   - `data.total`, `data.limit`, `data.offset`
+
+2. `GET /api/v1/mining/pools/{pool_id}`
+   - `data`: `{pool_id, pool_name, capability_states, template_control_owner, pool_sovereignty_score_100, mining_censorship_risk_score_100, confidence_score, source_quality, explainability}`
+
+3. `GET /api/v1/mining/stratum-v2/adoption`
+   - `data`: `{network_adoption_state, pools[], coverage_ratio, confidence_score, source_quality, explainability}`
+
+4. `GET /api/v1/mining/sovereignty-score`
+   - `data`: `{pool_scope, pool_sovereignty_score_100, severity, factor_breakdown, confidence_score, source_quality, explainability}`
+
+5. `GET /api/v1/mining/censorship-risk`
+   - `data`: `{pool_scope, mining_censorship_risk_score_100, mining_censorship_risk_level, factor_breakdown, confidence_score, source_quality, explainability}`
+
+6. `GET /api/v1/mining/template-control`
+   - `data`: `{path_observation, template_control_state, template_control_owner, template_sovereignty_score_100, template_interference_risk_score_100, mitm_risk_level, confidence_score, source_quality, explainability}`
+
+7. `GET /api/v1/mining/signals`
+   - `data.items[]`: `{signal_id, signal_type, severity, confidence_score, source_quality, freshness, limitations, evidence_refs, explainability}`
+   - `data.total`, `data.limit`, `data.offset`

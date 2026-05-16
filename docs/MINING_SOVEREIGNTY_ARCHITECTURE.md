@@ -7,6 +7,11 @@ Task: **M0-01**
 ## Objective
 Audit current Bitcoin Bastion architecture and identify the safest integration points for adding Mining Sovereignty Intelligence **without architecture rewrite** and **without DB schema implementation in this block**.
 
+## 0) Implementation truth-status
+- Mining Sovereignty is currently **PLANNED / FOUNDATION SPEC**.
+- Mining-specific runtime endpoints and end-to-end mining service flows are **not implemented** in this repository state.
+- Next execution block is **M1** (provider abstraction + read-only scoring/API path).
+
 ---
 
 ## 1) Existing architecture facts (from code)
@@ -128,3 +133,55 @@ Boundary rule:
 5. **M3:** wire weighted consumption into Citadel and policy threshold packs.
 
 This sequence preserves current stability while enabling incremental mining domain adoption.
+
+
+## 7) Template-control sovereignty monitor integration (M0-07)
+
+### Monitoring path
+`Bitcoin node → Template Provider → Job Declarator → Pool → ASIC`
+
+### Boundary placement
+- **Domain (`app/domain/mining`)**
+  - Owns template-control vocabulary and state semantics (`template_control_state`, `template_control_owner`, MITM state semantics).
+- **Services (`app/services/mining`)**
+  - Computes template sovereignty/interference risk scores and binds path observations to explainability payloads.
+- **Integrations (`app/integrations/mining`)**
+  - Collects observable signals for each path segment and source-quality metadata.
+- **API (`app/api/v1/mining.py`)**
+  - Exposes advisory template-control monitor outputs without custody claims.
+- **Signals/Citadel/Policy consumers**
+  - Consume template-control outputs as advisory inputs only; ownership remains with their respective domains.
+
+### Risk semantics requirements
+Template-control monitoring must classify:
+- control state (`miner_controlled_verified`, `miner_controlled_claimed_unverified`, `shared_control_partial`, `pool_controlled`, `external_provider_controlled`, `unknown`)
+- control owner (`miner`, `pool`, `template_provider`, `shared`, `unknown`)
+- MITM risk (`low`, `medium`, `high`, `unknown`)
+- linkage into censorship-risk advisory outputs
+
+### Safety constraints
+- No custody assumptions introduced.
+- Unverified encrypted-channel claims must not be treated as verified security posture.
+- Unknown/fallback/synthetic path evidence must reduce confidence and cannot drive verified-grade claims.
+
+
+## 8) Mining signal taxonomy integration plan (M0-08)
+
+Planned signal types to be emitted by mining domain services:
+- `MINING_SOVEREIGNTY`
+- `POOL_CENSORSHIP_RISK`
+- `STRATUM_V2_ADOPTION`
+- `HASHRATE_CENTRALIZATION`
+- `TEMPLATE_CONTROL_RISK`
+- `MINING_PROVIDER_DEGRADATION`
+
+Integration path into existing Signal Engine:
+1. Mining services compute deterministic advisory outputs and create signal candidates.
+2. Candidates are passed to Signal Engine using standard source-link and dedup conventions.
+3. Signal Engine persists final signal entities and explainability graph links.
+4. Delivery layers (API/Telegram) render severity + confidence + source-quality disclosures.
+
+Architecture constraints:
+- Mining services own mining-specific factor semantics only.
+- Signal Engine owns cross-domain ranking/prioritization and publication orchestration.
+- Low-confidence critical mining signals must be marked tentative in downstream delivery surfaces.

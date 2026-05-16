@@ -49,6 +49,12 @@ Core runtime components:
 
 
 ## Emerging domain extension: Mining Sovereignty Intelligence
-- M0 foundation defines architecture boundaries and schema contracts without DB migrations.
+- M0 foundation defines architecture boundaries and schema contracts without DB migrations (**PLANNED / FOUNDATION SPEC**, not runtime-implemented mining features).
 - Planned modules: `app/domain/mining`, `app/services/mining`, `app/schemas/mining.py`, and future `app/tasks/mining_tasks.py`.
 - Integration path: mining outputs feed Signal, Policy, Explainability, and Citadel through explicit contracts and provenance tags.
+
+
+## Mining implementation status note
+- Mining Sovereignty in current repository state is **PLANNED / FOUNDATION SPEC**.
+- Existing runtime-implemented API surface does not yet include the planned mining contract endpoints documented in `docs/API_CONTRACTS.md`.
+- M1 is the next implementation block for provider abstractions and read-only mining scoring/API path.

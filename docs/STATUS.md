@@ -26,6 +26,12 @@ This document reflects repository state from code and tests, not roadmap targets
 - **SYNTHETIC**: parts of Citadel dependency/simulation behavior.
 - **BASELINE**: Telegram runtime behavior, some Bitcoin protocol-depth analyzers, and explainability depth.
 
+### Mining Sovereignty (M0 foundation status)
+- **PLANNED / FOUNDATION SPEC**: mining domain docs/contracts/boundary plans exist.
+- **NOT IMPLEMENTED**: mining runtime endpoints and production scoring services are not implemented in current code.
+- **Constraint**: mining outputs remain specified as advisory and verification-gated in docs; no production-grade claims are made.
+- **Next block (M1)**: provider abstraction wiring + read-only mining scoring/API path with explainability/source-quality fields.
+
 ## Evidence-backed constraints
 - No production SLO attainment is claimed in this file.
 - No completion percentages are used.
