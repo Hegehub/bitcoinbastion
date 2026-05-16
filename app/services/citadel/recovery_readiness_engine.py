@@ -123,7 +123,7 @@ class RecoveryReadinessEngine:
                     "descriptor": 0.25,
                     "instructions": 0.15,
                     "human_dependency": 0.1,
-                    "script_risk": -0.1,
+                "script_risk": -0.1,
                 },
                 "artifact_summary": artifact_summary,
                 "script_risk_score": script_risk_score,
