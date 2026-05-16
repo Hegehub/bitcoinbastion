@@ -1,4 +1,4 @@
-.PHONY: install install-dev test test-contract test-integration lint format up down run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke
+.PHONY: install install-dev test test-contract test-integration test-unit lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke
 
 install:
 	python -m pip install -e .
@@ -8,6 +8,9 @@ install-dev:
 
 test: install-dev
 	python -m pytest -q
+
+test-unit: install-dev
+	python -m pytest -q tests/unit
 
 test-contract: install-dev
 	python -m pytest -q tests/contract
@@ -28,7 +31,10 @@ run:
 dev: run
 
 up:
-	docker compose up -d --build
+	docker compose --env-file .env up -d --build
+
+up-prod:
+	ENVIRONMENT=prod docker compose --env-file .env up -d --build
 
 down:
 	docker compose down
@@ -75,3 +81,18 @@ ci-smoke: install-dev
 	python scripts/check_schema_runtime_parity.py
 	python scripts/check_docs_truthfulness.py
 	python -m pytest -q tests/contract
+
+ci-release-gates: install-dev
+	rm -f bitcoin_bastion.db
+	python -m alembic upgrade head
+	python -m alembic downgrade base
+	python -m alembic upgrade head
+	bash scripts/check_alembic_reproducibility.sh
+	python -m pytest -q tests/unit/test_migration_reproducibility.py
+	python scripts/check_model_migration_coverage.py
+	python scripts/check_schema_runtime_parity.py
+	python scripts/check_docs_truthfulness.py
+
+compose-smoke:
+	docker compose config >/dev/null
+

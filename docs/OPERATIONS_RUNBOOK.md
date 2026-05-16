@@ -13,6 +13,21 @@ After each deploy:
 
 If any check fails, stop rollout and proceed to rollback section.
 
+### Exact verification command set (record output in release evidence)
+```bash
+# API health
+curl -fsS http://localhost:8000/api/v1/health/live
+curl -fsS http://localhost:8000/api/v1/health/ready
+
+# governance/admin
+curl -fsS -H "Authorization: Bearer <ADMIN_TOKEN>" http://localhost:8000/api/v1/admin/status
+curl -fsS -H "Authorization: Bearer <ADMIN_TOKEN>" http://localhost:8000/api/v1/admin/jobs/recovery-check
+curl -fsS -H "Authorization: Bearer <ADMIN_TOKEN>" http://localhost:8000/api/v1/observability/snapshot
+
+# runtime metrics
+curl -fsS http://localhost:8000/metrics
+```
+
 ## 2) Runtime governance interpretation
 
 When reading `/api/v1/observability/snapshot`:
@@ -68,6 +83,28 @@ Rollback steps:
 3. Re-run post-deploy verification checklist.
 4. Record incident summary and residual risks.
 
+### Rollback checklist (operator copy/paste)
+- [ ] Freeze high-impact automation (policy/treasury).
+- [ ] Pin and deploy last known-good image digest.
+- [ ] Validate DB migration compatibility path before traffic shift.
+- [ ] Run health/governance verification commands.
+- [ ] Confirm recovery-check severity is not worsening.
+- [ ] Confirm metrics endpoint is scraping successfully.
+- [ ] Document incident timeline, trigger, blast radius, and residual risk.
+
+### Rollback verification commands
+```bash
+# 1) compatibility + parity checks
+bash scripts/check_alembic_reproducibility.sh
+python scripts/check_schema_runtime_parity.py
+
+# 2) service verification after rollback deploy
+curl -fsS http://localhost:8000/api/v1/health/live
+curl -fsS http://localhost:8000/api/v1/health/ready
+curl -fsS -H "Authorization: Bearer <ADMIN_TOKEN>" http://localhost:8000/api/v1/admin/jobs/recovery-check
+curl -fsS http://localhost:8000/metrics
+```
+
 ## 7) Governance-sensitive policy changes
 
 For policy catalog changes with strict tightening:
@@ -81,3 +118,33 @@ For high-impact signals:
 1. Inspect `/api/v1/signals/{signal_id}/recommendations` for `evidence_refs`, `evidence_paths`, and `policy_refs`.
 2. Ensure actions and rationale are consistent with explainability graph artifacts.
 3. Escalate to operator review for inconsistent or low-confidence traces.
+
+
+## 9) Container deployment and reproducibility
+
+### Required environment
+1. Copy `.env.example` to `.env` and set non-default secrets (`POSTGRES_PASSWORD`, `JWT_SECRET_KEY`).
+2. For production (`ENVIRONMENT=prod`), startup intentionally fails if `JWT_SECRET_KEY` is default/weak.
+
+### Boot sequence
+1. Build and start stack: `docker compose --env-file .env up -d --build`.
+2. Verify dependencies are healthy: `docker compose ps`.
+3. Verify app liveness: `GET /api/v1/health/live`.
+
+### Migration path at deploy time
+- API/worker/beat entrypoints run `alembic upgrade head` before starting process runtime.
+- If migration fails, process exits non-zero and container restart policy handles retry/escalation.
+
+### Service lifecycle expectations
+- `db` and `redis` must report healthy before app/worker/beat startup proceeds.
+- `worker` and `beat` depend on DB/Redis readiness and use deterministic startup scripts.
+
+### Failure-safe behavior
+- Missing required env vars (`DATABASE_URL`, `REDIS_URL`, `JWT_SECRET_KEY`) cause immediate startup failure.
+- Production mode rejects insecure JWT secret values by design.
+
+## 10) Incident response notes (release governance)
+- Treat `runtime_severity.level == critical` as immediate incident response trigger.
+- Treat unresolved critical findings in recovery SLO as release blocker until explicitly waived by operator + owner.
+- For repeated job/delivery hotspot failures (>=3/24h), run focused drill before resuming automation.
+- Any fallback-heavy runtime state during release must be captured as known limitation in release notes.

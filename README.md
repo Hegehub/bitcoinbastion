@@ -61,3 +61,16 @@ make docs-truthfulness
 - docs/STATUS.md
 - docs/PRODUCTION_READINESS.md
 - docs/OPERATIONS_RUNBOOK.md
+
+
+## Release governance
+- Release/RC checklist: `docs/PRODUCTION_READINESS.md`
+- Operational rollback + incident notes: `docs/OPERATIONS_RUNBOOK.md`
+- Release notes + exact verification command template: `docs/RELEASE_NOTES_TEMPLATE.md`
+- Current truth-status and limitations: `docs/STATUS.md`
+
+
+## Final readiness declaration
+- Sovereignty-grade readiness (P6-10): **85%** (evidence-based; not an SLO claim).
+- Current release-candidate decision: **Conditionally approved** pending environment verification evidence.
+- Residual risks and next-release tasks are tracked in `docs/STATUS.md`.
