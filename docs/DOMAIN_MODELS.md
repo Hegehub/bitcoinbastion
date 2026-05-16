@@ -34,6 +34,16 @@ Model list aligned to `app/db/models`.
 - `WalletProfile`
 - `WalletHealthReport`
 
+## Mining sovereignty (M0 draft, persistence not yet introduced)
+- `MiningWindow`
+- `HashrateSnapshot`
+- `PoolShareSnapshot`
+- `BlockProductionSnapshot`
+- `InclusionCensorshipSnapshot`
+- `MiningExplainabilityNode`
+- `MiningSovereigntyScorecard`
+
+
 ## Treasury and policy runtime
 - `TreasuryRequest`
 - `PsbtWorkflow`
