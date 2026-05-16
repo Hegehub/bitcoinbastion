@@ -701,3 +701,43 @@ If explainability is unavailable for high-impact output, endpoint must return do
 ### 14.5 Planned vs implemented clarity rule
 - These routes are **planned contracts only** in M0.
 - Runtime implementation status must be tracked in `docs/API_CONTRACTS.md` inventory before any route is considered implemented.
+
+
+## 15) Persistence baseline status (M1)
+
+Status label: **MODELS/PERSISTENCE BASELINE IMPLEMENTED**.
+
+### What is implemented
+- SQLAlchemy mining model set exists and is migration-backed.
+- Repository persistence abstraction exists for pool/capability/score/risk/template/signal records.
+- Schema parity checks include mining tables and surface mining drift context.
+
+### What is not implied by this status
+- This does not claim fully implemented mining provider ingestion.
+- This does not claim production-grade live mining intelligence runtime.
+- Planned mining API endpoints remain planned unless explicitly marked implemented in `docs/API_CONTRACTS.md`.
+
+### Source-quality and unknown/unverified semantics
+- Persistence includes `source_type`, `is_verified`, `is_fallback`, `is_synthetic`, `confidence(_score)`, freshness/observed fields, limitations, and evidence refs.
+- Unknown/unverified states are accepted and expected defaults for baseline records.
+
+### Synthetic fixture warning
+- Test fixtures under `tests/fixtures/mining.py` are synthetic and must never be represented as real-world pool intelligence.
+
+
+## 16) Block M1 verification summary
+
+### M1 completion statement
+- Mining persistence foundation exists and is migration-backed.
+- Repository abstraction and baseline schema contracts are in place.
+- This is **not** full mining runtime completion.
+
+### Verification outcomes
+- Mining model tests: passed.
+- Mining repository tests: passed.
+- Migration smoke replay: passed.
+- Runtime schema parity check: passed.
+- Lint gate note: `make lint` currently reports pre-existing mypy failures outside mining scope; this does not alter mining-specific pass/fail of persistence verification.
+
+### Next block reference
+- **M2** is the next execution block for provider-connected read/runtime behavior and implementation of planned mining endpoint flows.

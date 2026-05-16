@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, MetaData, String, Table, text
+from sqlalchemy import Column, Integer, MetaData, String, Table
 
 from scripts.check_schema_runtime_parity import (
     _model_unique_signature,
@@ -77,3 +77,19 @@ def test_collect_schema_parity_errors_surfaces_column_nullable_default_and_index
     assert any(err.startswith("nullable parity mismatch:") for err in errors)
     assert any(err.startswith("default parity mismatch:") for err in errors)
     assert any(err.startswith("index parity mismatch:") for err in errors)
+
+
+def test_extract_mining_table_drift_returns_only_mining_related_errors() -> None:
+    from scripts.check_schema_runtime_parity import _extract_mining_table_drift
+
+    errors = [
+        "column parity mismatch: mining_pools: missing=['x'], extra=[]",
+        "index parity mismatch: signals: missing=[], extra=['ix_bad']",
+        "foreign key parity mismatch: template_control_assessments: missing=[], extra=[]",
+        "nullable parity mismatch: users.email: model_nullable=False db_nullable=True",
+    ]
+
+    mining = _extract_mining_table_drift(errors)
+    assert len(mining) == 2
+    assert any("mining_pools" in msg for msg in mining)
+    assert any("template_control_assessments" in msg for msg in mining)

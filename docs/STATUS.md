@@ -26,11 +26,11 @@ This document reflects repository state from code and tests, not roadmap targets
 - **SYNTHETIC**: parts of Citadel dependency/simulation behavior.
 - **BASELINE**: Telegram runtime behavior, some Bitcoin protocol-depth analyzers, and explainability depth.
 
-### Mining Sovereignty (M0 foundation status)
-- **PLANNED / FOUNDATION SPEC**: mining domain docs/contracts/boundary plans exist.
-- **NOT IMPLEMENTED**: mining runtime endpoints and production scoring services are not implemented in current code.
-- **Constraint**: mining outputs remain specified as advisory and verification-gated in docs; no production-grade claims are made.
-- **Next block (M1)**: provider abstraction wiring + read-only mining scoring/API path with explainability/source-quality fields.
+### Mining Sovereignty (M1 persistence status)
+- **MODELS/PERSISTENCE BASELINE IMPLEMENTED**: mining SQLAlchemy models, Alembic tables, and repository persistence methods exist.
+- **PLANNED**: full provider-driven mining ingestion/scoring runtime and planned mining API endpoints beyond planning surface remain not implemented.
+- **Constraint**: mining records and outputs remain advisory and verification-gated; unknown/unverified states are valid baseline values.
+- **Fixture warning**: mining fixture data in tests is synthetic and must not be interpreted as real-world pool intelligence.
 
 ## Evidence-backed constraints
 - No production SLO attainment is claimed in this file.
@@ -129,3 +129,24 @@ Assessment date: **2026-05-16**
   3. Production deployment evidence closure remains environment/operator-dependent and not fully closed in repository artifacts alone.
 - **P0 blocker status:** no direct code P0 regressions detected in repository verification; remaining blockers are realism/evidence closure blockers for RC declaration.
 - **Next promotion condition:** all RC criteria plus explicit closure evidence for protocol realism, Citadel realism, and deployment operations runbook execution in target environment.
+
+
+# BLOCK M1 PROGRESS REPORT
+- completed tasks: M1-01 through M1-10 (persistence models, migrations, repositories, schemas, fixtures, tests, parity visibility, and verification run).
+- files changed: mining model/repository/schema layers, Alembic revisions `20260516_0009` and `20260516_0010`, parity script/tests, mining fixtures, mining unit tests, and mining docs.
+- migrations added: `20260516_0009_mining_foundation.py`, `20260516_0010_add_mining_sovereignty_tables.py`.
+- tests added: `tests/unit/test_mining_models.py`, `tests/unit/test_mining_repository.py`, `tests/fixtures/mining.py` (reused by tests), plus schema parity test extension.
+- verification commands executed:
+  - `make lint` (ruff passed; mypy currently fails due to pre-existing non-mining typing debt in Citadel/observability/delivery paths)
+  - `python -m pytest -q tests/unit/test_mining_models.py`
+  - `python -m pytest -q tests/unit/test_mining_repository.py`
+  - `make migration-smoke`
+  - `python scripts/check_schema_runtime_parity.py`
+- current Mining Sovereignty readiness: **MODELS/PERSISTENCE BASELINE IMPLEMENTED (~46% toward full mining feature completion)**.
+- impact on global production readiness: mining persistence baseline is now real and migration-verified; global production decision remains unchanged because mining runtime/provider/API execution is still planned.
+- remaining risks:
+  1. provider ingestion/runtime scoring not yet implemented (M2+).
+  2. planned mining API endpoints (beyond planning capability route) still not runtime implemented.
+  3. existing repository-wide mypy debt (outside mining scope) keeps `make lint` non-green.
+  4. synthetic fixture data must never be interpreted as real pool intelligence.
+- next block: **M2** (provider-connected ingestion/read services and endpoint/runtime wiring with explainability provenance).

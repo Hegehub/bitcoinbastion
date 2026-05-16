@@ -1,68 +1,162 @@
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, Field
 
 
-class MiningWindow(BaseModel):
-    window_start: datetime
-    window_end: datetime
-    resolution: str = Field(description="Window resolution (e.g. 1h, 24h, 7d)")
+class MiningFreshnessOut(BaseModel):
+    observed_at: datetime | None = None
+    age_seconds: int | None = None
+    freshness_band: str = "unknown"
 
 
-class HashrateSnapshot(BaseModel):
-    window: MiningWindow
-    network_hashrate_eh: float
-    hashrate_regime: str
-    difficulty: float
-    difficulty_change_pct: float
-    confidence_score: float = Field(ge=0.0, le=1.0)
-
-
-class PoolShareSnapshot(BaseModel):
-    window: MiningWindow
-    top_pool_share_pct: float
-    top3_pool_share_pct: float
-    top5_pool_share_pct: float
-    concentration_risk_band: str
-    confidence_score: float = Field(ge=0.0, le=1.0)
-
-
-class BlockProductionSnapshot(BaseModel):
-    window: MiningWindow
-    expected_blocks: int
-    produced_blocks: int
-    orphan_rate_pct: float
-    empty_block_rate_pct: float
-    anomaly_flags: list[str] = Field(default_factory=list)
-    confidence_score: float = Field(ge=0.0, le=1.0)
-
-
-class InclusionCensorshipSnapshot(BaseModel):
-    window: MiningWindow
-    median_inclusion_delay_blocks: float
-    p95_inclusion_delay_blocks: float
-    suspected_filter_footprint_score: float = Field(ge=0.0, le=1.0)
-    affected_template_classes: list[str] = Field(default_factory=list)
-    confidence_score: float = Field(ge=0.0, le=1.0)
-
-
-class MiningExplainabilityNode(BaseModel):
-    key: str
-    title: str
-    value: float | str | int
-    weight: float
-    source_refs: list[str] = Field(default_factory=list)
+class MiningExplainabilityOut(BaseModel):
+    drivers: list[str] = Field(default_factory=list)
+    factor_breakdown: list[dict[str, Any]] = Field(default_factory=list)
+    source_quality_impact: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
 
 
-class MiningSovereigntyScorecard(BaseModel):
-    window: MiningWindow
-    hashrate_resilience_score: float = Field(ge=0.0, le=1.0)
-    concentration_risk_score: float = Field(ge=0.0, le=1.0)
-    production_integrity_score: float = Field(ge=0.0, le=1.0)
-    inclusion_neutrality_score: float = Field(ge=0.0, le=1.0)
-    fee_market_alignment_score: float = Field(ge=0.0, le=1.0)
-    aggregate_score: float = Field(ge=0.0, le=1.0)
-    risk_band: str
-    confidence_score: float = Field(ge=0.0, le=1.0)
-    explainability_nodes: list[MiningExplainabilityNode] = Field(default_factory=list)
+class MiningSourceQualityOut(BaseModel):
+    source_type: str = "unknown"
+    provider_name: str = "unknown"
+    is_verified: bool = False
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    freshness: MiningFreshnessOut = Field(default_factory=MiningFreshnessOut)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+
+
+class MiningPoolCreate(BaseModel):
+    pool_key: str
+    display_name: str
+    provider_name: str = "unknown"
+
+
+class MiningPoolEndpointOut(BaseModel):
+    id: int
+    endpoint_type: str
+    endpoint_url: str
+    network: str
+    source_type: str = "unknown"
+    provider_name: str = "unknown"
+    is_verified: bool = False
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    freshness: MiningFreshnessOut = Field(default_factory=MiningFreshnessOut)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+
+
+class StratumV2CapabilityOut(BaseModel):
+    id: int
+    capability_state: str = "unknown"
+    job_declaration_state: str = "unknown"
+    translator_proxy_state: str = "unknown"
+    encrypted_channel_state: str = "unknown"
+    source_type: str = "unknown"
+    provider_name: str = "unknown"
+    is_verified: bool = False
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    freshness: MiningFreshnessOut = Field(default_factory=MiningFreshnessOut)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+
+
+class PoolSovereigntyScoreOut(BaseModel):
+    id: int
+    score_100: float = Field(default=0.0, ge=0.0, le=100.0)
+    severity: str = "unknown"
+    source_type: str = "unknown"
+    provider_name: str = "unknown"
+    is_verified: bool = False
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    freshness: MiningFreshnessOut = Field(default_factory=MiningFreshnessOut)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+
+
+class MiningCensorshipRiskOut(BaseModel):
+    id: int
+    risk_score_100: float = Field(default=0.0, ge=0.0, le=100.0)
+    risk_level: str = "unknown"
+    source_type: str = "unknown"
+    provider_name: str = "unknown"
+    is_verified: bool = False
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    freshness: MiningFreshnessOut = Field(default_factory=MiningFreshnessOut)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+
+
+class TemplateControlAssessmentOut(BaseModel):
+    id: int
+    template_control_state: str = "unknown"
+    template_control_owner: str = "unknown"
+    template_sovereignty_score_100: float = Field(default=0.0, ge=0.0, le=100.0)
+    template_interference_risk_score_100: float = Field(default=0.0, ge=0.0, le=100.0)
+    mitm_risk_level: str = "unknown"
+    source_type: str = "unknown"
+    provider_name: str = "unknown"
+    is_verified: bool = False
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    freshness: MiningFreshnessOut = Field(default_factory=MiningFreshnessOut)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+
+
+class MiningSignalOut(BaseModel):
+    id: int
+    signal_type: str
+    severity: str = "unknown"
+    title: str = ""
+    summary: str = ""
+    source_type: str = "unknown"
+    provider_name: str = "unknown"
+    is_verified: bool = False
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    freshness: MiningFreshnessOut = Field(default_factory=MiningFreshnessOut)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+
+
+class MiningPoolOut(BaseModel):
+    id: int
+    pool_key: str
+    display_name: str
+    source_type: str = "unknown"
+    provider_name: str = "unknown"
+    is_verified: bool = False
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    freshness: MiningFreshnessOut = Field(default_factory=MiningFreshnessOut)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+
+    endpoints: list[MiningPoolEndpointOut] = Field(default_factory=list)
+    latest_stratum_v2_capability: StratumV2CapabilityOut | None = None
+    latest_sovereignty_score: PoolSovereigntyScoreOut | None = None
+    latest_censorship_risk: MiningCensorshipRiskOut | None = None
+    latest_template_control: TemplateControlAssessmentOut | None = None
+    latest_signal: MiningSignalOut | None = None

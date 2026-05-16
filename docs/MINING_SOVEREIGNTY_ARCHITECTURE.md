@@ -185,3 +185,25 @@ Architecture constraints:
 - Mining services own mining-specific factor semantics only.
 - Signal Engine owns cross-domain ranking/prioritization and publication orchestration.
 - Low-confidence critical mining signals must be marked tentative in downstream delivery surfaces.
+
+
+## 9) Persistence layer baseline (M1)
+
+Implementation label: **MODELS/PERSISTENCE BASELINE IMPLEMENTED**.
+
+Implemented persistence entities:
+- `mining_pools`
+- `mining_pool_endpoints`
+- `stratum_v2_capabilities`
+- `pool_sovereignty_scores`
+- `mining_censorship_risks`
+- `template_control_assessments`
+- `mining_signals`
+
+Purpose boundaries:
+- Persistence captures advisory mining telemetry/assessment snapshots and source-quality provenance metadata.
+- Unknown/unverified values are valid baseline states and must not be coerced into verified claims.
+- This baseline does not imply full mining runtime feature completion.
+
+Fixture safety:
+- Local fixtures are synthetic (`tests/fixtures/mining.py`) and are strictly test/dev scaffolding.
