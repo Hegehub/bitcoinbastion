@@ -102,6 +102,7 @@ class RecoveryCheckService:
             },
             recovery_slo={
                 "status": status,
+                "slo_breached": slo_breached,
                 "target": {
                     "job_success_rate_24h": slo_target,
                     "stale_verification": False,
