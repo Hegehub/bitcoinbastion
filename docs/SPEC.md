@@ -9,20 +9,19 @@ Bitcoin Bastion is a **Bitcoin Sovereign Intelligence, Decision, and Operations 
 1. News Intelligence
 2. On-chain Intelligence
 3. Entity / OSINT Intelligence
-4. Mining Sovereignty Intelligence
-5. Signal Engine
+4. Signal Engine
 
 ### Decision & operations domains
-6. Wallet Health
-7. Treasury / PSBT Workflows
-8. Fee / UTXO Analytics
-9. Privacy Risk Scoring
-10. Policy-as-Code checks
+5. Wallet Health
+6. Treasury / PSBT Workflows
+7. Fee / UTXO Analytics
+8. Privacy Risk Scoring
+9. Policy-as-Code checks
 
 ### Delivery & platform domains
-11. Telegram Delivery
-12. REST API / Dashboard backend
-13. Observability / Audit
+10. Telegram Delivery
+11. REST API / Dashboard backend
+12. Observability / Audit
 
 ## Reference architecture
 Use a **modular monolith first** with explicit boundaries:
@@ -59,7 +58,6 @@ Use a **modular monolith first** with explicit boundaries:
 - `/api/v1/news`
 - `/api/v1/signals`
 - `/api/v1/onchain`
-- `/api/v1/mining` (planned)
 - `/api/v1/entities`
 - `/api/v1/wallet`
 - `/api/v1/fees`

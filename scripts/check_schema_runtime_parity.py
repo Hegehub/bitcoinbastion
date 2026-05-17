@@ -234,21 +234,6 @@ def collect_schema_parity_errors(inspector: Inspector) -> list[str]:
     return errors
 
 
-
-
-def _extract_mining_table_drift(errors: list[str]) -> list[str]:
-    mining_tokens = (
-        "mining_",
-        "pool_sovereignty_scores",
-        "stratum_v2_capabilities",
-        "template_control_assessments",
-    )
-    mining_drift: list[str] = []
-    for err in errors:
-        if any(token in err for token in mining_tokens):
-            mining_drift.append(err)
-    return mining_drift
-
 def main() -> int:
     with tempfile.NamedTemporaryFile(prefix="schema_parity_", suffix=".db") as temp_db:
         database_url = f"sqlite+pysqlite:///{temp_db.name}"
@@ -262,11 +247,6 @@ def main() -> int:
 
         print("Runtime schema parity:", f"model_tables={len(model_tables)}", f"db_tables={len(db_tables)}", f"errors={len(errors)}")
         if errors:
-            mining_drift = _extract_mining_table_drift(errors)
-            if mining_drift:
-                print("- mining table drift detected:")
-                for err in mining_drift:
-                    print("  *", err)
             for err in errors:
                 print("-", err)
             return 1

@@ -5,15 +5,6 @@ from app.db.models.delivery import DeliveryLog
 from app.db.models.entity import Entity, EntityAddress
 from app.db.models.explainability import EvidenceEdge, EvidenceNode, SignalExplanation
 from app.db.models.job_run import JobRun
-from app.db.models.mining import (
-    MiningCensorshipRisk,
-    MiningPool,
-    MiningPoolEndpoint,
-    MiningSignal,
-    PoolSovereigntyScore,
-    StratumV2Capability,
-    TemplateControlAssessment,
-)
 from app.db.models.news import NewsArticle, NewsSource, SourceReputationProfile
 from app.db.models.onchain import OnchainEvent
 from app.db.models.signal import Signal
@@ -35,13 +26,6 @@ __all__ = [
     "EvidenceNode",
     "EvidenceEdge",
     "JobRun",
-    "MiningPool",
-    "MiningPoolEndpoint",
-    "StratumV2Capability",
-    "PoolSovereigntyScore",
-    "MiningCensorshipRisk",
-    "TemplateControlAssessment",
-    "MiningSignal",
     "NewsSource",
     "NewsArticle",
     "SourceReputationProfile",
