@@ -53,6 +53,7 @@ Verification commands:
 make test-contract
 make migration-smoke
 make docs-truthfulness
+make ci
 ```
 
 ## Core documentation
@@ -85,3 +86,9 @@ make docs-truthfulness
 - Candidate label and release-note structure are prepared in `docs/RELEASE_NOTES_TEMPLATE.md` (metadata-only; no tag implied).
 
 - Next promotion requires closure evidence for protocol/Citadel realism and target-environment operational verification.
+
+
+## Mining Sovereignty status
+- **PLANNED / FOUNDATION SPEC**: Mining Sovereignty artifacts in this repository are planning/specification scaffolding only in M0.
+- **NOT IMPLEMENTED**: production mining endpoints (`/api/v1/mining/pools`, `/pools/{pool_id}`, `/stratum-v2/adoption`, `/sovereignty-score`, `/censorship-risk`, `/template-control`, `/signals`) are contract drafts and are not runtime-implemented.
+- Next block: **M1** (provider abstractions + read-only scoring/API path, still advisory and evidence-labeled).
