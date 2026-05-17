@@ -16,10 +16,16 @@ from app.schemas.observability import (
 )
 from app.services.blockchain.chain_state_service import ChainStateService
 from app.services.observability.recovery_service import RecoveryCheckService
+from app.services.observability.provider_health_service import ProviderHealthService
 from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService, MempoolSnapshot
 from app.services.explainability.contract import build_audit_packet
 from app.services.explainability.contract import propagate_confidence
-from app.core.telemetry import set_observability_runtime_metrics
+from app.core.telemetry import (
+    increment_provider_failure_metric,
+    set_observability_runtime_metrics,
+    set_provider_health_detail_metrics,
+    set_provider_health_state_metric,
+)
 
 
 class OperationsSnapshotService:
@@ -296,8 +302,6 @@ class OperationsSnapshotService:
 
         failed_jobs = jobs.failed_count_last_24h()
         failed_deliveries = deliveries.failed_count_last_24h()
-        started_jobs = max(1, jobs.started_count_last_24h())
-        job_success_rate = (started_jobs - failed_jobs) / started_jobs
         observed_block_height = onchain.latest_block_height() or 899_995
         provider_counts = onchain.provider_counts_last_24h()
         provider_count_total = sum(count for _, count in provider_counts)
@@ -306,7 +310,6 @@ class OperationsSnapshotService:
             observed_block_height=observed_block_height,
             headers_height=observed_block_height + 1,
         )
-        onchain_healthy = failed_jobs == 0 and chain_state.finality_band in {"moderate", "strong"}
         mempool_state = MempoolAnalyzerService().analyze(
             MempoolSnapshot(
                 backlog_tx_count=75_000,
@@ -315,12 +318,6 @@ class OperationsSnapshotService:
                 high_priority_fee_rate_sat_vb=42.0,
                 snapshot_age_seconds=900 if provider_count_total == 0 else 180,
             )
-        )
-        degradation = chain_state.explainability.get("degradation_governance", {})
-        onchain_details = (
-            "Runtime jobs healthy and chain finality is acceptable."
-            if onchain_healthy
-            else "On-chain health degraded due to failed jobs or weak finality."
         )
         recovery = RecoveryCheckService().evaluate(db=db)
         provider_name = provider_counts[0][0] if provider_counts else "unknown"
@@ -366,34 +363,57 @@ class OperationsSnapshotService:
             citadel_runtime_healthy=(recovery.recovery_slo.get("status") == "healthy"),
         )
 
+        health_evidence = ProviderHealthService().collect(db=db)
+        providers: list[ProviderHealthOut] = []
+        for evidence in health_evidence:
+            set_provider_health_state_metric(
+                provider_type=evidence.provider_type,
+                provider_name=evidence.provider_name,
+                healthy=evidence.healthy,
+                is_fallback=evidence.is_fallback,
+                is_mock=evidence.is_mock,
+            )
+            stale_evidence = evidence.freshness_seconds >= 1800
+            degradation_reason = None if evidence.healthy else (evidence.error_type or "provider_unhealthy")
+            guidance = ["Continue routine provider checks."] if evidence.healthy else ["Verify provider runtime and failover path.", "Review sanitized provider errors and refresh evidence."]
+            set_provider_health_detail_metrics(
+                provider_type=evidence.provider_type,
+                provider_name=evidence.provider_name,
+                latency_ms=evidence.latency_ms,
+                is_fallback=evidence.is_fallback,
+                confidence=evidence.confidence,
+                last_success_age_seconds=evidence.freshness_seconds if evidence.healthy else max(evidence.freshness_seconds, 1),
+            )
+            if not evidence.healthy:
+                increment_provider_failure_metric(
+                    provider_type=evidence.provider_type,
+                    provider_name=evidence.provider_name,
+                    error_type=evidence.error_type,
+                )
+            providers.append(
+                ProviderHealthOut(
+                    provider=evidence.provider_type,
+                    provider_name=evidence.provider_name,
+                    healthy=evidence.healthy,
+                    details=(
+                        f"provider={evidence.provider_name} source_type={evidence.source_type} "
+                        f"fallback={evidence.is_fallback} mock={evidence.is_mock} "
+                        f"error_type={evidence.error_type or 'none'}"
+                    ),
+                    confidence=evidence.confidence,
+                    freshness_seconds=evidence.freshness_seconds,
+                    stale_evidence=stale_evidence,
+                    is_fallback=evidence.is_fallback,
+                    is_mock=evidence.is_mock,
+                    degradation_reason=degradation_reason,
+                    operator_guidance=guidance,
+                )
+            )
+
         return OperationsSnapshotOut(
             queue_depth=0,
             stale_jobs=failed_jobs,
-            providers=[
-                ProviderHealthOut(provider="rss", healthy=True, details="No provider errors observed."),
-                ProviderHealthOut(
-                    provider="onchain",
-                    healthy=onchain_healthy,
-                    details=(
-                        f"{onchain_details} dominant_provider={provider_name} share={provider_share} "
-                        f"degraded_runtime_state={degradation.get('degraded_runtime_state', False)} "
-                        f"fallback_activated={degradation.get('fallback_activated', False)}"
-                    ),
-                    confidence=max(0.0, min(1.0, 1.0 - chain_state.reorg_risk_score)),
-                    freshness_seconds=300,
-                ),
-                ProviderHealthOut(
-                    provider="delivery",
-                    healthy=failed_deliveries == 0,
-                    details=(
-                        "Delivery health derived from last-24h delivery logs."
-                        f" recovery_slo_status={recovery.recovery_slo.get('status', 'unknown')}"
-                        f" unresolved_critical_findings={recovery.recovery_slo.get('signals', {}).get('unresolved_critical_findings', 0)}"
-                    ),
-                    confidence=max(0.0, min(1.0, job_success_rate)),
-                    freshness_seconds=300,
-                ),
-            ],
+            providers=providers,
             jobs=JobStatsOut(
                 started_24h=jobs.started_count_last_24h(),
                 failed_24h=failed_jobs,

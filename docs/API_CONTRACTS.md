@@ -122,3 +122,7 @@ Clients should treat these as source-quality markers and avoid strict assumption
 - Envelope exceptions are explicit and stable unless versioned.
 - Pagination fields (`items`, `total`, `limit`, `offset`) are required for paginated endpoints.
 - Error envelope shape is standardized across auth/validation/http/application errors.
+
+
+## RC lock note
+- RC promotion remains blocked until quality gates in `docs/FINAL_PRODUCTION_GAP_AUDIT.md` are closed.

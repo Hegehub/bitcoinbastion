@@ -50,3 +50,7 @@ Model list aligned to `app/db/models`.
 ## Labeling notes
 - Some service-level outputs using these models are **BASELINE**.
 - Citadel-dependent projections include **SYNTHETIC** elements in selected endpoints.
+
+
+## RC lock note
+- Domain model readiness is constrained by global quality gates; see `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.

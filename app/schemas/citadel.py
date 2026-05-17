@@ -50,6 +50,14 @@ class CitadelAssessmentOut(CitadelScoreBreakdownOut):
     generated_at: datetime
     created_at: datetime
     updated_at: datetime
+    synthetic_component: bool = False
+    synthetic_reason: str = ""
+    production_replacement_path: str = ""
+    confidence_penalty: float = 0.0
+    operator_warning: str = ""
+    evidence_refs: list[str] = Field(default_factory=list)
+    limitations: list[str] = Field(default_factory=list)
+    source_quality: dict[str, object] = Field(default_factory=dict)
 
 
 class CitadelAssessmentRecalculateIn(BaseModel):
@@ -81,6 +89,14 @@ class RecoveryReadinessOut(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
     data_sources: list[str] = Field(default_factory=list)
+    synthetic_component: bool = False
+    synthetic_reason: str = ""
+    production_replacement_path: str = ""
+    confidence_penalty: float = 0.0
+    operator_warning: str = ""
+    evidence_refs: list[str] = Field(default_factory=list)
+    limitations: list[str] = Field(default_factory=list)
+    source_quality: dict[str, object] = Field(default_factory=dict)
 
 
 class CitadelOverviewOut(BaseModel):
@@ -104,6 +120,14 @@ class CitadelDependencyGraphOut(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
     data_sources: list[str] = Field(default_factory=list)
+    synthetic_component: bool = False
+    synthetic_reason: str = ""
+    production_replacement_path: str = ""
+    confidence_penalty: float = 0.0
+    operator_warning: str = ""
+    evidence_refs: list[str] = Field(default_factory=list)
+    limitations: list[str] = Field(default_factory=list)
+    source_quality: dict[str, object] = Field(default_factory=dict)
 
 
 class CitadelSimulationIn(BaseModel):
@@ -123,6 +147,14 @@ class CitadelSimulationOut(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
     data_sources: list[str] = Field(default_factory=list)
+    synthetic_component: bool = False
+    synthetic_reason: str = ""
+    production_replacement_path: str = ""
+    confidence_penalty: float = 0.0
+    operator_warning: str = ""
+    evidence_refs: list[str] = Field(default_factory=list)
+    limitations: list[str] = Field(default_factory=list)
+    source_quality: dict[str, object] = Field(default_factory=dict)
 
 
 class CitadelRepairPlanOut(BaseModel):
@@ -132,6 +164,14 @@ class CitadelRepairPlanOut(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
     data_sources: list[str] = Field(default_factory=list)
+    synthetic_component: bool = False
+    synthetic_reason: str = ""
+    production_replacement_path: str = ""
+    confidence_penalty: float = 0.0
+    operator_warning: str = ""
+    evidence_refs: list[str] = Field(default_factory=list)
+    limitations: list[str] = Field(default_factory=list)
+    source_quality: dict[str, object] = Field(default_factory=dict)
 
 
 class CitadelPolicyChecksOut(BaseModel):
@@ -157,3 +197,11 @@ class CitadelInheritanceOut(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     explainability: ExplainabilityOut = Field(default_factory=ExplainabilityOut)
     data_sources: list[str] = Field(default_factory=list)
+    synthetic_component: bool = False
+    synthetic_reason: str = ""
+    production_replacement_path: str = ""
+    confidence_penalty: float = 0.0
+    operator_warning: str = ""
+    evidence_refs: list[str] = Field(default_factory=list)
+    limitations: list[str] = Field(default_factory=list)
+    source_quality: dict[str, object] = Field(default_factory=dict)

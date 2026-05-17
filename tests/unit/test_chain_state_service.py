@@ -91,3 +91,21 @@ def test_chain_state_service_exposes_degradation_governance_flags() -> None:
     assert governance["fallback_activated"] is True
     assert governance["stale_provider_data"] is True
     assert governance["degraded_runtime_state"] is True
+
+
+def test_chain_state_service_single_source_reduces_confidence() -> None:
+    single = ChainStateService().evaluate(
+        tip_height=900_000,
+        observed_block_height=899_998,
+        data_source="provider_probe",
+        provider_count=1,
+    )
+    multi = ChainStateService().evaluate(
+        tip_height=900_000,
+        observed_block_height=899_998,
+        data_source="provider_probe",
+        provider_count=3,
+        corroborated_by=["p1", "p2", "p3"],
+    )
+    assert single.confidence_score < multi.confidence_score
+    assert single.freshness["single_source_advisory"] is True

@@ -210,3 +210,7 @@ For high-impact signals:
 - **Automated (implemented):** telemetry emission, recovery-check computation, job/delivery counters, snapshot synthesis.
 - **Manual (required):** interval reviews, incident classification, rollback decision, stakeholder communication, and release-risk sign-off.
 - No fully autonomous rollback is assumed or claimed.
+
+
+## RC audit linkage
+- Before promotion, attach `docs/FINAL_PRODUCTION_GAP_AUDIT.md` and release evidence artifact output from `python scripts/collect_release_evidence.py`.

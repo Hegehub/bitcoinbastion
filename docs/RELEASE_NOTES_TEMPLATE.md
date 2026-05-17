@@ -81,3 +81,8 @@ curl -fsS http://localhost:8000/metrics
 - Citadel includes deterministic synthetic simulation components.
 - Telegram/delivery behavior remains environment-dependent.
 - Deployment evidence capture remains operator-driven per release checklist.
+
+
+## RC decision field (required)
+- Decision class: `PRODUCTION RELEASE CANDIDATE` / `PRE-RC / PRODUCTION-ORIENTED BETA` / `NOT READY`
+- Final audit reference: `docs/FINAL_PRODUCTION_GAP_AUDIT.md`
