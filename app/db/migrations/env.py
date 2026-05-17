@@ -7,7 +7,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from app.db.base import Base
-import app.db.models  # noqa: F401
+from app.db.models import *  # noqa: F401,F403
 
 config = context.config
 if config.config_file_name is not None:

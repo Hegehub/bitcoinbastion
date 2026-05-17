@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 
 from app.db.models.news import NewsArticle, NewsSource
 
-BITCOIN_KEYWORDS = {"bitcoin", "btc", "halving", "lightning", "mining", "utxo", "etf"}
+BITCOIN_KEYWORDS = {"bitcoin", "btc", "halving", "lightning", "utxo", "etf"}
 URGENT_KEYWORDS = {"hack", "ban", "break", "exploit", "liquidation", "surge"}
 
 

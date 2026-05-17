@@ -91,16 +91,3 @@ It intentionally separates what is already delivered vs what is still partial.
 2. **Citadel realism pack**: eliminate residual synthetic recovery/inheritance assumptions.
 3. **Ops closure pack**: auto-remediation workflows with post-action validation.
 4. **Release gate pack**: objective production audit checklist runbook with artifacts.
-
-
-## Block M0 — Mining Sovereignty Intelligence Foundation (new)
-### Delivered in M0 (PLANNED / FOUNDATION SPEC only)
-- Domain architecture and boundary definition finalized.
-- Draft schema contracts added for mining sovereignty intelligence (no DB tables/migrations).
-- Integration sequencing documented across On-chain, Signals, Policy, Explainability, and Citadel.
-- No claim of implemented mining runtime endpoints/services in this block.
-
-### Next
-- M1: provider abstraction and read-only scoring/API path.
-- M2: persistence + scheduled ingestion.
-- M3: full weighted integration and calibration.
