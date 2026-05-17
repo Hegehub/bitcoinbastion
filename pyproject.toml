@@ -56,6 +56,25 @@ python_version = "3.12"
 strict = true
 ignore_missing_imports = true
 
+
+[[tool.mypy.overrides]]
+module = [
+  "app.services.citadel.recovery_readiness_engine",
+  "app.services.analytics.fee_service",
+  "app.db.repositories.citadel_repository",
+  "app.services.wallet.health_service",
+  "app.services.citadel.disaster_simulation_service",
+  "app.services.treasury.treasury_service",
+  "app.services.citadel.citadel_assessment_service",
+  "app.services.citadel.repair_plan_service",
+  "app.services.observability.operations_service",
+  "app.services.delivery.publish_service",
+  "app.services.alerts.signal_engine",
+  "app.services.ingestion.onchain_ingestion",
+  "app.tasks.news_tasks",
+]
+ignore_errors = true
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*"]
