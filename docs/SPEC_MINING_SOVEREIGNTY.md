@@ -717,6 +717,31 @@ Status label: **MODELS/PERSISTENCE BASELINE IMPLEMENTED**.
 - This does not claim production-grade live mining intelligence runtime.
 - Planned mining API endpoints remain planned unless explicitly marked implemented in `docs/API_CONTRACTS.md`.
 
+## 15.1 M2 Stratum V2 registry/service baseline (implemented)
+
+Status label: **SERVICE BASELINE IMPLEMENTED**.
+
+Implemented baseline behavior:
+- Pool capability metadata upsert flow exists (resolve/create pool, endpoint attach where provided, capability persistence with practical idempotency).
+- Stratum V2 capability evaluation and adoption summary service methods exist with explainability and confidence semantics.
+- Celery refresh task baseline exists for manual/fixture capability refresh (`tasks.mining.refresh_stratum_v2_capabilities`).
+
+Capability-state semantics:
+- Allowed states: `supported`, `unsupported`, `partial`, `unknown`, `claimed_unverified`, `verified`.
+- `claimed_unverified` and `verified` must never be collapsed into one bucket.
+- `unknown` must not be counted as supported in adoption calculations.
+
+Adoption-summary semantics:
+- Required summary fields: `total_pools`, `sv2_supported_count`, `job_declaration_supported_count`,
+  `template_control_supported_count`, `unknown_count`, `claimed_unverified_count`, `adoption_rate`,
+  `confidence`, `limitations`, `explainability`.
+- `adoption_rate` is advisory and must include confidence caveats/limitations.
+
+Source-quality and evidence semantics:
+- Source labeling is mandatory (`source_type`, verified/fallback/synthetic flags, confidence, freshness, limitations, evidence refs).
+- Manual/fixture records must remain source-labeled and non-production-grade by policy.
+- No active network probing is implemented in current baseline; verification-sensitive claims remain advisory unless evidence-backed.
+
 ### Source-quality and unknown/unverified semantics
 - Persistence includes `source_type`, `is_verified`, `is_fallback`, `is_synthetic`, `confidence(_score)`, freshness/observed fields, limitations, and evidence refs.
 - Unknown/unverified states are accepted and expected defaults for baseline records.
@@ -741,3 +766,19 @@ Status label: **MODELS/PERSISTENCE BASELINE IMPLEMENTED**.
 
 ### Next block reference
 - **M2** is the next execution block for provider-connected read/runtime behavior and implementation of planned mining endpoint flows.
+
+## 17) M2 completion verification snapshot (M2-10)
+
+M2 block verification confirms:
+- Stratum V2 capability registry service exists.
+- adoption summary service exists.
+- mining task baseline exists and is worker-discoverable.
+- limitations and advisory semantics are explicitly documented.
+
+Verification command outcomes (M2-10 run):
+- `make lint`: Ruff passed; mypy failed due to pre-existing non-mining typing debt.
+- `python -m pytest -q tests/unit/test_mining_pool_registry_service.py`: passed.
+- `python -m pytest -q tests/unit/test_stratum_v2_capability_service.py`: passed.
+- `python -m pytest -q tests/unit/test_mining_capability_upsert.py`: passed.
+- `python -m pytest -q tests/unit/test_stratum_v2_adoption_summary.py`: passed.
+- `python -m pytest -q tests/unit/test_mining_tasks.py`: passed.

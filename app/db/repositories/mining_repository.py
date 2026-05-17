@@ -91,6 +91,61 @@ class MiningRepository:
         except SQLAlchemyError:
             return []
 
+    def attach_pool_endpoint(
+        self,
+        *,
+        pool_id: int,
+        endpoint_type: str = "api",
+        endpoint_url: str,
+        network: str = "unknown",
+        source_type: str = "unknown",
+        confidence_score: float = 0.0,
+        freshness_seconds: int | None = None,
+        is_verified: bool = False,
+        limitations: list[str] | None = None,
+        evidence_refs: list[str] | None = None,
+        observed_at: datetime | None = None,
+    ) -> MiningPoolEndpoint:
+        row = MiningPoolEndpoint(
+            pool_id=pool_id,
+            endpoint_type=endpoint_type,
+            endpoint_url=endpoint_url,
+            network=network,
+            source_type=source_type,
+            confidence_score=confidence_score,
+            freshness_seconds=freshness_seconds,
+            is_verified=is_verified,
+            limitations_json=json.dumps(limitations or []),
+            evidence_refs_json=json.dumps(evidence_refs or []),
+            observed_at=observed_at,
+        )
+        self.db.add(row)
+        self.db.commit()
+        self.db.refresh(row)
+        return row
+
+    def get_pool_endpoint(
+        self,
+        *,
+        pool_id: int,
+        endpoint_type: str,
+        endpoint_url: str,
+        network: str,
+    ) -> MiningPoolEndpoint | None:
+        stmt = (
+            select(MiningPoolEndpoint)
+            .where(MiningPoolEndpoint.pool_id == pool_id)
+            .where(MiningPoolEndpoint.endpoint_type == endpoint_type)
+            .where(MiningPoolEndpoint.endpoint_url == endpoint_url)
+            .where(MiningPoolEndpoint.network == network)
+            .order_by(MiningPoolEndpoint.id.desc())
+            .limit(1)
+        )
+        try:
+            return self.db.execute(stmt).scalar_one_or_none()
+        except SQLAlchemyError:
+            return None
+
     def upsert_stratum_v2_capability(
         self,
         *,
@@ -131,6 +186,60 @@ class MiningRepository:
         self.db.commit()
         self.db.refresh(row)
         return row
+
+    def save_stratum_v2_capability(
+        self,
+        *,
+        pool_id: int,
+        capability_state: str = "unknown",
+        job_declaration_state: str = "unknown",
+        translator_proxy_state: str = "unknown",
+        encrypted_channel_state: str = "unknown",
+        source_type: str = "unknown",
+        confidence_score: float = 0.0,
+        freshness_seconds: int | None = None,
+        limitations: list[str] | None = None,
+        evidence_refs: list[str] | None = None,
+        observed_at: datetime | None = None,
+    ) -> StratumV2Capability:
+        row = StratumV2Capability(
+            pool_id=pool_id,
+            capability_state=capability_state,
+            job_declaration_state=job_declaration_state,
+            translator_proxy_state=translator_proxy_state,
+            encrypted_channel_state=encrypted_channel_state,
+            source_type=source_type,
+            confidence_score=confidence_score,
+            freshness_seconds=freshness_seconds,
+            limitations_json=json.dumps(limitations or []),
+            evidence_refs_json=json.dumps(evidence_refs or []),
+            observed_at=observed_at,
+        )
+        self.db.add(row)
+        self.db.commit()
+        self.db.refresh(row)
+        return row
+
+    def latest_stratum_v2_capability(self, pool_id: int) -> StratumV2Capability | None:
+        stmt = (
+            select(StratumV2Capability)
+            .where(StratumV2Capability.pool_id == pool_id)
+            .order_by(StratumV2Capability.created_at.desc(), StratumV2Capability.id.desc())
+            .limit(1)
+        )
+        try:
+            return self.db.execute(stmt).scalar_one_or_none()
+        except SQLAlchemyError:
+            return None
+
+    def list_latest_stratum_v2_capabilities(self) -> list[StratumV2Capability]:
+        pools = self.list_pools(limit=10000, offset=0)
+        latest: list[StratumV2Capability] = []
+        for pool in pools:
+            item = self.latest_stratum_v2_capability(pool.id)
+            if item is not None:
+                latest.append(item)
+        return latest
 
     def latest_pool_score(self, pool_id: int) -> PoolSovereigntyScore | None:
         stmt = (

@@ -8,9 +8,9 @@ Task: **M0-01**
 Audit current Bitcoin Bastion architecture and identify the safest integration points for adding Mining Sovereignty Intelligence **without architecture rewrite** and **without DB schema implementation in this block**.
 
 ## 0) Implementation truth-status
-- Mining Sovereignty is currently **PLANNED / FOUNDATION SPEC**.
-- Mining-specific runtime endpoints and end-to-end mining service flows are **not implemented** in this repository state.
-- Next execution block is **M1** (provider abstraction + read-only scoring/API path).
+- Mining Sovereignty is currently **SERVICE BASELINE IMPLEMENTED** for persistence, repository, service, and task scaffolding.
+- Mining-specific public runtime read endpoints remain mostly **PLANNED** and must be treated as advisory contracts until explicitly promoted.
+- No active network probing is implemented for mining capability verification in current M2 baseline.
 
 ---
 
@@ -37,6 +37,19 @@ This is a good fit for adding mining intelligence as another bounded domain foll
 
 ## API location
 - `app/api/v1/mining.py` (future): thin read-oriented endpoints only.
+
+## 2.1 M2 Stratum V2 registry semantics (implemented baseline)
+- Capability states in use: `supported`, `unsupported`, `partial`, `unknown`, `claimed_unverified`, `verified`.
+- `claimed_unverified` is explicitly not equivalent to `verified` and must remain separate in summaries and downstream decisions.
+- Adoption summaries must expose both support counts and uncertainty counts (`unknown`, `claimed_unverified`) with confidence + limitations.
+- Source-quality labels (`source_type`, `is_verified`, `is_fallback`, `is_synthetic`, freshness, evidence refs, limitations) are first-class and must be preserved end-to-end.
+- Fixture/manual records are allowed for baseline operation but must remain source-labeled and must not be presented as production-grade verified evidence.
+
+## 2.2 M2 verification status (M2-10)
+- M2 capability-registry block is functionally implemented at service/task baseline.
+- Worker-discoverable Celery mining refresh task is present.
+- Adoption summary semantics are implemented with explicit unknown/claimed separation and confidence caveats.
+- No active network probing is implemented yet; all verification-sensitive outcomes remain advisory unless evidence-backed.
 
 ## Schema location
 - `app/schemas/mining.py` (already drafted): transport/internal contracts.

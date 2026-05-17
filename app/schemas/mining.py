@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class MiningFreshnessOut(BaseModel):
@@ -33,6 +33,33 @@ class MiningPoolCreate(BaseModel):
     pool_key: str
     display_name: str
     provider_name: str = "unknown"
+
+
+class MiningPoolRegistryMetadata(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    pool_name: str
+    website_url: str | None = None
+    operator_name: str | None = None
+    country: str | None = None
+    jurisdiction: str | None = None
+    public_documentation_url: str | None = None
+    notes: str | None = None
+    source_quality: str = "unknown"
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    freshness: int | None = Field(default=None, ge=0)
+
+
+class MiningPoolEndpointCreate(BaseModel):
+    endpoint_type: str = "api"
+    endpoint_url: str
+    network: str = "unknown"
+    source_type: str = "unknown"
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    is_verified: bool = False
+    freshness: int | None = Field(default=None, ge=0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
 
 
 class MiningPoolEndpointOut(BaseModel):
@@ -67,6 +94,50 @@ class StratumV2CapabilityOut(BaseModel):
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     limitations: list[str] = Field(default_factory=list)
     evidence_refs: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+
+
+class StratumV2CapabilityEvaluationInput(BaseModel):
+    supports_stratum_v2: str = "unknown"
+    supports_job_declaration: str = "unknown"
+    supports_template_distribution: str = "unknown"
+    supports_template_provider: str = "unknown"
+    supports_translator_proxy: str = "unknown"
+    supports_encrypted_channel: str = "unknown"
+    miner_can_build_templates: str = "unknown"
+    pool_can_override_templates: str = "unknown"
+    miner_template_control_level: str = "unknown"
+    source_type: str = "unknown"
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
+    freshness_seconds: int | None = Field(default=None, ge=0)
+    is_fallback: bool = False
+    is_synthetic: bool = False
+    is_verified: bool = False
+
+
+class StratumV2CapabilityEvaluationOut(BaseModel):
+    capability_summary: str
+    missing_capabilities: list[str] = Field(default_factory=list)
+    positive_factors: list[str] = Field(default_factory=list)
+    negative_factors: list[str] = Field(default_factory=list)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
+    explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
+    statuses: dict[str, str] = Field(default_factory=dict)
+
+
+class StratumV2AdoptionSummaryOut(BaseModel):
+    total_pools: int = 0
+    sv2_supported_count: int = 0
+    job_declaration_supported_count: int = 0
+    template_control_supported_count: int = 0
+    unknown_count: int = 0
+    claimed_unverified_count: int = 0
+    adoption_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    limitations: list[str] = Field(default_factory=list)
     explainability: MiningExplainabilityOut = Field(default_factory=MiningExplainabilityOut)
 
 

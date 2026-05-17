@@ -26,11 +26,14 @@ This document reflects repository state from code and tests, not roadmap targets
 - **SYNTHETIC**: parts of Citadel dependency/simulation behavior.
 - **BASELINE**: Telegram runtime behavior, some Bitcoin protocol-depth analyzers, and explainability depth.
 
-### Mining Sovereignty (M1 persistence status)
-- **MODELS/PERSISTENCE BASELINE IMPLEMENTED**: mining SQLAlchemy models, Alembic tables, and repository persistence methods exist.
-- **PLANNED**: full provider-driven mining ingestion/scoring runtime and planned mining API endpoints beyond planning surface remain not implemented.
+### Mining Sovereignty (M2 service baseline status)
+- **SERVICE BASELINE IMPLEMENTED**: mining SQLAlchemy models, Alembic tables, repository persistence, service-layer capability workflows, adoption summary semantics, and Celery refresh baseline exist.
+- **PLANNED**: full provider-driven live ingestion/probing runtime and most public mining read APIs remain not implemented.
 - **Constraint**: mining records and outputs remain advisory and verification-gated; unknown/unverified states are valid baseline values.
 - **Fixture warning**: mining fixture data in tests is synthetic and must not be interpreted as real-world pool intelligence.
+- **Capability-state policy**: `supported`, `unsupported`, `partial`, `unknown`, `claimed_unverified`, `verified` are distinct states; claimed/unverified must not be presented as verified.
+- **Adoption semantics policy**: unknown is not counted as supported; adoption rate must be accompanied by confidence and explicit limitations.
+- **Network probing status**: no active network probing yet in current mining baseline.
 
 ## Evidence-backed constraints
 - No production SLO attainment is claimed in this file.
@@ -142,7 +145,7 @@ Assessment date: **2026-05-16**
   - `python -m pytest -q tests/unit/test_mining_repository.py`
   - `make migration-smoke`
   - `python scripts/check_schema_runtime_parity.py`
-- current Mining Sovereignty readiness: **MODELS/PERSISTENCE BASELINE IMPLEMENTED (~46% toward full mining feature completion)**.
+- current Mining Sovereignty readiness: **SERVICE BASELINE IMPLEMENTED**.
 - impact on global production readiness: mining persistence baseline is now real and migration-verified; global production decision remains unchanged because mining runtime/provider/API execution is still planned.
 - remaining risks:
   1. provider ingestion/runtime scoring not yet implemented (M2+).
@@ -150,3 +153,33 @@ Assessment date: **2026-05-16**
   3. existing repository-wide mypy debt (outside mining scope) keeps `make lint` non-green.
   4. synthetic fixture data must never be interpreted as real pool intelligence.
 - next block: **M2** (provider-connected ingestion/read services and endpoint/runtime wiring with explainability provenance).
+
+
+# BLOCK M2 PROGRESS REPORT
+- completed tasks: M2-01 through M2-10 (pool registry service, capability evaluator, source-quality helper, manual metadata provider, capability upsert workflow, adoption summary, Celery refresh baseline, task discovery, and status/spec alignment).
+- files changed: mining service/repository/task/schema paths and mining unit tests; docs updated in `docs/STATUS.md`, `docs/SPEC_MINING_SOVEREIGNTY.md`, `docs/MINING_SOVEREIGNTY_ARCHITECTURE.md`, and `docs/API_CONTRACTS.md`.
+- services added:
+  - `app/services/mining/pool_registry_service.py`
+  - `app/services/mining/stratum_v2_capability_service.py`
+  - `app/services/mining/source_quality.py`
+  - task baseline `tasks.mining.refresh_stratum_v2_capabilities` in `app/tasks/mining_tasks.py`
+- tests added:
+  - `tests/unit/test_mining_capability_upsert.py`
+  - `tests/unit/test_stratum_v2_adoption_summary.py`
+  - `tests/unit/test_mining_tasks.py`
+  - `tests/unit/test_mining_task_discovery.py`
+- commands run:
+  - `make lint` (ruff passed; mypy failed on pre-existing non-mining typing debt outside mining scope)
+  - `python -m pytest -q tests/unit/test_mining_pool_registry_service.py`
+  - `python -m pytest -q tests/unit/test_stratum_v2_capability_service.py`
+  - `python -m pytest -q tests/unit/test_mining_capability_upsert.py`
+  - `python -m pytest -q tests/unit/test_stratum_v2_adoption_summary.py`
+  - `python -m pytest -q tests/unit/test_mining_tasks.py`
+- current Mining Sovereignty readiness %: **63%** (service baseline implemented; provider-probing/live-read layers still pending).
+- impact on global production readiness: positive for domain completeness and operator visibility; global production decision remains unchanged due to unresolved non-mining realism/typing/operational blockers.
+- remaining risks:
+  1. no active network probing yet; capability verification remains advisory/claimed.
+  2. planned mining runtime read APIs are still mostly not implemented.
+  3. repository-wide mypy debt remains unresolved outside mining scope.
+  4. fixture/manual data must not be interpreted as verified real-world intelligence.
+- next block recommendation: **M3** — provider-backed ingestion + evidence-grounded verification pipeline + runtime mining read endpoints with contract tests.

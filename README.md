@@ -53,6 +53,7 @@ Verification commands:
 make test-contract
 make migration-smoke
 make docs-truthfulness
+make ci
 ```
 
 ## Core documentation
