@@ -1,4 +1,4 @@
-.PHONY: install install-dev test test-contract test-integration test-unit lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke
+ .PHONY: install install-dev test test-contract test-integration test-unit lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence
 
 install:
 	python -m pip install -e .
@@ -96,3 +96,13 @@ ci-release-gates: install-dev
 compose-smoke:
 	docker compose config >/dev/null
 
+
+
+postgres-migration-smoke:
+	python scripts/run_postgres_migration_smoke.py
+
+postgres-schema-parity:
+	python scripts/check_postgres_schema_parity.py
+
+release-evidence:
+	python scripts/collect_release_evidence.py

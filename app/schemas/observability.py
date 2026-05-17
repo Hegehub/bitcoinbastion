@@ -1,12 +1,36 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
 
 
 class ProviderHealthOut(BaseModel):
     provider: str
+    provider_name: str = "unknown"
     healthy: bool
     details: str
     confidence: float = 0.0
     freshness_seconds: int = 0
+    stale_evidence: bool = False
+    is_fallback: bool = False
+    is_mock: bool = False
+    degradation_reason: str | None = None
+    operator_guidance: list[str] = Field(default_factory=list)
+
+
+class ProviderHealthEvidenceOut(BaseModel):
+    provider_name: str
+    provider_type: str
+    checked_at: datetime
+    healthy: bool
+    latency_ms: int
+    error_type: str | None = None
+    error_message: str | None = None
+    source_type: str = "unknown"
+    is_fallback: bool = False
+    is_mock: bool = False
+    confidence: float = 0.0
+    freshness_seconds: int = 0
+    limitations: list[str] = Field(default_factory=list)
+    evidence_refs: list[str] = Field(default_factory=list)
 
 
 class DeliveryStatsOut(BaseModel):

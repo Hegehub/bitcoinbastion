@@ -85,3 +85,6 @@ make docs-truthfulness
 - Candidate label and release-note structure are prepared in `docs/RELEASE_NOTES_TEMPLATE.md` (metadata-only; no tag implied).
 
 - Next promotion requires closure evidence for protocol/Citadel realism and target-environment operational verification.
+
+
+- Final RC readiness audit: `docs/FINAL_PRODUCTION_GAP_AUDIT.md` (current decision remains PRE-RC).

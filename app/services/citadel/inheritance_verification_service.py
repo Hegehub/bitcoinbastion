@@ -86,6 +86,14 @@ class InheritanceVerificationService:
             "recommendations": recommendations,
             "freshness": {"source": "inheritance_operational_model_v2"},
             "confidence": round(0.62 + (0.22 * min(1.0, artifact_score + freshness_score) / 2), 3),
+            "synthetic_component": True,
+            "synthetic_reason": "Deterministic baseline model with partial synthetic assumptions.",
+            "production_replacement_path": "Replace with production-grade telemetry, attestations, and provider-linked evidence.",
+            "confidence_penalty": 0.15,
+            "operator_warning": "Synthetic/baseline Citadel output: validate with real operational evidence before critical action.",
+            "evidence_refs": ["citadel:baseline_model"],
+            "limitations": ["Output includes synthetic or baseline assumptions and is not full production attestation."],
+            "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "signals": [
                     "recovery readiness",

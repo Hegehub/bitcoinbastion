@@ -123,3 +123,18 @@ Assessment date: **2026-05-16**
   3. Production deployment evidence closure remains environment/operator-dependent and not fully closed in repository artifacts alone.
 - **P0 blocker status:** no direct code P0 regressions detected in repository verification; remaining blockers are realism/evidence closure blockers for RC declaration.
 - **Next promotion condition:** all RC criteria plus explicit closure evidence for protocol realism, Citadel realism, and deployment operations runbook execution in target environment.
+
+
+- Provider health pipeline now executes real on-chain probes (with fallback/error sanitization), plus RSS/delivery evidence snapshots and bounded provider-health metrics labels.
+
+- Observability snapshot now includes provider stale-evidence flags, fallback/mock/degradation reasons, provider confidence, and operator guidance; metrics now include provider status, latency, fallback active, confidence, last-success age, and failure counts with bounded labels.
+
+- Citadel synthetic/baseline outputs are now explicitly labeled with operator-visible risk metadata, confidence penalties, replacement paths, and limitations (see `docs/CITADEL_SYNTHETIC_RISK_REGISTER.md`).
+
+- Protocol corroboration hardening added: chain-state/mempool/utxo freshness now expose provider-count corroboration metadata, advisory flags, confidence adjustment, fallback markers, and operator guidance (`docs/PROTOCOL_CORROBORATION.md`).
+
+
+## Final RC readiness audit (2026-05-17)
+- **Decision:** PRE-RC / PRODUCTION-ORIENTED BETA.
+- **Blocking reason:** `make lint` fails on repository-wide mypy errors, so RC quality gate is not closed.
+- **Reference:** `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.

@@ -27,6 +27,13 @@ class RepairPlanService:
             "effort_estimate": effort_estimate,
             "status": "open",
             "evidence_refs": evidence,
+            "synthetic_component": True,
+            "synthetic_reason": "Deterministic baseline model with partial synthetic assumptions.",
+            "production_replacement_path": "Replace with production-grade telemetry, attestations, and provider-linked evidence.",
+            "confidence_penalty": 0.15,
+            "operator_warning": "Synthetic/baseline Citadel output: validate with real operational evidence before critical action.",
+            "limitations": ["Output includes synthetic or baseline assumptions and is not full production attestation."],
+            "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "driven_by": evidence,
                 "priority_inputs": {
@@ -143,6 +150,14 @@ class RepairPlanService:
             "items": items,
             "freshness": {"source": "citadel_repair_planner_v2"},
             "confidence": 0.78,
+            "synthetic_component": True,
+            "synthetic_reason": "Repair priorities are baseline heuristics derived from synthetic/baseline Citadel inputs.",
+            "production_replacement_path": "Back with production incident telemetry and verified workflow outcomes.",
+            "confidence_penalty": 0.15,
+            "operator_warning": "Repair plan is advisory and synthetic-influenced; validate against live operations evidence.",
+            "evidence_refs": ["citadel:repair_plan", "citadel:baseline_model"],
+            "limitations": ["Heuristic prioritization may differ from production incident reality."],
+            "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "priority_logic": "derived from recovery artifacts, inheritance gaps, human dependency, descriptor readiness",
                 "recovery_summary": recovery.artifact_summary,

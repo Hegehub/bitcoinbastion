@@ -27,6 +27,9 @@ class ChainStateService:
         provider_confidence: float | None = None,
         provider_data_age_seconds: int | None = None,
         data_source: str = "query",
+        provider_count: int = 1,
+        corroborated_by: list[str] | None = None,
+        conflicting_providers: list[str] | None = None,
     ) -> ChainStateEvaluation:
         headers = headers_height if headers_height is not None else tip_height
         confirmation_depth = max(0, (tip_height - observed_block_height) + 1)
@@ -110,6 +113,10 @@ class ChainStateService:
         else:
             band = "weak"
 
+        corroborated = list(corroborated_by or [])
+        conflicting = list(conflicting_providers or [])
+        safe_provider_count = max(0, int(provider_count))
+        single_source_advisory = safe_provider_count <= 1
         confidence = 0.84
         if data_source == "repository_fallback":
             confidence -= 0.16
@@ -122,7 +129,12 @@ class ChainStateService:
             confidence -= min(0.22, max(0, int(provider_data_age_seconds)) / 1200)
         if header_tip_gap > 0:
             confidence -= min(0.18, header_tip_gap * 0.04)
+        if single_source_advisory:
+            confidence -= 0.1
+        if conflicting:
+            confidence -= min(0.2, 0.05 * len(conflicting))
         confidence = round(max(0.1, min(0.95, confidence)), 4)
+        confidence_adjustment = round(0.84 - confidence, 4)
 
         return ChainStateEvaluation(
             tip_height=tip_height,
@@ -141,6 +153,19 @@ class ChainStateService:
                 "is_fallback": data_source in {"repository_fallback", "provider_fallback"},
                 "provider_data_age_seconds": provider_data_age_seconds,
                 "provider_freshness_band": stale_band,
+                "freshness_band": stale_band,
+                "provider_count": safe_provider_count,
+                "corroborated_by": corroborated,
+                "conflicting_providers": conflicting,
+                "confidence_adjustment": confidence_adjustment,
+                "fallback_active": fallback_activated,
+                "single_source_advisory": single_source_advisory,
+                "advisory_not_consensus_proof": True,
+                "operator_guidance": [
+                    "Treat chain-state output as advisory; require multi-provider corroboration for critical actions.",
+                    "Investigate reorg risk signals before high-impact transactions.",
+                ],
+                "limitations": ["Operational estimate only; not consensus-finality proof."],
                 "degradation_state": (
                     "degraded"
                     if fallback_activated or stale_provider_data or inconsistent_provider_response
@@ -175,8 +200,13 @@ class ChainStateService:
                     "source_risk_component": round(source_risk, 4),
                 },
                 "scoring": {
-                    "note": "Conservative risk model. finality_score is operational confidence, not consensus finality.",
+                    "note": "Conservative risk model. finality_score is operational confidence, never consensus finality.",
                     "finality_formula": "depth_quality*(1-reorg_risk)",
+                },
+                "reorg_risk_reasoning": {
+                    "summary": "Risk rises with low confirmations, stale/fallback source quality, and provider disagreement.",
+                    "single_source_advisory": single_source_advisory,
+                    "conflicting_providers": conflicting,
                 },
                 "source_quality": {
                     "source_type": "provider" if data_source == "provider_probe" else "runtime",

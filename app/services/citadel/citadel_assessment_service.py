@@ -1240,6 +1240,14 @@ class CitadelAssessmentService:
             generated_at=now,
             created_at=now,
             updated_at=now,
+            synthetic_component=bool(protocol_fallback_domains),
+            synthetic_reason=("Protocol domains include fallback/synthetic inputs." if protocol_fallback_domains else ""),
+            production_replacement_path="Replace synthetic domains with provider-attested, live protocol/runtime evidence.",
+            confidence_penalty=round(max(0.0, protocol_confidence_raw - protocol_confidence), 3),
+            operator_warning=("Citadel assessment includes synthetic/baseline assumptions; validate before critical operations." if protocol_fallback_domains else ""),
+            evidence_refs=[f"domain:{d}" for d in protocol_fallback_domains][:8],
+            limitations=["Citadel combines real, fallback, and synthetic domains."],
+            source_quality={"source_type": "mixed", "is_fallback": bool(protocol_fallback_domains), "confidence": protocol_confidence},
         )
 
     def recovery_artifacts(self, *, owner_id: int) -> list[RecoveryArtifactOut]:

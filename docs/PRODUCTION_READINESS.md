@@ -127,3 +127,20 @@ python -m pytest -q tests/contract/test_runtime_api_contracts.py tests/integrati
   1. protocol maturity realism in operational workflows,
   2. Citadel synthetic-risk reduction or formal acceptance,
   3. full target-environment operations/deployment evidence capture.
+
+
+- Provider health pipeline now executes real on-chain probes (with fallback/error sanitization), plus RSS/delivery evidence snapshots and bounded provider-health metrics labels.
+
+- Observability snapshot now includes provider stale-evidence flags, fallback/mock/degradation reasons, provider confidence, and operator guidance; metrics now include provider status, latency, fallback active, confidence, last-success age, and failure counts with bounded labels.
+
+
+- [ ] PostgreSQL staging validation executed and archived (`docs/POSTGRES_VALIDATION.md`).
+- [ ] Release evidence pack generated and attached (`docs/DEPLOYMENT_EVIDENCE_PACK.md`).
+
+- [ ] Citadel synthetic risk register reviewed and acknowledged (`docs/CITADEL_SYNTHETIC_RISK_REGISTER.md`).
+
+
+## Final RC audit record
+- Decision: **PRE-RC / PRODUCTION-ORIENTED BETA** (2026-05-17).
+- Blocking gate: `make lint` (mypy failures).
+- See: `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.

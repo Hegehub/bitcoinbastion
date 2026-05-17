@@ -45,13 +45,16 @@ def test_operations_snapshot_includes_job_and_delivery_stats() -> None:
     assert any(item.provider == "delivery" for item in snapshot.providers)
     assert snapshot.chain_state.tip_height >= snapshot.chain_state.observed_block_height
     assert snapshot.chain_state.finality_band in {"weak", "moderate", "strong"}
-    onchain = next(item for item in snapshot.providers if item.provider == "onchain")
-    assert onchain.healthy is False
-    assert "degraded" in onchain.details
-    assert "fallback_activated=" in onchain.details
+    onchain = next(item for item in snapshot.providers if item.provider == "bitcoin")
+    assert "fallback=True" in onchain.details
+    assert "mock=True" in onchain.details
     assert 0.0 <= onchain.confidence <= 1.0
+    assert isinstance(onchain.stale_evidence, bool)
+    assert onchain.operator_guidance
+    assert onchain.is_fallback is True
+    assert onchain.is_mock is True
     delivery = next(item for item in snapshot.providers if item.provider == "delivery")
-    assert "recovery_slo_status" in delivery.details
+    assert "source_type=delivery_logs" in delivery.details
 
     assert snapshot.recovery_slo.status in {"healthy", "degraded", "critical"}
     assert "signals" in snapshot.recovery_slo.model_dump()
@@ -132,3 +135,23 @@ def test_operations_snapshot_emits_runtime_metrics(monkeypatch) -> None:
     assert captured["degraded_mode_active"] == snapshot.degraded_mode.active
     assert isinstance(captured["provider_name"], str)
     assert 0.0 <= float(captured["provider_share"]) <= 1.0
+
+
+def test_provider_health_metrics_bounded_labels() -> None:
+    from app.core.telemetry import set_provider_health_detail_metrics, set_provider_health_state_metric
+
+    set_provider_health_state_metric(
+        provider_type="some_unbounded_external_type",
+        provider_name="x" * 200,
+        healthy=False,
+        is_fallback=True,
+        is_mock=False,
+    )
+    set_provider_health_detail_metrics(
+        provider_type="some_unbounded_external_type",
+        provider_name="x" * 200,
+        latency_ms=120,
+        is_fallback=True,
+        confidence=0.4,
+        last_success_age_seconds=7200,
+    )
