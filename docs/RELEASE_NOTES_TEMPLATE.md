@@ -84,5 +84,10 @@ curl -fsS http://localhost:8000/metrics
 
 
 ## RC decision field (required)
-- Decision class: `PRODUCTION RELEASE CANDIDATE` / `PRE-RC / PRODUCTION-ORIENTED BETA` / `NOT READY`
+- Decision class: `PRODUCTION RELEASE CANDIDATE` / `RC-ready pending environment evidence` / `PRE-RC / PRODUCTION-ORIENTED BETA` / `NOT READY`
 - Final audit reference: `docs/FINAL_PRODUCTION_GAP_AUDIT.md`
+
+## Evidence attachment field (required for RC promotion)
+- [ ] `artifacts/release_evidence.json` attached
+- [ ] `artifacts/postgres_migration_smoke.json` attached
+- [ ] `artifacts/postgres_schema_parity.json` attached

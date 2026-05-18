@@ -7,6 +7,29 @@ from app.services.blockchain.chain_state_service import ChainStateService
 
 
 class DisasterSimulationService:
+    @staticmethod
+    def _as_str_set(value: object) -> set[str]:
+        if not isinstance(value, (set, list, tuple)):
+            return set()
+        return {str(item) for item in value}
+
+    @staticmethod
+    def _as_object_list(value: object) -> list[object]:
+        if not isinstance(value, list):
+            return []
+        return value
+
+    @staticmethod
+    def _as_float(value: object, *, default: float = 0.0) -> float:
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            try:
+                return float(value)
+            except ValueError:
+                return default
+        return default
+
     SCENARIO_RULES: dict[str, dict[str, object]] = {
         "signer_loss": {
             "aliases": {"loss_signer", "signer_loss"},
@@ -103,7 +126,7 @@ class DisasterSimulationService:
     @classmethod
     def _resolve_scenario(cls, normalized: str) -> tuple[str, dict[str, object]]:
         for canonical, rule in cls.SCENARIO_RULES.items():
-            aliases = rule.get("aliases", set())
+            aliases = cls._as_str_set(rule.get("aliases", set()))
             if normalized in aliases:
                 return canonical, rule
         return "coordinator_outage", cls.SCENARIO_RULES["coordinator_outage"]
@@ -150,17 +173,18 @@ class DisasterSimulationService:
             has_recent_health_report=scenario_key in {"high_fee_emergency_spend", "provider_outage"},
             wallet_type="multisig-2of3" if scenario_key in {"signer_loss", "high_fee_emergency_spend"} else "single-sig",
         )
-        edges = list(graph.get("edges", []))
-        spofs = list(graph.get("single_points_of_failure", []))
-        has_descriptor = any(node.get("node_type") == "descriptor" for node in graph.get("nodes", []))
-        has_recent_health_report = bool(graph.get("confidence", 0.0) >= 0.8)
+        edges = [item for item in self._as_object_list(graph.get("edges", [])) if isinstance(item, dict)]
+        spofs = [item for item in self._as_object_list(graph.get("single_points_of_failure", [])) if isinstance(item, dict)]
+        nodes = [item for item in self._as_object_list(graph.get("nodes", [])) if isinstance(item, dict)]
+        has_descriptor = any(node.get("node_type") == "descriptor" for node in nodes)
+        has_recent_health_report = self._as_float(graph.get("confidence", 0.0)) >= 0.8
         recovery_state = self._recovery_state(
             owner_id=owner_id,
             has_descriptor=has_descriptor,
             has_recent_health_report=has_recent_health_report,
         )
 
-        affected_types = set(scenario_rule["affected_dependency_types"])
+        affected_types = self._as_str_set(scenario_rule["affected_dependency_types"])
         blocked_edges = [edge for edge in edges if edge.get("dependency_type") in affected_types]
         blocked_paths = [self._path(edge) for edge in blocked_edges]
         remaining_paths = [self._path(edge) for edge in edges if edge.get("dependency_type") not in affected_types]
@@ -173,12 +197,12 @@ class DisasterSimulationService:
             }
         )
 
-        base_shock = float(scenario_rule["base_shock"])
+        base_shock = self._as_float(scenario_rule["base_shock"])
         spof_penalty = min(0.22, len(spofs) * 0.025)
         blocked_penalty = min(0.28, len(blocked_edges) * 0.03)
         recovery_penalty = min(
             0.2,
-            max(0.0, (1.0 - float(recovery_state.get("completeness_score", 0.0))) * 0.25),
+            max(0.0, (1.0 - self._as_float(recovery_state.get("completeness_score", 0.0))) * 0.25),
         )
         descriptor_profile = DescriptorAwarenessService().evaluate(
             has_descriptor=has_descriptor,
@@ -191,7 +215,7 @@ class DisasterSimulationService:
             + (0.08 if scenario_key == "descriptor_corruption" and not has_descriptor else 0.0),
         )
 
-        fee_pressure_multiplier = float(scenario_rule["fee_pressure_multiplier"])
+        fee_pressure_multiplier = self._as_float(scenario_rule["fee_pressure_multiplier"], default=1.0)
         mempool_snapshot = MempoolSnapshot(
             backlog_tx_count=int(35_000 + (len(blocked_edges) * 12_000 * fee_pressure_multiplier)),
             backlog_vbytes=int(50_000_000 + (len(spofs) * 10_000_000 * fee_pressure_multiplier)),
@@ -246,7 +270,7 @@ class DisasterSimulationService:
             "blocked_paths": blocked_paths,
             "remaining_paths": remaining_paths,
             "critical_failure_points": critical_failure_points,
-            "recommended_remediations": list(scenario_rule["remediations"]),
+            "recommended_remediations": [str(item) for item in self._as_object_list(scenario_rule["remediations"])],
             "freshness": {"source": "deterministic_ruleset", "version": "citadel_disaster_v3"},
             "confidence": confidence,
             "synthetic_component": True,

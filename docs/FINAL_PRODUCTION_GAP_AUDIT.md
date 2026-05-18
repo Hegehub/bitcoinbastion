@@ -1,15 +1,16 @@
 # Final Production Gap Audit (RC Decision)
 
-Audit date: 2026-05-17
+Audit date: 2026-05-18
 
 ## Release decision
-**2. PRE-RC / PRODUCTION-ORIENTED BETA**
+**1. RC-ready pending environment evidence**
 
-## Why not RC
-P0 blockers are **not closed**:
-1. `make lint` fails because `mypy` reports repository-wide typing failures (114 errors).
-2. CI workflow runs `make lint`, so RC gates are not green end-to-end.
-3. PostgreSQL validation/evidence tooling exists, but target-environment execution evidence is still operator-dependent.
+## Why not full production RC declaration yet
+P0 code blockers are closed, but target-environment evidence closure is pending:
+1. `make lint` now passes (`ruff` + `mypy` green).
+2. `make docs-truthfulness` passes.
+3. `python -m pytest -q tests/contract` passes.
+4. PostgreSQL validation/evidence tooling exists, but required target-environment artifacts are not attached yet.
 
 ## Must-verify checklist status
 - Provider health task no longer stubbed: **PASS**.
@@ -19,17 +20,26 @@ P0 blockers are **not closed**:
 - Deployment evidence pack tooling exists: **PASS**.
 - Citadel synthetic risk labeling/confidence adjustment exists: **PASS**.
 - Protocol corroboration semantics exist: **PASS**.
-- Tests/CI pass or failures documented: **PARTIAL** (tests pass; lint/type gate fails and is documented).
+- Tests/CI pass or failures documented: **PASS** (repository verification gates executed and passing).
 - Docs match code: **PASS** (`make docs-truthfulness`).
 
 ## Verification command results
-- `make lint`: **FAIL** (`ruff` pass, `mypy` fail).
-- `python -m pytest -q`: **PASS** (275 passed).
-- `make migration-smoke`: **PASS**.
+- `make lint`: **PASS** (`ruff` pass, `mypy` pass).
 - `make docs-truthfulness`: **PASS**.
+- `python -m pytest -q tests/contract`: **PASS** (16 passed).
+- `make migration-smoke`: **PASS**.
+- `python -m pytest -q`: **PASS** (275 passed).
 - `make ci-release-gates`: **PASS**.
 
-## Required closure for RC promotion
-1. Resolve repository-wide mypy failures until `make lint` passes.
-2. Keep `ci.yml` release gates green with lint + tests.
-3. Attach environment-executed Postgres staging validation and release evidence artifact for target deployment.
+## Required closure for full PRODUCTION RELEASE CANDIDATE declaration
+1. Attach environment-executed evidence artifacts:
+   - `artifacts/release_evidence.json`
+   - `artifacts/postgres_migration_smoke.json`
+   - `artifacts/postgres_schema_parity.json`
+2. Record post-deploy verification outputs (health, readiness, admin status, recovery-check, observability snapshot, metrics) with timestamps.
+3. Keep release gates green at the release commit (`make lint`, tests, migration smoke, docs truthfulness, ci-release-gates).
+
+## Block G decision lock (2026-05-18)
+- Repository verification gates are green end-to-end.
+- Target-environment evidence artifacts are still not attached in-repo.
+- **Decision lock:** `RC-ready pending environment evidence` (not full `PRODUCTION RELEASE CANDIDATE` yet).

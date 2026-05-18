@@ -101,7 +101,7 @@ class SignalPublishService:
                 continue
 
             message = TelegramFormatter.format_signal(signal)
-            payload_snapshot = {
+            payload_snapshot: dict[str, str | int | float] = {
                 "title": signal.title,
                 "severity": signal.severity,
                 "score": round(signal.score, 4),

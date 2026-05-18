@@ -71,8 +71,8 @@ make docs-truthfulness
 
 
 ## Final readiness declaration
-- Sovereignty-grade readiness (P7-06): **83%** (evidence-based; not an SLO claim).
-- Current release decision: **PRE-RC / PRODUCTION-ORIENTED BETA**.
+- Sovereignty-grade readiness (P7-06): **89%** (evidence-based; not an SLO claim).
+- Current release decision: **RC-ready pending environment evidence**.
 - Residual risks and next-release tasks are tracked in `docs/STATUS.md`.
 
 
@@ -87,4 +87,4 @@ make docs-truthfulness
 - Next promotion requires closure evidence for protocol/Citadel realism and target-environment operational verification.
 
 
-- Final RC readiness audit: `docs/FINAL_PRODUCTION_GAP_AUDIT.md` (current decision remains PRE-RC).
+- Final RC readiness audit: `docs/FINAL_PRODUCTION_GAP_AUDIT.md` (current decision is RC-ready pending environment evidence).

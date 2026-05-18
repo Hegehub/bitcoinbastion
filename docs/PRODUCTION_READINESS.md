@@ -19,9 +19,9 @@ All criteria below must be met before promoting an RC to production:
 - [ ] Known BASELINE/SYNTHETIC limitations acknowledged in release sign-off.
 
 ## Final P6-10 decision guard
-- Current repository-level sovereignty-grade readiness: **85%** (see `docs/STATUS.md`).
+- Current repository-level sovereignty-grade readiness: **89%** (see `docs/STATUS.md`).
 - **Do not claim 100% readiness** until all residual risks in `docs/STATUS.md` are explicitly closed with deployment evidence.
-- RC promotion is currently **not declared**; current status is PRE-RC / production-oriented beta pending closure of listed residual risks.
+- RC promotion is currently **RC-ready pending environment evidence**; do not declare full production deployment readiness until evidence artifacts are attached.
 
 ## Runtime and infrastructure
 - [ ] Docker image build reproduced for release commit.
@@ -136,11 +136,12 @@ python -m pytest -q tests/contract/test_runtime_api_contracts.py tests/integrati
 
 - [ ] PostgreSQL staging validation executed and archived (`docs/POSTGRES_VALIDATION.md`).
 - [ ] Release evidence pack generated and attached (`docs/DEPLOYMENT_EVIDENCE_PACK.md`).
+  - Required artifacts: `artifacts/release_evidence.json`, `artifacts/postgres_migration_smoke.json`, `artifacts/postgres_schema_parity.json`.
 
 - [ ] Citadel synthetic risk register reviewed and acknowledged (`docs/CITADEL_SYNTHETIC_RISK_REGISTER.md`).
 
 
 ## Final RC audit record
-- Decision: **PRE-RC / PRODUCTION-ORIENTED BETA** (2026-05-17).
-- Blocking gate: `make lint` (mypy failures).
+- Decision: **RC-ready pending environment evidence** (2026-05-18).
+- Blocking gate: target-environment evidence artifacts not yet attached.
 - See: `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.

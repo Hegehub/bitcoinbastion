@@ -57,17 +57,6 @@ strict = true
 ignore_missing_imports = true
 
 
-[[tool.mypy.overrides]]
-module = [
-  "app.services.citadel.disaster_simulation_service",
-  "app.services.treasury.treasury_service",
-  "app.services.citadel.citadel_assessment_service",
-  "app.services.citadel.repair_plan_service",
-  "app.services.observability.operations_service",
-  "app.services.delivery.publish_service",
-]
-ignore_errors = true
-
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*"]

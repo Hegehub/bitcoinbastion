@@ -30,6 +30,25 @@ from app.core.telemetry import (
 
 class OperationsSnapshotService:
     @staticmethod
+    def _as_dict(value: object) -> dict[str, object]:
+        return value if isinstance(value, dict) else {}
+
+    @staticmethod
+    def _as_list(value: object) -> list[object]:
+        return value if isinstance(value, list) else []
+
+    @staticmethod
+    def _as_int(value: object, default: int = 0) -> int:
+        if isinstance(value, bool):
+            return default
+        if isinstance(value, int):
+            return value
+        if isinstance(value, float):
+            return int(value)
+        if isinstance(value, str) and value.strip().lstrip("-").isdigit():
+            return int(value)
+        return default
+    @staticmethod
     def _runtime_severity(
         *,
         failed_jobs: int,
@@ -83,7 +102,12 @@ class OperationsSnapshotService:
 
         # recovery drift
         recovery_status = str(recovery_slo.get("status", "unknown"))
-        unresolved = int(recovery_slo.get("signals", {}).get("unresolved_critical_findings", 0) or 0)
+        unresolved = OperationsSnapshotService._as_int(
+            OperationsSnapshotService._as_dict(recovery_slo.get("signals", {})).get(
+                "unresolved_critical_findings", 0
+            ),
+            0,
+        )
         if recovery_status == "critical" or unresolved >= 2:
             dimensions["recovery_drift"] = "critical"
             conditions.append("Recovery readiness SLO is critical")
@@ -273,7 +297,7 @@ class OperationsSnapshotService:
             packet_type=str(packet.get("packet_type", "operational_runtime_evidence")),
             runtime_state=("degraded" if degraded_mode.active else "nominal"),
             degraded_dependencies=list(degraded_mode.reasons)[:8],
-            provider_quality=dict(packet.get("source_quality", {})),
+            provider_quality=OperationsSnapshotService._as_dict(packet.get("source_quality", {})),
             unresolved_critical_findings=unresolved,
             delivery_health={
                 "failed_24h": failed_deliveries,
@@ -287,7 +311,10 @@ class OperationsSnapshotService:
             },
             recovery_slo_status=recovery_status,
             confidence=confidence,
-            evidence_refs=list(packet.get("evidence_refs", []))[:8],
+            evidence_refs=[
+                str(item)
+                for item in OperationsSnapshotService._as_list(packet.get("evidence_refs", []))
+            ][:8],
             explainability={
                 "severity_level": runtime_severity.level,
                 "escalation_conditions": runtime_severity.escalation_conditions[:6],
@@ -341,7 +368,12 @@ class OperationsSnapshotService:
             failed_deliveries=failed_deliveries,
             provider_count_total=provider_count_total,
         )
-        unresolved_findings = int(recovery.recovery_slo.get("signals", {}).get("unresolved_critical_findings", 0) or 0)
+        unresolved_findings = self._as_int(
+            self._as_dict(recovery.recovery_slo.get("signals", {})).get(
+                "unresolved_critical_findings", 0
+            ),
+            0,
+        )
         operational_evidence = self._operational_evidence_packet(
             runtime_severity=runtime_severity,
             degraded_mode=degraded_mode,
