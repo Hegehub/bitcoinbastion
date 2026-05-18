@@ -1,4 +1,5 @@
 from app.schemas.fees import FeeRecommendationRequest, FeeRecommendationResponse
+from app.schemas.common import ExplainabilityOut, FreshnessOut
 from app.services.mempool.fee_market_model import FeeMarketModel
 from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService, MempoolSnapshot
 
@@ -25,6 +26,6 @@ class FeeAnalyticsService:
             congestion_state=market.congestion_state,
             high_fee_scenario_sat_vb=market.high_fee_scenario_sat_vb,
             confidence=market.confidence,
-            freshness=market.freshness,
-            explainability=market.explainability,
+            freshness=FreshnessOut.model_validate(market.freshness),
+            explainability=ExplainabilityOut.model_validate(market.explainability),
         )

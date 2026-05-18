@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import select
 
@@ -46,7 +46,7 @@ def fetch_news_task(self: Any) -> dict[str, int | str]:
         with tracker.track("news.fetch"):
             rss = RSSClient()
             service = NewsIngestionService(rss)
-            totals = {"inserted": 0, "duplicates": 0}
+            totals: dict[str, int | str] = {"inserted": 0, "duplicates": 0}
 
             sources = list(db.execute(select(NewsSource).where(NewsSource.is_active.is_(True))).scalars())
             from app.db.repositories.news_repository import NewsRepository
@@ -54,7 +54,7 @@ def fetch_news_task(self: Any) -> dict[str, int | str]:
             repo = NewsRepository(db)
             for source in sources:
                 result = service.ingest_source(source, repo)
-                totals["inserted"] += result.inserted
-                totals["duplicates"] += result.duplicates
+                totals["inserted"] = cast(int, totals["inserted"]) + result.inserted
+                totals["duplicates"] = cast(int, totals["duplicates"]) + result.duplicates
 
             return totals

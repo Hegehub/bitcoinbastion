@@ -53,10 +53,13 @@ class SignalEngine:
 
         tip_height = self._payload_int(raw_payload, "tip_height", default=max(1, int(event.block_height or 0) + 1))
         headers_height = self._payload_int(raw_payload, "headers_height", default=tip_height)
-        provider_tip_height = self._payload_int(raw_payload, "provider_tip_height", default=0) or None
+        provider_tip_height: int | None = self._payload_int(raw_payload, "provider_tip_height", default=0) or None
         provider_confidence = self._payload_float(raw_payload, "provider_confidence", default=0.0) or None
-        provider_data_age_seconds = self._payload_int(raw_payload, "provider_data_age_seconds", default=-1)
-        provider_data_age_seconds = provider_data_age_seconds if provider_data_age_seconds >= 0 else None
+        provider_data_age_seconds: int | None = self._payload_int(
+            raw_payload, "provider_data_age_seconds", default=-1
+        )
+        if provider_data_age_seconds is not None and provider_data_age_seconds < 0:
+            provider_data_age_seconds = None
         chain_source = str(raw_payload.get("chain_state_source", "repository_fallback"))
 
         chain_state = ChainStateService().evaluate(

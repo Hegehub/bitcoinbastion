@@ -16,6 +16,7 @@ from app.services.admin.audit_service import AuditService
 from app.services.analytics.fee_service import FeeAnalyticsService
 from app.services.policy.policy_service import TreasuryPolicyService
 from app.services.blockchain.chain_state_service import ChainStateService
+from app.services.blockchain.chain_state_service import ChainStateEvaluation
 from app.services.explainability.contract import build_audit_packet
 
 
@@ -26,7 +27,12 @@ class TreasuryService:
         self.audit_service = AuditService(AuditRepository(repo.db))
 
     @staticmethod
-    def _chain_state_for_treasury(*, wallet_health_score: float, amount_sats: int, data_source: str = "repository_fallback"):
+    def _chain_state_for_treasury(
+        *,
+        wallet_health_score: float,
+        amount_sats: int,
+        data_source: str = "repository_fallback",
+    ) -> ChainStateEvaluation:
         observed = 900_000
         if amount_sats >= 10_000_000 or wallet_health_score < 50:
             tip = observed
