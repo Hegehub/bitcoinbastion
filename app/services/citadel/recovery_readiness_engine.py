@@ -3,6 +3,24 @@ from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecor
 
 class RecoveryReadinessEngine:
     @staticmethod
+    def _as_int(value: object, default: int = 0) -> int:
+        if isinstance(value, bool):
+            return default
+        if isinstance(value, int):
+            return value
+        if isinstance(value, float):
+            return int(value)
+        if isinstance(value, str) and value.strip().lstrip("-").isdigit():
+            return int(value)
+        return default
+
+    @staticmethod
+    def _as_str_list(value: object) -> list[str]:
+        if not isinstance(value, list):
+            return []
+        return [str(item) for item in value]
+
+    @staticmethod
     def _score_from_summary(value: object) -> float:
         if isinstance(value, (int, float)):
             return float(value)
@@ -10,10 +28,16 @@ class RecoveryReadinessEngine:
 
     @staticmethod
     def _build_recovery_slo(*, artifact_summary: dict[str, object], readiness_score: float, confidence: float) -> dict[str, object]:
-        required_count = int(artifact_summary.get("required_count", 0) or 0)
-        verified_required = int(artifact_summary.get("verified_required_count", 0) or 0)
-        stale_required_labels = list(artifact_summary.get("stale_required_labels", []))
-        missing_required_labels = list(artifact_summary.get("missing_required_labels", []))
+        required_count = RecoveryReadinessEngine._as_int(artifact_summary.get("required_count", 0), 0)
+        verified_required = RecoveryReadinessEngine._as_int(
+            artifact_summary.get("verified_required_count", 0), 0
+        )
+        stale_required_labels = RecoveryReadinessEngine._as_str_list(
+            artifact_summary.get("stale_required_labels", [])
+        )
+        missing_required_labels = RecoveryReadinessEngine._as_str_list(
+            artifact_summary.get("missing_required_labels", [])
+        )
 
         stale_verification = len(stale_required_labels) > 0
         overdue_recovery_validation = len(missing_required_labels) > 0
@@ -97,19 +121,23 @@ class RecoveryReadinessEngine:
             warnings.append("High human dependency detected; recovery is operationally fragile.")
         if script_risk_score > 0.7:
             warnings.append("High script complexity risk detected; recovery path requires additional validation.")
-        if artifact_summary["missing_required_labels"]:
+        if RecoveryReadinessEngine._as_str_list(artifact_summary.get("missing_required_labels", [])):
             warnings.append("Required recovery artifacts are not verified.")
         if artifact_summary.get("stale_required_labels"):
             warnings.append("Some required recovery artifacts are stale and require reverification.")
+        provenance = artifact_summary.get("provenance", [])
+        provenance_items = provenance if isinstance(provenance, list) else []
         fallback_required = [
             item
-            for item in artifact_summary.get("provenance", [])
-            if item.get("required_for_recovery") and item.get("source_type") in {"fallback", "synthetic", "unknown"}
+            for item in provenance_items
+            if isinstance(item, dict)
+            and item.get("required_for_recovery")
+            and item.get("source_type") in {"fallback", "synthetic", "unknown"}
         ]
         if fallback_required:
             warnings.append("Recovery readiness includes fallback/synthetic required artifacts; confidence is reduced.")
 
-        confidence = float(artifact_summary.get("confidence", 0.0) or 0.0)
+        confidence = self._score_from_summary(artifact_summary.get("confidence", 0.0))
         recovery_slo = self._build_recovery_slo(
             artifact_summary=artifact_summary,
             readiness_score=score,

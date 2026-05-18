@@ -59,7 +59,6 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = [
-  "app.services.citadel.recovery_readiness_engine",
   "app.services.citadel.disaster_simulation_service",
   "app.services.treasury.treasury_service",
   "app.services.citadel.citadel_assessment_service",
