@@ -6,6 +6,27 @@ from app.services.script.script_analyzer_service import ScriptAnalyzerService
 
 class RepairPlanService:
     @staticmethod
+    def _as_float(value: object, *, default: float = 0.0) -> float:
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            try:
+                return float(value)
+            except ValueError:
+                return default
+        return default
+
+    @staticmethod
+    def _as_dict(value: object) -> dict[str, object]:
+        return value if isinstance(value, dict) else {}
+
+    @staticmethod
+    def _as_str_list(value: object) -> list[str]:
+        if not isinstance(value, list):
+            return []
+        return [str(item) for item in value]
+
+    @staticmethod
     def _item(
         *,
         priority: int,
@@ -58,13 +79,13 @@ class RepairPlanService:
             has_instructions=not any("instructions" in warning.lower() for warning in recovery.warnings),
             human_dependency_score=recovery.human_dependency_score,
             descriptor_available=descriptor_profile.has_descriptor,
-            artifact_completeness_score=float(recovery.artifact_summary.get("completeness_score", 0.0)),
+            artifact_completeness_score=self._as_float(recovery.artifact_summary.get("completeness_score", 0.0)),
             verification_freshness_score=max(
                 0.0,
                 1.0
                 - (
-                    float(recovery.artifact_summary.get("freshness", {}).get("stale_required_count", 0.0))
-                    / max(1.0, float(recovery.artifact_summary.get("freshness", {}).get("artifact_count", 1.0)))
+                    self._as_float(self._as_dict(recovery.artifact_summary.get("freshness", {})).get("stale_required_count", 0.0))
+                    / max(1.0, self._as_float(self._as_dict(recovery.artifact_summary.get("freshness", {})).get("artifact_count", 1.0), default=1.0))
                 ),
             ),
             emergency_contact_coverage=0.4,
@@ -83,7 +104,7 @@ class RepairPlanService:
                     dependency_area="recovery_artifacts",
                     expected_resilience_improvement="Increase deterministic recovery readiness and reduce custody loss risk.",
                     effort_estimate="4-8 hours",
-                    evidence=list(recovery.artifact_summary.get("missing_required_labels", [])),
+                    evidence=self._as_str_list(recovery.artifact_summary.get("missing_required_labels", [])),
                 )
             )
         if recovery.artifact_summary.get("stale_required_labels"):
@@ -96,11 +117,11 @@ class RepairPlanService:
                     dependency_area="verification_freshness",
                     expected_resilience_improvement="Reduce stale-proof risk and improve recovery confidence.",
                     effort_estimate="2-6 hours",
-                    evidence=list(recovery.artifact_summary.get("stale_required_labels", [])),
+                    evidence=self._as_str_list(recovery.artifact_summary.get("stale_required_labels", [])),
                 )
             )
 
-        for gap in inheritance.get("critical_gaps", []):
+        for gap in self._as_str_list(inheritance.get("critical_gaps", [])):
             area = "inheritance" if "inheritance" in gap.lower() else "descriptor" if "descriptor" in gap.lower() else "operations"
             items.append(
                 self._item(
@@ -143,7 +164,7 @@ class RepairPlanService:
                 )
             )
 
-        items.sort(key=lambda item: int(item["priority_score"]), reverse=True)
+        items.sort(key=lambda item: int(self._as_float(item["priority_score"], default=0.0)), reverse=True)
 
         return {
             "owner_id": owner_id,

@@ -214,3 +214,7 @@ For high-impact signals:
 
 ## RC audit linkage
 - Before promotion, attach `docs/FINAL_PRODUCTION_GAP_AUDIT.md` and release evidence artifact output from `python scripts/collect_release_evidence.py`.
+- Required evidence artifact set for full PRODUCTION RELEASE CANDIDATE declaration:
+  - `artifacts/release_evidence.json`
+  - `artifacts/postgres_migration_smoke.json`
+  - `artifacts/postgres_schema_parity.json`

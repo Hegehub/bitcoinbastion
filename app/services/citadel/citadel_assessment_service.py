@@ -1,6 +1,7 @@
 import json
 from datetime import UTC, datetime
 from dataclasses import dataclass
+from typing import Any, cast
 
 from app.core.config import get_settings
 from app.schemas.citadel import (
@@ -10,6 +11,7 @@ from app.schemas.citadel import (
     RecoveryArtifactOut,
     RecoveryReadinessOut,
 )
+from app.schemas.common import ExplainabilityOut
 from app.services.citadel.inheritance_verification_service import InheritanceVerificationService
 from app.services.citadel.policy_maturity_service import CitadelPolicyService
 from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecord
@@ -45,11 +47,11 @@ class CitadelAssessmentService:
         fee_exposure_score: float = 0.5
         wallet_health_score: float | None = None
         utxo_values_sats: list[int] | None = None
-        has_recent_health_report: bool = False,
-        backup_verified: bool | None = None,
-        recovery_instructions_verified: bool | None = None,
-        descriptor_verified: bool | None = None,
-        signer_count: int | None = None,
+        has_recent_health_report: bool = False
+        backup_verified: bool | None = None
+        recovery_instructions_verified: bool | None = None
+        descriptor_verified: bool | None = None
+        signer_count: int | None = None
         artifact_verification_age_days: int | None = None
         chain_tip_height: int | None = None
         chain_observed_height: int | None = None
@@ -88,6 +90,10 @@ class CitadelAssessmentService:
     @staticmethod
     def _as_object_list(value: object) -> list[object]:
         return value if isinstance(value, list) else []
+
+    @staticmethod
+    def _as_object_dict(value: object) -> dict[str, object]:
+        return value if isinstance(value, dict) else {}
 
     @staticmethod
     def _coverage_summary(
@@ -260,32 +266,32 @@ class CitadelAssessmentService:
             ),
             "inheritance": self._quality_meta(
                 source_type="synthetic",
-                freshness=str(inheritance.get("freshness", {}).get("source", "unknown")),
-                confidence=float(inheritance.get("confidence", 0.0)),
+                freshness=str(self._as_object_dict(inheritance.get("freshness", {})).get("source", "unknown")),
+                confidence=self._safe_float(inheritance.get("confidence", 0.0), default=0.0),
                 note="Current inheritance scoring includes owner-derived deterministic heuristics",
             ),
             "policy": self._quality_meta(
                 source_type="real" if context.wallet_health_score is not None else "fallback",
-                freshness=str(policy.get("freshness", {}).get("source", "unknown")),
-                confidence=float(policy.get("confidence", 0.0)),
+                freshness=str(self._as_object_dict(policy.get("freshness", {})).get("source", "unknown")),
+                confidence=self._safe_float(policy.get("confidence", 0.0), default=0.0),
                 note="Policy maturity uses runtime health score when available",
             ),
             "sovereignty_graph": self._quality_meta(
                 source_type="real" if context.descriptor_hint else "fallback",
-                freshness=str(graph.get("freshness", {}).get("source", "unknown")),
-                confidence=float(graph.get("confidence", 0.0)),
+                freshness=str(self._as_object_dict(graph.get("freshness", {})).get("source", "unknown")),
+                confidence=self._safe_float(graph.get("confidence", 0.0), default=0.0),
                 note="Topology is deterministic from wallet profile assumptions",
             ),
             "utxo": self._quality_meta(
-                source_type="fallback" if bool(utxo["analysis"].freshness.get("is_fallback")) else ("real" if context.utxo_values_sats else "fallback"),
+                source_type="fallback" if bool(cast(Any, utxo["analysis"]).freshness.get("is_fallback")) else ("real" if context.utxo_values_sats else "fallback"),
                 freshness="runtime_session",
-                confidence=0.78 if not bool(utxo["analysis"].freshness.get("is_fallback")) else 0.45,
+                confidence=0.78 if not bool(cast(Any, utxo["analysis"]).freshness.get("is_fallback")) else 0.45,
                 note="Uses fallback UTXO set when runtime values are absent",
             ),
             "mempool": self._quality_meta(
-                source_type="fallback" if bool(mempool["state"].freshness.get("is_fallback")) else "synthetic",
-                freshness=str(mempool["market"].freshness),
-                confidence=float(mempool["market"].confidence) * (0.75 if bool(mempool["state"].freshness.get("is_fallback")) else 1.0),
+                source_type="fallback" if bool(cast(Any, mempool["state"]).freshness.get("is_fallback")) else "synthetic",
+                freshness=str(cast(Any, mempool["market"]).freshness),
+                confidence=float(cast(Any, mempool["market"]).confidence) * (0.75 if bool(cast(Any, mempool["state"]).freshness.get("is_fallback")) else 1.0),
                 note="Mempool snapshot is synthesized from fee exposure context",
             ),
             "script": self._quality_meta(
@@ -440,6 +446,12 @@ class CitadelAssessmentService:
         utxo = self._utxo_signal(context=context)
         mempool = self._mempool_signal(context=context)
         script_descriptor = self._script_descriptor_signal(context=context)
+        recovery_freshness = self._as_object_dict(recovery.artifact_summary.get("freshness", {}))
+        script_model = cast(Any, script_descriptor["script"])
+        descriptor_model = cast(Any, script_descriptor["descriptor"])
+        utxo_analysis = cast(Any, utxo["analysis"])
+        mempool_state = cast(Any, mempool["state"])
+        mempool_market = cast(Any, mempool["market"])
         inheritance = InheritanceVerificationService().evaluate(
             owner_id=owner_id,
             recovery_readiness_score=recovery.recovery_readiness_score,
@@ -455,20 +467,20 @@ class CitadelAssessmentService:
                 - min(
                     1.0,
                     self._safe_float(
-                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                        recovery_freshness.get("stale_required_count"), default=0.0
                     )
                     / max(
                         1.0,
                         self._safe_float(
-                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                            recovery_freshness.get("artifact_count"), default=1.0
                         ),
                     ),
                 )
             ),
             emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
-            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            recovery_path_complexity=max(0.0, min(1.0, script_model.complexity_score)),
             operational_readability_score=max(
-                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+                0.0, min(1.0, descriptor_model.completeness_score * 0.9)
             ),
         )
 
@@ -499,20 +511,20 @@ class CitadelAssessmentService:
                 - min(
                     1.0,
                     self._safe_float(
-                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                        recovery_freshness.get("stale_required_count"), default=0.0
                     )
                     / max(
                         1.0,
                         self._safe_float(
-                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                            recovery_freshness.get("artifact_count"), default=1.0
                         ),
                     ),
                 )
             ),
             emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
-            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            recovery_path_complexity=max(0.0, min(1.0, script_model.complexity_score)),
             operational_readability_score=max(
-                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+                0.0, min(1.0, descriptor_model.completeness_score * 0.9)
             ),
         )
 
@@ -543,20 +555,20 @@ class CitadelAssessmentService:
                 - min(
                     1.0,
                     self._safe_float(
-                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                        recovery_freshness.get("stale_required_count"), default=0.0
                     )
                     / max(
                         1.0,
                         self._safe_float(
-                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                            recovery_freshness.get("artifact_count"), default=1.0
                         ),
                     ),
                 )
             ),
             emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
-            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            recovery_path_complexity=max(0.0, min(1.0, script_model.complexity_score)),
             operational_readability_score=max(
-                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+                0.0, min(1.0, descriptor_model.completeness_score * 0.9)
             ),
         )
 
@@ -587,20 +599,20 @@ class CitadelAssessmentService:
                 - min(
                     1.0,
                     self._safe_float(
-                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                        recovery_freshness.get("stale_required_count"), default=0.0
                     )
                     / max(
                         1.0,
                         self._safe_float(
-                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                            recovery_freshness.get("artifact_count"), default=1.0
                         ),
                     ),
                 )
             ),
             emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
-            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            recovery_path_complexity=max(0.0, min(1.0, script_model.complexity_score)),
             operational_readability_score=max(
-                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+                0.0, min(1.0, descriptor_model.completeness_score * 0.9)
             ),
         )
 
@@ -631,20 +643,20 @@ class CitadelAssessmentService:
                 - min(
                     1.0,
                     self._safe_float(
-                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                        recovery_freshness.get("stale_required_count"), default=0.0
                     )
                     / max(
                         1.0,
                         self._safe_float(
-                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                            recovery_freshness.get("artifact_count"), default=1.0
                         ),
                     ),
                 )
             ),
             emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
-            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            recovery_path_complexity=max(0.0, min(1.0, script_model.complexity_score)),
             operational_readability_score=max(
-                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+                0.0, min(1.0, descriptor_model.completeness_score * 0.9)
             ),
         )
 
@@ -675,20 +687,20 @@ class CitadelAssessmentService:
                 - min(
                     1.0,
                     self._safe_float(
-                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                        recovery_freshness.get("stale_required_count"), default=0.0
                     )
                     / max(
                         1.0,
                         self._safe_float(
-                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                            recovery_freshness.get("artifact_count"), default=1.0
                         ),
                     ),
                 )
             ),
             emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
-            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            recovery_path_complexity=max(0.0, min(1.0, script_model.complexity_score)),
             operational_readability_score=max(
-                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+                0.0, min(1.0, descriptor_model.completeness_score * 0.9)
             ),
         )
 
@@ -719,20 +731,20 @@ class CitadelAssessmentService:
                 - min(
                     1.0,
                     self._safe_float(
-                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                        recovery_freshness.get("stale_required_count"), default=0.0
                     )
                     / max(
                         1.0,
                         self._safe_float(
-                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                            recovery_freshness.get("artifact_count"), default=1.0
                         ),
                     ),
                 )
             ),
             emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
-            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            recovery_path_complexity=max(0.0, min(1.0, script_model.complexity_score)),
             operational_readability_score=max(
-                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+                0.0, min(1.0, descriptor_model.completeness_score * 0.9)
             ),
         )
 
@@ -763,27 +775,27 @@ class CitadelAssessmentService:
                 - min(
                     1.0,
                     self._safe_float(
-                        recovery.artifact_summary.get("freshness", {}).get("stale_required_count"), default=0.0
+                        recovery_freshness.get("stale_required_count"), default=0.0
                     )
                     / max(
                         1.0,
                         self._safe_float(
-                            recovery.artifact_summary.get("freshness", {}).get("artifact_count"), default=1.0
+                            recovery_freshness.get("artifact_count"), default=1.0
                         ),
                     ),
                 )
             ),
             emergency_contact_coverage=0.7 if context.has_recent_health_report else 0.4,
-            recovery_path_complexity=max(0.0, min(1.0, script_descriptor["script"].complexity_score)),
+            recovery_path_complexity=max(0.0, min(1.0, script_model.complexity_score)),
             operational_readability_score=max(
-                0.0, min(1.0, script_descriptor["descriptor"].completeness_score * 0.9)
+                0.0, min(1.0, descriptor_model.completeness_score * 0.9)
             ),
         )
 
         spof_items = self._as_object_list(graph.get("single_points_of_failure", []))
         spof_count = len(spof_items)
         descriptor_completeness_score_100 = self._clamp_percent(
-            script_descriptor["descriptor"].completeness_score * 100
+            descriptor_model.completeness_score * 100
         )
         descriptor_gap_penalty = max(0.0, (100.0 - descriptor_completeness_score_100) * 0.18)
         custody = self._clamp_percent(
@@ -791,7 +803,7 @@ class CitadelAssessmentService:
                 25.0,
                 78.0
                 - (spof_count * 12.0)
-                - (utxo["fragmentation_score_100"] * 0.2)
+                - (self._safe_float(utxo.get("fragmentation_score_100"), default=0.0) * 0.2)
                 - descriptor_gap_penalty,
             )
         )
@@ -811,24 +823,24 @@ class CitadelAssessmentService:
             45.0
             + (inheritance_score_100 * 0.35)
             + (policy_maturity * 0.2)
-            - (script_descriptor["script"].complexity_score * 12)
+            - (script_model.complexity_score * 12)
         )
         treasury = self._clamp_percent(48.0 + (policy_maturity * 0.3) + (recovery_score_100 * 0.22))
         fee_survivability = self._clamp_percent(
             50.0
             + (recovery_score_100 * 0.3)
             + (inheritance_score_100 * 0.2)
-            - (utxo["high_fee_exposure_score_100"] * 0.25)
-            - (utxo["spend_complexity_score_100"] * 0.15)
-            - (utxo["liquidity_penalty_score_100"] * 0.2)
-            - (min(100.0, mempool["market"].high_fee_scenario_sat_vb) * 0.15)
+            - (self._safe_float(utxo.get("high_fee_exposure_score_100"), default=0.0) * 0.25)
+            - (self._safe_float(utxo.get("spend_complexity_score_100"), default=0.0) * 0.15)
+            - (self._safe_float(utxo.get("liquidity_penalty_score_100"), default=0.0) * 0.2)
+            - (min(100.0, mempool_market.high_fee_scenario_sat_vb) * 0.15)
             - (chain_reorg_penalty_100 * 0.45)
         )
         operational = self._clamp_percent(
             35.0
             + (recovery_score_100 * 0.45)
             + (policy_maturity * 0.2)
-            + (script_descriptor["descriptor"].completeness_score * 10)
+            + (descriptor_model.completeness_score * 10)
             - chain_operational_penalty_100
         )
 
@@ -872,11 +884,11 @@ class CitadelAssessmentService:
             )
 
         recommendations = ["Verify backup artifacts and refresh recovery drills quarterly."]
-        if utxo["fragmentation_score_100"] > 60:
+        if self._safe_float(utxo.get("fragmentation_score_100"), default=0.0) > 60:
             recommendations.append(
                 "Prioritize UTXO consolidation window planning to reduce fragmentation drag."
             )
-        if utxo["spend_complexity_score_100"] > 60:
+        if self._safe_float(utxo.get("spend_complexity_score_100"), default=0.0) > 60:
             recommendations.append(
                 "Reduce spend-path input complexity to improve high-fee survivability."
             )
@@ -909,7 +921,7 @@ class CitadelAssessmentService:
                     detail="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON is set but invalid; defaults were used.",
                 )
             )
-        if utxo["dust_ratio_100"] > 20:
+        if self._safe_float(utxo.get("dust_ratio_100"), default=0.0) > 20:
             warnings.append(
                 CitadelFindingOut(
                     title="Elevated UTXO dust ratio",
@@ -918,7 +930,7 @@ class CitadelAssessmentService:
                     detail="Dust-heavy UTXO distribution may reduce fee survivability during stress windows.",
                 )
             )
-        if utxo["spend_complexity_score_100"] > 70:
+        if self._safe_float(utxo.get("spend_complexity_score_100"), default=0.0) > 70:
             warnings.append(
                 CitadelFindingOut(
                     title="Elevated UTXO spend complexity",
@@ -936,7 +948,7 @@ class CitadelAssessmentService:
                     detail="CITADEL_SCORE_WEIGHTS_JSON is set but invalid; defaults were used.",
                 )
             )
-        if script_descriptor["script"].risk_level == "high":
+        if script_model.risk_level == "high":
             warnings.append(
                 CitadelFindingOut(
                     title="High script complexity risk",
@@ -972,7 +984,7 @@ class CitadelAssessmentService:
                     detail="Descriptor assumptions are weak; deterministic recovery guarantees are not met.",
                 )
             )
-        for item in script_descriptor["descriptor"].warnings:
+        for item in descriptor_model.warnings:
             warnings.append(
                 CitadelFindingOut(
                     title="Descriptor readiness gap",
@@ -1047,7 +1059,7 @@ class CitadelAssessmentService:
             audit_packets.append(
                 build_audit_packet(
                     packet_type="recovery_failure",
-                    evidence_refs=list(recovery.artifact_summary.get("missing_required_labels", [])),
+                    evidence_refs=[str(item) for item in self._as_object_list(recovery.artifact_summary.get("missing_required_labels", []))],
                     source_quality={"source_type": "runtime", "is_fallback": True, "freshness": recovery.freshness},
                     confidence=float(recovery.confidence),
                     transformations=["recovery_artifact_summarization", "recovery_readiness_scoring"],
@@ -1104,7 +1116,7 @@ class CitadelAssessmentService:
                 "high_fee_exposure_score_100": utxo["high_fee_exposure_score_100"],
                 "liquidity_penalty_score_100": utxo["liquidity_penalty_score_100"],
                 "wallet_profile": utxo["wallet_profile"],
-                "analysis": utxo["analysis"].model_dump(),
+                "analysis": utxo_analysis.model_dump(),
             },
             "chain_state": {
                 "finality_band": chain_state.finality_band,
@@ -1119,15 +1131,15 @@ class CitadelAssessmentService:
                 },
             },
             "mempool": {
-                "congestion_state": mempool["state"].congestion_state,
-                "suggested_fee_rate_sat_vb": mempool["market"].suggested_fee_rate_sat_vb,
-                "high_fee_scenario_sat_vb": mempool["market"].high_fee_scenario_sat_vb,
-                "confidence": mempool["market"].confidence,
-                "freshness": mempool["market"].freshness,
-                "explainability": mempool["market"].explainability,
+                "congestion_state": mempool_state.congestion_state,
+                "suggested_fee_rate_sat_vb": mempool_market.suggested_fee_rate_sat_vb,
+                "high_fee_scenario_sat_vb": mempool_market.high_fee_scenario_sat_vb,
+                "confidence": mempool_market.confidence,
+                "freshness": mempool_market.freshness,
+                "explainability": mempool_market.explainability,
             },
-            "script": script_descriptor["script"].model_dump(),
-                "descriptor_awareness": script_descriptor["descriptor"].model_dump(),
+            "script": script_model.model_dump(),
+                "descriptor_awareness": descriptor_model.model_dump(),
                 "descriptor_completeness_score_100": descriptor_completeness_score_100,
                 "descriptor_gap_penalty": round(descriptor_gap_penalty, 2),
             "scoring_weights": {
@@ -1235,7 +1247,7 @@ class CitadelAssessmentService:
             critical_findings=findings,
             warnings=warnings,
             recommendations=recommendations,
-            explainability=explainability_payload,
+            explainability=ExplainabilityOut.model_validate(explainability_payload),
             freshness=CitadelFreshnessOut(assessment_generated_at=now.isoformat()),
             generated_at=now,
             created_at=now,

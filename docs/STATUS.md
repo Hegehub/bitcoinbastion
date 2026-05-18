@@ -1,6 +1,6 @@
 # Status (docs truth audit)
 
-Audit date: **2026-05-16**
+Audit date: **2026-05-18**
 
 This document reflects repository state from code and tests, not roadmap targets.
 
@@ -40,8 +40,9 @@ This document reflects repository state from code and tests, not roadmap targets
 
 
 ## Production readiness rollup
-- Current audit rollup: **82%** readiness for production hardening (implementation-complete with explicit blockers).
-- Remaining blockers are tracked in `docs/FINAL_AUDIT_P6-01.md`.
+- Current audit rollup: **89%** readiness for production hardening.
+- Current release decision: **RC-ready pending environment evidence**.
+- Remaining blockers are tracked in `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.
 
 
 ### Migration and schema safety (P6-03)
@@ -60,7 +61,7 @@ This document reflects repository state from code and tests, not roadmap targets
 
 ## Final sovereignty-grade readiness declaration (P6-10)
 
-Assessment date: **2026-05-16**
+Assessment date: **2026-05-18**
 
 ### Final readiness matrix
 | Domain | Evidence summary | Readiness | Status |
@@ -76,7 +77,7 @@ Assessment date: **2026-05-16**
 | Documentation truthfulness | Status/readiness/runbook/contracts updated and docs truth checks present. | **90%** | IMPLEMENTED |
 
 ### Final weighted readiness
-- **Sovereignty-grade readiness: 83%** (evidence-based weighted rollup across the matrix above, adjusted for unresolved production-candidate blockers).
+- **Sovereignty-grade readiness: 89%** (evidence-based weighted rollup across the matrix above, adjusted for unresolved target-environment evidence blockers).
 - This is a governance and implementation readiness score, **not** a production SLO guarantee.
 
 ### Residual risks (explicit)
@@ -86,8 +87,8 @@ Assessment date: **2026-05-16**
 4. **Delivery runtime risk (BASELINE):** destination/provider behavior can degrade by environment despite retry/idempotency controls.
 
 ### Release decision
-- **Final decision (P7-06): PRE-RC / PRODUCTION-ORIENTED BETA.**
-- Rationale: repository and test posture are strong, but full production-candidate declaration is blocked by unresolved realism/operational closures in protocol maturity, Citadel synthetic dependence, and environment-verified deployment evidence requirements.
+- **Final decision (P7-06): RC-ready pending environment evidence.**
+- Rationale: repository gates (`make lint`, docs truthfulness, contract tests, migration smoke) pass; promotion to full PRODUCTION RELEASE CANDIDATE remains blocked until target-environment evidence artifacts are attached.
 
 ### Next release tasks if full readiness is required
 - Close protocol-depth hardening for provider-grade corroboration workflows.
@@ -134,7 +135,8 @@ Assessment date: **2026-05-16**
 - Protocol corroboration hardening added: chain-state/mempool/utxo freshness now expose provider-count corroboration metadata, advisory flags, confidence adjustment, fallback markers, and operator guidance (`docs/PROTOCOL_CORROBORATION.md`).
 
 
-## Final RC readiness audit (2026-05-17)
-- **Decision:** PRE-RC / PRODUCTION-ORIENTED BETA.
-- **Blocking reason:** `make lint` fails on repository-wide mypy errors, so RC quality gate is not closed.
+## Final RC readiness audit (2026-05-18)
+- **Decision:** RC-ready pending environment evidence.
+- **Blocking reason:** target-environment evidence artifacts are not attached yet (`artifacts/release_evidence.json`, `artifacts/postgres_migration_smoke.json`, `artifacts/postgres_schema_parity.json`).
+- **Latest full verification:** `make lint`, `python -m pytest -q`, `make migration-smoke`, `make docs-truthfulness`, `make ci-release-gates` all PASS on 2026-05-18.
 - **Reference:** `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.

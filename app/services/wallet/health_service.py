@@ -1,8 +1,10 @@
 import json
 from datetime import UTC, datetime
+from typing import cast
 
 from app.db.models.wallet import WalletHealthReport
 from app.schemas.wallet import WalletHealthReportOut, WalletHealthRequest, WalletHealthResponse
+from app.schemas.common import ExplainabilityOut, FreshnessOut
 from app.services.script.descriptor_awareness_service import DescriptorAwarenessService
 from app.services.script.script_analyzer_service import ScriptAnalyzerService
 from app.services.utxo.utxo_analyzer_service import UTXOAnalyzerService
@@ -95,19 +97,21 @@ class WalletHealthService:
             ),
         }
 
+        confidence = cast(float, explainability["confidence"])
+
         return WalletHealthResponse(
             health_score=health,
             utxo_fragmentation_score=fragmentation,
             privacy_score=privacy,
             fee_exposure_score=fee_exposure,
             recommendations=recommendations,
-            confidence=explainability["confidence"],
-            explainability=explainability,
-            freshness={
+            confidence=confidence,
+            explainability=ExplainabilityOut.model_validate(explainability),
+            freshness=FreshnessOut.model_validate({
                 "computed_at": datetime.now(UTC).isoformat(),
                 "ttl_seconds": 300,
                 "is_stale": False,
-            },
+            }),
         )
 
     def to_report_out(self, report: WalletHealthReport) -> WalletHealthReportOut:
