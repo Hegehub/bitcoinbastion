@@ -33,7 +33,7 @@ class OnchainIngestionService:
                 event,
                 significance=score.significance,
                 confidence=score.confidence,
-                explainability=score.explainability,
+                explainability=self._normalize_explainability(score.explainability),
                 tags=score.tags,
             )
             signal = engine.from_onchain_event(model_event)
@@ -47,3 +47,13 @@ class OnchainIngestionService:
             )
 
         return signals
+
+    @staticmethod
+    def _normalize_explainability(payload: dict[str, object]) -> dict[str, float | str]:
+        normalized: dict[str, float | str] = {}
+        for key, value in payload.items():
+            if isinstance(value, (str, float)):
+                normalized[key] = value
+            elif isinstance(value, int) and not isinstance(value, bool):
+                normalized[key] = float(value)
+        return normalized
