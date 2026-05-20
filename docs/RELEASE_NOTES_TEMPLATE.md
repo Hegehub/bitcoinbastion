@@ -91,3 +91,15 @@ curl -fsS http://localhost:8000/metrics
 - [ ] `artifacts/release_evidence.json` attached
 - [ ] `artifacts/postgres_migration_smoke.json` attached
 - [ ] `artifacts/postgres_schema_parity.json` attached
+
+## GitOps Promotion Metadata
+- Environment path promoted from/to:
+- Image digest promoted:
+- Evidence gate checklist reference:
+- Production approval reference:
+- Rollback commit reference:
+
+## Kubernetes RC Certification References
+- KUBERNETES_RC_CERTIFICATION.md reviewed: 
+- FINAL_KUBERNETES_READINESS_MATRIX.md reviewed: 
+- OPERATOR_RUNBOOK_LOCK accepted: 

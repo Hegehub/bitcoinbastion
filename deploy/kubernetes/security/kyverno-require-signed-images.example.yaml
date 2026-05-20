@@ -1,0 +1,22 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: bitcoin-bastion-require-signed-images
+spec:
+  validationFailureAction: Audit
+  background: false
+  rules:
+    - name: verify-signed-images
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["bitcoin-bastion-prod"]
+      verifyImages:
+        - imageReferences:
+            - "ghcr.io/your-org/bitcoin-bastion*"
+          attestors:
+            - entries:
+                - keyless:
+                    issuer: "https://token.actions.githubusercontent.com"
+                    subjectRegExp: ".*"

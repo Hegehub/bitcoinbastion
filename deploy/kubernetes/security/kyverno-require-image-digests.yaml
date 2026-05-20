@@ -1,0 +1,20 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: bitcoin-bastion-require-image-digests
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: require-digest-pinned-images
+      match:
+        any:
+          - resources:
+              kinds: ["Deployment"]
+              namespaces: ["bitcoin-bastion-prod"]
+      validate:
+        message: "Production containers must use immutable image digests"
+        foreach:
+          - list: "request.object.spec.template.spec.containers"
+            pattern:
+              image: "*@sha256:*"

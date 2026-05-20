@@ -1,0 +1,54 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: bitcoin-bastion-alerts
+  namespace: bitcoin-bastion
+spec:
+  groups:
+    - name: bitcoin-bastion-runtime
+      rules:
+        - alert: BitcoinBastionApiDown
+          expr: up{job="bitcoin-bastion-api"} == 0
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "API target down"}
+        - alert: BitcoinBastionReadinessFailing
+          expr: avg_over_time(probe_success{job="bitcoin-bastion-ready"}[10m]) < 1
+          for: 10m
+          labels: {severity: warning}
+          annotations: {summary: "Readiness checks failing"}
+        - alert: BitcoinBastionDegradedMode
+          expr: bitcoin_bastion_degraded_mode_active > 0
+          for: 10m
+          labels: {severity: warning}
+          annotations: {summary: "Degraded mode active"}
+        - alert: BitcoinBastionProviderFallbackActive
+          expr: bitcoin_bastion_provider_fallback_active > 0
+          for: 10m
+          labels: {severity: warning}
+          annotations: {summary: "Provider fallback active"}
+        - alert: BitcoinBastionHighDeliveryFailureRate
+          expr: rate(bitcoin_bastion_delivery_failures_total[15m]) > 0.05
+          for: 15m
+          labels: {severity: warning}
+          annotations: {summary: "High delivery failure rate"}
+        - alert: BitcoinBastionUnresolvedCriticalRecoveryFindings
+          expr: bitcoin_bastion_unresolved_critical_findings > 0
+          for: 15m
+          labels: {severity: critical}
+          annotations: {summary: "Unresolved critical recovery findings"}
+        - alert: BitcoinBastionHighRuntimeSeverity
+          expr: bitcoin_bastion_runtime_severity_score > 0.8
+          for: 10m
+          labels: {severity: critical}
+          annotations: {summary: "Runtime severity high"}
+        - alert: BitcoinBastionEvidenceJobFailure
+          expr: kube_job_status_failed{namespace="bitcoin-bastion",job_name=~"bitcoin-bastion-(release-evidence|postgres-migration-smoke|postgres-schema-parity).*"} > 0
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "Evidence job failed"}
+        - alert: BitcoinBastionCeleryBacklogHigh
+          expr: bitcoin_bastion_celery_queue_backlog > 100
+          for: 10m
+          labels: {severity: warning}
+          annotations: {summary: "Celery backlog high (if metric exists)"}

@@ -1,0 +1,25 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: bitcoin-bastion-require-standards
+spec:
+  validationFailureAction: Audit
+  rules:
+    - name: require-security-context
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["bitcoin-bastion"]
+      validate:
+        message: "Pods must run as non-root and drop all capabilities"
+        pattern:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+            containers:
+              - securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                      - ALL

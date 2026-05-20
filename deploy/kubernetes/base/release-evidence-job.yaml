@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-release-evidence
+  namespace: bitcoin-bastion
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app: bitcoin-bastion-release-evidence
+    spec:
+      serviceAccountName: bitcoin-bastion
+      restartPolicy: Never
+      containers:
+        - name: release-evidence
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          command: ["python", "scripts/collect_release_evidence.py", "--output", "/tmp/artifacts/release_evidence.json"]
+          envFrom:
+            - configMapRef: {name: bitcoin-bastion-config}
+            - secretRef: {name: bitcoin-bastion-secrets}
+          volumeMounts:
+            - name: artifacts
+              mountPath: /tmp/artifacts
+      volumes:
+        - name: artifacts
+          emptyDir: {}

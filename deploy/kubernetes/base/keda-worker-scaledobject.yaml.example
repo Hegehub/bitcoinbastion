@@ -1,0 +1,16 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: bitcoin-bastion-worker
+  namespace: bitcoin-bastion
+spec:
+  scaleTargetRef:
+    name: bitcoin-bastion-worker
+  minReplicaCount: 1
+  maxReplicaCount: 8
+  triggers:
+    - type: redis
+      metadata:
+        address: redis:6379
+        listName: celery
+        listLength: "10"

@@ -43,3 +43,6 @@ P0 code blockers are closed, but target-environment evidence closure is pending:
 - Repository verification gates are green end-to-end.
 - Target-environment evidence artifacts are still not attached in-repo.
 - **Decision lock:** `RC-ready pending environment evidence` (not full `PRODUCTION RELEASE CANDIDATE` yet).
+
+## Kubernetes RC certification addendum (2026-05-20)
+- Certification package added; blocker remains target-environment evidence attachment.

@@ -1,0 +1,10 @@
+route:
+  receiver: non-urgent
+  group_by: [alertname, namespace]
+  routes:
+    - matchers: [severity="critical"]
+      receiver: urgent
+    - matchers: [team="provider"]
+      receiver: operations
+    - matchers: [team="release"]
+      receiver: release

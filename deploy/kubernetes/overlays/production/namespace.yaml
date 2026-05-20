@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bitcoin-bastion-prod
+  labels:
+    app.kubernetes.io/name: bitcoin-bastion
+    app.kubernetes.io/environment: production

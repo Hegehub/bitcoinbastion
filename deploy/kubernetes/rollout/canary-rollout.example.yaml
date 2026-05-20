@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: bitcoin-bastion-api
+  namespace: bitcoin-bastion
+spec:
+  replicas: 2
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: {duration: 120s}
+        - analysis:
+            templates:
+              - templateName: bitcoin-bastion-runtime-analysis
+        - setWeight: 50
+        - pause: {duration: 300s}
+        - setWeight: 100

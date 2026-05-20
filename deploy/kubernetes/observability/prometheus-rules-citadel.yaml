@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata: {name: bitcoin-bastion-citadel, namespace: bitcoin-bastion}
+spec:
+  groups:
+    - name: citadel
+      rules:
+        - alert: CitadelRuntimeHealthDegraded
+          expr: bitcoin_bastion_citadel_runtime_health < 0.7
+          for: 15m
+          labels: {severity: warning}
+        - alert: UnresolvedCriticalRecoveryFindings
+          expr: bitcoin_bastion_unresolved_critical_findings > 0
+          for: 15m
+          labels: {severity: critical}

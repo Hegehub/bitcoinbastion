@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-recovery-slo-drill
+  namespace: bitcoin-bastion
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: recovery-slo-drill
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          command: ["/bin/sh","-c","echo recovery_slo_drill_start; curl -fsS http://bitcoin-bastion-api:8000/api/v1/admin/jobs/recovery-check || true; echo recovery_slo_drill_end"]

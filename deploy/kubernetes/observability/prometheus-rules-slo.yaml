@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata: {name: bitcoin-bastion-slo, namespace: bitcoin-bastion}
+spec:
+  groups:
+    - name: slo-internal
+      rules:
+        - alert: SLOApiAvailabilityLow
+          expr: avg_over_time(up{job="bitcoin-bastion-api"}[30m]) < 0.995
+          for: 15m
+          labels: {severity: warning}
+        - alert: SLOApiErrorBudgetFastBurn
+          expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(http_requests_total[5m])),1) > 0.05
+          for: 5m
+          labels: {severity: critical}
+        - alert: SLOApiErrorBudgetSlowBurn
+          expr: sum(rate(http_requests_total{status=~"5.."}[30m])) / clamp_min(sum(rate(http_requests_total[30m])),1) > 0.02
+          for: 30m
+          labels: {severity: warning}

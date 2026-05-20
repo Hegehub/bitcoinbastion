@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-provider-outage-drill
+  namespace: bitcoin-bastion
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: provider-drill
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          command: ["/bin/sh","-c","echo provider_outage_dry_run; curl -fsS http://bitcoin-bastion-api:8000/api/v1/observability/snapshot || true"]

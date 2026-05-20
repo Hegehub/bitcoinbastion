@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata: {name: bitcoin-bastion-runtime, namespace: bitcoin-bastion}
+spec:
+  groups:
+    - name: runtime
+      rules:
+        - alert: ApiPodDown
+          expr: up{job="bitcoin-bastion-api"} == 0
+          for: 5m
+          labels: {severity: critical}
+        - alert: RuntimeDegradedModeActive
+          expr: bitcoin_bastion_degraded_mode_active > 0
+          for: 10m
+          labels: {severity: warning}
