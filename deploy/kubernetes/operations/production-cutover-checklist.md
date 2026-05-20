@@ -1,0 +1,16 @@
+# Production cutover checklist
+- [ ] Image digest verified
+- [ ] SBOM generated
+- [ ] Vulnerability scan reviewed
+- [ ] Cosign signature verified (if enabled)
+- [ ] Migration job completed
+- [ ] PostgreSQL smoke passed
+- [ ] Schema parity passed
+- [ ] Release evidence generated
+- [ ] Health/readiness checks passed
+- [ ] Observability snapshot reviewed
+- [ ] Metrics scrape confirmed
+- [ ] Alert routing confirmed
+- [ ] Pre-cutover backup completed
+- [ ] Rollback plan confirmed
+- [ ] Operator sign-off recorded

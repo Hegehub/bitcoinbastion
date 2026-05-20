@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bitcoin-bastion-incident-webhook-example
+  namespace: bitcoin-bastion
+data:
+  payload-template.json: |
+    {"incident":"create","attach":["observability_snapshot","provider_health_summary","release_evidence_status","deployment_sha","rollback_notes"],"destructive_actions":false}

@@ -162,3 +162,44 @@ Kubernetes manifests improve deployment consistency but **do not alone satisfy R
 - [ ] `postgres-schema-parity-job` executed and artifact captured.
 - [ ] `release-evidence-job` executed and artifact captured.
 - [ ] All three blocker artifacts attached to release decision packet.
+
+### Sovereign Kubernetes runtime layer (P7-K8S-SOVEREIGN)
+- [ ] GitOps staging->production promotion flow is enforced and documented.
+- [ ] Production deployment changes happen through GitOps (manual kubectl only for emergency break-glass).
+- [ ] External Secrets integration configured for selected secret backend.
+- [ ] Kyverno guardrails active (audit/enforce per rollout plan).
+- [ ] Prometheus rules + Alertmanager routing validated in target environment.
+- [ ] Grafana runtime dashboard imported and verified.
+- [ ] Evidence archive job executed with checksum output.
+- [ ] Backup CronJob executed and restore drill performed in staging.
+- [ ] Provider/recovery/disaster drills executed and attached to release evidence.
+
+- [ ] Dedicated namespaces exist: `bitcoin-bastion-staging` and `bitcoin-bastion-prod`.
+
+- [ ] Supply-chain artifacts attached (SBOM, vulnerability report, provenance).
+- [ ] Production overlay images pinned to approved immutable digests.
+- [ ] Signed-image verification policy enabled (Audit/Enforce per rollout stage).
+
+- [ ] Runtime security checklist completed (`docs/KUBERNETES_RUNTIME_SECURITY.md`).
+- [ ] RBAC least-privilege service accounts bound and default SA unused.
+- [ ] Emergency lockdown NetworkPolicy validated in staging.
+
+- [ ] Production burn-in checklist completed and archived.
+- [ ] Production cutover checklist completed before traffic shift.
+- [ ] Operational sign-off template completed and attached.
+- [ ] Backup verification evidence attached pre-cutover.
+- [ ] Provider and delivery outage drills executed and evidence attached.
+- [ ] Internal SLO baseline accepted as operational target (not public SLA).
+
+- [ ] Observability validation job passed in target environment.
+- [ ] SLO/rule packs reviewed and alert routing tested.
+- [ ] Alert fatigue controls acknowledged and tuned per environment.
+
+- [ ] GitOps promotion gates satisfied for current release.
+- [ ] Production approval template completed and attached.
+- [ ] Drift check run and no unapproved production drift present.
+
+## Final Kubernetes RC certification lock
+- [ ] `docs/KUBERNETES_RC_CERTIFICATION.md` reviewed.
+- [ ] `docs/FINAL_KUBERNETES_READINESS_MATRIX.md` reviewed.
+- [ ] `docs/KUBERNETES_OPERATOR_RUNBOOK_LOCK.md` accepted by operators.

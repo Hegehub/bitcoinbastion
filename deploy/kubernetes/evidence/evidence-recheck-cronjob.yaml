@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-evidence-recheck
+  namespace: bitcoin-bastion
+spec:
+  schedule: "0 */4 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: evidence-recheck
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["/bin/sh","-c","set -eu; for f in release_evidence.json postgres_migration_smoke.json postgres_schema_parity.json; do test -s /evidence/$f; done; echo evidence_recheck_ok"]
+              volumeMounts:
+                - name: evidence
+                  mountPath: /evidence
+          volumes:
+            - name: evidence
+              emptyDir: {}

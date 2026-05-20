@@ -37,3 +37,27 @@ Current baseline uses native Secret references for compatibility. To adopt Exter
 1. Replace manually managed `bitcoin-bastion-secrets` with `ExternalSecret`.
 2. Keep env key names unchanged.
 3. Remove direct Secret creation from operator workflows.
+
+## Sovereign runtime control-plane extensions
+- `gitops/`: Argo CD application examples and promotion workflow notes.
+- `security/`: External Secrets and Kyverno policy-as-code examples.
+- `observability/`: Grafana dashboard, Prometheus rules, Alertmanager routing example.
+- `autoscaling/`: API HPA and optional KEDA worker autoscaling example.
+- `evidence/`: evidence verification and archive jobs.
+- `rollout/`: optional canary rollout examples.
+- `backup/`: PostgreSQL backup cron and restore job example.
+- `drills/`: disaster/provider/recovery drill manifests.
+
+- Namespaces: `bitcoin-bastion-staging` (staging overlay) and `bitcoin-bastion-prod` (production overlay).
+
+- Supply-chain security layer now includes signed-image and digest-pin policy examples in `deploy/kubernetes/security`.
+
+- Runtime security hardening assets are in `deploy/kubernetes/security` (RBAC, PSA labels, lockdown NP, Falco, secret-leakage scan, hardening notes).
+
+- Production operations layer is under `deploy/kubernetes/operations`.
+
+- Production observability/SLO/incident automation assets are under `deploy/kubernetes/observability`.
+
+- Multi-environment GitOps governance is under `deploy/kubernetes/gitops` (dev/staging/prod app topology, promotion gates, approval templates, drift checks).
+
+- Final certification artifacts: `FINAL_CHECKLIST.md`, `OPERATOR_RUNBOOK.md`, `RC_EVIDENCE_CHECKLIST.md`.

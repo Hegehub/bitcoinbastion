@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-database-restore-drill
+  namespace: bitcoin-bastion
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: restore-drill
+          image: postgres:16
+          command: ["/bin/sh","-c","set -eu; : \"${CONFIRM_RESTORE_DRILL:?}\"; test \"$CONFIRM_RESTORE_DRILL\" = "YES_I_ACKNOWLEDGE_DATA_RISK"; echo run restore into test DB only; echo run schema parity + sample query"]

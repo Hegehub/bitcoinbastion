@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-observability-validation
+  namespace: bitcoin-bastion
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: validate
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          command: ["/bin/sh","-c","set -eu; curl -fsS http://bitcoin-bastion-api:8000/metrics >/dev/null; curl -fsS http://bitcoin-bastion-api:8000/api/v1/observability/snapshot >/dev/null; echo observability_validation_ok"]

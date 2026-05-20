@@ -243,3 +243,51 @@ make k8s-status
 2. Verify job completion with `kubectl -n bitcoin-bastion get jobs`.
 3. Export artifacts from job pods into `artifacts/`.
 4. Attach artifacts to release sign-off packet.
+
+## 13) Sovereign Kubernetes control-plane operations
+
+### GitOps policy
+- Promote images by Git commit through staging first, then production.
+- Rollback primarily by Git revert and GitOps resync.
+- Avoid manual production `kubectl` changes except emergency break-glass.
+
+### Evidence and drills
+- Run `make k8s-run-evidence-archive` after evidence files exist.
+- Run drill jobs (`make k8s-run-provider-failure-drill`, `make k8s-run-recovery-slo-drill`) and archive logs.
+
+### Backup and restore
+- Trigger ad hoc backup with `make k8s-backup-now`.
+- Restore requires explicit acknowledgement via `CONFIRM_RESTORE=YES_I_ACKNOWLEDGE_DATA_RISK` and should be tested in staging first.
+
+- Namespace policy: staging runs in `bitcoin-bastion-staging`, production runs in `bitcoin-bastion-prod`.
+
+## 14) Supply-chain operations
+- Build/sign images through CI workflow `container-security.yml`.
+- Promote only digest-pinned images after staging evidence and security artifact review.
+- Verify signature before production promotion and archive provenance with release evidence.
+
+## 15) Runtime security operations
+- Keep incident-ready lockdown manifest prepared: `emergency-lockdown-networkpolicy.yaml`.
+- Use dedicated service accounts only; do not run workloads on default SA.
+- Run periodic secret leakage scan and cluster hardening checks (kube-bench/kube-score/polaris).
+
+## 16) Production operations layer
+- Use `deploy/kubernetes/operations/*` checklists for burn-in, cutover, and sign-off.
+- Execute backup verification before cutover and document checksum/size/timestamp.
+- Run provider and delivery outage dry-run drills to verify degraded/fallback and operator guidance paths.
+- Keep PITR and Redis recovery strategies reviewed and evidence-backed per release window.
+
+## 17) Observability and incident automation
+- Validate metrics and snapshot via `observability-validation-job.yaml` before release sign-off.
+- Use alert routing by severity/team and keep critical paging thresholds conservative.
+- Incident webhook automation must remain non-destructive unless explicitly approved.
+
+## 18) GitOps promotion governance
+- Promote dev -> staging -> production by digest PRs only.
+- Require evidence gate checklist before production sync.
+- Use rollback by Git revert, not mutable in-cluster edits.
+- Run drift checks regularly and after incidents.
+
+## 19) Runbook lock and RC certification
+- Follow locked sequence in `docs/KUBERNETES_OPERATOR_RUNBOOK_LOCK.md`.
+- RC promotion requires all entries in `deploy/kubernetes/RC_EVIDENCE_CHECKLIST.md`.

@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata: {name: bitcoin-bastion-provider, namespace: bitcoin-bastion}
+spec:
+  groups:
+    - name: provider
+      rules:
+        - alert: ProviderFallbackActive
+          expr: bitcoin_bastion_provider_fallback_active > 0
+          for: 10m
+          labels: {severity: warning}
+        - alert: ProviderConfidenceLow
+          expr: bitcoin_bastion_provider_confidence < 0.5
+          for: 15m
+          labels: {severity: warning}

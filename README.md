@@ -88,3 +88,7 @@ make docs-truthfulness
 
 
 - Final RC readiness audit: `docs/FINAL_PRODUCTION_GAP_AUDIT.md` (current decision is RC-ready pending environment evidence).
+
+
+## Kubernetes RC certification
+See `docs/KUBERNETES_RC_CERTIFICATION.md` and `docs/KUBERNETES_OPERATOR_RUNBOOK_LOCK.md` for final RC governance and operator command lock.

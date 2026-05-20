@@ -1,0 +1,59 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: bitcoin-bastion-deny-unsafe-containers
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: deny-privileged-root-escalation
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["bitcoin-bastion"]
+      validate:
+        message: "Privileged/root/escalating containers are not allowed"
+        pattern:
+          spec:
+            containers:
+              - securityContext:
+                  privileged: false
+                  runAsNonRoot: true
+                  allowPrivilegeEscalation: false
+    - name: deny-latest-prod-image-tag
+      match:
+        any:
+          - resources:
+              kinds: ["Deployment"]
+              namespaces: ["bitcoin-bastion"]
+      validate:
+        message: "Do not use mutable latest tag in production"
+        foreach:
+          - list: "request.object.spec.template.spec.containers"
+            deny:
+              conditions:
+                all:
+                  - key: "{{ request.namespace }}"
+                    operator: Equals
+                    value: "bitcoin-bastion"
+                  - key: "{{ element.image }}"
+                    operator: EndsWith
+                    value: ":latest"
+    - name: deny-secret-like-configmap-values
+      match:
+        any:
+          - resources:
+              kinds: ["ConfigMap"]
+              namespaces: ["bitcoin-bastion"]
+      validate:
+        message: "ConfigMaps must not contain obvious secret keys"
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.data.PASSWORD || '' }}"
+                operator: NotEquals
+                value: ""
+              - key: "{{ request.object.data.SECRET || '' }}"
+                operator: NotEquals
+                value: ""

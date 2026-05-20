@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: bitcoin-bastion-runtime-analysis
+  namespace: bitcoin-bastion
+spec:
+  metrics:
+    - name: health-live
+      successCondition: result[0] == 1
+      provider: {prometheus: {address: http://prometheus.monitoring.svc:9090, query: 'up{job="bitcoin-bastion-api"}'}}
+    - name: readiness
+      successCondition: result[0] >= 1
+      provider: {prometheus: {address: http://prometheus.monitoring.svc:9090, query: 'probe_success{job="bitcoin-bastion-ready"}'}}
+    - name: error-rate
+      successCondition: result[0] < 0.05
+      provider: {prometheus: {address: http://prometheus.monitoring.svc:9090, query: 'sum(rate(http_requests_total{status=~"5.."}[5m]))'}}
+    - name: runtime-severity
+      successCondition: result[0] < 0.8
+      provider: {prometheus: {address: http://prometheus.monitoring.svc:9090, query: 'bitcoin_bastion_runtime_severity_score'}}
+    - name: degraded-mode
+      successCondition: result[0] == 0
+      provider: {prometheus: {address: http://prometheus.monitoring.svc:9090, query: 'bitcoin_bastion_degraded_mode_active'}}
+    - name: provider-health
+      successCondition: result[0] >= 0.8
+      provider: {prometheus: {address: http://prometheus.monitoring.svc:9090, query: 'bitcoin_bastion_provider_confidence'}}

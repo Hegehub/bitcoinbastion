@@ -1,0 +1,6 @@
+receivers:
+  - name: urgent
+  - name: operations
+  - name: release
+  - name: non-urgent
+  - name: webhook

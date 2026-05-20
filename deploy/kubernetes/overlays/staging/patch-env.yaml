@@ -3,10 +3,13 @@ kind: Deployment
 metadata:
   name: bitcoin-bastion-api
 spec:
+  replicas: 2
   template:
     spec:
       containers:
         - name: api
+          image: ghcr.io/your-org/bitcoin-bastion@sha256:replace-with-approved-digest
+          resources: {requests: {cpu: 250m, memory: 512Mi}, limits: {cpu: "1", memory: "2Gi"}}
           env:
             - name: ENVIRONMENT
               value: "staging"
@@ -16,10 +19,13 @@ kind: Deployment
 metadata:
   name: bitcoin-bastion-worker
 spec:
+  replicas: 2
   template:
     spec:
       containers:
         - name: worker
+          image: ghcr.io/your-org/bitcoin-bastion@sha256:replace-with-approved-digest
+          resources: {requests: {cpu: 250m, memory: 512Mi}, limits: {cpu: "1", memory: "2Gi"}}
           env:
             - name: ENVIRONMENT
               value: "staging"
@@ -29,10 +35,21 @@ kind: Deployment
 metadata:
   name: bitcoin-bastion-beat
 spec:
+  replicas: 2
   template:
     spec:
       containers:
         - name: beat
+          image: ghcr.io/your-org/bitcoin-bastion@sha256:replace-with-approved-digest
+          resources: {requests: {cpu: 250m, memory: 512Mi}, limits: {cpu: "1", memory: "2Gi"}}
           env:
             - name: ENVIRONMENT
               value: "staging"
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata: {name: bitcoin-bastion}
+spec:
+  rules:
+    - host: bitcoin-bastion-staging.example.com

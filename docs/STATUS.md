@@ -148,3 +148,19 @@ Assessment date: **2026-05-18**
 - **Constraint**: no real secrets are committed; `secret.example.yaml` is template-only and intended for replacement by secret manager / External Secrets.
 - **IMPLEMENTED (2026-05-20)**: Kubernetes evidence jobs added for migration, postgres migration smoke, postgres schema parity, and release evidence artifact generation.
 - **IMPLEMENTED (2026-05-20)**: GitOps hardening examples added (ExternalSecret template, Kyverno policy template, API HPA, optional KEDA ScaledObject example).
+- **IMPLEMENTED (2026-05-20)**: sovereign Kubernetes control-plane layer added for GitOps examples, security policy-as-code examples, observability packs, autoscaling examples, evidence archive/verify jobs, rollout examples, backup/restore manifests, and drill jobs.
+- **BASELINE (2026-05-20)**: these manifests are templates/examples and require target-cluster validation evidence before they can close RC blockers.
+
+- **IMPLEMENTED (2026-05-20)**: namespace separation overlays added for `bitcoin-bastion-staging` and `bitcoin-bastion-prod`.
+
+- **IMPLEMENTED (2026-05-20)**: supply-chain layer scaffold added (SBOM, vulnerability scan, provenance workflow, Cosign signing flow, digest-pin admission policy examples).
+
+- **IMPLEMENTED (2026-05-20)**: runtime security and cluster hardening layer added (RBAC least privilege, PSA labels, egress restriction, emergency lockdown policy, Falco and hardening scan examples).
+
+- **IMPLEMENTED (2026-05-20)**: production operations layer added (burn-in/cutover/sign-off/SLO baseline, backup-restore validation, PITR and Redis strategy docs, provider/delivery outage drills, retention policy).
+
+- **IMPLEMENTED (2026-05-20)**: production observability/SLO/alerting/incident-automation layer added (dashboards, rule packs, routing examples, validation job, fatigue controls).
+
+- **IMPLEMENTED (2026-05-20)**: multi-environment GitOps promotion and release governance layer added (dev/staging/prod overlays, app-of-apps, promotion/rollback/override policies, drift check, approval template).
+
+- **IMPLEMENTED (2026-05-20)**: final Kubernetes RC certification docs, readiness matrix, and operator runbook lock added.

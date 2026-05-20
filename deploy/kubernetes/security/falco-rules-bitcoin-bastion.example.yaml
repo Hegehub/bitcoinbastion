@@ -1,0 +1,10 @@
+- rule: BitcoinBastion Unexpected Shell in Container
+  desc: Detect shell spawned in bastion containers
+  condition: container and k8s.ns.name startswith "bitcoin-bastion" and spawned_process and proc.name in (bash,sh)
+  output: "Unexpected shell in container (user=%user.name pod=%k8s.pod.name cmd=%proc.cmdline)"
+  priority: WARNING
+- rule: BitcoinBastion Write Below /app
+  desc: Detect write activity under app root for read-only expectations
+  condition: container and k8s.ns.name startswith "bitcoin-bastion" and open_write and fd.name startswith /app
+  output: "Write under /app (pod=%k8s.pod.name file=%fd.name cmd=%proc.cmdline)"
+  priority: WARNING

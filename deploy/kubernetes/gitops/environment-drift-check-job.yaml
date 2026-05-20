@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-gitops-drift-check
+  namespace: argocd
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: drift-check
+          image: argoproj/argocd:latest
+          command: ["/bin/sh","-c","argocd app diff bitcoin-bastion-dev || true; argocd app diff bitcoin-bastion-staging || true; argocd app diff bitcoin-bastion-production || true"]

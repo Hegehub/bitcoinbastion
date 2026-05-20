@@ -1,0 +1,9 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: {name: bitcoin-bastion-production, namespace: argocd}
+spec:
+  project: bitcoin-bastion
+  source: {repoURL: https://github.com/Hegehub/bitcoinbastion.git, targetRevision: main, path: deploy/kubernetes/overlays/production}
+  destination: {server: https://kubernetes.default.svc, namespace: bitcoin-bastion-prod}
+  syncPolicy:
+    syncOptions: [CreateNamespace=true]

@@ -1,0 +1,39 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: bitcoin-bastion-require-prod-guardrails
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: require-resource-limits
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["bitcoin-bastion"]
+      validate:
+        message: "Containers must set cpu/memory requests and limits"
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  requests:
+                    cpu: "?*"
+                    memory: "?*"
+                  limits:
+                    cpu: "?*"
+                    memory: "?*"
+    - name: require-seccomp-runtime-default
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["bitcoin-bastion"]
+      validate:
+        message: "Pods must use seccomp RuntimeDefault"
+        pattern:
+          spec:
+            securityContext:
+              seccompProfile:
+                type: RuntimeDefault
