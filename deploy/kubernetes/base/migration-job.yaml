@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-migration
+  namespace: bitcoin-bastion
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: bitcoin-bastion-migration
+    spec:
+      serviceAccountName: bitcoin-bastion
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migration
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c", "alembic upgrade head"]
+          envFrom:
+            - configMapRef:
+                name: bitcoin-bastion-config
+            - secretRef:
+                name: bitcoin-bastion-secrets
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {drop: ["ALL"]}
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

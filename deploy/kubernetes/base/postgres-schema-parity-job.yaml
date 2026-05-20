@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-postgres-schema-parity
+  namespace: bitcoin-bastion
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app: bitcoin-bastion-postgres-schema-parity
+    spec:
+      serviceAccountName: bitcoin-bastion
+      restartPolicy: Never
+      containers:
+        - name: postgres-schema-parity
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          command: ["python", "scripts/check_postgres_schema_parity.py", "--output-json", "/tmp/artifacts/postgres_schema_parity.json"]
+          envFrom:
+            - configMapRef: {name: bitcoin-bastion-config}
+            - secretRef: {name: bitcoin-bastion-secrets}
+          env:
+            - name: POSTGRES_TEST_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: bitcoin-bastion-secrets
+                  key: DATABASE_URL
+          volumeMounts:
+            - name: artifacts
+              mountPath: /tmp/artifacts
+      volumes:
+        - name: artifacts
+          emptyDir: {}

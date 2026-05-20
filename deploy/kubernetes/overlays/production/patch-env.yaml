@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-worker
+spec:
+  template:
+    spec:
+      containers:
+        - name: worker
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-beat
+spec:
+  template:
+    spec:
+      containers:
+        - name: beat
+          env:
+            - name: ENVIRONMENT
+              value: "production"

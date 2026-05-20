@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-recovery-drill
+  namespace: bitcoin-bastion
+spec:
+  schedule: "0 */6 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: recovery-drill
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.recovery_drill"]
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}

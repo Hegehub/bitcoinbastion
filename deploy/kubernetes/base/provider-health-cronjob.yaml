@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-provider-health
+  namespace: bitcoin-bastion
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: provider-health
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.provider_health"]
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}

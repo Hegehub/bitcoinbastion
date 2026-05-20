@@ -218,3 +218,28 @@ For high-impact signals:
   - `artifacts/release_evidence.json`
   - `artifacts/postgres_migration_smoke.json`
   - `artifacts/postgres_schema_parity.json`
+
+## 12) Kubernetes operations baseline
+
+### Render/apply workflow
+```bash
+make k8s-render-staging
+make k8s-render-production
+make k8s-apply-staging
+make k8s-apply-production
+make k8s-status
+```
+
+### Kubernetes-specific rollback guidance
+1. Identify last known-good overlay commit and image digest.
+2. Re-apply known-good configuration (`kubectl apply -k ...`).
+3. Validate API live/ready, recovery-check, and metrics endpoints.
+4. Capture `kubectl get` status evidence and incident notes.
+
+`make k8s-rollback-notes` prints the operator short checklist.
+
+### Kubernetes evidence jobs (RC closure)
+1. Run migration and evidence jobs.
+2. Verify job completion with `kubectl -n bitcoin-bastion get jobs`.
+3. Export artifacts from job pods into `artifacts/`.
+4. Attach artifacts to release sign-off packet.
