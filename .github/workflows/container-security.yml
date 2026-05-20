@@ -1,0 +1,83 @@
+name: container-security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  IMAGE_REF: ghcr.io/your-org/bitcoin-bastion:ci-${{ github.sha }}
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build container image
+        run: docker build -t "$IMAGE_REF" .
+
+      - name: Resolve image digest
+        run: |
+          mkdir -p artifacts
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE_REF" || true)
+          echo "IMAGE_DIGEST=$DIGEST" >> "$GITHUB_ENV"
+
+      - name: Generate SBOM (Syft SPDX JSON)
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.IMAGE_REF }}
+          format: spdx-json
+          output-file: artifacts/sbom.spdx.json
+
+      - name: Vulnerability scan (Trivy JSON)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ${{ env.IMAGE_REF }}
+          format: json
+          output: artifacts/vulnerability_report.json
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+
+      - name: pip-audit (python deps)
+        run: |
+          python -m pip install --upgrade pip pip-audit
+          pip-audit -r <(python -m pip freeze) -f json -o artifacts/pip_audit_report.json || true
+
+      - name: Generate provenance
+        run: |
+          cat > artifacts/provenance.json <<EOF
+          {
+            "git_sha": "${{ github.sha }}",
+            "workflow": "${{ github.workflow }}",
+            "run_id": "${{ github.run_id }}",
+            "image_ref": "${{ env.IMAGE_REF }}",
+            "image_digest": "${IMAGE_DIGEST:-unknown}",
+            "sbom": "artifacts/sbom.spdx.json",
+            "vulnerability_report": "artifacts/vulnerability_report.json",
+            "verification_command": "cosign verify --certificate-identity-regexp '.*' --certificate-oidc-issuer https://token.actions.githubusercontent.com <IMAGE@DIGEST>",
+            "timestamp_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.5.0
+
+      - name: Cosign keyless sign (OIDC)
+        if: github.event_name != 'pull_request'
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign --yes "$IMAGE_REF"
+
+      - name: Upload security artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-security-artifacts
+          path: artifacts/

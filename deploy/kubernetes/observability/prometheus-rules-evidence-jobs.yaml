@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata: {name: bitcoin-bastion-evidence-jobs, namespace: bitcoin-bastion}
+spec:
+  groups:
+    - name: evidence-jobs
+      rules:
+        - alert: EvidenceJobFailed
+          expr: kube_job_status_failed{namespace=~"bitcoin-bastion.*",job_name=~"bitcoin-bastion-(migration|postgres-migration-smoke|postgres-schema-parity|release-evidence|evidence-archive|backup-verification).*"} > 0
+          for: 5m
+          labels: {severity: critical}

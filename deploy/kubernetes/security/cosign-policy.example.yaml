@@ -1,0 +1,10 @@
+# Example policy profile (operator-owned, not a private key)
+cosign:
+  mode: keyless
+  oidc_issuer: https://token.actions.githubusercontent.com
+  subject_regexp: ".*github/workflows/container-security.yml.*"
+  key_ref_optional: "k8s://bitcoin-bastion-prod/cosign-public-key"
+  rotate_policy:
+    - keep previous trusted identity for overlap window
+    - update verifier policies
+    - verify old/new signatures during transition

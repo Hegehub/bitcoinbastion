@@ -32,3 +32,13 @@ python scripts/check_postgres_schema_parity.py --output-json artifacts/postgres_
 ## Commands
 - `python scripts/run_postgres_migration_smoke.py`
 - `python scripts/check_postgres_schema_parity.py`
+
+## Kubernetes job option
+For target-environment validation, run:
+
+```bash
+make k8s-run-postgres-migration-smoke
+make k8s-run-postgres-schema-parity
+```
+
+Then export artifacts from job pods into local `artifacts/` for release evidence attachment.

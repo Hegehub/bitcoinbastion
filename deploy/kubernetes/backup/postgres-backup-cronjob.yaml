@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-postgres-backup
+  namespace: bitcoin-bastion
+spec:
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: backup
+              image: postgres:16
+              command: ["/bin/sh","-c","set -eu; : \"${DATABASE_URL:?}\"; TS=$(date +%Y%m%d_%H%M%S); pg_dump \"${DATABASE_URL}\" > /backup/bitcoin_bastion_${TS}.sql; echo Backup complete"]
+              envFrom:
+                - secretRef: {name: bitcoin-bastion-secrets}
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+          volumes:
+            - name: backup
+              emptyDir: {}

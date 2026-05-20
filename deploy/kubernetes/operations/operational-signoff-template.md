@@ -1,0 +1,11 @@
+# Operational Sign-off Template
+- Operator name/role:
+- Date/time (UTC):
+- Environment:
+- Git SHA:
+- Image digest:
+- Evidence artifact refs:
+- Known limitations acknowledged (Y/N):
+- Rollback plan acknowledged (Y/N):
+- No-custody confirmation (Y/N):
+- Final decision: APPROVE / HOLD / ROLLBACK

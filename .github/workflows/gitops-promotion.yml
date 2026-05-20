@@ -1,0 +1,23 @@
+name: gitops-promotion-gates
+on:
+  pull_request:
+    paths:
+      - "deploy/kubernetes/overlays/**"
+      - "deploy/kubernetes/gitops/**"
+      - ".github/workflows/gitops-promotion.yml"
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        run: make lint
+      - name: Tests
+        run: python -m pytest -q
+      - name: Render dev/staging/production
+        run: |
+          kubectl kustomize deploy/kubernetes/overlays/dev >/dev/null
+          kubectl kustomize deploy/kubernetes/overlays/staging >/dev/null
+          kubectl kustomize deploy/kubernetes/overlays/production >/dev/null
+      - name: Check for immutable digests in prod overlay
+        run: rg -n "@sha256:" deploy/kubernetes/overlays/production/patch-env.yaml

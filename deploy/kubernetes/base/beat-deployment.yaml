@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-beat
+  namespace: bitcoin-bastion
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitcoin-bastion-beat
+  template:
+    metadata:
+      labels:
+        app: bitcoin-bastion-beat
+    spec:
+      serviceAccountName: bitcoin-bastion
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: beat
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "scripts/start_beat.sh"]
+          envFrom:
+            - configMapRef:
+                name: bitcoin-bastion-config
+            - secretRef:
+                name: bitcoin-bastion-secrets
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

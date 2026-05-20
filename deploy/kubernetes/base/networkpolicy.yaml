@@ -1,0 +1,79 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: bitcoin-bastion-default-deny
+  namespace: bitcoin-bastion
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress", "Egress"]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: bitcoin-bastion-api-ingress
+  namespace: bitcoin-bastion
+spec:
+  podSelector:
+    matchLabels:
+      app: bitcoin-bastion-api
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: bitcoin-bastion-prometheus-metrics
+  namespace: bitcoin-bastion
+spec:
+  podSelector:
+    matchLabels:
+      app: bitcoin-bastion-api
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: bitcoin-bastion-egress
+  namespace: bitcoin-bastion
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values: ["bitcoin-bastion-api", "bitcoin-bastion-worker", "bitcoin-bastion-beat"]
+  policyTypes: ["Egress"]
+  egress:
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 6379
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80

@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-disaster-recovery-drill
+  namespace: bitcoin-bastion
+spec:
+  schedule: "0 3 * * 1"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: dr-drill
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["/bin/sh","-c","echo disaster_recovery_drill_start; python scripts/collect_release_evidence.py --output /tmp/drill_release_evidence.json; echo disaster_recovery_drill_end"]

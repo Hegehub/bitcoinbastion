@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-postgres-restore
+  namespace: bitcoin-bastion
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: restore
+          image: postgres:16
+          command: ["/bin/sh","-c","set -eu; : \"${CONFIRM_RESTORE:?set CONFIRM_RESTORE=YES_I_ACKNOWLEDGE_DATA_RISK}\"; test \"${CONFIRM_RESTORE}\" = "YES_I_ACKNOWLEDGE_DATA_RISK"; : \"${DATABASE_URL:?}\"; : \"${RESTORE_FILE:?}\"; psql \"${DATABASE_URL}\" < \"${RESTORE_FILE}\"; echo Restore complete"]

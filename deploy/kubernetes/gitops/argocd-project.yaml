@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: bitcoin-bastion
+  namespace: argocd
+spec:
+  sourceRepos: ["https://github.com/Hegehub/bitcoinbastion.git"]
+  destinations:
+    - namespace: bitcoin-bastion-dev
+      server: https://kubernetes.default.svc
+    - namespace: bitcoin-bastion-staging
+      server: https://kubernetes.default.svc
+    - namespace: bitcoin-bastion-prod
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"

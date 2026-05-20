@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bitcoin-bastion-evidence-archive
+  namespace: bitcoin-bastion
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: archive
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          command: ["/bin/sh","-c","set -eu; for f in release_evidence.json postgres_migration_smoke.json postgres_schema_parity.json; do test -s /evidence/$f; done; tar -czf /archive/evidence_bundle.tgz -C /evidence .; sha256sum /archive/evidence_bundle.tgz; if [ -n \"${EVIDENCE_ARCHIVE_UPLOAD_URL:-}\" ]; then echo Optional upload enabled; fi"]
+          envFrom:
+            - configMapRef: {name: bitcoin-bastion-config}
+            - secretRef: {name: bitcoin-bastion-secrets}
+          volumeMounts:
+            - name: evidence
+              mountPath: /evidence
+            - name: archive
+              mountPath: /archive
+      volumes:
+        - name: evidence
+          emptyDir: {}
+        - name: archive
+          emptyDir: {}

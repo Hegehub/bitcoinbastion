@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-api
+spec:
+  template:
+    spec:
+      serviceAccountName: bitcoin-bastion-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-worker
+spec:
+  template:
+    spec:
+      serviceAccountName: bitcoin-bastion-worker
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-beat
+spec:
+  template:
+    spec:
+      serviceAccountName: bitcoin-bastion-beat
