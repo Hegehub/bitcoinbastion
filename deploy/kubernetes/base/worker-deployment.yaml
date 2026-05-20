@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-worker
+  namespace: bitcoin-bastion
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bitcoin-bastion-worker
+  template:
+    metadata:
+      labels:
+        app: bitcoin-bastion-worker
+    spec:
+      serviceAccountName: bitcoin-bastion
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: worker
+          image: ghcr.io/your-org/bitcoin-bastion:latest
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "scripts/start_worker.sh"]
+          envFrom:
+            - configMapRef:
+                name: bitcoin-bastion-config
+            - secretRef:
+                name: bitcoin-bastion-secrets
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 15"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

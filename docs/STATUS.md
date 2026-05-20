@@ -140,3 +140,11 @@ Assessment date: **2026-05-18**
 - **Blocking reason:** target-environment evidence artifacts are not attached yet (`artifacts/release_evidence.json`, `artifacts/postgres_migration_smoke.json`, `artifacts/postgres_schema_parity.json`).
 - **Latest full verification:** `make lint`, `python -m pytest -q`, `make migration-smoke`, `make docs-truthfulness`, `make ci-release-gates` all PASS on 2026-05-18.
 - **Reference:** `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.
+
+## Kubernetes deployment foundation status (2026-05-20)
+- **IMPLEMENTED**: baseline Kubernetes manifests exist under `deploy/kubernetes` for namespace, API/worker/beat deployments, service, ingress, network policy, PDB, and ServiceMonitor.
+- **IMPLEMENTED**: staging/production overlays exist with environment-specific patching.
+- **BASELINE**: manifests are not environment evidence; RC decision remains **RC-ready pending environment evidence** until target-cluster deployment artifacts are attached.
+- **Constraint**: no real secrets are committed; `secret.example.yaml` is template-only and intended for replacement by secret manager / External Secrets.
+- **IMPLEMENTED (2026-05-20)**: Kubernetes evidence jobs added for migration, postgres migration smoke, postgres schema parity, and release evidence artifact generation.
+- **IMPLEMENTED (2026-05-20)**: GitOps hardening examples added (ExternalSecret template, Kyverno policy template, API HPA, optional KEDA ScaledObject example).

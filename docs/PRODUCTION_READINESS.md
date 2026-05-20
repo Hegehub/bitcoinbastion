@@ -145,3 +145,20 @@ python -m pytest -q tests/contract/test_runtime_api_contracts.py tests/integrati
 - Decision: **RC-ready pending environment evidence** (2026-05-18).
 - Blocking gate: target-environment evidence artifacts not yet attached.
 - See: `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.
+
+## Kubernetes target-environment foundation (P7-K8S)
+- [ ] Kubernetes manifests rendered successfully (`make k8s-render-staging`, `make k8s-render-production`).
+- [ ] Kubernetes deployment evidence captured from target environment (`make k8s-status` output + health/readiness/metrics curls).
+- [ ] Secrets are provisioned from secret manager (no plaintext production credentials in git).
+- [ ] NetworkPolicy enforcement validated for API ingress, Prometheus metrics scrape, and Redis/PostgreSQL egress.
+- [ ] ServiceMonitor scrape verified in monitoring stack.
+- [ ] Rollback runbook includes overlay/image pin strategy (`make k8s-rollback-notes`).
+
+Kubernetes manifests improve deployment consistency but **do not alone satisfy RC promotion**. RC status remains tied to real environment evidence artifacts.
+
+### Kubernetes RC blocker closure evidence
+- [ ] `migration-job` executed successfully in target namespace.
+- [ ] `postgres-migration-smoke-job` executed and artifact captured.
+- [ ] `postgres-schema-parity-job` executed and artifact captured.
+- [ ] `release-evidence-job` executed and artifact captured.
+- [ ] All three blocker artifacts attached to release decision packet.

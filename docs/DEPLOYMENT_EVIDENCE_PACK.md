@@ -37,3 +37,19 @@ Some checks (observability snapshot, recovery-check, metrics scrape) require dep
   - `artifacts/postgres_migration_smoke.json`
   - `artifacts/postgres_schema_parity.json`
 - Include pass/fail summary and any accepted drift justification in release notes.
+
+## Kubernetes evidence capture workflow
+Use Kubernetes jobs to generate the RC blocker artifacts in-cluster:
+
+```bash
+make k8s-run-migration
+make k8s-run-postgres-migration-smoke
+make k8s-run-postgres-schema-parity
+make k8s-run-release-evidence
+make k8s-collect-evidence-artifacts
+```
+
+Expected in-cluster output files:
+- `/tmp/artifacts/release_evidence.json`
+- `/tmp/artifacts/postgres_migration_smoke.json`
+- `/tmp/artifacts/postgres_schema_parity.json`

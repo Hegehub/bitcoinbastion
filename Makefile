@@ -1,4 +1,4 @@
- .PHONY: install install-dev test test-contract test-integration test-unit lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence
+ .PHONY: install install-dev test test-contract test-integration test-unit lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence k8s-render-staging k8s-render-production k8s-apply-staging k8s-apply-production k8s-status k8s-rollback-notes k8s-run-migration k8s-run-postgres-migration-smoke k8s-run-postgres-schema-parity k8s-run-release-evidence k8s-collect-evidence-artifacts
 
 install:
 	python -m pip install -e .
@@ -106,3 +106,42 @@ postgres-schema-parity:
 
 release-evidence:
 	python scripts/collect_release_evidence.py
+
+
+k8s-render-staging:
+	kubectl kustomize deploy/kubernetes/overlays/staging
+
+k8s-render-production:
+	kubectl kustomize deploy/kubernetes/overlays/production
+
+k8s-apply-staging:
+	kubectl apply -k deploy/kubernetes/overlays/staging
+
+k8s-apply-production:
+	kubectl apply -k deploy/kubernetes/overlays/production
+
+k8s-status:
+	kubectl -n bitcoin-bastion get deploy,po,svc,ingress,pdb
+
+k8s-rollback-notes:
+	@echo "Rollback notes: pin last known-good image digest, re-apply previous overlay revision, and re-run health/readiness/recovery-check/metrics verification."
+
+
+k8s-run-migration:
+	kubectl -n bitcoin-bastion delete job bitcoin-bastion-migration --ignore-not-found
+	kubectl -n bitcoin-bastion apply -f deploy/kubernetes/base/migration-job.yaml
+
+k8s-run-postgres-migration-smoke:
+	kubectl -n bitcoin-bastion delete job bitcoin-bastion-postgres-migration-smoke --ignore-not-found
+	kubectl -n bitcoin-bastion apply -f deploy/kubernetes/base/postgres-migration-smoke-job.yaml
+
+k8s-run-postgres-schema-parity:
+	kubectl -n bitcoin-bastion delete job bitcoin-bastion-postgres-schema-parity --ignore-not-found
+	kubectl -n bitcoin-bastion apply -f deploy/kubernetes/base/postgres-schema-parity-job.yaml
+
+k8s-run-release-evidence:
+	kubectl -n bitcoin-bastion delete job bitcoin-bastion-release-evidence --ignore-not-found
+	kubectl -n bitcoin-bastion apply -f deploy/kubernetes/base/release-evidence-job.yaml
+
+k8s-collect-evidence-artifacts:
+	@echo "Collect artifacts via kubectl cp from completed job pods: release_evidence.json, postgres_migration_smoke.json, postgres_schema_parity.json"
