@@ -11,6 +11,7 @@ from app.db.models.signal import Signal
 from app.db.models.signal_link import SignalSourceLink
 from app.db.models.telegram import TelegramDeliveryLog
 from app.db.models.treasury import PolicyExecutionLog, PolicyRule, PsbtWorkflow, TreasuryPolicy, TreasuryRequest
+from app.db.models.bastion_trace import TraceEvidence, TraceReport, TraceSource, TraceSourceSnapshot, TraceWatchlistEntry
 from app.db.models.wallet import WalletHealthReport, WalletProfile
 from app.db.models.watched_entity import WatchedEntity
 
@@ -42,4 +43,9 @@ __all__ = [
     "PolicyExecutionLog",
     "DeliveryLog",
     "TelegramDeliveryLog",
+    "TraceReport",
+    "TraceEvidence",
+    "TraceSource",
+    "TraceSourceSnapshot",
+    "TraceWatchlistEntry",
 ]

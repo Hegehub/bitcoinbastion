@@ -88,6 +88,26 @@ These endpoints intentionally return direct schema payloads (not `ResponseEnvelo
 - `GET /api/v1/citadel/repair-plan`
 - `GET /api/v1/citadel/policy-checks`
 
+### Bastion Trace
+- `GET /api/v1/trace/address/{address}`
+- `GET /api/v1/trace/report/{report_id}`
+- `GET /api/v1/trace/report/{report_id}/evidence`
+- `GET /api/v1/trace/sources`
+- `GET /api/v1/trace/watchlist`
+- `POST /api/v1/trace/watchlist`
+
+- `GET /api/v1/trace/report/{report_id}/origin-passport`
+- `GET /api/v1/trace/report/{report_id}/source-summary`
+- `GET /api/v1/trace/report/{report_id}/provider-disagreement`
+- `GET /api/v1/trace/sources/{source_name}`
+- `GET /api/v1/trace/report/{report_id}/privacy-shield`
+- `GET /api/v1/trace/report/{report_id}/utxo-hygiene`
+- `GET /api/v1/trace/report/{report_id}/dust-radar`
+- `GET /api/v1/trace/report/{report_id}/counterparty-lens`
+- `POST /api/v1/trace/payment-context`
+- `POST /api/v1/trace/payment-intent/preview`
+- `POST /api/v1/trace/destination-review`
+- `GET /api/v1/trace/lite/{address}`
 ### Admin
 - `GET /api/v1/admin/status`
 - `GET /api/v1/admin/jobs`
@@ -126,3 +146,34 @@ Clients should treat these as source-quality markers and avoid strict assumption
 
 ## RC lock note
 - RC promotion remains blocked until quality gates in `docs/FINAL_PRODUCTION_GAP_AUDIT.md` are closed.
+
+
+## Bastion Trace
+Bastion Trace status: INITIAL BASELINE / NOT PRODUCTION-COMPLETE
+Advisory only; baseline scoring placeholder; no trusted external risk sources; no legal verdict; no consensus proof; no seed/private key intake; no Stratum/mining introduced.
+
+
+Trace address responses include `trace_dna`, `factor_contributions`, `confidence_ledger`, `score_breakdown`, and deterministic baseline reason codes.
+
+
+Bastion Trace: BASELINE SCORING + EVIDENCE RECEIPTS + ORIGIN/SOURCE BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+Business Tier is a capability profile, not billing enforcement. Business policy actions are operational recommendations, not legal verdicts. Business policy actions do not execute payments. Batch screening accepts only public Bitcoin addresses. Sensitive wallet material is rejected and not stored. Review Desk is for operator review, not automated enforcement. Proof packets are evidence bundles, not legal certificates. API-key scopes are placeholders unless auth infrastructure exists. Bastion Trace: BUSINESS TIER BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+Enterprise Tier is a capability profile, not billing enforcement. RBAC/SSO are placeholders unless connected to production auth/IdP. Legal Hold is operational metadata and not legal advice. Immutable Audit Log is append-only at application level unless WORM is configured. SIEM hooks are placeholders unless delivery infrastructure is configured. Retention auto-delete is disabled by default. Legal hold overrides retention. Enterprise proof packets are evidence bundles, not legal certificates. Bastion Trace: ENTERPRISE TIER GOVERNANCE BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+Bastion Trace is a module inside Bitcoin Bastion, not the whole platform. Citadel consumes Trace as a separate advisory contribution. Policy Bridge does not execute payments. Treasury Bridge does not sign or broadcast transactions. Register Bridge is advisory and does not auto-reject payments. Cross-domain evidence refs preserve auditability. Trace production calibration is still pending. Bastion Trace: PLATFORM INTEGRATION BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+Bastion Trace metrics use bounded labels only. Bitcoin addresses are never used as Prometheus labels. Trace status is operational and not a production calibration claim. Telegram commands are advisory and never request seed/private keys. Trace alerts are placeholders unless delivery infrastructure exists. Production alert delivery requires environment configuration. trace_production_calibrated remains false until real calibration evidence exists.
+
+
+## Bastion Trace contract reference
+See `docs/BASTION_TRACE_API.md` for route-level Bastion Trace status (implemented/baseline/placeholder), safety notes, and explicit not-implemented routes.
+
+
+## Public presentation APIs
+- `GET /api/v1/public/landing`
+- `GET /api/v1/public/status`
+- `GET /api/v1/public/roadmap`
+- `GET /api/v1/public/stats`
+- `GET /api/v1/public/features`
+- `GET /api/v1/public/trace/{report_id}/summary`

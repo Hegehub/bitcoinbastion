@@ -1,0 +1,3 @@
+import React from 'react'
+import Link from 'next/link'
+export function HeroSection(){return <section className='space-y-4'><h1 className='text-4xl font-bold'>Bitcoin Bastion</h1><p className='text-lg'>Sovereign Bitcoin infrastructure for risk, payments, treasury and evidence.</p><p>Analyze addresses, protect privacy, verify counterparties, manage treasury workflows and operate Bitcoin-first systems without custody, seed phrases or private keys.</p><div className='flex gap-3 flex-wrap'><Link href='/trace' className='border px-3 py-2 rounded'>Check Bitcoin Address</Link><Link href='/platform' className='border px-3 py-2 rounded'>Explore Platform</Link><Link href='/developers' className='border px-3 py-2 rounded'>Developer Docs</Link></div></section>}
