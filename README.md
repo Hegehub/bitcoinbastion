@@ -984,3 +984,99 @@ Bitcoin Bastion создаётся как основа для серьёзной
 
 ```
 ```
+
+
+## Bastion Trace
+Bastion Trace status: INITIAL BASELINE / NOT PRODUCTION-COMPLETE
+Advisory only; baseline scoring placeholder; no trusted external risk sources; no legal verdict; no consensus proof; no seed/private key intake; no Stratum/mining introduced.
+
+
+## Core documentation
+- docs/ARCHITECTURE.md
+- docs/API_CONTRACTS.md
+- docs/DOMAIN_MODELS.md
+- docs/PRODUCTION_READINESS.md
+- docs/STATUS.md
+- docs/BASTION_TRACE.md
+
+
+Bastion Trace: BASELINE SCORING IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+Weights are deterministic baseline defaults and not production-calibrated. Confidence measures evidence reliability, not safety. Provider disagreement reduces confidence. Privacy risk is separate from illicit-risk claims.
+
+
+Bastion Trace: BASELINE SCORING + EVIDENCE RECEIPTS + ORIGIN/SOURCE BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+
+Bastion Trace: BASELINE SCORING + EVIDENCE RECEIPTS + ORIGIN/SOURCE BASELINE + PRIVACY SHIELD BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+
+Bastion Trace: BASELINE SCORING + EVIDENCE RECEIPTS + ORIGIN/SOURCE BASELINE + PRIVACY SHIELD + COUNTERPARTY/PAYMENT CONTEXT BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+
+Bastion Trace: LITE PUBLIC ADDRESS CHECK BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+Business Tier is a capability profile, not billing enforcement. Business policy actions are operational recommendations, not legal verdicts. Business policy actions do not execute payments. Batch screening accepts only public Bitcoin addresses. Sensitive wallet material is rejected and not stored. Review Desk is for operator review, not automated enforcement. Proof packets are evidence bundles, not legal certificates. API-key scopes are placeholders unless auth infrastructure exists. Bastion Trace: BUSINESS TIER BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+Enterprise Tier is a capability profile, not billing enforcement. RBAC/SSO are placeholders unless connected to production auth/IdP. Legal Hold is operational metadata and not legal advice. Immutable Audit Log is append-only at application level unless WORM is configured. SIEM hooks are placeholders unless delivery infrastructure is configured. Retention auto-delete is disabled by default. Legal hold overrides retention. Enterprise proof packets are evidence bundles, not legal certificates. Bastion Trace: ENTERPRISE TIER GOVERNANCE BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+
+Bastion Trace is a module inside Bitcoin Bastion, not the whole platform. Citadel consumes Trace as a separate advisory contribution. Policy Bridge does not execute payments. Treasury Bridge does not sign or broadcast transactions. Register Bridge is advisory and does not auto-reject payments. Cross-domain evidence refs preserve auditability. Trace production calibration is still pending. Bastion Trace: PLATFORM INTEGRATION BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
+Bastion Trace metrics use bounded labels only. Bitcoin addresses are never used as Prometheus labels. Trace status is operational and not a production calibration claim. Telegram commands are advisory and never request seed/private keys. Trace alerts are placeholders unless delivery infrastructure exists. Production alert delivery requires environment configuration. trace_production_calibrated remains false until real calibration evidence exists.
+
+
+## Bastion Trace (module)
+
+Bastion Trace is a backend module inside Bitcoin Bastion for advisory public Bitcoin address analysis (risk/origin/privacy/context) with Lite/Pro/Business/Enterprise capability profiles.
+
+Safety posture:
+- no custody
+- no seed phrase/private key/wallet-file handling
+- no transaction signing or broadcasting
+- advisory only (not a legal verdict, not Bitcoin consensus proof)
+
+Reference docs:
+- `docs/BASTION_TRACE.md`
+- `docs/BASTION_TRACE_API.md`
+- `docs/BASTION_TRACE_DOMAIN_MODEL.md`
+- `docs/BASTION_TRACE_TIERS.md`
+- `docs/BASTION_TRACE_INTEGRATIONS.md`
+- `docs/BASTION_TRACE_OBSERVABILITY.md`
+- `docs/BASTION_TRACE_LIMITATIONS.md`
+
+
+## Public Website Backend Foundation
+
+Public-safe website backend APIs are available under `/api/v1/public/*` for landing, status, roadmap, feature catalog, stats, and Trace summary presentation. These APIs are advisory-only and do not expose internal evidence chains by default.
+
+
+## Frontend Foundation
+
+Frontend architecture/design-system foundation is baseline implemented under `frontend/` using presentation-safe APIs. No transaction signing and no seed/private-key handling exists in frontend. Placeholder sections are intentionally marked.
+
+
+Public website foundation implemented. Public pages are informational baseline and interactive workflows are still pending.
+
+
+Trace Lite frontend workflow is advisory-only, accepts only public Bitcoin addresses, rejects seed/private key material, and is baseline (not production-calibrated).
+
+Detailed Trace reports are advisory-only. Proof packets are evidence bundles and not legal certificates.
+
+Business UI is baseline.
+Enterprise UI is baseline/placeholder.
+Business decisions are not legal verdicts.
+Proof packets are not legal certificates.
+No payment is executed from Review Desk actions.
+Enterprise RBAC/SSO/SIEM require production configuration.
+
+Platform dashboard is informational and operational. Citadel outputs are advisory-only. Operations UI does not manage infrastructure directly. Kubernetes/GitOps panels are informational baseline. Deployment evidence may be incomplete or placeholder. Production calibration is still pending.
+
+Frontend hardening baseline completed.
+
+Security hardening baseline implemented. Rate limiting is baseline and should also exist at infrastructure level. Frontend does not accept seed phrases/private keys. CSP and security headers may require tuning in production. Production penetration testing not yet completed.
+
+Deployment manifests are baseline and require environment adaptation. Observability stack is baseline and requires tuning.
+
+Calibration framework baseline implemented. Production calibration evidence is still pending. Release gates are baseline governance controls. Deployment evidence registry may contain placeholders until staging validation occurs. Operational validation remains incomplete until real deployments are exercised.
+
+Repository stabilization baseline completed. Technical debt remains and is documented. Production validation is still pending.
+
+Repository: Release Candidate Baseline. Frontend: baseline stabilized. Backend: baseline hardened. Deployment: baseline prepared. Calibration: pending production validation. Security: hardened baseline, validation pending. Production readiness: NOT COMPLETE.

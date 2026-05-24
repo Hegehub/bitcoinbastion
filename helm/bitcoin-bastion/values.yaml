@@ -1,0 +1,4 @@
+replicaCount: 2
+image:
+  api: ghcr.io/hegehub/bitcoinbastion-api:latest
+  frontend: ghcr.io/hegehub/bitcoinbastion-frontend:latest

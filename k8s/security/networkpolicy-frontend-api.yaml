@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: frontend-to-api
+spec:
+  podSelector:
+    matchLabels: {app: api}
+  ingress:
+    - from:
+        - podSelector: {matchLabels: {app: frontend}}
+      ports:
+        - protocol: TCP
+          port: 8000
+  policyTypes: [Ingress]

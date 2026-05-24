@@ -46,3 +46,10 @@ P0 code blockers are closed, but target-environment evidence closure is pending:
 
 ## Kubernetes RC certification addendum (2026-05-20)
 - Certification package added; blocker remains target-environment evidence attachment.
+
+
+## Bastion Trace gap addendum
+- Bastion Trace is backend baseline, not production-calibrated.
+- Website UI is pending.
+- Production external source calibration is pending.
+- Production rate limiting/auth evidence is pending.
