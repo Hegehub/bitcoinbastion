@@ -1054,3 +1054,29 @@ Frontend architecture/design-system foundation is baseline implemented under `fr
 
 
 Public website foundation implemented. Public pages are informational baseline and interactive workflows are still pending.
+
+
+Trace Lite frontend workflow is advisory-only, accepts only public Bitcoin addresses, rejects seed/private key material, and is baseline (not production-calibrated).
+
+Detailed Trace reports are advisory-only. Proof packets are evidence bundles and not legal certificates.
+
+Business UI is baseline.
+Enterprise UI is baseline/placeholder.
+Business decisions are not legal verdicts.
+Proof packets are not legal certificates.
+No payment is executed from Review Desk actions.
+Enterprise RBAC/SSO/SIEM require production configuration.
+
+Platform dashboard is informational and operational. Citadel outputs are advisory-only. Operations UI does not manage infrastructure directly. Kubernetes/GitOps panels are informational baseline. Deployment evidence may be incomplete or placeholder. Production calibration is still pending.
+
+Frontend hardening baseline completed.
+
+Security hardening baseline implemented. Rate limiting is baseline and should also exist at infrastructure level. Frontend does not accept seed phrases/private keys. CSP and security headers may require tuning in production. Production penetration testing not yet completed.
+
+Deployment manifests are baseline and require environment adaptation. Observability stack is baseline and requires tuning.
+
+Calibration framework baseline implemented. Production calibration evidence is still pending. Release gates are baseline governance controls. Deployment evidence registry may contain placeholders until staging validation occurs. Operational validation remains incomplete until real deployments are exercised.
+
+Repository stabilization baseline completed. Technical debt remains and is documented. Production validation is still pending.
+
+Repository: Release Candidate Baseline. Frontend: baseline stabilized. Backend: baseline hardened. Deployment: baseline prepared. Calibration: pending production validation. Security: hardened baseline, validation pending. Production readiness: NOT COMPLETE.

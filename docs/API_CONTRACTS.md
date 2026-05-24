@@ -177,3 +177,9 @@ See `docs/BASTION_TRACE_API.md` for route-level Bastion Trace status (implemente
 - `GET /api/v1/public/stats`
 - `GET /api/v1/public/features`
 - `GET /api/v1/public/trace/{report_id}/summary`
+
+
+## API Envelope and Errors
+- Current envelope baseline: success/data for success responses; standardized `error` payload for failures from global handlers.
+- Stable error code targets: invalid_bitcoin_address, sensitive_wallet_material_not_accepted, report_not_found, proof_packet_not_found, unsupported_export_format, feature_placeholder, insufficient_evidence, rate_limited, backend_unavailable, validation_error, internal_error.
+- API versioning: `/api/v1` with backward-compatible additive changes preferred.

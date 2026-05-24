@@ -73,3 +73,6 @@ This document lists Bastion Trace routes implemented in `app/api/v1/trace.py`.
 - `400` invalid Bitcoin address/sensitive wallet material.
 - `404` report/event/source not found.
 - Placeholder/baseline features return advisory or limited outputs; do not imply production enforcement.
+
+
+Contract lock note: `/api/v1` frontend-facing DTOs are baseline-locked for critical routes; breaking changes require migration note and synchronized frontend type update.

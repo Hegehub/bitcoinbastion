@@ -1,0 +1,4 @@
+apiVersion: v2
+name: bitcoin-bastion
+version: 0.1.0
+description: Baseline placeholder chart for Bitcoin Bastion deployment.

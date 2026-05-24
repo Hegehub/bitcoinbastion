@@ -52,3 +52,86 @@ Explicit open gaps:
 
 
 Production frontend hardening is still pending.
+
+- Public endpoint rate limiting validation pending
+- Frontend production security review pending
+- No production UX telemetry validation yet
+- No production accessibility audit yet
+- Advanced Trace visualizations not implemented
+- No production calibration evidence yet
+
+Advanced graph visualization not implemented
+Production accessibility audit pending
+Frontend E2E coverage incomplete
+Timeline performance validation pending
+Proof packet signing/certification not implemented
+No production calibration evidence yet
+
+Business UI requires auth/rate-limit review
+Review Desk requires production user/role model
+Enterprise RBAC/SSO are placeholders unless configured
+SIEM delivery requires deployment configuration
+Audit immutability is application-level unless WORM/DB controls exist
+Legal Hold is operational metadata and not legal advice
+Frontend E2E tests still incomplete
+
+Operations dashboard is informational only
+No infrastructure mutation/control plane implemented
+Production deployment evidence incomplete
+Staging validation incomplete
+No production calibration evidence
+Runtime event scaling not validated
+Frontend E2E coverage incomplete
+
+Production accessibility audit pending or partially complete
+Production security review pending or partially complete
+E2E coverage baseline unless full suite exists
+CDN/CSP/WAF configuration pending
+Production telemetry/privacy review pending
+Backend calibration still pending
+Deployment evidence still pending
+
+API contracts baseline locked, not final external SLA
+OpenAPI should be reviewed before public API launch
+Automated TypeScript generation may be pending
+Auth/rate limiting still required for production public exposure
+Contract tests cover critical paths but not every future endpoint
+
+Penetration testing pending
+WAF/CDN deployment pending
+Infrastructure-level rate limiting pending
+Production TLS validation pending
+Production CSP tuning pending
+Full security review pending
+Third-party dependency audit pending
+
+Production cluster validation pending
+Load testing pending
+Production observability tuning pending
+Disaster recovery drills pending
+Penetration testing pending
+Secrets-management integration pending
+Production autoscaling validation pending
+
+No real production calibration evidence
+No production load testing evidence
+No real disaster recovery validation
+No production runtime metrics validation
+No penetration testing completion evidence
+No production deployment evidence yet
+
+Real staging validation pending
+Production deployment evidence pending
+Production load testing pending
+Penetration testing pending
+Accessibility certification pending
+Full operational drills pending
+Production calibration pending
+
+Production calibration incomplete
+No production load-testing evidence
+No penetration testing completion evidence
+No production deployment evidence
+No real disaster recovery drill evidence
+No accessibility certification
+No production operational metrics baseline

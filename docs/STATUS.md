@@ -34,3 +34,38 @@ Frontend UI Flows: PARTIAL / PLACEHOLDER
 
 Public website foundation implemented.
 Interactive workflows are still pending.
+
+- Public Address Check UX: BASELINE IMPLEMENTED
+- Trace Lite UX: BASELINE IMPLEMENTED
+- Advanced Trace UI: NOT IMPLEMENTED
+
+Detailed Trace Report UI: BASELINE IMPLEMENTED
+Proof Packet Viewer: BASELINE IMPLEMENTED
+Advanced Graph Intelligence UI: NOT IMPLEMENTED
+
+Business UI: BASELINE IMPLEMENTED
+Enterprise UI: BASELINE/PLACEHOLDER IMPLEMENTED
+
+Platform Dashboard UI: BASELINE IMPLEMENTED
+Operations Status UI: BASELINE IMPLEMENTED
+Infrastructure Control Plane: NOT IMPLEMENTED
+
+Frontend Hardening: BASELINE COMPLETED
+
+Security Hardening Baseline: IMPLEMENTED
+Production Security Validation: PENDING
+
+Kubernetes Deployment Baseline: IMPLEMENTED
+GitOps Structure: IMPLEMENTED
+Production Deployment Validation: PENDING
+
+Calibration Framework: IMPLEMENTED
+Release Candidate Gates: IMPLEMENTED
+Production Validation: PENDING
+
+Repository Stabilization: IMPLEMENTED
+Technical Debt Audit: IMPLEMENTED
+Production Validation: PENDING
+
+Repository: Release Candidate Baseline
+Production Readiness: NOT COMPLETE

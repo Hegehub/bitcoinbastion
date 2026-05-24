@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.errors import register_exception_handlers
-from app.api.middleware import RateLimitMiddleware, RequestIDMiddleware
+from app.api.middleware import RateLimitMiddleware, RequestIDMiddleware, RequestSizeLimitMiddleware, SecurityHeadersMiddleware
+from app.api.openapi import apply_openapi_defaults
 from app.api.v1.admin import router as admin_router
 from app.api.v1.citadel import router as citadel_router
 from app.api.v1.auth import router as auth_router
@@ -29,9 +31,13 @@ settings = get_settings()
 
 app = FastAPI(title=settings.app_name)
 app.add_middleware(RequestIDMiddleware)
+app.add_middleware(RequestSizeLimitMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:3000"], allow_credentials=False, allow_methods=["GET","POST","PATCH","OPTIONS"], allow_headers=["*"])
 app.add_middleware(RateLimitMiddleware)
 attach_metrics(app)
 register_exception_handlers(app)
+apply_openapi_defaults(app)
 
 app.include_router(health_router, prefix=settings.api_prefix)
 app.include_router(auth_router, prefix=settings.api_prefix)
