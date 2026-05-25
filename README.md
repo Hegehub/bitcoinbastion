@@ -1,4 +1,4 @@
-[Main README](README.md) · [README RU](README_RU.md) · [License](LICENSE) · [Certificate](CERTIFICATE.md)
+[Main README](README.md) · [License](LICENSE) · [Certificate](CERTIFICATE.md)
 # Bitcoin Bastion
 
 > **Bitcoin-first sovereign backend for evidence-driven market intelligence, operational resilience, and production-grade self-hosted deployment.**
