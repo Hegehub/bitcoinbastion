@@ -4,7 +4,7 @@
 > **Bitcoin-first sovereign backend for evidence-driven market intelligence, operational resilience, and production-grade self-hosted deployment.**
 
 - Website (Vercel): https://bitcoin-bastion.vercel.app
-- Primary domain: https://bitcoinbastion.org
+- Primary domain: https://bitcoinbastion.com
 - License: MNT (repo license file: MIT)
 
 ![Status](https://img.shields.io/badge/status-RC--ready%20pending%20environment%20evidence-orange)
