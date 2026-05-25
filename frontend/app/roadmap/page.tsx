@@ -1,6 +1,45 @@
-import React from 'react'
-import { PublicLayout } from '@/components/layout/PublicLayout';
-import { StatusBadge } from '@/components/ui/StatusBadge';
-import { SafetyBanner } from '@/components/public/SafetyBanner';
+'use client';
 
-export default function Page(){return <PublicLayout><h1 className='text-3xl font-bold'>Roadmap</h1><div className='my-2'><StatusBadge label='BASELINE'/><span className='ml-2'><StatusBadge label='NOT PRODUCTION-CALIBRATED'/></span></div><p>This module page is an informational shell for Bitcoin Bastion platform orientation.</p><h2 className='text-xl font-semibold mt-4'>What it does</h2><p>Provides advisory, evidence-oriented workflows for operators.</p><h2 className='text-xl font-semibold mt-4'>What it does not do</h2><p>No custody, no seed/private key handling, no transaction signing/broadcasting.</p><h2 className='text-xl font-semibold mt-4'>Limitations</h2><p>Baseline / placeholder coverage for interactive workflows.</p><SafetyBanner/></PublicLayout>}
+import { usePublicRoadmap } from '@/hooks/usePublicRoadmap';
+
+function Bucket({ title, items }: { title: string; items: string[] }) {
+  return (
+    <article className='bastion-card'>
+      <h2 className='text-xl font-heading'>{title}</h2>
+      <ul className='mt-3 list-disc space-y-1 pl-5 text-sm text-bb-graphite'>
+        {items.length ? items.map((i) => <li key={i}>{i}</li>) : <li>None reported.</li>}
+      </ul>
+    </article>
+  );
+}
+
+export default function RoadmapPage() {
+  const roadmap = usePublicRoadmap();
+  const data = roadmap.data;
+
+  return (
+    <div className='bastion-section'>
+      <div className='bastion-container space-y-6'>
+        <header>
+          <p className='bastion-eyebrow'>Roadmap</p>
+          <h1 className='mt-2 text-4xl font-heading'>Public Roadmap</h1>
+          <p className='mt-3 max-w-3xl text-bb-gray'>Status language reflects backend public roadmap outputs and should not be interpreted as blanket production certification.</p>
+        </header>
+
+        <section className='bastion-card'>
+          <p className='text-sm uppercase text-bb-gray'>Current phase</p>
+          <p className='mt-1 text-2xl font-heading'>{data?.current_phase ?? 'baseline'}</p>
+          {roadmap.isLoading && <p className='mt-2 text-sm text-bb-gray'>Loading roadmap signal…</p>}
+        </section>
+
+        <section className='grid gap-4 lg:grid-cols-2'>
+          <Bucket title='Implemented' items={data?.implemented ?? []} />
+          <Bucket title='Baseline' items={data?.baseline ?? []} />
+          <Bucket title='Placeholder' items={data?.placeholder ?? []} />
+          <Bucket title='Planned' items={data?.planned ?? []} />
+          <Bucket title='Not started' items={data?.not_started ?? []} />
+        </section>
+      </div>
+    </div>
+  );
+}

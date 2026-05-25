@@ -1,2 +1,75 @@
-@tailwind base;@tailwind components;@tailwind utilities;@import '../styles/tokens.css';
-body{background:var(--bg);color:var(--text)}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bb-orange: #f7931a;
+  --bb-orange-soft: #ffe8cc;
+  --bb-black: #0f1115;
+  --bb-graphite: #1f242d;
+  --bb-gray: #667085;
+  --bb-border: #e4e7ec;
+  --bb-bg: #ffffff;
+  --bb-bg-soft: #f8fafc;
+  --bb-success: #12b76a;
+  --bb-warning: #f79009;
+  --bb-danger: #d92d20;
+  --bb-node-blue: #2563eb;
+
+  --font-heading: 'Ubuntu Sans', Ubuntu, 'Segoe UI', Arial, sans-serif;
+  --font-body: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+
+  /* Backward-compatible aliases used by existing components */
+  --bg: var(--bb-bg);
+  --surface: #ffffff;
+  --text: var(--bb-black);
+  --muted: var(--bb-gray);
+  --accent: var(--bb-orange);
+  --danger: var(--bb-danger);
+}
+
+* {
+  border-color: var(--bb-border);
+}
+
+body {
+  background: var(--bb-bg);
+  color: var(--bb-black);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+@layer components {
+  .bastion-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .bastion-card {
+    @apply rounded-2xl border bg-white p-6 shadow-sm;
+  }
+
+  .bastion-section {
+    @apply py-12 sm:py-16 lg:py-20;
+  }
+
+  .bastion-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-bb-orange;
+  }
+
+  .bastion-gradient-grid {
+    background-color: var(--bb-bg-soft);
+    background-image: linear-gradient(to right, rgba(15, 17, 21, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(15, 17, 21, 0.04) 1px, transparent 1px),
+      radial-gradient(circle at 90% -10%, rgba(247, 147, 26, 0.2), transparent 32%);
+    background-size: 28px 28px, 28px 28px, auto;
+  }
+}

@@ -1,6 +1,63 @@
-import React from 'react'
-import { PublicLayout } from '@/components/layout/PublicLayout';
-import { StatusBadge } from '@/components/ui/StatusBadge';
-import { SafetyBanner } from '@/components/public/SafetyBanner';
+import Link from 'next/link';
+import { ProtocolModeSwitcher } from '@/components/interactive/ProtocolModeSwitcher';
+import { OfflineFirstDemoSimulator } from '@/components/interactive/OfflineFirstDemoSimulator';
 
-export default function Page(){return <PublicLayout><h1 className='text-3xl font-bold'>Developers</h1><div className='my-2'><StatusBadge label='BASELINE'/><span className='ml-2'><StatusBadge label='NOT PRODUCTION-CALIBRATED'/></span></div><p>This module page is an informational shell for Bitcoin Bastion platform orientation.</p><h2 className='text-xl font-semibold mt-4'>What it does</h2><p>Provides advisory, evidence-oriented workflows for operators.</p><h2 className='text-xl font-semibold mt-4'>What it does not do</h2><p>No custody, no seed/private key handling, no transaction signing/broadcasting.</p><h2 className='text-xl font-semibold mt-4'>Limitations</h2><p>Baseline / placeholder coverage for interactive workflows.</p><SafetyBanner/></PublicLayout>}
+const PUBLIC_ENDPOINTS = [
+  '/api/v1/public/landing',
+  '/api/v1/public/status',
+  '/api/v1/public/roadmap',
+  '/api/v1/public/stats',
+  '/api/v1/public/features',
+  '/api/v1/public/trace/{report_id}/summary',
+];
+
+export default function DevelopersPage() {
+  return (
+    <div className='bastion-section'>
+      <div className='bastion-container space-y-6'>
+        <header>
+          <p className='bastion-eyebrow'>Developers</p>
+          <h1 className='mt-2 text-4xl font-heading'>Build verifiable Bitcoin infrastructure interfaces</h1>
+          <p className='mt-3 max-w-3xl text-bb-gray'>
+            Build dashboards, safety workflows, and public-facing status experiences on top of Bitcoin Bastion public APIs.
+          </p>
+        </header>
+
+        <section className='bastion-card'>
+          <h2 className='text-xl font-heading'>API overview</h2>
+          <p className='mt-2 text-bb-gray'>Versioned FastAPI routes under `/api/v1` with advisory-safe public payloads.</p>
+          <ul className='mt-3 list-disc space-y-1 pl-5 text-sm'>
+            {PUBLIC_ENDPOINTS.map((e) => <li key={e} className='font-mono'>{e}</li>)}
+          </ul>
+        </section>
+
+        <section className='grid gap-4 lg:grid-cols-2'><ProtocolModeSwitcher /><OfflineFirstDemoSimulator /></section>
+
+        <section className='grid gap-4 md:grid-cols-2'>
+          <article className='bastion-card'>
+            <h3 className='font-heading text-lg'>Admin endpoints</h3>
+            <p className='mt-2 text-sm text-bb-gray'>Placeholder: admin APIs exist but are not part of public unauthenticated documentation.</p>
+          </article>
+          <article className='bastion-card'>
+            <h3 className='font-heading text-lg'>Evidence API direction</h3>
+            <p className='mt-2 text-sm text-bb-gray'>Evidence and explainability surfaces are being formalized with conservative public-safe contracts.</p>
+          </article>
+          <article className='bastion-card'>
+            <h3 className='font-heading text-lg'>Policy API direction</h3>
+            <p className='mt-2 text-sm text-bb-gray'>Policy endpoints are operator-facing and expected to retain explicit approval and audit constraints.</p>
+          </article>
+          <article className='bastion-card'>
+            <h3 className='font-heading text-lg'>Quick links</h3>
+            <div className='mt-3 flex flex-wrap gap-2 text-sm'>
+              <Link href='/developers/api' className='rounded border px-3 py-1'>API</Link>
+              <Link href='/developers/examples' className='rounded border px-3 py-1'>Examples</Link>
+              <Link href='/developers/webhooks' className='rounded border px-3 py-1'>Webhooks</Link>
+              <Link href='/developers/contributing' className='rounded border px-3 py-1'>Contributing</Link>
+              <Link href='/developers/changelog' className='rounded border px-3 py-1'>Changelog</Link>
+            </div>
+          </article>
+        </section>
+      </div>
+    </div>
+  );
+}
