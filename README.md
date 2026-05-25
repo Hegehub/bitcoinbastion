@@ -9,7 +9,7 @@
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688)
 ![Kubernetes](https://img.shields.io/badge/kubernetes-supported-326ce5)
-![License](https://img.shields.io/badge/license-TBD-lightgrey)
+![License](https:/)
 
 ---
 
