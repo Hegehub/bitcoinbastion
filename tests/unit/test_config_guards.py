@@ -33,9 +33,32 @@ def test_env_file_path_is_stable() -> None:
 
 def test_non_hs256_rejected_in_production() -> None:
     with pytest.raises(ValidationError):
-        Settings(ENVIRONMENT="prod", JWT_SECRET_KEY="bastion-prod-secret-that-is-long-and-random-2026", JWT_ALGORITHM="HS512")
+        Settings(
+            ENVIRONMENT="prod",
+            JWT_SECRET_KEY="bastion-prod-secret-that-is-long-and-random-2026",
+            JWT_ALGORITHM="HS512",
+        )
 
 
 def test_blank_issuer_rejected_in_production() -> None:
     with pytest.raises(ValidationError):
-        Settings(ENVIRONMENT="prod", JWT_SECRET_KEY="bastion-prod-secret-that-is-long-and-random-2026", JWT_ISSUER="")
+        Settings(
+            ENVIRONMENT="prod",
+            JWT_SECRET_KEY="bastion-prod-secret-that-is-long-and-random-2026",
+            JWT_ISSUER="",
+        )
+
+
+def test_cors_allow_origins_parses_comma_separated_values() -> None:
+    settings = Settings(CORS_ALLOW_ORIGINS="http://localhost:3000, https://bitcoinbastion.org")
+    assert settings.cors_allow_origins == ["http://localhost:3000", "https://bitcoinbastion.org"]
+
+
+def test_cors_allow_origins_defaults_when_blank() -> None:
+    settings = Settings(CORS_ALLOW_ORIGINS="")
+    assert settings.cors_allow_origins == ["http://localhost:3000"]
+
+
+def test_cors_wildcard_is_rejected() -> None:
+    with pytest.raises(ValidationError):
+        Settings(CORS_ALLOW_ORIGINS="*")
