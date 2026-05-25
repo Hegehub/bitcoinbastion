@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { BastionCommandPalette } from '@/components/interactive/BastionCommandPalette';
 
 const NAV_ITEMS = [
   { label: 'Products', href: '/platform' },
@@ -34,6 +35,7 @@ export function SiteHeader() {
         </nav>
 
         <div className='hidden items-center gap-3 lg:flex'>
+          <BastionCommandPalette />
           <Link href='/status' className='rounded-xl border border-bb-border px-3 py-2 text-sm font-medium'>
             View Status
           </Link>
@@ -41,6 +43,8 @@ export function SiteHeader() {
             Self-host Bitcoin Bastion
           </Link>
         </div>
+
+        <div className='lg:hidden'><BastionCommandPalette /></div>
 
         <button
           type='button'

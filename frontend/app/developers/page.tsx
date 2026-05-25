@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { ProtocolModeSwitcher } from '@/components/interactive/ProtocolModeSwitcher';
+import { OfflineFirstDemoSimulator } from '@/components/interactive/OfflineFirstDemoSimulator';
 
 const PUBLIC_ENDPOINTS = [
   '/api/v1/public/landing',
@@ -28,6 +30,8 @@ export default function DevelopersPage() {
             {PUBLIC_ENDPOINTS.map((e) => <li key={e} className='font-mono'>{e}</li>)}
           </ul>
         </section>
+
+        <section className='grid gap-4 lg:grid-cols-2'><ProtocolModeSwitcher /><OfflineFirstDemoSimulator /></section>
 
         <section className='grid gap-4 md:grid-cols-2'>
           <article className='bastion-card'>
