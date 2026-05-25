@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     app_name: str = Field(default="Bitcoin Bastion", alias="APP_NAME")
     environment: str = Field(default="dev", alias="ENVIRONMENT")
     api_prefix: str = Field(default="/api/v1", alias="API_PREFIX")
+
+
+    cors_allow_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:3000"], alias="CORS_ALLOW_ORIGINS"
+    )
 
     database_url: str = Field(
         default="sqlite+pysqlite:///./bitcoin_bastion.db", alias="DATABASE_URL"
@@ -57,8 +62,25 @@ class Settings(BaseSettings):
         default="", alias="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON"
     )
 
+
+    @field_validator("cors_allow_origins", mode="before")
+    @classmethod
+    def parse_cors_allow_origins(cls, value: object) -> list[str]:
+        if value is None:
+            return ["http://localhost:3000"]
+        if isinstance(value, str):
+            origins = [item.strip() for item in value.split(",") if item.strip()]
+            return origins or ["http://localhost:3000"]
+        if isinstance(value, (list, tuple, set)):
+            origins = [str(item).strip() for item in value if str(item).strip()]
+            return origins or ["http://localhost:3000"]
+        raise ValueError("CORS_ALLOW_ORIGINS must be a comma-separated string or list of origins.")
+
     @model_validator(mode="after")
     def validate_production_secret_guards(self) -> "Settings":
+        if "*" in self.cors_allow_origins:
+            raise ValueError("CORS_ALLOW_ORIGINS cannot include wildcard '*'.")
+
         if self.environment.lower() not in PRODUCTION_ENVIRONMENTS:
             return self
 
