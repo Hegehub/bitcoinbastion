@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from '../navigation/SiteHeader';
+import type { SiteLanguage } from '@/lib/i18n';
 
-export function SiteShell({ children }: { children: ReactNode }) {
+export function SiteShell({ children, language = 'en' }: { children: ReactNode; language?: SiteLanguage }) {
   return (
     <div className='min-h-screen bg-bb-bg text-bb-black'>
       <a
@@ -11,11 +12,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
-      <SiteHeader />
+      <SiteHeader language={language} />
       <main id='main-content' className='bastion-gradient-grid'>
         {children}
       </main>
-      <SiteFooter />
+      <SiteFooter language={language} />
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { cookies } from 'next/headers';
 import { SiteShell } from '@/components/layout/SiteShell';
 import { QueryProvider } from '@/components/providers/QueryProvider';
+import { getLanguageFromCookie, LANGUAGE_COOKIE_NAME } from '@/lib/i18n';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -28,11 +30,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const cookieStore = await cookies();
+  const language = getLanguageFromCookie(cookieStore.get(LANGUAGE_COOKIE_NAME)?.value);
+
   return (
-    <html lang='en'>
+    <html lang={language}>
       <body>
-        <QueryProvider><SiteShell>{children}</SiteShell></QueryProvider>
+        <QueryProvider><SiteShell language={language}>{children}</SiteShell></QueryProvider>
       </body>
     </html>
   );
