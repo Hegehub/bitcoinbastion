@@ -69,3 +69,21 @@ Production Validation: PENDING
 
 Repository: Release Candidate Baseline
 Production Readiness: NOT COMPLETE
+
+- News ingestion foundation added (RSS/public source pipeline, duplicate-candidate precheck, replay metadata).
+
+- Source Registry + YAML seed layer baseline implemented.
+
+- Source Health Layer + Provider Confidence Engine baseline implemented.
+
+- Deduplication & Clustering Engine baseline implemented.
+
+## Canonical News Event Engine
+- Added deterministic canonical event clustering service, event/article lineage tables, and read endpoints for event timelines.
+
+- Added BTC market data provider layer (multi-provider collection, aggregation, provider health API).
+
+- Added /api/v1/market/btc/context and /api/v1/market/providers/health via market provider layer v2.
+
+## BTC Candle Engine
+- Deterministic BTC candle generation from price points with integrity score, provider confidence, and rebuild metadata.
