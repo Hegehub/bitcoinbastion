@@ -8,9 +8,22 @@ Model list aligned to `app/db/models`.
 - `UserSubscription`
 
 ## News and reputation
+- `BTCCandle`
+- `BTCPricePoint`
+- `ProviderHealthRecord`
+- `MarketProviderHealth`
+- `NewsEventArticle`
+- `NewsEventCluster`
 - `NewsSource`
 - `NewsArticle`
 - `SourceReputationProfile`
+- `SourceHealthRecord`
+- `NewsFetchLog`
+- `NewsRawPayload`
+- `NewsArticleCluster`
+- `SourceHealthSnapshot`
+- `ProviderConfidenceEvent`
+- `NewsEvent`
 
 ## Entities
 - `Entity`

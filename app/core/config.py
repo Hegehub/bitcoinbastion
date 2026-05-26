@@ -44,6 +44,11 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = Field(default=120, alias="RATE_LIMIT_PER_MINUTE")
 
     news_fetch_interval_seconds: int = Field(default=300, alias="NEWS_FETCH_INTERVAL_SECONDS")
+    news_ingestion_enabled: bool = Field(default=True, alias="NEWS_INGESTION_ENABLED")
+    news_fetch_timeout_seconds: int = Field(default=10, alias="NEWS_FETCH_TIMEOUT_SECONDS")
+    news_fetch_max_retries: int = Field(default=3, alias="NEWS_FETCH_MAX_RETRIES")
+    news_max_payload_mb: int = Field(default=4, alias="NEWS_MAX_PAYLOAD_MB")
+    news_user_agent: str = Field(default="BitcoinBastionNews/1.0", alias="NEWS_USER_AGENT")
     onchain_large_transfer_sats: int = Field(
         default=1_000_000_000, alias="ONCHAIN_LARGE_TRANSFER_SATS"
     )

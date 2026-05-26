@@ -135,3 +135,9 @@ No production deployment evidence
 No real disaster recovery drill evidence
 No accessibility certification
 No production operational metrics baseline
+
+## Market Data Engine
+- BTC provider aggregation, confidence, degraded mode, and replayability evidence fields implemented in foundation form.
+
+## BTC Candle Engine
+- Production candle storage and deterministic rebuild baseline implemented.

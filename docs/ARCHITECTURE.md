@@ -46,3 +46,6 @@ Core runtime components:
 - SQLite-specific migration behavior (batch mode, default/constraint representation) can produce autogenerate drift signals that require explicit review before accepting migration deltas.
 - Runtime drift checks now validate tables, columns, nullability, type affinity, indexes, unique constraints, foreign keys, and explicit server defaults via `python scripts/check_schema_runtime_parity.py`.
 - Advanced drift checks intentionally degrade gracefully when a dialect does not expose a reflection surface (e.g., unsupported index/constraint APIs) to avoid false positives in CI.
+
+## Deduplication & Clustering Engine
+Deterministic, replayable dedup and conservative clustering feed canonical NewsEvent attribution.

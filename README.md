@@ -969,3 +969,13 @@ Its strongest idea is simple:
 > Make runtime, risk, deployment, and readiness visible, auditable, and operator-controlled.
 
 Bitcoin Bastion is built to become a foundation for serious Bitcoin-native infrastructure where sovereignty, evidence, and operational discipline matter.
+
+## Source Health
+Provider confidence and degraded state tracking are implemented for news sources.
+
+## Deduplication & Clustering Engine
+Deterministic deduplication prevents duplicate-news spam and preserves replayable evidence for canonical event attribution.
+
+- Market data provider layer for BTC/USD (Binance, Kraken, Coinbase, Bitstamp) with provider-aware aggregation and degraded-mode visibility.
+
+- Market provider layer v2 added with median aggregation and degraded-state exposure.
