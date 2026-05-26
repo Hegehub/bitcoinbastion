@@ -21,6 +21,7 @@ export const TRANSLATIONS = {
     },
     cta: { viewStatus: 'View Status', selfHostBastion: 'Self-host Bitcoin Bastion', menu: 'Menu', language: 'Language' },
     footer: { product: 'Product', operators: 'Operators', project: 'Project', legalSafety: 'Legal/Safety', advisoryOnly: 'Advisory only', noCustody: 'No custody' },
+    accessibility: { skipToContent: 'Skip to content', mainNavigation: 'Main navigation', desktopNavigation: 'Desktop navigation', mobileNavigation: 'Mobile navigation' },
   },
   ru: {
     nav: {
@@ -29,6 +30,7 @@ export const TRANSLATIONS = {
     },
     cta: { viewStatus: 'Показать статус', selfHostBastion: 'Самохостинг Bitcoin Bastion', menu: 'Меню', language: 'Язык' },
     footer: { product: 'Продукт', operators: 'Операторам', project: 'Проект', legalSafety: 'Право/Безопасность', advisoryOnly: 'Только рекомендации', noCustody: 'Без хранения средств' },
+    accessibility: { skipToContent: 'Перейти к содержимому', mainNavigation: 'Основная навигация', desktopNavigation: 'Навигация для десктопа', mobileNavigation: 'Мобильная навигация' },
   },
   es: {
     nav: {
@@ -37,6 +39,7 @@ export const TRANSLATIONS = {
     },
     cta: { viewStatus: 'Ver estado', selfHostBastion: 'Autoalojar Bitcoin Bastion', menu: 'Menú', language: 'Idioma' },
     footer: { product: 'Producto', operators: 'Operadores', project: 'Proyecto', legalSafety: 'Legal/Seguridad', advisoryOnly: 'Solo asesoramiento', noCustody: 'Sin custodia' },
+    accessibility: { skipToContent: 'Saltar al contenido', mainNavigation: 'Navegación principal', desktopNavigation: 'Navegación de escritorio', mobileNavigation: 'Navegación móvil' },
   },
   fr: {
     nav: {
@@ -45,6 +48,7 @@ export const TRANSLATIONS = {
     },
     cta: { viewStatus: 'Voir le statut', selfHostBastion: 'Auto-héberger Bitcoin Bastion', menu: 'Menu', language: 'Langue' },
     footer: { product: 'Produit', operators: 'Opérateurs', project: 'Projet', legalSafety: 'Légal/Sécurité', advisoryOnly: 'Conseil uniquement', noCustody: 'Sans garde' },
+    accessibility: { skipToContent: 'Aller au contenu', mainNavigation: 'Navigation principale', desktopNavigation: 'Navigation bureau', mobileNavigation: 'Navigation mobile' },
   },
   zh: {
     nav: {
@@ -53,6 +57,7 @@ export const TRANSLATIONS = {
     },
     cta: { viewStatus: '查看状态', selfHostBastion: '自托管 Bitcoin Bastion', menu: '菜单', language: '语言' },
     footer: { product: '产品', operators: '运维人员', project: '项目', legalSafety: '法律/安全', advisoryOnly: '仅供参考', noCustody: '不托管资金' },
+    accessibility: { skipToContent: '跳转到内容', mainNavigation: '主导航', desktopNavigation: '桌面导航', mobileNavigation: '移动导航' },
   },
   ja: {
     nav: {
@@ -61,6 +66,7 @@ export const TRANSLATIONS = {
     },
     cta: { viewStatus: 'ステータスを見る', selfHostBastion: 'Bitcoin Bastionをセルフホスト', menu: 'メニュー', language: '言語' },
     footer: { product: '製品', operators: '運用者', project: 'プロジェクト', legalSafety: '法務/安全', advisoryOnly: '助言のみ', noCustody: 'カストディなし' },
+    accessibility: { skipToContent: 'コンテンツにスキップ', mainNavigation: 'メインナビゲーション', desktopNavigation: 'デスクトップナビゲーション', mobileNavigation: 'モバイルナビゲーション' },
   },
 } as const;
 
