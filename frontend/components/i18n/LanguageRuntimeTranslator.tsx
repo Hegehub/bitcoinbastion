@@ -52,6 +52,10 @@ function translateElementAttributes(element: Element, dictionary: Record<string,
 function translateTree(root: ParentNode, dictionary: Record<string, string>, reverse: Map<string, string>) {
   if (!Object.keys(dictionary).length) return;
 
+  if (root instanceof Element && !shouldSkipNode(root)) {
+    translateElementAttributes(root, dictionary, reverse);
+  }
+
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
   let current = walker.nextNode();
 
@@ -76,9 +80,14 @@ export function LanguageRuntimeTranslator({ language }: { language: SiteLanguage
 
     const reverse = buildReverseDictionary();
     translateTree(document.body, dictionary, reverse);
+    window.requestAnimationFrame(() => translateTree(document.body, dictionary, reverse));
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
+        if (mutation.type === 'characterData') {
+          const translated = translateTextValue(mutation.target.nodeValue ?? '', dictionary, reverse);
+          if (translated) mutation.target.nodeValue = translated;
+        }
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === Node.TEXT_NODE) {
             const translated = translateTextValue(node.nodeValue ?? '', dictionary, reverse);
@@ -92,7 +101,7 @@ export function LanguageRuntimeTranslator({ language }: { language: SiteLanguage
       });
     });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, characterData: true, subtree: true });
     return () => observer.disconnect();
   }, [language]);
 
