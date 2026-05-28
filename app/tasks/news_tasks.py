@@ -1,60 +1,38 @@
-from typing import Any, cast
+from typing import Any
 
+from celery import shared_task
 from sqlalchemy import select
 
 from app.db.models.news import NewsSource
-from app.db.repositories.job_run_repository import JobRunRepository
 from app.db.session import SessionLocal
-from app.integrations.rss.client import RSSClient
-from app.services.admin.job_service import JobTrackingService
-from app.services.ingestion.news_ingestion import NewsIngestionService
-from app.tasks.celery_app import celery_app
+from app.services.intelligence.news_ingestion.ingestion_service import IngestionService
+from app.services.intelligence.news_ingestion.metrics import NEWS_FETCH_FAILURES_TOTAL
+from app.services.intelligence.news_ingestion.rss_client import RSSClient
 
 
-
-
-def _should_skip_duplicate_run(*, tracker: JobTrackingService, task_name: str, cooldown_seconds: int = 45) -> bool:
-    from datetime import UTC, datetime
-
-    now = datetime.now(UTC)
-    if not hasattr(tracker, "list_recent"):
-        return False
-    recent = tracker.list_recent(limit=10)
-    for run in recent:
-        if run.task_name != task_name:
-            continue
-        if run.status not in {"started", "success"}:
-            continue
-        delta = (now - run.started_at).total_seconds()
-        if delta <= cooldown_seconds:
-            return True
-    return False
-@celery_app.task(  # type: ignore[untyped-decorator]
-    name="news.fetch",
-    bind=True,
-    autoretry_for=(Exception,),
-    retry_backoff=True,
-    retry_kwargs={"max_retries": 2},
-    retry_jitter=True,
-    retry_backoff_max=120,
-)
-def fetch_news_task(self: Any) -> dict[str, int | str]:
+@shared_task(name="news.fetch_source", bind=True, autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 3})  # type: ignore[untyped-decorator]
+def fetch_source_task(self: Any, source_id: int) -> dict[str, int | str]:
     with SessionLocal() as db:
-        tracker = JobTrackingService(JobRunRepository(db))
-        if _should_skip_duplicate_run(tracker=tracker, task_name="news.fetch"):
-            return {"status": "skipped", "reason": "duplicate_window_skip"}
-        with tracker.track("news.fetch"):
-            rss = RSSClient()
-            service = NewsIngestionService(rss)
-            totals: dict[str, int | str] = {"inserted": 0, "duplicates": 0}
+        source = db.execute(select(NewsSource).where(NewsSource.id == source_id, NewsSource.is_active.is_(True))).scalar_one_or_none()
+        if source is None:
+            return {"status": "skipped", "reason": "source_not_found"}
+        try:
+            result = IngestionService(RSSClient()).ingest_source(db, source)
+            return {"status": "ok", **result}
+        except Exception:
+            NEWS_FETCH_FAILURES_TOTAL.labels(source=str(source_id)).inc()
+            raise
 
-            sources = list(db.execute(select(NewsSource).where(NewsSource.is_active.is_(True))).scalars())
-            from app.db.repositories.news_repository import NewsRepository
 
-            repo = NewsRepository(db)
-            for source in sources:
-                result = service.ingest_source(source, repo)
-                totals["inserted"] = cast(int, totals["inserted"]) + result.inserted
-                totals["duplicates"] = cast(int, totals["duplicates"]) + result.duplicates
-
-            return totals
+@shared_task(name="news.fetch_all_sources", bind=True, autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 2})  # type: ignore[untyped-decorator]
+def fetch_all_sources_task(self: Any) -> dict[str, int]:
+    with SessionLocal() as db:
+        sources = list(db.execute(select(NewsSource).where(NewsSource.is_active.is_(True))).scalars())
+        total_discovered = 0
+        total_inserted = 0
+        svc = IngestionService(RSSClient())
+        for source in sources:
+            result = svc.ingest_source(db, source)
+            total_discovered += result["discovered"]
+            total_inserted += result["inserted"]
+        return {"discovered": total_discovered, "inserted": total_inserted}

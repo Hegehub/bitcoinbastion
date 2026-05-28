@@ -1,8 +1,6 @@
 import time
 import uuid
 from collections import defaultdict
-from typing import cast
-
 from redis import RedisError
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
@@ -57,7 +55,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         limited = False
         try:
             redis_client = get_redis_client()
-            value = cast(int, redis_client.incr(key))
+            value = redis_client.incr(key)
             if value == 1:
                 redis_client.expire(key, 70)
             limit = settings.rate_limit_per_minute // 2 if path.startswith('/api/v1/public') else settings.rate_limit_per_minute

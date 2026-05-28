@@ -1,0 +1,14 @@
+KEYWORD_PROFILES: dict[str, set[str]] = {
+    "positive": {"approval", "adoption", "accumulation", "inflow", "launch", "partnership", "integration", "growth"},
+    "negative": {"hack", "exploit", "ban", "lawsuit", "crackdown", "liquidation", "outflow", "failure"},
+    "institutional": {"etf", "blackrock", "fidelity", "microstrategy", "treasury", "fund", "custody", "issuer"},
+    "macro": {"fed", "rates", "inflation", "liquidity", "treasury", "cpi", "yield", "dollar"},
+    "security": {"exploit", "private key", "malware", "exchange hack", "vulnerability", "phishing", "wallet leak"},
+    "regulatory": {"sec", "cftc", "treasury", "compliance", "regulation", "approval", "enforcement"},
+    "mining": {"mining", "miner", "hashrate", "difficulty"},
+    "lightning": {"lightning", "lnurl", "channel", "routing"},
+    "bitcoin_core": {"bitcoin core", "bip", "taproot", "mempool"},
+    "sovereignty": {"self-custody", "sovereign", "non-custodial", "local node", "privacy", "peer-to-peer"},
+    "volatility": {"volatility", "spike", "drawdown", "liquidation"},
+    "liquidity": {"liquidity", "inflow", "outflow", "order book"},
+}
