@@ -77,3 +77,45 @@ export function isSupportedLanguage(value?: string | null): value is SiteLanguag
 export function getLanguageFromCookie(value?: string | null): SiteLanguage {
   return isSupportedLanguage(value) ? value : 'en';
 }
+
+
+type HomeTranslations = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  readManifesto: string;
+  selfHost: string;
+};
+
+export const PAGE_TRANSLATIONS: Record<SiteLanguage, { home: HomeTranslations; platform: { title: string; summary: string }; operations: { title: string; summary: string } }> = {
+  en: {
+    home: { eyebrow: 'Bitcoin-native infrastructure you can verify', title: 'Operator-controlled, no-custody Bitcoin infrastructure.', subtitle: 'Evidence over claims. Self-host capable. Built on a Bitcoin-first backend foundation with advisory-only workflows and transparent status signals.', readManifesto: 'Read Manifesto', selfHost: 'Self-host' },
+    platform: { title: 'Platform', summary: 'This module page is an informational shell for Bitcoin Bastion platform orientation.' },
+    operations: { title: 'Operations', summary: 'Kubernetes, GitOps, observability, evidence jobs, backup/restore and recovery drill foundations.' },
+  },
+  ru: {
+    home: { eyebrow: 'Биткоин-нативная инфраструктура, которую можно проверить', title: 'Инфраструктура Bitcoin под контролем оператора и без хранения средств.', subtitle: 'Факты важнее заявлений. Готово к самохостингу. Построено на биткоин-ориентированной backend-основе с рекомендательными процессами и прозрачными статус-сигналами.', readManifesto: 'Читать манифест', selfHost: 'Самохостинг' },
+    platform: { title: 'Платформа', summary: 'Эта страница модуля является информационной оболочкой для ориентации по платформе Bitcoin Bastion.' },
+    operations: { title: 'Операции', summary: 'Основы Kubernetes, GitOps, наблюдаемости, задач доказательств, backup/restore и учений по восстановлению.' },
+  },
+  es: {
+    home: { eyebrow: 'Infraestructura nativa de Bitcoin que puedes verificar', title: 'Infraestructura Bitcoin controlada por el operador y sin custodia.', subtitle: 'Evidencia sobre afirmaciones. Capaz de autoalojamiento. Construido sobre una base backend Bitcoin-first con flujos solo de asesoría y señales de estado transparentes.', readManifesto: 'Leer manifiesto', selfHost: 'Autoalojar' },
+    platform: { title: 'Plataforma', summary: 'Esta página de módulo es una capa informativa para la orientación de la plataforma Bitcoin Bastion.' },
+    operations: { title: 'Operaciones', summary: 'Fundamentos de Kubernetes, GitOps, observabilidad, trabajos de evidencia, copia/restauración y simulacros de recuperación.' },
+  },
+  fr: {
+    home: { eyebrow: 'Infrastructure native Bitcoin que vous pouvez vérifier', title: 'Infrastructure Bitcoin contrôlée par l’opérateur, sans garde.', subtitle: 'Les preuves avant les promesses. Compatible auto-hébergement. Construite sur une base backend Bitcoin-first avec des workflows consultatifs et des signaux d’état transparents.', readManifesto: 'Lire le manifeste', selfHost: 'Auto-héberger' },
+    platform: { title: 'Plateforme', summary: 'Cette page de module est une base informative pour l’orientation de la plateforme Bitcoin Bastion.' },
+    operations: { title: 'Opérations', summary: 'Fondations Kubernetes, GitOps, observabilité, tâches de preuve, sauvegarde/restauration et exercices de reprise.' },
+  },
+  zh: {
+    home: { eyebrow: '可验证的比特币原生基础设施', title: '由运营者掌控、非托管的比特币基础设施。', subtitle: '以证据为先，而非宣称。支持自托管。基于 Bitcoin-first 后端基础，提供仅建议型流程与透明状态信号。', readManifesto: '阅读宣言', selfHost: '自托管' },
+    platform: { title: '平台', summary: '此模块页面是用于 Bitcoin Bastion 平台导览的信息壳层。' },
+    operations: { title: '运维', summary: 'Kubernetes、GitOps、可观测性、证据任务、备份/恢复与恢复演练基础。' },
+  },
+  ja: {
+    home: { eyebrow: '検証可能なBitcoinネイティブ基盤', title: '運用者が管理する、カストディ不要のBitcoinインフラ。', subtitle: '主張より証拠。セルフホスト対応。Bitcoin-firstなバックエンド基盤の上に、助言限定ワークフローと透明なステータス信号を構築。', readManifesto: 'マニフェストを読む', selfHost: 'セルフホスト' },
+    platform: { title: 'プラットフォーム', summary: 'このモジュールページはBitcoin Bastionプラットフォーム案内のための情報シェルです。' },
+    operations: { title: '運用', summary: 'Kubernetes、GitOps、可観測性、エビデンスタスク、バックアップ/復元、復旧訓練の基盤。' },
+  },
+};

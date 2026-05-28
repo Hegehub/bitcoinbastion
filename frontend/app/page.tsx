@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePublicLanding } from '@/hooks/usePublicLanding';
 import { usePublicStatus } from '@/hooks/usePublicStatus';
+import { PAGE_TRANSLATIONS } from '@/lib/i18n';
+import { useRuntimeLanguage } from '@/lib/runtimeLanguage';
 
 function Pill({ children }: { children: string }) {
   return <span className='rounded-full border border-bb-border bg-white px-3 py-1 text-xs text-bb-graphite'>{children}</span>;
@@ -13,6 +15,9 @@ export default function HomePage() {
   const landing = usePublicLanding();
   const status = usePublicStatus();
 
+  const language = useRuntimeLanguage();
+  const copy = PAGE_TRANSLATIONS[language].home;
+
   const modules = status.data?.modules ?? {};
   const limitations = status.data?.known_limitations ?? ['Public status feed unavailable; showing fallback posture.'];
 
@@ -21,23 +26,22 @@ export default function HomePage() {
       <section className='bastion-section'>
         <div className='bastion-container'>
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-            <p className='bastion-eyebrow'>Bitcoin-native infrastructure you can verify</p>
+            <p className='bastion-eyebrow'>{copy.eyebrow}</p>
             <h1 className='mt-4 max-w-4xl text-4xl font-heading leading-tight text-bb-black sm:text-5xl'>
-              Operator-controlled, no-custody Bitcoin infrastructure.
+              {copy.title}
             </h1>
             <p className='mt-5 max-w-3xl text-base text-bb-gray sm:text-lg'>
-              Evidence over claims. Self-host capable. Built on a Bitcoin-first backend foundation with advisory-only
-              workflows and transparent status signals.
+              {copy.subtitle}
             </p>
             <div className='mt-7 flex flex-wrap gap-3'>
               <Link href='/status' className='rounded-xl border border-bb-border bg-white px-4 py-2 font-medium'>
                 View Status
               </Link>
               <Link href='/manifesto' className='rounded-xl border border-bb-border bg-white px-4 py-2 font-medium'>
-                Read Manifesto
+                {copy.readManifesto}
               </Link>
               <Link href='/operations' className='rounded-xl bg-bb-orange px-4 py-2 font-semibold text-white'>
-                Self-host
+                {copy.selfHost}
               </Link>
             </div>
           </motion.div>
@@ -105,7 +109,7 @@ export default function HomePage() {
             </p>
             <div className='mt-6 flex flex-wrap justify-center gap-3'>
               <Link href='/status' className='rounded-xl border border-bb-border px-4 py-2 font-medium'>View Status</Link>
-              <Link href='/operations' className='rounded-xl bg-bb-orange px-4 py-2 font-semibold text-white'>Self-host Bitcoin Bastion</Link>
+              <Link href='/operations' className='rounded-xl bg-bb-orange px-4 py-2 font-semibold text-white'>{copy.selfHost} Bitcoin Bastion</Link>
             </div>
           </div>
         </div>

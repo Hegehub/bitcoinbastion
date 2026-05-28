@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { LanguageRuntimeTranslator } from '@/components/i18n/LanguageRuntimeTranslator';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from '../navigation/SiteHeader';
 import { TRANSLATIONS, type SiteLanguage } from '@/lib/i18n';
@@ -14,6 +15,7 @@ export function SiteShell({ children, language = 'en' }: { children: ReactNode; 
       >
         {t.accessibility.skipToContent}
       </a>
+      <LanguageRuntimeTranslator language={language} />
       <SiteHeader language={language} />
       <main id='main-content' className='bastion-gradient-grid'>
         {children}
