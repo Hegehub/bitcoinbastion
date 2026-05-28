@@ -49,3 +49,7 @@ Core runtime components:
 
 ## Deduplication & Clustering Engine
 Deterministic, replayable dedup and conservative clustering feed canonical NewsEvent attribution.
+
+- Market-data foundation now includes provider health snapshot API and canonical BTC price history retrieval.
+
+- News scoring foundation now includes deterministic rule-based scoring service with config-driven weights in `config/news_scoring.yaml`.

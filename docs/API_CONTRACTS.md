@@ -222,3 +222,62 @@ See `docs/BASTION_TRACE_API.md` for route-level Bastion Trace status (implemente
 - `GET /api/v1/market/btc/candles`
 - `GET /api/v1/market/btc/candles/{timeframe}/latest`
 - `GET /api/v1/market/btc/candles/latest`
+
+- `GET /api/v1/market/btc/candles/{candle_id}`
+- `GET /api/v1/market/btc/candles/{candle_id}/evidence`
+
+- `GET /api/v1/intelligence/timeline`
+- `GET /api/v1/intelligence/timeline/latest`
+- `GET /api/v1/intelligence/timeline/window`
+- `GET /api/v1/intelligence/timeline/context/{timeline_event_id}`
+
+- `GET /api/v1/market/health`
+- `GET /api/v1/market/btc/price/history`
+
+- `/api/v1/news/{article_id}/score`
+
+- `/api/v1/news/events/{event_id}/score`
+
+- `/api/v1/news/high-impact`
+
+- `/api/v1/news/security`
+
+- `/api/v1/news/regulatory`
+
+- `GET /api/v1/news/{article_id}/score`
+- `GET /api/v1/news/events/{event_id}/score`
+- `GET /api/v1/news/high-impact`
+- `GET /api/v1/news/security`
+- `GET /api/v1/news/regulatory`
+- `GET /api/v1/news/by-sentiment/{label}`
+
+- `GET /api/v1/news/{article_id}/scores`
+- `GET /api/v1/news/{article_id}/narratives`
+- `GET /api/v1/news/high-relevance`
+- `GET /api/v1/intelligence/timeline/narratives/current`
+
+- `GET /api/v1/news/{article_id}/impact`
+
+- `GET /api/v1/news/{article_id}/explanation`
+
+- `GET /api/v1/news/{article_id}/impact`
+- `GET /api/v1/news/events/{event_id}/impact`
+- `GET /api/v1/intelligence/timeline/news-impacts/high-confidence`
+- `GET /api/v1/intelligence/timeline/news-impacts/recent`
+
+### Candle Attribution API
+
+- `GET /api/v1/intelligence/candles/{candle_id}/attribution` — calculate and return candidate news/event attributions for a BTC candle.
+- `GET /api/v1/intelligence/candles/{candle_id}/top-events` — return persisted top-ranked candidate events for a BTC candle.
+- `GET /api/v1/intelligence/candles/{candle_id}/replay` — return replay/debug snapshots for candle attribution runs.
+- `GET /api/v1/intelligence/impact/high-confidence` — return high-confidence correlation-based news impact records.
+
+### Production Candle Attribution Engine
+
+- `GET /api/v1/intelligence/candles/{candle_id}/attribution` recalculates or returns ranked candle attribution candidates with confidence, limitations, and evidence references.
+- `GET /api/v1/intelligence/candles/{candle_id}/explain` returns a frontend-ready candle explanation payload for chart markers, candle modal, side panel, and evidence drawer.
+- `GET /api/v1/intelligence/candles/{candle_id}/candidates` returns persisted pre-ranking candidate rows and ranking features.
+- `GET /api/v1/intelligence/candles/{candle_id}/replay` returns replay/debug snapshots for attribution runs.
+- `PATCH /api/v1/intelligence/candles/attributions/{attribution_id}/review` records operator approval, rejection, false-attribution marking, confidence downgrade, or notes.
+
+All candle attribution responses preserve the limitation that correlation is not proof of causation.

@@ -1,3 +1,10 @@
+from app.db.models.intelligence_timeline import IntelligenceTimelineEvent
+from app.db.models.candle_build_run import CandleBuildRun
+from app.db.models.attribution_replay_log import AttributionReplayLog
+from app.db.models.candle_attribution import CandleAttribution
+from app.db.models.candle_attribution_candidate import CandleAttributionCandidate
+from app.db.models.attribution_context_snapshot import AttributionContextSnapshot
+from app.db.models.candle_provider_snapshot import CandleProviderSnapshot
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.btc_price_point import BTCPricePoint
 from app.db.models.market_provider_health import MarketProviderHealth
@@ -30,6 +37,13 @@ from app.db.models.watched_entity import WatchedEntity
 
 __all__ = [
     "BTCCandle",
+    "CandleAttribution",
+    "CandleAttributionCandidate",
+    "AttributionContextSnapshot",
+    "AttributionReplayLog",
+    "IntelligenceTimelineEvent",
+    "CandleBuildRun",
+    "CandleProviderSnapshot",
     "BTCPricePoint",
     "ProviderHealthRecord",
     "MarketProviderHealth",
@@ -74,4 +88,25 @@ __all__ = [
     "TraceSource",
     "TraceSourceSnapshot",
     "TraceWatchlistEntry",
+    "NewsScore",
+    "NewsArticleScore",
+    "NewsNarrativeTag",
+    "NewsPriceImpact",
+    "ImpactWindowSnapshot",
+    "ImpactConfidenceBreakdown",
+    "ScoringFactor",
+    "ScoreExplanation",
 ]
+
+from .news_score import NewsScore
+
+from .news_article_score import NewsArticleScore
+
+from .news_narrative_tag import NewsNarrativeTag
+
+from .news_price_impact import NewsPriceImpact
+from .impact_window_snapshot import ImpactWindowSnapshot
+from .impact_confidence_breakdown import ImpactConfidenceBreakdown
+
+from .scoring_factor import ScoringFactor
+from .score_explanation import ScoreExplanation

@@ -7,3 +7,5 @@ The BTC Candle Engine builds deterministic OHLC candles from `btc_price_points`.
 - Candles include provider confidence and integrity score.
 - Rebuild is deterministic for same inputs and calculation version.
 - No fabricated candles when there are no valid price points.
+
+- Integrity states: valid/degraded/partial/missing_provider_data/anomalous.

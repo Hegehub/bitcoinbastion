@@ -49,6 +49,32 @@ class Settings(BaseSettings):
     news_fetch_max_retries: int = Field(default=3, alias="NEWS_FETCH_MAX_RETRIES")
     news_max_payload_mb: int = Field(default=4, alias="NEWS_MAX_PAYLOAD_MB")
     news_user_agent: str = Field(default="BitcoinBastionNews/1.0", alias="NEWS_USER_AGENT")
+
+    market_flat_threshold_pct: float = Field(default=0.05, alias="MARKET_FLAT_THRESHOLD_PCT")
+    news_impact_min_provider_confidence: float = Field(default=0.4, alias="NEWS_IMPACT_MIN_PROVIDER_CONFIDENCE")
+    news_impact_default_volatility: float = Field(default=0.02, alias="NEWS_IMPACT_DEFAULT_VOLATILITY")
+    news_impact_degraded_confidence_multiplier: float = Field(default=0.8, alias="NEWS_IMPACT_DEGRADED_CONFIDENCE_MULTIPLIER")
+    news_impact_windows_minutes: str = Field(default="15,60,240,1440", alias="NEWS_IMPACT_WINDOWS_MINUTES")
+    news_impact_nearest_price_tolerance_minutes: int = Field(default=10, alias="NEWS_IMPACT_NEAREST_PRICE_TOLERANCE_MINUTES")
+    attribution_window_before_minutes: int = Field(default=240, alias="ATTRIBUTION_WINDOW_BEFORE_MINUTES")
+    attribution_window_after_minutes: int = Field(default=15, alias="ATTRIBUTION_WINDOW_AFTER_MINUTES")
+    attribution_top_candidates: int = Field(default=5, alias="ATTRIBUTION_TOP_CANDIDATES")
+    attribution_max_confidence: float = Field(default=0.92, alias="ATTRIBUTION_MAX_CONFIDENCE")
+    attribution_enable_replay: bool = Field(default=True, alias="ATTRIBUTION_ENABLE_REPLAY")
+    attribution_window_config_json: str = Field(
+        default='{"15m":{"before":45,"after":15},"1h":{"before":240,"after":60},"4h":{"before":720,"after":240},"1d":{"before":2880,"after":720}}',
+        alias="ATTRIBUTION_WINDOW_CONFIG_JSON",
+    )
+    attribution_ranking_weights_json: str = Field(
+        default='{"btc_relevance_score":0.18,"market_impact_score":0.16,"source_credibility_score":0.12,"impact_confidence":0.12,"historical_similarity_score":0.08,"pattern_match_score":0.08,"provider_confidence":0.10,"time_distance":0.08,"direction_match":0.05,"volatility_weight":0.03}',
+        alias="ATTRIBUTION_RANKING_WEIGHTS_JSON",
+    )
+    attribution_time_decay_half_life_minutes: int = Field(
+        default=120, alias="ATTRIBUTION_TIME_DECAY_HALF_LIFE_MINUTES"
+    )
+    attribution_low_confidence_threshold: float = Field(
+        default=0.35, alias="ATTRIBUTION_LOW_CONFIDENCE_THRESHOLD"
+    )
     onchain_large_transfer_sats: int = Field(
         default=1_000_000_000, alias="ONCHAIN_LARGE_TRANSFER_SATS"
     )

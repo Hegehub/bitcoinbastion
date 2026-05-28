@@ -43,7 +43,7 @@ class BTCCandleBuilderService:
             low=lo,
             close=cl,
             volume=float(len(points)),
-            source_mode=mode,
+            price_source_mode=mode,
             provider_count=len(providers),
             provider_confidence=pconf,
             provider_snapshot_json={"providers": list(providers), "points": len(points), "spread_pct": round(spread, 4)},
@@ -64,6 +64,6 @@ class BTCCandleBuilderService:
             candle.revision += 1
             candle.rebuild_reason = reason
             candle.rebuilt_at = datetime.now(UTC)
-            candle.source_mode = "reconstructed"
+            candle.price_source_mode = "reconstructed"
             db.commit()
         return candle

@@ -21,3 +21,5 @@ Persisted price points include provider, timestamps, latency, confidence, aggreg
 ## Limitations
 Public endpoints may fail or rate-limit; this is an evidence/context subsystem only.
 No trading execution, no custody, no financial advice.
+
+- Candle build runs and provider snapshots are persisted for replay/debug evidence.
