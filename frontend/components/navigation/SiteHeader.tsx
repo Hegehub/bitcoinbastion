@@ -25,7 +25,7 @@ export function SiteHeader({ language = 'en' }: { language?: SiteLanguage }) {
     <header className='sticky top-0 z-40 border-b border-bb-border bg-white/95 backdrop-blur'>
       <div className='bastion-container flex min-h-16 items-center justify-between gap-4'>
         <Link href='/' className='font-heading text-lg font-semibold text-bb-black'>Bitcoin Bastion</Link>
-        <nav aria-label='Desktop navigation' className='hidden items-center gap-5 lg:flex'>
+        <nav aria-label={t.accessibility.desktopNavigation} className='hidden items-center gap-5 lg:flex'>
           {navItems.map((item) => <Link key={item.href} href={item.href} className='text-sm text-bb-graphite hover:text-bb-orange'>{item.label}</Link>)}
         </nav>
         <div className='hidden items-center gap-3 lg:flex'>
@@ -39,7 +39,7 @@ export function SiteHeader({ language = 'en' }: { language?: SiteLanguage }) {
       </div>
 
       {open ? (
-        <nav id='mobile-nav' aria-label='Mobile navigation' className='border-t border-bb-border bg-white lg:hidden'>
+        <nav id='mobile-nav' aria-label={t.accessibility.mobileNavigation} className='border-t border-bb-border bg-white lg:hidden'>
           <div className='bastion-container flex flex-col py-3'>
             <div className='mb-2'><LanguageSelector value={language} label={t.cta.language} /></div>
             {navItems.map((item) => (
