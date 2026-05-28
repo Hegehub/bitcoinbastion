@@ -8,9 +8,25 @@ Model list aligned to `app/db/models`.
 - `UserSubscription`
 
 ## News and reputation
+- `BTCCandle`
+- `IntelligenceTimelineEvent`
+- `CandleProviderSnapshot`
+- `CandleBuildRun`
+- `BTCPricePoint`
+- `ProviderHealthRecord`
+- `MarketProviderHealth`
+- `NewsEventArticle`
+- `NewsEventCluster`
 - `NewsSource`
 - `NewsArticle`
 - `SourceReputationProfile`
+- `SourceHealthRecord`
+- `NewsFetchLog`
+- `NewsRawPayload`
+- `NewsArticleCluster`
+- `SourceHealthSnapshot`
+- `ProviderConfidenceEvent`
+- `NewsEvent`
 
 ## Entities
 - `Entity`
@@ -78,3 +94,25 @@ Bastion Trace metrics use bounded labels only. Bitcoin addresses are never used 
 
 ## Bastion Trace domain reference
 See `docs/BASTION_TRACE_DOMAIN_MODEL.md` for Bastion Trace persistence and service-level artifact mapping.
+
+- `NewsScore`: deterministic article/event scoring snapshot with factor breakdown and limitations.
+- `NewsScore`
+- `NewsArticleScore`
+
+- `NewsNarrativeTag`
+- `NewsPriceImpact`
+
+- `ScoringFactor`
+- `ScoreExplanation`
+
+- `CandleAttribution`
+- `AttributionReplayLog`
+- `ImpactWindowSnapshot`
+- `ImpactConfidenceBreakdown`
+
+## Production Candle Attribution Models
+
+- `CandleAttributionCandidate`: pre-ranking candidate evidence for candle attribution, including raw score, normalized score, ranking features, and rejection reason.
+- `AttributionContextSnapshot`: replayable market/news context around a candle attribution run, including provider health, market regime, active news counts, and timeline snapshot data.
+- `CandleAttributionCandidate`
+- `AttributionContextSnapshot`

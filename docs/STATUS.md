@@ -69,3 +69,51 @@ Production Validation: PENDING
 
 Repository: Release Candidate Baseline
 Production Readiness: NOT COMPLETE
+
+- News ingestion foundation added (RSS/public source pipeline, duplicate-candidate precheck, replay metadata).
+
+- Source Registry + YAML seed layer baseline implemented.
+
+- Source Health Layer + Provider Confidence Engine baseline implemented.
+
+- Deduplication & Clustering Engine baseline implemented.
+
+## Canonical News Event Engine
+- Added deterministic canonical event clustering service, event/article lineage tables, and read endpoints for event timelines.
+
+- Added BTC market data provider layer (multi-provider collection, aggregation, provider health API).
+
+- Added /api/v1/market/btc/context and /api/v1/market/providers/health via market provider layer v2.
+
+## BTC Candle Engine
+- Deterministic BTC candle generation from price points with integrity score, provider confidence, and rebuild metadata.
+
+- Prompt 11 candle provider-confidence and evidence snapshots baseline implemented.
+
+- Prompt 12 unified intelligence timeline foundation implemented (normalization, storage, API, dedup baseline).
+
+- Prompt 13 BTC market data foundation safety/health API baseline refined.
+
+- Prompt 17: production-grade news scoring service, narratives, APIs and tests integrated.
+
+- Prompt 18: impact confidence engine, delayed reaction detector, false signal detector, and impact diagnostics API added.
+
+- Prompt 20: news price impact windows and diagnostics endpoints implemented.
+
+## Candle Attribution Engine
+
+- Added first-generation candle attribution persistence for candidate news/event context around BTC candles.
+- Added replay logs with deterministic input hashes and ranking snapshots.
+- Added operator-safe API routes for candle attribution, top events, and replay diagnostics.
+
+## Production News Impact Engine
+
+- Replaced synthetic news-impact placeholders with candle/price-point-backed impact windows.
+- Added per-window snapshots and confidence breakdown persistence.
+- Added idempotent article/event recalculation and high-confidence impact discovery.
+
+## Production Candle Attribution Engine
+
+- Added production candle attribution models for ranked attributions, candidate staging, and context snapshots.
+- Added configurable candidate windows, weighted ranking, time decay, confidence bands, replay evidence, and operator review hooks.
+- Added frontend-ready attribution explanation, candidates, replay, and review API surfaces.

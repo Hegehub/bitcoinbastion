@@ -1,3 +1,14 @@
+from app.db.models.intelligence_timeline import IntelligenceTimelineEvent
+from app.db.models.candle_build_run import CandleBuildRun
+from app.db.models.attribution_replay_log import AttributionReplayLog
+from app.db.models.candle_attribution import CandleAttribution
+from app.db.models.candle_attribution_candidate import CandleAttributionCandidate
+from app.db.models.attribution_context_snapshot import AttributionContextSnapshot
+from app.db.models.candle_provider_snapshot import CandleProviderSnapshot
+from app.db.models.btc_candle import BTCCandle
+from app.db.models.btc_price_point import BTCPricePoint
+from app.db.models.market_provider_health import MarketProviderHealth
+from app.db.models.provider_health_record import ProviderHealthRecord
 from app.db.models.audit import AuditLog
 from app.db.models.auth import SubscriptionPlan, User, UserSubscription
 from app.db.models.citadel_assessment import CitadelAssessment
@@ -6,6 +17,15 @@ from app.db.models.entity import Entity, EntityAddress
 from app.db.models.explainability import EvidenceEdge, EvidenceNode, SignalExplanation
 from app.db.models.job_run import JobRun
 from app.db.models.news import NewsArticle, NewsSource, SourceReputationProfile
+from app.db.models.news_article_cluster import NewsArticleCluster
+from app.db.models.news_event import NewsEvent
+from app.db.models.news_event_article import NewsEventArticle
+from app.db.models.news_event_cluster import NewsEventCluster
+from app.db.models.news_fetch_log import NewsFetchLog
+from app.db.models.news_raw_payload import NewsRawPayload
+from app.db.models.source_health_record import SourceHealthRecord
+from app.db.models.provider_confidence_event import ProviderConfidenceEvent
+from app.db.models.source_health_snapshot import SourceHealthSnapshot
 from app.db.models.onchain import OnchainEvent
 from app.db.models.signal import Signal
 from app.db.models.signal_link import SignalSourceLink
@@ -16,6 +36,17 @@ from app.db.models.wallet import WalletHealthReport, WalletProfile
 from app.db.models.watched_entity import WatchedEntity
 
 __all__ = [
+    "BTCCandle",
+    "CandleAttribution",
+    "CandleAttributionCandidate",
+    "AttributionContextSnapshot",
+    "AttributionReplayLog",
+    "IntelligenceTimelineEvent",
+    "CandleBuildRun",
+    "CandleProviderSnapshot",
+    "BTCPricePoint",
+    "ProviderHealthRecord",
+    "MarketProviderHealth",
     "AuditLog",
     "CitadelAssessment",
     "User",
@@ -29,7 +60,16 @@ __all__ = [
     "JobRun",
     "NewsSource",
     "NewsArticle",
+    "NewsArticleCluster",
     "SourceReputationProfile",
+    "NewsEvent",
+    "NewsEventArticle",
+    "NewsEventCluster",
+    "NewsFetchLog",
+    "NewsRawPayload",
+    "SourceHealthRecord",
+    "ProviderConfidenceEvent",
+    "SourceHealthSnapshot",
     "OnchainEvent",
     "Signal",
     "SignalSourceLink",
@@ -48,4 +88,25 @@ __all__ = [
     "TraceSource",
     "TraceSourceSnapshot",
     "TraceWatchlistEntry",
+    "NewsScore",
+    "NewsArticleScore",
+    "NewsNarrativeTag",
+    "NewsPriceImpact",
+    "ImpactWindowSnapshot",
+    "ImpactConfidenceBreakdown",
+    "ScoringFactor",
+    "ScoreExplanation",
 ]
+
+from .news_score import NewsScore
+
+from .news_article_score import NewsArticleScore
+
+from .news_narrative_tag import NewsNarrativeTag
+
+from .news_price_impact import NewsPriceImpact
+from .impact_window_snapshot import ImpactWindowSnapshot
+from .impact_confidence_breakdown import ImpactConfidenceBreakdown
+
+from .scoring_factor import ScoringFactor
+from .score_explanation import ScoreExplanation
