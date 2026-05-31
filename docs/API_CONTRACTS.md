@@ -40,6 +40,14 @@ These endpoints intentionally return direct schema payloads (not `ResponseEnvelo
 
 ### News
 - `GET /api/v1/news/latest`
+- `GET /api/v1/news/sources`
+- `GET /api/v1/news/sources/tiers`
+- `GET /api/v1/news/sources/{source_id}/confidence-events`
+- `GET /api/v1/news/sources/{source_id}/snapshots`
+- `GET /api/v1/news/sources/{source_id}/health`
+- `GET /api/v1/news/sources/health`
+- `GET /api/v1/news/sources/categories`
+- `GET /api/v1/news/sources/{source_id}`
 - `POST /api/v1/news/sources/reputation/refresh`
 - `GET /api/v1/news/sources/reputation`
 
@@ -183,3 +191,149 @@ See `docs/BASTION_TRACE_API.md` for route-level Bastion Trace status (implemente
 - Current envelope baseline: success/data for success responses; standardized `error` payload for failures from global handlers.
 - Stable error code targets: invalid_bitcoin_address, sensitive_wallet_material_not_accepted, report_not_found, proof_packet_not_found, unsupported_export_format, feature_placeholder, insufficient_evidence, rate_limited, backend_unavailable, validation_error, internal_error.
 - API versioning: `/api/v1` with backward-compatible additive changes preferred.
+
+- `GET /api/v1/news/clusters`
+- `GET /api/v1/news/clusters/{cluster_id}`
+- `GET /api/v1/news/articles/{article_id}/duplicates`
+
+### News Events API
+- GET /api/v1/news/events
+- GET /api/v1/news/events/{event_id}
+- GET /api/v1/news/events/{event_id}/articles
+- GET /api/v1/news/events/high-impact
+- GET /api/v1/news/events/security
+- GET /api/v1/news/events/regulatory
+
+
+- `GET /api/v1/news/events`
+- `GET /api/v1/news/events/{event_id}`
+- `GET /api/v1/news/events/{event_id}/articles`
+- `GET /api/v1/news/events/high-impact`
+- `GET /api/v1/news/events/security`
+- `GET /api/v1/news/events/regulatory`
+- `GET /api/v1/market/btc/price`
+- `GET /api/v1/market/btc/providers`
+- `GET /api/v1/market/btc/providers/health`
+- `GET /api/v1/market/btc/price/history`
+
+- `GET /api/v1/market/btc/context`
+- `GET /api/v1/market/providers/health`
+
+- `GET /api/v1/market/btc/candles`
+- `GET /api/v1/market/btc/candles/{timeframe}/latest`
+- `GET /api/v1/market/btc/candles/latest`
+
+- `GET /api/v1/market/btc/candles/{candle_id}`
+- `GET /api/v1/market/btc/candles/{candle_id}/evidence`
+
+- `GET /api/v1/intelligence/timeline`
+- `GET /api/v1/intelligence/timeline/latest`
+- `GET /api/v1/intelligence/timeline/window`
+- `GET /api/v1/intelligence/timeline/context/{timeline_event_id}`
+
+- `GET /api/v1/market/health`
+- `GET /api/v1/market/btc/price/history`
+
+- `/api/v1/news/{article_id}/score`
+
+- `/api/v1/news/events/{event_id}/score`
+
+- `/api/v1/news/high-impact`
+
+- `/api/v1/news/security`
+
+- `/api/v1/news/regulatory`
+
+- `GET /api/v1/news/{article_id}/score`
+- `GET /api/v1/news/events/{event_id}/score`
+- `GET /api/v1/news/high-impact`
+- `GET /api/v1/news/security`
+- `GET /api/v1/news/regulatory`
+- `GET /api/v1/news/by-sentiment/{label}`
+
+- `GET /api/v1/news/{article_id}/scores`
+- `GET /api/v1/news/{article_id}/narratives`
+- `GET /api/v1/news/high-relevance`
+- `GET /api/v1/intelligence/timeline/narratives/current`
+
+- `GET /api/v1/news/{article_id}/impact`
+
+- `GET /api/v1/news/{article_id}/explanation`
+
+- `GET /api/v1/news/{article_id}/impact`
+- `GET /api/v1/news/events/{event_id}/impact`
+- `GET /api/v1/intelligence/timeline/news-impacts/high-confidence`
+- `GET /api/v1/intelligence/timeline/news-impacts/recent`
+
+### Candle Attribution API
+
+- `GET /api/v1/intelligence/candles/{candle_id}/attribution` — calculate and return candidate news/event attributions for a BTC candle.
+- `GET /api/v1/intelligence/candles/{candle_id}/top-events` — return persisted top-ranked candidate events for a BTC candle.
+- `GET /api/v1/intelligence/candles/{candle_id}/replay` — return replay/debug snapshots for candle attribution runs.
+- `GET /api/v1/intelligence/impact/high-confidence` — return high-confidence correlation-based news impact records.
+
+### Production Candle Attribution Engine
+
+- `GET /api/v1/intelligence/candles/{candle_id}/attribution` recalculates or returns ranked candle attribution candidates with confidence, limitations, and evidence references.
+- `GET /api/v1/intelligence/candles/{candle_id}/explain` returns a frontend-ready candle explanation payload for chart markers, candle modal, side panel, and evidence drawer.
+- `GET /api/v1/intelligence/candles/{candle_id}/candidates` returns persisted pre-ranking candidate rows and ranking features.
+- `GET /api/v1/intelligence/candles/{candle_id}/replay` returns replay/debug snapshots for attribution runs.
+- `PATCH /api/v1/intelligence/candles/attributions/{attribution_id}/review` records operator approval, rejection, false-attribution marking, confidence downgrade, or notes.
+
+All candle attribution responses preserve the limitation that correlation is not proof of causation.
+- `GET /api/v1/intelligence/candles/{candle_id}/context` returns the candle context snapshot with volatility, volume, provider confidence, market regime, event density, sentiment balance, and event category counts.
+
+### Historical Similarity API
+
+- `GET /api/v1/intelligence/similarity/news/{event_id}` returns the top historical NewsEvent comparisons with pattern type, reaction windows, confidence, explanation components, and no-causation limitations.
+- `GET /api/v1/intelligence/similarity/event/{event_id}` returns the generic event similarity contract for frontend Historical Similarity Panel and Event Comparison views.
+- `GET /api/v1/intelligence/similarity/candle/{candle_id}` returns similarity comparisons for the strongest candle attribution candidate tied to a BTC candle.
+
+Historical similarity responses expose `similarity_score`, `reaction_15m`, `reaction_1h`, `reaction_4h`, `reaction_24h`, `confidence`, and explanation JSON. They are retrospective market-memory contracts, not trading signals or predictions.
+
+### Production Historical Similarity API
+
+- `GET /api/v1/intelligence/similarity/events/{event_id}` returns a `HistoricalSimilarityReport` with top analogs, similarity band, sample size, median/average reaction windows, confidence, limitations, and evidence.
+- `GET /api/v1/intelligence/similarity/articles/{article_id}` resolves an article-linked event where available and returns the same report shape.
+- `GET /api/v1/intelligence/patterns` returns seeded market pattern-library entries for future Historical Similarity Panel views.
+- `GET /api/v1/intelligence/patterns/{pattern_code}` returns one pattern-library entry by code.
+
+Historical similarity API output is informational only and includes: `Historical similarity does not guarantee future outcomes.`
+
+### Historical Similarity Package Contract
+
+- `GET /api/v1/intelligence/similarity/signals/{signal_id}` returns a safe historical similarity response for a market signal; unresolved signals return an empty comparison with limitations.
+
+The package response model includes `current_item`, `matched_items`, `top_similar_events`, `pattern_detected`, `historical_reaction_summary`, `median_reaction`, `reaction_distribution`, `confidence`, `limitations`, and `generated_at`. Pattern responses also include `default_sentiment`, `expected_reaction_window`, `expected_volatility`, and `confidence_modifier` for future UI pattern-catalog panels.
+
+## BMTM-30 Historical Similarity and Market Memory API
+
+The production historical-similarity layer exposes these backend-only contracts for future UI panels:
+
+- `GET /api/v1/intelligence/events/{event_id}/similar` returns pattern reasoning, top historical analogs, reaction statistics, calibrated confidence, and limitations.
+- `GET /api/v1/intelligence/events/{event_id}/memory` returns persisted market-memory evidence for an event.
+- `GET /api/v1/intelligence/patterns` returns the active `market_patterns` catalog.
+- `GET /api/v1/intelligence/patterns/{pattern_code}` returns one pattern by slug or numeric ID.
+- `GET /api/v1/intelligence/patterns/{pattern_code}/history` returns events classified under that pattern.
+- `GET /api/v1/intelligence/patterns/{pattern_code}/reaction-profile` returns median and average BTC reaction windows.
+
+All historical-similarity responses must include the disclaimer: "Historical similarity does not guarantee future market behavior." These endpoints are informational and do not predict price.
+
+## Historical Similarity Foundation API
+
+- `GET /api/v1/intelligence/similar-events/{event_id}` returns the current event, detected pattern, similar historical events, reaction profiles, median reaction, confidence, limitations, evidence attach points, and generation timestamp.
+- `GET /api/v1/intelligence/reaction-profile/{event_id}` builds or returns an event-level historical reaction profile with 15m, 1h, 4h, 24h, maximum positive/negative move, volatility, and confidence fields.
+
+These endpoints are informational only and must include: "Historical similarity does not imply future performance. Correlation is not proof of causation."
+
+## Narrative Heatmap API
+
+- `GET /api/v1/intelligence/narratives` returns the active narrative catalog.
+- `GET /api/v1/intelligence/narratives/top` returns the latest ranked narrative snapshots by weighted score.
+- `GET /api/v1/intelligence/narratives/rising` returns latest narratives in `RISING` or `SPIKING` states.
+- `GET /api/v1/intelligence/narratives/falling` returns latest narratives in `FALLING` or `COOLING` states.
+- `GET /api/v1/intelligence/narratives/heatmap` builds and returns a backend-ready heatmap with top narratives, rising/falling lists, highest-impact narratives, dominance percentages, evidence, confidence, and limitations.
+- `GET /api/v1/intelligence/narratives/{slug}` returns narrative metadata, keywords, latest snapshot, and limitations.
+- `GET /api/v1/intelligence/narratives/rotations` returns possible attention-rotation events between consecutive narrative snapshots.
+
+Narrative responses are informational and correlation-based. They must not claim that a narrative caused a BTC price move.

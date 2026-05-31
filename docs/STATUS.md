@@ -69,3 +69,95 @@ Production Validation: PENDING
 
 Repository: Release Candidate Baseline
 Production Readiness: NOT COMPLETE
+
+- News ingestion foundation added (RSS/public source pipeline, duplicate-candidate precheck, replay metadata).
+
+- Source Registry + YAML seed layer baseline implemented.
+
+- Source Health Layer + Provider Confidence Engine baseline implemented.
+
+- Deduplication & Clustering Engine baseline implemented.
+
+## Canonical News Event Engine
+- Added deterministic canonical event clustering service, event/article lineage tables, and read endpoints for event timelines.
+
+- Added BTC market data provider layer (multi-provider collection, aggregation, provider health API).
+
+- Added /api/v1/market/btc/context and /api/v1/market/providers/health via market provider layer v2.
+
+## BTC Candle Engine
+- Deterministic BTC candle generation from price points with integrity score, provider confidence, and rebuild metadata.
+
+- Prompt 11 candle provider-confidence and evidence snapshots baseline implemented.
+
+- Prompt 12 unified intelligence timeline foundation implemented (normalization, storage, API, dedup baseline).
+
+- Prompt 13 BTC market data foundation safety/health API baseline refined.
+
+- Prompt 17: production-grade news scoring service, narratives, APIs and tests integrated.
+
+- Prompt 18: impact confidence engine, delayed reaction detector, false signal detector, and impact diagnostics API added.
+
+- Prompt 20: news price impact windows and diagnostics endpoints implemented.
+
+## Candle Attribution Engine
+
+- Added first-generation candle attribution persistence for candidate news/event context around BTC candles.
+- Added replay logs with deterministic input hashes and ranking snapshots.
+- Added operator-safe API routes for candle attribution, top events, and replay diagnostics.
+
+## Production News Impact Engine
+
+- Replaced synthetic news-impact placeholders with candle/price-point-backed impact windows.
+- Added per-window snapshots and confidence breakdown persistence.
+- Added idempotent article/event recalculation and high-confidence impact discovery.
+
+## Production Candle Attribution Engine
+
+- Added production candle attribution models for ranked attributions, candidate staging, and context snapshots.
+- Added configurable candidate windows, weighted ranking, time decay, confidence bands, replay evidence, and operator review hooks.
+- Added frontend-ready attribution explanation, candidates, replay, and review API surfaces.
+
+## Candle Attribution Foundation Context
+
+- Added `candle_context_snapshots` and enriched raw attribution candidates with relevance, direction-match, impact-alignment, recency, metadata, raw score, and normalized score fields.
+- Added `/api/v1/intelligence/candles/{candle_id}/context` and background context refresh support.
+
+## Historical Similarity Engine
+
+- Added historical event profiles and persisted similarity results for NewsEvent, NewsImpact, and Candle Attribution comparison workflows.
+- Added the rule-based pattern library and deterministic similarity scoring across narrative, sentiment, market-impact windows, confidence, provider confidence, and dominant reaction window.
+- Added `/api/v1/intelligence/similarity/news/{event_id}`, `/api/v1/intelligence/similarity/event/{event_id}`, and `/api/v1/intelligence/similarity/candle/{candle_id}` for frontend-ready Historical Similarity Panel data.
+- Similarity output remains retrospective evidence context only: correlation is not proof of causation, and past reactions do not guarantee future market behavior.
+
+## Production Historical Similarity Engine V1
+
+- Added seeded `market_pattern_library` persistence for deterministic Bitcoin market patterns.
+- Added `historical_similarity_records` for report-level analog evidence, component matches, reaction windows, confidence, and explanation JSON.
+- Added `PatternClassificationService` plus event/article similarity reports with Weak/Moderate/Strong/Very Strong bands and median/average reaction statistics.
+- Added `/api/v1/intelligence/similarity/events/{event_id}`, `/api/v1/intelligence/similarity/articles/{article_id}`, `/api/v1/intelligence/patterns`, and `/api/v1/intelligence/patterns/{pattern_code}`.
+- Historical similarity remains informational only: historical similarity does not guarantee future outcomes.
+
+## Historical Similarity Package Layout
+
+- Added package-level historical similarity service boundaries: `historical_similarity_service.py`, `similarity_scoring.py`, `pattern_matcher.py`, and `similarity_explainer.py`.
+- Added Prompt 28 response schema under `app/schemas/intelligence/historical_similarity.py` and a signal similarity endpoint.
+- Expanded result persistence with reference/matched signal/article/candle fields, pattern type, reaction direction, confidence, and limitations JSON.
+
+## BMTM-30 — Historical Similarity Engine, Pattern Library, and Market Memory
+
+Status: implemented foundation.
+
+Added production market-pattern memory with seeded Bitcoin market patterns, multi-pattern classification evidence, historical event similarity persistence, pattern reaction profiles, confidence calibration, market-memory retrieval, and Intelligence API endpoints for event similarity, pattern history, and reaction profiles.
+
+Safety posture: the engine is evidence-based and does not predict price. Every similarity report must include: "Historical similarity does not guarantee future market behavior."
+
+Bastion Market Time Machine progress: 62% complete. Core ingestion, scoring, market data, candle attribution, historical similarity, pattern memory, and confidence calibration are now in place; remaining work includes richer operator workflows, broader historical backfills, production dashboards, and expanded evidence review tooling.
+
+## Historical Similarity Foundation Update
+
+Implemented foundation tables and services for historical patterns, event reaction profiles, and replayable similarity matches. Added `/api/v1/intelligence/similar-events/{event_id}` and `/api/v1/intelligence/reaction-profile/{event_id}` for evidence-based historical comparisons. The feature remains informational only and does not predict future BTC price action.
+
+## Narrative Heatmap Engine Update
+
+Implemented Prompt 32 foundation for Bitcoin narrative intelligence: persisted narrative catalog, narrative keywords, heatmap snapshots, deterministic classifier/scoring/trend/dominance/rotation services, timeline integration for rising/spiking narratives, API contracts, metrics, and tests. Production readiness improves through operator-visible narrative dominance and evidence packets, while remaining explicitly correlation-based and non-predictive.

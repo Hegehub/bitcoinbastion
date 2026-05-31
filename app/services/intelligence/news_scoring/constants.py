@@ -1,0 +1,9 @@
+POSITIVE_KEYWORDS = {"approval","inflow","adoption","treasury","accumulation","integration","launch"}
+NEGATIVE_KEYWORDS = {"exploit","hack","lawsuit","crackdown","rejection","outflow","liquidation"}
+INSTITUTIONAL_KEYWORDS = {"blackrock","fidelity","etf","institutional","treasury reserve"}
+MACRO_KEYWORDS = {"fed","cpi","inflation","rates","liquidity","treasury yields"}
+REGULATORY_KEYWORDS = {"sec","cftc","lawsuit","regulation","enforcement"}
+SECURITY_KEYWORDS = {"exploit","wallet leak","malware","phishing","bridge attack","exchange hack"}
+SOVEREIGNTY_KEYWORDS = {"self-custody","local node","lightning","bitcoin core","open-source","sovereignty","censorship resistance"}
+BITCOIN_KEYWORDS = {"bitcoin","btc","lightning","mining","etf","bitcoin core"}
+SCORE_VERSION = "v1"

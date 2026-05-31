@@ -1,0 +1,13 @@
+from enum import StrEnum
+
+ALGORITHM_VERSION = "dedup-v1"
+NORMALIZATION_VERSION = "norm-v1"
+
+
+class DeduplicationStatus(StrEnum):
+    UNIQUE = "UNIQUE"
+    EXACT_DUPLICATE = "EXACT_DUPLICATE"
+    NEAR_DUPLICATE = "NEAR_DUPLICATE"
+    CLUSTERED = "CLUSTERED"
+    CANONICAL = "CANONICAL"
+    UNKNOWN = "UNKNOWN"

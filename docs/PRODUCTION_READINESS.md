@@ -135,3 +135,35 @@ No production deployment evidence
 No real disaster recovery drill evidence
 No accessibility certification
 No production operational metrics baseline
+
+## Market Data Engine
+- BTC provider aggregation, confidence, degraded mode, and replayability evidence fields implemented in foundation form.
+
+## BTC Candle Engine
+- Production candle storage and deterministic rebuild baseline implemented.
+
+- Market candle build runs and provider snapshots baseline implemented.
+
+- Intelligence timeline foundation added with replay-safe hashing and deterministic ordering baseline.
+
+- Market health snapshot endpoint and BTC price history contract aligned for operator visibility.
+
+- News scoring now emits explainable factors + limitations and avoids mandatory AI dependencies.
+
+- News price impact engine now exposes confidence breakdown, impact bands, delayed reaction and false-signal flags.
+
+## News Impact Engine readiness
+
+The News Impact Engine records degraded price/provider state instead of hiding missing data. It persists confidence inputs, window snapshots, and limitations for operator audit. Outputs remain correlation-based and are not financial advice.
+
+## Candle Attribution Production Readiness
+
+Candle attribution remains operator-reviewable and correlation-oriented. The engine records confidence bands, score contributions, provider health, degraded-state limitations, and replay snapshots so operators can audit why an event was ranked near a candle. It does not generate trading signals or claim causation.
+
+## Candle Attribution Context Readiness
+
+The foundation records candle context snapshots for every attributed candle so operators can audit event density, provider confidence, volatility/volume regimes, and category pressure. The context is evidence metadata only and does not assert causation.
+
+## Historical Similarity Production Readiness
+
+Historical similarity is implemented as a deterministic, replayable comparison layer for operator context, not as a forecasting layer. Known limitations include small sample-size sensitivity, incomplete signal-to-event linking, and market regime differences across historical windows. Every response includes limitations and avoids causation or financial-advice claims.
