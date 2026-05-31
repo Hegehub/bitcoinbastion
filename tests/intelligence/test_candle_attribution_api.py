@@ -33,3 +33,11 @@ def test_candle_attribution_explain_api_no_storage_smoke() -> None:
 
     assert response.status_code in {200, 404}
     assert response.json()
+
+
+def test_candle_attribution_context_api_no_storage_smoke() -> None:
+    client = TestClient(app, raise_server_exceptions=False)
+    response = client.get("/api/v1/intelligence/candles/999999/context")
+
+    assert response.status_code in {200, 404}
+    assert response.json()

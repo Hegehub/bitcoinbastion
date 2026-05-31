@@ -159,3 +159,11 @@ The News Impact Engine records degraded price/provider state instead of hiding m
 ## Candle Attribution Production Readiness
 
 Candle attribution remains operator-reviewable and correlation-oriented. The engine records confidence bands, score contributions, provider health, degraded-state limitations, and replay snapshots so operators can audit why an event was ranked near a candle. It does not generate trading signals or claim causation.
+
+## Candle Attribution Context Readiness
+
+The foundation records candle context snapshots for every attributed candle so operators can audit event density, provider confidence, volatility/volume regimes, and category pressure. The context is evidence metadata only and does not assert causation.
+
+## Historical Similarity Production Readiness
+
+Historical similarity is implemented as a deterministic, replayable comparison layer for operator context, not as a forecasting layer. Known limitations include small sample-size sensitivity, incomplete signal-to-event linking, and market regime differences across historical windows. Every response includes limitations and avoids causation or financial-advice claims.

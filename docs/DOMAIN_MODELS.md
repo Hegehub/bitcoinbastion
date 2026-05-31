@@ -116,3 +116,43 @@ See `docs/BASTION_TRACE_DOMAIN_MODEL.md` for Bastion Trace persistence and servi
 - `AttributionContextSnapshot`: replayable market/news context around a candle attribution run, including provider health, market regime, active news counts, and timeline snapshot data.
 - `CandleAttributionCandidate`
 - `AttributionContextSnapshot`
+- `CandleContextSnapshot`
+
+## Historical Similarity Models
+
+- `HistoricalEventProfile`: normalized historical market-memory profile with pattern, narrative, sentiment, impact windows, confidence, and provider-confidence features.
+- `HistoricalSimilarityResult`: persisted component-level similarity comparison with explanation JSON and limitations.
+- `HistoricalEventProfile`
+- `HistoricalSimilarityResult`
+
+## Production Historical Similarity Models
+
+- `HistoricalSimilarityRecord`: report-level historical analog evidence with component matches, reaction windows, confidence, and explanation JSON.
+- `MarketPatternLibrary`: seeded deterministic market pattern taxonomy for ETF, regulatory, macro, security, miner, treasury, Lightning, and volatility narratives.
+- `HistoricalSimilarityRecord`
+- `MarketPatternLibrary`
+
+## BMTM-30 Market Memory Models
+
+- `MarketPattern`
+- `EventPatternMatch`
+- `HistoricalEventSimilarity`
+- `PatternReactionProfile`
+
+These models store the active production market-pattern catalog, ranked event pattern-classification evidence, replayable historical event similarities, and calibrated pattern reaction profiles.
+
+## Historical Similarity Foundation Models
+
+- `HistoricalPattern`
+- `HistoricalSimilarityMatch`
+- `HistoricalReactionProfile`
+
+These models store the foundation pattern catalog, replayable event-to-event similarity component scores, and event-level BTC reaction profiles for evidence-based historical comparison.
+
+## Narrative Heatmap Models
+
+- `MarketNarrative`
+- `NarrativeKeyword`
+- `NarrativeSnapshot`
+
+These models store the active Bitcoin narrative catalog, weighted deterministic keyword rules, and replayable narrative heatmap snapshots with confidence, provider state, evidence, and limitations.

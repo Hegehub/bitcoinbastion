@@ -19,6 +19,8 @@
 
 ## Core documentation
 
+- Historical Similarity Foundation: `docs/HISTORICAL_SIMILARITY_ENGINE.md` documents pattern matching, reaction profiles, similarity scoring, limitations, and API contracts.
+
 - `docs/STATUS.md`
 - `docs/PRODUCTION_READINESS.md`
 - `docs/OPERATIONS_RUNBOOK.md`
@@ -995,3 +997,7 @@ Bitcoin Bastion includes a replay-safe Candle Attribution Engine foundation for 
 ### Candle Attribution Engine
 
 Bitcoin Bastion includes a production Candle Attribution Engine that ranks nearby news/events as possible BTC candle contributors with configurable windows, weighted scoring, confidence bands, replay evidence, and operator review hooks. It always treats attribution as correlation-based context, not causation or trading advice.
+
+### Historical Similarity Engine
+
+Bitcoin Bastion now includes a production Historical Similarity Engine for Market Time Machine. It classifies NewsEvents into deterministic market patterns, compares historical analogs across event type, sentiment, narrative category, impact score, BTC reaction windows, and confidence, and returns reaction statistics for operator review. Historical similarity is informational only: **Historical similarity does not guarantee future outcomes.**

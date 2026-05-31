@@ -53,3 +53,13 @@ Deterministic, replayable dedup and conservative clustering feed canonical NewsE
 - Market-data foundation now includes provider health snapshot API and canonical BTC price history retrieval.
 
 - News scoring foundation now includes deterministic rule-based scoring service with config-driven weights in `config/news_scoring.yaml`.
+
+## Historical similarity subsystem
+
+The historical similarity subsystem lives under `app/services/intelligence`. It materializes `HistoricalEventProfile` rows from NewsEvents, NewsPriceImpacts, and CandleAttributions, then computes explainable component scores for narrative similarity, sentiment similarity, impact similarity, price-behavior similarity, confidence similarity, and dominant-window similarity.
+
+Similarity results are persisted for auditability and can be embedded into evidence packets as `similar_historical_events` plus `historical_similarity_summary`. The subsystem is deterministic, rule-based, and intentionally avoids prediction language.
+
+## Production Historical Similarity Engine
+
+The production Historical Similarity Engine adds `market_pattern_library` and `historical_similarity_records` alongside the historical profile/result tables. Pattern classification is handled by `PatternClassificationService`, while `HistoricalSimilarityService` builds reports with top analogs, median/average reaction statistics, confidence reasoning, and replayable evidence. The API layer exposes event, article, and pattern-library endpoints without introducing prediction or trading-advice semantics.

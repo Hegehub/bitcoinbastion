@@ -35,3 +35,45 @@ Each run can persist an `attribution_replay_logs` entry containing the engine ve
 - `GET /api/v1/intelligence/candles/{candle_id}/replay`
 
 These endpoints are designed for future UI aggregation such as “why did BTC move during this candle?” while preserving uncertainty and avoiding financial advice.
+
+## Foundation context snapshots
+
+The attribution foundation stores `candle_context_snapshots` for each attributed candle. These snapshots include volatility level, volume level, provider confidence, market regime, news/event density, positive/negative balance, macro/security/regulatory/institutional event counts, and a summary JSON payload for evidence drawers.
+
+## BMTM-029 Ranking Layer
+
+The production ranking layer in `app/services/intelligence/candle_attribution_ranking.py` focuses on the NewsEvent → BTC Candle relationship and produces ranked candidates for a candle. It searches:
+
+- events in the 15m, 30m, 60m, and 4h windows before the candle;
+- events published inside the candle interval;
+- events up to 15m after the candle for delayed attribution analysis.
+
+The service stores the final `rank`, score, explanation, limitations, time distance, direction match, and factor evidence in `candle_attributions`.
+
+## Ranking model
+
+The score is evidence-weighted rather than causal. The base formula multiplies:
+
+`time_proximity × btc_relevance × market_impact × direction_match × provider_confidence`
+
+It is then adjusted by historical pattern support, source health confidence, and event confidence. The response and persisted row include factor scores and weighted factor contributions so operators can see why an event ranked where it did.
+
+## Direction matching
+
+Direction match values are:
+
+- `strong_match` — positive event with green candle, or negative event with red candle;
+- `weak_match` — directional evidence exists but is not decisive;
+- `neutral` — neutral/unknown event sentiment or flat candle;
+- `contradictory` — event sentiment conflicts with candle direction.
+
+Contradictory evidence reduces confidence but never forces the score to zero, because markets can react irrationally or to overlapping events.
+
+## Confidence and limitations
+
+Confidence bands are `LOW`, `MEDIUM`, and `HIGH`; there is no critical/certain band. Every attribution includes:
+
+- `Correlation-based attribution. Not proof of causation.`
+- `Correlation is not proof of causation.`
+
+Additional limitations are emitted for provider degradation, low source confidence, weak historical support, insufficient evidence, and contradictory direction evidence.

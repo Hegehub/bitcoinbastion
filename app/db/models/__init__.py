@@ -4,6 +4,21 @@ from app.db.models.attribution_replay_log import AttributionReplayLog
 from app.db.models.candle_attribution import CandleAttribution
 from app.db.models.candle_attribution_candidate import CandleAttributionCandidate
 from app.db.models.attribution_context_snapshot import AttributionContextSnapshot
+from app.db.models.candle_context_snapshot import CandleContextSnapshot
+from app.db.models.historical_event_profile import HistoricalEventProfile
+from app.db.models.historical_similarity_result import HistoricalSimilarityResult
+from app.db.models.historical_similarity_record import HistoricalSimilarityRecord
+from app.db.models.market_pattern_library import MarketPatternLibrary
+from app.db.models.market_pattern import MarketPattern
+from app.db.models.event_pattern_match import EventPatternMatch
+from app.db.models.historical_event_similarity import HistoricalEventSimilarity
+from app.db.models.pattern_reaction_profile import PatternReactionProfile
+from app.db.models.historical_pattern import HistoricalPattern
+from app.db.models.historical_similarity_match import HistoricalSimilarityMatch
+from app.db.models.historical_reaction_profile import HistoricalReactionProfile
+from app.db.models.market_narrative import MarketNarrative
+from app.db.models.narrative_keyword import NarrativeKeyword
+from app.db.models.narrative_snapshot import NarrativeSnapshot
 from app.db.models.candle_provider_snapshot import CandleProviderSnapshot
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.btc_price_point import BTCPricePoint
@@ -30,8 +45,20 @@ from app.db.models.onchain import OnchainEvent
 from app.db.models.signal import Signal
 from app.db.models.signal_link import SignalSourceLink
 from app.db.models.telegram import TelegramDeliveryLog
-from app.db.models.treasury import PolicyExecutionLog, PolicyRule, PsbtWorkflow, TreasuryPolicy, TreasuryRequest
-from app.db.models.bastion_trace import TraceEvidence, TraceReport, TraceSource, TraceSourceSnapshot, TraceWatchlistEntry
+from app.db.models.treasury import (
+    PolicyExecutionLog,
+    PolicyRule,
+    PsbtWorkflow,
+    TreasuryPolicy,
+    TreasuryRequest,
+)
+from app.db.models.bastion_trace import (
+    TraceEvidence,
+    TraceReport,
+    TraceSource,
+    TraceSourceSnapshot,
+    TraceWatchlistEntry,
+)
 from app.db.models.wallet import WalletHealthReport, WalletProfile
 from app.db.models.watched_entity import WatchedEntity
 
@@ -40,6 +67,21 @@ __all__ = [
     "CandleAttribution",
     "CandleAttributionCandidate",
     "AttributionContextSnapshot",
+    "CandleContextSnapshot",
+    "HistoricalEventProfile",
+    "HistoricalSimilarityResult",
+    "HistoricalSimilarityRecord",
+    "MarketPatternLibrary",
+    "PatternReactionProfile",
+    "HistoricalEventSimilarity",
+    "EventPatternMatch",
+    "MarketPattern",
+    "HistoricalPattern",
+    "HistoricalSimilarityMatch",
+    "HistoricalReactionProfile",
+    "MarketNarrative",
+    "NarrativeKeyword",
+    "NarrativeSnapshot",
     "AttributionReplayLog",
     "IntelligenceTimelineEvent",
     "CandleBuildRun",

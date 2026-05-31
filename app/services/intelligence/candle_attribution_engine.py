@@ -17,13 +17,20 @@ from app.db.models.attribution_replay_log import AttributionReplayLog
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.candle_attribution import CandleAttribution
 from app.db.models.candle_attribution_candidate import CandleAttributionCandidate
+from app.db.models.candle_context_snapshot import CandleContextSnapshot
 from app.db.models.news_event import NewsEvent
 from app.db.models.news_price_impact import NewsPriceImpact
 from app.db.models.time_utils import utcnow
+from app.services.intelligence.historical_similarity_service import HistoricalSimilarityService
 from app.services.intelligence.candle_attribution.metrics import (
     ATTRIBUTION_CANDIDATES_TOTAL,
     ATTRIBUTION_CONFIDENCE_AVG,
     ATTRIBUTION_RUNTIME_MS,
+    CANDLE_ATTRIBUTION_CONFIDENCE_DISTRIBUTION,
+    CANDLE_ATTRIBUTION_FAILURES_TOTAL,
+    CANDLE_ATTRIBUTION_RUNS_TOTAL,
+    CANDLE_ATTRIBUTION_RUNTIME_SECONDS,
+    CANDLE_CANDIDATES_GENERATED_TOTAL,
     CANDLES_PROCESSED_TOTAL,
     LOW_CONFIDENCE_ATTRIBUTIONS_TOTAL,
     PROVIDER_DISAGREEMENT_TOTAL,
@@ -131,6 +138,7 @@ class CandleAttributionEngine:
 
     def attribute_candle_object(self, candle: BTCCandle) -> list[CandleAttribution]:
         start = time.perf_counter()
+        CANDLE_ATTRIBUTION_RUNS_TOTAL.inc()
         try:
             candidates = self.find_candidate_events(candle)
             scored = self.rank_candidates(candle, candidates)
@@ -142,6 +150,8 @@ class CandleAttributionEngine:
                     len(scored), self.settings.attribution_top_candidates
                 )
                 ATTRIBUTION_CONFIDENCE_AVG.set(average_confidence)
+                for item in scored[: self.settings.attribution_top_candidates]:
+                    CANDLE_ATTRIBUTION_CONFIDENCE_DISTRIBUTION.observe(item.confidence_score)
             logger.info(
                 "candle_attribution_completed",
                 extra={
@@ -152,8 +162,13 @@ class CandleAttributionEngine:
                 },
             )
             return rows
+        except Exception:
+            CANDLE_ATTRIBUTION_FAILURES_TOTAL.inc()
+            raise
         finally:
-            ATTRIBUTION_RUNTIME_MS.observe((time.perf_counter() - start) * 1000.0)
+            runtime_seconds = time.perf_counter() - start
+            ATTRIBUTION_RUNTIME_MS.observe(runtime_seconds * 1000.0)
+            CANDLE_ATTRIBUTION_RUNTIME_SECONDS.observe(runtime_seconds)
 
     def find_candidate_events(self, candle: BTCCandle) -> list[NewsEvent]:
         window = self._window_for_timeframe(candle.timeframe)
@@ -167,6 +182,7 @@ class CandleAttributionEngine:
         )
         events = list(self.db.execute(stmt).scalars())
         ATTRIBUTION_CANDIDATES_TOTAL.inc(len(events))
+        CANDLE_CANDIDATES_GENERATED_TOTAL.inc(len(events))
         return events
 
     def rank_candidates(self, candle: BTCCandle, events: list[NewsEvent]) -> list[CandidateScore]:
@@ -275,6 +291,7 @@ class CandleAttributionEngine:
         self.db.execute(delete(CandleAttribution).where(CandleAttribution.candle_id == candle.id))
         self.db.execute(delete(CandleAttributionCandidate).where(CandleAttributionCandidate.candle_id == candle.id))
         self.db.execute(delete(AttributionContextSnapshot).where(AttributionContextSnapshot.candle_id == candle.id))
+        self.db.execute(delete(CandleContextSnapshot).where(CandleContextSnapshot.candle_id == candle.id))
         for item in scored:
             self.db.add(
                 CandleAttributionCandidate(
@@ -282,8 +299,18 @@ class CandleAttributionEngine:
                     candidate_type=item.attribution_type.lower(),
                     event_id=item.event.id,
                     article_id=item.event.primary_article_id,
+                    time_distance_seconds=item.time_distance_seconds,
+                    relevance_score=item.ranking_features["factors"]["btc_relevance_score"],
+                    direction_match_score=item.ranking_features["factors"]["direction_match"],
+                    impact_alignment_score=item.ranking_features["factors"]["market_impact_score"],
+                    recency_score=item.freshness_weight,
                     raw_score=item.raw_score,
                     normalized_score=item.normalized_score,
+                    metadata_json={
+                        "provider_confidence": item.ranking_features["factors"]["provider_confidence"],
+                        "sentiment_direction_match": item.sentiment_direction_match,
+                        "event_type": item.ranking_features.get("event_type"),
+                    },
                     ranking_features_json=item.ranking_features,
                     rejection_reason="" if item.rank <= self.settings.attribution_top_candidates else "below_top_candidate_limit",
                 )
@@ -342,8 +369,27 @@ class CandleAttributionEngine:
             self.db.add(row)
             rows.append(row)
         self.db.add(self._context_snapshot(candle, scored))
+        self.db.add(self._candle_context_snapshot(candle, scored))
         self.db.flush()
         return rows
+
+    def get_context_snapshot(self, candle_id: int) -> CandleContextSnapshot | None:
+        row = (
+            self.db.query(CandleContextSnapshot)
+            .filter(CandleContextSnapshot.candle_id == candle_id)
+            .order_by(CandleContextSnapshot.id.desc())
+            .first()
+        )
+        if row is not None:
+            return row
+        candle = self.db.get(BTCCandle, candle_id)
+        if candle is None:
+            return None
+        scored = self.rank_candidates(candle, self.find_candidate_events(candle))
+        snapshot = self._candle_context_snapshot(candle, scored)
+        self.db.add(snapshot)
+        self.db.flush()
+        return snapshot
 
     def explain_candle(self, candle_id: int) -> dict[str, Any]:
         candle = self.db.get(BTCCandle, candle_id)
@@ -490,6 +536,10 @@ class CandleAttributionEngine:
         return limitations
 
     def generate_replayable_evidence(self, candle: BTCCandle, candidate: CandidateScore) -> dict[str, Any]:
+        similarity_packet = HistoricalSimilarityService(self.db).evidence_packet_for_event(candidate.event.id, limit=3)
+        similarity_limitations = similarity_packet.get("limitations", [])
+        if not isinstance(similarity_limitations, list):
+            similarity_limitations = []
         return {
             "candidate_selection": {
                 "event_id": candidate.event.id,
@@ -513,7 +563,9 @@ class CandleAttributionEngine:
             "ranking_features": candidate.ranking_features,
             "direction_logic": candidate.ranking_features.get("direction_logic", {}),
             "confidence_adjustments": candidate.ranking_features.get("confidence_adjustments", []),
-            "limitations": candidate.limitations,
+            "similar_historical_events": similarity_packet["similar_historical_events"],
+            "historical_similarity_summary": similarity_packet["historical_similarity_summary"],
+            "limitations": candidate.limitations + [str(item) for item in similarity_limitations],
         }
 
     def confidence_band(self, value: float) -> str:
@@ -548,6 +600,45 @@ class CandleAttributionEngine:
             news_provider_confidence=news_confidence,
             timeline_snapshot_json={"candidates": [self._candidate_payload(item) for item in scored]},
         )
+
+    def _candle_context_snapshot(self, candle: BTCCandle, scored: list[CandidateScore]) -> CandleContextSnapshot:
+        positive_count = sum(1 for item in scored if str(item.event.event_sentiment).upper() == "POSITIVE")
+        negative_count = sum(1 for item in scored if str(item.event.event_sentiment).upper() == "NEGATIVE")
+        volatility = float(candle.volatility_score or 0.0)
+        volume = float(candle.volume or 0.0)
+        return CandleContextSnapshot(
+            candle_id=candle.id,
+            volatility_level=self._bucket(volatility, low=0.25, high=0.7),
+            volume_level="unknown" if volume <= 0 else self._bucket(volume, low=1.0, high=10.0),
+            provider_confidence=float(candle.provider_confidence or 0.0),
+            market_regime=candle.market_regime or "unknown",
+            news_density=len(scored),
+            event_density=len(scored),
+            positive_event_count=positive_count,
+            negative_event_count=negative_count,
+            macro_event_count=sum(1 for item in scored if item.event.is_macro_related),
+            security_event_count=sum(1 for item in scored if item.event.is_security_related),
+            regulatory_event_count=sum(1 for item in scored if item.event.is_regulatory_related),
+            institutional_event_count=sum(1 for item in scored if item.event.is_institutional_related),
+            summary_json={
+                "provider_state": {
+                    "provider_count": candle.provider_count,
+                    "provider_confidence": candle.provider_confidence,
+                    "provider_disagreement_score": candle.provider_disagreement_score,
+                    "is_degraded": candle.is_degraded,
+                },
+                "sentiment_balance": {"positive": positive_count, "negative": negative_count},
+                "limitations": [CORRELATION_LIMITATION],
+                "top_candidates": [self._candidate_payload(item) for item in scored[: self.settings.attribution_top_candidates]],
+            },
+        )
+
+    def _bucket(self, value: float, low: float, high: float) -> str:
+        if value >= high:
+            return "high"
+        if value >= low:
+            return "medium"
+        return "low"
 
     def _row_payload(self, row: CandleAttribution) -> dict[str, Any]:
         title = ""

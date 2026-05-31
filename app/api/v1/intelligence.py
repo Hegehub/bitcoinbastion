@@ -10,6 +10,28 @@ from app.db.models.btc_candle import BTCCandle
 from app.db.models.candle_attribution import CandleAttribution
 from app.db.models.candle_attribution_candidate import CandleAttributionCandidate
 from app.services.intelligence.candle_attribution_engine import CandleAttributionEngine
+from app.services.intelligence.candle_attribution_ranking import CandleAttributionRankingEngine
+from app.services.intelligence.historical_similarity.historical_similarity_service import (
+    HistoricalSimilarityService as PackagedHistoricalSimilarityService,
+)
+from app.services.intelligence.historical_similarity_engine import HistoricalSimilarityEngine
+from app.services.intelligence.historical_similarity_foundation import (
+    HistoricalReactionService as FoundationHistoricalReactionService,
+    HistoricalSimilarityService as FoundationHistoricalSimilarityService,
+)
+from app.services.intelligence.market_memory_service import MarketMemoryService
+from app.services.intelligence.narrative_heatmap import (
+    NarrativeHeatmapService,
+    NarrativeRotationService,
+    NARRATIVE_LIMITATION,
+    NARRATIVE_SAFETY,
+)
+from app.services.intelligence.historical_similarity_service import (
+    CORRELATION_LIMITATION,
+    HISTORICAL_OUTCOME_LIMITATION,
+    PAST_PERFORMANCE_LIMITATION,
+    HistoricalSimilarityService,
+)
 
 router = APIRouter(prefix="/intelligence", tags=["intelligence"])
 
@@ -60,40 +82,386 @@ def _attribution_payload(row: CandleAttribution) -> dict[str, Any]:
     }
 
 
+def _similarity_unavailable_payload() -> dict[str, object]:
+    return {
+        "data": [],
+        "limitations": [
+            CORRELATION_LIMITATION,
+            HISTORICAL_OUTCOME_LIMITATION,
+            PAST_PERFORMANCE_LIMITATION,
+            "Historical similarity storage is unavailable in this environment.",
+        ],
+    }
+
+
+@router.get("/similarity/news/{event_id}")
+def get_news_similarity(
+    event_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        return {
+            "data": HistoricalSimilarityService(db).find_similar_news_events(event_id, limit=limit),
+            "limitations": [
+                CORRELATION_LIMITATION,
+                PAST_PERFORMANCE_LIMITATION,
+                HISTORICAL_OUTCOME_LIMITATION,
+            ],
+        }
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+@router.get("/similarity/event/{event_id}")
+def get_event_similarity(
+    event_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        return {
+            "data": HistoricalSimilarityService(db).find_similar_events(event_id, limit=limit),
+            "limitations": [
+                CORRELATION_LIMITATION,
+                PAST_PERFORMANCE_LIMITATION,
+                HISTORICAL_OUTCOME_LIMITATION,
+            ],
+        }
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+@router.get("/similarity/candle/{candle_id}")
+def get_candle_similarity(
+    candle_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        return {
+            "data": HistoricalSimilarityService(db).find_similar_candle_events(
+                candle_id, limit=limit
+            ),
+            "limitations": [
+                CORRELATION_LIMITATION,
+                PAST_PERFORMANCE_LIMITATION,
+                HISTORICAL_OUTCOME_LIMITATION,
+            ],
+        }
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+def _pattern_payload(row: object) -> dict[str, object]:
+    slug = getattr(row, "slug", getattr(row, "pattern_code", ""))
+    name = getattr(row, "name", getattr(row, "display_name", slug))
+    return {
+        "id": getattr(row, "id", None),
+        "slug": slug,
+        "pattern_code": slug,
+        "name": name,
+        "display_name": name,
+        "category": getattr(row, "category", "unknown"),
+        "description": getattr(row, "description", ""),
+        "expected_sentiment": getattr(
+            row, "expected_sentiment", getattr(row, "default_sentiment", "UNKNOWN")
+        ),
+        "expected_direction": getattr(row, "expected_direction", "UNKNOWN"),
+        "typical_impact_window": getattr(
+            row, "typical_impact_window", getattr(row, "expected_reaction_window", "unknown")
+        ),
+        "historical_reaction_profile": getattr(row, "historical_reaction_profile_json", {}),
+        "confidence_rules": getattr(row, "confidence_rules_json", {}),
+        "is_active": getattr(row, "is_active", True),
+        "created_at": getattr(row, "created_at", None),
+        "updated_at": getattr(row, "updated_at", None),
+    }
+
+
+@router.get("/similarity/events/{event_id}")
+def get_event_similarity_report(
+    event_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        return (
+            PackagedHistoricalSimilarityService(db)
+            .find_for_event(event_id, limit=limit)
+            .model_dump()
+        )
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+@router.get("/similarity/articles/{article_id}")
+def get_article_similarity_report(
+    article_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        return (
+            PackagedHistoricalSimilarityService(db)
+            .find_for_article(article_id, limit=limit)
+            .model_dump()
+        )
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+@router.get("/similarity/signals/{signal_id}")
+def get_signal_similarity_report(
+    signal_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        return (
+            PackagedHistoricalSimilarityService(db)
+            .find_for_signal(signal_id, limit=limit)
+            .model_dump()
+        )
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+@router.get("/similar-events/{event_id}")
+def get_foundation_similar_events(
+    event_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        payload = FoundationHistoricalSimilarityService(db).find_similar_events(
+            event_id, limit=limit
+        )
+        db.commit()
+        return payload
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+@router.get("/reaction-profile/{event_id}")
+def get_foundation_reaction_profile(
+    event_id: int, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        service = FoundationHistoricalReactionService(db)
+        profile = service.build_reaction_profile(event_id)
+        if profile is None:
+            raise HTTPException(status_code=404, detail="event_not_found")
+        db.commit()
+        return {
+            "data": service.payload(profile),
+            "limitations": [
+                "Historical similarity does not imply future performance. Correlation is not proof of causation."
+            ],
+        }
+    except OperationalError:
+        return {"data": None, "limitations": ["Reaction profile storage is unavailable."]}
+
+
+@router.get("/events/{event_id}/similar")
+def get_event_market_memory_similarity(
+    event_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        payload = HistoricalSimilarityEngine(db).find_similar_events(event_id, limit=limit)
+        db.commit()
+        return payload
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+@router.get("/events/{event_id}/memory")
+def get_event_market_memory(event_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return MarketMemoryService(db).event_memory(event_id)
+    except OperationalError:
+        return {
+            "event_id": event_id,
+            "pattern_matches": [],
+            "similar_events": [],
+            "confidence_history": [],
+            "limitations": ["Market memory storage is unavailable."],
+        }
+
+
+@router.get("/patterns")
+def list_market_patterns(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        rows = MarketMemoryService(db).ensure_patterns()
+        return {
+            "data": [_pattern_payload(row) for row in rows],
+            "limitations": [HISTORICAL_OUTCOME_LIMITATION],
+        }
+    except OperationalError:
+        return {"data": [], "limitations": ["Pattern library storage is unavailable."]}
+
+
+@router.get("/patterns/{pattern_code}/history")
+def get_market_pattern_history(
+    pattern_code: str, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        return {
+            "data": MarketMemoryService(db).retrieve_pattern_history(pattern_code),
+            "limitations": [HISTORICAL_OUTCOME_LIMITATION],
+        }
+    except OperationalError:
+        return {"data": [], "limitations": ["Pattern history storage is unavailable."]}
+
+
+@router.get("/patterns/{pattern_code}/reaction-profile")
+def get_market_pattern_reaction_profile(
+    pattern_code: str, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        profile = MarketMemoryService(db).retrieve_reaction_profile(pattern_code)
+        return {
+            "data": (
+                MarketMemoryService(db).reaction_profile_payload(profile)
+                if profile is not None
+                else None
+            ),
+            "limitations": [HISTORICAL_OUTCOME_LIMITATION],
+        }
+    except OperationalError:
+        return {"data": None, "limitations": ["Pattern reaction-profile storage is unavailable."]}
+
+
+@router.get("/patterns/{pattern_code}")
+def get_market_pattern(pattern_code: str, db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        row = MarketMemoryService(db).get_pattern(pattern_code)
+        if row is None:
+            raise HTTPException(status_code=404, detail="pattern_not_found")
+        return {"data": _pattern_payload(row), "limitations": [HISTORICAL_OUTCOME_LIMITATION]}
+    except OperationalError:
+        return {"data": None, "limitations": ["Pattern library storage is unavailable."]}
+
+
+@router.get("/narratives")
+def list_narratives(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        payload = {
+            "data": NarrativeHeatmapService(db).list_narratives(),
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
+        db.commit()
+        return payload
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative storage is unavailable."]}
+
+
+@router.get("/narratives/top")
+def get_top_narratives(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return NarrativeHeatmapService(db).top()
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative snapshot storage is unavailable."]}
+
+
+@router.get("/narratives/rising")
+def get_rising_narratives(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return NarrativeHeatmapService(db).rising()
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative snapshot storage is unavailable."]}
+
+
+@router.get("/narratives/falling")
+def get_falling_narratives(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return NarrativeHeatmapService(db).falling()
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative snapshot storage is unavailable."]}
+
+
+@router.get("/narratives/heatmap")
+def get_narrative_heatmap(
+    window: str = "24h", db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        payload = NarrativeHeatmapService(db).build_heatmap(window=window)
+        db.commit()
+        return payload
+    except OperationalError:
+        return {
+            "top_narratives": [],
+            "top_rising_narratives": [],
+            "top_falling_narratives": [],
+            "highest_impact_narratives": [],
+            "dominance_index": {},
+            "limitations": ["Narrative heatmap storage is unavailable."],
+        }
+
+
+@router.get("/narratives/rotations")
+def get_narrative_rotations(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return {
+            "data": NarrativeRotationService(db).detect_rotations(),
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative rotation storage is unavailable."]}
+
+
+@router.get("/narratives/{slug}")
+def get_narrative(slug: str, db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        row = NarrativeHeatmapService(db).get_narrative(slug)
+        if row is None:
+            raise HTTPException(status_code=404, detail="narrative_not_found")
+        db.commit()
+        return {"data": row, "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
+    except OperationalError:
+        return {"data": None, "limitations": ["Narrative storage is unavailable."]}
+
+
 @router.get("/candles/{candle_id}/attribution")
-def get_candle_attribution(candle_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_candle_attribution(
+    candle_id: int, limit: int = 5, db: Session = Depends(db_session)
+) -> dict[str, object]:
     try:
         candle = db.get(BTCCandle, candle_id)
         if candle is None:
             raise HTTPException(status_code=404, detail="candle_not_found")
-        rows = CandleAttributionEngine(db).attribute_candle_object(candle)
-        if not rows:
-            replay = db.query(AttributionReplayLog).filter(AttributionReplayLog.candle_id == candle_id).order_by(AttributionReplayLog.id.desc()).first()
-            explanation = replay.explanation_snapshot_json if replay else {"limitations": ["Correlation is not proof of causation."]}
-            return {"candle": _candle_payload(candle), "candidate_events": [], "summary": explanation.get("summary", "No candidates found."), "limitations": explanation.get("limitations", [])}
-        return {
-            "candle": _candle_payload(candle),
-            "candidate_events": [_attribution_payload(row) for row in rows],
-            "summary": rows[0].summary_text,
-            "limitations": rows[0].limitations_json.get("limitations", []) if isinstance(rows[0].limitations_json, dict) else [],
-        }
+        payload = CandleAttributionRankingEngine(db).attribute_candle(candle_id, limit=limit)
+        db.commit()
+        return payload
     except OperationalError:
-        return {"candle": None, "candidate_events": [], "summary": "Attribution storage is unavailable.", "limitations": ["Correlation is not proof of causation.", "Attribution tables are not available in this environment."]}
+        return {
+            "candle": None,
+            "candidate_events": [],
+            "ranking": [],
+            "confidence": 0.0,
+            "summary": "Attribution storage is unavailable.",
+            "limitations": [
+                "Correlation is not proof of causation.",
+                "Attribution tables are not available in this environment.",
+            ],
+        }
 
 
 @router.get("/candles/{candle_id}/top-events")
-def get_candle_top_events(candle_id: int, limit: int = 5, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_candle_top_events(
+    candle_id: int, limit: int = 5, db: Session = Depends(db_session)
+) -> dict[str, object]:
     try:
-        rows = db.query(CandleAttribution).filter(CandleAttribution.candle_id == candle_id).order_by(CandleAttribution.rank.asc()).limit(limit).all()
+        rows = (
+            db.query(CandleAttribution)
+            .filter(CandleAttribution.candle_id == candle_id)
+            .order_by(CandleAttribution.rank.asc())
+            .limit(limit)
+            .all()
+        )
         return {"data": [_attribution_payload(row) for row in rows]}
     except OperationalError:
         return {"data": []}
 
 
 @router.get("/candles/{candle_id}/replay")
-def get_candle_replay(candle_id: int, limit: int = 5, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_candle_replay(
+    candle_id: int, limit: int = 5, db: Session = Depends(db_session)
+) -> dict[str, object]:
     try:
-        rows = db.query(AttributionReplayLog).filter(AttributionReplayLog.candle_id == candle_id).order_by(AttributionReplayLog.id.desc()).limit(limit).all()
+        rows = (
+            db.query(AttributionReplayLog)
+            .filter(AttributionReplayLog.candle_id == candle_id)
+            .order_by(AttributionReplayLog.id.desc())
+            .limit(limit)
+            .all()
+        )
         return {
             "data": [
                 {
@@ -127,19 +495,57 @@ def explain_candle(candle_id: int, db: Session = Depends(db_session)) -> dict[st
             "candle": None,
             "ranked_candidate_events": [],
             "summary": "Attribution storage is unavailable.",
-            "limitations": ["Correlation is not proof of causation.", "Attribution tables are not available in this environment."],
+            "limitations": [
+                "Correlation is not proof of causation.",
+                "Attribution tables are not available in this environment.",
+            ],
             "side_panel": {"primary_candidate": None, "candidate_count": 0},
             "evidence_drawer": {"items": []},
         }
 
 
+@router.get("/candles/{candle_id}/context")
+def get_candle_context(candle_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        row = CandleAttributionEngine(db).get_context_snapshot(candle_id)
+        if row is None:
+            raise HTTPException(status_code=404, detail="candle_not_found")
+        return {
+            "data": {
+                "id": row.id,
+                "candle_id": row.candle_id,
+                "volatility_level": row.volatility_level,
+                "volume_level": row.volume_level,
+                "provider_confidence": row.provider_confidence,
+                "market_regime": row.market_regime,
+                "news_density": row.news_density,
+                "event_density": row.event_density,
+                "positive_event_count": row.positive_event_count,
+                "negative_event_count": row.negative_event_count,
+                "macro_event_count": row.macro_event_count,
+                "security_event_count": row.security_event_count,
+                "regulatory_event_count": row.regulatory_event_count,
+                "institutional_event_count": row.institutional_event_count,
+                "summary": row.summary_json,
+                "created_at": row.created_at,
+            }
+        }
+    except OperationalError:
+        return {"data": None, "limitations": ["Candle context storage is unavailable."]}
+
+
 @router.get("/candles/{candle_id}/candidates")
-def get_candle_candidates(candle_id: int, limit: int = 50, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_candle_candidates(
+    candle_id: int, limit: int = 50, db: Session = Depends(db_session)
+) -> dict[str, object]:
     try:
         rows = (
             db.query(CandleAttributionCandidate)
             .filter(CandleAttributionCandidate.candle_id == candle_id)
-            .order_by(CandleAttributionCandidate.normalized_score.desc(), CandleAttributionCandidate.id.asc())
+            .order_by(
+                CandleAttributionCandidate.normalized_score.desc(),
+                CandleAttributionCandidate.id.asc(),
+            )
             .limit(limit)
             .all()
         )
@@ -151,8 +557,14 @@ def get_candle_candidates(candle_id: int, limit: int = 50, db: Session = Depends
                     "candidate_type": row.candidate_type,
                     "event_id": row.event_id,
                     "article_id": row.article_id,
+                    "time_distance_seconds": row.time_distance_seconds,
+                    "relevance_score": row.relevance_score,
+                    "direction_match_score": row.direction_match_score,
+                    "impact_alignment_score": row.impact_alignment_score,
+                    "recency_score": row.recency_score,
                     "raw_score": row.raw_score,
                     "normalized_score": row.normalized_score,
+                    "metadata": row.metadata_json,
                     "ranking_features": row.ranking_features_json,
                     "rejection_reason": row.rejection_reason,
                     "created_at": row.created_at,
@@ -188,7 +600,9 @@ def review_candle_attribution(
 
 
 @router.get("/impact/high-confidence")
-def get_high_confidence_impacts(limit: int = 50, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_high_confidence_impacts(
+    limit: int = 50, db: Session = Depends(db_session)
+) -> dict[str, object]:
     try:
         from app.db.models.news_price_impact import NewsPriceImpact
 

@@ -148,3 +148,29 @@ def test_explain_candle_returns_frontend_ready_payload() -> None:
     assert payload["ranked_candidate_events"]
     assert payload["side_panel"]["candidate_count"] == 1
     assert payload["evidence_drawer"]["items"]
+
+
+def test_context_snapshot_and_candidate_factor_fields_are_persisted() -> None:
+    db = _session()
+    open_time = datetime(2026, 5, 28, 12, 0, 0)
+    candle = _candle(open_time)
+    event = _event(open_time - timedelta(minutes=7), "Bitcoin regulatory ETF approval")
+    event.is_regulatory_related = True
+    db.add_all([candle, event])
+    db.commit()
+
+    engine = CandleAttributionEngine(db)
+    engine.attribute_candle(candle.id)
+    context = engine.get_context_snapshot(candle.id)
+    candidate = db.query(CandleAttributionCandidate).one()
+
+    assert candidate.time_distance_seconds > 0
+    assert candidate.relevance_score > 0
+    assert candidate.direction_match_score > 0
+    assert candidate.impact_alignment_score > 0
+    assert candidate.recency_score > 0
+    assert candidate.metadata_json["provider_confidence"] > 0
+    assert context is not None
+    assert context.event_density == 1
+    assert context.regulatory_event_count == 1
+    assert context.summary_json["limitations"] == ["Correlation is not proof of causation."]
