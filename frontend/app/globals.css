@@ -33,10 +33,16 @@
   border-color: var(--bb-border);
 }
 
+html {
+  text-rendering: optimizeLegibility;
+}
+
 body {
   background: var(--bb-bg);
   color: var(--bb-black);
   font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -54,11 +60,27 @@ h6 {
   }
 
   .bastion-card {
-    @apply rounded-2xl border bg-white p-6 shadow-sm;
+    @apply rounded-2xl border bg-white p-6 text-left shadow-sm;
   }
 
   .bastion-section {
     @apply py-12 sm:py-16 lg:py-20;
+  }
+
+  .bastion-stack {
+    @apply space-y-6;
+  }
+
+  .bastion-copy {
+    @apply max-w-3xl text-base leading-7 text-bb-gray;
+  }
+
+  .bastion-copy-sm {
+    @apply text-sm leading-6 text-bb-gray;
+  }
+
+  .bastion-card-title {
+    @apply font-heading text-lg font-semibold leading-7 text-bb-black;
   }
 
   .bastion-eyebrow {
