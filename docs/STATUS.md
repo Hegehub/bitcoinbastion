@@ -161,3 +161,11 @@ Implemented foundation tables and services for historical patterns, event reacti
 ## Narrative Heatmap Engine Update
 
 Implemented Prompt 32 foundation for Bitcoin narrative intelligence: persisted narrative catalog, narrative keywords, heatmap snapshots, deterministic classifier/scoring/trend/dominance/rotation services, timeline integration for rising/spiking narratives, API contracts, metrics, and tests. Production readiness improves through operator-visible narrative dominance and evidence packets, while remaining explicitly correlation-based and non-predictive.
+
+## BMTM-033 Narrative Heatmap Expansion
+
+Expanded the narrative heatmap into the BMTM-033 contract with `NarrativeType`, narrative observations, heat/volume/impact/growth snapshot fields, dominance/history APIs, deterministic multi-category classifier coverage for ETF/Fed/Lightning examples, and observability metrics. Remaining work: calibrate historical "before major BTC moves" analysis after broader candle-attribution backfill.
+
+## BMTM-034 Narrative Heatmap Production Registry
+
+Implemented the Task 34 production foundation: local YAML narrative registry, seed command, observation strength/relevance fields, snapshot heat/velocity/dominance fields, emerging narrative API, frontend-ready supporting evidence DTOs, and production metrics. Remaining work: richer historical volatility correlation and dashboard UI rendering.

@@ -366,6 +366,22 @@ def get_falling_narratives(db: Session = Depends(db_session)) -> dict[str, objec
         return {"data": [], "limitations": ["Narrative snapshot storage is unavailable."]}
 
 
+@router.get("/narratives/emerging")
+def get_emerging_narratives(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return NarrativeHeatmapService(db).emerging()
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative snapshot storage is unavailable."]}
+
+
+@router.get("/narratives/dominant")
+def get_dominant_narratives(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return NarrativeHeatmapService(db).dominant()
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative snapshot storage is unavailable."]}
+
+
 @router.get("/narratives/heatmap")
 def get_narrative_heatmap(
     window: str = "24h", db: Session = Depends(db_session)
@@ -383,6 +399,24 @@ def get_narrative_heatmap(
             "dominance_index": {},
             "limitations": ["Narrative heatmap storage is unavailable."],
         }
+
+
+@router.get("/narratives/dominance")
+def get_narrative_dominance(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return NarrativeHeatmapService(db).dominance()
+    except OperationalError:
+        return {"data": {}, "items": [], "limitations": ["Narrative dominance storage is unavailable."]}
+
+
+@router.get("/narratives/history")
+def get_narrative_history(
+    period: str = "month", limit: int = 20, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        return NarrativeHeatmapService(db).history(period=period, limit=limit)
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative history storage is unavailable."]}
 
 
 @router.get("/narratives/rotations")

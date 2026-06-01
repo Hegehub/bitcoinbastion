@@ -63,3 +63,11 @@ Similarity results are persisted for auditability and can be embedded into evide
 ## Production Historical Similarity Engine
 
 The production Historical Similarity Engine adds `market_pattern_library` and `historical_similarity_records` alongside the historical profile/result tables. Pattern classification is handled by `PatternClassificationService`, while `HistoricalSimilarityService` builds reports with top analogs, median/average reaction statistics, confidence reasoning, and replayable evidence. The API layer exposes event, article, and pattern-library endpoints without introducing prediction or trading-advice semantics.
+
+## BMTM Narrative Heatmap
+
+The Market Time Machine Intelligence Layer includes a Narrative Heatmap subsystem. It persists narrative taxonomy, narrative observations, and narrative snapshots; classifies NewsArticles and NewsEvents into multiple deterministic `NarrativeType` values; computes heat, volume, impact, growth, confidence, dominance, and trend state; and emits narrative timeline entries for rising/spiking narratives. It integrates with news, scoring, timeline, historical similarity, and future dashboard widgets while preserving correlation-only language.
+
+### Narrative registry and UI contracts
+
+The Narrative Heatmap subsystem now reads the operator-editable `config/narratives.yaml` registry, persists observation-level strength/relevance/confidence, and stores snapshot-level heat, velocity, dominance, and supporting-event counts. The API returns frontend-ready DTOs for heatmaps, trend charts, leaderboards, and narrative timelines without claiming causation.

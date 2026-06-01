@@ -156,3 +156,14 @@ These models store the foundation pattern catalog, replayable event-to-event sim
 - `NarrativeSnapshot`
 
 These models store the active Bitcoin narrative catalog, weighted deterministic keyword rules, and replayable narrative heatmap snapshots with confidence, provider state, evidence, and limitations.
+
+## BMTM-033 Narrative Observation Model
+
+- `NarrativeObservation`
+
+This model stores article/event-level narrative classification observations with narrative type, observation score, confidence, source confidence, and observed time for replayable narrative intelligence.
+
+### Task 34 Narrative Heatmap Fields
+
+- `NarrativeObservation` includes `narrative_id`, `observation_time`, `strength_score`, and `relevance_score` for replayable classifier evidence.
+- `NarrativeSnapshot` includes `velocity_score`, `dominance_score`, and `supporting_events_count` for leaderboard and heatmap rendering.

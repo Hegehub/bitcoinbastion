@@ -12,7 +12,9 @@ class MarketNarrative(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     slug: Mapped[str] = mapped_column(String(96), unique=True, index=True)
+    narrative_type: Mapped[str] = mapped_column(String(64), index=True, default="")
     name: Mapped[str] = mapped_column(String(160), nullable=False)
+    display_name: Mapped[str] = mapped_column(String(160), default="")
     description: Mapped[str] = mapped_column(String(600), default="")
     category: Mapped[str] = mapped_column(String(64), index=True, default="unknown")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)

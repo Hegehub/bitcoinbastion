@@ -333,7 +333,16 @@ These endpoints are informational only and must include: "Historical similarity 
 - `GET /api/v1/intelligence/narratives/rising` returns latest narratives in `RISING` or `SPIKING` states.
 - `GET /api/v1/intelligence/narratives/falling` returns latest narratives in `FALLING` or `COOLING` states.
 - `GET /api/v1/intelligence/narratives/heatmap` builds and returns a backend-ready heatmap with top narratives, rising/falling lists, highest-impact narratives, dominance percentages, evidence, confidence, and limitations.
-- `GET /api/v1/intelligence/narratives/{slug}` returns narrative metadata, keywords, latest snapshot, and limitations.
+- `GET /api/v1/intelligence/narratives/{slug}` returns narrative metadata, keywords, latest snapshot, and limitations; `{slug}` may also be a `NarrativeType` such as `ETF`.
+- `GET /api/v1/intelligence/narratives/dominance` returns the latest narrative dominance index and heat-ranked items for a future dominance pie widget.
+- `GET /api/v1/intelligence/narratives/history` returns recent top narratives, impact ranking, growth leaders, declining narratives, and historical limitations.
 - `GET /api/v1/intelligence/narratives/rotations` returns possible attention-rotation events between consecutive narrative snapshots.
 
 Narrative responses are informational and correlation-based. They must not claim that a narrative caused a BTC price move.
+
+### Narrative Heatmap Task 34 additions
+
+- `GET /api/v1/intelligence/narratives/emerging` returns rising/spiking narratives ordered by velocity score.
+- `GET /api/v1/intelligence/narratives/dominant` returns narratives with high dominance or heat scores for leaderboard widgets.
+- Narrative heatmap rows include `velocity_score`, `dominance_score`, `supporting_events_count`, `supporting_articles`, and `supporting_events` for future heatmap, trend-chart, leaderboard, and narrative-timeline widgets.
+- The narrative registry is seeded from `config/narratives.yaml`; the classifier remains local and deterministic.

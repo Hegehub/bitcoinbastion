@@ -19,6 +19,7 @@ from app.db.models.historical_reaction_profile import HistoricalReactionProfile
 from app.db.models.market_narrative import MarketNarrative
 from app.db.models.narrative_keyword import NarrativeKeyword
 from app.db.models.narrative_snapshot import NarrativeSnapshot
+from app.db.models.narrative_observation import NarrativeObservation
 from app.db.models.candle_provider_snapshot import CandleProviderSnapshot
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.btc_price_point import BTCPricePoint
@@ -82,6 +83,7 @@ __all__ = [
     "MarketNarrative",
     "NarrativeKeyword",
     "NarrativeSnapshot",
+    "NarrativeObservation",
     "AttributionReplayLog",
     "IntelligenceTimelineEvent",
     "CandleBuildRun",

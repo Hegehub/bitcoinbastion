@@ -2,25 +2,36 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from pathlib import Path
 from statistics import mean
 from typing import Any, cast
 
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
+
 from app.db.models.intelligence_timeline import IntelligenceTimelineEvent
 from app.db.models.market_narrative import MarketNarrative
 from app.db.models.narrative_keyword import NarrativeKeyword
+from app.db.models.narrative_observation import NarrativeObservation
 from app.db.models.narrative_snapshot import NarrativeSnapshot
 from app.db.models.news_article import NewsArticle
 from app.db.models.news_event import NewsEvent
 from app.db.models.time_utils import utcnow
 from app.services.intelligence.narrative_heatmap_metrics import (
+    CLASSIFICATION_FAILURES_TOTAL,
     NARRATIVE_CLASSIFICATIONS_TOTAL,
+    NARRATIVE_CLASSIFIER_FAILURES_TOTAL,
     NARRATIVE_CONFIDENCE_AVG,
+    NARRATIVE_DOMINANCE_UPDATES_TOTAL,
+    NARRATIVE_GROWTH_RECALCULATIONS_TOTAL,
+    NARRATIVE_HEAT_UPDATES_TOTAL,
     NARRATIVE_ROTATIONS_TOTAL,
+    NARRATIVES_DETECTED_TOTAL,
     NARRATIVE_SNAPSHOTS_TOTAL,
 )
+from app.services.intelligence.narrative_types import NarrativeType
+from app.services.market_intelligence.source_registry import yaml_any as yaml_loader
 
 NARRATIVE_LIMITATION = "Narrative heatmap output is correlation-based and does not prove causation."
 NARRATIVE_SAFETY = "Narratives may be associated with market context, but they do not predict price movement."
@@ -43,7 +54,28 @@ NARRATIVE_SEEDS: tuple[tuple[str, str, str, str, tuple[tuple[str, float], ...]],
     ("exchange-risk", "Exchange Risk", "Exchange solvency, hacks, reserves, and counterparty-risk narratives.", "security", (("exchange", 1.6), ("proof of reserves", 2.0), ("solvency", 1.8), ("withdrawals halted", 2.0))),
     ("security-incidents", "Security Incidents", "Security incidents, exploits, vulnerabilities, and custody failures.", "security", (("hack", 2.0), ("exploit", 2.0), ("vulnerability", 2.0), ("custody failure", 2.0), ("breach", 1.5))),
     ("liquidations", "Liquidations", "Liquidation cascades, leverage flushes, and forced-deleveraging narratives.", "market_structure", (("liquidation", 2.5), ("cascade", 1.8), ("leverage", 1.2), ("forced selling", 1.4))),
+    ("stablecoin-liquidity", "Stablecoin Liquidity", "Stablecoin liquidity and dollar-rail narratives around Bitcoin markets.", "market_structure", (("stablecoin liquidity", 2.4), ("stablecoin", 2.0), ("usdt", 1.2), ("usdc", 1.2))),
     ("market-structure", "Market Structure", "Liquidity, order-book, volatility, basis, and market-structure narratives.", "market_structure", (("market structure", 2.5), ("liquidity", 1.2), ("order book", 1.5), ("volatility", 1.3), ("basis", 1.2))),
+    ("hashrate", "Hashrate", "Hashrate and mining difficulty narratives.", "mining", (("hashrate", 2.0), ("hash rate", 2.0), ("difficulty", 1.5))),
+    ("macro", "Macro", "Macro market narratives.", "macro", (("macro", 1.6), ("global market", 1.0), ("risk appetite", 1.2))),
+    ("interest-rates", "Interest Rates", "Rate-cut, rate-hike, and yield narratives.", "macro", (("interest rates", 2.0), ("rate cut", 1.5), ("rate hike", 1.5), ("yields", 1.2))),
+    ("liquidity", "Liquidity", "Global liquidity and market liquidity narratives.", "macro", (("liquidity", 2.0), ("global liquidity", 2.5), ("dollar liquidity", 1.8))),
+    ("cftc", "CFTC", "CFTC policy and enforcement narratives.", "regulatory", (("cftc", 2.5), ("commodity futures", 1.5))),
+    ("banking", "Banking", "Banking stress and fiat-rail narratives.", "macro", (("bank", 1.5), ("banking", 1.8), ("bank failure", 2.2), ("deposit", 1.0))),
+    ("exchange-liquidity", "Exchange Liquidity", "Exchange liquidity and order-book narratives.", "market_structure", (("exchange liquidity", 2.4), ("order book", 1.5), ("market depth", 1.5))),
+    ("exchange-failure", "Exchange Failure", "Exchange solvency, halt, and failure narratives.", "security", (("exchange failure", 2.5), ("withdrawals halted", 2.0), ("insolvency", 1.8))),
+    ("security", "Security", "Security and exploit narratives.", "security", (("security", 1.6), ("exploit", 1.7), ("vulnerability", 1.7))),
+    ("exchange-hack", "Exchange Hack", "Exchange hack and breach narratives.", "security", (("exchange hack", 2.5), ("hack", 1.5), ("breach", 1.4))),
+    ("wallet-security", "Wallet Security", "Wallet and key-management security narratives.", "security", (("wallet security", 2.5), ("private keys", 1.7), ("seed phrase", 1.5))),
+    ("privacy", "Privacy", "Bitcoin privacy narratives.", "sovereignty", (("privacy", 2.0), ("coinjoin", 1.6), ("surveillance", 1.2))),
+    ("nation-state-adoption", "Nation State Adoption", "Nation-state adoption and reserve narratives.", "sovereignty", (("nation state", 2.2), ("sovereign", 1.4), ("strategic reserve", 1.8))),
+    ("corporate-adoption", "Corporate Adoption", "Corporate Bitcoin adoption narratives.", "treasury", (("corporate", 1.6), ("company", 0.8), ("balance sheet", 1.3))),
+    ("energy", "Energy", "Energy, grid, and mining power narratives.", "mining", (("energy", 1.8), ("grid", 1.2), ("power", 1.0))),
+    ("layer2", "Layer2", "Bitcoin Layer 2 narratives.", "layer2", (("layer 2", 2.0), ("layer2", 2.0), ("lightning", 1.2))),
+    ("stablecoins", "Stablecoins", "Stablecoin and dollar-rail narratives around Bitcoin markets.", "market_structure", (("stablecoin", 2.0), ("usdt", 1.2), ("usdc", 1.2))),
+    ("liquidation-cascade", "Liquidation Cascade", "Liquidation cascade and forced-deleveraging narratives.", "market_structure", (("liquidation cascade", 2.7), ("liquidations", 2.0), ("forced deleveraging", 1.7))),
+    ("risk-off", "Risk Off", "Risk-off macro narratives.", "macro", (("risk off", 2.0), ("risk-off", 2.0), ("panic", 1.2))),
+    ("risk-on", "Risk On", "Risk-on macro narratives.", "macro", (("risk on", 2.0), ("risk-on", 2.0), ("recovery", 1.0))),
 )
 
 WINDOWS: dict[str, timedelta] = {
@@ -52,6 +84,74 @@ WINDOWS: dict[str, timedelta] = {
     "24h": timedelta(hours=24),
     "7d": timedelta(days=7),
     "30d": timedelta(days=30),
+}
+
+NarrativeSeed = tuple[str, str, str, str, tuple[tuple[str, float], ...]]
+
+
+def narrative_seed_rows(path: Path = Path("config/narratives.yaml")) -> tuple[NarrativeSeed, ...]:
+    if not path.exists():
+        return NARRATIVE_SEEDS
+    rows = yaml_loader.safe_load(path.read_text()) or []
+    seeds: list[NarrativeSeed] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        keywords = tuple(
+            (str(keyword_row.get("keyword", "")).lower(), float(keyword_row.get("weight", 1.0)))
+            for keyword_row in row.get("keywords", [])
+            if isinstance(keyword_row, dict) and keyword_row.get("keyword")
+        )
+        seeds.append(
+            (
+                str(row.get("slug", "")).strip(),
+                str(row.get("name", "")).strip(),
+                str(row.get("description", "")).strip(),
+                str(row.get("category", "unknown")).strip(),
+                keywords,
+            )
+        )
+    return tuple(seed for seed in seeds if seed[0] and seed[1]) or NARRATIVE_SEEDS
+
+SLUG_TO_TYPE: dict[str, NarrativeType] = {
+    "etf": NarrativeType.ETF,
+    "institutional-adoption": NarrativeType.INSTITUTIONAL_ADOPTION,
+    "treasury-adoption": NarrativeType.TREASURY_ADOPTION,
+    "self-custody": NarrativeType.SELF_CUSTODY,
+    "sovereignty": NarrativeType.SOVEREIGNTY,
+    "bitcoin-core": NarrativeType.BITCOIN_CORE,
+    "lightning": NarrativeType.LIGHTNING,
+    "mining": NarrativeType.MINING,
+    "hashrate": NarrativeType.HASHRATE,
+    "macro": NarrativeType.MACRO,
+    "macro-liquidity": NarrativeType.LIQUIDITY,
+    "fed": NarrativeType.FED,
+    "inflation": NarrativeType.INFLATION,
+    "interest-rates": NarrativeType.INTEREST_RATES,
+    "liquidity": NarrativeType.LIQUIDITY,
+    "regulation": NarrativeType.REGULATION,
+    "sec": NarrativeType.SEC,
+    "cftc": NarrativeType.CFTC,
+    "banking": NarrativeType.BANKING,
+    "exchange-risk": NarrativeType.EXCHANGE_FAILURE,
+    "exchange-liquidity": NarrativeType.EXCHANGE_LIQUIDITY,
+    "exchange-failure": NarrativeType.EXCHANGE_FAILURE,
+    "security": NarrativeType.SECURITY,
+    "security-incidents": NarrativeType.SECURITY,
+    "exchange-hack": NarrativeType.EXCHANGE_HACK,
+    "wallet-security": NarrativeType.WALLET_SECURITY,
+    "privacy": NarrativeType.PRIVACY,
+    "nation-state-adoption": NarrativeType.NATION_STATE_ADOPTION,
+    "corporate-adoption": NarrativeType.CORPORATE_ADOPTION,
+    "energy": NarrativeType.ENERGY,
+    "layer2": NarrativeType.LAYER2,
+    "stablecoins": NarrativeType.STABLECOINS,
+    "stablecoin-liquidity": NarrativeType.STABLECOINS,
+    "market-structure": NarrativeType.MARKET_STRUCTURE,
+    "liquidations": NarrativeType.LIQUIDATION_CASCADE,
+    "liquidation-cascade": NarrativeType.LIQUIDATION_CASCADE,
+    "risk-off": NarrativeType.RISK_OFF,
+    "risk-on": NarrativeType.RISK_ON,
 }
 
 
@@ -68,14 +168,24 @@ class NarrativeClassificationService:
         self.db = db
 
     def ensure_narratives(self) -> list[MarketNarrative]:
-        for slug, name, description, category, keywords in NARRATIVE_SEEDS:
+        for slug, name, description, category, keywords in narrative_seed_rows():
             narrative = self.db.query(MarketNarrative).filter(MarketNarrative.slug == slug).first()
+            narrative_type = SLUG_TO_TYPE.get(slug, NarrativeType.MARKET_STRUCTURE).value
             if narrative is None:
-                narrative = MarketNarrative(slug=slug, name=name, description=description, category=category)
+                narrative = MarketNarrative(
+                    slug=slug,
+                    narrative_type=narrative_type,
+                    name=name,
+                    display_name=name,
+                    description=description,
+                    category=category,
+                )
                 self.db.add(narrative)
                 self.db.flush()
             else:
+                narrative.narrative_type = narrative_type
                 narrative.name = name
+                narrative.display_name = name
                 narrative.description = description
                 narrative.category = category
                 narrative.is_active = True
@@ -97,28 +207,83 @@ class NarrativeClassificationService:
         text = f"{event.canonical_title} {event.canonical_summary} {event.event_type} {event.event_category}".lower()
         return self._classify_text(text)
 
-    def _classify_text(self, text: str) -> list[NarrativeMatch]:
-        self.ensure_narratives()
-        matches: list[NarrativeMatch] = []
-        narratives = self.db.query(MarketNarrative).filter(MarketNarrative.is_active.is_(True)).all()
-        for narrative in narratives:
-            keywords = self.db.query(NarrativeKeyword).filter(NarrativeKeyword.narrative_id == narrative.id).all()
-            matched = [keyword for keyword in keywords if keyword.keyword.lower() in text]
-            if not matched:
-                continue
-            keyword_score = sum(float(keyword.weight) for keyword in matched)
-            confidence = min(1.0, 0.25 + (keyword_score / 6.0))
-            matches.append(
-                NarrativeMatch(
-                    narrative=narrative,
-                    keyword_score=round(keyword_score, 6),
-                    matched_keywords=[keyword.keyword for keyword in matched],
-                    confidence=round(confidence, 6),
+    def observe_article(self, article: NewsArticle) -> list[NarrativeObservation]:
+        return self._persist_observations(self.classify_article(article), article=article, event=None)
+
+    def observe_event(self, event: NewsEvent) -> list[NarrativeObservation]:
+        return self._persist_observations(self.classify_event(event), article=None, event=event)
+
+    def _persist_observations(
+        self,
+        matches: list[NarrativeMatch],
+        article: NewsArticle | None,
+        event: NewsEvent | None,
+    ) -> list[NarrativeObservation]:
+        rows: list[NarrativeObservation] = []
+        observed_at = getattr(article, "published_at", None) or getattr(event, "first_seen_at", None) or utcnow()
+        source_confidence = float(getattr(article, "provider_confidence", getattr(event, "provider_confidence", 0.5)) or 0.5)
+        article_id = article.id if article is not None else None
+        event_id = event.id if event is not None else None
+        for match in matches:
+            narrative_type = match.narrative.narrative_type or SLUG_TO_TYPE.get(match.narrative.slug, NarrativeType.MARKET_STRUCTURE).value
+            existing = (
+                self.db.query(NarrativeObservation)
+                .filter(
+                    NarrativeObservation.narrative_type == narrative_type,
+                    NarrativeObservation.article_id == article_id,
+                    NarrativeObservation.event_id == event_id,
                 )
+                .first()
             )
-        matches.sort(key=lambda match: (match.keyword_score, match.narrative.slug), reverse=True)
-        NARRATIVE_CLASSIFICATIONS_TOTAL.inc(len(matches))
-        return matches
+            row = existing or NarrativeObservation(
+                narrative_id=match.narrative.id,
+                narrative_type=narrative_type,
+                article_id=article_id,
+                event_id=event_id,
+                observed_at=observed_at,
+                observation_time=observed_at,
+            )
+            if existing is None:
+                self.db.add(row)
+            row.narrative_id = match.narrative.id
+            row.observation_time = observed_at
+            row.observation_score = match.keyword_score
+            row.strength_score = match.keyword_score
+            row.relevance_score = min(1.0, match.keyword_score / 8.0)
+            row.confidence_score = match.confidence
+            row.source_confidence = source_confidence
+            rows.append(row)
+        self.db.flush()
+        return rows
+
+    def _classify_text(self, text: str) -> list[NarrativeMatch]:
+        try:
+            self.ensure_narratives()
+            matches: list[NarrativeMatch] = []
+            narratives = self.db.query(MarketNarrative).filter(MarketNarrative.is_active.is_(True)).all()
+            for narrative in narratives:
+                keywords = self.db.query(NarrativeKeyword).filter(NarrativeKeyword.narrative_id == narrative.id).all()
+                matched = [keyword for keyword in keywords if keyword.keyword.lower() in text]
+                if not matched:
+                    continue
+                keyword_score = sum(float(keyword.weight) for keyword in matched)
+                confidence = min(1.0, 0.25 + (keyword_score / 6.0))
+                matches.append(
+                    NarrativeMatch(
+                        narrative=narrative,
+                        keyword_score=round(keyword_score, 6),
+                        matched_keywords=[keyword.keyword for keyword in matched],
+                        confidence=round(confidence, 6),
+                    )
+                )
+            matches.sort(key=lambda match: (match.keyword_score, match.narrative.slug), reverse=True)
+            NARRATIVE_CLASSIFICATIONS_TOTAL.inc(len(matches))
+            NARRATIVES_DETECTED_TOTAL.inc(len({match.narrative.slug for match in matches}))
+            return matches
+        except Exception:
+            CLASSIFICATION_FAILURES_TOTAL.inc()
+            NARRATIVE_CLASSIFIER_FAILURES_TOTAL.inc()
+            raise
 
 
 class NarrativeScoringService:
@@ -165,6 +330,26 @@ class NarrativeScoringService:
         if isinstance(value, (int, float, str)):
             return float(value)
         return float(cast(float, value))
+
+
+class NarrativeHeatEngine:
+    def compute_heat_score(
+        self, volume_score: float, impact_score: float, confidence_score: float, growth_score: float
+    ) -> float:
+        normalized_growth = max(0.0, min(growth_score, 100.0))
+        score = (volume_score * 0.35) + (impact_score * 0.30) + (confidence_score * 100.0 * 0.20) + (normalized_growth * 0.15)
+        return round(max(0.0, min(score, 100.0)), 6)
+
+    def band(self, heat_score: float) -> str:
+        if heat_score < 20.0:
+            return "Quiet"
+        if heat_score < 40.0:
+            return "Emerging"
+        if heat_score < 60.0:
+            return "Active"
+        if heat_score < 80.0:
+            return "Dominant"
+        return "Major Narrative"
 
 
 class NarrativeTrendService:
@@ -255,6 +440,7 @@ class NarrativeHeatmapService:
         self.classifier = NarrativeClassificationService(db)
         self.scoring = NarrativeScoringService()
         self.trends = NarrativeTrendService()
+        self.heat = NarrativeHeatEngine()
 
     def build_heatmap(self, window: str = "24h", snapshot_time: datetime | None = None) -> dict[str, object]:
         snapshot_at = snapshot_time or utcnow()
@@ -264,7 +450,12 @@ class NarrativeHeatmapService:
         events = self._events(snapshot_at - delta, snapshot_at)
         aggregates = self._aggregate(articles, events, snapshot_at, delta)
         snapshots = self._store_snapshots(aggregates, snapshot_at)
+        NARRATIVE_HEAT_UPDATES_TOTAL.inc(len(snapshots))
         dominance = NarrativeDominanceIndex().calculate(snapshots)
+        for snapshot in snapshots:
+            snapshot.dominance_score = dominance.get(str(snapshot.metadata_json.get("slug", snapshot.narrative_id)), 0.0)
+        self.db.flush()
+        NARRATIVE_DOMINANCE_UPDATES_TOTAL.inc()
         confidence_values = [snapshot.confidence_score for snapshot in snapshots]
         if confidence_values:
             NARRATIVE_CONFIDENCE_AVG.set(mean(confidence_values))
@@ -286,7 +477,17 @@ class NarrativeHeatmapService:
 
     def get_narrative(self, slug: str) -> dict[str, object] | None:
         self.classifier.ensure_narratives()
-        row = self.db.query(MarketNarrative).filter(or_(MarketNarrative.slug == slug, MarketNarrative.id == self._int_or_zero(slug))).first()
+        row = (
+            self.db.query(MarketNarrative)
+            .filter(
+                or_(
+                    MarketNarrative.slug == slug,
+                    MarketNarrative.narrative_type == slug.upper().replace("-", "_"),
+                    MarketNarrative.id == self._int_or_zero(slug),
+                )
+            )
+            .first()
+        )
         if row is None:
             return None
         keywords = self.db.query(NarrativeKeyword).filter(NarrativeKeyword.narrative_id == row.id).order_by(NarrativeKeyword.weight.desc()).all()
@@ -319,11 +520,23 @@ class NarrativeHeatmapService:
         dominance = NarrativeDominanceIndex().calculate(snapshots)
         return {"data": [self.snapshot_payload(row, dominance) for row in snapshots], "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
 
+    def emerging(self) -> dict[str, object]:
+        snapshots = [row for row in self.latest_snapshots() if row.trend_direction in {"RISING", "SPIKING"} or row.velocity_score >= 10.0]
+        dominance = NarrativeDominanceIndex().calculate(snapshots)
+        return {"data": [self.snapshot_payload(row, dominance) for row in sorted(snapshots, key=lambda row: row.velocity_score, reverse=True)], "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
+
+    def dominant(self) -> dict[str, object]:
+        snapshots = [row for row in self.latest_snapshots() if row.dominance_score >= 20.0 or row.heat_score >= 60.0]
+        dominance = NarrativeDominanceIndex().calculate(snapshots)
+        return {"data": [self.snapshot_payload(row, dominance) for row in sorted(snapshots, key=lambda row: row.dominance_score, reverse=True)], "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
+
     def narrative_payload(self, row: MarketNarrative) -> dict[str, object]:
         return {
             "id": row.id,
             "slug": row.slug,
+            "narrative_type": row.narrative_type,
             "name": row.name,
+            "display_name": row.display_name or row.name,
             "description": row.description,
             "category": row.category,
             "is_active": row.is_active,
@@ -335,33 +548,71 @@ class NarrativeHeatmapService:
         if row is None:
             return None
         slug = str(row.metadata_json.get("slug", row.narrative_id))
+        evidence = cast(dict[str, object], row.metadata_json.get("evidence", {}))
+        supporting_articles = cast(list[dict[str, object]], evidence.get("top_articles", []))
+        supporting_events = cast(list[dict[str, object]], evidence.get("top_events", []))
         return {
             "snapshot_id": row.id,
             "snapshot_time": row.snapshot_time,
             "narrative_id": row.narrative_id,
             "slug": slug,
+            "narrative_type": row.narrative_type,
             "name": row.metadata_json.get("name", slug),
             "category": row.metadata_json.get("category", "unknown"),
             "mention_count": row.mention_count,
             "weighted_score": row.weighted_score,
-            "dominance_pct": dominance.get(slug),
+            "heat_score": row.heat_score,
+            "heat_band": self.heat.band(row.heat_score),
+            "velocity_score": row.velocity_score,
+            "dominance_score": row.dominance_score,
+            "volume_score": row.volume_score,
+            "growth_score": row.growth_score,
+            "dominance_pct": dominance.get(slug, row.dominance_score),
             "sentiment_score": row.sentiment_score,
             "impact_score": row.impact_score,
             "source_count": row.source_count,
             "event_count": row.event_count,
+            "supporting_events_count": row.supporting_events_count,
+            "supporting_articles": supporting_articles,
+            "supporting_events": supporting_events,
             "provider_confidence": row.provider_confidence,
             "trend_direction": row.trend_direction,
             "confidence_score": row.confidence_score,
-            "evidence": row.metadata_json.get("evidence", {}),
+            "evidence": evidence,
             "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
+
+    def dominance(self) -> dict[str, object]:
+        snapshots = self.latest_snapshots()
+        dominance = NarrativeDominanceIndex().calculate(snapshots)
+        return {
+            "data": dominance,
+            "items": [self.snapshot_payload(row, dominance) for row in sorted(snapshots, key=lambda row: row.heat_score, reverse=True)],
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
+
+    def history(self, period: str = "month", limit: int = 20) -> dict[str, object]:
+        snapshots = self.db.query(NarrativeSnapshot).order_by(NarrativeSnapshot.snapshot_time.desc(), NarrativeSnapshot.heat_score.desc()).limit(limit).all()
+        return {
+            "period": period,
+            "top_narratives": [self.snapshot_payload(row, {}) for row in snapshots],
+            "most_impactful_narratives": [self.snapshot_payload(row, {}) for row in sorted(snapshots, key=lambda row: row.impact_score, reverse=True)[:limit]],
+            "growth_leaders": [self.snapshot_payload(row, {}) for row in sorted(snapshots, key=lambda row: row.growth_score, reverse=True)[:limit]],
+            "declining_narratives": [self.snapshot_payload(row, {}) for row in sorted(snapshots, key=lambda row: row.growth_score)[:limit]],
+            "before_major_btc_moves": [],
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY, "Major BTC move correlation requires candle attribution backfill."],
         }
 
     def _aggregate(self, articles: list[NewsArticle], events: list[NewsEvent], snapshot_time: datetime, window: timedelta) -> dict[int, dict[str, Any]]:
         aggregates: dict[int, dict[str, Any]] = {}
         for article in articles:
-            self._add_item(aggregates, article, self.classifier.classify_article(article), snapshot_time, window)
+            matches = self.classifier.classify_article(article)
+            self.classifier._persist_observations(matches, article=article, event=None)
+            self._add_item(aggregates, article, matches, snapshot_time, window)
         for event in events:
-            self._add_item(aggregates, event, self.classifier.classify_event(event), snapshot_time, window)
+            matches = self.classifier.classify_event(event)
+            self.classifier._persist_observations(matches, article=None, event=event)
+            self._add_item(aggregates, event, matches, snapshot_time, window)
         return aggregates
 
     def _add_item(
@@ -414,23 +665,39 @@ class NarrativeHeatmapService:
             narrative = aggregate["narrative"]
             previous = self._latest_snapshot(narrative_id)
             score = round(float(aggregate["weighted_score"]), 6)
-            trend = self.trends.detect_trend(score, previous.weighted_score if previous else None)
+            volume_score = round(min(float(aggregate["mention_count"]) * 20.0, 100.0), 6)
+            impact_score = round(self._average(aggregate["impacts"], 0.0) * 100.0, 6)
+            previous_heat = previous.heat_score if previous else 0.0
+            growth_score = round(max(-100.0, min(100.0, score - previous_heat)), 6)
+            velocity_score = round(max(0.0, min(100.0, growth_score)), 6)
+            trend = self.trends.detect_trend(score, previous_heat if previous else None)
+            NARRATIVE_GROWTH_RECALCULATIONS_TOTAL.inc()
             provider_confidence = self._average(aggregate["provider_confidences"], 0.5)
             confidence = round(min(1.0, (provider_confidence * 0.45) + (min(aggregate["mention_count"] / 5.0, 1.0) * 0.35) + (min(score / 100.0, 1.0) * 0.20)), 6)
+            heat_score = self.heat.compute_heat_score(volume_score, impact_score, confidence, growth_score)
+            narrative_type = narrative.narrative_type or SLUG_TO_TYPE.get(narrative.slug, NarrativeType.MARKET_STRUCTURE).value
             snapshot = NarrativeSnapshot(
                 snapshot_time=snapshot_time,
                 narrative_id=narrative_id,
+                narrative_type=narrative_type,
                 mention_count=int(aggregate["mention_count"]),
                 weighted_score=score,
+                heat_score=heat_score,
+                velocity_score=velocity_score,
+                dominance_score=0.0,
+                volume_score=volume_score,
                 sentiment_score=round(self._average(aggregate["sentiments"], 0.0), 6),
-                impact_score=round(self._average(aggregate["impacts"], 0.0), 6),
+                impact_score=impact_score,
+                growth_score=growth_score,
                 source_count=len(aggregate["sources"]),
                 event_count=len(aggregate["event_ids"]),
+                supporting_events_count=len(aggregate["event_ids"]),
                 provider_confidence=round(provider_confidence, 6),
                 trend_direction=trend,
                 confidence_score=confidence,
                 metadata_json={
                     "slug": narrative.slug,
+                    "narrative_type": narrative_type,
                     "name": narrative.name,
                     "category": narrative.category,
                     "evidence": {
@@ -439,6 +706,15 @@ class NarrativeHeatmapService:
                         "top_keywords": sorted(aggregate["keywords"].items(), key=lambda item: item[1], reverse=True)[:8],
                         "provider_state": "HEALTHY" if provider_confidence >= 0.7 else "DEGRADED",
                         "confidence_reasoning": "Confidence combines provider confidence, sample size, and weighted narrative score.",
+                        "scoring_factors": {
+                            "article_count": len(aggregate["article_ids"]),
+                            "event_count": len(aggregate["event_ids"]),
+                            "source_count": len(aggregate["sources"]),
+                            "source_quality": round(provider_confidence, 6),
+                            "btc_relevance": "included per item when available",
+                            "market_impact": impact_score,
+                            "freshness": "weighted inside item scoring",
+                        },
                     },
                 },
             )
@@ -497,3 +773,14 @@ class NarrativeHeatmapService:
 
     def _int_or_zero(self, value: str) -> int:
         return int(value) if value.isdigit() else 0
+
+
+class NarrativeHistoryService:
+    def __init__(self, db: Session) -> None:
+        self.db = db
+
+    def history(self, period: str = "month", limit: int = 20) -> dict[str, object]:
+        return NarrativeHeatmapService(self.db).history(period=period, limit=limit)
+
+
+NarrativeClassifierService = NarrativeClassificationService
