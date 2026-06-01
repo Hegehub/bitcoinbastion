@@ -1,0 +1,171 @@
+- slug: etf
+  name: ETF
+  description: ETF inflows, outflows, approvals, issuers, and fund-flow narratives.
+  category: institutional
+  keywords:
+    - {keyword: etf, weight: 2.0}
+    - {keyword: spot bitcoin etf, weight: 3.0}
+    - {keyword: inflow, weight: 1.4}
+    - {keyword: outflow, weight: 1.4}
+- slug: institutional-adoption
+  name: Institutional Adoption
+  description: Institutional allocation and adoption narratives.
+  category: institutional
+  keywords:
+    - {keyword: institutional, weight: 2.0}
+    - {keyword: asset manager, weight: 1.5}
+    - {keyword: allocation, weight: 1.4}
+- slug: treasury-adoption
+  name: Treasury Adoption
+  description: Treasury and reserve-asset adoption narratives.
+  category: treasury
+  keywords:
+    - {keyword: treasury, weight: 2.0}
+    - {keyword: balance sheet, weight: 1.3}
+    - {keyword: reserve asset, weight: 1.4}
+- slug: bitcoin-core
+  name: Bitcoin Core
+  description: Bitcoin Core software and protocol maintenance narratives.
+  category: bitcoin_core
+  keywords:
+    - {keyword: bitcoin core, weight: 3.0}
+    - {keyword: core release, weight: 2.0}
+    - {keyword: node, weight: 1.0}
+- slug: lightning
+  name: Lightning
+  description: Lightning Network adoption, infrastructure, and liquidity narratives.
+  category: lightning
+  keywords:
+    - {keyword: lightning, weight: 2.5}
+    - {keyword: channel, weight: 1.0}
+    - {keyword: payment, weight: 0.8}
+- slug: mining
+  name: Mining
+  description: Mining economics and miner behavior narratives.
+  category: mining
+  keywords:
+    - {keyword: miner, weight: 2.0}
+    - {keyword: mining, weight: 2.0}
+    - {keyword: difficulty, weight: 1.4}
+- slug: hashrate
+  name: Hashrate
+  description: Hashrate and mining difficulty narratives.
+  category: mining
+  keywords:
+    - {keyword: hashrate, weight: 2.0}
+    - {keyword: hash rate, weight: 2.0}
+    - {keyword: difficulty, weight: 1.5}
+- slug: macro-liquidity
+  name: Macro Liquidity
+  description: Global liquidity and macro risk appetite narratives.
+  category: macro
+  keywords:
+    - {keyword: liquidity, weight: 2.0}
+    - {keyword: global liquidity, weight: 2.5}
+    - {keyword: risk-on, weight: 1.4}
+- slug: fed
+  name: Fed
+  description: Federal Reserve policy, rates, and liquidity narratives.
+  category: macro
+  keywords:
+    - {keyword: fed, weight: 2.0}
+    - {keyword: federal reserve, weight: 2.0}
+    - {keyword: rate cut, weight: 1.5}
+    - {keyword: rate hike, weight: 1.5}
+- slug: inflation
+  name: Inflation
+  description: Inflation, CPI, real-rate, and purchasing-power narratives.
+  category: macro
+  keywords:
+    - {keyword: inflation, weight: 2.0}
+    - {keyword: cpi, weight: 1.5}
+    - {keyword: real yield, weight: 1.3}
+- slug: sec
+  name: SEC
+  description: SEC approval, enforcement, delay, and litigation narratives.
+  category: regulatory
+  keywords:
+    - {keyword: sec, weight: 2.5}
+    - {keyword: enforcement, weight: 1.3}
+    - {keyword: lawsuit, weight: 1.2}
+- slug: regulation
+  name: Regulation
+  description: Regulatory policy and jurisdictional treatment narratives.
+  category: regulatory
+  keywords:
+    - {keyword: regulation, weight: 2.0}
+    - {keyword: regulatory, weight: 2.0}
+    - {keyword: approval, weight: 1.2}
+- slug: security
+  name: Security
+  description: Security, exploit, vulnerability, and custody-risk narratives.
+  category: security
+  keywords:
+    - {keyword: security, weight: 1.6}
+    - {keyword: exploit, weight: 1.7}
+    - {keyword: vulnerability, weight: 1.7}
+- slug: self-custody
+  name: Self Custody
+  description: Self-custody, withdrawal, and key-sovereignty narratives.
+  category: sovereignty
+  keywords:
+    - {keyword: self custody, weight: 2.5}
+    - {keyword: self-custody, weight: 2.5}
+    - {keyword: private keys, weight: 1.7}
+- slug: sovereignty
+  name: Sovereignty
+  description: Bitcoin sovereignty and censorship-resistance narratives.
+  category: sovereignty
+  keywords:
+    - {keyword: sovereignty, weight: 2.0}
+    - {keyword: censorship resistance, weight: 2.0}
+    - {keyword: permissionless, weight: 1.4}
+- slug: exchange-liquidity
+  name: Exchange Liquidity
+  description: Exchange liquidity and order-book depth narratives.
+  category: market_structure
+  keywords:
+    - {keyword: exchange liquidity, weight: 2.4}
+    - {keyword: order book, weight: 1.5}
+    - {keyword: market depth, weight: 1.5}
+- slug: stablecoin-liquidity
+  name: Stablecoin Liquidity
+  description: Stablecoin liquidity and dollar-rail narratives around Bitcoin markets.
+  category: market_structure
+  keywords:
+    - {keyword: stablecoin liquidity, weight: 2.4}
+    - {keyword: stablecoin, weight: 2.0}
+    - {keyword: usdt, weight: 1.2}
+    - {keyword: usdc, weight: 1.2}
+- slug: nation-state-adoption
+  name: Nation State Adoption
+  description: Nation-state adoption and strategic reserve narratives.
+  category: sovereignty
+  keywords:
+    - {keyword: nation state, weight: 2.2}
+    - {keyword: strategic reserve, weight: 1.8}
+    - {keyword: sovereign, weight: 1.4}
+- slug: energy
+  name: Energy
+  description: Energy, grid, and mining power narratives.
+  category: mining
+  keywords:
+    - {keyword: energy, weight: 1.8}
+    - {keyword: grid, weight: 1.2}
+    - {keyword: power, weight: 1.0}
+- slug: layer2
+  name: Layer 2
+  description: Bitcoin Layer 2 and payment-layer narratives.
+  category: lightning
+  keywords:
+    - {keyword: layer 2, weight: 2.0}
+    - {keyword: layer2, weight: 2.0}
+    - {keyword: lightning, weight: 1.2}
+- slug: macro
+  name: Macro
+  description: Broad macro market narratives around Bitcoin context.
+  category: macro
+  keywords:
+    - {keyword: macro, weight: 1.6}
+    - {keyword: global market, weight: 1.0}
+    - {keyword: risk appetite, weight: 1.2}

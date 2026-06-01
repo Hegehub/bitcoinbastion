@@ -8,9 +8,25 @@ Model list aligned to `app/db/models`.
 - `UserSubscription`
 
 ## News and reputation
+- `BTCCandle`
+- `IntelligenceTimelineEvent`
+- `CandleProviderSnapshot`
+- `CandleBuildRun`
+- `BTCPricePoint`
+- `ProviderHealthRecord`
+- `MarketProviderHealth`
+- `NewsEventArticle`
+- `NewsEventCluster`
 - `NewsSource`
 - `NewsArticle`
 - `SourceReputationProfile`
+- `SourceHealthRecord`
+- `NewsFetchLog`
+- `NewsRawPayload`
+- `NewsArticleCluster`
+- `SourceHealthSnapshot`
+- `ProviderConfidenceEvent`
+- `NewsEvent`
 
 ## Entities
 - `Entity`
@@ -78,3 +94,76 @@ Bastion Trace metrics use bounded labels only. Bitcoin addresses are never used 
 
 ## Bastion Trace domain reference
 See `docs/BASTION_TRACE_DOMAIN_MODEL.md` for Bastion Trace persistence and service-level artifact mapping.
+
+- `NewsScore`: deterministic article/event scoring snapshot with factor breakdown and limitations.
+- `NewsScore`
+- `NewsArticleScore`
+
+- `NewsNarrativeTag`
+- `NewsPriceImpact`
+
+- `ScoringFactor`
+- `ScoreExplanation`
+
+- `CandleAttribution`
+- `AttributionReplayLog`
+- `ImpactWindowSnapshot`
+- `ImpactConfidenceBreakdown`
+
+## Production Candle Attribution Models
+
+- `CandleAttributionCandidate`: pre-ranking candidate evidence for candle attribution, including raw score, normalized score, ranking features, and rejection reason.
+- `AttributionContextSnapshot`: replayable market/news context around a candle attribution run, including provider health, market regime, active news counts, and timeline snapshot data.
+- `CandleAttributionCandidate`
+- `AttributionContextSnapshot`
+- `CandleContextSnapshot`
+
+## Historical Similarity Models
+
+- `HistoricalEventProfile`: normalized historical market-memory profile with pattern, narrative, sentiment, impact windows, confidence, and provider-confidence features.
+- `HistoricalSimilarityResult`: persisted component-level similarity comparison with explanation JSON and limitations.
+- `HistoricalEventProfile`
+- `HistoricalSimilarityResult`
+
+## Production Historical Similarity Models
+
+- `HistoricalSimilarityRecord`: report-level historical analog evidence with component matches, reaction windows, confidence, and explanation JSON.
+- `MarketPatternLibrary`: seeded deterministic market pattern taxonomy for ETF, regulatory, macro, security, miner, treasury, Lightning, and volatility narratives.
+- `HistoricalSimilarityRecord`
+- `MarketPatternLibrary`
+
+## BMTM-30 Market Memory Models
+
+- `MarketPattern`
+- `EventPatternMatch`
+- `HistoricalEventSimilarity`
+- `PatternReactionProfile`
+
+These models store the active production market-pattern catalog, ranked event pattern-classification evidence, replayable historical event similarities, and calibrated pattern reaction profiles.
+
+## Historical Similarity Foundation Models
+
+- `HistoricalPattern`
+- `HistoricalSimilarityMatch`
+- `HistoricalReactionProfile`
+
+These models store the foundation pattern catalog, replayable event-to-event similarity component scores, and event-level BTC reaction profiles for evidence-based historical comparison.
+
+## Narrative Heatmap Models
+
+- `MarketNarrative`
+- `NarrativeKeyword`
+- `NarrativeSnapshot`
+
+These models store the active Bitcoin narrative catalog, weighted deterministic keyword rules, and replayable narrative heatmap snapshots with confidence, provider state, evidence, and limitations.
+
+## BMTM-033 Narrative Observation Model
+
+- `NarrativeObservation`
+
+This model stores article/event-level narrative classification observations with narrative type, observation score, confidence, source confidence, and observed time for replayable narrative intelligence.
+
+### Task 34 Narrative Heatmap Fields
+
+- `NarrativeObservation` includes `narrative_id`, `observation_time`, `strength_score`, and `relevance_score` for replayable classifier evidence.
+- `NarrativeSnapshot` includes `velocity_score`, `dominance_score`, and `supporting_events_count` for leaderboard and heatmap rendering.

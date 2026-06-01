@@ -1,0 +1,24 @@
+score_version: v1_rule_based
+scoring_method: RULE_BASED
+field_weights:
+  title: 0.55
+  summary: 0.30
+  content: 0.15
+category_weights:
+  btc_relevance: 0.25
+  institutional: 0.20
+  macro: 0.15
+  regulatory: 0.15
+  security: 0.15
+  sovereignty: 0.10
+confidence_weights:
+  source_credibility: 0.30
+  keyword_density: 0.20
+  category_agreement: 0.20
+  title_body_consistency: 0.15
+  freshness: 0.10
+  provider_health_placeholder: 0.05
+risk_band_thresholds:
+  critical: 0.90
+  high: 0.75
+  medium: 0.45

@@ -19,6 +19,8 @@
 
 ## Core documentation
 
+- Historical Similarity Foundation: `docs/HISTORICAL_SIMILARITY_ENGINE.md` documents pattern matching, reaction profiles, similarity scoring, limitations, and API contracts.
+
 - `docs/STATUS.md`
 - `docs/PRODUCTION_READINESS.md`
 - `docs/OPERATIONS_RUNBOOK.md`
@@ -969,3 +971,37 @@ Its strongest idea is simple:
 > Make runtime, risk, deployment, and readiness visible, auditable, and operator-controlled.
 
 Bitcoin Bastion is built to become a foundation for serious Bitcoin-native infrastructure where sovereignty, evidence, and operational discipline matter.
+
+## Source Health
+Provider confidence and degraded state tracking are implemented for news sources.
+
+## Deduplication & Clustering Engine
+Deterministic deduplication prevents duplicate-news spam and preserves replayable evidence for canonical event attribution.
+
+- Market data provider layer for BTC/USD (Binance, Kraken, Coinbase, Bitstamp) with provider-aware aggregation and degraded-mode visibility.
+
+- Market provider layer v2 added with median aggregation and degraded-state exposure.
+
+- BTC candle evidence APIs now expose candle-level provider snapshot details.
+
+- Added `/api/v1/market/health` snapshot for provider-count, degraded-state and confidence visibility.
+
+- News scoring foundation: deterministic rule-based scoring with explainability and limitations (no OpenAI dependency).
+
+- News scoring exposes explainable relevance, confidence, and narrative tags (informational only).
+
+### Candle Attribution Engine
+
+Bitcoin Bastion includes a replay-safe Candle Attribution Engine foundation for Market Time Machine. It ranks nearby news events for a BTC candle using BTC relevance, market-impact score, provider/source confidence, time distance, and sentiment/candle direction matching while preserving the limitation that correlation is not proof of causation.
+
+### Candle Attribution Engine
+
+Bitcoin Bastion includes a production Candle Attribution Engine that ranks nearby news/events as possible BTC candle contributors with configurable windows, weighted scoring, confidence bands, replay evidence, and operator review hooks. It always treats attribution as correlation-based context, not causation or trading advice.
+
+### Historical Similarity Engine
+
+Bitcoin Bastion now includes a production Historical Similarity Engine for Market Time Machine. It classifies NewsEvents into deterministic market patterns, compares historical analogs across event type, sentiment, narrative category, impact score, BTC reaction windows, and confidence, and returns reaction statistics for operator review. Historical similarity is informational only: **Historical similarity does not guarantee future outcomes.**
+
+- Narrative Heatmap: `docs/BMTM_NARRATIVE_HEATMAP.md` documents Bitcoin narrative taxonomy, heat scoring, dominance, history, and correlation-only safety limits.
+
+- BMTM-034 Narrative Heatmap registry: `config/narratives.yaml` and `app/cli/seed_narratives.py` provide a local-first narrative registry and seed path for heatmap, trend, leaderboard, and narrative timeline API contracts.

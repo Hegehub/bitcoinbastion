@@ -12,6 +12,11 @@ from app.api.v1.entities import router as entities_router
 from app.api.v1.fees import router as fees_router
 from app.api.v1.health import router as health_router
 from app.api.v1.news import router as news_router
+from app.api.v1.market_intelligence import router as market_intelligence_router
+from app.api.v1.market_data import router as market_data_router
+from app.api.v1.market import router as market_router
+from app.api.v1.intelligence_timeline import router as intelligence_timeline_router
+from app.api.v1.intelligence import router as intelligence_router
 from app.api.v1.observability import router as observability_router
 from app.api.v1.policy import router as policy_router
 from app.api.v1.public import router as public_router
@@ -42,6 +47,11 @@ apply_openapi_defaults(app)
 app.include_router(health_router, prefix=settings.api_prefix)
 app.include_router(auth_router, prefix=settings.api_prefix)
 app.include_router(news_router, prefix=settings.api_prefix)
+app.include_router(market_intelligence_router, prefix=settings.api_prefix)
+app.include_router(market_data_router, prefix=settings.api_prefix)
+app.include_router(market_router, prefix=settings.api_prefix)
+app.include_router(intelligence_timeline_router, prefix=settings.api_prefix)
+app.include_router(intelligence_router, prefix=settings.api_prefix)
 app.include_router(signals_router, prefix=settings.api_prefix)
 app.include_router(onchain_router, prefix=settings.api_prefix)
 app.include_router(entities_router, prefix=settings.api_prefix)
