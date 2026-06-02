@@ -169,3 +169,9 @@ Expanded the narrative heatmap into the BMTM-033 contract with `NarrativeType`, 
 ## BMTM-034 Narrative Heatmap Production Registry
 
 Implemented the Task 34 production foundation: local YAML narrative registry, seed command, observation strength/relevance fields, snapshot heat/velocity/dominance fields, emerging narrative API, frontend-ready supporting evidence DTOs, and production metrics. Remaining work: richer historical volatility correlation and dashboard UI rendering.
+
+## BMTM-P35 Production Historical Similarity + Market Memory
+
+Status: implemented production foundation. Completion target moved from 72% to 75%.
+
+Implemented a reusable Market Memory package, event fingerprints, explicit pattern matching, ranked historical similarity, pattern statistics, evidence payloads, replay support, auditable operator review records, API contracts, and test coverage. Remaining limitations: statistics depend on available historical backfills, small samples reduce confidence, and historical analogs are contextual evidence only.

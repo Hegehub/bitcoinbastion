@@ -41,3 +41,11 @@ This is not a prediction engine. Historical similarity does not imply future per
 Market Time Machine now includes a backend Narrative Heatmap Engine for identifying which Bitcoin narratives are dominating discussion over 1h, 4h, 24h, 7d, and 30d windows. It classifies NewsArticles and NewsEvents into deterministic narratives such as ETF, institutional adoption, treasury adoption, Lightning, Bitcoin Core, mining, macro liquidity, Fed, inflation, regulation, SEC, self-custody, sovereignty, exchange risk, security incidents, liquidations, and market structure.
 
 Narrative scores combine keyword evidence, news impact, BTC relevance, event confidence, source credibility, source count, freshness, and provider confidence. The heatmap exposes top narratives, rising/falling narratives, highest-impact narratives, dominance share, trend states, evidence, and limitations. Narrative outputs are correlation-based; they may be associated with market context but do not prove causation or predict BTC price movement.
+
+## BMTM-P35 Market Memory Engine
+
+The Market Time Machine now has a production Market Memory package at `app/services/intelligence/market_memory/`. The package builds an `EventFingerprint` from Bitcoin relevance, market impact, sentiment, institutional/macro/regulatory/security context, source count, 15m/1h/4h/24h BTC reaction windows, direction, volatility profile, and provider confidence. The historical similarity facade ranks candidate events, persists reusable `market_memory_records`, creates replay payloads, and exposes market-memory evidence without making prediction or causality claims.
+
+Replay output shows the event analyzed, candidate events, similarity scores, pattern assignments, reason codes, and final ranking. Operators can audit or override pattern confidence, approve/reject pattern assignments, add notes, and mark false similarities through auditable review records.
+
+Safety requirements for Market Memory responses are: Historical similarity is not prediction. Correlation is not proof of causation. Past market reactions do not guarantee future outcomes. Do not generate trading recommendations.

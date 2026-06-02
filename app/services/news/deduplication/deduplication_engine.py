@@ -1,3 +1,4 @@
+import hashlib
 import logging
 
 from sqlalchemy import select
@@ -17,7 +18,7 @@ class DeduplicationEngine:
         article.normalized_title = normalize_title(article.title)
         article.normalized_title_hash = hash_title(article.title)
         article.canonical_url_hash = hash_url(article.canonical_url or article.url)
-        article.url_hash = hash_url(article.url)
+        article.url_hash = hashlib.sha256((article.url or "").encode("utf-8")).hexdigest()
         article.content_hash = hash_content(article.content_text or article.raw_content or "")
 
         existing = db.execute(select(NewsArticle).where(NewsArticle.id != article.id).limit(300)).scalars()
@@ -32,6 +33,7 @@ class DeduplicationEngine:
                 article.deduplication_metadata_json = {"algorithm_version": ALGORITHM_VERSION, "normalization_version": NORMALIZATION_VERSION, "matched_article_ids": [cand.id]}
                 logger.info("duplicate detected", extra={"article_id": article.id, "match_id": cand.id})
                 db.commit()
+                cluster_article(db, article.id)
                 return article
             if best is None or sim.similarity_score > best[1]:
                 best = (cand, sim.similarity_score, sim.reasons)
