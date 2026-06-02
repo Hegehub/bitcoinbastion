@@ -14,7 +14,9 @@ from app.services.intelligence.candle_attribution_ranking import CandleAttributi
 from app.services.intelligence.historical_similarity.historical_similarity_service import (
     HistoricalSimilarityService as PackagedHistoricalSimilarityService,
 )
-from app.services.intelligence.historical_similarity_engine import HistoricalSimilarityEngine
+from app.services.intelligence.market_memory.engine import HistoricalSimilarityEngine as MarketMemoryHistoricalSimilarityEngine
+from app.services.intelligence.market_memory.review import OperatorReviewService
+from app.services.intelligence.market_memory.safety import MARKET_MEMORY_SAFETY_LIMITATIONS
 from app.services.intelligence.historical_similarity_foundation import (
     HistoricalReactionService as FoundationHistoricalReactionService,
     HistoricalSimilarityService as FoundationHistoricalSimilarityService,
@@ -80,6 +82,14 @@ def _attribution_payload(row: CandleAttribution) -> dict[str, Any]:
         "limitations": row.limitations_json,
         "evidence_refs": row.evidence_refs_json,
     }
+
+
+def _market_memory_safety(limitations: list[object]) -> list[str]:
+    output = [str(item) for item in limitations]
+    for item in MARKET_MEMORY_SAFETY_LIMITATIONS:
+        if item not in output:
+            output.append(item)
+    return output
 
 
 def _similarity_unavailable_payload() -> dict[str, object]:
@@ -254,7 +264,7 @@ def get_event_market_memory_similarity(
     event_id: int, limit: int = 10, db: Session = Depends(db_session)
 ) -> dict[str, object]:
     try:
-        payload = HistoricalSimilarityEngine(db).find_similar_events(event_id, limit=limit)
+        payload = MarketMemoryHistoricalSimilarityEngine(db).find_similar_events(event_id, limit=limit)
         db.commit()
         return payload
     except OperationalError:
@@ -264,7 +274,11 @@ def get_event_market_memory_similarity(
 @router.get("/events/{event_id}/memory")
 def get_event_market_memory(event_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
     try:
-        return MarketMemoryService(db).event_memory(event_id)
+        payload = MarketMemoryService(db).event_memory(event_id)
+        raw_limitations = payload.get("limitations", [])
+        limitations = raw_limitations if isinstance(raw_limitations, list) else []
+        payload["limitations"] = _market_memory_safety(limitations)
+        return payload
     except OperationalError:
         return {
             "event_id": event_id,
@@ -281,7 +295,7 @@ def list_market_patterns(db: Session = Depends(db_session)) -> dict[str, object]
         rows = MarketMemoryService(db).ensure_patterns()
         return {
             "data": [_pattern_payload(row) for row in rows],
-            "limitations": [HISTORICAL_OUTCOME_LIMITATION],
+            "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION]),
         }
     except OperationalError:
         return {"data": [], "limitations": ["Pattern library storage is unavailable."]}
@@ -294,7 +308,7 @@ def get_market_pattern_history(
     try:
         return {
             "data": MarketMemoryService(db).retrieve_pattern_history(pattern_code),
-            "limitations": [HISTORICAL_OUTCOME_LIMITATION],
+            "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION]),
         }
     except OperationalError:
         return {"data": [], "limitations": ["Pattern history storage is unavailable."]}
@@ -312,7 +326,7 @@ def get_market_pattern_reaction_profile(
                 if profile is not None
                 else None
             ),
-            "limitations": [HISTORICAL_OUTCOME_LIMITATION],
+            "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION]),
         }
     except OperationalError:
         return {"data": None, "limitations": ["Pattern reaction-profile storage is unavailable."]}
@@ -324,9 +338,71 @@ def get_market_pattern(pattern_code: str, db: Session = Depends(db_session)) -> 
         row = MarketMemoryService(db).get_pattern(pattern_code)
         if row is None:
             raise HTTPException(status_code=404, detail="pattern_not_found")
-        return {"data": _pattern_payload(row), "limitations": [HISTORICAL_OUTCOME_LIMITATION]}
+        return {"data": _pattern_payload(row), "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION])}
     except OperationalError:
         return {"data": None, "limitations": ["Pattern library storage is unavailable."]}
+
+
+@router.get("/patterns/{pattern_code}/statistics")
+def get_market_pattern_statistics(
+    pattern_code: str, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        service = MarketMemoryHistoricalSimilarityEngine(db).statistics
+        summary = service.compute(pattern_code)
+        db.commit()
+        return {
+            "data": service.payload(summary),
+            "limitations": _market_memory_safety([]),
+        }
+    except OperationalError:
+        return {"data": None, "limitations": _market_memory_safety(["Pattern statistics storage is unavailable."])}
+
+
+@router.get("/events/{event_id}/memory/replay")
+def get_event_market_memory_replay(
+    event_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        payload = MarketMemoryHistoricalSimilarityEngine(db).replay(event_id, limit=limit)
+        db.commit()
+        return payload
+    except OperationalError:
+        return {"event_analyzed": {"event_id": event_id}, "candidate_events": [], "limitations": _market_memory_safety(["Replay storage is unavailable."])}
+
+
+@router.post("/events/{event_id}/memory/operator-review")
+def create_event_market_memory_operator_review(
+    event_id: int, payload: dict[str, object], db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        raw_pattern = payload.get("pattern")
+        pattern = raw_pattern if isinstance(raw_pattern, (str, int)) else None
+        raw_similar_event_id = payload.get("similar_event_id")
+        similar_event_id = raw_similar_event_id if isinstance(raw_similar_event_id, int) else None
+        raw_approved = payload.get("approved")
+        approved = raw_approved if isinstance(raw_approved, bool) else None
+        raw_override_confidence = payload.get("override_confidence")
+        override_confidence = (
+            float(raw_override_confidence)
+            if isinstance(raw_override_confidence, (int, float))
+            else None
+        )
+        row = OperatorReviewService(db).record_review(
+            event_id=event_id,
+            pattern=pattern,
+            similar_event_id=similar_event_id,
+            action=str(payload.get("action", "operator_review")),
+            approved=approved,
+            override_confidence=override_confidence,
+            notes=str(payload.get("notes", "")),
+            false_similarity=bool(payload.get("false_similarity", False)),
+            operator=str(payload.get("operator", "operator")),
+        )
+        db.commit()
+        return {"data": OperatorReviewService(db).payload(row), "limitations": _market_memory_safety([])}
+    except OperationalError:
+        return {"data": None, "limitations": _market_memory_safety(["Operator review storage is unavailable."])}
 
 
 @router.get("/narratives")

@@ -167,3 +167,7 @@ The foundation records candle context snapshots for every attributed candle so o
 ## Historical Similarity Production Readiness
 
 Historical similarity is implemented as a deterministic, replayable comparison layer for operator context, not as a forecasting layer. Known limitations include small sample-size sensitivity, incomplete signal-to-event linking, and market regime differences across historical windows. Every response includes limitations and avoids causation or financial-advice claims.
+
+## Market Memory Production Readiness
+
+Market Memory now has deterministic event fingerprints, explicit pattern matching, replayable similarity rankings, persisted market-memory records, pattern statistics, evidence payloads, and auditable operator review support. The system remains operator-controlled and informational only. It is not a prediction engine, does not prove causation, does not guarantee future outcomes from past reactions, and does not generate trading recommendations.

@@ -346,3 +346,16 @@ Narrative responses are informational and correlation-based. They must not claim
 - `GET /api/v1/intelligence/narratives/dominant` returns narratives with high dominance or heat scores for leaderboard widgets.
 - Narrative heatmap rows include `velocity_score`, `dominance_score`, `supporting_events_count`, `supporting_articles`, and `supporting_events` for future heatmap, trend-chart, leaderboard, and narrative-timeline widgets.
 - The narrative registry is seeded from `config/narratives.yaml`; the classifier remains local and deterministic.
+
+## BMTM-P35 Market Memory API
+
+- `GET /api/v1/intelligence/events/{event_id}/similar` returns the current event, event fingerprint, explicit pattern matches, top similar events, historical reaction summary, confidence reasoning, evidence, and safety limitations.
+- `GET /api/v1/intelligence/events/{event_id}/memory` returns pattern matches, similar events, confidence history, and safety limitations.
+- `GET /api/v1/intelligence/events/{event_id}/memory/replay` returns the replay contract: event analyzed, candidates, similarity scores, pattern assignment, reason codes, and final ranking.
+- `POST /api/v1/intelligence/events/{event_id}/memory/operator-review` records auditable operator approvals, rejections, confidence overrides, notes, and false-similarity markers.
+- `GET /api/v1/intelligence/patterns` returns the explicit active pattern library.
+- `GET /api/v1/intelligence/patterns/{pattern_code}` returns one pattern by slug or numeric ID.
+- `GET /api/v1/intelligence/patterns/{pattern_code}/statistics` returns historical occurrences, median move windows, positive/negative/neutral rates, average confidence, best case, worst case, and limitations.
+- `GET /api/v1/evidence/market-memory/{event_id}` returns Market Memory evidence with source events, similarity calculations, pattern matches, historical reaction summary, limitations, provider confidence, and generation time.
+
+All Market Memory endpoints must include: Historical similarity is not prediction. Correlation is not proof of causation. Past market reactions do not guarantee future outcomes. Do not generate trading recommendations.

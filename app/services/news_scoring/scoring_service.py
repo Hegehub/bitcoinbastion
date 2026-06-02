@@ -2,7 +2,7 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 
-import yaml  # type: ignore[import-untyped]
+import yaml  # type: ignore[import-untyped,unused-ignore]
 
 from app.db.models.news_article import NewsArticle
 from app.db.models.news_article_score import NewsArticleScore

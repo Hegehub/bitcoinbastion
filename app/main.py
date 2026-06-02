@@ -8,6 +8,7 @@ from app.api.v1.admin import router as admin_router
 from app.api.v1.citadel import router as citadel_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.education import router as education_router
+from app.api.v1.evidence import router as evidence_router
 from app.api.v1.entities import router as entities_router
 from app.api.v1.fees import router as fees_router
 from app.api.v1.health import router as health_router
@@ -63,6 +64,7 @@ app.include_router(users_router, prefix=settings.api_prefix)
 app.include_router(policy_router, prefix=settings.api_prefix)
 app.include_router(privacy_router, prefix=settings.api_prefix)
 app.include_router(education_router, prefix=settings.api_prefix)
+app.include_router(evidence_router, prefix=settings.api_prefix)
 app.include_router(observability_router, prefix=settings.api_prefix)
 app.include_router(citadel_router, prefix=settings.api_prefix)
 app.include_router(trace_router, prefix=settings.api_prefix)
