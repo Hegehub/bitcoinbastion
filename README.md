@@ -20,6 +20,8 @@
 ## Core documentation
 
 - Historical Similarity Foundation: `docs/HISTORICAL_SIMILARITY_ENGINE.md` documents pattern matching, reaction profiles, similarity scoring, limitations, and API contracts.
+- Market Signal Governance: `docs/MARKET_SIGNAL_GOVERNANCE.md` documents candidate lifecycle, publishing policy gates, operator review, delivery logs, and no-causation safety.
+- Evidence Packets and Replay: `docs/EVIDENCE_PACKETS.md` and `docs/EVIDENCE_REPLAY.md` document replayable evidence bundles, lineage, integrity snapshots, timeline replay, exports, and no-causation safety.
 
 - `docs/STATUS.md`
 - `docs/PRODUCTION_READINESS.md`

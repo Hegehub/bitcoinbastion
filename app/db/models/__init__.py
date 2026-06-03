@@ -1,4 +1,17 @@
+from app.db.models.evidence_packet import (
+    EvidenceArtifact,
+    EvidenceIntegritySnapshot,
+    EvidencePacket,
+    EvidenceRelationship,
+    EvidenceReplayLog,
+)
 from app.db.models.intelligence_timeline import IntelligenceTimelineEvent
+from app.db.models.intelligence_signals import (
+    IntelligenceOperatorReview,
+    IntelligencePublishingPolicy,
+    IntelligenceSignalCandidate,
+    IntelligenceSignalDeliveryLog,
+)
 from app.db.models.candle_build_run import CandleBuildRun
 from app.db.models.attribution_replay_log import AttributionReplayLog
 from app.db.models.candle_attribution import CandleAttribution
@@ -94,7 +107,16 @@ __all__ = [
     "NarrativeSnapshot",
     "NarrativeObservation",
     "AttributionReplayLog",
+    "EvidencePacket",
+    "EvidenceRelationship",
+    "EvidenceArtifact",
+    "EvidenceIntegritySnapshot",
+    "EvidenceReplayLog",
     "IntelligenceTimelineEvent",
+    "IntelligenceSignalCandidate",
+    "IntelligenceOperatorReview",
+    "IntelligencePublishingPolicy",
+    "IntelligenceSignalDeliveryLog",
     "CandleBuildRun",
     "CandleProviderSnapshot",
     "BTCPricePoint",
