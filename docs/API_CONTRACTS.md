@@ -346,3 +346,50 @@ Narrative responses are informational and correlation-based. They must not claim
 - `GET /api/v1/intelligence/narratives/dominant` returns narratives with high dominance or heat scores for leaderboard widgets.
 - Narrative heatmap rows include `velocity_score`, `dominance_score`, `supporting_events_count`, `supporting_articles`, and `supporting_events` for future heatmap, trend-chart, leaderboard, and narrative-timeline widgets.
 - The narrative registry is seeded from `config/narratives.yaml`; the classifier remains local and deterministic.
+
+## BMTM-P35 Market Memory API
+
+- `GET /api/v1/intelligence/events/{event_id}/similar` returns the current event, event fingerprint, explicit pattern matches, top similar events, historical reaction summary, confidence reasoning, evidence, and safety limitations.
+- `GET /api/v1/intelligence/events/{event_id}/memory` returns pattern matches, similar events, confidence history, and safety limitations.
+- `GET /api/v1/intelligence/events/{event_id}/memory/replay` returns the replay contract: event analyzed, candidates, similarity scores, pattern assignment, reason codes, and final ranking.
+- `POST /api/v1/intelligence/events/{event_id}/memory/operator-review` records auditable operator approvals, rejections, confidence overrides, notes, and false-similarity markers.
+- `GET /api/v1/intelligence/patterns` returns the explicit active pattern library.
+- `GET /api/v1/intelligence/patterns/{pattern_code}` returns one pattern by slug or numeric ID.
+- `GET /api/v1/intelligence/patterns/{pattern_code}/statistics` returns historical occurrences, median move windows, positive/negative/neutral rates, average confidence, best case, worst case, and limitations.
+- `GET /api/v1/evidence/market-memory/{event_id}` returns Market Memory evidence with source events, similarity calculations, pattern matches, historical reaction summary, limitations, provider confidence, and generation time.
+
+All Market Memory endpoints must include: Historical similarity is not prediction. Correlation is not proof of causation. Past market reactions do not guarantee future outcomes. Do not generate trading recommendations.
+
+## BMTM-P36 Signal Governance API
+
+- `GET /api/v1/operator/signals/pending` returns pending signal candidates for operator review.
+- `GET /api/v1/operator/signals/{signal_id}` returns one candidate plus review history.
+- `POST /api/v1/operator/signals/{signal_id}/approve` records an approval review and updates candidate status.
+- `POST /api/v1/operator/signals/{signal_id}/reject` records a rejection review and updates candidate status.
+- `POST /api/v1/operator/signals/{signal_id}/hold` records a hold review and updates candidate status.
+- `POST /api/v1/operator/signals/{signal_id}/needs-more-evidence` records a needs-more-evidence review and holds the candidate.
+- `POST /api/v1/operator/signals/{signal_id}/mark-false-positive` records a false-positive review and rejects the candidate.
+- `POST /api/v1/operator/signals/{signal_id}/confidence-override` records a confidence override on the review record without mutating source facts.
+- `GET /api/v1/signals/news-market-impact` returns public/frontend-ready news market impact signal candidates.
+- `GET /api/v1/signals/latest` returns latest public/frontend-ready signal candidates.
+- `GET /api/v1/signals/{signal_id}` returns one public/frontend-ready signal candidate.
+- `GET /api/v1/signals/{signal_id}/evidence` returns evidence references and limitations for a signal candidate.
+- `GET /api/v1/signals/{signal_id}/delivery-logs` returns delivery logs for a signal candidate.
+
+Public signal output includes safety flags: `correlation_not_causation = true`, `not_financial_advice = true`, `operator_reviewed`, and `evidence_based`.
+
+### BMTM-P36 governance hardening
+
+Policy responses may include `duplicate_signal` when the same signal type and source identity already produced a candidate. Public signal evidence treats provider confidence as contextual metadata; `evidence_based` is true only when primary evidence such as article, event, impact, attribution, replay, or source-health evidence is present.
+
+## BMTM-P37 Evidence Packet and Replay API
+
+- `GET /api/v1/evidence/packets` returns recent evidence packets with frontend-ready timelines, confidence breakdowns, evidence chains, limitations, integrity status, operator review status, and publication status.
+- `GET /api/v1/evidence/packets/{packet_id}` returns one evidence packet; `format=markdown` returns a Markdown export wrapper.
+- `GET /api/v1/evidence/packets/{packet_id}/timeline` returns the packet replay timeline.
+- `GET /api/v1/evidence/packets/{packet_id}/relationships` returns lineage relationships for the packet chain.
+- `GET /api/v1/evidence/replay/{entity_type}/{entity_id}` replays article, event, impact, attribution, signal, or publication evidence; `format=markdown` returns a Markdown export wrapper.
+- `GET /api/v1/evidence/replay/{entity_type}/{entity_id}/timeline` returns the replay timeline for the entity.
+- `GET /api/v1/evidence/replay/{entity_type}/{entity_id}/integrity` checks deterministic evidence integrity snapshots and exposes mismatches.
+
+Evidence replay responses must expose correlation-not-causation, evidence-based, replayable, and operator-reviewed flags. Replay failures, degraded providers, missing external confirmations, and integrity mismatches must remain visible. JSON and Markdown exports are implemented; PDF export remains future work.

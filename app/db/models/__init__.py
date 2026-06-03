@@ -1,4 +1,17 @@
+from app.db.models.evidence_packet import (
+    EvidenceArtifact,
+    EvidenceIntegritySnapshot,
+    EvidencePacket,
+    EvidenceRelationship,
+    EvidenceReplayLog,
+)
 from app.db.models.intelligence_timeline import IntelligenceTimelineEvent
+from app.db.models.intelligence_signals import (
+    IntelligenceOperatorReview,
+    IntelligencePublishingPolicy,
+    IntelligenceSignalCandidate,
+    IntelligenceSignalDeliveryLog,
+)
 from app.db.models.candle_build_run import CandleBuildRun
 from app.db.models.attribution_replay_log import AttributionReplayLog
 from app.db.models.candle_attribution import CandleAttribution
@@ -13,6 +26,11 @@ from app.db.models.market_pattern import MarketPattern
 from app.db.models.event_pattern_match import EventPatternMatch
 from app.db.models.historical_event_similarity import HistoricalEventSimilarity
 from app.db.models.pattern_reaction_profile import PatternReactionProfile
+
+from app.db.models.market_memory_record import MarketMemoryRecord
+from app.db.models.event_fingerprint import EventFingerprintRecord
+from app.db.models.pattern_statistics import PatternStatistics
+from app.db.models.market_memory_operator_review import MarketMemoryOperatorReview
 from app.db.models.historical_pattern import HistoricalPattern
 from app.db.models.historical_similarity_match import HistoricalSimilarityMatch
 from app.db.models.historical_reaction_profile import HistoricalReactionProfile
@@ -77,6 +95,10 @@ __all__ = [
     "HistoricalEventSimilarity",
     "EventPatternMatch",
     "MarketPattern",
+    "MarketMemoryRecord",
+    "EventFingerprintRecord",
+    "PatternStatistics",
+    "MarketMemoryOperatorReview",
     "HistoricalPattern",
     "HistoricalSimilarityMatch",
     "HistoricalReactionProfile",
@@ -85,7 +107,16 @@ __all__ = [
     "NarrativeSnapshot",
     "NarrativeObservation",
     "AttributionReplayLog",
+    "EvidencePacket",
+    "EvidenceRelationship",
+    "EvidenceArtifact",
+    "EvidenceIntegritySnapshot",
+    "EvidenceReplayLog",
     "IntelligenceTimelineEvent",
+    "IntelligenceSignalCandidate",
+    "IntelligenceOperatorReview",
+    "IntelligencePublishingPolicy",
+    "IntelligenceSignalDeliveryLog",
     "CandleBuildRun",
     "CandleProviderSnapshot",
     "BTCPricePoint",

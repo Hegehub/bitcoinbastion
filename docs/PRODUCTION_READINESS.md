@@ -167,3 +167,17 @@ The foundation records candle context snapshots for every attributed candle so o
 ## Historical Similarity Production Readiness
 
 Historical similarity is implemented as a deterministic, replayable comparison layer for operator context, not as a forecasting layer. Known limitations include small sample-size sensitivity, incomplete signal-to-event linking, and market regime differences across historical windows. Every response includes limitations and avoids causation or financial-advice claims.
+
+## Market Memory Production Readiness
+
+Market Memory now has deterministic event fingerprints, explicit pattern matching, replayable similarity rankings, persisted market-memory records, pattern statistics, evidence payloads, and auditable operator review support. The system remains operator-controlled and informational only. It is not a prediction engine, does not prove causation, does not guarantee future outcomes from past reactions, and does not generate trading recommendations.
+
+## Signal Governance Production Readiness
+
+Signal governance now prevents automatic strong market-claim publication by default. Candidate signals must pass policy gates and usually require operator review before publication visibility. Delivery logs preserve channel outcomes and sanitized errors. Outputs remain correlation-based and not financial advice; direct causation claims are prohibited.
+
+## Evidence Packet and Replay Production Readiness
+
+Evidence Packet and Replay now provide a production foundation for replayable market-intelligence evidence. Packets persist source entities, lineage relationships, artifacts, deterministic integrity snapshots, confidence provenance, limitations, operator review status, publication status, and replay logs. API responses are frontend-ready and expose correlation-not-causation, evidence-based, replayable, and operator-reviewed flags. JSON and Markdown export are supported; PDF remains future work.
+
+Remaining readiness constraints: historical provider/source-health snapshots need deeper backfill, PDF export is not implemented, and global CI release gates remain constrained by pre-existing schema/runtime parity drift unrelated to the evidence subsystem.

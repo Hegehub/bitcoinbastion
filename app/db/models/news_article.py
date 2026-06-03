@@ -1,7 +1,8 @@
 from datetime import datetime
+from hashlib import sha256
 from uuid import uuid4
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, event
 from sqlalchemy import JSON
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -17,13 +18,13 @@ class NewsArticle(Base):
     source_id: Mapped[int] = mapped_column(ForeignKey("news_sources.id"), index=True)
     external_id: Mapped[str] = mapped_column(String(255), default="")
     title: Mapped[str] = mapped_column(String(500), nullable=False)
-    normalized_title: Mapped[str] = mapped_column(String(500), nullable=False)
-    raw_url: Mapped[str] = mapped_column(String(2048), nullable=False)
+    normalized_title: Mapped[str] = mapped_column(String(500), default="", nullable=False)
+    raw_url: Mapped[str] = mapped_column(String(2048), default="", nullable=False)
     url: Mapped[str] = mapped_column(String(2048), nullable=False)
-    canonical_url: Mapped[str] = mapped_column(String(2048), nullable=False)
-    url_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
-    canonical_url_hash: Mapped[str] = mapped_column(String(64), index=True)
-    title_hash: Mapped[str] = mapped_column(String(64), index=True)
+    canonical_url: Mapped[str] = mapped_column(String(2048), default="", nullable=False)
+    url_hash: Mapped[str] = mapped_column(String(64), default="", unique=True, index=True)
+    canonical_url_hash: Mapped[str] = mapped_column(String(64), default="", index=True)
+    title_hash: Mapped[str] = mapped_column(String(64), default="", index=True)
     normalized_title_hash: Mapped[str] = mapped_column(String(64), default="", index=True)
     content_hash: Mapped[str] = mapped_column(String(64), index=True)
     author: Mapped[str] = mapped_column(String(255), default="")
@@ -65,3 +66,23 @@ class NewsArticle(Base):
     metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+
+@event.listens_for(NewsArticle, "before_insert")
+def _fill_news_article_defaults(_mapper: object, _connection: object, target: NewsArticle) -> None:
+    title = target.title or ""
+    url = target.url or target.raw_url or target.canonical_url or ""
+    if not target.normalized_title:
+        target.normalized_title = title.lower().strip()
+    if not target.raw_url:
+        target.raw_url = url
+    if not target.canonical_url:
+        target.canonical_url = url
+    if not target.url_hash:
+        target.url_hash = sha256(url.encode("utf-8")).hexdigest()
+    if not target.canonical_url_hash:
+        target.canonical_url_hash = sha256((target.canonical_url or url).encode("utf-8")).hexdigest()
+    if not target.title_hash:
+        target.title_hash = sha256(title.lower().strip().encode("utf-8")).hexdigest()
+    if not target.normalized_title_hash:
+        target.normalized_title_hash = sha256(target.normalized_title.encode("utf-8")).hexdigest()

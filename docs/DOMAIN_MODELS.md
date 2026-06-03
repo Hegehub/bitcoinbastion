@@ -167,3 +167,28 @@ This model stores article/event-level narrative classification observations with
 
 - `NarrativeObservation` includes `narrative_id`, `observation_time`, `strength_score`, and `relevance_score` for replayable classifier evidence.
 - `NarrativeSnapshot` includes `velocity_score`, `dominance_score`, and `supporting_events_count` for leaderboard and heatmap rendering.
+
+## BMTM-P35 Market Memory Engine Models
+
+- `MarketMemoryRecord`
+- `EventFingerprintRecord`
+- `PatternStatistics`
+- `MarketMemoryOperatorReview`
+
+## BMTM-P36 Signal Governance Models
+
+- `IntelligenceSignalCandidate`
+- `IntelligenceOperatorReview`
+- `IntelligencePublishingPolicy`
+- `IntelligenceSignalDeliveryLog`
+
+These models store governed candidate signals, operator review audit records, publication thresholds/defaults, and channel delivery outcomes.
+
+## BMTM-P37 Evidence Packet and Replay Models
+- `EvidencePacket`
+- `EvidenceRelationship`
+- `EvidenceArtifact`
+- `EvidenceIntegritySnapshot`
+- `EvidenceReplayLog`
+
+These models persist replayable evidence bundles, lineage chains, artifact payloads, deterministic integrity snapshots, and replay logs for article, event, impact, attribution, signal, and publication evidence.
