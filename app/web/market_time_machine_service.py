@@ -10,11 +10,14 @@ from sqlalchemy.orm import Session
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.candle_attribution_candidate import CandleAttributionCandidate
 from app.db.models.evidence_packet import EvidenceArtifact, EvidencePacket, EvidenceReplayLog
+from app.db.models.intelligence_signals import IntelligenceOperatorReview, IntelligenceSignalCandidate
 from app.db.models.intelligence_timeline import IntelligenceTimelineEvent
 from app.db.models.narrative_memory_snapshot import NarrativeMemorySnapshot
 from app.db.models.news_article import NewsArticle
 from app.db.models.news_event import NewsEvent
 from app.db.models.news_price_impact import NewsPriceImpact
+from app.db.models.news_source import NewsSource
+from app.db.models.source_reputation_profile import SourceReputationProfile
 from app.schemas.market_time_machine_web import (
     CandleAttributionDTO,
     EvidencePanelDTO,
@@ -79,6 +82,204 @@ class MarketTimeMachineWebService:
             similarity_preview=similarity_preview,
             operator_status={"operator_reviewed": False, "status": "display_only"},
         )
+
+
+    def landing_payload(self, *, timeframe: str = "1h") -> dict[str, object]:
+        dashboard = self.dashboard(timeframe=timeframe, page_size=80)
+        latest_candle = dashboard.candles[-1].model_dump() if dashboard.candles else None
+        latest_event = dashboard.chart_markers[0].model_dump() if dashboard.chart_markers else None
+        signals = self.signal_summary(limit=25)
+        evidence = self.evidence_summary(limit=25)
+        replay = self.replay_requests_summary(limit=25)
+        sources = self.source_summary(limit=50)
+        return {
+            "market_timeline": dashboard.model_dump(),
+            "btc_price": {
+                "price_usd": latest_candle.get("close") if latest_candle else None,
+                "timeframe": latest_candle.get("timeframe") if latest_candle else timeframe,
+                "observed_at": latest_candle.get("close_time") if latest_candle else "unknown",
+                "provider_confidence": latest_candle.get("provider_confidence") if latest_candle else 0.0,
+            },
+            "latest_high_impact_event": latest_event,
+            "latest_published_signal": signals["latest_published_signal"],
+            "operator_queue": signals["operator_queue"],
+            "evidence_replay_requests": replay,
+            "source_summary": sources,
+            "signal_summary": signals,
+            "evidence_summary": evidence,
+            "limitations": SAFETY_LIMITATIONS,
+        }
+
+    def signal_summary(self, *, limit: int = 50, status: str | None = None) -> dict[str, object]:
+        query = select(IntelligenceSignalCandidate)
+        if status and status != "all":
+            query = query.where(IntelligenceSignalCandidate.status == status)
+        rows = list(
+            self.db.execute(
+                query.order_by(IntelligenceSignalCandidate.created_at.desc(), IntelligenceSignalCandidate.id.desc()).limit(min(max(limit, 1), 100))
+            ).scalars()
+        )
+        counts = {name: 0 for name in ["published", "pending_review", "held", "rejected", "false_positive", "expired"]}
+        for row in rows:
+            counts[self._signal_bucket(row)] = counts.get(self._signal_bucket(row), 0) + 1
+        pending_ids = [row.id for row in rows if row.requires_operator_review or self._signal_bucket(row) == "pending_review"]
+        reviews = list(
+            self.db.execute(
+                select(IntelligenceOperatorReview)
+                .where(IntelligenceOperatorReview.signal_candidate_id.in_(pending_ids or [0]))
+                .order_by(IntelligenceOperatorReview.created_at.desc())
+                .limit(25)
+            ).scalars()
+        )
+        items = [
+            {
+                "id": row.id,
+                "title": row.title or f"Signal {row.id}",
+                "status": self._signal_bucket(row),
+                "raw_status": row.status,
+                "confidence": row.confidence_score or 0.0,
+                "evidence_packet_id": row.evidence_packet_id,
+                "requires_operator_review": row.requires_operator_review,
+                "policy_decision": row.policy_decision,
+                "published_at": self._dt(row.published_at),
+                "created_at": self._dt(row.created_at),
+                "limitations": SAFETY_LIMITATIONS,
+            }
+            for row in rows
+        ]
+        return {
+            "items": items,
+            "counts": counts,
+            "latest_published_signal": next((item for item in items if item["status"] == "published"), items[0] if items else None),
+            "operator_queue": {
+                "pending_count": len(pending_ids),
+                "reviews": [
+                    {
+                        "signal_candidate_id": review.signal_candidate_id,
+                        "review_status": review.review_status,
+                        "false_positive_marker": review.false_positive_marker,
+                        "created_at": self._dt(review.created_at),
+                    }
+                    for review in reviews
+                ],
+            },
+            "limitations": SAFETY_LIMITATIONS,
+        }
+
+    def evidence_summary(self, *, limit: int = 25) -> dict[str, object]:
+        packets = list(
+            self.db.execute(
+                select(EvidencePacket).order_by(EvidencePacket.created_at.desc(), EvidencePacket.id.desc()).limit(min(max(limit, 1), 100))
+            ).scalars()
+        )
+        packet_ids = [packet.id for packet in packets]
+        artifacts = list(
+            self.db.execute(
+                select(EvidenceArtifact).where(EvidenceArtifact.packet_id.in_(packet_ids or [0])).limit(200)
+            ).scalars()
+        )
+        artifact_counts: dict[int, int] = {}
+        for artifact in artifacts:
+            if artifact.packet_id is not None:
+                artifact_counts[artifact.packet_id] = artifact_counts.get(artifact.packet_id, 0) + 1
+        return {
+            "items": [
+                {
+                    "packet_id": packet.id,
+                    "title": packet.title or f"Evidence packet {packet.id}",
+                    "summary": packet.summary or "Evidence packet summary unavailable.",
+                    "packet_type": packet.packet_type,
+                    "source_entity_type": packet.source_entity_type,
+                    "source_entity_id": packet.source_entity_id,
+                    "confidence": packet.confidence_score or 0.0,
+                    "provider_confidence": packet.provider_confidence or 0.0,
+                    "source_confidence": packet.source_confidence or 0.0,
+                    "artifact_count": artifact_counts.get(packet.id, 0),
+                    "replay_url": f"/market/evidence?packet_id={packet.id}",
+                    "created_at": self._dt(packet.created_at),
+                    "limitations": SAFETY_LIMITATIONS,
+                }
+                for packet in packets
+            ],
+            "limitations": SAFETY_LIMITATIONS + ([] if packets else ["No evidence packets available."]),
+        }
+
+    def replay_requests_summary(self, *, limit: int = 25) -> dict[str, object]:
+        rows = list(
+            self.db.execute(
+                select(EvidenceReplayLog).order_by(EvidenceReplayLog.started_at.desc(), EvidenceReplayLog.id.desc()).limit(min(max(limit, 1), 100))
+            ).scalars()
+        )
+        return {
+            "items": [
+                {
+                    "entity_type": row.entity_type,
+                    "entity_id": row.entity_id,
+                    "step": row.step_name,
+                    "input_hash": row.input_hash,
+                    "output_hash": row.output_hash,
+                    "success": row.success,
+                    "error_code": row.error_code,
+                    "started_at": self._dt(row.started_at),
+                    "finished_at": self._dt(row.finished_at),
+                    "policy_decisions": (row.metadata_json or {}).get("policy_decisions", []),
+                    "operator_actions": (row.metadata_json or {}).get("operator_actions", []),
+                    "publication_status": (row.metadata_json or {}).get("publication_status", "unknown"),
+                }
+                for row in rows
+            ],
+            "failure_count": sum(1 for row in rows if not row.success),
+            "limitations": SAFETY_LIMITATIONS + ([] if rows else ["Replay unavailable."]),
+        }
+
+    def source_summary(self, *, limit: int = 50, sort: str = "name") -> dict[str, object]:
+        rows = list(
+            self.db.execute(select(NewsSource).order_by(NewsSource.name.asc()).limit(min(max(limit, 1), 100))).scalars()
+        )
+        source_ids = [row.id for row in rows]
+        reputations = {
+            row.source_id: row
+            for row in self.db.execute(
+                select(SourceReputationProfile).where(SourceReputationProfile.source_id.in_(source_ids or [0]))
+            ).scalars()
+        }
+        items: list[dict[str, object]] = []
+        for row in rows:
+            reputation = reputations.get(row.id)
+            items.append(
+                {
+                    "source_id": row.id,
+                    "source_name": row.name,
+                    "health": row.health_band or ("DEGRADED" if row.is_degraded else "UNKNOWN"),
+                    "provider_confidence": row.provider_confidence,
+                    "reputation": reputation.reliability_score if reputation else 0.0,
+                    "average_latency": row.avg_latency_ms or 0.0,
+                    "failure_count": row.failure_count,
+                    "first_mover_score": reputation.first_mover_score if reputation else 0.0,
+                    "signal_quality": reputation.signal_quality_score if reputation else row.signal_quality_weight,
+                    "is_degraded": row.is_degraded,
+                    "limitations": SAFETY_LIMITATIONS,
+                }
+            )
+        if sort == "confidence":
+            items.sort(key=lambda item: self._float_value(item.get("provider_confidence")), reverse=True)
+        elif sort == "failures":
+            items.sort(key=lambda item: self._int_value(item.get("failure_count")), reverse=True)
+        elif sort == "quality":
+            items.sort(key=lambda item: self._float_value(item.get("signal_quality")), reverse=True)
+        return {
+            "items": items,
+            "provider_health": {
+                "news_providers": len(items),
+                "market_providers": 0,
+                "provider_confidence": round(sum(self._float_value(item.get("provider_confidence")) for item in items) / len(items), 4) if items else 0.0,
+                "degraded_sources": [str(item.get("source_name")) for item in items if bool(item.get("is_degraded"))],
+                "degraded_count": sum(1 for item in items if bool(item.get("is_degraded"))),
+                "provider_health_visible": True,
+                "limitations": SAFETY_LIMITATIONS,
+            },
+            "limitations": SAFETY_LIMITATIONS + ([] if items else ["Source registry is empty or unavailable."]),
+        }
 
     def timeline(
         self,
@@ -493,6 +694,32 @@ class MarketTimeMachineWebService:
         if window in windows:
             return query.where(IntelligenceTimelineEvent.event_time >= datetime.utcnow() - windows[window])
         return query
+
+
+
+    @staticmethod
+    def _float_value(value: object) -> float:
+        return float(value) if isinstance(value, int | float | str) else 0.0
+
+    @staticmethod
+    def _int_value(value: object) -> int:
+        return int(value) if isinstance(value, int | float | str) else 0
+
+    def _signal_bucket(self, row: IntelligenceSignalCandidate) -> str:
+        text = f"{row.status} {row.policy_decision} {row.policy_reason}".lower()
+        if row.published_at is not None or "published" in text:
+            return "published"
+        if "false" in text:
+            return "false_positive"
+        if "reject" in text:
+            return "rejected"
+        if "expire" in text:
+            return "expired"
+        if "hold" in text or "held" in text:
+            return "held"
+        if row.requires_operator_review or "review" in text or "pending" in text:
+            return "pending_review"
+        return row.status or "pending_review"
 
     def _candidate_event(self, candidate: CandleAttributionCandidate, event: NewsEvent | None) -> dict[str, object]:
         return {

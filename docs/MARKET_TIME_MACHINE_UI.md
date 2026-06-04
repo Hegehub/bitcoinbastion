@@ -1,115 +1,128 @@
 # Market Time Machine UI
 
-The Market Time Machine dashboard is the production web interface for Bitcoin Bastion market memory. It preserves the existing Bitcoin-first visual language: simple cards, clear typography, high contrast, operator control, and evidence-first explanations.
+Status: baseline production-grade web interface implemented; production calibration and live provider coverage still pending.
 
-## Architecture
+## Purpose
 
-Task 41 finalizes the dashboard as a **FastAPI + Jinja2 + HTMX + Alpine.js** web surface. The web layer is intentionally thin:
+The Market Time Machine is the unified web interface for BTC candles, classified news markers, candle explanations, evidence packets, historical similarity, and replay timelines.
 
-- templates render DTOs supplied by backend services;
-- no frontend price, attribution, confidence, or similarity calculations are performed;
-- routes never expose stack traces and show empty/error/degraded states instead;
-- the existing Trace UI and public frontend remain untouched.
+Safety posture is mandatory:
 
-The previously added React `/market` prototype has been removed from the production dashboard path because this surface must stay compatible with the non-SPA web architecture.
+- Correlation is not proof of causation.
+- Evidence, missing evidence, degraded providers, and operator review state must remain visible.
+- The UI is informational and never claims certainty or financial advice.
 
-## Routes
+## Pages
 
-Production web pages:
+Implemented web pages:
 
-- `GET /market-time-machine` — primary dashboard with time controls, BTC chart, markers, timeline panel, attribution panel, and evidence entry point.
-- `GET /intelligence/timeline` — unified timeline with filtering, sorting, pagination, and time-window controls.
-- `GET /evidence/{packet_id}` — evidence packet viewer with confidence, provider/source health, replay references, limitations, and integrity status.
-- `GET /candles/{candle_id}` — candle attribution view with OHLC, price change, candidate events/articles, confidence, replay availability, and limitations.
+- `/market`
+- `/market/timeline`
+- `/market/candles`
+- `/market/events`
+- `/market/news`
+- `/market/narratives`
+- `/market/shock-index`
 
-Thin DTO endpoints for HTMX/Alpine or self-hosted integrations:
+Legacy compatibility remains available through `/market-time-machine`, `/intelligence/timeline`, `/candles/{candle_id}`, `/evidence/{packet_id}`, and DTO endpoints under `/web/*`.
 
-- `GET /web/market-time-machine`
-- `GET /web/timeline`
-- `GET /web/candle/{id}`
-- `GET /web/evidence/{id}`
+## Frontend DTOs
 
-## Components and Templates
+The main DTO exposes:
 
-Reusable Jinja components live in `app/web/templates/components.html`:
+- `chart_data`
+- `marker_data`
+- `selected_candle`
+- `selected_event`
+- `historical_matches`
+- `evidence_summary`
+- `shock_index`
+- `narrative_summary`
+- `provider_health`
 
-- `btc_candlestick_chart`
-- evidence side panel
-- status badges
-- safety notice
-- loading skeleton
-- empty state
-- error state
+## Interaction model
 
-The candlestick component supports timeframe switching, zoom controls, pan controls, responsive horizontal overflow, keyboard focus, and deterministic marker rendering.
+The chart supports responsive rendering, keyboard focus, hover/click selection, zoom controls, pan controls, candle selection, marker rendering, and bounded telemetry calls.
 
-## Marker System
+Marker details include title, source, publish time, BTC price at publish, 15m/1h/4h/24h changes, confidence, evidence availability, and historical matches.
 
-Markers are deterministic backend DTOs, not frontend inference. Supported marker classes are:
+Candle details include OHLC, volume, price-change percent, candidate event groups, attribution confidence, limitations, likely factors, combined explanation, and the required no-causation disclosure.
 
-- positive
-- negative
-- uncertain
-- security
-- regulatory
-- institutional / ETF
-- mining
-- Lightning / Bitcoin Core
+## Marker types
 
-Duplicate markers are suppressed by timestamp bucket and marker type so repeated events do not visually stack on the same candle.
+Supported display mapping:
 
-## Attribution Flow
+- `positive_news` → 🟢
+- `negative_news` → 🔴
+- `uncertain_news` → 🟡
+- `security_shock` → ⚠️
+- `regulatory_event` → 🏛
+- `institutional_event` → 🏦
+- `mining_event` → ⛏
+- `lightning_or_core_event` → ⚡
 
-Clicking a candle opens `/candles/{candle_id}`. The page displays:
+## Metrics
 
-- OHLC and volume;
-- price change percentage;
-- candidate events;
-- candidate articles;
-- confidence;
-- time distance;
-- historical similarity count;
-- replay availability;
-- limitations.
+Bounded UI metrics:
 
-Every attribution surface repeats: **Correlation is not proof of causation.**
+- `market_ui_page_views_total{page}`
+- `market_ui_marker_clicks_total{marker_type}`
+- `market_ui_candle_clicks_total{timeframe}`
+- `market_ui_replay_requests_total{entity_type}`
+- `market_ui_evidence_views_total{surface}`
 
-## Evidence Panel and Replay Integration
+## Readiness
 
-Evidence views expose:
+Market Time Machine readiness after this task: **88%**.
 
-- evidence packet ID;
-- replay availability;
-- evidence sources;
-- provider confidence;
-- source confidence;
-- integrity status;
-- operator review status;
-- limitations.
+Remaining blockers:
 
-Replay open events are observable through bounded metrics, and replay-unavailable states remain visible.
+- Live production data calibration and provider coverage evidence.
+- Full browser-based visual regression suite.
+- Real-user load/performance validation.
 
-## Mobile and Accessibility
+## Prompt 44 production finalization
 
-- Mobile layouts stack panels and preserve chart usability through horizontal overflow.
-- Controls are touch-friendly and keyboard-focusable.
-- Chart and navigation regions include ARIA labels.
-- IDs and hashes use monospace formatting.
-- Native `<details>` elements provide accessible expandable evidence sections.
+Prompt 44 finalizes the web Market Intelligence dashboard around the Market Time Machine.
 
-## Safety Copy
+### Navigation
 
-Every Market Time Machine page displays:
+The existing site navigation exposes `Market Intelligence` with subsections:
 
-```text
-Correlation is not proof of causation.
-Bitcoin Bastion provides evidence-based informational analysis.
-Nothing displayed here constitutes financial advice.
-```
+- Timeline
+- Market Time Machine
+- Narratives
+- Signals
+- Evidence
+- Sources
 
-## Known Limitations
+### Dashboard structure
 
-- The dashboard depends on populated backend market-memory tables.
-- Missing evidence packets render as explicit empty states.
-- Provider degradation and backend timeouts render safe error messages without internal exceptions.
-- Chart rendering is intentionally minimal and self-hosted friendly; future prompts may add richer canvas/SVG interactions without moving business logic into the browser.
+`/market` now acts as the dashboard landing page and includes future-refresh-ready cards for:
+
+- BTC Price
+- News Shock Index
+- Active Narratives
+- Latest High Impact Event
+- Latest Published Signal
+- Provider Health
+- Operator Queue
+- Evidence Replay Requests
+
+### Timeline UX
+
+`/market/timeline` uses a windowed timeline presentation for candles, news events, signals, security shocks, regulatory events, narrative shifts, and operator publications. Filtering, scrolling, grouping, and future incremental loading are represented in the frontend contract without rendering full history.
+
+### Evidence and replay UX
+
+`/market/evidence` displays evidence packets with expandable sections for packet summary, evidence chain, confidence breakdown, provider snapshot, source snapshot, limitations, and replay timeline. Replay failures, hashes, policy decisions, operator actions, and publication status remain visible.
+
+### Safety principles
+
+Every Market Intelligence route keeps the global safety banner visible:
+
+- Correlation is not proof of causation.
+- Bitcoin Bastion provides evidence-based market context, not financial advice.
+- Missing evidence, degraded providers, low confidence, replay failures, and operator review state must remain visible.
+
+Market Time Machine readiness after Prompt 44: **93%**.

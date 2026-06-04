@@ -221,3 +221,42 @@ Production protections:
 - Attribution panels expose `correlation_not_causation`, `evidence_based`, `operator_reviewed`, and `confidence_score`.
 
 Remaining production constraints are richer chart interactions, live table backfill depth, and the pre-existing schema parity blocker in global release gates.
+
+## Market Time Machine UI readiness
+
+Prompt 43 adds the primary Market Time Machine web interface and frontend contract tests.
+
+Implemented:
+
+- Unified `/market` web interface.
+- Section pages for timeline, candles, events, news, narratives, and shock index.
+- Responsive and high-contrast CSS baseline.
+- Keyboard-accessible chart controls and marker/candle selection.
+- Mandatory no-causation, evidence-based, operator-review, and provider-health visibility flags.
+- Bounded Prometheus metrics for page views, marker clicks, candle clicks, replay requests, and evidence views.
+
+Remaining blockers before production-ready claim:
+
+- Production traffic/load validation.
+- Browser screenshot and visual regression suite against live data.
+- Calibration evidence for shock-index thresholds and narrative confidence.
+- Provider-health coverage validation in production.
+
+## Prompt 44 Market Intelligence dashboard production-finalization status
+
+Implemented:
+
+- Market Intelligence landing dashboard.
+- Dedicated timeline, time-machine, signals, evidence, narratives, and sources routes.
+- Future-refresh-ready dashboard cards.
+- Windowed timeline rendering and meaningful empty/error states.
+- Evidence packet and replay visibility including replay failures and policy/operator fields.
+- Source intelligence table with sorting.
+- Bounded observability metrics for dashboard, evidence, replay, signal, and narrative views.
+
+Still pending before a production-ready claim:
+
+- Production live-data calibration of shock index thresholds and narrative confidence.
+- Production provider-health validation with real degraded-source incidents.
+- Browser-based visual regression and accessibility audit against production-like data.
+- Existing release-gate schema parity blocker remains unresolved outside this UI task.

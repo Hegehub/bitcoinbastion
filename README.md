@@ -22,6 +22,8 @@
 - Historical Similarity Foundation: `docs/HISTORICAL_SIMILARITY_ENGINE.md` documents pattern matching, reaction profiles, similarity scoring, limitations, and API contracts.
 - Market Signal Governance: `docs/MARKET_SIGNAL_GOVERNANCE.md` documents candidate lifecycle, publishing policy gates, operator review, delivery logs, and no-causation safety.
 - Evidence Packets and Replay: `docs/EVIDENCE_PACKETS.md` and `docs/EVIDENCE_REPLAY.md` document replayable evidence bundles, lineage, integrity snapshots, timeline replay, exports, and no-causation safety.
+- Market Time Machine UI: `docs/MARKET_TIME_MACHINE_UI.md` documents the `/market` interface for BTC candles, news markers, candle explanations, evidence packets, historical similarity, replay timeline, shock index, narratives, and provider health.
+- Market Intelligence Dashboard: `/market` provides the web intelligence console for BTC price context, News Shock Index, Market Time Machine, narratives, signals, evidence/replay, and source quality without trading-terminal or financial-advice framing.
 
 - `docs/STATUS.md`
 - `docs/PRODUCTION_READINESS.md`

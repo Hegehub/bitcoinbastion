@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% import "components/market_panels.html" as market %}
+{% block title %}{{ frame.title }} — Market Intelligence{% endblock %}
+{% block content %}
+<section class="market-hero">
+  <p class="eyebrow">Market Intelligence</p>
+  <h1>{{ frame.title }}</h1>
+  <p>{{ frame.subtitle }}</p>
+  <nav class="section-nav" aria-label="Market Intelligence navigation">
+    <a href="/market">Market Intelligence</a>
+    <a href="/market/timeline">Timeline</a>
+    <a href="/market/time-machine">Market Time Machine</a>
+    <a href="/market/narratives">Narratives</a>
+    <a href="/market/signals">Signals</a>
+    <a href="/market/evidence">Evidence</a>
+    <a href="/market/sources">Sources</a>
+  </nav>
+</section>
+{% if market_vm %}
+{{ market.safety_flags(market_vm.safety_flags, market_vm.limitations) }}
+{% if frame.slug == 'timeline' %}
+  {{ market.market_timeline_view(market_vm) }}
+  {{ market.shock_index_widget(market_vm.shock_index) }}
+{% elif frame.slug == 'time-machine' %}
+  {{ market.timeline_controls(market_vm.selected_timeframe, market_vm.selected_date, timeframes) }}
+  {{ market.market_chart(market_vm.chart_data) }}
+  <div class="market-layout">{{ market.candle_panel(market_vm.selected_candle) }}{{ market.similarity_panel(market_vm.historical_matches) }}</div>
+{% elif frame.slug == 'signals' %}
+  {{ market.signals_view(market_vm.signal_summary, selected_status) }}
+{% elif frame.slug == 'evidence' %}
+  {{ market.evidence_view(market_vm.evidence_summary, market_vm.replay_summary) }}
+{% elif frame.slug == 'narratives' %}
+  {{ market.narrative_summary(market_vm.narrative_summary) }}
+{% elif frame.slug == 'sources' %}
+  {{ market.sources_view(market_vm.source_summary, selected_sort) }}
+{% endif %}
+{{ market.provider_health_widget(market_vm.provider_health) }}
+<script src="/static/js/market.js" defer></script>
+{% else %}
+<section class="market-card"><h2>{{ frame.title }} unavailable</h2><p class="warning">provider unavailable — this degraded state is visible.</p></section>
+{% endif %}
+{% endblock %}

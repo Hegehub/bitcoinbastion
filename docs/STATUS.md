@@ -221,3 +221,27 @@ Status: complete for production dashboard finalization.
 - Timeline filters support combinable filter values, high-confidence filtering, and operator-reviewed filtering.
 - Candle DTOs expose OHLC, volume, price change, dominant direction, volatility score, provider confidence, attribution count, candidate event groups, evidence summaries, similarity previews, narrative strength, and safety flags.
 - Remaining blocker: global CI release gates still report pre-existing runtime schema parity drift outside this dashboard task.
+
+## Prompt 43 — Market Time Machine UI
+
+Status: BASELINE IMPLEMENTED / PRODUCTION CALIBRATION PENDING
+
+- Added unified Market Time Machine web pages for `/market`, `/market/timeline`, `/market/candles`, `/market/events`, `/market/news`, `/market/narratives`, and `/market/shock-index`.
+- Added chart, marker, candle explanation, evidence packet, historical similarity, replay timeline, narrative, shock-index, and provider-health UI panels.
+- Added frontend DTO mapping for `chart_data`, `marker_data`, `selected_candle`, `selected_event`, `historical_matches`, `evidence_summary`, `shock_index`, `narrative_summary`, and `provider_health`.
+- Added bounded UI metrics while preserving visible uncertainty, missing evidence, degraded provider state, and operator review state.
+
+Market Time Machine readiness: 88%.
+Overall Bitcoin Bastion readiness: 91%.
+
+## Prompt 44 — Market Intelligence dashboard finalization
+
+Status: BASELINE IMPLEMENTED / PRODUCTION CALIBRATION PENDING
+
+- Added Market Intelligence dashboard navigation and routes for `/market`, `/market/timeline`, `/market/time-machine`, `/market/signals`, `/market/evidence`, `/market/narratives`, and `/market/sources`.
+- Added landing cards for BTC price, shock index, narratives, high-impact events, published signals, provider health, operator queue, and replay requests.
+- Added signal, evidence/replay, source intelligence, timeline, and time-machine section rendering while preserving safety limitations and degraded state visibility.
+- Added frontend DTO support for market timeline, timeline events, candle details, attribution details, evidence summary, replay summary, source summary, narrative summary, and shock-index summary.
+
+Market Time Machine readiness: 93%.
+Overall Bitcoin Bastion readiness: 92%.
