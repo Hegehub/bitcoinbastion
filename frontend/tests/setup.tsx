@@ -1,5 +1,6 @@
 import React from 'react';
-import { vi } from 'vitest';
+import { afterEach, vi } from 'vitest';
+import { cleanup } from '@testing-library/react';
 
 vi.mock('next/link', () => ({
   default: ({ href, children, ...props }: any) => {
@@ -9,3 +10,12 @@ vi.mock('next/link', () => ({
     );
   },
 }));
+
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() }),
+  usePathname: () => '/',
+  useSearchParams: () => new URLSearchParams(),
+}));
+
+afterEach(() => cleanup());

@@ -208,3 +208,6 @@ These models persist replayable evidence bundles, lineage chains, artifact paylo
 
 - `PatternOccurrence`
 - `PatternReactionSnapshot`
+- `HistoricalReactionStatistics`
+- `PatternEmbeddingPlaceholder`
+- `NarrativeMemorySnapshot`

@@ -296,7 +296,7 @@ Historical similarity responses expose `similarity_score`, `reaction_15m`, `reac
 - `GET /api/v1/intelligence/similarity/events/{event_id}` returns a `HistoricalSimilarityReport` with top analogs, similarity band, sample size, median/average reaction windows, confidence, limitations, and evidence.
 - `GET /api/v1/intelligence/similarity/articles/{article_id}` resolves an article-linked event where available and returns the same report shape.
 - `GET /api/v1/intelligence/patterns` returns seeded market pattern-library entries for future Historical Similarity Panel views.
-- `GET /api/v1/intelligence/patterns/{pattern_code}` returns one pattern-library entry by code.
+- `GET /api/v1/intelligence/patterns/{pattern_id}` returns one pattern-library entry by code.
 
 Historical similarity API output is informational only and includes: `Historical similarity does not guarantee future outcomes.`
 
@@ -313,9 +313,9 @@ The production historical-similarity layer exposes these backend-only contracts 
 - `GET /api/v1/intelligence/events/{event_id}/similar` returns pattern reasoning, top historical analogs, reaction statistics, calibrated confidence, and limitations.
 - `GET /api/v1/intelligence/events/{event_id}/memory` returns persisted market-memory evidence for an event.
 - `GET /api/v1/intelligence/patterns` returns the active `market_patterns` catalog.
-- `GET /api/v1/intelligence/patterns/{pattern_code}` returns one pattern by slug or numeric ID.
-- `GET /api/v1/intelligence/patterns/{pattern_code}/history` returns events classified under that pattern.
-- `GET /api/v1/intelligence/patterns/{pattern_code}/reaction-profile` returns median and average BTC reaction windows.
+- `GET /api/v1/intelligence/patterns/{pattern_id}` returns one pattern by slug or numeric ID.
+- `GET /api/v1/intelligence/patterns/{pattern_id}/history` returns events classified under that pattern.
+- `GET /api/v1/intelligence/patterns/{pattern_id}/reaction-profile` returns median and average BTC reaction windows.
 
 All historical-similarity responses must include the disclaimer: "Historical similarity does not guarantee future market behavior." These endpoints are informational and do not predict price.
 
@@ -354,8 +354,8 @@ Narrative responses are informational and correlation-based. They must not claim
 - `GET /api/v1/intelligence/events/{event_id}/memory/replay` returns the replay contract: event analyzed, candidates, similarity scores, pattern assignment, reason codes, and final ranking.
 - `POST /api/v1/intelligence/events/{event_id}/memory/operator-review` records auditable operator approvals, rejections, confidence overrides, notes, and false-similarity markers.
 - `GET /api/v1/intelligence/patterns` returns the explicit active pattern library.
-- `GET /api/v1/intelligence/patterns/{pattern_code}` returns one pattern by slug or numeric ID.
-- `GET /api/v1/intelligence/patterns/{pattern_code}/statistics` returns historical occurrences, median move windows, positive/negative/neutral rates, average confidence, best case, worst case, and limitations.
+- `GET /api/v1/intelligence/patterns/{pattern_id}` returns one pattern by slug or numeric ID.
+- `GET /api/v1/intelligence/patterns/{pattern_id}/statistics` returns historical occurrences, median move windows, positive/negative/neutral rates, average confidence, best case, worst case, and limitations.
 - `GET /api/v1/evidence/market-memory/{event_id}` returns Market Memory evidence with source events, similarity calculations, pattern matches, historical reaction summary, limitations, provider confidence, and generation time.
 
 All Market Memory endpoints must include: Historical similarity is not prediction. Correlation is not proof of causation. Past market reactions do not guarantee future outcomes. Do not generate trading recommendations.
@@ -400,8 +400,58 @@ Evidence replay responses must expose correlation-not-causation, evidence-based,
 - `GET /api/v1/intelligence/similarity/{event_id}` returns frontend-ready historical context.
 - `GET /api/v1/intelligence/similarity/{event_id}/matches` returns raw historical matches.
 - `GET /api/v1/intelligence/patterns` returns the active pattern library.
-- `GET /api/v1/intelligence/patterns/{pattern_code}` returns a pattern by ID or code.
-- `GET /api/v1/intelligence/patterns/{pattern_code}/statistics` returns pattern reaction statistics.
-- `GET /api/v1/intelligence/patterns/{pattern_code}/occurrences` returns occurrence memory.
+- `GET /api/v1/intelligence/patterns/{pattern_id}` returns a pattern by ID or code.
+- `GET /api/v1/intelligence/patterns/{pattern_id}/statistics` returns pattern reaction statistics.
+- `GET /api/v1/intelligence/patterns/{pattern_id}/occurrences` returns occurrence memory.
 
 Similarity payloads are correlation-only and include safety limitations.
+
+## Historical Similarity and Narrative Memory API
+
+Production Market Time Machine endpoints include:
+
+- `GET /api/v1/intelligence/similarity/{event_id}` for frontend-ready historical context.
+- `GET /api/v1/intelligence/patterns` for the active pattern library.
+- `GET /api/v1/intelligence/patterns/{pattern_id}` for pattern detail.
+- `GET /api/v1/intelligence/patterns/{pattern_id}/statistics` for historical reaction statistics.
+- `GET /api/v1/intelligence/narratives` for narrative catalog data.
+- `GET /api/v1/intelligence/narratives/active` for active narrative memory.
+- `GET /api/v1/intelligence/narratives/memory` for current narrative memory snapshots.
+- `GET /api/v1/intelligence/narratives/history` for narrative heatmap history plus memory snapshots.
+
+Similarity responses expose `similarity_score`, `matched_pattern`, `historical_examples`, `reaction_statistics`, `confidence_breakdown`, `narrative_tags`, and `limitations`.
+
+## Market Time Machine Frontend DTO Consumption
+
+The web dashboard consumes existing backend endpoints rather than creating parallel APIs: timeline (`/api/v1/intelligence/timeline`), BTC candles (`/api/v1/market/btc/candles`), candle attribution (`/api/v1/intelligence/candles/{candle_id}/attribution`), signals (`/api/v1/signals/latest`), evidence (`/api/v1/evidence/packets`), replay (`/api/v1/evidence/replay/{entity_type}/{entity_id}/timeline`), operator queue (`/api/v1/operator/signals/pending`), and narratives (`/api/v1/intelligence/narratives/active`). DTOs are rendered as provided and include confidence, limitations, provider health, integrity, operator, and publication state.
+
+
+## Market Time Machine Web Contracts (Task 41)
+
+The production web dashboard exposes HTML pages and thin DTO endpoints outside the `/api/v1` namespace:
+
+- `GET /market-time-machine` renders the primary dashboard.
+- `GET /intelligence/timeline` renders the unified timeline with `filter`, `page`, `page_size`, `sort`, and `window` query parameters.
+- `GET /evidence/{packet_id}` renders an evidence packet viewer.
+- `GET /candles/{candle_id}` renders a candle attribution view.
+- `GET /web/market-time-machine` returns `MarketTimelineDTO`.
+- `GET /web/timeline` returns paginated `MarketTimelineDTO` timeline items.
+- `GET /web/candle/{id}` returns `CandleAttributionDTO`.
+- `GET /web/evidence/{id}` returns `EvidencePanelDTO`.
+
+DTOs include `MarketTimelineDTO`, `CandleAttributionDTO`, `NewsMarkerDTO`, `EvidencePanelDTO`, `ReplaySummaryDTO`, and `SignalCardDTO`. All DTOs preserve explicit limitations and do not imply causation, predictions, or financial advice.
+
+## Market Timeline and Candle Dashboard API Contracts — Task 42
+
+Task 42 adds frontend-ready Market Timeline and Candlestick Intelligence contracts:
+
+- `GET /api/v1/intelligence/timeline` returns `data`, `timeline_items`, and limitations.
+- `GET /api/v1/intelligence/timeline/day` returns a paginated 24-hour `MarketTimelineDTO`.
+- `GET /api/v1/intelligence/timeline/hour` returns a paginated 1-hour `MarketTimelineDTO`.
+- `GET /api/v1/intelligence/candles/{candle_id}` returns the candle dashboard DTO with OHLC, volume, price change, dominant direction, volatility, provider confidence, attribution count, `confidence_breakdown`, `narrative_strength`, `similarity_preview`, `operator_status`, and safety limitations.
+- `GET /api/v1/intelligence/candles/{candle_id}/events` returns candidate news, macro, security, and narrative events for the candle.
+- `GET /api/v1/intelligence/candles/{candle_id}/evidence` returns `EvidencePanelDTO` with evidence summary, confidence breakdown, provider/source snapshots, replay status, integrity status, limitations, and export/relationship links.
+- `GET /api/v1/intelligence/candles/{candle_id}/similar` returns historical similarity previews for the candle.
+- `GET /api/v1/intelligence/events/{event_id}/timeline` returns news-click context, evidence packet summary, replay summary, similar historical events, chart markers, and related timeline items.
+
+All contracts are evidence-first and historical-reference-only. They must not guarantee causation or future price behavior.

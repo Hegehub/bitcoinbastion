@@ -21,6 +21,88 @@ from app.services.intelligence.historical_similarity_metrics import (
 )
 
 MARKET_PATTERNS: list[dict[str, object]] = [
+
+    {
+        "slug": "REGULATORY_APPROVAL",
+        "name": "Regulatory approval",
+        "category": "regulatory",
+        "description": "Regulatory approval or green-light for Bitcoin market infrastructure.",
+        "expected_sentiment": "POSITIVE",
+        "expected_direction": "UP",
+        "typical_impact_window": "1h",
+    },
+    {
+        "slug": "REGULATORY_DELAY",
+        "name": "Regulatory delay",
+        "category": "regulatory",
+        "description": "Delayed or postponed regulatory decision affecting Bitcoin market expectations.",
+        "expected_sentiment": "NEGATIVE",
+        "expected_direction": "DOWN",
+        "typical_impact_window": "4h",
+    },
+    {
+        "slug": "FED_LIQUIDITY",
+        "name": "Fed liquidity",
+        "category": "macro",
+        "description": "Federal Reserve liquidity conditions relevant to BTC risk appetite.",
+        "expected_sentiment": "NEUTRAL",
+        "expected_direction": "UNKNOWN",
+        "typical_impact_window": "4h",
+    },
+    {
+        "slug": "FED_TIGHTENING",
+        "name": "Fed tightening",
+        "category": "macro",
+        "description": "Hawkish Fed tightening or restrictive policy signal.",
+        "expected_sentiment": "NEGATIVE",
+        "expected_direction": "DOWN",
+        "typical_impact_window": "4h",
+    },
+    {
+        "slug": "CPI_SURPRISE",
+        "name": "CPI surprise",
+        "category": "macro",
+        "description": "Inflation data surprise that changes risk or rates expectations.",
+        "expected_sentiment": "NEUTRAL",
+        "expected_direction": "UNKNOWN",
+        "typical_impact_window": "1h",
+    },
+    {
+        "slug": "LARGE_LIQUIDATION",
+        "name": "Large liquidation",
+        "category": "liquidity",
+        "description": "Large liquidation or forced deleveraging event.",
+        "expected_sentiment": "NEGATIVE",
+        "expected_direction": "DOWN",
+        "typical_impact_window": "15m",
+    },
+    {
+        "slug": "INSTITUTIONAL_TREASURY",
+        "name": "Institutional treasury",
+        "category": "institutional",
+        "description": "Corporate or institutional Bitcoin treasury allocation.",
+        "expected_sentiment": "POSITIVE",
+        "expected_direction": "UP",
+        "typical_impact_window": "4h",
+    },
+    {
+        "slug": "SELF_CUSTODY_NARRATIVE",
+        "name": "Self custody narrative",
+        "category": "sovereignty",
+        "description": "Self-custody adoption or withdrawal narrative.",
+        "expected_sentiment": "POSITIVE",
+        "expected_direction": "UNKNOWN",
+        "typical_impact_window": "24h",
+    },
+    {
+        "slug": "SECURITY_VULNERABILITY",
+        "name": "Security vulnerability",
+        "category": "security",
+        "description": "Security vulnerability affecting Bitcoin users, services, or infrastructure.",
+        "expected_sentiment": "NEGATIVE",
+        "expected_direction": "DOWN",
+        "typical_impact_window": "15m",
+    },
     {
         "slug": "ETF_INFLOW_SHOCK",
         "name": "ETF inflow shock",
@@ -324,8 +406,12 @@ class MarketMemoryService:
             slug = str(payload["slug"])
             payload = dict(payload)
             payload.setdefault("pattern_code", slug)
+            payload.setdefault("display_name", payload.get("name", slug))
             payload.setdefault("default_sentiment", payload.get("expected_sentiment", "UNKNOWN"))
+            payload.setdefault("typical_sentiment", payload.get("expected_sentiment", "UNKNOWN"))
+            payload.setdefault("typical_direction", payload.get("expected_direction", "UNKNOWN"))
             payload.setdefault("default_impact_window", payload.get("typical_impact_window", "1h"))
+            payload.setdefault("default_time_window", payload.get("typical_impact_window", "1h"))
             payload.setdefault("risk_profile", "elevated" if "SHOCK" in slug or "HACK" in slug or "CASCADE" in slug else "standard")
             row = self.db.query(MarketPattern).filter(MarketPattern.slug == slug).first()
             if row is None:
@@ -610,7 +696,12 @@ class MarketMemoryService:
             "FED_LIQUIDITY_EASING": ["fed", "liquidity", "easing", "dovish"],
             "FED_LIQUIDITY_TIGHTENING": ["fed", "tightening", "hawkish", "rate"],
             "FED_LIQUIDITY_SHOCK": ["fed", "liquidity", "shock", "rate", "fomc"],
+            "FED_LIQUIDITY": ["fed", "liquidity", "fomc"],
+            "FED_TIGHTENING": ["fed", "tightening", "hawkish", "rate hike"],
+            "CPI_SURPRISE": ["cpi", "inflation", "surprise"],
             "SEC_APPROVAL": ["sec", "approval", "approved", "regulatory"],
+            "REGULATORY_APPROVAL": ["regulatory", "approval", "approved", "green-light"],
+            "REGULATORY_DELAY": ["regulatory", "delay", "postpone", "delayed"],
             "SEC_ENFORCEMENT": ["sec", "enforcement", "lawsuit", "charges"],
             "BITCOIN_CORE_RELEASE": ["bitcoin core", "core release"],
             "LIGHTNING_ADOPTION": ["lightning"],
@@ -622,13 +713,17 @@ class MarketMemoryService:
             "SECURITY_INCIDENT": ["security", "incident", "exploit", "hack", "custody"],
             "INSTITUTIONAL_ADOPTION": ["institutional", "blackrock", "fidelity"],
             "TREASURY_ADOPTION": ["treasury", "corporate"],
+            "INSTITUTIONAL_TREASURY": ["institutional", "treasury", "corporate"],
             "MACRO_RISK_ON": ["risk-on", "recovery"],
             "MACRO_RISK_OFF": ["risk-off", "panic"],
             "LIQUIDATION_CASCADE_LONG": ["long", "liquidation", "cascade"],
             "LIQUIDATION_CASCADE_SHORT": ["short", "squeeze", "liquidation"],
             "LARGE_LIQUIDATION_CASCADE": ["large liquidation", "liquidation", "cascade", "deleveraging"],
+            "LARGE_LIQUIDATION": ["large liquidation", "liquidation", "deleveraging"],
             "HALVING_NARRATIVE": ["halving"],
             "SELF_CUSTODY_WAVE": ["self-custody", "withdrawal"],
+            "SELF_CUSTODY_NARRATIVE": ["self custody", "self-custody", "withdrawal"],
+            "SECURITY_VULNERABILITY": ["security", "vulnerability", "cve"],
             "SOVEREIGNTY_ADOPTION": ["sovereignty", "nation", "state"],
         }.get(slug, [])
 

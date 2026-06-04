@@ -186,3 +186,38 @@ Remaining readiness constraints: historical provider/source-health snapshots nee
 ## Historical Similarity Readiness
 
 Task 38 adds long-term market memory. Readiness improves with pattern library seeding, occurrence persistence, reaction statistics, confidence breakdowns, bounded Prometheus metrics, and safe API contracts. Remaining work is larger-scale historical backfill and operator-calibrated production thresholds.
+
+## Historical Similarity Production Readiness
+
+The Historical Similarity Engine is ready for historical-reference production use. It remains intentionally non-predictive and always exposes uncertainty, sample-size limitations, provider-confidence context, and correlation-not-causation safety flags.
+
+## Market Time Machine UI Readiness
+
+The web dashboard layer is ready for operator-facing review flows. It remains display-only, preserves backend authority for DTOs, shows degraded-provider and uncertainty states, and repeats non-advice/correlation safety language on every intelligence page.
+
+
+## Market Time Machine Web Dashboard Readiness — Task 41
+
+Readiness increased because the primary Market Time Machine interface now exists as a self-hosted FastAPI/Jinja2 dashboard with accessible templates, responsive panels, deterministic markers, candle attribution views, evidence packet views, timeline filters, bounded metrics, and safe empty/error states.
+
+The dashboard is display-only. It does not calculate prices, confidence, attribution, historical similarity, or trading direction in the browser. Safety language remains visible on every page.
+
+Remaining production constraints:
+
+- richer chart interactivity remains planned for a later prompt;
+- live usefulness depends on populated market-memory tables and evidence packets;
+- global release gates remain blocked by pre-existing schema/runtime parity drift unrelated to this task.
+
+## Market Timeline and Candlestick Dashboard Readiness — Task 42
+
+Readiness increased because `/market` now combines timeline navigation, BTC candle charting, deterministic markers, context panels, evidence overlays, historical similarity previews, and narrative strength in one evidence-first interface.
+
+Production protections:
+
+- DTOs come from backend services; browser/templates do not calculate causation or predictions.
+- Timeline requests are paginated and bounded.
+- Marker rendering suppresses deterministic duplicates.
+- Evidence, provider degradation, replay availability, and limitations remain visible.
+- Attribution panels expose `correlation_not_causation`, `evidence_based`, `operator_reviewed`, and `confidence_score`.
+
+Remaining production constraints are richer chart interactions, live table backfill depth, and the pre-existing schema parity blocker in global release gates.

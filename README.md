@@ -1012,3 +1012,15 @@ Bitcoin Bastion now includes a production Historical Similarity Engine for Marke
 ### Historical Similarity Engine and Pattern Library
 
 Bastion Market Time Machine now includes historical market memory: event pattern classification, similarity search, reaction statistics, pattern confidence, narrative memory fields, and frontend-ready APIs under `/api/v1/intelligence/similarity` and `/api/v1/intelligence/patterns`. Outputs are historical context only and explicitly avoid prediction or causation claims.
+
+### Historical Similarity Engine and Narrative Memory
+
+Bastion Market Time Machine now includes a finalized deterministic Historical Similarity Engine, seeded production Pattern Library, historical reaction statistics, and Narrative Memory snapshots. API output is frontend-ready and includes matched patterns, historical examples, reaction statistics, confidence breakdowns, narrative tags, and mandatory safety limitations. Historical comparisons are evidence-based references only, not price predictions or financial advice.
+
+### Market Time Machine Web Dashboard
+
+Bitcoin Bastion now exposes the Market Time Machine through a self-hosted FastAPI/Jinja2/HTMX/Alpine.js web dashboard at `/market-time-machine`, with timeline (`/intelligence/timeline`), evidence (`/evidence/{packet_id}`), and candle attribution (`/candles/{candle_id}`) pages. The dashboard is evidence-first, responsive, accessible, and display-only: it renders backend DTOs, shows provider/evidence limitations, and never presents historical context as price prediction or financial advice.
+
+### Market Timeline and Candlestick Intelligence Dashboard
+
+The primary Market Time Machine dashboard now lives at `/market`. It combines timeline navigation, BTC candles, deterministic news markers, candle context, attribution confidence, evidence overlays, historical similarity previews, and narrative strength. API contracts under `/api/v1/intelligence/timeline`, `/api/v1/intelligence/candles/{candle_id}`, and `/api/v1/intelligence/events/{event_id}/timeline` are frontend-ready and preserve correlation-not-causation, evidence-based, operator-reviewed, and confidence-score safety fields.

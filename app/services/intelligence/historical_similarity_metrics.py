@@ -64,3 +64,11 @@ PATTERN_OCCURRENCES_TOTAL = Counter(
 PATTERN_CONFIDENCE_CALCULATIONS_TOTAL = Counter(
     "pattern_confidence_calculations_total", "Total pattern confidence calculations."
 )
+
+PATTERN_STATISTICS_UPDATES_TOTAL = Counter(
+    "pattern_statistics_updates_total", "Total historical pattern statistics updates."
+)
+
+NARRATIVE_SNAPSHOTS_GENERATED_TOTAL = Counter(
+    "narrative_snapshots_generated_total", "Total narrative memory snapshots generated."
+)

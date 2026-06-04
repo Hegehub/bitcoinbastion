@@ -15,13 +15,17 @@ class MarketPattern(Base):
     slug: Mapped[str] = mapped_column(String(96), unique=True, index=True)
     pattern_code: Mapped[str] = mapped_column(String(96), default="", index=True)
     name: Mapped[str] = mapped_column(String(160), default="")
+    display_name: Mapped[str] = mapped_column(String(160), default="")
     category: Mapped[str] = mapped_column(String(64), index=True, default="unknown")
     description: Mapped[str] = mapped_column(String(600), default="")
     expected_sentiment: Mapped[str] = mapped_column(String(32), default="UNKNOWN")
     default_sentiment: Mapped[str] = mapped_column(String(32), default="UNKNOWN")
+    typical_sentiment: Mapped[str] = mapped_column(String(32), default="UNKNOWN")
     expected_direction: Mapped[str] = mapped_column(String(16), default="UNKNOWN")
+    typical_direction: Mapped[str] = mapped_column(String(16), default="UNKNOWN")
     typical_impact_window: Mapped[str] = mapped_column(String(32), default="1h")
     default_impact_window: Mapped[str] = mapped_column(String(32), default="1h")
+    default_time_window: Mapped[str] = mapped_column(String(32), default="1h")
     risk_profile: Mapped[str] = mapped_column(String(64), default="standard")
     historical_reaction_profile_json: Mapped[dict[str, object]] = mapped_column(
         JSONB().with_variant(JSON(), "sqlite"), default=dict

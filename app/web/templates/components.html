@@ -1,0 +1,92 @@
+{% macro status_badge(status) -%}
+<span class="badge badge-status" aria-label="Status {{ status }}">{{ status|replace('_', ' ')|title }}</span>
+{%- endmacro %}
+
+{% macro safety_notice(limitations) -%}
+<section class="safety" aria-label="Market intelligence safety notice">
+  <strong>Evidence-first safety notice.</strong>
+  <ul>
+    {% for limitation in limitations %}<li>{{ limitation }}</li>{% endfor %}
+  </ul>
+</section>
+{%- endmacro %}
+
+{% macro loading_panel(label) -%}
+<section class="panel skeleton" aria-busy="true" aria-label="{{ label }} loading">
+  <div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div>
+</section>
+{%- endmacro %}
+
+{% macro empty_state(message) -%}
+<div class="empty-state" role="status">{{ message }}</div>
+{%- endmacro %}
+
+{% macro error_state(message) -%}
+<div class="error-state" role="alert">{{ message }}</div>
+{%- endmacro %}
+
+{% macro btc_candlestick_chart(candles, markers, selected_timeframe) -%}
+<section class="chart-card" aria-label="BTC candlestick chart with news markers">
+  <div class="chart-toolbar">
+    <h2>BTC Candlestick Chart</h2>
+    <div class="timeframes" role="group" aria-label="Timeframe switching">
+      {% for tf in ['1m','5m','15m','1h','4h','1d'] %}
+      <a class="timeframe {% if tf == selected_timeframe %}active{% endif %}" href="/market-time-machine?timeframe={{ tf }}">{{ tf }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="chart-shell" role="img" aria-label="Responsive candlestick chart supporting zoom, pan, timeframe switching, and news markers" tabindex="0" x-data="{ zoom: 1, offset: 0 }">
+    <div class="chart-controls" aria-label="Chart zoom and pan controls">
+      <button type="button" x-on:click="zoom = Math.min(3, zoom + 0.25)">Zoom in</button>
+      <button type="button" x-on:click="zoom = Math.max(0.75, zoom - 0.25)">Zoom out</button>
+      <button type="button" x-on:click="offset = offset - 1">Back</button>
+      <button type="button" x-on:click="offset = offset + 1">Forward</button>
+    </div>
+    <div class="candles" style="--candle-count: {{ candles|length if candles else 1 }};">
+      {% if candles %}
+        {% for candle in candles %}
+        {% set change = candle.price_change_pct %}
+        <a class="candle {% if change >= 0 %}up{% else %}down{% endif %}" href="/candles/{{ candle.id }}" aria-label="Open candle {{ candle.id }} attribution. Open {{ candle.open }}, high {{ candle.high }}, low {{ candle.low }}, close {{ candle.close }}, volume {{ candle.volume }}, attribution count {{ candle.attribution_count }}, volatility {{ candle.volatility_score }}, narrative strength {{ candle.narrative_strength }}, change {{ change }} percent." style="height: {{ 24 + (change|abs * 6) if change|abs < 10 else 84 }}px">
+          <span class="wick"></span>
+          <span class="body"></span>
+          <span class="candle-meta">{{ candle.timeframe }} · A{{ candle.attribution_count }}</span>
+        </a>
+        {% endfor %}
+      {% else %}
+        {{ empty_state('No candle data available for the selected period.') }}
+      {% endif %}
+    </div>
+    <div class="marker-row" aria-label="News markers overlay">
+      {% if markers %}
+        {% for marker in markers|sort(attribute='marker_priority') %}
+        <button class="marker {{ marker.marker_style }}" type="button" aria-label="Open marker {{ marker.title }}" title="{{ marker.title }}" x-on:click="fetch('/web/market-time-machine/marker-click', { method: 'POST' })">{{ {'positive':'🟢','negative':'🔴','uncertain':'🟡','security':'⚠','regulatory':'🏛','institutional':'🏦','mining':'⛏','lightning':'⚡','narrative_spike':'📈'}.get(marker.marker_type, '🟡') }}</button>
+        {% endfor %}
+      {% else %}
+        <span class="muted">No news markers found.</span>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{%- endmacro %}
+
+{% macro evidence_side_panel(dto) -%}
+<aside class="panel evidence-panel" aria-label="Evidence side panel">
+  <h2>Evidence Panel</h2>
+  {% if dto %}
+    <p><span class="mono">Packet {{ dto.packet_id or 'not generated' }}</span></p>
+    <dl class="metrics">
+      <div><dt>Replay Available</dt><dd>{{ 'Yes' if dto.replay_available else 'No' }}</dd></div>
+      <div><dt>Provider Confidence</dt><dd>{{ '%.2f'|format(dto.provider_confidence) }}</dd></div>
+      <div><dt>Source Confidence</dt><dd>{{ '%.2f'|format(dto.source_confidence) }}</dd></div>
+      <div><dt>Integrity</dt><dd>{{ dto.integrity_status }}</dd></div>
+      <div><dt>Operator Review</dt><dd>{{ dto.operator_review_status }}</dd></div>
+    </dl>
+    <details open><summary>Evidence Sources</summary>
+      {% if dto.evidence_sources %}<ul>{% for source in dto.evidence_sources %}<li>{{ source.type }} <span class="mono">{{ source.entity_type }}:{{ source.entity_id }}</span></li>{% endfor %}</ul>{% else %}{{ empty_state('No evidence packet generated.') }}{% endif %}
+    </details>
+    <div class="actions"><a href="/evidence/{{ dto.packet_id or 0 }}">Open Evidence</a><button type="button" x-data x-on:click="fetch('/web/market-time-machine/replay-open', { method: 'POST' })">Open Replay</button><a href="{{ dto.relationships_url or '/intelligence/timeline' }}">View Relationships</a><a href="{{ dto.export_json_url or '/web/evidence/0' }}">Export JSON</a><a href="{{ dto.export_markdown_url or '/web/evidence/0' }}">Export Markdown</a></div>
+  {% else %}
+    {{ error_state('Evidence unavailable. Data temporarily unavailable without exposing internal errors.') }}
+  {% endif %}
+</aside>
+{%- endmacro %}
