@@ -1007,3 +1007,8 @@ Bitcoin Bastion now includes a production Historical Similarity Engine for Marke
 - Narrative Heatmap: `docs/BMTM_NARRATIVE_HEATMAP.md` documents Bitcoin narrative taxonomy, heat scoring, dominance, history, and correlation-only safety limits.
 
 - BMTM-034 Narrative Heatmap registry: `config/narratives.yaml` and `app/cli/seed_narratives.py` provide a local-first narrative registry and seed path for heatmap, trend, leaderboard, and narrative timeline API contracts.
+
+
+### Historical Similarity Engine and Pattern Library
+
+Bastion Market Time Machine now includes historical market memory: event pattern classification, similarity search, reaction statistics, pattern confidence, narrative memory fields, and frontend-ready APIs under `/api/v1/intelligence/similarity` and `/api/v1/intelligence/patterns`. Outputs are historical context only and explicitly avoid prediction or causation claims.

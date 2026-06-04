@@ -46,7 +46,7 @@ class PatternStatisticsService:
             confidence=self._average([row.classification_confidence for row in matches]),
             limitations=MARKET_MEMORY_SAFETY_LIMITATIONS.copy(),
         )
-        self._persist(pattern_row, summary, matches, moves_4h)
+        self._persist(pattern_row, summary, matches, moves_4h, impacts)
         return summary
 
     def compute_all(self) -> list[HistoricalReactionSummary]:
@@ -75,6 +75,7 @@ class PatternStatisticsService:
         summary: HistoricalReactionSummary,
         matches: list[EventPatternMatch],
         moves_4h: list[float],
+        impacts: list[NewsPriceImpact],
     ) -> None:
         row = self.db.query(PatternStatistics).filter(PatternStatistics.pattern_id == pattern.id).first()
         if row is None:
@@ -86,10 +87,16 @@ class PatternStatisticsService:
         denom = len(moves_4h) or 1
         row.pattern_slug = pattern.slug
         row.historical_occurrences = summary.occurrences
+        row.occurrence_count = summary.occurrences
         row.median_15m_move = summary.median_move_15m
+        row.avg_move_15m = self._average([impact.change_15m_pct for impact in impacts])
+        row.avg_move_1h = self._average([impact.change_1h_pct for impact in impacts])
+        row.avg_move_4h = self._average([impact.change_4h_pct for impact in impacts])
+        row.avg_move_24h = self._average([impact.change_24h_pct for impact in impacts])
         row.median_1h_move = summary.median_move_1h
         row.median_4h_move = summary.median_move_4h
         row.median_24h_move = summary.median_move_24h
+        row.success_rate = round(len(positive) / denom, 6)
         row.positive_rate = round(len(positive) / denom, 6)
         row.negative_rate = round(len(negative) / denom, 6)
         row.neutral_rate = round(len(neutral) / denom, 6)

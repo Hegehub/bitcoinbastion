@@ -89,12 +89,16 @@ class HistoricalSimilarityService:
             {"pattern": item.pattern, "score": item.score, "explanation": item.explanation}
             for item in pattern_matches
         ]
+        top_score = float(similar_events[0].get("similarity_score", 0.0)) if similar_events else 0.0
         return HistoricalSimilarityResponse(
             current_item=getattr(report, "reference_event", None),
             matched_items=similar_events,
             top_similar_events=similar_events[:10],
             pattern_detected=detected,
             pattern_name=str(detected[0]["pattern"]) if detected else None,
+            pattern_category=str(similar_events[0].get("pattern_type", "")) if similar_events else None,
+            similarity_score=top_score,
+            historical_matches=similar_events,
             historical_reaction_summary={
                 "sample_size": getattr(report, "sample_size", 0),
                 "median_reaction": median_reaction,
@@ -106,9 +110,18 @@ class HistoricalSimilarityService:
                 },
             },
             median_reaction=median_reaction,
+            historical_median=median_reaction,
+            historical_average={
+                "15m": getattr(report, "average_reaction_15m", None),
+                "1h": getattr(report, "average_reaction_1h", None),
+                "4h": getattr(report, "average_reaction_4h", None),
+                "24h": getattr(report, "average_reaction_24h", None),
+            },
             reaction_summary=reaction_stats,
             reaction_distribution=reaction_stats.get("dispersion", {}) if isinstance(reaction_stats, dict) else {},
             confidence=float(getattr(report, "confidence", 0.0)),
+            pattern_confidence=float(getattr(report, "confidence", 0.0)),
+            reaction_statistics=reaction_stats if isinstance(reaction_stats, dict) else {},
             sample_size=int(getattr(report, "sample_size", 0)),
             similarity_band=str(getattr(report, "similarity_band", "weak")).lower(),
             limitations=list(getattr(report, "limitations", [])),

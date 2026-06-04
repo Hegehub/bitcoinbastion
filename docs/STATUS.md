@@ -187,3 +187,8 @@ Implemented candidate signal persistence, policy gates, operator review workflow
 Status: implemented production foundation. Market Time Machine readiness estimate moved from 78% to 81%; overall Bitcoin Bastion readiness estimate moved from 86% to 87%.
 
 Implemented first-class Evidence Packets, Evidence Replay, Evidence Relationships, Evidence Artifacts, Integrity Snapshots, Replay Logs, confidence provenance, limitation flags, JSON/Markdown export, frontend-ready DTO fields, bounded metrics, API contracts, and test coverage. Remaining limitations: PDF export is future work, provider/source-health snapshots are compact references until full historical health backfill exists, and global schema/runtime parity still has pre-existing drift outside this task.
+
+
+## Task 38/48 Historical Similarity Engine
+
+Status: implemented. The repository now includes production pattern memory tables, occurrence/reaction snapshots, pattern confidence calculation, frontend-ready similarity context endpoints, and historical-similarity safety limitations.

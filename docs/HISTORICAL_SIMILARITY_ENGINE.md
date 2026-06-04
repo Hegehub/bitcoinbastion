@@ -1,49 +1,39 @@
 # Historical Similarity Engine
 
-The Historical Similarity Engine answers: "What similar Bitcoin market events happened before, and how did BTC react historically?" It is an evidence-based comparison layer, not a prediction engine or financial-advice system.
+The Historical Similarity Engine adds long-term market memory to Bastion Market Time Machine.
 
-## Inputs
+## Flow
 
-The current implementation accepts a canonical `NewsEvent` ID and compares it with historical `NewsEvent` rows, associated `NewsPriceImpact` records, and pattern-classification evidence.
+```text
+News Event
+  -> Pattern Classification
+  -> Historical Search
+  -> Similarity Scoring
+  -> Reaction Analysis
+  -> Evidence Packet
+  -> Historical Report
+```
 
-## Scoring Dimensions
+## Similarity factors
 
-The deterministic score ranges from `0.0` to `1.0` and combines:
+Similarity scoring is weighted across pattern/event-type match, sentiment match, BTC relevance and market impact, time-window overlap, provider/source confidence, and reaction-profile similarity.
 
-- shared market pattern
-- sentiment similarity
-- BTC relevance similarity
-- market impact similarity
-- volatility context similarity
-- market direction similarity
-- source/provider profile similarity
-- institutional, regulatory, security, and macro flags
+## Similarity bands
 
-Scores are persisted in `historical_event_similarities` with component evidence and replayable explanations.
+Frontend DTOs expose production bands:
 
-## Historical Reaction Profile
+- `VERY_HIGH`: `0.90+`
+- `HIGH`: `0.75+`
+- `MEDIUM`: `0.60+`
+- `LOW`: `0.40+`
+- `VERY_LOW`: below `0.40`
 
-For a pattern, Bastion computes median and average BTC reactions over 15m, 1h, 4h, and 24h windows from historical `NewsPriceImpact` rows. The profile is stored in `pattern_reaction_profiles` with sample size and calibrated confidence.
+Legacy responses may also expose `Weak`, `Moderate`, `Strong`, and `Very Strong` for backward compatibility.
 
-## Confidence Calibration
+## Historical context report
 
-`HistoricalConfidenceCalibrator` adjusts confidence using historical sample size, reaction consistency, provider confidence, and provider disagreement. Small samples and degraded providers reduce confidence.
+Reports include `pattern_name`, `pattern_category`, `similarity_score`, `similarity_band`, `historical_matches`, `historical_median`, `historical_average`, `pattern_confidence`, `reaction_statistics`, and limitations.
 
-## Required Safety Language
+## Required limitations
 
-Every report includes: "Historical similarity does not guarantee future market behavior." Reports also state that correlation-based analysis is not proof of causation.
-
-## Foundation API and Tables
-
-The production foundation adds `historical_patterns`, `historical_similarity_matches`, and `historical_reaction_profiles` as the evidence-first base layer. Similarity scoring is deterministic and uses these MVP weights:
-
-- Pattern match: 30%
-- Sentiment match: 20%
-- BTC relevance proximity: 15%
-- Impact-window similarity: 15%
-- Market-reaction similarity: 10%
-- Source/category similarity: 10%
-
-`HistoricalReactionService` stores event-level 15m, 1h, 4h, and 24h reactions, maximum positive/negative excursions, volatility score, and confidence. `HistoricalSimilarityService` persists replayable match rows with component scores and explanation JSON.
-
-Required disclaimer: "Historical similarity does not imply future performance. Correlation is not proof of causation."
+Every production context includes: `historical_similarity_not_prediction`, `sample_size_limited`, `market_regime_changed`, `provider_limitations`, `correlation_not_causation`, `historical_context_only`, `not_prediction`, and `evidence_based`.

@@ -51,3 +51,16 @@ SIMILARITY_GENERATION_DURATION_SECONDS = Histogram(
 SIMILARITY_MATCHES_FOUND = Counter(
     "similarity_matches_found", "Total historical similarity matches returned."
 )
+
+HISTORICAL_SIMILARITY_MATCHES_TOTAL = Counter(
+    "historical_similarity_matches_total", "Total historical similarity matches returned."
+)
+MARKET_PATTERNS_TOTAL = Counter(
+    "market_patterns_total", "Total market pattern rows ensured."
+)
+PATTERN_OCCURRENCES_TOTAL = Counter(
+    "pattern_occurrences_total", "Total pattern occurrences recorded."
+)
+PATTERN_CONFIDENCE_CALCULATIONS_TOTAL = Counter(
+    "pattern_confidence_calculations_total", "Total pattern confidence calculations."
+)

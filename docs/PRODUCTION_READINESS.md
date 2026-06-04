@@ -181,3 +181,8 @@ Signal governance now prevents automatic strong market-claim publication by defa
 Evidence Packet and Replay now provide a production foundation for replayable market-intelligence evidence. Packets persist source entities, lineage relationships, artifacts, deterministic integrity snapshots, confidence provenance, limitations, operator review status, publication status, and replay logs. API responses are frontend-ready and expose correlation-not-causation, evidence-based, replayable, and operator-reviewed flags. JSON and Markdown export are supported; PDF remains future work.
 
 Remaining readiness constraints: historical provider/source-health snapshots need deeper backfill, PDF export is not implemented, and global CI release gates remain constrained by pre-existing schema/runtime parity drift unrelated to the evidence subsystem.
+
+
+## Historical Similarity Readiness
+
+Task 38 adds long-term market memory. Readiness improves with pattern library seeding, occurrence persistence, reaction statistics, confidence breakdowns, bounded Prometheus metrics, and safe API contracts. Remaining work is larger-scale historical backfill and operator-calibrated production thresholds.

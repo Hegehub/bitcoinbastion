@@ -6,11 +6,14 @@ class MarketPattern(StrEnum):
     ETF_OUTFLOW_SHOCK = "ETF_OUTFLOW_SHOCK"
     SEC_ENFORCEMENT = "SEC_ENFORCEMENT"
     REGULATORY_APPROVAL = "REGULATORY_APPROVAL"
+    SEC_APPROVAL = "SEC_APPROVAL"
     REGULATORY_DELAY = "REGULATORY_DELAY"
     ETF_APPROVAL = "ETF_APPROVAL"
     ETF_DELAY = "ETF_DELAY"
     FED_LIQUIDITY_EASING = "FED_LIQUIDITY_EASING"
     FED_TIGHTENING = "FED_TIGHTENING"
+    RATE_CUT_SIGNAL = "RATE_CUT_SIGNAL"
+    RATE_HIKE_SIGNAL = "RATE_HIKE_SIGNAL"
     FED_LIQUIDITY_SHOCK = "FED_LIQUIDITY_SHOCK"
     INTEREST_RATE_SHOCK = "FED_TIGHTENING"
     INFLATION_SHOCK = "MACRO_RISK_OFF"
@@ -27,8 +30,10 @@ class MarketPattern(StrEnum):
     SECURITY_INCIDENT = "SECURITY_INCIDENT"
     BANKING_STRESS = "BANKING_STRESS"
     CUSTODY_FAILURE = "CUSTODY_FAILURE"
+    PRIVATE_KEY_LEAK = "PRIVATE_KEY_LEAK"
     LARGE_LIQUIDATION = "LARGE_LIQUIDATION_CASCADE"
     LARGE_LIQUIDATION_CASCADE = "LARGE_LIQUIDATION_CASCADE"
+    LIQUIDATION_CASCADE = "LIQUIDATION_CASCADE"
     SHORT_SQUEEZE = "VOLATILITY_EXPANSION"
     LONG_SQUEEZE = "VOLATILITY_EXPANSION"
     MARKET_PANIC = "MACRO_RISK_OFF"
@@ -45,19 +50,24 @@ def seed_pattern_definitions() -> list[dict[str, object]]:
         _pattern("ETF_OUTFLOW_SHOCK", "ETF outflow shock", "Spot Bitcoin ETF outflow surprise or acceleration.", "NEGATIVE", ["15m", "1h", "4h"], "Strong"),
         _pattern("SEC_ENFORCEMENT", "SEC enforcement", "SEC enforcement action or legal pressure touching Bitcoin market structure.", "NEGATIVE", ["1h", "4h", "24h"], "Moderate"),
         _pattern("REGULATORY_APPROVAL", "Regulatory approval", "Approval or constructive regulatory development.", "POSITIVE", ["1h", "4h", "24h"], "Moderate"),
+        _pattern("SEC_APPROVAL", "SEC approval", "SEC approval or constructive regulatory decision.", "POSITIVE", ["1h", "4h", "24h"], "Moderate"),
         _pattern("REGULATORY_DELAY", "Regulatory delay", "Delayed approval or unresolved regulatory process.", "NEGATIVE", ["1h", "4h", "24h"], "Moderate"),
         _pattern("ETF_APPROVAL", "ETF approval", "Spot Bitcoin ETF approval or listing authorization.", "POSITIVE", ["15m", "1h", "4h"], "Strong", "elevated", 1.08),
         _pattern("ETF_DELAY", "ETF delay", "Spot Bitcoin ETF delay, deferral, or adverse review timeline.", "NEGATIVE", ["1h", "4h", "24h"], "Moderate", "elevated", 0.94),
         _pattern("FED_LIQUIDITY_SHOCK", "Fed liquidity shock", "Unexpected liquidity, balance-sheet, or funding-market shock.", "NEUTRAL", ["1h", "4h", "24h"], "Moderate", "elevated", 0.98),
         _pattern("FED_LIQUIDITY_EASING", "Fed liquidity easing", "Liquidity easing or dovish macro signal.", "POSITIVE", ["1h", "4h", "24h"], "Moderate"),
         _pattern("FED_TIGHTENING", "Fed tightening", "Tightening or hawkish macro signal.", "NEGATIVE", ["1h", "4h", "24h"], "Moderate"),
+        _pattern("RATE_CUT_SIGNAL", "Rate cut signal", "Rate-cut or dovish policy signal.", "POSITIVE", ["1h", "4h", "24h"], "Moderate"),
+        _pattern("RATE_HIKE_SIGNAL", "Rate hike signal", "Rate-hike or hawkish policy signal.", "NEGATIVE", ["1h", "4h", "24h"], "Moderate"),
         _pattern("EXCHANGE_HACK", "Exchange hack", "Exchange compromise or platform-security shock.", "NEGATIVE", ["15m", "1h", "4h"], "Strong"),
         _pattern("CUSTODY_FAILURE", "Custody failure", "Custodian failure, insolvency, or custody confidence shock.", "NEGATIVE", ["1h", "4h", "24h"], "Strong"),
+        _pattern("PRIVATE_KEY_LEAK", "Private key leak", "Private-key leak, signer compromise, or key-material exposure.", "NEGATIVE", ["15m", "1h", "4h"], "Strong", "elevated", 1.05),
         _pattern("MINER_CAPITULATION", "Miner capitulation", "Miner distress, forced selling, or capitulation narrative.", "NEGATIVE", ["4h", "24h"], "Moderate"),
         _pattern("MINING_DIFFICULTY_SHOCK", "Mining difficulty shock", "Mining difficulty or hash-rate adjustment shock affecting miner economics.", "NEUTRAL", ["4h", "24h"], "Moderate", "elevated", 0.96),
         _pattern("HALVING_NARRATIVE", "Halving narrative", "Halving-cycle narrative, supply issuance, or post-halving miner pressure.", "POSITIVE", ["4h", "24h"], "Moderate", "normal", 1.0),
         _pattern("MINER_ACCUMULATION", "Miner accumulation", "Miner accumulation or reduced miner selling pressure.", "POSITIVE", ["4h", "24h"], "Moderate"),
         _pattern("LARGE_LIQUIDATION_CASCADE", "Large liquidation cascade", "High-leverage liquidation cascade or derivatives stress.", "NEGATIVE", ["15m", "1h"], "Strong"),
+        _pattern("LIQUIDATION_CASCADE", "Liquidation cascade", "Forced-liquidation cascade or derivatives stress.", "NEGATIVE", ["15m", "1h"], "Strong"),
         _pattern("BITCOIN_CORE_RELEASE", "Bitcoin Core release", "Bitcoin Core software release or protocol maintenance event.", "NEUTRAL", ["4h", "24h"], "Weak"),
         _pattern("LIGHTNING_ADOPTION", "Lightning adoption", "Lightning Network adoption or infrastructure news.", "POSITIVE", ["4h", "24h"], "Moderate"),
         _pattern("TREASURY_ADOPTION", "Treasury adoption", "Corporate or sovereign Bitcoin treasury adoption.", "POSITIVE", ["1h", "4h", "24h"], "Strong"),
@@ -89,6 +99,10 @@ def infer_pattern_type(title: str, event_type: str = "", category: str = "") -> 
         return MarketPattern.REGULATORY_APPROVAL
     if "fed" in text and ("shock" in text or "liquidity" in text):
         return MarketPattern.FED_LIQUIDITY_SHOCK
+    if "rate cut" in text or "cut rates" in text:
+        return MarketPattern.RATE_CUT_SIGNAL
+    if "rate hike" in text or "hike rates" in text:
+        return MarketPattern.RATE_HIKE_SIGNAL
     if "easing" in text or "dovish" in text:
         return MarketPattern.FED_LIQUIDITY_EASING
     if "tightening" in text or "hawkish" in text or "interest" in text or "inflation" in text or "cpi" in text:
@@ -115,10 +129,12 @@ def infer_pattern_type(title: str, event_type: str = "", category: str = "") -> 
         return MarketPattern.SECURITY_EXPLOIT
     if "security incident" in text:
         return MarketPattern.SECURITY_INCIDENT
+    if "private key" in text or "key leak" in text or "signer compromise" in text:
+        return MarketPattern.PRIVATE_KEY_LEAK
     if "custody" in text or "custodian" in text:
         return MarketPattern.CUSTODY_FAILURE
     if "liquidation" in text or "cascade" in text:
-        return MarketPattern.LARGE_LIQUIDATION_CASCADE
+        return MarketPattern.LIQUIDATION_CASCADE
     if "banking stress" in text or "bank failure" in text or "bank run" in text:
         return MarketPattern.BANKING_STRESS
     if "risk-on" in text or "recovery" in text:

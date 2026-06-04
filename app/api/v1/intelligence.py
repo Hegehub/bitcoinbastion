@@ -9,6 +9,7 @@ from app.db.models.attribution_replay_log import AttributionReplayLog
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.candle_attribution import CandleAttribution
 from app.db.models.candle_attribution_candidate import CandleAttributionCandidate
+from app.db.models.pattern_occurrence import PatternOccurrence
 from app.services.intelligence.candle_attribution_engine import CandleAttributionEngine
 from app.services.intelligence.candle_attribution_ranking import CandleAttributionRankingEngine
 from app.services.intelligence.historical_similarity.historical_similarity_service import (
@@ -225,6 +226,34 @@ def get_signal_similarity_report(
         return _similarity_unavailable_payload()
 
 
+@router.get("/similarity/{event_id}")
+def get_historical_similarity_context(
+    event_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        payload = HistoricalSimilarityService(db).build_historical_context(event_id, limit=limit)
+        db.commit()
+        return payload
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
+@router.get("/similarity/{event_id}/matches")
+def get_historical_similarity_matches(
+    event_id: int, limit: int = 10, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        matches = HistoricalSimilarityService(db).find_similar_events(event_id, limit=limit)
+        db.commit()
+        return {
+            "data": matches,
+            "historical_matches": matches,
+            "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION]),
+        }
+    except OperationalError:
+        return _similarity_unavailable_payload()
+
+
 @router.get("/similar-events/{event_id}")
 def get_foundation_similar_events(
     event_id: int, limit: int = 10, db: Session = Depends(db_session)
@@ -330,6 +359,42 @@ def get_market_pattern_reaction_profile(
         }
     except OperationalError:
         return {"data": None, "limitations": ["Pattern reaction-profile storage is unavailable."]}
+
+
+@router.get("/patterns/{pattern_code}/occurrences")
+def get_market_pattern_occurrences(
+    pattern_code: str, limit: int = 50, db: Session = Depends(db_session)
+) -> dict[str, object]:
+    try:
+        pattern = MarketMemoryService(db).get_pattern(pattern_code)
+        if pattern is None:
+            raise HTTPException(status_code=404, detail="pattern_not_found")
+        rows = (
+            db.query(PatternOccurrence)
+            .filter(PatternOccurrence.pattern_id == pattern.id)
+            .order_by(PatternOccurrence.occurred_at.desc(), PatternOccurrence.id.desc())
+            .limit(max(0, min(limit, 200)))
+            .all()
+        )
+        return {
+            "data": [
+                {
+                    "id": row.id,
+                    "pattern_id": row.pattern_id,
+                    "article_id": row.article_id,
+                    "event_id": row.event_id,
+                    "impact_id": row.impact_id,
+                    "attribution_id": row.attribution_id,
+                    "occurred_at": row.occurred_at,
+                    "confidence_score": row.confidence_score,
+                    "created_at": row.created_at,
+                }
+                for row in rows
+            ],
+            "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION]),
+        }
+    except OperationalError:
+        return {"data": [], "limitations": _market_memory_safety(["Pattern occurrence storage is unavailable."])}
 
 
 @router.get("/patterns/{pattern_code}")
