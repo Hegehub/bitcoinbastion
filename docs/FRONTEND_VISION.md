@@ -104,3 +104,19 @@ The Market Time Machine web surface adds calm, evidence-first routes for `/marke
 The production Market Time Machine dashboard is implemented as a FastAPI/Jinja2/HTMX/Alpine.js web surface rather than a new React route family. This preserves self-hosted compatibility and keeps the intelligence dashboard thin: templates render backend DTOs and do not duplicate attribution, evidence, confidence, or market calculations.
 
 Primary routes are `/market-time-machine`, `/intelligence/timeline`, `/evidence/{packet_id}`, and `/candles/{candle_id}`. Thin DTO endpoints under `/web/*` support progressive enhancement and self-hosted integrations.
+
+## Market Intelligence Dashboard finalization
+
+The Market Intelligence dashboard is integrated into the existing Bitcoin Bastion web surface rather than a standalone trading application.
+
+Navigation adds a Market Intelligence section with these operator-friendly routes:
+
+- `/market` — dashboard landing page with BTC Price, News Shock Index, Active Narratives, Latest High Impact Event, Latest Published Signal, Provider Health, Operator Queue, and Evidence Replay Requests cards.
+- `/market/timeline` — windowed market timeline for BTC candles, news events, signals, security shocks, regulatory events, narrative shifts, and operator publications.
+- `/market/time-machine` — candle/timeframe investigation view for OHLC, movement, candidate events/signals, confidence, evidence, replay, limitations, and historical similarity.
+- `/market/narratives` — narrative heatmap for ETF, Fed, Macro, Mining, Lightning, Bitcoin Core, Security, Institutional, and Sovereignty themes.
+- `/market/signals` — signal status view for Published, Pending Review, Held, Rejected, False Positive, and Expired states.
+- `/market/evidence` — packet and replay viewer with evidence chain, confidence breakdown, provider/source snapshots, limitations, hashes, policy decisions, operator actions, and replay failure visibility.
+- `/market/sources` — source intelligence view for source health, provider confidence, reputation, latency, failure count, first-mover score, and signal quality.
+
+The UI deliberately avoids exchange/trading-terminal aesthetics. It is an intelligence console: clean, technical, Bitcoin-first, evidence-first, responsive, mobile-friendly, and explicit about uncertainty.

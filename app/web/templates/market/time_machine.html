@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import "components/market_panels.html" as market %}
+{% block title %}Market Time Machine — Bitcoin Bastion{% endblock %}
+{% block content %}
+{% if market_vm %}
+<section class="market-hero"><p class="eyebrow">Market Intelligence</p><h1>Market Time Machine</h1><p>Select a date and timeframe to inspect candles, markers, evidence, replay, and uncertainty.</p></section>
+{{ market.safety_flags(market_vm.safety_flags, market_vm.limitations) }}
+<div class="market-layout top-row">{{ market.timeline_controls(market_vm.selected_timeframe, market_vm.selected_date, timeframes) }}{{ market.narrative_summary(market_vm.narrative_summary) }}</div>
+<div class="market-layout widget-row">{{ market.shock_index_widget(market_vm.shock_index) }}{{ market.provider_health_widget(market_vm.provider_health) }}</div>
+{{ market.market_chart(market_vm.chart_data) }}
+<div class="market-layout">{{ market.candle_panel(market_vm.selected_candle) }}{{ market.event_panel(market_vm.selected_event) }}</div>
+<div class="market-layout">{{ market.evidence_panel(market_vm.evidence_summary) }}{{ market.similarity_panel(market_vm.historical_matches) }}</div>
+<script src="/static/js/market.js" defer></script>
+{% else %}<section class="market-card"><h1>Market Time Machine unavailable</h1><p class="warning">timeline unavailable — degraded provider mode is visible.</p></section>{% endif %}
+{% endblock %}

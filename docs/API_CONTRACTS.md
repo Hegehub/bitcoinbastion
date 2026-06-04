@@ -455,3 +455,41 @@ Task 42 adds frontend-ready Market Timeline and Candlestick Intelligence contrac
 - `GET /api/v1/intelligence/events/{event_id}/timeline` returns news-click context, evidence packet summary, replay summary, similar historical events, chart markers, and related timeline items.
 
 All contracts are evidence-first and historical-reference-only. They must not guarantee causation or future price behavior.
+
+### Market Time Machine web DTOs
+
+Implemented web DTO endpoints:
+
+- `GET /web/market-time-machine?timeframe=1h`
+- `GET /web/timeline`
+- `GET /web/candle/{candle_id}`
+- `GET /web/evidence/{packet_id}`
+
+The Market Time Machine DTO includes the frontend contract keys `chart_data`, `marker_data`, `selected_candle`, `selected_event`, `historical_matches`, `evidence_summary`, `shock_index`, `narrative_summary`, and `provider_health` in addition to legacy timeline/candle/marker fields.
+
+Telemetry endpoints are write-only bounded counters:
+
+- `POST /web/market-time-machine/marker-click?marker_type=regulatory_event`
+- `POST /web/market-time-machine/candle-click?timeframe=1h`
+- `POST /web/market-time-machine/replay-open?entity_type=event`
+- `POST /web/market-time-machine/evidence-view`
+
+These endpoints record UI observability only and do not mutate business intelligence records.
+
+### Market Intelligence frontend DTOs — Prompt 44
+
+The production-finalized Market Intelligence frontend contract includes:
+
+- `market_timeline`
+- `timeline_events`
+- `candle_details`
+- `attribution_details`
+- `evidence_summary`
+- `replay_summary`
+- `source_summary`
+- `narrative_summary`
+- `shock_index_summary`
+
+The web contract is exposed through `GET /web/market-time-machine?timeframe={1m|5m|15m|1h|4h|1d}` and is used by the server-rendered templates for `/market`, `/market/timeline`, `/market/time-machine`, `/market/signals`, `/market/evidence`, `/market/narratives`, and `/market/sources`.
+
+The frontend view model consumes service/API payloads and does not query the database directly. Business logic remains in backend services.

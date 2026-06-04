@@ -1,0 +1,189 @@
+{% macro safety_flags(flags, limitations) -%}
+<section class="market-safety" aria-label="Required safety disclosures">
+  <strong>Safety disclosures</strong>
+  <ul>
+    <li>Correlation is not proof of causation.</li>
+    <li>correlation_not_causation: {{ flags.correlation_not_causation }}</li>
+    <li>evidence_based: {{ flags.evidence_based }}</li>
+    <li>operator_reviewed: {{ flags.operator_reviewed }}</li>
+    <li>provider_health_visible: {{ flags.provider_health_visible }}</li>
+  </ul>
+  <details><summary>Limitations</summary><ul>{% for item in limitations %}<li>{{ item }}</li>{% endfor %}</ul></details>
+</section>
+{%- endmacro %}
+
+{% macro timeline_controls(selected_timeframe, selected_date, timeframes) -%}
+<section class="market-card timeline-controls" aria-label="Timeline Controls">
+  <h2>Timeline Controls</h2>
+  <form action="/market" method="get" class="market-control-form">
+    <a class="market-button" href="/market?date={{ selected_date }}&timeframe={{ selected_timeframe }}&direction=previous" aria-label="Previous Day">Previous Day</a>
+    <a class="market-button" href="/market?date={{ selected_date }}&timeframe={{ selected_timeframe }}&direction=next" aria-label="Next Day">Next Day</a>
+    <label for="market-date">Jump To Date</label>
+    <input id="market-date" name="date" type="date" value="{{ selected_date }}">
+    <label for="market-timeframe">Timeframe Selector</label>
+    <select id="market-timeframe" name="timeframe">{% for tf in timeframes %}<option value="{{ tf }}" {% if tf == selected_timeframe %}selected{% endif %}>{{ tf }}</option>{% endfor %}</select>
+    <button class="market-button primary" type="submit">Jump</button>
+    <a class="market-button" href="/market">Now</a>
+  </form>
+</section>
+{%- endmacro %}
+
+{% macro narrative_summary(items) -%}
+<section class="market-card" aria-label="Current Narrative Summary">
+  <h2>Narrative Panel</h2><p>Current Narrative Summary</p>
+  <div class="narrative-grid">{% for item in items %}
+    <article class="narrative-chip" tabindex="0"><strong>{{ item.narrative }}</strong><span>Strength {{ '%.2f'|format(item.strength) }}</span><span>Trend {{ item.trend }}</span><span>Confidence {{ '%.2f'|format(item.confidence) }}</span></article>
+  {% endfor %}</div>
+</section>
+{%- endmacro %}
+
+{% macro shock_index_widget(shock) -%}
+<section class="market-card shock-card" aria-label="Current Shock Index">
+  <h2>Current Shock Index</h2>
+  <div class="shock-score" aria-label="News Shock Index score {{ shock.score }} out of 100"><span>{{ shock.score }}</span><small>/100 {{ shock.regime }}</small></div>
+  <meter min="0" max="100" low="20" high="75" optimum="10" value="{{ shock.score }}">{{ shock.score }}</meter>
+  <p>{{ shock.explanation }}</p>
+  <ul>{% for band in shock.bands %}<li>{{ band }}</li>{% endfor %}</ul>
+</section>
+{%- endmacro %}
+
+{% macro provider_health_widget(health) -%}
+<section class="market-card provider-health" aria-label="Provider Health Summary">
+  <h2>Provider Health Summary</h2>
+  <dl class="market-metrics"><div><dt>News Providers</dt><dd>{{ health.news_providers }}</dd></div><div><dt>Market Providers</dt><dd>{{ health.market_providers }}</dd></div><div><dt>Provider Confidence</dt><dd>{{ '%.2f'|format(health.provider_confidence) }}</dd></div><div><dt>Degraded Sources</dt><dd>{{ health.degraded_count }}</dd></div></dl>
+  {% if health.degraded_sources %}<ul class="degraded-list">{% for source in health.degraded_sources %}<li>{{ source }}</li>{% endfor %}</ul>{% else %}<p class="muted">No degraded sources reported by available provider-health rows. Degraded state remains visible.</p>{% endif %}
+</section>
+{%- endmacro %}
+
+{% macro market_chart(chart) -%}
+<section class="market-card chart-card" aria-label="BTC Candlestick Chart">
+  <div class="chart-heading"><h2>BTC Candlestick Chart</h2><p>{{ chart.timeframe }} · zoom, pan, hover, candle selection, marker rendering, responsive resizing</p></div>
+  <div class="chart-actions" aria-label="Chart controls"><button type="button" data-market-zoom="in">Zoom In</button><button type="button" data-market-zoom="out">Zoom Out</button><button type="button" data-market-pan="left">Pan Left</button><button type="button" data-market-pan="right">Pan Right</button></div>
+  <div class="market-chart" role="application" aria-label="BTC candlestick chart with news markers" tabindex="0" data-chart='{{ chart|tojson }}'>
+    <div class="candle-layer" aria-label="Candles">
+    {% for candle in chart.candles %}<button class="market-candle {{ candle.dominant_direction }}" type="button" data-candle='{{ candle|tojson }}' style="--candle-height: {{ 24 + (candle.volatility_score or 0) * 120 }}px" aria-label="Candle {{ candle.open_time }} OHLC {{ candle.open }} {{ candle.high }} {{ candle.low }} {{ candle.close }}"><span class="wick"></span><span class="body"></span><small>{{ candle.open_time[:10] }}</small></button>{% endfor %}
+    </div>
+    <div class="marker-layer" aria-label="News Markers">
+    {% for marker in chart.markers %}<button class="market-marker {{ marker.marker_style }}" type="button" data-marker='{{ marker|tojson }}' aria-label="{{ marker.aria_label }}"><span aria-hidden="true">{{ marker.icon }}</span><small>{{ marker.canonical_type }}</small></button>{% endfor %}
+    </div>
+  </div>
+</section>
+{%- endmacro %}
+
+{% macro candle_panel(candle) -%}
+<section id="selected-candle" class="market-card detail-panel" aria-label="Selected Candle" tabindex="0">
+  <h2>Selected Candle</h2>
+  {% if candle %}
+  <dl class="market-metrics"><div><dt>OHLC</dt><dd>{{ candle.open }} / {{ candle.high }} / {{ candle.low }} / {{ candle.close }}</dd></div><div><dt>Volume</dt><dd>{{ candle.volume or 0 }}</dd></div><div><dt>Price Change %</dt><dd>{{ '%.4f'|format(candle.price_change_pct) }}</dd></div><div><dt>Attribution Confidence</dt><dd>{{ '%.2f'|format(candle.confidence) }}</dd></div><div><dt>Dominant Direction</dt><dd>{{ candle.dominant_direction }}</dd></div></dl>
+  <p>Candidate Events {{ candle.candidate_events|length }} · Candidate Narratives {{ candle.candidate_narrative_events|length }} · Candidate Security Events {{ candle.candidate_security_events|length }} · Candidate Regulatory Events {{ candle.candidate_macro_events|length }}</p>
+  <h3>Candle Explanation Panel</h3><ol>{% for factor in candle.likely_factors %}<li>{{ factor.title }} — confidence {{ '%.2f'|format(factor.confidence) }}</li>{% else %}<li>No likely factors available.</li>{% endfor %}</ol>
+  <p>{{ candle.combined_explanation }}</p><p class="warning">Correlation is not proof of causation.</p>
+  <details open><summary>Limitations</summary><ul>{% for item in candle.limitations %}<li>{{ item }}</li>{% endfor %}</ul></details>
+  {% else %}<p class="empty-state">No candle selected.</p>{% endif %}
+</section>
+{%- endmacro %}
+
+{% macro event_panel(event) -%}
+<section id="selected-event" class="market-card detail-panel" aria-label="Related Events" tabindex="0">
+  <h2>Related Events</h2>
+  {% if event %}<h3>{{ event.title }}</h3><dl class="market-metrics"><div><dt>Source</dt><dd>{{ event.source }}</dd></div><div><dt>Published Time</dt><dd>{{ event.published_at }}</dd></div><div><dt>BTC Price At Publish</dt><dd>{{ event.btc_price_at_publish or 'unknown' }}</dd></div><div><dt>15m Change</dt><dd>{{ event.change_15m or 'n/a' }}</dd></div><div><dt>1h Change</dt><dd>{{ event.change_1h or 'n/a' }}</dd></div><div><dt>4h Change</dt><dd>{{ event.change_4h or 'n/a' }}</dd></div><div><dt>24h Change</dt><dd>{{ event.change_24h or 'n/a' }}</dd></div><div><dt>Confidence</dt><dd>{{ '%.2f'|format(event.confidence) }}</dd></div><div><dt>Evidence Available</dt><dd>{{ event.evidence_available }}</dd></div><div><dt>Historical Matches</dt><dd>{{ event.similarity_preview|length }}</dd></div></dl><div class="panel-actions"><a href="{{ event.evidence_url or '#' }}">Open Evidence</a><a href="{{ event.replay_url or '#' }}" data-replay-link>Replay</a><a href="{{ event.similar_events_url or '#' }}">Show Similar Events</a></div>{% else %}<p class="empty-state">No event selected.</p>{% endif %}
+</section>
+{%- endmacro %}
+
+{% macro evidence_panel(evidence) -%}
+<section class="market-card detail-panel" aria-label="Evidence Packet">
+  <h2>Evidence Packet</h2>
+  <p>{{ evidence.summary }}</p><dl class="market-metrics"><div><dt>Sources</dt><dd>{{ evidence.sources }}</dd></div><div><dt>Provider Confidence</dt><dd>{{ '%.2f'|format(evidence.provider_confidence) }}</dd></div><div><dt>Replay Available</dt><dd>{{ evidence.replay_available }}</dd></div><div><dt>Operator Review Status</dt><dd>{{ evidence.operator_review_status }}</dd></div></dl>
+  <details open><summary>Limitations</summary><ul>{% for item in evidence.limitations %}<li>{{ item }}</li>{% endfor %}</ul></details><div class="panel-actions"><a href="{{ evidence.export_json_url or '#' }}" data-evidence-link>Export JSON</a><a href="{{ evidence.open_replay_url or '#' }}" data-replay-link>Open Replay</a><a href="{{ evidence.relationships_url or '#' }}">View Relationships</a></div>
+</section>
+{%- endmacro %}
+
+{% macro similarity_panel(matches) -%}
+<section class="market-card detail-panel" aria-label="Historical Similarity">
+  <h2>Historical Similarity Panel</h2>
+  {% for item in matches[:5] %}<article class="similarity-item" tabindex="0"><strong>Similar Event #{{ loop.index }}: {{ item.similar_event }}</strong><dl class="market-metrics"><div><dt>Date</dt><dd>{{ item.date }}</dd></div><div><dt>Pattern</dt><dd>{{ item.pattern }}</dd></div><div><dt>Reaction</dt><dd>{{ item.reaction }}</dd></div><div><dt>Confidence</dt><dd>{{ '%.2f'|format(item.confidence) }}</dd></div></dl></article>{% else %}<p class="empty-state">No historical similarity found.</p>{% endfor %}
+</section>
+{%- endmacro %}
+
+{% macro dashboard_cards(cards) -%}
+<section class="market-card" aria-label="Market Intelligence dashboard cards">
+  <h2>Market Intelligence</h2>
+  <div class="dashboard-card-grid">
+    {% for card in cards %}
+    <a class="dashboard-card" href="{{ card.href }}" data-refresh-ready="{{ card.refresh_ready }}">
+      <span>{{ card.title }}</span>
+      <strong>{{ card.value }}</strong>
+      <small>{{ card.detail }}</small>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{%- endmacro %}
+
+{% macro market_timeline_view(vm) -%}
+<section class="market-card" aria-label="Market Timeline View">
+  <h2>Market Timeline</h2>
+  <form class="market-control-form" action="/market/timeline" method="get">
+    <label for="timeline-filter">Filter</label>
+    <select id="timeline-filter" name="filter">
+      <option value="all">All</option><option value="news">News Events</option><option value="signals">Signals</option><option value="security">Security Shocks</option><option value="regulatory">Regulatory Events</option><option value="operator_reviewed">Operator Publications</option>
+    </select>
+    <button class="market-button" type="submit">Apply</button>
+  </form>
+  <div class="timeline-window" tabindex="0" aria-label="Windowed timeline with scrolling, filtering, zoom and event grouping">
+    {% for item in vm.timeline_events[:30] %}
+    <article class="timeline-item" data-event-type="{{ item.type }}">
+      <strong>{{ item.title }}</strong>
+      <p>{{ item.summary }}</p>
+      <small>{{ item.timestamp }} · {{ item.type }} · confidence {{ '%.2f'|format(item.confidence) }} · evidence {{ item.evidence_count }}</small>
+    </article>
+    {% else %}<p class="empty-state">The selected period contains no high-confidence events.</p>{% endfor %}
+  </div>
+</section>
+{%- endmacro %}
+
+{% macro signals_view(summary, selected_status='all') -%}
+<section class="market-card" aria-label="Signals View">
+  <h2>Signals</h2>
+  <form class="market-control-form" action="/market/signals" method="get">
+    <label for="signal-status">Status</label>
+    <select id="signal-status" name="status">
+      {% for status in ['all','published','pending_review','held','rejected','false_positive','expired'] %}<option value="{{ status }}" {% if status == selected_status %}selected{% endif %}>{{ status|replace('_',' ')|title }}</option>{% endfor %}
+    </select>
+    <button class="market-button" type="submit">Filter</button>
+  </form>
+  <dl class="market-metrics">{% for key, value in summary['counts'].items() %}<div><dt>{{ key|replace('_',' ')|title }}</dt><dd>{{ value }}</dd></div>{% endfor %}</dl>
+  {% for signal in summary['items'] %}<article class="timeline-item"><strong>{{ signal.title }}</strong><p>Status {{ signal.status }} · Confidence {{ '%.2f'|format(signal.confidence) }} · Policy {{ signal.policy_decision|default('unknown') }} · Operator Review {{ signal.requires_operator_review|default(false) }}</p></article>{% else %}<p class="empty-state">No signals available for this filter.</p>{% endfor %}
+</section>
+{%- endmacro %}
+
+{% macro evidence_view(evidence, replay) -%}
+<section class="market-card" aria-label="Evidence Packet Viewer">
+  <h2>Evidence Packet Viewer</h2>
+  {% for packet in evidence['packets'] or evidence['items'] %}
+  <details class="evidence-detail" open>
+    <summary>{{ packet.title }}</summary>
+    <p>{{ packet.summary }}</p>
+    <dl class="market-metrics"><div><dt>Packet Summary</dt><dd>{{ packet.packet_type|default('selected') }}</dd></div><div><dt>Evidence Chain</dt><dd>{{ packet.artifact_count|default(evidence.sources) }}</dd></div><div><dt>Confidence Breakdown</dt><dd>{{ '%.2f'|format(packet.confidence|default(evidence.provider_confidence)) }}</dd></div><div><dt>Provider Snapshot</dt><dd>{{ '%.2f'|format(packet.provider_confidence|default(0.0)) }}</dd></div><div><dt>Source Snapshot</dt><dd>{{ '%.2f'|format(packet.source_confidence|default(0.0)) }}</dd></div></dl>
+    <p class="warning">Limitations remain visible. Correlation is not proof of causation.</p>
+  </details>
+  {% else %}<p class="empty-state">No evidence packets available.</p>{% endfor %}
+  <h3>Replay Timeline</h3>
+  {% for item in replay %}<article class="timeline-item"><strong>{{ item.timeline }}</strong><p>Input Entities {{ item.input_entities }} · Derived Entities {{ item.derived_entities }} · Hashes {{ item.hashes }} · Policy Decisions {{ item.policy_decisions }} · Operator Actions {{ item.operator_actions }} · Publication Status {{ item.publication_status }} · Success {{ item.success }}</p>{% if item.error_code %}<p class="warning">Replay failure: {{ item.error_code }}</p>{% endif %}</article>{% else %}<p class="empty-state">Replay unavailable.</p>{% endfor %}
+</section>
+{%- endmacro %}
+
+{% macro sources_view(source_summary, selected_sort='name') -%}
+<section class="market-card" aria-label="Source Intelligence View">
+  <h2>Source Intelligence</h2>
+  <form class="market-control-form" action="/market/sources" method="get">
+    <label for="source-sort">Sort</label>
+    <select id="source-sort" name="sort"><option value="name" {% if selected_sort == 'name' %}selected{% endif %}>Name</option><option value="confidence" {% if selected_sort == 'confidence' %}selected{% endif %}>Provider Confidence</option><option value="failures" {% if selected_sort == 'failures' %}selected{% endif %}>Failure Count</option><option value="quality" {% if selected_sort == 'quality' %}selected{% endif %}>Signal Quality</option></select>
+    <button class="market-button" type="submit">Sort</button>
+  </form>
+  <div class="source-table" role="table" aria-label="Source quality table">
+    <div role="row" class="source-row source-head"><span>Source Name</span><span>Health</span><span>Provider Confidence</span><span>Reputation</span><span>Average Latency</span><span>Failure Count</span><span>First Mover Score</span><span>Signal Quality</span></div>
+    {% for source in source_summary['items'] %}<div role="row" class="source-row"><span>{{ source.source_name }}</span><span>{{ source.health }}</span><span>{{ '%.2f'|format(source.provider_confidence) }}</span><span>{{ '%.2f'|format(source.reputation) }}</span><span>{{ source.average_latency }}</span><span>{{ source.failure_count }}</span><span>{{ '%.2f'|format(source.first_mover_score) }}</span><span>{{ '%.2f'|format(source.signal_quality) }}</span></div>{% else %}<p class="empty-state">Source registry is empty or unavailable.</p>{% endfor %}
+  </div>
+</section>
+{%- endmacro %}

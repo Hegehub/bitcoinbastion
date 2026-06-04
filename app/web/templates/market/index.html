@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import "components/market_panels.html" as market %}
+{% block title %}Market Time Machine — Bitcoin Bastion{% endblock %}
+{% block content %}
+<section class="market-hero"><p class="eyebrow">Market Time Machine</p><h1>Bitcoin Bastion shows market memory.</h1><p>Every candle can be investigated. Every event can be replayed. Every signal can be verified.</p></section>
+{{ market.safety_flags(market_vm.safety_flags, market_vm.limitations) }}
+<div class="market-layout top-row">{{ market.timeline_controls(market_vm.selected_timeframe, market_vm.selected_date, timeframes) }}{{ market.narrative_summary(market_vm.narrative_summary) }}</div>
+<div class="market-layout widget-row">{{ market.shock_index_widget(market_vm.shock_index) }}{{ market.provider_health_widget(market_vm.provider_health) }}</div>
+{{ market.market_chart(market_vm.chart_data) }}
+<div class="market-layout">{{ market.candle_panel(market_vm.selected_candle) }}{{ market.event_panel(market_vm.selected_event) }}</div>
+<div class="market-layout">{{ market.evidence_panel(market_vm.evidence_summary) }}{{ market.similarity_panel(market_vm.historical_matches) }}</div>
+<section class="market-card" aria-label="Recent Signals"><h2>Recent Signals</h2>{% for signal in market_vm.recent_signals %}<article class="signal-card"><strong>{{ signal.title }}</strong><span>Status {{ signal.status }}</span><span>Confidence {{ '%.2f'|format(signal.confidence) }}</span><span>Replay Available {{ signal.replay_available }}</span></article>{% endfor %}</section>
+<script src="/static/js/market.js" defer></script>
+{% endblock %}
