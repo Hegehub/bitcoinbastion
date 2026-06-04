@@ -15,6 +15,7 @@ export default defineConfig({
       'tests/status-page.test.tsx',
       'tests/selfhost-wizard.test.tsx',
       'tests/api-client.test.ts',
+      'tests/market-time-machine-ui.test.tsx',
     ],
   },
 });

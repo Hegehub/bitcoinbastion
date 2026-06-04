@@ -135,7 +135,7 @@ Production Readiness: NOT COMPLETE
 - Added seeded `market_pattern_library` persistence for deterministic Bitcoin market patterns.
 - Added `historical_similarity_records` for report-level analog evidence, component matches, reaction windows, confidence, and explanation JSON.
 - Added `PatternClassificationService` plus event/article similarity reports with Weak/Moderate/Strong/Very Strong bands and median/average reaction statistics.
-- Added `/api/v1/intelligence/similarity/events/{event_id}`, `/api/v1/intelligence/similarity/articles/{article_id}`, `/api/v1/intelligence/patterns`, and `/api/v1/intelligence/patterns/{pattern_code}`.
+- Added `/api/v1/intelligence/similarity/events/{event_id}`, `/api/v1/intelligence/similarity/articles/{article_id}`, `/api/v1/intelligence/patterns`, and `/api/v1/intelligence/patterns/{pattern_id}`.
 - Historical similarity remains informational only: historical similarity does not guarantee future outcomes.
 
 ## Historical Similarity Package Layout
@@ -192,3 +192,32 @@ Implemented first-class Evidence Packets, Evidence Replay, Evidence Relationship
 ## Task 38/48 Historical Similarity Engine
 
 Status: implemented. The repository now includes production pattern memory tables, occurrence/reaction snapshots, pattern confidence calculation, frontend-ready similarity context endpoints, and historical-similarity safety limitations.
+
+## Task 39 — Historical Similarity Engine and Pattern Library
+
+Status: implemented. The repository now includes final pattern-library fields, pattern occurrence reason/signal links, historical reaction statistics, deterministic similarity evidence, narrative memory snapshots, bounded metrics, API routes, and regression tests.
+
+## Task 40 — Market Time Machine Web Dashboard
+
+Status: implemented. Added Market Time Machine frontend routes, reusable dashboard components, chart container, evidence/replay views, narrative heatmap, shock index, operator queue, DTO endpoint inventory, frontend tests, and safety language across intelligence pages.
+
+
+## Task 41 — Market Time Machine Web Dashboard
+
+Status: complete for production web foundation.
+
+- Added FastAPI/Jinja2/HTMX/Alpine routes for `/market-time-machine`, `/intelligence/timeline`, `/evidence/{packet_id}`, and `/candles/{candle_id}`.
+- Added thin `/web/*` DTO endpoints for dashboard, timeline, candle attribution, and evidence panel rendering.
+- Removed the React `/market` prototype from the production dashboard path to satisfy the non-SPA Market Time Machine constraint.
+- Added observable counters for dashboard views, timeline requests, marker clicks, candle opens, evidence opens, and replay opens.
+- Remaining blocker: global CI release gates still report pre-existing schema/runtime parity drift outside this UI task.
+
+## Task 42 — Market Timeline and Candlestick Intelligence Dashboard
+
+Status: complete for production dashboard finalization.
+
+- `/market` now renders the primary Market Timeline and Candlestick Intelligence Dashboard.
+- Added frontend-ready API contracts for timeline day/hour, candle dashboard DTOs, candle events, candle evidence, candle similarity, and event timeline context.
+- Timeline filters support combinable filter values, high-confidence filtering, and operator-reviewed filtering.
+- Candle DTOs expose OHLC, volume, price change, dominant direction, volatility score, provider confidence, attribution count, candidate event groups, evidence summaries, similarity previews, narrative strength, and safety flags.
+- Remaining blocker: global CI release gates still report pre-existing runtime schema parity drift outside this dashboard task.

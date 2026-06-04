@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "components.html" as ui %}
+{% block title %}Market Timeline — Bitcoin Bastion{% endblock %}
+{% block content %}
+<section class="hero"><p class="eyebrow">Intelligence Timeline</p><h1>Unified market memory timeline.</h1><p>News events, BTC candles, price spikes, volatility events, security events, regulatory events, ETF events, signals, and operator publications.</p></section>
+{{ ui.safety_notice(safety_limitations) }}
+<section class="panel" aria-label="Timeline filters">
+  <div class="timeline-filters">
+    {% for f in timeline_filters %}<a class="{% if f == selected_filter %}active{% endif %}" href="/intelligence/timeline?filter={{ f }}&window={{ selected_window }}&sort={{ sort }}">{{ f|replace('_',' ')|title }}</a>{% endfor %}
+  </div>
+  <form class="controls" action="/intelligence/timeline" method="get"><input type="hidden" name="filter" value="{{ selected_filter }}"><label>Window <select name="window"><option>1h</option><option>4h</option><option selected>24h</option><option>7d</option><option>30d</option><option>all</option></select></label><label>Sort <select name="sort"><option value="desc">Newest</option><option value="asc">Oldest</option></select></label><button type="submit">Apply</button></form>
+</section>
+<section class="timeline-list" aria-label="Market timeline results">
+{% if dto and dto.timeline_items %}
+  {% for item in dto.timeline_items %}
+  <article class="timeline-item" tabindex="0">
+    <header><strong>{{ item.title }}</strong>{{ ui.status_badge(item.status) }}</header>
+    <p>{{ item.summary }}</p>
+    <small class="muted">{{ item.timestamp }} · {{ item.type }} · confidence {{ '%.2f'|format(item.confidence) }} · provider {{ '%.2f'|format(item.provider_confidence) }} · evidence {{ item.evidence_count }}</small>
+    <div class="actions">{% if item.related_candle_id %}<a href="/candles/{{ item.related_candle_id }}">Open Candle</a>{% endif %}{% if item.evidence_count %}<a href="/evidence/{{ item.id }}">Open Evidence</a>{% endif %}</div>
+  </article>
+  {% endfor %}
+  <nav class="history-nav" aria-label="Timeline pagination"><a href="/intelligence/timeline?filter={{ selected_filter }}&page={{ dto.page - 1 if dto.page > 1 else 1 }}">Previous</a>{% if dto.has_next %}<a href="/intelligence/timeline?filter={{ selected_filter }}&page={{ dto.page + 1 }}">Next</a>{% endif %}</nav>
+{% elif dto %}
+  {{ ui.empty_state('No events found.') }}
+{% else %}
+  {{ ui.error_state('Data temporarily unavailable.') }}
+{% endif %}
+</section>
+{% endblock %}

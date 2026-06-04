@@ -23,12 +23,15 @@ from app.services.intelligence.historical_similarity_foundation import (
     HistoricalSimilarityService as FoundationHistoricalSimilarityService,
 )
 from app.services.intelligence.market_memory_service import MarketMemoryService
+from app.services.intelligence.narrative_memory_service import NarrativeMemoryService
 from app.services.intelligence.narrative_heatmap import (
     NarrativeHeatmapService,
     NarrativeRotationService,
     NARRATIVE_LIMITATION,
     NARRATIVE_SAFETY,
 )
+from app.web.market_time_machine_service import SAFETY_LIMITATIONS, MarketTimeMachineWebService
+from app.web.metrics import EVIDENCE_PANEL_REQUESTS_TOTAL, SIMILARITY_PANEL_REQUESTS_TOTAL
 from app.services.intelligence.historical_similarity_service import (
     CORRELATION_LIMITATION,
     HISTORICAL_OUTCOME_LIMITATION,
@@ -166,13 +169,16 @@ def _pattern_payload(row: object) -> dict[str, object]:
         "slug": slug,
         "pattern_code": slug,
         "name": name,
-        "display_name": name,
+        "display_name": getattr(row, "display_name", name) or name,
         "category": getattr(row, "category", "unknown"),
         "description": getattr(row, "description", ""),
         "expected_sentiment": getattr(
             row, "expected_sentiment", getattr(row, "default_sentiment", "UNKNOWN")
         ),
         "expected_direction": getattr(row, "expected_direction", "UNKNOWN"),
+        "typical_sentiment": getattr(row, "typical_sentiment", getattr(row, "expected_sentiment", "UNKNOWN")),
+        "typical_direction": getattr(row, "typical_direction", getattr(row, "expected_direction", "UNKNOWN")),
+        "default_time_window": getattr(row, "default_time_window", getattr(row, "typical_impact_window", "1h")),
         "typical_impact_window": getattr(
             row, "typical_impact_window", getattr(row, "expected_reaction_window", "unknown")
         ),
@@ -330,25 +336,25 @@ def list_market_patterns(db: Session = Depends(db_session)) -> dict[str, object]
         return {"data": [], "limitations": ["Pattern library storage is unavailable."]}
 
 
-@router.get("/patterns/{pattern_code}/history")
+@router.get("/patterns/{pattern_id}/history")
 def get_market_pattern_history(
-    pattern_code: str, db: Session = Depends(db_session)
+    pattern_id: str, db: Session = Depends(db_session)
 ) -> dict[str, object]:
     try:
         return {
-            "data": MarketMemoryService(db).retrieve_pattern_history(pattern_code),
+            "data": MarketMemoryService(db).retrieve_pattern_history(pattern_id),
             "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION]),
         }
     except OperationalError:
         return {"data": [], "limitations": ["Pattern history storage is unavailable."]}
 
 
-@router.get("/patterns/{pattern_code}/reaction-profile")
+@router.get("/patterns/{pattern_id}/reaction-profile")
 def get_market_pattern_reaction_profile(
-    pattern_code: str, db: Session = Depends(db_session)
+    pattern_id: str, db: Session = Depends(db_session)
 ) -> dict[str, object]:
     try:
-        profile = MarketMemoryService(db).retrieve_reaction_profile(pattern_code)
+        profile = MarketMemoryService(db).retrieve_reaction_profile(pattern_id)
         return {
             "data": (
                 MarketMemoryService(db).reaction_profile_payload(profile)
@@ -361,12 +367,12 @@ def get_market_pattern_reaction_profile(
         return {"data": None, "limitations": ["Pattern reaction-profile storage is unavailable."]}
 
 
-@router.get("/patterns/{pattern_code}/occurrences")
+@router.get("/patterns/{pattern_id}/occurrences")
 def get_market_pattern_occurrences(
-    pattern_code: str, limit: int = 50, db: Session = Depends(db_session)
+    pattern_id: str, limit: int = 50, db: Session = Depends(db_session)
 ) -> dict[str, object]:
     try:
-        pattern = MarketMemoryService(db).get_pattern(pattern_code)
+        pattern = MarketMemoryService(db).get_pattern(pattern_id)
         if pattern is None:
             raise HTTPException(status_code=404, detail="pattern_not_found")
         rows = (
@@ -385,8 +391,10 @@ def get_market_pattern_occurrences(
                     "event_id": row.event_id,
                     "impact_id": row.impact_id,
                     "attribution_id": row.attribution_id,
+                    "signal_id": row.signal_id,
                     "occurred_at": row.occurred_at,
                     "confidence_score": row.confidence_score,
+                    "classification_reason": row.classification_reason,
                     "created_at": row.created_at,
                 }
                 for row in rows
@@ -397,10 +405,10 @@ def get_market_pattern_occurrences(
         return {"data": [], "limitations": _market_memory_safety(["Pattern occurrence storage is unavailable."])}
 
 
-@router.get("/patterns/{pattern_code}")
-def get_market_pattern(pattern_code: str, db: Session = Depends(db_session)) -> dict[str, object]:
+@router.get("/patterns/{pattern_id}")
+def get_market_pattern(pattern_id: str, db: Session = Depends(db_session)) -> dict[str, object]:
     try:
-        row = MarketMemoryService(db).get_pattern(pattern_code)
+        row = MarketMemoryService(db).get_pattern(pattern_id)
         if row is None:
             raise HTTPException(status_code=404, detail="pattern_not_found")
         return {"data": _pattern_payload(row), "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION])}
@@ -408,16 +416,19 @@ def get_market_pattern(pattern_code: str, db: Session = Depends(db_session)) -> 
         return {"data": None, "limitations": ["Pattern library storage is unavailable."]}
 
 
-@router.get("/patterns/{pattern_code}/statistics")
+@router.get("/patterns/{pattern_id}/statistics")
 def get_market_pattern_statistics(
-    pattern_code: str, db: Session = Depends(db_session)
+    pattern_id: str, db: Session = Depends(db_session)
 ) -> dict[str, object]:
     try:
-        service = MarketMemoryHistoricalSimilarityEngine(db).statistics
-        summary = service.compute(pattern_code)
+        pattern = MarketMemoryService(db).get_pattern(pattern_id)
+        if pattern is None:
+            raise HTTPException(status_code=404, detail="pattern_not_found")
+        data = HistoricalSimilarityService(db).build_reaction_statistics(pattern.id)
         db.commit()
         return {
-            "data": service.payload(summary),
+            "data": data,
+            "reaction_statistics": data,
             "limitations": _market_memory_safety([]),
         }
     except OperationalError:
@@ -550,12 +561,42 @@ def get_narrative_dominance(db: Session = Depends(db_session)) -> dict[str, obje
         return {"data": {}, "items": [], "limitations": ["Narrative dominance storage is unavailable."]}
 
 
+
+
+@router.get("/narratives/active")
+def get_active_narrative_memory(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        payload = {
+            "data": NarrativeMemoryService(db).track_active_narratives(),
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY, "historical_reference_only"],
+        }
+        db.commit()
+        return payload
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative memory storage is unavailable."]}
+
+
+@router.get("/narratives/memory")
+def get_narrative_memory(db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        payload = NarrativeMemoryService(db).build_narrative_snapshot()
+        db.commit()
+        return payload
+    except OperationalError:
+        return {"data": [], "limitations": ["Narrative memory storage is unavailable."]}
+
+
 @router.get("/narratives/history")
 def get_narrative_history(
     period: str = "month", limit: int = 20, db: Session = Depends(db_session)
 ) -> dict[str, object]:
     try:
-        return NarrativeHeatmapService(db).history(period=period, limit=limit)
+        heatmap_history = NarrativeHeatmapService(db).history(period=period, limit=limit)
+        memory_history = NarrativeMemoryService(db).history(limit=limit)
+        if isinstance(heatmap_history, dict):
+            heatmap_history["memory_history"] = memory_history.get("data", [])
+            return heatmap_history
+        return memory_history
     except OperationalError:
         return {"data": [], "limitations": ["Narrative history storage is unavailable."]}
 
@@ -581,6 +622,66 @@ def get_narrative(slug: str, db: Session = Depends(db_session)) -> dict[str, obj
         return {"data": row, "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
     except OperationalError:
         return {"data": None, "limitations": ["Narrative storage is unavailable."]}
+
+
+@router.get("/candles/{candle_id}")
+def get_candle_dashboard_dto(candle_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        return MarketTimeMachineWebService(db).candle_api_payload(candle_id)
+    except OperationalError:
+        return {"data": None, "limitations": SAFETY_LIMITATIONS + ["Candle storage is unavailable."]}
+
+
+@router.get("/candles/{candle_id}/events")
+def get_candle_events_dashboard_dto(candle_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        candle = MarketTimeMachineWebService(db).candle_attribution(candle_id)
+        return {
+            "data": candle.candidate_events,
+            "candidate_news_events": candle.candidate_news_events,
+            "candidate_macro_events": candle.candidate_macro_events,
+            "candidate_security_events": candle.candidate_security_events,
+            "candidate_narrative_events": candle.candidate_narrative_events,
+            "confidence_score": candle.confidence,
+            "limitations": candle.limitations,
+        }
+    except OperationalError:
+        return {"data": [], "limitations": SAFETY_LIMITATIONS + ["Candle event storage is unavailable."]}
+
+
+@router.get("/candles/{candle_id}/evidence")
+def get_candle_evidence_dashboard_dto(candle_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+    EVIDENCE_PANEL_REQUESTS_TOTAL.labels(surface="api").inc()
+    try:
+        return MarketTimeMachineWebService(db).evidence_for_candle(candle_id).model_dump()
+    except OperationalError:
+        return {"packet_id": None, "limitations": SAFETY_LIMITATIONS + ["Evidence storage is unavailable."]}
+
+
+@router.get("/candles/{candle_id}/similar")
+def get_candle_similarity_dashboard_dto(candle_id: int, limit: int = 5, db: Session = Depends(db_session)) -> dict[str, object]:
+    SIMILARITY_PANEL_REQUESTS_TOTAL.labels(surface="api").inc()
+    try:
+        return {
+            "data": MarketTimeMachineWebService(db).candle_similarity_preview(candle_id, limit=limit),
+            "limitations": SAFETY_LIMITATIONS + ["Historical similarity is reference-only."],
+        }
+    except OperationalError:
+        return {"data": [], "limitations": SAFETY_LIMITATIONS + ["Similarity storage is unavailable."]}
+
+
+@router.get("/events/{event_id}/timeline")
+def get_event_timeline_dashboard_dto(event_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+    try:
+        service = MarketTimeMachineWebService(db)
+        return {
+            "data": service.event_context(event_id),
+            "timeline_items": service.timeline_for_event(event_id),
+            "chart_markers": [item.model_dump() for item in service.news_markers(limit=1000) if item.event_id == event_id],
+            "limitations": SAFETY_LIMITATIONS,
+        }
+    except OperationalError:
+        return {"data": None, "timeline_items": [], "limitations": SAFETY_LIMITATIONS + ["Event timeline storage is unavailable."]}
 
 
 @router.get("/candles/{candle_id}/attribution")

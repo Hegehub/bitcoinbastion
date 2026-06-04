@@ -29,6 +29,7 @@ from app.api.v1.signals import router as signals_router
 from app.api.v1.treasury import router as treasury_router
 from app.api.v1.trace import router as trace_router
 from app.api.v1.users import router as users_router
+from app.web.routes import router as market_time_machine_web_router
 from app.api.v1.wallet import router as wallet_router
 from app.core.config import get_settings
 from app.core.logging import configure_logging
@@ -74,3 +75,4 @@ app.include_router(citadel_router, prefix=settings.api_prefix)
 app.include_router(trace_router, prefix=settings.api_prefix)
 
 app.include_router(public_router, prefix=settings.api_prefix)
+app.include_router(market_time_machine_web_router)

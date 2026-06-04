@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% import "components.html" as ui %}
+{% block title %}Market Time Machine — Bitcoin Bastion{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Market Time Machine</p>
+  <h1>The memory behind the market.</h1>
+  <p>One candle. Many possible factors. Fully explainable. Fully replayable when evidence exists.</p>
+</section>
+{{ ui.safety_notice(safety_limitations) }}
+<section class="panel" aria-label="Historical navigation">
+  <form class="controls" action="/market-time-machine" method="get">
+    <label for="date">Select Date</label><input id="date" name="date" type="date">
+    <label for="timeframe">Timeframe</label><select id="timeframe" name="timeframe">{% for tf in timeframes %}<option value="{{ tf }}" {% if tf == selected_timeframe %}selected{% endif %}>{{ tf }}</option>{% endfor %}</select>
+    <button type="submit">Jump</button>
+    <a href="/intelligence/timeline">Jump To Event</a><a href="/candles/1">Jump To Candle</a><a href="/intelligence/timeline?filter=signals">Jump To Signal</a><a href="/evidence/1">Jump To Evidence</a>
+    <button type="button" onclick="history.back()">Move Backward</button><button type="button" onclick="history.forward()">Move Forward</button>
+  </form>
+</section>
+{% if dto %}
+<div class="grid">
+  <div class="stack">
+    {{ ui.btc_candlestick_chart(dto.candles, dto.chart_markers, selected_timeframe) }}
+    <section class="panel" aria-label="Timeline panel">
+      <h2>Timeline Panel</h2>
+      {% if dto.timeline_items %}
+      <div class="timeline-list">
+        {% for item in dto.timeline_items[:8] %}
+        <article class="timeline-item" tabindex="0">
+          <header><strong>{{ item.title }}</strong>{{ ui.status_badge(item.status) }}</header>
+          <p>{{ item.summary }}</p>
+          <small class="muted">{{ item.timestamp }} · {{ item.type }} · confidence {{ '%.2f'|format(item.confidence) }} · evidence {{ item.evidence_count }}</small>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}{{ ui.empty_state('No events found.') }}{% endif %}
+    </section>
+  </div>
+  <div class="stack">
+    <aside class="panel" aria-label="Marker details side panel">
+      <h2>Marker Interaction</h2>
+      {% if dto.chart_markers %}
+        {% set marker = dto.chart_markers[0] %}
+        <h3>{{ marker.title }}</h3>
+        <dl class="metrics"><div><dt>Source</dt><dd>{{ marker.source }}</dd></div><div><dt>Published Time</dt><dd>{{ marker.timestamp }}</dd></div><div><dt>Confidence</dt><dd>{{ '%.2f'|format(marker.confidence) }}</dd></div><div><dt>Evidence Count</dt><dd>{{ marker.evidence_count }}</dd></div></dl>
+        <dl class="metrics"><div><dt>BTC Price At Publish</dt><dd>{{ marker.btc_price_at_publish or 'unknown' }}</dd></div><div><dt>15m / 1h</dt><dd>{{ marker.change_15m or 'n/a' }} / {{ marker.change_1h or 'n/a' }}</dd></div><div><dt>4h / 24h</dt><dd>{{ marker.change_4h or 'n/a' }} / {{ marker.change_24h or 'n/a' }}</dd></div><div><dt>Impact Confidence</dt><dd>{{ '%.2f'|format(marker.impact_confidence) }}</dd></div></dl><p class="muted">Sentiment {{ marker.sentiment }} · BTC relevance {{ '%.2f'|format(marker.btc_relevance) }} · provider {{ '%.2f'|format(marker.provider_confidence) }}</p>
+      {% else %}{{ ui.empty_state('No events found.') }}{% endif %}
+    </aside>
+    <aside class="panel" aria-label="Candle attribution panel">
+      <h2>Candle Attribution</h2>
+      {% if dto.candles %}
+        {% set candle = dto.candles[-1] %}
+        <dl class="metrics"><div><dt>OHLC</dt><dd>{{ candle.open }} / {{ candle.high }} / {{ candle.low }} / {{ candle.close }}</dd></div><div><dt>Volume</dt><dd>{{ candle.volume or 0 }}</dd></div><div><dt>Price Change %</dt><dd>{{ '%.4f'|format(candle.price_change_pct) }}</dd></div><div><dt>Dominant Direction</dt><dd>{{ candle.dominant_direction }}</dd></div><div><dt>Volatility</dt><dd>{{ '%.2f'|format(candle.volatility_score) }}</dd></div><div><dt>Provider Confidence</dt><dd>{{ '%.2f'|format(candle.provider_confidence) }}</dd></div><div><dt>Attribution Confidence</dt><dd>{{ '%.2f'|format(candle.confidence) }}</dd></div><div><dt>Historical Similarity</dt><dd>{{ candle.historical_similarity_count }}</dd></div></dl><p class="muted">Candidate news {{ candle.candidate_news_events|length }} · macro {{ candle.candidate_macro_events|length }} · security {{ candle.candidate_security_events|length }} · narrative {{ candle.candidate_narrative_events|length }}</p>
+        <p><a href="/candles/{{ candle.id }}">Open Candle Attribution</a></p>
+      {% else %}{{ ui.empty_state('No attribution available.') }}{% endif %}
+    </aside>
+    <aside class="panel" aria-label="Evidence side panel placeholder">
+      <h2>Evidence Side Panel</h2>
+      <p>Open any evidence packet to inspect provider confidence, source confidence, replay references, limitations, and integrity status.</p>
+      <p><a href="/evidence/1">Open Evidence</a></p>
+    </aside>
+  </div>
+</div>
+<section class="grid" aria-label="Historical similarity and narrative panels">
+  <aside class="panel" aria-label="Historical Similarity Panel"><h2>Historical Similarity Panel</h2>{% if dto.similarity_preview %}<div class="timeline-list">{% for item in dto.similarity_preview %}<article class="timeline-item"><strong>{{ item.similar_event }}</strong><small class="muted">{{ item.date }} · pattern {{ item.pattern }} · confidence {{ '%.2f'|format(item.confidence) }} · median move {{ item.median_historical_move }} · window {{ item.typical_window }}</small></article>{% endfor %}</div>{% else %}{{ ui.empty_state('No historical similarity found.') }}{% endif %}</aside>
+  <aside class="panel" aria-label="Narrative Panel"><h2>Narrative Panel</h2>{% if dto.narrative_strength %}<div class="timeline-list">{% for item in dto.narrative_strength %}<article class="timeline-item"><strong>{{ item.narrative }}</strong><small class="muted">strength {{ '%.2f'|format(item.strength) }} · direction {{ item.direction }} · recent activity {{ item.recent_activity }} · trend {{ item.historical_trend }}</small></article>{% endfor %}</div>{% else %}{{ ui.empty_state('No active narratives found.') }}{% endif %}</aside>
+</section>
+{% else %}
+{{ ui.loading_panel('Market dashboard') }}
+{{ ui.error_state('Data temporarily unavailable. Provider degraded or backend timeout handled without exposing stack traces.') }}
+{% endif %}
+{% endblock %}

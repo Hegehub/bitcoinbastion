@@ -93,3 +93,14 @@ Frontend work should follow real backend contracts and avoid inventing data that
 3. signal explanation panel
 4. observability/admin screens
 5. treasury review surface
+
+## Market Time Machine Dashboard
+
+The Market Time Machine web surface adds calm, evidence-first routes for `/market-time-machine`, `/intelligence/timeline`, `/evidence/{packet_id}`, and `/candles/{candle_id}`. The UI uses FastAPI/Jinja2 templates, existing Bastion cards, typography, status badges, and safety language rather than trading-terminal aesthetics.
+
+
+## Market Time Machine Web Surface (Task 41)
+
+The production Market Time Machine dashboard is implemented as a FastAPI/Jinja2/HTMX/Alpine.js web surface rather than a new React route family. This preserves self-hosted compatibility and keeps the intelligence dashboard thin: templates render backend DTOs and do not duplicate attribution, evidence, confidence, or market calculations.
+
+Primary routes are `/market-time-machine`, `/intelligence/timeline`, `/evidence/{packet_id}`, and `/candles/{candle_id}`. Thin DTO endpoints under `/web/*` support progressive enhancement and self-hosted integrations.

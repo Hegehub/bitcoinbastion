@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "components.html" as ui %}
+{% block title %}Candle Attribution — Bitcoin Bastion{% endblock %}
+{% block content %}
+<section class="hero"><p class="eyebrow">Candle Attribution</p><h1>Candle <span class="mono">{{ candle_id }}</span></h1><p>One candle. Many possible factors. Fully explainable. Fully replayable when evidence exists.</p></section>
+{{ ui.safety_notice(safety_limitations) }}
+{% if dto %}
+<div class="grid">
+  <section class="panel" aria-label="OHLC and attribution summary">
+    <h2>OHLC</h2>
+    <dl class="metrics"><div><dt>Open</dt><dd>{{ dto.open }}</dd></div><div><dt>High</dt><dd>{{ dto.high }}</dd></div><div><dt>Low</dt><dd>{{ dto.low }}</dd></div><div><dt>Close</dt><dd>{{ dto.close }}</dd></div><div><dt>Volume</dt><dd>{{ dto.volume or 0 }}</dd></div><div><dt>Price Change</dt><dd>{{ '%.4f'|format(dto.price_change_pct) }}%</dd></div><div><dt>Dominant Direction</dt><dd>{{ dto.dominant_direction }}</dd></div><div><dt>Volatility Score</dt><dd>{{ '%.2f'|format(dto.volatility_score) }}</dd></div><div><dt>Provider Confidence</dt><dd>{{ '%.2f'|format(dto.provider_confidence) }}</dd></div><div><dt>Attribution Confidence</dt><dd>{{ '%.2f'|format(dto.confidence) }}</dd></div><div><dt>Replay Available</dt><dd>{{ 'Yes' if dto.replay_available else 'No' }}</dd></div><div><dt>correlation_not_causation</dt><dd>{{ dto.safety_flags.correlation_not_causation }}</dd></div><div><dt>evidence_based</dt><dd>{{ dto.safety_flags.evidence_based }}</dd></div><div><dt>operator_reviewed</dt><dd>{{ dto.safety_flags.operator_reviewed }}</dd></div><div><dt>confidence_score</dt><dd>{{ dto.safety_flags.confidence_score }}</dd></div></dl>
+    <p><strong>Attribution Summary:</strong> Candidate events and articles are backend DTOs; this template does not calculate causality.</p>
+  </section>
+  <aside class="panel" aria-label="Limitations"><h2>Limitations</h2><ul>{% for limitation in dto.limitations %}<li>{{ limitation }}</li>{% endfor %}</ul><div class="actions"><a href="/web/candle/{{ dto.id }}">Export JSON</a><a href="/intelligence/timeline">Open Timeline</a></div></aside>
+</div>
+<section class="panel" aria-label="Candidate events"><h2>Candidate Events</h2>{% if dto.candidate_events %}<div class="timeline-list">{% for event in dto.candidate_events %}<article class="timeline-item"><strong>{{ event.title }}</strong><small class="muted">confidence {{ '%.2f'|format(event.confidence) }} · distance {{ event.time_distance_seconds }}s · evidence {{ event.evidence_count }}</small></article>{% endfor %}</div>{% else %}{{ ui.empty_state('No attribution available.') }}{% endif %}</section>
+<section class="panel" aria-label="Candidate articles"><h2>Candidate Articles</h2>{% if dto.candidate_articles %}<ul>{% for article in dto.candidate_articles %}<li>{{ article.title }} — {{ article.source }} · confidence {{ '%.2f'|format(article.confidence) }}</li>{% endfor %}</ul>{% else %}{{ ui.empty_state('No candidate articles available.') }}{% endif %}</section>
+{% else %}
+{{ ui.error_state('Data temporarily unavailable.') }}
+{% endif %}
+{% endblock %}

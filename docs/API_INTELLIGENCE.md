@@ -7,9 +7,9 @@ The intelligence API exposes Market Time Machine evidence layers for candle attr
 - `GET /api/v1/intelligence/events/{event_id}/similar` returns similar historical events, pattern reasoning, reaction statistics, confidence, and limitations.
 - `GET /api/v1/intelligence/events/{event_id}/memory` returns the event's pattern matches, persisted similar events, confidence history, and limitations.
 - `GET /api/v1/intelligence/patterns` returns the active production market-pattern catalog.
-- `GET /api/v1/intelligence/patterns/{pattern_code}` returns a single pattern by numeric ID or slug.
-- `GET /api/v1/intelligence/patterns/{pattern_code}/history` returns historical events classified under a pattern.
-- `GET /api/v1/intelligence/patterns/{pattern_code}/reaction-profile` returns median and average BTC reaction windows for a pattern.
+- `GET /api/v1/intelligence/patterns/{pattern_id}` returns a single pattern by numeric ID or slug.
+- `GET /api/v1/intelligence/patterns/{pattern_id}/history` returns historical events classified under a pattern.
+- `GET /api/v1/intelligence/patterns/{pattern_id}/reaction-profile` returns median and average BTC reaction windows for a pattern.
 
 ## Response Guarantees
 

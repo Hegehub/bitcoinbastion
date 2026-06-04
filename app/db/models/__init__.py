@@ -40,6 +40,10 @@ from app.db.models.market_narrative import MarketNarrative
 from app.db.models.narrative_keyword import NarrativeKeyword
 from app.db.models.narrative_snapshot import NarrativeSnapshot
 from app.db.models.narrative_observation import NarrativeObservation
+
+from app.db.models.historical_reaction_statistics import HistoricalReactionStatistics
+from app.db.models.pattern_embedding_placeholder import PatternEmbeddingPlaceholder
+from app.db.models.narrative_memory_snapshot import NarrativeMemorySnapshot
 from app.db.models.candle_provider_snapshot import CandleProviderSnapshot
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.btc_price_point import BTCPricePoint
@@ -110,6 +114,9 @@ __all__ = [
     "NarrativeKeyword",
     "NarrativeSnapshot",
     "NarrativeObservation",
+    "HistoricalReactionStatistics",
+    "PatternEmbeddingPlaceholder",
+    "NarrativeMemorySnapshot",
     "AttributionReplayLog",
     "EvidencePacket",
     "EvidenceRelationship",

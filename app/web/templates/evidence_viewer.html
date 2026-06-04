@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "components.html" as ui %}
+{% block title %}Evidence Viewer — Bitcoin Bastion{% endblock %}
+{% block content %}
+<section class="hero"><p class="eyebrow">Evidence Viewer</p><h1>Evidence packet <span class="mono">{{ packet_id }}</span></h1><p>Replayable, provider-aware evidence with limitations visible.</p></section>
+{{ ui.safety_notice(safety_limitations) }}
+<div class="grid">
+  <section class="panel" aria-label="Evidence summary">
+    {% if dto %}
+    <h2>{{ dto.title }}</h2><p>{{ dto.summary }}</p>
+    <dl class="metrics"><div><dt>Provider Health</dt><dd>{{ '%.2f'|format(dto.provider_confidence) }}</dd></div><div><dt>Source Confidence</dt><dd>{{ '%.2f'|format(dto.source_confidence) }}</dd></div><div><dt>Replay References</dt><dd>{{ 'Available' if dto.replay_available else 'Replay unavailable' }}</dd></div><div><dt>Integrity Status</dt><dd>{{ dto.integrity_status }}</dd></div></dl>
+    <details open><summary>Confidence Breakdown</summary><p>Provider confidence {{ '%.2f'|format(dto.provider_confidence) }} and source confidence {{ '%.2f'|format(dto.source_confidence) }} are supplied by backend DTOs.</p></details>
+    <details><summary>Limitations</summary><ul>{% for limitation in dto.limitations %}<li>{{ limitation }}</li>{% endfor %}</ul></details>
+    {% else %}{{ ui.error_state('Evidence unavailable.') }}{% endif %}
+  </section>
+  {{ ui.evidence_side_panel(dto) }}
+</div>
+<section class="panel" aria-label="Replay references">
+  <h2>Replay References</h2>
+  {% if replay and replay.steps %}<ol>{% for step in replay.steps %}<li>{{ step.step }} — {{ step.status }} <span class="mono">{{ step.created_at }}</span></li>{% endfor %}</ol>{% else %}{{ ui.empty_state('Replay unavailable.') }}{% endif %}
+</section>
+{% endblock %}
