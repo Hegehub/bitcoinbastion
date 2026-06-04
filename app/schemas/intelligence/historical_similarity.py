@@ -12,6 +12,13 @@ class HistoricalSimilarityResponse(BaseModel):
     top_similar_events: list[dict[str, Any]] = Field(default_factory=list)
     pattern_detected: list[dict[str, Any]] = Field(default_factory=list)
     pattern_name: str | None = None
+    pattern_category: str | None = None
+    similarity_score: float = 0.0
+    historical_matches: list[dict[str, Any]] = Field(default_factory=list)
+    historical_median: dict[str, float | None] = Field(default_factory=dict)
+    historical_average: dict[str, float | None] = Field(default_factory=dict)
+    pattern_confidence: float = 0.0
+    reaction_statistics: dict[str, Any] = Field(default_factory=dict)
     historical_reaction_summary: dict[str, Any] = Field(default_factory=dict)
     median_reaction: dict[str, float | None] = Field(default_factory=dict)
     reaction_summary: dict[str, Any] = Field(default_factory=dict)

@@ -192,3 +192,19 @@ These models store governed candidate signals, operator review audit records, pu
 - `EvidenceReplayLog`
 
 These models persist replayable evidence bundles, lineage chains, artifact payloads, deterministic integrity snapshots, and replay logs for article, event, impact, attribution, signal, and publication evidence.
+
+
+## Historical Similarity and Pattern Memory Models
+
+- `market_patterns`: production pattern catalog with `pattern_code`, human name, category, default sentiment, default impact window, risk profile, confidence rules, active flag, and timestamps.
+- `pattern_occurrences`: event/article/impact/attribution occurrence memory for a pattern.
+- `historical_similarity_results`: source and candidate event comparisons with similarity, reaction similarity, confidence, and explanation JSON.
+- `pattern_statistics`: occurrence counts, average/median moves across 15m/1h/4h/24h, success rate, and update timestamp.
+- `pattern_reaction_snapshots`: immutable reaction snapshots per occurrence and reaction window.
+- `market_narratives`: narrative memory fields for first seen, last seen, event count, average confidence, and related patterns.
+
+
+### Model exports
+
+- `PatternOccurrence`
+- `PatternReactionSnapshot`

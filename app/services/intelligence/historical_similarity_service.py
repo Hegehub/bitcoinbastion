@@ -10,20 +10,37 @@ from app.db.models.candle_attribution import CandleAttribution
 from app.db.models.historical_event_profile import HistoricalEventProfile
 from app.db.models.historical_similarity_record import HistoricalSimilarityRecord
 from app.db.models.historical_similarity_result import HistoricalSimilarityResult
+from app.db.models.market_pattern import MarketPattern as MarketPatternModel
 from app.db.models.market_pattern_library import MarketPatternLibrary
+from app.db.models.pattern_occurrence import PatternOccurrence
+from app.db.models.pattern_reaction_snapshot import PatternReactionSnapshot
 from app.db.models.news_event import NewsEvent
 from app.db.models.news_price_impact import NewsPriceImpact
 from app.schemas.historical_similarity import HistoricalSimilarityReport
 from app.services.intelligence.historical_similarity_metrics import (
     HISTORICAL_SIMILARITY_FAILURES_TOTAL,
+    HISTORICAL_SIMILARITY_MATCHES_TOTAL,
     HISTORICAL_SIMILARITY_RUNS_TOTAL,
+    PATTERN_OCCURRENCES_TOTAL,
 )
 from app.services.intelligence.historical_profile_builder import HistoricalEventProfileBuilder
+from app.services.intelligence.market_memory_service import MarketMemoryService
+from app.services.intelligence.pattern_confidence_service import PatternConfidenceService
 from app.services.intelligence.pattern_classification_service import PatternClassificationService
 
 CORRELATION_LIMITATION = "Correlation is not proof of causation."
 PAST_PERFORMANCE_LIMITATION = "Past reactions do not guarantee future market behavior."
 HISTORICAL_OUTCOME_LIMITATION = "Historical similarity does not guarantee future outcomes."
+REQUIRED_LIMITATIONS = [
+    "historical_similarity_not_prediction",
+    "sample_size_limited",
+    "market_regime_changed",
+    "provider_limitations",
+    "correlation_not_causation",
+    "historical_context_only",
+    "not_prediction",
+    "evidence_based",
+]
 
 
 @dataclass(frozen=True)
@@ -62,13 +79,55 @@ class HistoricalSimilarityService:
         self.db = db
         self.profile_builder = HistoricalEventProfileBuilder(db)
 
+
+    def classify_event(self, event: NewsEvent) -> list[dict[str, object]]:
+        return PatternClassificationService(self.db).classify_market_patterns(event)
+
+    def score_similarity(self, reference_event_id: int, candidate_event_id: int) -> dict[str, object]:
+        reference = self.db.get(NewsEvent, reference_event_id)
+        candidate = self.db.get(NewsEvent, candidate_event_id)
+        if reference is None or candidate is None:
+            return {"similarity_score": 0.0, "similarity_band": self.similarity_band(0.0), "explanation": {}}
+        reference_profile = self._ensure_profile_for_event(reference)
+        candidate_profile = self._ensure_profile_for_event(candidate)
+        components = self._score_components(reference_profile, candidate_profile)
+        return {
+            "similarity_score": components.final_score,
+            "similarity_band": self.similarity_band(components.final_score),
+            "explanation": self._build_explanation(reference_profile, candidate_profile, components),
+        }
+
+    def build_historical_context(self, event_id: int, limit: int = 10) -> dict[str, object]:
+        report = self.build_event_report(event_id, limit=limit)
+        matches = list(report.similar_events)
+        return {
+            "current_event": report.reference_event,
+            "pattern_name": (matches[0].get("pattern_type") if matches else None),
+            "pattern_category": self._pattern_category(matches[0].get("pattern_type") if matches else None),
+            "similarity_score": matches[0].get("similarity_score") if matches else 0.0,
+            "similarity_band": self._band_label(float(matches[0].get("similarity_score", 0.0))) if matches else "VERY_LOW",
+            "historical_matches": matches,
+            "historical_median": {"15m": report.median_reaction_15m, "1h": report.median_reaction_1h, "4h": report.median_reaction_4h, "24h": report.median_reaction_24h},
+            "historical_average": {"15m": report.average_reaction_15m, "1h": report.average_reaction_1h, "4h": report.average_reaction_4h, "24h": report.average_reaction_24h},
+            "pattern_confidence": report.confidence,
+            "reaction_statistics": report.evidence.get("reaction_statistics", {}),
+            "limitations": self._limitations(report.limitations),
+            "safety": ["historical_context_only", "not_prediction", "correlation_not_causation", "evidence_based"],
+        }
+
+    def calculate_pattern_confidence(self, pattern_id: int) -> dict[str, float]:
+        return PatternConfidenceService(self.db).calculate(pattern_id).as_dict()
+
     def find_similar_events(self, reference_event_id: int, limit: int = 10, persist_results: bool = True) -> list[dict[str, object]]:
         reference_event = self.db.get(NewsEvent, reference_event_id)
         if reference_event is None:
             return []
         reference_profile = self._ensure_profile_for_event(reference_event)
         candidate_profiles = self._candidate_profiles(exclude_event_id=reference_event_id)
-        return self._rank_profiles(reference_profile, candidate_profiles, limit=limit, persist_results=persist_results)
+        results = self._rank_profiles(reference_profile, candidate_profiles, limit=limit, persist_results=persist_results)
+        if results:
+            HISTORICAL_SIMILARITY_MATCHES_TOTAL.inc(len(results))
+        return results
 
     def find_similar_news_events(self, event_id: int, limit: int = 10, persist_results: bool = True) -> list[dict[str, object]]:
         return self.find_similar_events(event_id, limit=limit, persist_results=persist_results)
@@ -195,7 +254,9 @@ class HistoricalSimilarityService:
                 self.db.add(
                     HistoricalSimilarityResult(
                         reference_event_id=reference.event_id,
+                        source_event_id=reference.event_id,
                         candidate_event_id=candidate.event_id,
+                        pattern_id=self._market_pattern_id(candidate.pattern_type),
                         matched_event_id=candidate.event_id,
                         reference_article_id=reference.article_id,
                         matched_article_id=candidate.article_id,
@@ -204,6 +265,7 @@ class HistoricalSimilarityService:
                         sentiment_similarity=components.sentiment_similarity,
                         impact_similarity=components.impact_similarity,
                         price_behavior_similarity=components.price_behavior_similarity,
+                        reaction_similarity_score=components.price_behavior_similarity,
                         confidence_similarity=components.confidence_similarity,
                         time_window_similarity=components.time_window_similarity,
                         pattern_type=candidate.pattern_type,
@@ -217,6 +279,28 @@ class HistoricalSimilarityService:
                         limitations_json={"limitations": explanation.get("limitations", [])},
                     )
                 )
+                pattern_id = self._market_pattern_id(candidate.pattern_type)
+                if pattern_id is not None and candidate.event_id is not None:
+                    occurrence = PatternOccurrence(
+                        pattern_id=pattern_id,
+                        event_id=candidate.event_id,
+                        article_id=candidate.article_id,
+                        occurred_at=candidate.created_at,
+                        confidence_score=components.final_score,
+                    )
+                    self.db.add(occurrence)
+                    self.db.flush()
+                    PATTERN_OCCURRENCES_TOTAL.inc()
+                    self.db.add(PatternReactionSnapshot(
+                        pattern_id=pattern_id,
+                        occurrence_id=occurrence.id,
+                        event_id=candidate.event_id,
+                        reaction_window=self._dominant_window(candidate) or "4h",
+                        move_pct=candidate.price_change_4h_pct,
+                        direction=self._reaction_direction(candidate),
+                        provider_confidence=candidate.provider_confidence,
+                        reaction_json=self._moves(candidate),
+                    ))
                 self.db.add(
                     HistoricalSimilarityRecord(
                         reference_event_id=reference.event_id,
@@ -348,7 +432,7 @@ class HistoricalSimilarityService:
         return {
             "similarity_score": components.final_score,
             "reasons": reasons,
-            "limitations": [CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, "Market conditions differ across historical windows."],
+            "limitations": self._limitations([CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, "Market conditions differ across historical windows."]),
             "components": {
                 "event_type_match": components.event_type_match,
                 "narrative_similarity": components.narrative_similarity,
@@ -426,13 +510,13 @@ class HistoricalSimilarityService:
             average_reaction_4h=reactions["average"].get("reaction_4h"),
             average_reaction_24h=reactions["average"].get("reaction_24h"),
             confidence=confidence,
-            limitations=[CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, HISTORICAL_OUTCOME_LIMITATION],
+            limitations=self._limitations([CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, HISTORICAL_OUTCOME_LIMITATION]),
             evidence={
                 "pattern_classification": classifications,
                 "candidate_events": similar_events,
                 "reaction_statistics": reactions,
                 "confidence_reasoning": self._confidence_reasoning(similar_events, confidence),
-                "limitations": [CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, HISTORICAL_OUTCOME_LIMITATION],
+                "limitations": self._limitations([CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, HISTORICAL_OUTCOME_LIMITATION]),
             },
         )
 
@@ -443,13 +527,13 @@ class HistoricalSimilarityService:
             similarity_band="Weak",
             sample_size=0,
             confidence=0.0,
-            limitations=[CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, HISTORICAL_OUTCOME_LIMITATION],
+            limitations=self._limitations([CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, HISTORICAL_OUTCOME_LIMITATION]),
             evidence={
                 "pattern_classification": [],
                 "candidate_events": [],
                 "reaction_statistics": {},
                 "confidence_reasoning": ["No historical analogs available for this reference."],
-                "limitations": [CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, HISTORICAL_OUTCOME_LIMITATION],
+                "limitations": self._limitations([CORRELATION_LIMITATION, PAST_PERFORMANCE_LIMITATION, HISTORICAL_OUTCOME_LIMITATION]),
             },
         )
 
@@ -487,6 +571,41 @@ class HistoricalSimilarityService:
             f"confidence={confidence}",
             "confidence is reduced for small samples and remains informational only",
         ]
+
+
+    def _limitations(self, existing: list[str]) -> list[str]:
+        output = list(existing)
+        for item in REQUIRED_LIMITATIONS:
+            if item not in output:
+                output.append(item)
+        return output
+
+    def _band_label(self, value: float) -> str:
+        if value >= 0.90:
+            return "VERY_HIGH"
+        if value >= 0.75:
+            return "HIGH"
+        if value >= 0.60:
+            return "MEDIUM"
+        if value >= 0.40:
+            return "LOW"
+        return "VERY_LOW"
+
+    def _market_pattern_id(self, pattern_type: object) -> int | None:
+        if not pattern_type:
+            return None
+        slug = str(pattern_type).upper()
+        row = self.db.query(MarketPatternModel).filter(MarketPatternModel.slug == slug).first()
+        if row is None:
+            MarketMemoryService(self.db).ensure_patterns()
+            row = self.db.query(MarketPatternModel).filter(MarketPatternModel.slug == slug).first()
+        return row.id if row is not None else None
+
+    def _pattern_category(self, pattern_type: object) -> str | None:
+        if not pattern_type:
+            return None
+        row = self.db.query(MarketPatternModel).filter(MarketPatternModel.slug == str(pattern_type).upper()).first()
+        return row.category if row is not None else None
 
     def similarity_band(self, value: float) -> str:
         if value < 0.40:

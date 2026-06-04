@@ -26,6 +26,8 @@ from app.db.models.market_pattern import MarketPattern
 from app.db.models.event_pattern_match import EventPatternMatch
 from app.db.models.historical_event_similarity import HistoricalEventSimilarity
 from app.db.models.pattern_reaction_profile import PatternReactionProfile
+from app.db.models.pattern_occurrence import PatternOccurrence
+from app.db.models.pattern_reaction_snapshot import PatternReactionSnapshot
 
 from app.db.models.market_memory_record import MarketMemoryRecord
 from app.db.models.event_fingerprint import EventFingerprintRecord
@@ -92,6 +94,8 @@ __all__ = [
     "HistoricalSimilarityRecord",
     "MarketPatternLibrary",
     "PatternReactionProfile",
+    "PatternOccurrence",
+    "PatternReactionSnapshot",
     "HistoricalEventSimilarity",
     "EventPatternMatch",
     "MarketPattern",

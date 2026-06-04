@@ -240,6 +240,61 @@ MARKET_PATTERNS: list[dict[str, object]] = [
         "expected_direction": "UP",
         "typical_impact_window": "24h",
     },
+
+    {
+        "slug": "RATE_CUT_SIGNAL",
+        "name": "Rate cut signal",
+        "category": "macro",
+        "description": "Central-bank rate-cut or dovish policy signal.",
+        "expected_sentiment": "POSITIVE",
+        "expected_direction": "UP",
+        "typical_impact_window": "4h",
+    },
+    {
+        "slug": "RATE_HIKE_SIGNAL",
+        "name": "Rate hike signal",
+        "category": "macro",
+        "description": "Central-bank rate-hike or hawkish policy signal.",
+        "expected_sentiment": "NEGATIVE",
+        "expected_direction": "DOWN",
+        "typical_impact_window": "4h",
+    },
+    {
+        "slug": "PRIVATE_KEY_LEAK",
+        "name": "Private key leak",
+        "category": "security",
+        "description": "Private-key leak, signer compromise, or key-material exposure.",
+        "expected_sentiment": "NEGATIVE",
+        "expected_direction": "DOWN",
+        "typical_impact_window": "15m",
+    },
+    {
+        "slug": "INSTITUTIONAL_ACCUMULATION",
+        "name": "Institutional accumulation",
+        "category": "institutional",
+        "description": "Institutional Bitcoin accumulation or allocation narrative.",
+        "expected_sentiment": "POSITIVE",
+        "expected_direction": "UP",
+        "typical_impact_window": "4h",
+    },
+    {
+        "slug": "LIQUIDATION_CASCADE",
+        "name": "Liquidation cascade",
+        "category": "market_structure",
+        "description": "Large forced-liquidation cascade or derivative deleveraging shock.",
+        "expected_sentiment": "NEGATIVE",
+        "expected_direction": "UNKNOWN",
+        "typical_impact_window": "15m",
+    },
+    {
+        "slug": "VOLATILITY_EXPANSION",
+        "name": "Volatility expansion",
+        "category": "market_structure",
+        "description": "Rapid realized-volatility expansion or market-structure breakout.",
+        "expected_sentiment": "NEUTRAL",
+        "expected_direction": "UNKNOWN",
+        "typical_impact_window": "15m",
+    },
     {
         "slug": "SOVEREIGNTY_ADOPTION",
         "name": "Sovereignty adoption",
@@ -267,6 +322,11 @@ class MarketMemoryService:
         rows: list[MarketPattern] = []
         for payload in MARKET_PATTERNS:
             slug = str(payload["slug"])
+            payload = dict(payload)
+            payload.setdefault("pattern_code", slug)
+            payload.setdefault("default_sentiment", payload.get("expected_sentiment", "UNKNOWN"))
+            payload.setdefault("default_impact_window", payload.get("typical_impact_window", "1h"))
+            payload.setdefault("risk_profile", "elevated" if "SHOCK" in slug or "HACK" in slug or "CASCADE" in slug else "standard")
             row = self.db.query(MarketPattern).filter(MarketPattern.slug == slug).first()
             if row is None:
                 row = MarketPattern(

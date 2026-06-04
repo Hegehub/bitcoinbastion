@@ -393,3 +393,15 @@ Policy responses may include `duplicate_signal` when the same signal type and so
 - `GET /api/v1/evidence/replay/{entity_type}/{entity_id}/integrity` checks deterministic evidence integrity snapshots and exposes mismatches.
 
 Evidence replay responses must expose correlation-not-causation, evidence-based, replayable, and operator-reviewed flags. Replay failures, degraded providers, missing external confirmations, and integrity mismatches must remain visible. JSON and Markdown exports are implemented; PDF export remains future work.
+
+
+## Historical Similarity API
+
+- `GET /api/v1/intelligence/similarity/{event_id}` returns frontend-ready historical context.
+- `GET /api/v1/intelligence/similarity/{event_id}/matches` returns raw historical matches.
+- `GET /api/v1/intelligence/patterns` returns the active pattern library.
+- `GET /api/v1/intelligence/patterns/{pattern_code}` returns a pattern by ID or code.
+- `GET /api/v1/intelligence/patterns/{pattern_code}/statistics` returns pattern reaction statistics.
+- `GET /api/v1/intelligence/patterns/{pattern_code}/occurrences` returns occurrence memory.
+
+Similarity payloads are correlation-only and include safety limitations.
