@@ -23,7 +23,7 @@ class BTCPricePoint(Base):
     provider_latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     provider_confidence: Mapped[float] = mapped_column(Float, default=0.5)
     raw_payload_hash: Mapped[str] = mapped_column(String(64), index=True)
-    aggregation_round_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    aggregation_round_id: Mapped[str] = mapped_column(String(64), default="", nullable=False, index=True)
     is_median_selected: Mapped[bool] = mapped_column(Boolean, default=False)
     metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

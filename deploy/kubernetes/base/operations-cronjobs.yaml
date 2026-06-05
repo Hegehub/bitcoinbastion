@@ -1,0 +1,472 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-news-fetch
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "news.fetch"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-news-fetch"
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.news_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "news.fetch"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-news-score-unprocessed
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "news.score_unprocessed"
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.news_scoring_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "news.score_unprocessed"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-news-cluster-events
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "news.cluster_events"
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.news_event_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "news.cluster_events"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-market-collect-btc-price
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "market.collect_btc_price"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-btc-collection"
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.market_collect_btc_price"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "market.collect_btc_price"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-market-build-candles
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "market.build_candles"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-candle-generation"
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.market_build_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "market.build_candles"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-market-calculate-price-impact
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "market.calculate_price_impact"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-impact-calculation"
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.news_price_impact_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "market.calculate_price_impact"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-intelligence-attribute-candles
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "intelligence.attribute_candles"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-attribution-refresh"
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.candle_attribution_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "intelligence.attribute_candles"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-intelligence-refresh-patterns
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "intelligence.refresh_patterns"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-source-reputation-refresh"
+spec:
+  schedule: "*/30 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.intelligence.build_timeline_events"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "intelligence.refresh_patterns"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-intelligence-refresh-similarity
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "intelligence.refresh_similarity"
+spec:
+  schedule: "*/30 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.intelligence.build_timeline_events"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "intelligence.refresh_similarity"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-intelligence-update-news-shock-index
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "intelligence.update_news_shock_index"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-news-shock-refresh"
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.news_scoring_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "intelligence.update_news_shock_index"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-signals-create-candidates
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "signals.create_candidates"
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.signal_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "signals.create_candidates"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-signals-publish
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "signals.publish"
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.signal_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "signals.publish"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-evidence-generate-packets
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "evidence.generate_packets"
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.news_price_impact_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "evidence.generate_packets"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-evidence-integrity-scan
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "evidence.integrity_scan"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-integrity-verification"
+spec:
+  schedule: "15 */6 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "scripts.collect_release_evidence"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "evidence.integrity_scan"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-operations-health-snapshot
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "operations.health_snapshot"
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.observability_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "operations.health_snapshot"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-operations-cleanup-expired
+  namespace: bitcoin-bastion
+  annotations:
+    operations.bitcoinbastion.io/job-name: "operations.cleanup_expired"
+    operations.bitcoinbastion.io/legacy-name: "bitcoin-bastion-cleanup"
+spec:
+  schedule: "0 */6 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: bitcoin-bastion
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: ghcr.io/your-org/bitcoin-bastion:latest
+              command: ["python", "-m", "app.tasks.maintenance_tasks"]
+              env:
+                - name: BASTION_JOB_NAME
+                  value: "operations.cleanup_expired"
+              envFrom:
+                - configMapRef: {name: bitcoin-bastion-config}
+                - secretRef: {name: bitcoin-bastion-secrets}

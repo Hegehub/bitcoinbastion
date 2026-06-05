@@ -47,6 +47,7 @@ class NewsSource(Base):
     notes: Mapped[str] = mapped_column(String(1000), default="")
     tags_json: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
     metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    last_fetched_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_success_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_failure_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)

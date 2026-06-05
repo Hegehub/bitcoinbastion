@@ -31,6 +31,9 @@
 - `docs/DEPLOYMENT_EVIDENCE_PACK.md`
 - `docs/FINAL_PRODUCTION_GAP_AUDIT.md`
 - `docs/KUBERNETES_RC_CERTIFICATION.md`
+- `docs/FINAL_PRODUCTION_AUDIT.md`
+- `docs/SOVEREIGNTY_CERTIFICATION.md`
+- `docs/RELEASE_CANDIDATE_REPORT.md`
 
 ## 1. What is Bitcoin Bastion?
 
@@ -1026,3 +1029,22 @@ Bitcoin Bastion now exposes the Market Time Machine through a self-hosted FastAP
 ### Market Timeline and Candlestick Intelligence Dashboard
 
 The primary Market Time Machine dashboard now lives at `/market`. It combines timeline navigation, BTC candles, deterministic news markers, candle context, attribution confidence, evidence overlays, historical similarity previews, and narrative strength. API contracts under `/api/v1/intelligence/timeline`, `/api/v1/intelligence/candles/{candle_id}`, and `/api/v1/intelligence/events/{event_id}/timeline` are frontend-ready and preserve correlation-not-causation, evidence-based, operator-reviewed, and confidence-score safety fields.
+
+## Production observability and health
+
+Bitcoin Bastion exposes operational health through `/api/v1/health`, `/api/v1/health/providers`, `/api/v1/health/jobs`, `/api/v1/health/runtime`, `/api/v1/health/degraded` and `/api/v1/metrics/status`. The monitoring philosophy is **no invisible failures**: degraded providers, delayed jobs, Telegram delivery failures, fallbacks and recovery lifecycle events must remain visible to operators and downstream confidence calculations.
+
+### Operations control plane
+
+The production control plane exposes root health probes (`/health/live`, `/health/ready`, `/health/startup`) plus dependency, provider, intelligence and operations health endpoints. Operators can use `/api/v1/operations/status`, `/api/v1/operations/drills`, `/api/v1/operations/metrics-summary`, and `/api/v1/operations/runbooks` for degraded-state visibility, recovery evidence, SLO summaries and runbook links.
+
+### Disaster recovery validation
+
+Disaster recovery validation is exposed through operational health DTOs and records backup verification, restore verification, deterministic replay validation and integrity verification. The system must not report readiness as healthy when required providers, timeline generation, database or scheduler checks are degraded.
+
+
+## Final production candidate certification
+
+Bitcoin Bastion and Bastion Market Time Machine are classified as a conservative Production Candidate after the final repository-wide audit. The final reports are `docs/FINAL_PRODUCTION_AUDIT.md`, `docs/SOVEREIGNTY_CERTIFICATION.md`, and `docs/RELEASE_CANDIDATE_REPORT.md`. Public market-intelligence output must continue to display: Correlation is not proof of causation. Evidence-based informational analysis. Not financial advice.
+
+This repository does not claim perfect security, guaranteed outcomes, or bug-free behavior. Environment-specific production validation remains required for Kubernetes rendering, load testing, Telegram runtime evidence, WAF/CDN/TLS/rate limiting, penetration testing, and accessibility certification.

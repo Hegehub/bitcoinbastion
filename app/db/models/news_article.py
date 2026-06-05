@@ -24,6 +24,7 @@ class NewsArticle(Base):
     canonical_url: Mapped[str] = mapped_column(String(2048), default="", nullable=False)
     url_hash: Mapped[str] = mapped_column(String(64), default="", unique=True, index=True)
     canonical_url_hash: Mapped[str] = mapped_column(String(64), default="", index=True)
+    canonical_hash: Mapped[str] = mapped_column(String(64), default="")
     title_hash: Mapped[str] = mapped_column(String(64), default="", index=True)
     normalized_title_hash: Mapped[str] = mapped_column(String(64), default="", index=True)
     content_hash: Mapped[str] = mapped_column(String(64), index=True)
@@ -31,10 +32,12 @@ class NewsArticle(Base):
     language: Mapped[str] = mapped_column(String(8), default="en")
     summary: Mapped[str] = mapped_column(Text, default="")
     raw_content: Mapped[str] = mapped_column(Text, default="")
+    content_raw: Mapped[str] = mapped_column(Text, default="")
     content_text: Mapped[str] = mapped_column(Text, default="")
     content_clean: Mapped[str] = mapped_column(Text, default="")
     published_at: Mapped[datetime] = mapped_column(DateTime, index=True)
     fetched_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)
+    processed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     discovered_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     article_type: Mapped[str] = mapped_column(String(64), default="NEWS")
     category: Mapped[str] = mapped_column(String(80), default="general")
@@ -63,6 +66,7 @@ class NewsArticle(Base):
     is_canonical: Mapped[bool] = mapped_column(Boolean, default=False)
     deduplication_reason: Mapped[str] = mapped_column(String(255), default="")
     deduplication_metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    explainability_json: Mapped[str] = mapped_column(Text, default="{}")
     metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
@@ -82,7 +86,13 @@ def _fill_news_article_defaults(_mapper: object, _connection: object, target: Ne
         target.url_hash = sha256(url.encode("utf-8")).hexdigest()
     if not target.canonical_url_hash:
         target.canonical_url_hash = sha256((target.canonical_url or url).encode("utf-8")).hexdigest()
+    if not target.canonical_hash:
+        target.canonical_hash = target.canonical_url_hash
     if not target.title_hash:
         target.title_hash = sha256(title.lower().strip().encode("utf-8")).hexdigest()
     if not target.normalized_title_hash:
         target.normalized_title_hash = sha256(target.normalized_title.encode("utf-8")).hexdigest()
+    if not target.content_raw:
+        target.content_raw = target.raw_content
+    if not target.content_text:
+        target.content_text = target.content_clean or target.raw_content

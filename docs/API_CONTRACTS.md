@@ -493,3 +493,41 @@ The production-finalized Market Intelligence frontend contract includes:
 The web contract is exposed through `GET /web/market-time-machine?timeframe={1m|5m|15m|1h|4h|1d}` and is used by the server-rendered templates for `/market`, `/market/timeline`, `/market/time-machine`, `/market/signals`, `/market/evidence`, `/market/narratives`, and `/market/sources`.
 
 The frontend view model consumes service/API payloads and does not query the database directly. Business logic remains in backend services.
+
+## Production health and observability APIs
+
+- `GET /api/v1/health` returns process, DB and migration liveness details.
+- `GET /api/v1/health/providers` returns provider health DTOs.
+- `GET /api/v1/health/jobs` returns background job health DTOs.
+- `GET /api/v1/health/runtime` returns `system_state`, `provider_state`, `job_state`, `signal_pipeline_state`, `evidence_pipeline_state` and `telegram_state`.
+- `GET /api/v1/health/degraded` returns degraded component DTOs.
+- `GET /api/v1/metrics/status` returns Prometheus status, bounded labels and registered metric names.
+
+Frontend DTOs include `system_health`, `provider_health`, `job_health`, `runtime_status`, `degraded_components`, `recovery_events`, `queue_depth` and `last_success`.
+- `GET /api/v1/health/system` returns the frontend-ready system health aggregate including recovery timeline data.
+
+## Sovereign operations control-plane APIs
+
+- `GET /api/v1/operations/status` returns platform status, dependency status, provider status, operations timeline, recovery drills, system health, alert summary, and operational limitations.
+- `GET /api/v1/operations/providers` returns provider status with provider confidence, last success, last failure, and degraded state.
+- `GET /api/v1/operations/drills` returns recovery drill evidence from `operations_evidence`.
+- `GET /api/v1/operations/metrics-summary` returns SLO-oriented API availability, background job success, provider availability, signal latency, evidence latency, and replay latency summary fields.
+- `GET /api/v1/operations/runbooks` returns operator runbook links for database, workers, providers, Telegram, and deployment failures.
+
+Root health endpoints for Kubernetes and external probes:
+
+- `GET /health/live`
+- `GET /health/ready`
+- `GET /health/startup`
+- `GET /health/dependencies`
+- `GET /health/providers`
+- `GET /health/intelligence`
+- `GET /health/operations`
+
+## Operational health and disaster recovery APIs
+
+- `GET /api/v1/operations/health` returns website-dashboard DTOs for system status, provider status, scheduler, timeline, evidence, signal queue, backup, restore, integrity and production-readiness panels.
+- `GET /api/v1/operations/jobs` returns background job health for scheduler and CronJob visibility.
+- `GET /api/v1/operations/metrics` returns SLO-oriented metrics summary.
+- `GET /api/v1/operations/readiness` returns readiness using the required news provider, price provider, timeline engine, database and scheduler checks.
+- `GET /api/v1/operations/liveness` returns process, DB and migration liveness.

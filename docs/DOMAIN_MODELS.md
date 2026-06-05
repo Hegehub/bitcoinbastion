@@ -211,3 +211,37 @@ These models persist replayable evidence bundles, lineage chains, artifact paylo
 - `HistoricalReactionStatistics`
 - `PatternEmbeddingPlaceholder`
 - `NarrativeMemorySnapshot`
+
+## Production observability models
+
+- `SystemHealthSnapshot` stores rolled-up system health, degraded/critical counts, fallback state and operator-attention state.
+- `ProviderHealthSnapshot` stores provider name/type, success/failure timestamps, failure counts, latency, confidence, backoff and health state.
+- `BackgroundJobHealth` stores background job starts, finishes, durations, retry state, next schedule and worker name.
+- `ServiceHealthSnapshot` stores service-level health snapshots for initialized runtime dependencies.
+- `RuntimeStateSnapshot` stores system, provider, job, signal, evidence and Telegram runtime states.
+- `DegradedComponentSnapshot` stores degraded component severity, recommendation, fallback usage and operator-attention flag.
+- `RecoveryEvent` stores failure detection, fallback activation, restoration and operator-confirmation lifecycle details.
+
+- `SystemHealthSnapshot`
+- `ProviderHealthSnapshot`
+- `BackgroundJobHealth`
+- `ServiceHealthSnapshot`
+- `RuntimeStateSnapshot`
+- `DegradedComponentSnapshot`
+- `RecoveryEvent`
+
+## Operations control-plane models
+
+- `OperationsEvidence` stores recovery drill evidence, operator notes, success status, and artifact references.
+- `OperationsSLOSnapshot` stores SLO status for API availability, jobs, providers, signal latency, evidence latency, and replay latency.
+
+- `OperationsEvidence`
+- `OperationsSLOSnapshot`
+
+## Disaster recovery validation models
+
+- `BackupValidationRecord` stores backup ID, timestamps, success, checked objects, integrity verification and limitations.
+- `RecoveryValidationRecord` stores restore/replay validation status, deterministic rebuild verification, integrity verification, replay types and limitations.
+
+- `BackupValidationRecord`
+- `RecoveryValidationRecord`

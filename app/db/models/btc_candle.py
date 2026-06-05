@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, Float, Integer, String, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, Float, Index, Integer, String, UniqueConstraint
 from sqlalchemy import JSON
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -8,7 +8,11 @@ from app.db.models.time_utils import utcnow
 
 class BTCCandle(Base):
     __tablename__ = "btc_candles"
-    __table_args__ = (UniqueConstraint("timeframe", "open_time", name="uq_btc_candles_timeframe_open_time"),)
+    __table_args__ = (
+        UniqueConstraint("timeframe", "open_time", name="uq_btc_candles_timeframe_open_time"),
+        Index("ix_btc_candles_timeframe_open_time", "timeframe", "open_time"),
+        Index("ix_btc_candles_timeframe_close_time", "timeframe", "close_time"),
+    )
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     timeframe: Mapped[str] = mapped_column(String(8), index=True)
     open_time: Mapped[datetime] = mapped_column(DateTime, index=True)
@@ -18,6 +22,17 @@ class BTCCandle(Base):
     low: Mapped[float | None] = mapped_column(Float, nullable=True)
     close: Mapped[float | None] = mapped_column(Float, nullable=True)
     volume: Mapped[float | None] = mapped_column(Float, nullable=True)
+    open_price: Mapped[float] = mapped_column(Float, default=0.0)
+    high_price: Mapped[float] = mapped_column(Float, default=0.0)
+    low_price: Mapped[float] = mapped_column(Float, default=0.0)
+    close_price: Mapped[float] = mapped_column(Float, default=0.0)
+    volume_estimate: Mapped[float | None] = mapped_column(Float, nullable=True)
+    trade_count_estimate: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    source_mode: Mapped[str] = mapped_column(String(32), default="multi_provider_median")
+    price_point_count: Mapped[int] = mapped_column(Integer, default=0)
+    median_price_source_count: Mapped[int] = mapped_column(Integer, default=0)
+    integrity_score: Mapped[float] = mapped_column(Float, default=0.0)
+    calculation_version: Mapped[str] = mapped_column(String(32), default="v1")
     price_source_mode: Mapped[str] = mapped_column(String(32), default="median_multi_provider")
     provider_count: Mapped[int] = mapped_column(Integer, default=0)
     provider_confidence: Mapped[float] = mapped_column(Float, default=0.0)

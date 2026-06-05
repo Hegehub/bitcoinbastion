@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Index, Integer, String
 from sqlalchemy import JSON
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -11,6 +11,11 @@ from app.db.models.time_utils import utcnow
 
 class IntelligenceTimelineEvent(Base):
     __tablename__ = "intelligence_timeline_events"
+    __table_args__ = (
+        Index("ix_intel_timeline_event_time", "event_time"),
+        Index("ix_intel_timeline_event_type", "event_type"),
+        Index("ix_intel_timeline_event_type_time", "event_type", "event_time"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     event_type: Mapped[str] = mapped_column(String(64), index=True)

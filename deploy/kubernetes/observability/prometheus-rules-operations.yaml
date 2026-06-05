@@ -1,0 +1,66 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: bitcoin-bastion-operations-alerts
+  namespace: bitcoin-bastion
+spec:
+  groups:
+    - name: bitcoin-bastion-critical
+      rules:
+        - alert: BitcoinBastionDatabaseUnavailable
+          expr: bastion_provider_health_score{provider="database"} == 0
+          for: 2m
+          labels: {severity: critical}
+          annotations: {summary: "Database unavailable", runbook: "docs/RUNBOOK_DATABASE.md"}
+        - alert: BitcoinBastionWorkerStopped
+          expr: absent(rate(bastion_background_jobs_total[15m]))
+          for: 15m
+          labels: {severity: critical}
+          annotations: {summary: "Worker stopped", runbook: "docs/RUNBOOK_WORKERS.md"}
+        - alert: BitcoinBastionProviderConfidenceCollapse
+          expr: bastion_provider_health_score < 0.2
+          for: 10m
+          labels: {severity: critical}
+          annotations: {summary: "Provider confidence collapse", runbook: "docs/RUNBOOK_PROVIDERS.md"}
+        - alert: BitcoinBastionTelegramPublicationFailures
+          expr: rate(telegram_publication_failures_total[10m]) > 0
+          for: 10m
+          labels: {severity: critical}
+          annotations: {summary: "Telegram publication failures", runbook: "docs/RUNBOOK_TELEGRAM.md"}
+        - alert: BitcoinBastionMigrationMismatch
+          expr: kube_job_status_failed{job_name=~"bitcoin-bastion-postgres-(migration-smoke|schema-parity).*"} > 0
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "Migration mismatch", runbook: "docs/RUNBOOK_DEPLOYMENT.md"}
+        - alert: BitcoinBastionEvidenceIntegrityFailures
+          expr: rate(evidence_integrity_mismatches_total[15m]) > 0
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "Evidence integrity failures", runbook: "docs/RUNBOOK_DEPLOYMENT.md"}
+    - name: bitcoin-bastion-warning
+      rules:
+        - alert: BitcoinBastionRSSFailures
+          expr: rate(bastion_news_fetch_failures_total[15m]) > 0
+          for: 15m
+          labels: {severity: warning}
+          annotations: {summary: "RSS failures", runbook: "docs/RUNBOOK_PROVIDERS.md"}
+        - alert: BitcoinBastionProviderLatencyHigh
+          expr: histogram_quantile(0.95, rate(bastion_http_request_duration_seconds_bucket[10m])) > 2
+          for: 10m
+          labels: {severity: warning}
+          annotations: {summary: "Provider latency high"}
+        - alert: BitcoinBastionLowSourceDiversity
+          expr: count(bastion_provider_health_score{provider=~"rss|official_blog|regulatory"} > 0.5) < 2
+          for: 30m
+          labels: {severity: warning}
+          annotations: {summary: "Low source diversity"}
+        - alert: BitcoinBastionHighReplayFailures
+          expr: rate(evidence_replay_failures_total[15m]) > 0.05
+          for: 15m
+          labels: {severity: warning}
+          annotations: {summary: "High replay failures"}
+        - alert: BitcoinBastionBackgroundQueueGrowth
+          expr: rate(bastion_background_job_failures_total[15m]) > 0
+          for: 15m
+          labels: {severity: warning}
+          annotations: {summary: "Background queue growth or job failures"}
