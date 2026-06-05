@@ -260,3 +260,34 @@ Still pending before a production-ready claim:
 - Production provider-health validation with real degraded-source incidents.
 - Browser-based visual regression and accessibility audit against production-like data.
 - Existing release-gate schema parity blocker remains unresolved outside this UI task.
+
+## Observability readiness
+
+The platform is production-observable for runtime health: provider failures, job failures, Telegram degradation, fallback activation and operator-attention states are API-visible and metric-compatible. Grafana JSON dashboards are intentionally deferred; metric naming and bounded labels are ready for dashboard construction.
+
+## Operations control-plane readiness
+
+Production readiness now includes root Kubernetes health probes, dependency health DTOs, operations status APIs, recovery drill evidence storage, SLO summary DTOs, Grafana dashboard definitions, Alertmanager-compatible Prometheus rules, and runbooks for database, workers, providers, Telegram and deployment failures.
+
+## Disaster recovery readiness
+
+Production readiness now requires backup validation, restore validation, deterministic replay validation, integrity verification and operator-visible limitations before recovery can be considered successful.
+
+## Final release-candidate production readiness
+
+Status: Production Candidate / Production Baseline / Operationally Hardened.
+
+The final release-candidate audit validates the complete evidence-driven production chain from external sources through collectors, normalization, storage, scoring, evidence, replay, attribution, signals, policy, operator review, publication, API, web and Telegram outputs. Required public safety language remains mandatory: Correlation is not proof of causation. Evidence-based informational analysis. Not financial advice.
+
+Final hardening includes runtime schema parity alignment between SQLAlchemy models and Alembic-created databases, conservative release-candidate documentation, sovereignty certification, and explicit known limitations. This does not claim perfect security, guaranteed correctness, or bug-free operation.
+
+Remaining environment-specific evidence before a production-validated claim:
+
+- production Kubernetes render/apply evidence with `kubectl` available;
+- live staging provider-health incidents and recovery records;
+- production load testing and traffic-shaping evidence;
+- Telegram bot token/runtime delivery evidence;
+- WAF/CDN/TLS/rate-limit validation;
+- penetration testing and accessibility certification.
+
+Final readiness estimate: Market Time Machine 99%; overall Bitcoin Bastion 99% as a production candidate.

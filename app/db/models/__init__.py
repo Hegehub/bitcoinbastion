@@ -49,6 +49,17 @@ from app.db.models.btc_candle import BTCCandle
 from app.db.models.btc_price_point import BTCPricePoint
 from app.db.models.market_provider_health import MarketProviderHealth
 from app.db.models.provider_health_record import ProviderHealthRecord
+
+from app.db.models.operations_control import BackupValidationRecord, OperationsEvidence, OperationsSLOSnapshot, RecoveryValidationRecord
+from app.db.models.observability_health import (
+    BackgroundJobHealth,
+    DegradedComponentSnapshot,
+    ProviderHealthSnapshot,
+    RecoveryEvent,
+    RuntimeStateSnapshot,
+    ServiceHealthSnapshot,
+    SystemHealthSnapshot,
+)
 from app.db.models.audit import AuditLog
 from app.db.models.auth import SubscriptionPlan, User, UserSubscription
 from app.db.models.citadel_assessment import CitadelAssessment
@@ -132,6 +143,17 @@ __all__ = [
     "CandleProviderSnapshot",
     "BTCPricePoint",
     "ProviderHealthRecord",
+    "SystemHealthSnapshot",
+    "ProviderHealthSnapshot",
+    "BackgroundJobHealth",
+    "ServiceHealthSnapshot",
+    "RuntimeStateSnapshot",
+    "DegradedComponentSnapshot",
+    "RecoveryEvent",
+    "OperationsEvidence",
+    "OperationsSLOSnapshot",
+    "BackupValidationRecord",
+    "RecoveryValidationRecord",
     "MarketProviderHealth",
     "AuditLog",
     "CitadelAssessment",

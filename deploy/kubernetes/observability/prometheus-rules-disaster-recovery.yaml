@@ -1,0 +1,59 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: bitcoin-bastion-disaster-recovery-alerts
+  namespace: bitcoin-bastion
+spec:
+  groups:
+    - name: bitcoin-bastion-operational-health
+      rules:
+        - alert: BitcoinBastionAllNewsProvidersOffline
+          expr: count(bastion_provider_health_score{provider_type="news"} > 0.2) == 0
+          for: 10m
+          labels: {severity: critical}
+          annotations: {summary: "All news providers offline", runbook: "docs/runbooks/provider_failure.md"}
+        - alert: BitcoinBastionAllPriceProvidersOffline
+          expr: count(bastion_price_provider_health_score > 0.2) == 0
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "All price providers offline", runbook: "docs/runbooks/provider_failure.md"}
+        - alert: BitcoinBastionTimelineGenerationFailed
+          expr: rate(timeline_build_failures_total[15m]) > 0
+          for: 10m
+          labels: {severity: critical}
+          annotations: {summary: "Timeline generation failed", runbook: "docs/runbooks/timeline_rebuild.md"}
+        - alert: BitcoinBastionEvidenceReplayFailure
+          expr: rate(evidence_replay_requests_total{status="failure"}[15m]) > 0
+          for: 10m
+          labels: {severity: critical}
+          annotations: {summary: "Evidence replay failure", runbook: "docs/runbooks/evidence_integrity.md"}
+        - alert: BitcoinBastionIntegrityMismatch
+          expr: rate(evidence_integrity_mismatches_total[15m]) > 0
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "Integrity mismatch", runbook: "docs/runbooks/evidence_integrity.md"}
+        - alert: BitcoinBastionSchedulerStalled
+          expr: absent(rate(bastion_background_jobs_total[30m]))
+          for: 30m
+          labels: {severity: critical}
+          annotations: {summary: "Scheduler stalled", runbook: "docs/runbooks/signal_queue_recovery.md"}
+        - alert: BitcoinBastionDatabaseDegraded
+          expr: bastion_provider_health_score{provider_type="database"} < 1
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "Database degraded", runbook: "docs/runbooks/database_restore.md"}
+        - alert: BitcoinBastionSignalQueueOverflow
+          expr: signals_pending_review_total > 100
+          for: 15m
+          labels: {severity: warning}
+          annotations: {summary: "Signal queue overflow", runbook: "docs/runbooks/signal_queue_recovery.md"}
+        - alert: BitcoinBastionBackupValidationFailure
+          expr: rate(backup_validation_runs_total{status="failure"}[24h]) > 0
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "Backup validation failure", runbook: "docs/runbooks/full_disaster_recovery.md"}
+        - alert: BitcoinBastionRestoreValidationFailure
+          expr: rate(dr_recovery_runs_total{status="failure"}[24h]) > 0
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "Restore validation failure", runbook: "docs/runbooks/full_disaster_recovery.md"}

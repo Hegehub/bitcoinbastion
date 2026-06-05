@@ -19,4 +19,5 @@ resources:
   - release-evidence-job.yaml
   - provider-health-cronjob.yaml
   - recovery-drill-cronjob.yaml
+  - operations-cronjobs.yaml
   - hpa-api.yaml

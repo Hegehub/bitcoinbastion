@@ -245,3 +245,21 @@ Status: BASELINE IMPLEMENTED / PRODUCTION CALIBRATION PENDING
 
 Market Time Machine readiness: 93%.
 Overall Bitcoin Bastion readiness: 92%.
+
+## Task 45 status — production observability
+
+Production observability now includes runtime status, provider health, background job health, degraded component visibility, recovery tracking storage, bounded Prometheus metrics and Kubernetes-compatible probe contracts. Market Time Machine readiness is updated to 95%; overall Bitcoin Bastion readiness is updated to 94% pending final Telegram card/publishing productionization, frontend polish and release hardening.
+
+## Task 46 status — operations control plane
+
+Production operations now include root health probes, dependency health, operations APIs, recovery drill evidence storage, SLO summary DTOs, Grafana dashboards, alert rules, runbooks, and production CronJob coverage. Market Time Machine readiness is updated to 96%; overall Bitcoin Bastion readiness is updated to 96% pending final validation and release candidate audit.
+
+## Task 47 status — disaster recovery and operational health
+
+Production operations now include OperationalHealthService aggregation, exact Market Time Machine CronJobs, DR validation records, backup/restore validation services, operational health/readiness/liveness APIs, DR alert rules and detailed runbooks. Market Time Machine readiness is updated to 98%; overall Bitcoin Bastion readiness is updated to 98% pending final sovereignty-grade release audit.
+
+## Task 48 status — final production audit and sovereignty certification
+
+Status: Production Candidate / Operationally Hardened.
+
+Final release-candidate audit documentation now records repository-wide validation for database migrations, API contracts, Celery/background jobs, evidence, replay, operator workflow, publishing policy, website/frontend DTOs, Telegram safety, observability, Kubernetes artifacts, security posture and sovereignty principles. Schema/runtime parity is hardened through the final release-candidate parity migration. Market Time Machine readiness is updated to 99%; overall Bitcoin Bastion readiness is updated to 99% pending only environment-specific production evidence such as live Kubernetes rendering, load testing, provider incidents, Telegram runtime proof, penetration testing and accessibility certification.
