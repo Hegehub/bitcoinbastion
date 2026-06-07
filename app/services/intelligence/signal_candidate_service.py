@@ -8,6 +8,7 @@ from app.db.models.news_event import NewsEvent
 from app.db.models.news_price_impact import NewsPriceImpact
 from app.repositories.intelligence_signal_repository import IntelligenceSignalRepository
 from app.services.intelligence.publishing_policy_service import PublishingPolicyService
+from app.services.events.domain_event_publisher import publish_domain_event
 from app.services.intelligence.signal_governance_metrics import (
     INTELLIGENCE_SIGNAL_CANDIDATES_TOTAL,
     INTELLIGENCE_SIGNAL_PENDING_REVIEW_TOTAL,
@@ -121,6 +122,7 @@ class SignalCandidateService:
         if candidate.requires_operator_review:
             reason = (candidate.policy_reason.split(",") or ["review_required"])[0] or "review_required"
             INTELLIGENCE_SIGNAL_PENDING_REVIEW_TOTAL.labels(signal_type=self._bounded_type(candidate.signal_type), reason_code=self._bounded_reason(reason)).inc()
+        self._publish_candidate_events(candidate)
         return candidate
 
     def _event_signal_type(self, event: NewsEvent) -> str:
@@ -131,6 +133,46 @@ class SignalCandidateService:
         if event.is_macro_related:
             return "macro_shock"
         return "news_market_impact"
+
+    def _publish_candidate_events(self, candidate: IntelligenceSignalCandidate) -> None:
+        payload = {
+            "signal_id": candidate.id,
+            "signal_type": candidate.signal_type,
+            "status": candidate.status,
+            "confidence": candidate.confidence_score,
+            "policy_status": candidate.policy_decision,
+            "policy_reason": candidate.policy_reason,
+            "operator_review_required": candidate.requires_operator_review,
+            "created_at": candidate.created_at.isoformat() if candidate.created_at else None,
+            "updated_at": candidate.updated_at.isoformat() if candidate.updated_at else None,
+            "limitations": [
+                "Signal output is informational and not financial advice.",
+                "Correlation is not proof of causation.",
+                "No automatic execution is performed by event publication.",
+            ],
+            "not_financial_advice": True,
+            "correlation_not_causation": True,
+            "no_auto_execution": True,
+        }
+        publish_domain_event(
+            self.db,
+            "signal.created",
+            payload,
+            aggregate_type="signal",
+            aggregate_id=candidate.id,
+            source="signal_governance",
+            idempotency_key=f"signal.created:signal:{candidate.id}:created",
+        )
+        if candidate.requires_operator_review:
+            publish_domain_event(
+                self.db,
+                "signal.operator_review_required",
+                payload,
+                aggregate_type="signal",
+                aggregate_id=candidate.id,
+                source="signal_governance",
+                idempotency_key=f"signal.operator_review_required:signal:{candidate.id}:review",
+            )
 
     def _bounded_type(self, value: str) -> str:
         return value if value in MVP_SIGNAL_TYPES else "other"

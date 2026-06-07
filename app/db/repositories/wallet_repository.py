@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.models.wallet import WalletHealthReport, WalletProfile
 from app.schemas.wallet import WalletHealthResponse
+from app.services.events.domain_event_publisher import publish_domain_event
 
 
 class WalletRepository:
@@ -49,6 +50,45 @@ class WalletRepository:
         self.db.add(report)
         self.db.commit()
         self.db.refresh(report)
+        publish_domain_event(
+            self.db,
+            "wallet.health.generated",
+            {
+                "wallet_id": wallet_profile_id,
+                "health_status": "generated",
+                "privacy_risk_band": "high" if health.privacy_score < 0.4 else "baseline",
+                "risk_reasons": health.recommendations,
+                "confidence": health.confidence,
+                "limitations": [
+                    "Wallet health events contain derived health metadata only.",
+                    "No custody or secret wallet material is accepted.",
+                ],
+                "no_custody": True,
+            },
+            aggregate_type="wallet_health",
+            aggregate_id=report.id,
+            source="wallet_health_service",
+            idempotency_key=f"wallet.health.generated:wallet_health:{report.id}:generated",
+        )
+        if health.privacy_score < 0.4:
+            publish_domain_event(
+                self.db,
+                "wallet.privacy_risk.high",
+                {
+                    "wallet_id": wallet_profile_id,
+                    "health_status": "generated",
+                    "privacy_risk_band": "high",
+                    "risk_reasons": health.recommendations,
+                    "confidence": health.confidence,
+                    "limitations": ["Wallet privacy risk is advisory-only and no-custody."],
+                    "no_custody": True,
+                    "advisory_only": True,
+                },
+                aggregate_type="wallet_health",
+                aggregate_id=report.id,
+                source="wallet_health_service",
+                idempotency_key=f"wallet.privacy_risk.high:wallet_health:{report.id}:high",
+            )
         return report
 
     def list_health_reports(self, wallet_profile_id: int, limit: int, offset: int) -> list[WalletHealthReport]:

@@ -18,15 +18,20 @@ Substatus:
 - Enterprise Tier: PLACEHOLDER/BASELINE
 - Integrations: BASELINE
 - Observability: BASELINE
-- Website UI: NOT IMPLEMENTED
+- Website UI: BASELINE IMPLEMENTED
 - Production Calibration: NOT COMPLETE
 
 ## Global note
 This file intentionally avoids production-ready claims for Bastion Trace.
 
+## Trace API/frontend contract alignment
+
+Trace frontend routes (`/check`, `/trace`, `/trace/[reportId]`, and `/trace/[reportId]/proof-packet`) are baseline implemented against real backend endpoints. Trace remains advisory-only, no-custody, not legal verification, not Bitcoin consensus proof, and not production-calibrated. Proof packets are unsigned application-level evidence summaries unless signing is explicitly implemented and configured.
+
+
 
 Website Backend Foundation: BASELINE IMPLEMENTED
-Frontend UI: NOT IMPLEMENTED
+Frontend UI: BASELINE IMPLEMENTED
 
 Frontend Architecture: BASELINE IMPLEMENTED
 Frontend Design System: BASELINE IMPLEMENTED
@@ -37,7 +42,7 @@ Interactive workflows are still pending.
 
 - Public Address Check UX: BASELINE IMPLEMENTED
 - Trace Lite UX: BASELINE IMPLEMENTED
-- Advanced Trace UI: NOT IMPLEMENTED
+- Advanced Trace UI: BASELINE/PARTIAL IMPLEMENTED
 
 Detailed Trace Report UI: BASELINE IMPLEMENTED
 Proof Packet Viewer: BASELINE IMPLEMENTED
@@ -263,3 +268,27 @@ Production operations now include OperationalHealthService aggregation, exact Ma
 Status: Production Candidate / Operationally Hardened.
 
 Final release-candidate audit documentation now records repository-wide validation for database migrations, API contracts, Celery/background jobs, evidence, replay, operator workflow, publishing policy, website/frontend DTOs, Telegram safety, observability, Kubernetes artifacts, security posture and sovereignty principles. Schema/runtime parity is hardened through the final release-candidate parity migration. Market Time Machine readiness is updated to 99%; overall Bitcoin Bastion readiness is updated to 99% pending only environment-specific production evidence such as live Kubernetes rendering, load testing, provider incidents, Telegram runtime proof, penetration testing and accessibility certification.
+
+## Event Taxonomy and Registry
+
+Event taxonomy and registry foundation: BASELINE CONTRACT IMPLEMENTED.
+
+This taxonomy baseline defines canonical event domains, event types, metadata, safety flags, and deterministic payload safety checks. Later prompts have added the durable outbox and internal publisher, but webhook delivery, WebSocket broadcasting, SDK clients, CLI commands, MCP server, and plugin runtime execution remain unimplemented.
+
+## Event Outbox
+
+Event outbox foundation: DURABLE INTERNAL BASELINE IMPLEMENTED.
+
+The `event_outbox` table, SQLAlchemy model, repository, service, migration, and tests now exist. This baseline records events as pending rows and prepares retry/lock/dead-letter fields only. It does not implement webhook dispatch, WebSocket streaming, Telegram delivery, SDK consumers, CLI commands, MCP connector, or plugin execution.
+
+## Event Bus
+
+Internal event bus foundation: BASELINE IMPLEMENTED.
+
+The `publish_event(...)` API validates registered event types, checks payload and metadata safety, serializes payloads deterministically, handles local idempotency keys, and writes pending rows to `event_outbox`. It does not implement external delivery.
+
+## Event Domain Integration Status
+
+Prompt 7 wires selected real backend workflows to the internal Event Bus/Event Outbox. Events are persisted internally for Signals, Trace, Treasury, Evidence/Replay, Provider Health, On-chain ingestion, Wallet health, Policy evaluation, News article ingestion, and Market candle attribution where stable hooks exist.
+
+This does not implement webhook delivery, WebSocket streaming, SDK consumption, CLI commands, MCP connectors, or plugin execution. Event publication is not proof of payment, legal status, Bitcoin consensus proof, or trading correctness. Remaining event integration gaps are documented in `docs/EVENT_INTEGRATION_GAPS.md`.

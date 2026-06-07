@@ -18,6 +18,7 @@ from app.services.policy.policy_service import TreasuryPolicyService
 from app.services.blockchain.chain_state_service import ChainStateService
 from app.services.blockchain.chain_state_service import ChainStateEvaluation
 from app.services.explainability.contract import build_audit_packet
+from app.services.events.domain_event_publisher import publish_domain_event
 
 
 class TreasuryService:
@@ -25,6 +26,59 @@ class TreasuryService:
         self.repo = repo
         self.policy_service = TreasuryPolicyService()
         self.audit_service = AuditService(AuditRepository(repo.db))
+
+    def _publish_treasury_event(
+        self,
+        event_type: str,
+        request: TreasuryRequest,
+        *,
+        actor_id: int | None = None,
+        policy_result: object | None = None,
+        approval_required: bool | None = None,
+        idempotency_suffix: str,
+    ) -> None:
+        policy_payload: dict[str, object] = {}
+        try:
+            policy_payload = json.loads(request.policy_snapshot_json or "{}")
+        except json.JSONDecodeError:
+            policy_payload = {}
+        if policy_result is not None:
+            policy_payload.update(
+                {
+                    "policy_name": getattr(policy_result, "evaluated_policy", policy_payload.get("policy_name", "unknown")),
+                    "allowed": getattr(policy_result, "allowed", policy_payload.get("allowed")),
+                    "violations": getattr(policy_result, "violations", policy_payload.get("violations", [])),
+                    "next_actions": getattr(policy_result, "next_actions", policy_payload.get("next_actions", [])),
+                }
+            )
+        publish_domain_event(
+            self.repo.db,
+            event_type,
+            {
+                "request_id": request.id,
+                "status": request.status,
+                "requested_by": request.requested_by,
+                "amount": request.amount_sats,
+                "asset": "BTC",
+                "policy_result": policy_payload,
+                "approval_required": approval_required if approval_required is not None else request.status in {"pending", "needs_review", "awaiting_approval"},
+                "approver_id": actor_id,
+                "created_at": request.created_at.isoformat() if request.created_at else None,
+                "updated_at": request.updated_at.isoformat() if request.updated_at else None,
+                "limitations": [
+                    "Treasury events are workflow events, not proof of fund movement.",
+                    "No transaction signing or broadcasting is performed by event publication.",
+                    "Operator approval is required before external treasury workflows proceed.",
+                ],
+                "no_custody": True,
+                "no_auto_execution": True,
+            },
+            aggregate_type="treasury_request",
+            aggregate_id=request.id,
+            source="treasury_service",
+            actor_id=actor_id,
+            idempotency_key=f"{event_type}:treasury_request:{request.id}:{idempotency_suffix}",
+        )
 
     @staticmethod
     def _chain_state_for_treasury(
@@ -135,6 +189,32 @@ class TreasuryService:
             actor_user_id=requested_by,
             after={"status": created.status, "required_approvals": created.required_approvals},
         )
+        self._publish_treasury_event(
+            "treasury.request.created",
+            created,
+            actor_id=requested_by,
+            policy_result=policy_result,
+            approval_required=created.status in {"pending", "needs_review", "awaiting_approval"},
+            idempotency_suffix="created",
+        )
+        if created.status in {"pending", "needs_review", "awaiting_approval"}:
+            self._publish_treasury_event(
+                "treasury.approval.required",
+                created,
+                actor_id=requested_by,
+                policy_result=policy_result,
+                approval_required=True,
+                idempotency_suffix="approval_required",
+            )
+        if not policy_result.allowed:
+            self._publish_treasury_event(
+                "treasury.policy.failed",
+                created,
+                actor_id=requested_by,
+                policy_result=policy_result,
+                approval_required=True,
+                idempotency_suffix="policy_failed",
+            )
         return created
 
     def approve_request(self, request_id: int, approver_user_id: int, payload: TreasuryApprovalActionIn) -> TreasuryApprovalOut:
@@ -206,6 +286,24 @@ class TreasuryService:
             before={"status": before_status},
             after={"status": saved.status, "approved_count": len(approved_by)},
         )
+        if saved.status == "approved":
+            self._publish_treasury_event(
+                "treasury.request.approved",
+                saved,
+                actor_id=approver_user_id,
+                policy_result=policy_result,
+                approval_required=False,
+                idempotency_suffix="approved",
+            )
+        elif not policy_result.allowed:
+            self._publish_treasury_event(
+                "treasury.policy.failed",
+                saved,
+                actor_id=approver_user_id,
+                policy_result=policy_result,
+                approval_required=True,
+                idempotency_suffix="policy_failed",
+            )
 
         return TreasuryApprovalOut(
             request_id=saved.id,
@@ -234,6 +332,13 @@ class TreasuryService:
             actor_user_id=actor_user_id,
             before={"status": before_status},
             after={"status": saved.status},
+        )
+        self._publish_treasury_event(
+            "treasury.request.rejected",
+            saved,
+            actor_id=actor_user_id,
+            approval_required=False,
+            idempotency_suffix="rejected",
         )
 
         return TreasuryRejectOut(request_id=saved.id, status=saved.status, note=payload.note)

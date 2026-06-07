@@ -291,3 +291,23 @@ Remaining environment-specific evidence before a production-validated claim:
 - penetration testing and accessibility certification.
 
 Final readiness estimate: Market Time Machine 99%; overall Bitcoin Bastion 99% as a production candidate.
+
+## Trace API/frontend contract alignment
+
+Bastion Trace is implemented as a backend and frontend baseline, not a production-calibrated service. `/check`, `/trace`, `/trace/[reportId]`, and `/trace/[reportId]/proof-packet` align with real FastAPI endpoints and preserve `ResponseEnvelope.data` handling. Trace outputs are advisory-only, no-custody, not legal verification, and not Bitcoin consensus proof. Proof packets are unsigned application-level evidence summaries unless signing is explicitly implemented and configured with evidence.
+
+## Event layer readiness
+
+The event taxonomy and registry are a baseline contract. The durable outbox and internal publisher now exist, but production event delivery remains pending because no webhook dispatcher, WebSocket broadcaster, queue worker, SDK, CLI, MCP connector, or plugin execution runtime is implemented by this baseline.
+
+## Event outbox readiness
+
+The event outbox is implemented as an internal durable foundation only. It prepares persistence, retry metadata, lock metadata, and sanitized error storage, but production event delivery remains pending until dispatcher workers, delivery authorization, webhook/WebSocket transports, operational runbooks, and live deployment evidence exist.
+
+## Event bus readiness
+
+The internal Event Bus is a baseline publisher into the durable outbox only. Production delivery readiness remains pending until dispatcher workers, webhook/WebSocket authorization, delivery logs, runtime metrics, operator runbooks, and deployment evidence are implemented and validated.
+
+## Event Bus / Domain Integration Readiness Note
+
+The Event Bus and Outbox are an internal durability foundation. Selected domains now write events to the outbox, but no external delivery dispatcher is implemented in this step. Delivery retries, webhook signing, WebSocket fan-out, SDK consumption, CLI surfaces, MCP connectors, and plugin execution require later prompts and separate evidence before any production-ready delivery claim.

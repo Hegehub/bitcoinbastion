@@ -46,6 +46,7 @@ from app.services.bastion_trace.trace_metrics import TRACE_BATCH, TRACE_CONF, TR
 from app.services.bastion_trace.trace_runtime_events import create_event, get_event, list_events
 from app.services.bastion_trace.trace_alerts import create_alert, list_alerts
 from app.services.bastion_trace.trace_status import make_status
+from app.services.events.domain_event_publisher import publish_domain_event
 
 _LIMITATIONS = [
     "advisory_only",
@@ -61,6 +62,36 @@ class TraceService:
     def __init__(self, repo: BastionTraceRepository) -> None:
         self.repo = repo
         self.source_registry = RiskSourceRegistryService(repo)
+
+    def _publish_trace_report_created(
+        self,
+        saved: TraceReport,
+        breakdown: TraceScoreBreakdown,
+        scoring: object,
+    ) -> None:
+        publish_domain_event(
+            self.repo.db,
+            "trace.report.created",
+            {
+                "report_id": saved.id,
+                "address_hash_or_public_address": saved.address,
+                "trace_band": saved.trace_band,
+                "confidence": saved.confidence,
+                "source_quality": saved.source_quality,
+                "freshness": saved.freshness,
+                "manual_review_recommended": saved.trace_band in {"HIGH", "CRITICAL"},
+                "reason_codes": json.loads(saved.reason_codes_json or "[]"),
+                "evidence_refs": json.loads(saved.evidence_refs_json or "[]"),
+                "limitations": breakdown.limitations,
+                "advisory_not_legal_verdict": True,
+                "not_consensus_proof": True,
+                "no_custody": True,
+            },
+            aggregate_type="trace_report",
+            aggregate_id=saved.id,
+            source="bastion_trace",
+            idempotency_key=f"trace.report.created:trace_report:{saved.id}:created",
+        )
 
     def analyze_address(self, address: str) -> TraceReportSchema:
         TRACE_REQUESTS.labels(tier="core", operation="analyze_address", status="attempt").inc()
@@ -127,6 +158,7 @@ class TraceService:
         self.repo.save_privacy_metadata(saved.id, privacy.model_dump(mode="json"))
         lens = build_counterparty_lens(normalized, scoring.band.value, privacy.privacy_band.value, passport.origin_category, disagreement.severity.value, independence.score)
         self.repo.save_counterparty_lens(saved.id, lens.model_dump(mode="json"))
+        self._publish_trace_report_created(saved, breakdown, scoring)
 
         return TraceReportSchema(
             id=saved.id,
@@ -276,6 +308,24 @@ class TraceService:
         batch.updated_at = datetime.now(UTC)
         self.repo.create_batch(batch)
         self.repo.save_business_event(TraceBusinessEventModel(event_type=BusinessTraceEventType.TRACE_BATCH_COMPLETED.value, payload_json=json.dumps({"batch_id": batch.id}), delivered=False))
+        publish_domain_event(
+            self.repo.db,
+            "trace.batch.completed",
+            {
+                "batch_id": batch.id,
+                "processed_count": result.processed_count,
+                "rejected_count": result.rejected_count,
+                "manual_review_count": result.manual_review_count,
+                "limitations": ["baseline_batch_screening", "advisory_only", "not_consensus_proof"],
+                "advisory_not_legal_verdict": True,
+                "not_consensus_proof": True,
+                "no_custody": True,
+            },
+            aggregate_type="trace_batch",
+            aggregate_id=batch.id,
+            source="bastion_trace_batch",
+            idempotency_key=f"trace.batch.completed:trace_batch:{batch.id}:completed",
+        )
         TRACE_BATCH.labels(status="success").inc()
         create_event("TRACE_BATCH_COMPLETED", "INFO", "batch", "success", "batch completed", {"batch_id": batch.id})
         TRACE_RUNTIME.labels(event_type="TRACE_BATCH_COMPLETED", severity="INFO", status="success").inc()
@@ -361,7 +411,7 @@ class TraceService:
 
     def treasury_destination_check(self, payload: BastionTraceTreasuryCheckRequest) -> dict[str, object]:
         report = self.analyze_address(payload.destination_address)
-        return {
+        result: dict[str, object] = {
             "destination_address": payload.destination_address,
             "trace_report_id": report.id,
             "trace_band": report.trace_band.value,
@@ -372,6 +422,28 @@ class TraceService:
             "limitations": ["advisory_only", "no_transaction_signing"],
             "operator_guidance": ["Treasury Bridge does not sign or broadcast transactions."],
         }
+        publish_domain_event(
+            self.repo.db,
+            "trace.treasury_destination_check.created",
+            {
+                "report_id": report.id,
+                "address_hash_or_public_address": payload.destination_address,
+                "trace_band": report.trace_band.value,
+                "confidence": report.confidence,
+                "manual_review_recommended": result["manual_review_recommended"],
+                "reason_codes": report.reason_codes,
+                "evidence_refs": report.evidence_refs,
+                "limitations": result["limitations"],
+                "advisory_not_legal_verdict": True,
+                "not_consensus_proof": True,
+                "no_custody": True,
+            },
+            aggregate_type="trace_report",
+            aggregate_id=report.id,
+            source="bastion_trace_treasury_bridge",
+            idempotency_key=f"trace.treasury_destination_check.created:trace_report:{report.id}:created",
+        )
+        return result
 
     def register_payment_advisory(self, payload: BastionTraceRegisterAdvisoryRequest) -> dict[str, object]:
         report = self.analyze_address(payload.payer_address)

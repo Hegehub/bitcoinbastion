@@ -10,6 +10,7 @@ from app.services.intelligence.news_ingestion.dedup_precheck import is_duplicate
 from app.services.intelligence.news_ingestion.feed_parser import parse_feed
 from app.services.intelligence.news_ingestion.fetch_policies import FETCH_POLICIES, FetchPolicyName
 from app.services.intelligence.news_ingestion.html_cleaner import clean_html
+from app.services.events.domain_event_publisher import publish_domain_event
 from app.services.intelligence.news_ingestion.metrics import NEWS_ARTICLES_INGESTED_TOTAL, NEWS_DUPLICATE_CANDIDATES_TOTAL, NEWS_FETCH_TOTAL, NEWS_HTTP_304_TOTAL
 from app.services.intelligence.news_ingestion.rss_client import RSSClient
 from app.services.intelligence.news_ingestion.url_canonicalizer import canonicalize_url
@@ -31,6 +32,7 @@ class IngestionService:
             return {"discovered": 0, "inserted": 0}
         items = parse_feed(resp.body)
         inserted = 0
+        inserted_articles: list[NewsArticle] = []
         for item in items:
             raw_url = str(item["url"])
             canonical = canonicalize_url(raw_url)
@@ -47,8 +49,29 @@ class IngestionService:
                 NEWS_DUPLICATE_CANDIDATES_TOTAL.labels(source=str(source.id)).inc()
             article = NewsArticle(source_id=source.id, title=str(item["title"]), normalized_title=normalized_title, url=raw_url, canonical_url=canonical, url_hash=sha256_hex(raw_url), canonical_url_hash=can_hash, title_hash=title_hash, content_hash=content_hash, author=normalize_author(str(item["author"])), language="en", summary=str(item["summary"]), raw_content=str(item["summary"]), content_clean=content, content_text=content, published_at=ensure_utc(None), fetched_at=datetime.now(UTC), discovered_at=datetime.now(UTC), article_type="NEWS", ingestion_method="RSS", provider_confidence=source.default_confidence, fetch_status="fetched", is_duplicate_candidate=dup, duplicate_candidate_reason=reason, metadata_json={"etag": resp.etag, "last_modified": resp.last_modified})
             db.add(article)
+            inserted_articles.append(article)
             inserted += 1
         db.commit()
+        for article in inserted_articles:
+            publish_domain_event(
+                db,
+                "news.article.created",
+                {
+                    "article_id": article.id,
+                    "source_name": source.name,
+                    "source_type": source.kind,
+                    "published_at": article.published_at.isoformat() if article.published_at else None,
+                    "score": None,
+                    "impact_band": "unknown",
+                    "confidence": article.provider_confidence,
+                    "narratives": [],
+                    "limitations": ["News article ingestion records public-source metadata only."],
+                },
+                aggregate_type="news_article",
+                aggregate_id=article.id,
+                source="news_ingestion",
+                idempotency_key=f"news.article.created:news_article:{article.id}:created",
+            )
         NEWS_ARTICLES_INGESTED_TOTAL.labels(source=str(source.id)).inc(inserted)
         logger.info("news source ingested", extra={"source_id": source.id, "items_discovered": len(items), "items_inserted": inserted})
         return {"discovered": len(items), "inserted": inserted}

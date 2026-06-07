@@ -15,6 +15,7 @@ from app.db.models.news_article import NewsArticle
 from app.db.models.news_event import NewsEvent
 from app.db.models.news_price_impact import NewsPriceImpact
 from app.repositories.evidence_repository import EvidenceRepository
+from app.services.events.domain_event_publisher import publish_domain_event
 from app.services.intelligence.evidence_metrics import EVIDENCE_PACKETS_GENERATED_TOTAL
 
 SECRET_KEY_PARTS = ("secret", "token", "password", "api_key", "apikey", "private_key")
@@ -82,6 +83,26 @@ class EvidencePacketBuilder:
                 )
             )
         EVIDENCE_PACKETS_GENERATED_TOTAL.labels(packet_type=self._bounded_packet_type(packet.packet_type)).inc()
+        publish_domain_event(
+            self.db,
+            "evidence.packet.created",
+            {
+                "packet_id": packet.id,
+                "source_entity_type": packet.source_entity_type,
+                "source_entity_id": packet.source_entity_id,
+                "integrity_hash": integrity.content_hash if integrity else None,
+                "confidence": packet.confidence_score,
+                "limitations": self.limitations(packet, entity),
+                "operator_reviewed": self._operator_review_status(packet.signal_id) != "none",
+                "publication_status": self._publication_status(packet.signal_id),
+                "evidence_based": True,
+                "replayable": True,
+            },
+            aggregate_type="evidence_packet",
+            aggregate_id=packet.id,
+            source="evidence_packet_builder",
+            idempotency_key=f"evidence.packet.created:evidence_packet:{packet.id}:created",
+        )
         return packet
 
     def packet_payload(
