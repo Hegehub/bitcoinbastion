@@ -3,11 +3,11 @@ import { fireEvent, render, waitFor } from '@testing-library/react'
 import CheckPage from '../app/check/page'
 import { validatePublicBitcoinAddress } from '../lib/addressValidation'
 
-vi.mock('../services/api', () => ({
-  apiGet: vi.fn(async (path: string) => {
-    if (path.startsWith('/api/v1/trace/lite/')) return { report_id: 1 }
-    return { report_id: 1, band: 'MEDIUM', risk_summary: 'Caution', privacy_summary: 'Some privacy exposure', origin_summary: 'Unknown origin', confidence_summary: 'Low confidence', manual_review_recommended: true, top_reasons: ['BASELINE_SCORING_ONLY'], limitations: ['advisory_only'], safety_warnings: ['Advisory only'] }
-  })
+vi.mock('../services/apiClient', () => ({
+  apiClient: {
+    checkTraceLite: vi.fn(async () => ({ report_id: 1 })),
+    getTraceSummary: vi.fn(async () => ({ report_id: 1, band: 'MEDIUM', risk_summary: 'Caution', privacy_summary: 'Some privacy exposure', origin_summary: 'Unknown origin', confidence_summary: 'Low confidence', manual_review_recommended: true, top_reasons: ['BASELINE_SCORING_ONLY'], limitations: ['advisory_only'], safety_warnings: ['Advisory only'] })),
+  },
 }))
 
 test('address form renders and keyboard submit works', async () => {
@@ -22,6 +22,14 @@ test('ethereum and sensitive inputs rejected', () => {
   expect(validatePublicBitcoinAddress('0x1234567890123456789012345678901234567890').valid).toBe(false)
   expect(validatePublicBitcoinAddress('xprv9s21ZrQH143K3').valid).toBe(false)
   expect(validatePublicBitcoinAddress('abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about').valid).toBe(false)
+})
+
+test('check page keeps Trace safety warnings visible', () => {
+  const { getByText } = render(<CheckPage />)
+  expect(getByText(/Never enter seed phrases, private keys, wallet files or signing material/i)).toBeTruthy()
+  expect(getByText(/public Bitcoin addresses/i)).toBeTruthy()
+  expect(getByText(/advisory-only/i)).toBeTruthy()
+  expect(getByText(/not legal verification or Bitcoin consensus proof/i)).toBeTruthy()
 })
 
 test('forbidden wording absent', () => {

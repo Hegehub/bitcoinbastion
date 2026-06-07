@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { AddressInput } from './AddressInput'
 import { AddressValidationNotice } from './AddressValidationNotice'
 import { validatePublicBitcoinAddress } from '@/lib/addressValidation'
-import { apiGet } from '@/services/api'
+import { apiClient } from '@/services/apiClient'
 import { PublicTraceSummary } from '@/types/trace'
 import { TraceErrorState } from './TraceErrorState'
 import { normalizeApiError } from '@/services/api'
@@ -22,8 +22,8 @@ export function AddressCheckForm() {
     if (!check.valid) { setError(check.error); return }
     setError(undefined); setLoading(true); setSummary(null)
     try {
-      const lite = await apiGet<{ report_id: number }>(`/api/v1/trace/lite/${address}`)
-      const data = await apiGet<PublicTraceSummary>(`/api/v1/public/trace/${lite.report_id}/summary`)
+      const lite = await apiClient.checkTraceLite(address)
+      const data = await apiClient.getTraceSummary(lite.report_id)
       setSummary(data)
     } catch {
       setError(normalizeApiError(new Error('api_error_unknown')))

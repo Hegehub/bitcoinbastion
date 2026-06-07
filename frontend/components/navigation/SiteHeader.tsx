@@ -10,15 +10,15 @@ export function SiteHeader({ language = 'en' }: { language?: SiteLanguage }) {
   const [open, setOpen] = useState(false);
   const t = TRANSLATIONS[language];
   const navItems = [
-    { label: t.nav.products, href: '/platform' },
-    { label: t.nav.developers, href: '/developers' },
-    { label: t.nav.selfHost, href: '/operations' },
-    { label: t.nav.manifesto, href: '/manifesto' },
+    { label: t.nav.platform, href: '/platform' },
+    { label: t.nav.trace, href: '/trace' },
     { label: t.nav.evidence, href: '/evidence' },
     { label: t.nav.status, href: '/status' },
-    { label: t.nav.roadmap, href: '/roadmap' },
-    { label: t.nav.security, href: '/security' },
+    { label: t.nav.developers, href: '/developers' },
+    { label: t.nav.operations, href: '/operations' },
     { label: t.nav.docs, href: '/docs' },
+    { label: t.nav.security, href: '/security' },
+    { label: t.nav.roadmap, href: '/roadmap' },
   ] as const;
 
   return (

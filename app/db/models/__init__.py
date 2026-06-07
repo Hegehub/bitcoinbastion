@@ -1,3 +1,4 @@
+from app.db.models.event_outbox import EventOutbox, EventOutboxStatus
 from app.db.models.evidence_packet import (
     EvidenceArtifact,
     EvidenceIntegritySnapshot,
@@ -129,6 +130,8 @@ __all__ = [
     "PatternEmbeddingPlaceholder",
     "NarrativeMemorySnapshot",
     "AttributionReplayLog",
+    "EventOutbox",
+    "EventOutboxStatus",
     "EvidencePacket",
     "EvidenceRelationship",
     "EvidenceArtifact",

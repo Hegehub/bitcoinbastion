@@ -62,6 +62,8 @@ Model list aligned to `app/db/models`.
 - `TelegramDeliveryLog`
 - `AuditLog`
 - `JobRun`
+- `EventOutbox`
+- `EventOutboxStatus`
 
 
 ## Bastion Trace

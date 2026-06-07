@@ -100,6 +100,7 @@ These endpoints intentionally return direct schema payloads (not `ResponseEnvelo
 - `GET /api/v1/trace/address/{address}`
 - `GET /api/v1/trace/report/{report_id}`
 - `GET /api/v1/trace/report/{report_id}/evidence`
+- `GET /api/v1/trace/report/{report_id}/proof-packet`
 - `GET /api/v1/trace/sources`
 - `GET /api/v1/trace/watchlist`
 - `POST /api/v1/trace/watchlist`

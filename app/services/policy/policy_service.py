@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.db.models.treasury import PolicyExecutionLog
 from app.db.repositories.policy_repository import PolicyExecutionRepository, PolicyRepository
+from app.services.events.domain_event_publisher import publish_domain_event
 from app.schemas.policy import (
     PolicyCatalogOut,
     PolicyCatalogUpsertIn,
@@ -107,7 +108,54 @@ class TreasuryPolicyService:
             )
         except OperationalError:
             db.rollback()
+        self._publish_policy_events(db, result, payload)
         return result
+
+    def _publish_policy_events(self, db: Session, result: PolicyCheckResponse, payload: PolicyCheckRequest) -> None:
+        event_payload: dict[str, object] = {
+            "policy_id": result.evaluated_policy,
+            "policy_name": result.evaluated_policy,
+            "domain": "treasury",
+            "result": "allowed" if result.allowed else "blocked",
+            "warnings": result.next_actions,
+            "failure_reason": ",".join(result.violations),
+            "operator_action_required": bool(result.next_actions or not result.allowed),
+            "limitations": [
+                "Policy events are workflow telemetry and do not execute transactions.",
+                "Operator control remains required for treasury workflows.",
+            ],
+            "no_auto_execution": True,
+        }
+        suffix = f"{payload.transaction_amount_sats}:{payload.wallet_health_score}"
+        publish_domain_event(
+            db,
+            "policy.evaluation.completed",
+            event_payload,
+            aggregate_type="policy",
+            aggregate_id=result.evaluated_policy,
+            source="policy_service",
+            idempotency_key=f"policy.evaluation.completed:policy:{result.evaluated_policy}:{suffix}",
+        )
+        if not result.allowed:
+            publish_domain_event(
+                db,
+                "policy.execution.failed",
+                event_payload,
+                aggregate_type="policy",
+                aggregate_id=result.evaluated_policy,
+                source="policy_service",
+                idempotency_key=f"policy.execution.failed:policy:{result.evaluated_policy}:{suffix}",
+            )
+        elif result.next_actions:
+            publish_domain_event(
+                db,
+                "policy.warning.created",
+                event_payload,
+                aggregate_type="policy",
+                aggregate_id=result.evaluated_policy,
+                source="policy_service",
+                idempotency_key=f"policy.warning.created:policy:{result.evaluated_policy}:{suffix}",
+            )
 
     def list_executions(self, db: Session, limit: int, offset: int) -> list[PolicyExecutionLogOut]:
         repo = PolicyExecutionRepository(db)
