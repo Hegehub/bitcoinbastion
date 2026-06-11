@@ -1,0 +1,27 @@
+name: Deploy Reflex App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Pinning third-party actions to a full commit SHA protects against
+      # supply chain attacks where a tag (e.g. `v6`) is re-pointed at
+      # malicious code. Check the action's repo for the latest release SHA.
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Install Reflex
+        run: pip install -r my-app-folder/requirements.txt
+      - name: Deploy to Reflex Cloud
+        uses: reflex-dev/reflex-deploy-action@v3
+        with:
+          auth_token: ${{ secrets.REFLEX_AUTH_TOKEN }}
+          project_id: ${{ secrets.REFLEX_PROJECT_ID }}
+          app_directory: "my-app-folder" # Optional, defaults to root
+          extra_args: "--env THIRD_PARTY_APIKEY=${{ secrets.THIRD_PARTY_APIKEY }}" # Optional
