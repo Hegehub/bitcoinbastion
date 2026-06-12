@@ -167,6 +167,21 @@ class EventOutboxRepository:
         item.updated_at = utcnow()
         return self._save(item)
 
+    def mark_retry(
+        self, event_id: str, error: str, next_attempt_at: datetime | None
+    ) -> EventOutbox:
+        item = self._require_event(event_id)
+        if item.status not in {EventOutboxStatus.LOCKED.value, EventOutboxStatus.PENDING.value}:
+            raise EventOutboxRepositoryError("event cannot be scheduled for retry from current status")
+        item.status = EventOutboxStatus.PENDING.value
+        item.attempts += 1
+        item.last_error = sanitize_error(error)
+        item.next_attempt_at = next_attempt_at
+        item.locked_by = None
+        item.locked_at = None
+        item.updated_at = utcnow()
+        return self._save(item)
+
     def mark_failed(
         self, event_id: str, error: str, next_attempt_at: datetime | None
     ) -> EventOutbox:

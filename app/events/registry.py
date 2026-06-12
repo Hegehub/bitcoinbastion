@@ -120,6 +120,14 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         review=True,
         flags=SIGNAL_FLAGS + [SafetyFlag.OPERATOR_REVIEW_REQUIRED],
     ),
+    BastionEventType.SIGNAL_CONFIDENCE_CHANGED: _metadata(
+        BastionEventType.SIGNAL_CONFIDENCE_CHANGED,
+        EventDomain.SIGNAL,
+        "Signal confidence metadata changed.",
+        websocket=True,
+        audit=True,
+        flags=SIGNAL_FLAGS + [SafetyFlag.OPERATOR_REVIEW_REQUIRED],
+    ),
     BastionEventType.ONCHAIN_LARGE_TRANSFER: _metadata(
         BastionEventType.ONCHAIN_LARGE_TRANSFER,
         EventDomain.ONCHAIN,
@@ -158,6 +166,14 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         audit=True,
         flags=TRACE_FLAGS,
     ),
+    BastionEventType.TRACE_REPORT_PROGRESS: _metadata(
+        BastionEventType.TRACE_REPORT_PROGRESS,
+        EventDomain.TRACE,
+        "Trace report progress changed.",
+        websocket=True,
+        audit=True,
+        flags=TRACE_FLAGS + [SafetyFlag.DEGRADED_DATA_VISIBLE],
+    ),
     BastionEventType.TRACE_RISK_BAND_CHANGED: _metadata(
         BastionEventType.TRACE_RISK_BAND_CHANGED,
         EventDomain.TRACE,
@@ -185,6 +201,25 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         review=True,
         flags=TRACE_FLAGS
         + [SafetyFlag.PROVIDER_DISAGREEMENT_VISIBLE, SafetyFlag.OPERATOR_REVIEW_REQUIRED],
+    ),
+    BastionEventType.TRACE_SOURCE_DISAGREEMENT_UPDATED: _metadata(
+        BastionEventType.TRACE_SOURCE_DISAGREEMENT_UPDATED,
+        EventDomain.TRACE,
+        "Trace source disagreement summary changed.",
+        severity=EventSeverity.WARNING,
+        websocket=True,
+        audit=True,
+        review=True,
+        flags=TRACE_FLAGS
+        + [SafetyFlag.PROVIDER_DISAGREEMENT_VISIBLE, SafetyFlag.OPERATOR_REVIEW_REQUIRED],
+    ),
+    BastionEventType.TRACE_EVIDENCE_UPDATED: _metadata(
+        BastionEventType.TRACE_EVIDENCE_UPDATED,
+        EventDomain.TRACE,
+        "Trace evidence references changed.",
+        websocket=True,
+        audit=True,
+        flags=TRACE_FLAGS,
     ),
     BastionEventType.TRACE_TREASURY_DESTINATION_CHECK_CREATED: _metadata(
         BastionEventType.TRACE_TREASURY_DESTINATION_CHECK_CREATED,
@@ -256,6 +291,15 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         review=True,
         flags=NO_AUTO_FLAGS,
     ),
+    BastionEventType.TREASURY_PSBT_STATUS_CHANGED: _metadata(
+        BastionEventType.TREASURY_PSBT_STATUS_CHANGED,
+        EventDomain.TREASURY,
+        "Treasury PSBT workflow status changed without signing material.",
+        websocket=True,
+        audit=True,
+        review=True,
+        flags=NO_AUTO_FLAGS + [SafetyFlag.NO_CUSTODY],
+    ),
     BastionEventType.POLICY_EXECUTION_FAILED: _metadata(
         BastionEventType.POLICY_EXECUTION_FAILED,
         EventDomain.POLICY,
@@ -294,6 +338,14 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         audit=True,
         flags=MARKET_FLAGS + [SafetyFlag.HISTORICAL_SIMILARITY_NOT_PREDICTION],
     ),
+    BastionEventType.MARKET_PRICE_TICK: _metadata(
+        BastionEventType.MARKET_PRICE_TICK,
+        EventDomain.MARKET,
+        "Market price tick was observed for streaming consumers.",
+        websocket=True,
+        public_safe=True,
+        flags=[SafetyFlag.PUBLIC_DATA_ONLY, SafetyFlag.NOT_FINANCIAL_ADVICE],
+    ),
     BastionEventType.MARKET_PRICE_TICK_OBSERVED: _metadata(
         BastionEventType.MARKET_PRICE_TICK_OBSERVED,
         EventDomain.MARKET,
@@ -309,6 +361,23 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         websocket=True,
         public_safe=True,
         flags=[SafetyFlag.PUBLIC_DATA_ONLY, SafetyFlag.NOT_FINANCIAL_ADVICE],
+    ),
+    BastionEventType.MARKET_CANDLE_CLOSED_STREAM: _metadata(
+        BastionEventType.MARKET_CANDLE_CLOSED_STREAM,
+        EventDomain.MARKET,
+        "Market candle close event was prepared for streaming consumers.",
+        websocket=True,
+        public_safe=True,
+        flags=[SafetyFlag.PUBLIC_DATA_ONLY, SafetyFlag.NOT_FINANCIAL_ADVICE],
+    ),
+    BastionEventType.MARKET_PROVIDER_CONFIDENCE_CHANGED: _metadata(
+        BastionEventType.MARKET_PROVIDER_CONFIDENCE_CHANGED,
+        EventDomain.MARKET,
+        "Market provider confidence changed.",
+        severity=EventSeverity.WARNING,
+        websocket=True,
+        audit=True,
+        flags=MARKET_FLAGS + PROVIDER_FLAGS,
     ),
     BastionEventType.EVIDENCE_PACKET_CREATED: _metadata(
         BastionEventType.EVIDENCE_PACKET_CREATED,
@@ -354,6 +423,17 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         public_safe=True,
         flags=[SafetyFlag.DEGRADED_DATA_VISIBLE],
     ),
+    BastionEventType.PROVIDER_STALE: _metadata(
+        BastionEventType.PROVIDER_STALE,
+        EventDomain.PROVIDER,
+        "Provider data became stale.",
+        severity=EventSeverity.WARNING,
+        webhook=True,
+        websocket=True,
+        audit=True,
+        public_safe=True,
+        flags=PROVIDER_FLAGS,
+    ),
     BastionEventType.PIPELINE_LAG_HIGH: _metadata(
         BastionEventType.PIPELINE_LAG_HIGH,
         EventDomain.OBSERVABILITY,
@@ -372,6 +452,30 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         webhook=True,
         audit=True,
         flags=[SafetyFlag.DEGRADED_DATA_VISIBLE],
+    ),
+    BastionEventType.JOB_RECOVERED: _metadata(
+        BastionEventType.JOB_RECOVERED,
+        EventDomain.OBSERVABILITY,
+        "Background job recovered.",
+        websocket=True,
+        audit=True,
+        flags=[SafetyFlag.DEGRADED_DATA_VISIBLE],
+    ),
+    BastionEventType.INTELLIGENCE_TIMELINE_ITEM_CREATED: _metadata(
+        BastionEventType.INTELLIGENCE_TIMELINE_ITEM_CREATED,
+        EventDomain.EVENT,
+        "Intelligence timeline item was created.",
+        websocket=True,
+        audit=True,
+        flags=[SafetyFlag.ADVISORY_ONLY, SafetyFlag.CORRELATION_NOT_CAUSATION],
+    ),
+    BastionEventType.INTELLIGENCE_TIMELINE_ITEM_UPDATED: _metadata(
+        BastionEventType.INTELLIGENCE_TIMELINE_ITEM_UPDATED,
+        EventDomain.EVENT,
+        "Intelligence timeline item was updated.",
+        websocket=True,
+        audit=True,
+        flags=[SafetyFlag.ADVISORY_ONLY, SafetyFlag.CORRELATION_NOT_CAUSATION],
     ),
     BastionEventType.SYSTEM_DEGRADED_MODE_ENTERED: _metadata(
         BastionEventType.SYSTEM_DEGRADED_MODE_ENTERED,
@@ -403,6 +507,13 @@ EVENT_REGISTRY: dict[BastionEventType, EventMetadata] = {
         websocket=True,
         audit=True,
         flags=[SafetyFlag.DEGRADED_DATA_VISIBLE],
+    ),
+    BastionEventType.WEBHOOK_TEST: _metadata(
+        BastionEventType.WEBHOOK_TEST,
+        EventDomain.SYSTEM,
+        "Webhook management test delivery record was created.",
+        audit=True,
+        flags=[SafetyFlag.NO_CUSTODY, SafetyFlag.NO_AUTO_EXECUTION],
     ),
 }
 

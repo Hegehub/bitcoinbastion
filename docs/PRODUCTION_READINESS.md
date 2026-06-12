@@ -310,4 +310,14 @@ The internal Event Bus is a baseline publisher into the durable outbox only. Pro
 
 ## Event Bus / Domain Integration Readiness Note
 
-The Event Bus and Outbox are an internal durability foundation. Selected domains now write events to the outbox, but no external delivery dispatcher is implemented in this step. Delivery retries, webhook signing, WebSocket fan-out, SDK consumption, CLI surfaces, MCP connectors, and plugin execution require later prompts and separate evidence before any production-ready delivery claim.
+The Event Bus and Outbox are an internal durability foundation. Selected domains now write events to the outbox, and an outbox-backed webhook dispatcher foundation is implemented. Delivery retries, outbound webhook dispatch execution, WebSocket fan-out, SDK consumption, CLI surfaces, MCP connectors, and plugin execution require later prompts and separate evidence before any production-ready delivery claim.
+
+## Webhook Readiness Note
+
+Webhook endpoint/subscription/delivery persistence, management APIs, HMAC signing helpers, signed test delivery records, and sanitized delivery logs are implemented as a foundation. Production webhook delivery is not ready until live delivery metrics, secret rotation, alerting/SLO evidence, deployment-specific worker operations, and operator runbooks are implemented and validated.
+
+- Webhook security update: signed test deliveries and sanitized delivery observability are implemented as a foundation. Production live dispatcher evidence, alerting/SLO validation, and secret rotation evidence remain pending; webhooks must not be described as fully production-delivery-ready yet.
+
+## Webhook Dispatcher Readiness Note
+
+The webhook dispatcher foundation now performs outbox-backed signed POST delivery with retry/dead-letter state and sanitized delivery logs. Production readiness still requires live delivery evidence, operator runbooks, alerting/SLO validation, secret rotation, and deployment-specific dispatcher operations evidence.

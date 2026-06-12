@@ -291,4 +291,18 @@ The `publish_event(...)` API validates registered event types, checks payload an
 
 Prompt 7 wires selected real backend workflows to the internal Event Bus/Event Outbox. Events are persisted internally for Signals, Trace, Treasury, Evidence/Replay, Provider Health, On-chain ingestion, Wallet health, Policy evaluation, News article ingestion, and Market candle attribution where stable hooks exist.
 
-This does not implement webhook delivery, WebSocket streaming, SDK consumption, CLI commands, MCP connectors, or plugin execution. Event publication is not proof of payment, legal status, Bitcoin consensus proof, or trading correctness. Remaining event integration gaps are documented in `docs/EVENT_INTEGRATION_GAPS.md`.
+This now includes outbox-backed webhook delivery. WebSocket streaming, SDK consumption, CLI commands, MCP connectors, and plugin execution remain unimplemented. Event publication is not proof of payment, legal status, Bitcoin consensus proof, or trading correctness. Remaining event integration gaps are documented in `docs/EVENT_INTEGRATION_GAPS.md`.
+
+## Webhook Management Status
+
+Webhook management API foundation: IMPLEMENTED.
+
+The repository now includes persistent webhook endpoints, event subscriptions, delivery records, and `/api/v1/webhooks` management routes. Test delivery creates a safe signed `test_created` delivery record with canonical `X-Bastion-*` headers and sanitized delivery logs. Outbox-backed outbound network dispatch, retry dispatch, and worker execution are implemented as a foundation; live operational evidence and production runbooks remain pending.
+
+- Webhook signing baseline: HMAC SHA256 signing helpers, signed management test deliveries, and sanitized delivery logs are implemented. Full production operational evidence for dispatcher retry execution remains pending later prompts.
+
+## Webhook Dispatcher Status
+
+Webhook dispatcher worker: IMPLEMENTED FOUNDATION.
+
+`dispatch_webhook_outbox_events` processes ready outbox rows, resolves active webhook subscriptions, sends signed POST requests, records delivery attempts, and applies deterministic retry/dead-letter state. Webhook dispatch remains an infrastructure notification mechanism only; it is not legal verification, financial advice, Bitcoin consensus proof, payment approval, or transaction execution authorization.

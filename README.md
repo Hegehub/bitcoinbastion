@@ -1048,3 +1048,8 @@ Disaster recovery validation is exposed through operational health DTOs and reco
 Bitcoin Bastion and Bastion Market Time Machine are classified as a conservative Production Candidate after the final repository-wide audit. The final reports are `docs/FINAL_PRODUCTION_AUDIT.md`, `docs/SOVEREIGNTY_CERTIFICATION.md`, and `docs/RELEASE_CANDIDATE_REPORT.md`. Public market-intelligence output must continue to display: Correlation is not proof of causation. Evidence-based informational analysis. Not financial advice.
 
 This repository does not claim perfect security, guaranteed outcomes, or bug-free behavior. Environment-specific production validation remains required for Kubernetes rendering, load testing, Telegram runtime evidence, WAF/CDN/TLS/rate limiting, penetration testing, and accessibility certification.
+
+## Developer and operator tools
+
+- Python SDK: see [`sdk/python/README.md`](sdk/python/README.md).
+- Operator-safe CLI: see [`docs/CLI.md`](docs/CLI.md).

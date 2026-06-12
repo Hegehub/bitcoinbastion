@@ -5,6 +5,7 @@ from app.services.events.event_bus_service import (
     EventPublishResult,
     EventPublishStatus,
 )
+from app.services.events.webhook_signature import build_signed_payload, verify_signature
 from app.services.events.outbox_service import (
     MAX_METADATA_JSON_BYTES,
     MAX_PAYLOAD_JSON_BYTES,
@@ -22,4 +23,6 @@ __all__ = [
     "EventOutboxValidationError",
     "MAX_METADATA_JSON_BYTES",
     "MAX_PAYLOAD_JSON_BYTES",
+    "build_signed_payload",
+    "verify_signature",
 ]

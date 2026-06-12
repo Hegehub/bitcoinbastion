@@ -1,6 +1,6 @@
 # Bitcoin Bastion Events
 
-Bitcoin Bastion events are stable, typed contracts for future Event Bus, Outbox, Webhook, WebSocket, SDK, CLI, MCP, and plugin integrations. This document defines the event language only. It does **not** introduce delivery infrastructure, database outbox rows, migrations, broadcast sockets, webhook dispatchers, SDK clients, CLI commands, MCP servers, or plugin execution.
+Bitcoin Bastion events are stable, typed contracts for future Event Bus, Outbox, Webhook, WebSocket, SDK, CLI, MCP, and plugin integrations. This document defines the event language. The repository now also includes an internal outbox, publisher, and webhook dispatcher foundation; it still does **not** introduce broadcast sockets, SDK clients, CLI commands, MCP servers, or plugin execution.
 
 The event layer keeps the project posture explicit:
 
@@ -148,7 +148,7 @@ Trace payloads must avoid verdict-like wording. Trace reports remain advisory-on
 
 ## Future Webhook and WebSocket Use
 
-The registry includes explicit `webhook_allowed` and `websocket_allowed` metadata so later prompts can build delivery without guessing. Permission in the registry is not delivery implementation. Prompt 4 creates no outbox, dispatcher, queue, socket route, or webhook delivery process.
+The registry includes explicit `webhook_allowed` and `websocket_allowed` metadata so later prompts can build delivery without guessing. Permission in the registry is not a guarantee that every transport exists. The webhook dispatcher consumes only outbox rows whose event types are subscribed by active webhook endpoints; WebSocket, SDK, CLI, MCP, and plugin delivery remain separate future layers.
 
 ## Versioning and Compatibility
 
@@ -360,7 +360,7 @@ The registry includes explicit `webhook_allowed` and `websocket_allowed` metadat
 
 ## Event Outbox Persistence
 
-The Event Outbox is implemented as a durable internal foundation for recording canonical events before future delivery layers consume them. External webhook dispatch is not implemented in this task. WebSocket streaming is not implemented in this task. Delivery retries are prepared at the persistence layer through status, attempt, lock, and scheduling fields, but dispatcher execution comes later.
+The Event Outbox is implemented as a durable internal foundation for recording canonical events before future delivery layers consume them. External webhook dispatch is implemented through the Celery outbox dispatcher. Generic and specialized WebSocket stream foundations are implemented through the in-process broker; distributed fanout and production auth hardening remain future work. Delivery retries use status, attempt, lock, and scheduling fields and remain visible in delivery logs and outbox state.
 
 See `docs/EVENT_OUTBOX.md` for the table contract and lifecycle.
 
@@ -377,3 +377,14 @@ Selected existing backend workflows now publish internal events into the Event O
 This is not an external delivery layer. Webhooks, WebSocket streams, Telegram delivery, SDK consumption, CLI commands, MCP connectors, and plugin execution remain future work. Domain events must remain no-custody, advisory where applicable, and free of secrets or sensitive wallet material.
 
 Known gaps are tracked in [`EVENT_INTEGRATION_GAPS.md`](EVENT_INTEGRATION_GAPS.md). Gaps are documented rather than filled with artificial placeholder events.
+
+## Webhook Management Test Event
+
+`webhook.test` is a system/developer event used by the webhook management API to create safe signed test delivery records. It is internal/outbox-management metadata only and does not indicate transaction execution, payment approval, legal verification, Bitcoin consensus proof, or financial advice.
+
+## Webhook dispatcher contract
+
+Webhook delivery is outbox-backed: domain services publish events to `event_outbox`, and `dispatch_webhook_outbox_events` reads ready rows, resolves active event subscriptions, signs webhook POST requests, records delivery attempts, and updates retry/dead-letter state. Webhook events are infrastructure notifications only; they are not legal verification, financial advice, Bitcoin consensus proof, or authorization to execute transactions.
+## Generic WebSocket event stream
+
+The generic `/api/v1/ws/events` stream publishes sanitized, operator-safe event envelopes from the Event Outbox/Event Bus foundation to in-process WebSocket subscribers. Topic filtering supports signals, trace, market, news, onchain, treasury, policy, wallet, evidence, provider-health, observability, and intelligence-timeline. Specialized streams are also available at `/api/v1/ws/signals`, `/api/v1/ws/news`, `/api/v1/ws/onchain`, `/api/v1/ws/market`, `/api/v1/ws/trace`, `/api/v1/ws/treasury`, `/api/v1/ws/provider-health`, and `/api/v1/ws/intelligence-timeline`; they reuse the same broker and fixed event allowlists instead of creating separate event systems. The stream is a single-process foundation; distributed fanout and production WebSocket auth/rate-limit hardening remain future work.
