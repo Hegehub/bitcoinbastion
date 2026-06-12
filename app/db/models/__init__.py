@@ -1,3 +1,11 @@
+from app.db.models.event_outbox import EventOutbox, EventOutboxStatus
+from app.db.models.webhooks import (
+    WebhookDelivery,
+    WebhookDeliveryStatus,
+    WebhookEndpoint,
+    WebhookEndpointStatus,
+    WebhookEventSubscription,
+)
 from app.db.models.evidence_packet import (
     EvidenceArtifact,
     EvidenceIntegritySnapshot,
@@ -99,6 +107,11 @@ from app.db.models.wallet import WalletHealthReport, WalletProfile
 from app.db.models.watched_entity import WatchedEntity
 
 __all__ = [
+    "WebhookDelivery",
+    "WebhookDeliveryStatus",
+    "WebhookEndpoint",
+    "WebhookEndpointStatus",
+    "WebhookEventSubscription",
     "BTCCandle",
     "CandleAttribution",
     "CandleAttributionCandidate",
@@ -129,6 +142,8 @@ __all__ = [
     "PatternEmbeddingPlaceholder",
     "NarrativeMemorySnapshot",
     "AttributionReplayLog",
+    "EventOutbox",
+    "EventOutboxStatus",
     "EvidencePacket",
     "EvidenceRelationship",
     "EvidenceArtifact",

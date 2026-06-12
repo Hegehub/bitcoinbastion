@@ -88,6 +88,13 @@ class Settings(BaseSettings):
     delivery_retry_cooldown_seconds: int = Field(
         default=300, alias="DELIVERY_RETRY_COOLDOWN_SECONDS"
     )
+    webhook_dispatch_enabled: bool = Field(default=True, alias="WEBHOOK_DISPATCH_ENABLED")
+    webhook_dispatch_batch_size: int = Field(default=50, ge=1, le=500, alias="WEBHOOK_DISPATCH_BATCH_SIZE")
+    webhook_dispatch_timeout_seconds: float = Field(default=5.0, ge=1.0, le=30.0, alias="WEBHOOK_DISPATCH_TIMEOUT_SECONDS")
+    webhook_dispatch_max_attempts: int = Field(default=8, ge=1, le=25, alias="WEBHOOK_DISPATCH_MAX_ATTEMPTS")
+    webhook_dispatch_initial_retry_seconds: int = Field(default=30, ge=1, le=3600, alias="WEBHOOK_DISPATCH_INITIAL_RETRY_SECONDS")
+    webhook_dispatch_max_retry_seconds: int = Field(default=3600, ge=1, le=86400, alias="WEBHOOK_DISPATCH_MAX_RETRY_SECONDS")
+    webhook_dispatch_response_preview_bytes: int = Field(default=2048, ge=128, le=8192, alias="WEBHOOK_DISPATCH_RESPONSE_PREVIEW_BYTES")
     citadel_score_weights_json: str = Field(default="", alias="CITADEL_SCORE_WEIGHTS_JSON")
     citadel_external_signal_factors_json: str = Field(
         default="", alias="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON"

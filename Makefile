@@ -19,8 +19,8 @@ test-integration: install-dev
 	python -m pytest -q tests/integration
 
 lint:
-	python -m ruff check app tests
-	python -m mypy app
+	python -m ruff check app cli tests
+	python -m mypy app cli
 
 format:
 	python -m black app tests
@@ -283,3 +283,25 @@ k8s-operator-runbook-lock:
 
 k8s-readiness-matrix:
 	@cat docs/FINAL_KUBERNETES_READINESS_MATRIX.md
+
+sdk-python-install:
+	cd sdk/python && python -m pip install -e '.[dev]'
+
+sdk-python-lint:
+	cd sdk/python && python -m ruff check bitcoin_bastion_sdk tests
+	cd sdk/python && python -m mypy bitcoin_bastion_sdk
+
+sdk-python-test:
+	cd sdk/python && python -m pytest -q
+
+sdk-python-check: sdk-python-lint sdk-python-test
+
+cli-help:
+	python -m cli.bastion_cli.main --help
+
+cli-health:
+	bastion health
+
+cli-smoke:
+	bastion health
+	bastion status

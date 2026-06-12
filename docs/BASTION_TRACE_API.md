@@ -47,6 +47,7 @@ This document lists Bastion Trace routes implemented in `app/api/v1/trace.py`.
 - `GET /enterprise/sso` (PLACEHOLDER/IMPLEMENTED)
 - `POST /enterprise/evidence-access/evaluate` (BASELINE/IMPLEMENTED)
 - `POST /enterprise/proof-packet` (BASELINE/IMPLEMENTED)
+- `GET /report/{report_id}/proof-packet` (BASELINE/IMPLEMENTED; unsigned application-level evidence summary)
 
 ## Integration bridge routes
 - `GET /report/{report_id}/citadel-contribution` (BASELINE/IMPLEMENTED)
@@ -67,7 +68,6 @@ This document lists Bastion Trace routes implemented in `app/api/v1/trace.py`.
 - `GET /report/{report_id}/receipt`
 - `POST /report/{report_id}/replay`
 - `POST /report/{report_id}/proof-packet`
-- `GET /report/{report_id}/proof-packet`
 
 ## Error cases (current behavior)
 - `400` invalid Bitcoin address/sensitive wallet material.
@@ -76,3 +76,6 @@ This document lists Bastion Trace routes implemented in `app/api/v1/trace.py`.
 
 
 Contract lock note: `/api/v1` frontend-facing DTOs are baseline-locked for critical routes; breaking changes require migration note and synchronized frontend type update.
+
+## Frontend alignment note
+The Next.js Trace client calls real backend endpoints for Lite checks, public summaries, full reports, evidence, privacy/origin/provider/counterparty/policy facets, status, runtime events, and proof packets. Proof packets are unsigned unless signing is explicitly implemented and configured.

@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.db.models.evidence_packet import EvidenceReplayLog
 from app.db.models.time_utils import utcnow
 from app.repositories.evidence_repository import EvidenceRepository
+from app.services.events.domain_event_publisher import publish_domain_event
 from app.services.intelligence.evidence_metrics import (
     EVIDENCE_INTEGRITY_CHECKS_TOTAL,
     EVIDENCE_INTEGRITY_MISMATCHES_TOTAL,
@@ -79,6 +80,25 @@ class EvidenceReplayService:
             log.finished_at = utcnow()
             log.metadata_json = {"packet_id": packet.id, "timeline_steps": len(output["timeline"])}
             self.db.flush()
+            publish_domain_event(
+                self.db,
+                "evidence.replay.completed",
+                {
+                    "packet_id": packet.id,
+                    "source_entity_type": normalized,
+                    "source_entity_id": entity_id,
+                    "integrity_hash": output["hashes"]["output_hash"],
+                    "replay_status": "completed",
+                    "confidence": output.get("scores", {}).get("confidence_score"),
+                    "limitations": output.get("limitations", []),
+                    "operator_reviewed": bool(output.get("operator_reviewed")),
+                    "publication_status": output.get("publication_status", "unknown"),
+                },
+                aggregate_type="evidence_replay",
+                aggregate_id=log.id,
+                source="evidence_replay_service",
+                idempotency_key=f"evidence.replay.completed:{normalized}:{entity_id}:{output['hashes']['output_hash']}",
+            )
             return output
         except Exception as exc:
             reason = self._bounded_reason(str(exc))
@@ -88,8 +108,7 @@ class EvidenceReplayService:
             log.finished_at = utcnow()
             log.metadata_json = {"error": reason, "failure_visible": True}
             self.db.flush()
-            EVIDENCE_REPLAY_FAILURES_TOTAL.labels(entity_type=self._bounded_entity(normalized), reason_code=reason).inc()
-            return {
+            failure_output = {
                 "entity_type": normalized,
                 "entity_id": entity_id,
                 "success": False,
@@ -100,6 +119,26 @@ class EvidenceReplayService:
                 "operator_reviewed": False,
                 "limitations": {"replay_failure_visible": True, "correlation_not_causation": True},
             }
+            publish_domain_event(
+                self.db,
+                "evidence.replay.failed",
+                {
+                    "source_entity_type": normalized,
+                    "source_entity_id": entity_id,
+                    "replay_status": "failed",
+                    "failure_reason": reason,
+                    "limitations": failure_output["limitations"],
+                    "operator_reviewed": False,
+                    "evidence_based": False,
+                    "replayable": False,
+                },
+                aggregate_type="evidence_replay",
+                aggregate_id=log.id,
+                source="evidence_replay_service",
+                idempotency_key=f"evidence.replay.failed:{normalized}:{entity_id}:{log.id}",
+            )
+            EVIDENCE_REPLAY_FAILURES_TOTAL.labels(entity_type=self._bounded_entity(normalized), reason_code=reason).inc()
+            return failure_output
 
     def replay_timeline(self, entity_type: str, entity_id: int) -> list[dict[str, Any]]:
         return self.builder.timeline_for(entity_type, entity_id)

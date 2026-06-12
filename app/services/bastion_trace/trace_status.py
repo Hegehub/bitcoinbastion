@@ -1,5 +1,13 @@
 def make_status(*, reports_count: int, lite_checks_count: int, batches_count: int, source_count: int, last_report_at: str | None) -> dict[str, object]:
     return {
+        "status": "baseline",
+        "trace_available": True,
+        "calibration_status": "not_production_calibrated",
+        "provider_status": "baseline_or_degraded_visible",
+        "limitations": [
+            "Trace scoring is advisory-only.",
+            "Production calibration evidence is not complete.",
+        ],
         "trace_module_status": "baseline",
         "trace_baseline_mode": True,
         "trace_reports_count": reports_count,
