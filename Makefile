@@ -1,4 +1,4 @@
-.PHONY: install install-dev test test-contract test-integration test-unit plugin-test lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence k8s-render-staging k8s-render-production k8s-apply-staging k8s-apply-production k8s-status k8s-rollback-notes k8s-run-migration k8s-run-postgres-migration-smoke k8s-run-postgres-schema-parity k8s-run-release-evidence k8s-collect-evidence-artifacts k8s-render-gitops k8s-render-security k8s-render-observability k8s-render-autoscaling k8s-render-evidence k8s-render-rollout k8s-render-backup k8s-render-drills k8s-run-evidence-archive k8s-run-provider-failure-drill k8s-run-recovery-slo-drill k8s-backup-now k8s-restore-notes k8s-gitops-bootstrap-notes sbom vulnerability-scan provenance security-artifacts-notes k8s-render-runtime-security k8s-lockdown-notes k8s-burn-in-notes k8s-production-cutover-notes k8s-restore-validate-notes k8s-run-provider-outage-drill k8s-run-delivery-outage-drill k8s-operations-check k8s-operational-signoff-template k8s-render-observability-pack k8s-run-observability-validation k8s-alert-fatigue-notes k8s-incident-automation-notes runtime-render-kind runtime-render-minikube deploy-kind deploy-minikube
+.PHONY: install install-dev test test-contract test-integration test-unit plugin-test lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence k8s-render-staging k8s-render-production k8s-apply-staging k8s-apply-production k8s-status k8s-rollback-notes k8s-run-migration k8s-run-postgres-migration-smoke k8s-run-postgres-schema-parity k8s-run-release-evidence k8s-collect-evidence-artifacts k8s-render-gitops k8s-render-security k8s-render-observability k8s-render-autoscaling k8s-render-evidence k8s-render-rollout k8s-render-backup k8s-render-drills k8s-run-evidence-archive k8s-run-provider-failure-drill k8s-run-recovery-slo-drill k8s-backup-now k8s-restore-notes k8s-gitops-bootstrap-notes sbom vulnerability-scan provenance security-artifacts-notes k8s-render-runtime-security k8s-lockdown-notes k8s-burn-in-notes k8s-production-cutover-notes k8s-restore-validate-notes k8s-run-provider-outage-drill k8s-run-delivery-outage-drill k8s-operations-check k8s-operational-signoff-template k8s-render-observability-pack k8s-run-observability-validation k8s-alert-fatigue-notes k8s-incident-automation-notes runtime-render-kind runtime-render-minikube deploy-kind deploy-minikube runtime-profiles runtime-detect runtime-render-compose runtime-render-k8s runtime-render-k3s runtime-render-single-node deploy-compose deploy-k8s deploy-k3s deploy-single-node systemd-notes
 
 install:
 	python -m pip install -e .
@@ -120,17 +120,53 @@ k8s-render-staging:
 k8s-render-production:
 	kubectl kustomize deploy/kubernetes/overlays/production
 
+runtime-profiles:
+	python deploy/scripts/render-runtime-profile.py --list
+
+runtime-detect:
+	python deploy/scripts/detect-runtime-profile.py
+
+runtime-render-compose:
+	python deploy/scripts/render-runtime-profile.py --profile compose --env local --dry-run
+
+runtime-render-k8s:
+	python deploy/scripts/render-runtime-profile.py --profile k8s --env production --dry-run
+
+runtime-render-k3s:
+	python deploy/scripts/render-runtime-profile.py --profile k3s --env production --dry-run
+
 runtime-render-kind:
-	kubectl kustomize deploy/kubernetes/overlays/kind
+	python deploy/scripts/render-runtime-profile.py --profile kind --env local --dry-run
 
 runtime-render-minikube:
-	kubectl kustomize deploy/kubernetes/overlays/minikube
+	python deploy/scripts/render-runtime-profile.py --profile minikube --env local --dry-run
+
+runtime-render-single-node:
+	python deploy/scripts/render-runtime-profile.py --profile single-node --env production --dry-run
+
+deploy-compose:
+	python deploy/scripts/bastion-deploy apply --profile compose --env production --yes
+
+deploy-k8s:
+	python deploy/scripts/bastion-deploy apply --profile k8s --env production --yes
+
+deploy-k3s:
+	python deploy/scripts/bastion-deploy apply --profile k3s --env production --yes
 
 deploy-kind:
-	kubectl apply -k deploy/kubernetes/overlays/kind
+	@echo "Kind deployment is for local Kubernetes validation/testing only; it is not production."
+	python deploy/scripts/bastion-deploy apply --profile kind --env local --yes
 
 deploy-minikube:
-	kubectl apply -k deploy/kubernetes/overlays/minikube
+	@echo "Minikube deployment is for local operator testing only; it is not production."
+	python deploy/scripts/bastion-deploy apply --profile minikube --env local --yes
+
+deploy-single-node:
+	@echo "Single-node deployment is constrained production-like/sovereign operation with no default HA."
+	python deploy/scripts/bastion-deploy apply --profile single-node --env production --yes
+
+systemd-notes:
+	@cat docs/BARE_METAL_SYSTEMD.md
 
 k8s-apply-staging:
 	kubectl apply -k deploy/kubernetes/overlays/staging

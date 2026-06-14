@@ -20,14 +20,31 @@ from runtime_profile_lib import (  # noqa: E402
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Render or execute a Bitcoin Bastion runtime profile plan.")
-    parser.add_argument("--profile", required=True, help="Runtime profile name.")
-    parser.add_argument("--env", required=True, help="Environment: local, dev, staging, production.")
+    parser.add_argument("--profile", help="Runtime profile name.")
+    parser.add_argument("--env", default="local", help="Environment: local, dev, staging, production. Defaults to local.")
+    parser.add_argument("--list", action="store_true", help="List supported runtime profiles and metadata files.")
     parser.add_argument("--dry-run", action="store_true", help="Print the command plan without executing apply commands. Default.")
     parser.add_argument("--validate", action="store_true", help="Run the safe validation command for the selected profile.")
     parser.add_argument("--apply", action="store_true", help="Apply the selected profile. Requires --yes.")
     parser.add_argument("--yes", action="store_true", help="Explicit operator confirmation for apply mode.")
     parser.add_argument("--json", action="store_true", help="Print the command plan as JSON.")
     args = parser.parse_args(argv)
+
+    if args.list:
+        from runtime_profile_lib import PROFILE_DIR, SUPPORTED_PROFILES, require_runtime_metadata  # noqa: E402
+
+        print("Supported Bitcoin Bastion runtime profiles:")
+        for profile in sorted(SUPPORTED_PROFILES):
+            print(f"- {profile}: {PROFILE_DIR / (profile + '.yaml')}")
+        missing = require_runtime_metadata()
+        if missing:
+            print("Missing metadata files:", ", ".join(missing), file=sys.stderr)
+            return EXIT_MISSING_FILE
+        return 0
+
+    if not args.profile:
+        print("--profile is required unless --list is used.", file=sys.stderr)
+        return EXIT_INVALID_USAGE
 
     if args.apply and not args.yes:
         print("Refusing to apply without --yes. Dry-run is the default.", file=sys.stderr)
