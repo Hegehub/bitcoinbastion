@@ -1,0 +1,28 @@
+[project]
+name = "bitcoin-bastion-reflex-frontend"
+version = "0.1.0"
+description = "Experimental Reflex frontend shell for Bitcoin Bastion"
+requires-python = ">=3.12"
+dependencies = [
+    "reflex",
+    "httpx",
+    "pydantic",
+    "pydantic-settings",
+    "python-dotenv",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true

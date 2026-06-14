@@ -1063,3 +1063,41 @@ Bitcoin Bastion now includes a safe Plugin API foundation for manifest-first, de
 ## Runtime profiles
 
 Bitcoin Bastion supports multiple deployment profiles. Kubernetes is supported but not mandatory. Docker Compose, standard Kubernetes, K3s, Kind, Minikube, single-node, and bare-metal/systemd postures are documented in `docs/RUNTIME_PROFILES.md`; `deploy/kubernetes` remains the canonical Kubernetes manifest path.
+
+### Runtime profile deployment summary
+
+Bitcoin Bastion supports multiple runtime profiles while preserving its Bitcoin-first, no-custody, self-hosted capable, operator-controlled, evidence-driven, no-cloud-lock-in posture.
+
+- Docker Compose remains supported for local development, operator testing, and small self-hosted deployments.
+- Standard Kubernetes is recommended for production clusters when operators can provide ingress, storage, secrets, monitoring, backup/restore, rollback, and incident evidence.
+- K3s is recommended for sovereign VPS, home-server, mini-PC, and other small Kubernetes deployments after operator hardening and evidence collection.
+- Kind and Minikube are local Kubernetes validation/testing profiles only and must not be described as production runtimes.
+- Single-node is a constrained production-like/sovereign profile with limited HA, resource, and evidence-job tradeoffs.
+- Bare-metal/systemd is an advanced fallback for operators who accept manual process supervision, logs, backups, hardening, and health checks.
+
+Primary commands:
+
+```bash
+make runtime-profiles
+make runtime-detect
+make runtime-render-compose
+make runtime-render-k8s
+make runtime-render-k3s
+make runtime-render-kind
+make runtime-render-minikube
+make runtime-render-single-node
+make systemd-notes
+```
+
+Deployment commands call the runtime deployment helper and require real local tooling for the selected runtime:
+
+```bash
+make deploy-compose
+make deploy-k8s
+make deploy-k3s
+make deploy-kind       # local validation/testing only
+make deploy-minikube   # local testing only
+make deploy-single-node
+```
+
+No runtime profile is automatically production-ready. Production readiness requires environment-specific evidence artifacts, including deployment evidence, migration smoke evidence, schema parity evidence, provider health evidence, observability validation, backup/restore validation, rollback validation, security review, load testing, and incident/drill evidence.

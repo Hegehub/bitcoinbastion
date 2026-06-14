@@ -39,3 +39,21 @@ K3s, single-node, Kind, and Minikube baseline overlays now exist under `deploy/k
 ## Evidence and readiness
 
 Runtime profile metadata improves deployment clarity, but metadata alone is not production evidence. Operators must still collect environment-specific artifacts for secrets management, TLS, ingress, storage, backups, monitoring, alerting, recovery drills, and degraded-state visibility before making production-readiness claims.
+
+## Mandatory runtime safety statements
+
+No runtime profile implies custody. No runtime profile requires seed/private-key handling. No runtime profile is automatically production-ready. Production readiness requires environment evidence artifacts.
+
+## Primary commands
+
+| Profile | Primary commands |
+| --- | --- |
+| `compose` | `make runtime-render-compose`; `make deploy-compose` |
+| `k8s` | `make runtime-render-k8s`; `make deploy-k8s` |
+| `k3s` | `make runtime-render-k3s`; `make deploy-k3s` |
+| `kind` | `make runtime-render-kind`; `make deploy-kind` for local validation only |
+| `minikube` | `make runtime-render-minikube`; `make deploy-minikube` for local testing only |
+| `single-node` | `make runtime-render-single-node`; `make deploy-single-node` with constrained-production limitations |
+| `bare-metal/systemd` | `make systemd-notes`; run systemd units manually from `docs/BARE_METAL_SYSTEMD.md` |
+
+Each profile entry in the comparison matrix identifies best hardware, complexity, production suitability, evidence support, HA support, resource footprint, operational risk, recommended use, and limitations. Commands render or apply the existing runtime metadata and manifests; they do not create custody, cloud lock-in, seed handling, private-key handling, or automatic production certification.

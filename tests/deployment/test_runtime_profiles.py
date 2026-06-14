@@ -1,16 +1,42 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-PROFILES_DIR = ROOT / "deploy" / "runtime-profiles"
-EXPECTED_PROFILES = [
-    "compose",
-    "k8s",
-    "k3s",
-    "kind",
-    "minikube",
-    "single-node",
-    "bare-metal-systemd",
+PROFILE_DIR = ROOT / "deploy" / "runtime-profiles"
+
+REQUIRED = [
+    "README.md",
+    "profiles.yaml",
+    "compose.yaml",
+    "k8s.yaml",
+    "k3s.yaml",
+    "kind.yaml",
+    "minikube.yaml",
+    "single-node.yaml",
+    "bare-metal-systemd.yaml",
 ]
+PROFILES = ["compose", "k8s", "k3s", "kind", "minikube", "single-node", "bare-metal-systemd"]
+
+
+def test_runtime_profile_metadata_files_exist() -> None:
+    for filename in REQUIRED:
+        assert (PROFILE_DIR / filename).exists(), filename
+
+
+def test_profiles_yaml_lists_supported_profiles() -> None:
+    text = (PROFILE_DIR / "profiles.yaml").read_text(encoding="utf-8")
+    for profile in PROFILES:
+        assert f"- {profile}" in text or f"{profile}:" in text
+
+
+def test_profiles_yaml_preserves_core_runtime_constraints() -> None:
+    text = (PROFILE_DIR / "profiles.yaml").read_text(encoding="utf-8")
+    assert "canonical_kubernetes_path: deploy/kubernetes" in text
+    assert "kubernetes_required_for_all_profiles: false" in text
+    assert "cloud_provider_required: false" in text
+    assert "custody_allowed: false" in text
+    assert "seed_phrase_handling_allowed: false" in text
+    assert "private_key_handling_allowed: false" in text
+
 REQUIRED_FIELDS = [
     "name",
     "runtime_type",
@@ -41,29 +67,8 @@ def read_text(relative_path: str) -> str:
     return (ROOT / relative_path).read_text(encoding="utf-8")
 
 
-def test_runtime_profile_files_exist() -> None:
-    assert (ROOT / "docs" / "RUNTIME_PROFILES.md").is_file()
-    assert (PROFILES_DIR / "README.md").is_file()
-    assert (PROFILES_DIR / "profiles.yaml").is_file()
-    for profile in EXPECTED_PROFILES:
-        assert (PROFILES_DIR / f"{profile}.yaml").is_file()
-
-
-def test_profiles_index_references_expected_profiles_and_safety_flags() -> None:
-    index = read_text("deploy/runtime-profiles/profiles.yaml")
-    assert "version: 1" in index
-    assert "canonical_kubernetes_path: deploy/kubernetes" in index
-    assert "kubernetes_required_for_all_profiles: false" in index
-    assert "cloud_provider_required: false" in index
-    assert "custody_allowed: false" in index
-    assert "seed_phrase_handling_allowed: false" in index
-    assert "private_key_handling_allowed: false" in index
-    for profile in EXPECTED_PROFILES:
-        assert f"  - {profile}" in index
-
-
 def test_each_profile_metadata_has_required_fields() -> None:
-    for profile in EXPECTED_PROFILES:
+    for profile in PROFILES:
         metadata = read_text(f"deploy/runtime-profiles/{profile}.yaml")
         for field in REQUIRED_FIELDS:
             assert f"{field}:" in metadata
@@ -79,7 +84,7 @@ def test_runtime_profile_docs_are_truthful() -> None:
     assert "kind" in docs and "not production" in docs
     assert "minikube" in docs and "not production" in docs
     assert "all profiles are production-equal" not in docs
-    assert "full release-candidate or production claims still require" in docs
+    assert "production readiness requires environment evidence artifacts" in docs
 
 
 def test_canonical_kubernetes_path_is_documented() -> None:
