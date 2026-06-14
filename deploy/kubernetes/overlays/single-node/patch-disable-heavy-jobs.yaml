@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-recovery-drill
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-market-calculate-price-impact
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-intelligence-attribute-candles
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-intelligence-refresh-patterns
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-intelligence-refresh-similarity
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-intelligence-update-news-shock-index
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-signals-create-candidates
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-signals-publish
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-evidence-generate-packets
+spec:
+  suspend: true
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bitcoin-bastion-evidence-integrity-scan
+spec:
+  suspend: true

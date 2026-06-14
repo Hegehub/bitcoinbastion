@@ -62,8 +62,13 @@ target-version = "py312"
 python_version = "3.12"
 strict = true
 ignore_missing_imports = true
+warn_unused_ignores = false
 
 
 [tool.setuptools.packages.find]
 where = [".", "sdk/python"]
 include = ["app*", "cli*", "bitcoin_bastion_sdk*"]
+
+[[tool.mypy.overrides]]
+module = "cli.*"
+disallow_untyped_decorators = false

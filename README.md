@@ -1053,3 +1053,13 @@ This repository does not claim perfect security, guaranteed outcomes, or bug-fre
 
 - Python SDK: see [`sdk/python/README.md`](sdk/python/README.md).
 - Operator-safe CLI: see [`docs/CLI.md`](docs/CLI.md).
+- Bastion MCP Connector: see [`docs/MCP_CONNECTOR.md`](docs/MCP_CONNECTOR.md).
+- TypeScript SDK: see [`docs/TYPESCRIPT_SDK.md`](docs/TYPESCRIPT_SDK.md) and [`sdk/typescript/README.md`](sdk/typescript/README.md).
+
+### Plugin API foundation
+
+Bitcoin Bastion now includes a safe Plugin API foundation for manifest-first, deny-by-default in-process extensions. See [`docs/PLUGIN_API.md`](docs/PLUGIN_API.md), [`docs/PLUGIN_PERMISSIONS.md`](docs/PLUGIN_PERMISSIONS.md), and [`docs/PLUGIN_SECURITY_MODEL.md`](docs/PLUGIN_SECURITY_MODEL.md). Plugins are not a custody interface, signing interface, transaction broadcaster, or marketplace runtime.
+
+## Runtime profiles
+
+Bitcoin Bastion supports multiple deployment profiles. Kubernetes is supported but not mandatory. Docker Compose, standard Kubernetes, K3s, Kind, Minikube, single-node, and bare-metal/systemd postures are documented in `docs/RUNTIME_PROFILES.md`; `deploy/kubernetes` remains the canonical Kubernetes manifest path.

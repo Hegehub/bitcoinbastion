@@ -31,6 +31,7 @@ from app.api.v1.operator_signals import router as operator_signals_router
 from app.api.v1.observability import router as observability_router
 from app.api.v1.operations import router as operations_router
 from app.api.v1.policy import router as policy_router
+from app.api.v1.plugins import router as plugins_router
 from app.api.v1.public import router as public_router
 from app.api.v1.privacy import router as privacy_router
 from app.api.v1.onchain import router as onchain_router
@@ -86,6 +87,7 @@ app.include_router(treasury_router, prefix=settings.api_prefix)
 app.include_router(admin_router, prefix=settings.api_prefix)
 app.include_router(users_router, prefix=settings.api_prefix)
 app.include_router(policy_router, prefix=settings.api_prefix)
+app.include_router(plugins_router, prefix=settings.api_prefix)
 app.include_router(privacy_router, prefix=settings.api_prefix)
 app.include_router(education_router, prefix=settings.api_prefix)
 app.include_router(evidence_router, prefix=settings.api_prefix)

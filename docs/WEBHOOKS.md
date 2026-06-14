@@ -172,3 +172,21 @@ Webhook events are infrastructure notifications only. They are not legal verific
 ## Python SDK helper
 
 The developer-preview Python SDK includes `bitcoin_bastion_sdk.webhooks.verify_signature(...)` for receiver-side HMAC verification. The helper uses the same timestamp and raw-payload HMAC contract documented above and does not log webhook secrets.
+
+## TypeScript SDK helper
+
+The TypeScript SDK exposes `client.webhooks.*` for webhook management and `verifyBastionWebhookSignature(...)` for HMAC SHA256 receiver verification. Receivers should verify timestamps and retain recent delivery IDs for replay protection.
+
+## Replay-resistant verification
+
+Webhook receivers must verify all signed fields before processing a delivery:
+
+- `X-Bastion-Event`
+- `X-Bastion-Timestamp`
+- `X-Bastion-Delivery-ID`
+- `X-Bastion-Signature`
+- the exact raw request body bytes
+
+The signature covers `timestamp.delivery_id.event_type.raw_body`. Receivers should reject stale timestamps, missing delivery IDs, malformed signatures, invalid HMACs, and duplicate delivery IDs. Persist delivery IDs on the receiver side to prevent repeated processing.
+
+Private-network webhook targets are rejected by default. Local/self-hosted development can opt in with `BB_WEBHOOK_ALLOW_PRIVATE_NETWORK_TARGETS=true`, but this should not be enabled for production exposure without network egress controls.

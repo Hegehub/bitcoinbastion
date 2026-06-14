@@ -10,8 +10,13 @@ from app.events.safety import EventPayloadSafetyError, assert_event_payload_safe
 from app.events.serializer import EventSerializationError, serialize_event_json
 from app.events.types import BastionEventType, EventDomain
 
-MAX_PAYLOAD_JSON_BYTES = 64 * 1024
-MAX_METADATA_JSON_BYTES = 16 * 1024
+MAX_EVENT_PAYLOAD_BYTES = 65_536
+MAX_EVENT_METADATA_BYTES = 16_384
+MAX_EVENT_TYPE_LENGTH = 128
+MAX_AGGREGATE_ID_LENGTH = 128
+MAX_STRING_FIELD_LENGTH = 8_192
+MAX_PAYLOAD_JSON_BYTES = MAX_EVENT_PAYLOAD_BYTES
+MAX_METADATA_JSON_BYTES = MAX_EVENT_METADATA_BYTES
 REDACTED = "[REDACTED]"
 
 _SECRET_METADATA_KEYS = {
@@ -72,6 +77,8 @@ class EventOutboxService:
     ) -> EventOutbox:
         normalized_event_type = self._validate_event_type(event_type)
         normalized_domain = self._validate_domain(normalized_event_type, domain)
+        self._validate_optional_length(aggregate_type, "aggregate_type")
+        self._validate_optional_length(aggregate_id, "aggregate_id")
         safe_payload = dict(payload)
         self._assert_payload_safe(safe_payload)
         safe_metadata = self._sanitize_metadata(metadata or {})
@@ -95,7 +102,13 @@ class EventOutboxService:
     def list_pending(self, limit: int = 100) -> list[EventOutbox]:
         return self.repository.list_pending(limit=limit)
 
+    def _validate_optional_length(self, value: str | None, label: str) -> None:
+        if value is not None and len(value) > MAX_AGGREGATE_ID_LENGTH:
+            raise EventOutboxValidationError(f"{label} exceeds length limit")
+
     def _validate_event_type(self, event_type: str) -> str:
+        if len(event_type) > MAX_EVENT_TYPE_LENGTH:
+            raise EventOutboxValidationError("event_type exceeds length limit")
         try:
             parsed = BastionEventType(event_type)
         except ValueError as exc:
@@ -124,6 +137,8 @@ class EventOutboxService:
 
     def _assert_no_additional_forbidden_values(self, value: object) -> None:
         if isinstance(value, str):
+            if len(value) > MAX_STRING_FIELD_LENGTH:
+                raise EventOutboxValidationError("event payload string field exceeds length limit")
             lowered = value.casefold()
             for term in _ADDITIONAL_FORBIDDEN_VALUE_TERMS:
                 if term in lowered:
@@ -152,6 +167,8 @@ class EventOutboxService:
         if isinstance(value, tuple):
             return [self._sanitize_metadata_value(key, item) for item in value]
         if isinstance(value, str):
+            if len(value) > MAX_STRING_FIELD_LENGTH:
+                raise EventOutboxValidationError("event payload string field exceeds length limit")
             lowered = value.casefold()
             if any(term in lowered for term in _ADDITIONAL_FORBIDDEN_VALUE_TERMS):
                 return REDACTED

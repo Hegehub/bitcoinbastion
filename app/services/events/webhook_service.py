@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
+from app.core.config import get_settings
 from app.db.models.time_utils import utcnow
 from app.db.models.webhooks import (
     WebhookDelivery,
@@ -241,6 +242,11 @@ class WebhookService:
 
     def _validate_target_url(self, target_url: str) -> str:
         candidate = target_url.strip()
+        settings = get_settings()
+        if not candidate:
+            raise WebhookServiceError("Webhook target_url cannot be empty")
+        if len(candidate) > 2048:
+            raise WebhookServiceError("Webhook target_url exceeds length limit")
         parsed = urlparse(candidate)
         if (
             parsed.scheme not in {"http", "https"}
@@ -255,8 +261,8 @@ class WebhookService:
         if hostname is None:
             raise WebhookServiceError("Webhook target_url must include a host")
         lowered_host = hostname.casefold().strip("[]")
-        if lowered_host in {"localhost", "localhost.localdomain"} or lowered_host.endswith(
-            ".local"
+        if not settings.webhook_allow_private_network_targets and (
+            lowered_host in {"localhost", "localhost.localdomain"} or lowered_host.endswith(".local")
         ):
             raise WebhookServiceError(
                 "Webhook target_url cannot use localhost or private-network hosts"
@@ -265,7 +271,7 @@ class WebhookService:
             ip = ipaddress.ip_address(lowered_host)
         except ValueError:
             return candidate
-        if (
+        if not settings.webhook_allow_private_network_targets and (
             ip.is_private
             or ip.is_loopback
             or ip.is_link_local

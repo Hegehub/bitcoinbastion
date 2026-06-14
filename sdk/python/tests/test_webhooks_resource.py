@@ -46,9 +46,19 @@ def test_signature_verification_succeeds_for_valid_payload() -> None:
     payload = b'{"ok":true}'
     secret = "whsec_test_secret"
     timestamp = 1234567890
-    digest = hmac.new(secret.encode(), f"{timestamp}.".encode() + payload, hashlib.sha256).hexdigest()
-    assert verify_signature(payload=payload, secret=secret, timestamp=timestamp, signature=f"v1={digest}", now=timestamp)
+    delivery_id = "whd_test"
+    event_type = "signal.published"
+    digest = hmac.new(secret.encode(), f"{timestamp}.{delivery_id}.{event_type}.".encode() + payload, hashlib.sha256).hexdigest()
+    assert verify_signature(
+        payload=payload,
+        secret=secret,
+        timestamp=timestamp,
+        signature=f"v1={digest}",
+        delivery_id=delivery_id,
+        event_type=event_type,
+        now=timestamp,
+    )
 
 
 def test_signature_verification_fails_for_invalid_signature() -> None:
-    assert not verify_signature(payload=b"{}", secret="whsec_test_secret", timestamp=1, signature="v1=bad", now=1)
+    assert not verify_signature(payload=b"{}", secret="whsec_test_secret", timestamp=1, signature="v1=bad", delivery_id="whd", event_type="signal.published", now=1)

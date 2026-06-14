@@ -51,3 +51,27 @@ The developer-preview Python SDK is available under `sdk/python`. It exposes `Ba
 ## Operator CLI
 
 The operator-safe CLI is available as `bastion` after editable install. It uses the Python SDK as its primary API interface, preserves no-custody safety checks, keeps treasury commands read-only, and is documented in [`CLI.md`](CLI.md).
+
+## MCP Connector
+
+The Bastion MCP Connector lives under `mcp/` and exposes safe AI-agent tools for signals, Trace, public Trace summaries, wallet-health context, policy evaluation, draft-only treasury review, provider health, market context, and evidence packets. It enforces no-custody input scanning, advisory-only Trace semantics, no financial-advice market language, and structured limitations/safety flags. Use it for local-agent and operator-copilot workflows; do not use it as a wallet, signing service, trading executor, legal-verdict engine, or Bitcoin consensus oracle. See [`MCP_CONNECTOR.md`](MCP_CONNECTOR.md).
+
+## TypeScript SDK
+
+The developer-preview TypeScript SDK lives under `sdk/typescript` as package `bitcoin-bastion-sdk`. It exposes typed REST resources, raw transport access, WebSocket helpers, webhook signature verification, and input safety checks. See [`TYPESCRIPT_SDK.md`](TYPESCRIPT_SDK.md) and [`API_INTEGRATION_GUIDE.md`](API_INTEGRATION_GUIDE.md).
+
+## Plugin API foundation
+
+Bitcoin Bastion includes a safe Plugin API foundation under `app/plugins/` for manifest-first, deny-by-default extensions. The initial API is limited to manifest inspection, admin-gated enable/disable, and dry-run execution:
+
+- `GET /api/v1/plugins`
+- `GET /api/v1/plugins/{plugin_id}`
+- `POST /api/v1/plugins/{plugin_id}/enable`
+- `POST /api/v1/plugins/{plugin_id}/disable`
+- `POST /api/v1/plugins/{plugin_id}/dry-run`
+
+Plugins cannot access seed phrases, private keys, wallet files, xprv/yprv/zprv material, or signing material. Plugins cannot sign or broadcast Bitcoin transactions and cannot approve treasury actions. See `docs/PLUGIN_API.md`, `docs/PLUGIN_PERMISSIONS.md`, and `docs/PLUGIN_SECURITY_MODEL.md`.
+
+## Developer-layer hardening audit
+
+See `docs/DEVELOPER_LAYER_HARDENING_AUDIT.md` for the current hardening baseline. Production exposure still requires authentication, rate limits, TLS, monitoring, and deployment evidence. Webhooks are signed and replay-resistant when receivers verify timestamp, delivery id, event type, signature, and raw body. WebSocket streams are live convenience streams and are not durable delivery.

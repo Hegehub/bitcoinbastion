@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from types import MappingProxyType
 
+MAX_TOPICS_PER_CONNECTION = 8
+
 SUPPORTED_TOPICS: set[str] = {
     "signals",
     "trace",
@@ -131,6 +133,8 @@ def parse_topics(raw: str | None) -> set[str]:
     topics = {item.strip().casefold() for item in raw.split(",") if item.strip()}
     if not topics:
         return set(SUPPORTED_TOPICS)
+    if len(topics) > MAX_TOPICS_PER_CONNECTION:
+        raise WebSocketTopicError("Too many topics requested for one connection.")
     unknown = topics - SUPPORTED_TOPICS
     if unknown:
         raise WebSocketTopicError("One or more requested topics are not supported.")

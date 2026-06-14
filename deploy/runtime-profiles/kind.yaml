@@ -1,0 +1,42 @@
+name: kind
+runtime_type: kind
+status: overlay-added
+best_for:
+  - local manifest validation
+  - CI-like local Kubernetes testing
+  - developer smoke tests
+recommended_envs:
+  - local
+min_cpu: 2
+min_ram: 4Gi
+ha_supported: false
+evidence_supported: render-only
+k8s_required: true
+production_suitability: none
+production_suitable: false
+resource_footprint: low
+operational_complexity: low
+operational_risk: low-for-testing-only
+requires_cloud_provider: false
+supports_air_gapped: true
+supports_local_only: true
+canonical_paths:
+  - deploy/runtime-profiles/kind.yaml
+  - deploy/kubernetes
+  - deploy/kubernetes/overlays/kind
+commands:
+  - kubectl kustomize deploy/kubernetes/overlays/kind
+limitations:
+  - local testing only
+  - not production-ready
+  - no production evidence
+  - no HA
+  - no production TLS/WAF/CDN evidence
+  - no disaster recovery evidence
+security_notes:
+  - Do not use Kind as a production runtime.
+  - Do not place secrets in profile metadata.
+evidence_notes:
+  - Evidence support is render-only and limited to local manifest validation and smoke tests.
+future_extensions:
+  - Future local CI workflows may add non-secret smoke evidence collection.

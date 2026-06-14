@@ -1,0 +1,45 @@
+name: k8s
+runtime_type: kubernetes
+status: supported
+best_for:
+  - production cluster
+  - enterprise self-hosted
+  - multi-node deployment
+  - stronger observability/security controls
+recommended_envs:
+  - staging
+  - production
+min_cpu: 4
+min_ram: 8Gi
+ha_supported: true
+evidence_supported: strong
+k8s_required: true
+production_suitability: strongest-when-operated-correctly
+resource_footprint: medium-to-high
+operational_complexity: high
+operational_risk: high-without-kubernetes-expertise
+requires_cloud_provider: false
+supports_air_gapped: true
+supports_local_only: false
+canonical_paths:
+  - deploy/kubernetes/base
+  - deploy/kubernetes/overlays/staging
+  - deploy/kubernetes/overlays/production
+commands:
+  - make k8s-render-staging
+  - make k8s-render-production
+  - make k8s-apply-staging
+  - make k8s-apply-production
+limitations:
+  - High operational complexity.
+  - Requires Kubernetes expertise.
+  - Production readiness depends on real environment validation.
+  - Secrets, ingress, storage, monitoring, and backup must be configured by the operator.
+security_notes:
+  - Use production-grade secret management, TLS, NetworkPolicy, RBAC, image provenance, and monitoring.
+  - No profile permits custody, transaction signing, or private key storage.
+evidence_notes:
+  - Strongest profile for deployment evidence when operated with monitoring, backup, and recovery drills.
+  - Evidence artifacts remain environment-specific and must be collected by the operator.
+future_extensions:
+  - Additional environment overlays may be added under deploy/kubernetes.

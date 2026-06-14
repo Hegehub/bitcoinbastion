@@ -1,0 +1,42 @@
+name: k3s
+runtime_type: k3s
+status: overlay-added
+best_for:
+  - sovereign VPS
+  - home server
+  - mini-PC
+  - small self-hosted production
+recommended_envs:
+  - staging
+  - production
+min_cpu: 2
+min_ram: 4Gi
+ha_supported: possible
+evidence_supported: strong
+k8s_required: true
+production_suitability: good-for-small-sovereign-deployments-when-hardened
+resource_footprint: low-to-medium
+operational_complexity: medium
+operational_risk: medium
+requires_cloud_provider: false
+supports_air_gapped: true
+supports_local_only: true
+canonical_paths:
+  - deploy/runtime-profiles/k3s.yaml
+  - deploy/kubernetes
+  - deploy/kubernetes/overlays/k3s
+commands:
+  - kubectl kustomize deploy/kubernetes/overlays/k3s
+limitations:
+  - Not production-equal to a well-operated multi-node Kubernetes cluster.
+  - Single-node K3s has no HA.
+  - Traefik and local-path storage assumptions are documented in the overlay README and must be validated by the operator.
+  - Heavy jobs may need suspension or manual execution on weak hardware.
+security_notes:
+  - Harden host firewall, secrets, ingress, storage, backups, and updates before production use.
+  - No custody, signing, seed phrase, private key, wallet file, or signing material handling is allowed.
+evidence_notes:
+  - Can support strong evidence after a real overlay, monitoring, and recovery artifacts exist.
+  - Metadata alone is not production evidence.
+future_extensions:
+  - Further K3s hardening can tune CronJob cadence and HPA removal in later tasks.

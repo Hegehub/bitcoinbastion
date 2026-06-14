@@ -1,4 +1,4 @@
- .PHONY: install install-dev test test-contract test-integration test-unit lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence k8s-render-staging k8s-render-production k8s-apply-staging k8s-apply-production k8s-status k8s-rollback-notes k8s-run-migration k8s-run-postgres-migration-smoke k8s-run-postgres-schema-parity k8s-run-release-evidence k8s-collect-evidence-artifacts k8s-render-gitops k8s-render-security k8s-render-observability k8s-render-autoscaling k8s-render-evidence k8s-render-rollout k8s-render-backup k8s-render-drills k8s-run-evidence-archive k8s-run-provider-failure-drill k8s-run-recovery-slo-drill k8s-backup-now k8s-restore-notes k8s-gitops-bootstrap-notes sbom vulnerability-scan provenance security-artifacts-notes k8s-render-runtime-security k8s-lockdown-notes k8s-burn-in-notes k8s-production-cutover-notes k8s-restore-validate-notes k8s-run-provider-outage-drill k8s-run-delivery-outage-drill k8s-operations-check k8s-operational-signoff-template k8s-render-observability-pack k8s-run-observability-validation k8s-alert-fatigue-notes k8s-incident-automation-notes
+.PHONY: install install-dev test test-contract test-integration test-unit plugin-test lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence k8s-render-staging k8s-render-production k8s-apply-staging k8s-apply-production k8s-status k8s-rollback-notes k8s-run-migration k8s-run-postgres-migration-smoke k8s-run-postgres-schema-parity k8s-run-release-evidence k8s-collect-evidence-artifacts k8s-render-gitops k8s-render-security k8s-render-observability k8s-render-autoscaling k8s-render-evidence k8s-render-rollout k8s-render-backup k8s-render-drills k8s-run-evidence-archive k8s-run-provider-failure-drill k8s-run-recovery-slo-drill k8s-backup-now k8s-restore-notes k8s-gitops-bootstrap-notes sbom vulnerability-scan provenance security-artifacts-notes k8s-render-runtime-security k8s-lockdown-notes k8s-burn-in-notes k8s-production-cutover-notes k8s-restore-validate-notes k8s-run-provider-outage-drill k8s-run-delivery-outage-drill k8s-operations-check k8s-operational-signoff-template k8s-render-observability-pack k8s-run-observability-validation k8s-alert-fatigue-notes k8s-incident-automation-notes runtime-render-kind runtime-render-minikube deploy-kind deploy-minikube
 
 install:
 	python -m pip install -e .
@@ -17,6 +17,9 @@ test-contract: install-dev
 
 test-integration: install-dev
 	python -m pytest -q tests/integration
+
+plugin-test: install-dev
+	python -m pytest -q tests/unit/test_plugin_manifest.py tests/unit/test_plugin_permissions.py tests/unit/test_plugin_registry.py tests/unit/test_plugin_sandbox.py tests/unit/test_plugin_loader.py tests/contract/test_plugin_api_safety.py
 
 lint:
 	python -m ruff check app cli tests
@@ -116,6 +119,18 @@ k8s-render-staging:
 
 k8s-render-production:
 	kubectl kustomize deploy/kubernetes/overlays/production
+
+runtime-render-kind:
+	kubectl kustomize deploy/kubernetes/overlays/kind
+
+runtime-render-minikube:
+	kubectl kustomize deploy/kubernetes/overlays/minikube
+
+deploy-kind:
+	kubectl apply -k deploy/kubernetes/overlays/kind
+
+deploy-minikube:
+	kubectl apply -k deploy/kubernetes/overlays/minikube
 
 k8s-apply-staging:
 	kubectl apply -k deploy/kubernetes/overlays/staging
@@ -305,3 +320,32 @@ cli-health:
 cli-smoke:
 	bastion health
 	bastion status
+
+mcp-install:
+	cd mcp && python -m pip install -e '.[dev]'
+
+mcp-test:
+	cd mcp && python -m pytest -q
+
+mcp-lint:
+	cd mcp && python -m ruff check bastion_mcp
+
+mcp-typecheck:
+	cd mcp && python -m mypy bastion_mcp
+
+mcp-run:
+	cd mcp && python -m bastion_mcp.server
+
+ts-sdk-install:
+	cd sdk/typescript && npm install
+
+ts-sdk-build:
+	cd sdk/typescript && npm run build
+
+ts-sdk-typecheck:
+	cd sdk/typescript && npm run typecheck
+
+ts-sdk-test:
+	cd sdk/typescript && npm test
+
+ts-sdk-check: ts-sdk-typecheck ts-sdk-test

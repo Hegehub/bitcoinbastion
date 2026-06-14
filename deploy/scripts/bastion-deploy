@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+DETECT = SCRIPT_DIR / "detect-runtime-profile.py"
+RENDER = SCRIPT_DIR / "render-runtime-profile.py"
+
+
+def run_child(command: list[str]) -> int:
+    result = subprocess.run(command, check=False)
+    return result.returncode
+
+
+def print_header(mode: str, profile: str | None, env: str | None, yes: bool = False) -> None:
+    print("Bitcoin Bastion Runtime Deployment Helper", flush=True)
+    print(f"Profile: {profile or 'auto-detect'}", flush=True)
+    print(f"Environment: {env or 'auto-detect'}", flush=True)
+    print(f"Mode: {mode}", flush=True)
+    if mode == "apply" and yes:
+        print("Operator confirmation: --yes provided", flush=True)
+    print(flush=True)
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Safe Bitcoin Bastion runtime deployment helper.")
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("detect")
+    for name in ("render", "validate", "apply"):
+        p = sub.add_parser(name)
+        p.add_argument("--profile", required=True)
+        p.add_argument("--env", required=True)
+        if name == "apply":
+            p.add_argument("--yes", action="store_true")
+    args = parser.parse_args(argv)
+
+    if args.command == "detect":
+        print_header("detect", None, None)
+        return run_child([sys.executable, str(DETECT)])
+
+    if args.command == "apply" and not args.yes:
+        print_header("apply", args.profile, args.env)
+        print("Refusing to apply without --yes. No changes were made.", file=sys.stderr)
+        return 1
+
+    print_header(args.command, args.profile, args.env, yes=getattr(args, "yes", False))
+    base = [sys.executable, str(RENDER), "--profile", args.profile, "--env", args.env]
+    if args.command == "render":
+        return run_child([*base, "--dry-run"])
+    if args.command == "validate":
+        return run_child([*base, "--validate"])
+    return run_child([*base, "--apply", "--yes"])
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

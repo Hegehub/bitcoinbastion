@@ -31,6 +31,7 @@ def test_valid_signature_verifies_and_wrong_secret_fails() -> None:
         signature_header=headers["X-Bastion-Signature"],
         timestamp=1780000000,
         delivery_id="whd_test",
+        event_type="webhook.test",
         raw_body=raw_body,
         now=1780000000,
     )
@@ -39,6 +40,7 @@ def test_valid_signature_verifies_and_wrong_secret_fails() -> None:
         signature_header=headers["X-Bastion-Signature"],
         timestamp=1780000000,
         delivery_id="whd_test",
+        event_type="webhook.test",
         raw_body=raw_body,
         now=1780000000,
     )
@@ -55,6 +57,7 @@ def test_replay_tolerance_and_signature_prefix_are_enforced() -> None:
         signature_header=signature,
         timestamp=100,
         delivery_id="whd_test",
+        event_type="webhook.test",
         raw_body=raw_body,
         now=500,
     )
@@ -63,6 +66,7 @@ def test_replay_tolerance_and_signature_prefix_are_enforced() -> None:
         signature_header=signature,
         timestamp=1000,
         delivery_id="whd_test",
+        event_type="webhook.test",
         raw_body=raw_body,
         now=500,
     )
@@ -71,6 +75,7 @@ def test_replay_tolerance_and_signature_prefix_are_enforced() -> None:
         signature_header=signature.replace("v1=", "v2="),
         timestamp=100,
         delivery_id="whd_test",
+        event_type="webhook.test",
         raw_body=raw_body,
         now=100,
     )

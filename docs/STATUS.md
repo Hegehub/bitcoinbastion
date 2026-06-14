@@ -291,7 +291,7 @@ The `publish_event(...)` API validates registered event types, checks payload an
 
 Prompt 7 wires selected real backend workflows to the internal Event Bus/Event Outbox. Events are persisted internally for Signals, Trace, Treasury, Evidence/Replay, Provider Health, On-chain ingestion, Wallet health, Policy evaluation, News article ingestion, and Market candle attribution where stable hooks exist.
 
-This now includes outbox-backed webhook delivery. WebSocket streaming, SDK consumption, CLI commands, MCP connectors, and plugin execution remain unimplemented. Event publication is not proof of payment, legal status, Bitcoin consensus proof, or trading correctness. Remaining event integration gaps are documented in `docs/EVENT_INTEGRATION_GAPS.md`.
+This now includes outbox-backed webhook delivery. WebSocket streaming, SDK consumption, CLI commands, and the baseline MCP connector are implemented; plugin execution remains unimplemented. Event publication is not proof of payment, legal status, Bitcoin consensus proof, or trading correctness. Remaining event integration gaps are documented in `docs/EVENT_INTEGRATION_GAPS.md`.
 
 ## Webhook Management Status
 
@@ -306,3 +306,48 @@ The repository now includes persistent webhook endpoints, event subscriptions, d
 Webhook dispatcher worker: IMPLEMENTED FOUNDATION.
 
 `dispatch_webhook_outbox_events` processes ready outbox rows, resolves active webhook subscriptions, sends signed POST requests, records delivery attempts, and applies deterministic retry/dead-letter state. Webhook dispatch remains an infrastructure notification mechanism only; it is not legal verification, financial advice, Bitcoin consensus proof, payment approval, or transaction execution authorization.
+
+## MCP Connector status
+
+Bastion MCP Connector: BASELINE IMPLEMENTED / PRODUCTION HARDENING PENDING. The connector provides safe read-only, recommendation-only, and draft-only tools over the Bitcoin Bastion API adapter. Remaining blockers include production auth model validation, live MCP client compatibility testing, operator approval UX integration, rate-limit evidence, and security review.
+
+## TypeScript SDK status
+
+TypeScript SDK: DEVELOPER PREVIEW IMPLEMENTED. The package provides REST resources, ResponseEnvelope unwrapping, WebSocket helpers, webhook signature verification, and no-custody safety checks. Production hardening remains pending for package publication, broader browser/runtime compatibility evidence, and long-term API stability guarantees.
+
+## Plugin API foundation status
+
+Bastion Plugin API foundation: **BASELINE IMPLEMENTED / PRODUCTION HARDENING PENDING**.
+
+Implemented baseline:
+
+- typed plugin manifest and plugin type model;
+- deny-by-default permission registry;
+- forbidden custody/signing permission rejection;
+- restrictive sandbox defaults;
+- in-process registry with audit records;
+- built-in plugin interfaces and a safe dashboard smoke plugin;
+- minimal admin-gated plugin API for list/get/enable/disable/dry-run.
+
+Remaining hardening:
+
+- persisted plugin configuration and operator approval records;
+- package signing and external plugin verification;
+- production rate-limit evidence;
+- security review of any non-built-in plugin loading.
+
+## Developer layer hardening status
+
+Developer/API layer hardening: **BASELINE HARDENED / PRODUCTION EXPOSURE EVIDENCE PENDING**. Sensitive material guards, webhook replay checks, URL safety, payload limits, bounded WebSocket topics, MCP/CLI/plugin safety checks, and documentation truthfulness tests are in place. Remaining blockers are production auth, rate limits, TLS, monitoring evidence, and private-stream access control validation.
+
+## Runtime Profile Matrix
+
+Runtime Profile Matrix: IMPLEMENTED
+Runtime Profile Overlays: PENDING
+K3s Overlay: BASELINE IMPLEMENTED
+Kind Overlay: PENDING
+Minikube Overlay: PENDING
+Single-node Overlay: BASELINE IMPLEMENTED
+Bare-metal/systemd Docs: BASELINE METADATA IMPLEMENTED / FULL GUIDE PENDING
+
+Runtime profile metadata clarifies that Kubernetes is supported but optional, `deploy/kubernetes` remains the canonical Kubernetes path, and production claims still require environment-specific evidence artifacts.

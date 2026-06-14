@@ -1,0 +1,44 @@
+name: compose
+runtime_type: docker-compose
+status: supported
+best_for:
+  - local development
+  - simple demos
+  - tiny VPS
+  - operator testing
+recommended_envs:
+  - dev
+  - local
+  - small-self-hosted
+min_cpu: 2
+min_ram: 4Gi
+ha_supported: false
+evidence_supported: partial
+k8s_required: false
+production_suitability: limited
+resource_footprint: low-to-medium
+operational_complexity: low
+operational_risk: medium
+requires_cloud_provider: false
+supports_air_gapped: true
+supports_local_only: true
+canonical_paths:
+  - docker-compose.yml
+  - .env.example
+commands:
+  - docker compose config
+  - docker compose up
+limitations:
+  - Not highly available.
+  - Limited production suitability.
+  - Scaling is manual and host-bound.
+  - Isolation is weaker than a hardened Kubernetes deployment.
+  - Evidence collection may be partial or manual.
+security_notes:
+  - Keep secrets in local environment files or a secret manager, not in profile metadata.
+  - No custody, seed phrase, private key, wallet file, or signing material handling is allowed.
+evidence_notes:
+  - Suitable for local smoke evidence and manual operator testing.
+  - Production claims require additional host, backup, monitoring, and recovery evidence.
+future_extensions:
+  - podman-compose metadata may be added later.

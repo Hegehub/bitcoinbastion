@@ -388,3 +388,11 @@ Webhook delivery is outbox-backed: domain services publish events to `event_outb
 ## Generic WebSocket event stream
 
 The generic `/api/v1/ws/events` stream publishes sanitized, operator-safe event envelopes from the Event Outbox/Event Bus foundation to in-process WebSocket subscribers. Topic filtering supports signals, trace, market, news, onchain, treasury, policy, wallet, evidence, provider-health, observability, and intelligence-timeline. Specialized streams are also available at `/api/v1/ws/signals`, `/api/v1/ws/news`, `/api/v1/ws/onchain`, `/api/v1/ws/market`, `/api/v1/ws/trace`, `/api/v1/ws/treasury`, `/api/v1/ws/provider-health`, and `/api/v1/ws/intelligence-timeline`; they reuse the same broker and fixed event allowlists instead of creating separate event systems. The stream is a single-process foundation; distributed fanout and production WebSocket auth/rate-limit hardening remain future work.
+
+## TypeScript event schemas
+
+The TypeScript SDK includes event envelope types for the public event taxonomy. Event consumers should preserve `limitations`, `confidence`, `degraded`, and `stale` fields rather than hiding provider uncertainty.
+
+## Developer-layer hardening limits
+
+Event payloads and metadata are bounded (`BB_EVENTS_MAX_PAYLOAD_BYTES`, `BB_EVENTS_MAX_METADATA_BYTES`). Sensitive wallet material is rejected before outbox persistence. Event strings, event types, and aggregate identifiers are length-checked where practical. The Event Outbox remains the durable source for downstream delivery; WebSockets are not durable delivery.

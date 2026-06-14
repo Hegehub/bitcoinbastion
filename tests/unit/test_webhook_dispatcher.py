@@ -96,6 +96,8 @@ def test_dispatcher_sends_signed_post_to_subscribed_endpoint() -> None:
             secret="whsec_test_secret",
             signature_header=headers["x-bastion-signature"],
             timestamp=int(headers["x-bastion-timestamp"]),
+            delivery_id=str(headers["x-bastion-delivery-id"]),
+            event_type=str(headers["x-bastion-event"]),
             raw_body=str(captured["body"]),
             now=int(headers["x-bastion-timestamp"]),
         )

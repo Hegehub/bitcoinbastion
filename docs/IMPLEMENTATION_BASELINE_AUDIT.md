@@ -279,7 +279,7 @@ Searches were run for forbidden wording and sensitive input wording across repos
 
 ### Forbidden wording
 
-No production UI/docs use of exact forbidden wording was found. Exact terms such as `clean address`, `dirty address`, `criminal address`, `guaranteed safe`, `approved payment`, and `verified illicit` appear in frontend tests and `frontend/lib/security.ts` as deny-list/test fixtures. This is acceptable and should be preserved.
+No production UI/docs use of misleading Trace certainty wording was found. The frontend security deny-list and tests preserve these checks without using those phrases in user-facing copy.
 
 | Location | Issue | Risk | Recommended action |
 | --- | --- | --- | --- |

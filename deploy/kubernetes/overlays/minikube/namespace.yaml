@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bitcoin-bastion-minikube
+  labels:
+    app.kubernetes.io/name: bitcoin-bastion
+    app.kubernetes.io/part-of: bitcoin-bastion
+    bastion.runtime/profile: minikube
+    bastion.runtime/scope: local-testing

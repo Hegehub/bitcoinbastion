@@ -117,6 +117,13 @@ These endpoints intentionally return direct schema payloads (not `ResponseEnvelo
 - `POST /api/v1/trace/payment-intent/preview`
 - `POST /api/v1/trace/destination-review`
 - `GET /api/v1/trace/lite/{address}`
+### Plugins
+- `GET /api/v1/plugins`
+- `GET /api/v1/plugins/{plugin_id}`
+- `POST /api/v1/plugins/{plugin_id}/enable`
+- `POST /api/v1/plugins/{plugin_id}/disable`
+- `POST /api/v1/plugins/{plugin_id}/dry-run`
+
 ### Admin
 - `GET /api/v1/admin/status`
 - `GET /api/v1/admin/jobs`

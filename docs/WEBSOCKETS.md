@@ -190,3 +190,13 @@ The implementation adds bounded WebSocket metrics for active connections, total 
 ## Python SDK helper
 
 The developer-preview Python SDK includes `client.websocket.subscribe_events(topics=[...])` for the generic stream and `client.websocket.subscribe("signals")` style helpers for specialized streams. The SDK helpers preserve the same no-custody payload rules and do not add replay or distributed fanout beyond the backend capabilities documented here.
+
+## TypeScript SDK helper
+
+The TypeScript SDK exposes `client.websocket.subscribe(...)` for `/ws/events` topic subscriptions and specialized helpers for `/ws/signals`, `/ws/news`, `/ws/onchain`, `/ws/market`, `/ws/trace`, `/ws/treasury`, `/ws/provider-health`, and `/ws/intelligence-timeline`.
+
+## Hardening limits
+
+WebSocket subscriptions are bounded by topic count and invalid topics are rejected. Event payloads are sanitized before broadcast and oversized payloads are replaced with a truncation marker. WebSockets are live convenience streams, not durable delivery; use the Event Outbox and webhooks for durable/retryable delivery.
+
+Production exposure of private/operator streams still requires authentication, rate limits, TLS, and monitoring evidence.

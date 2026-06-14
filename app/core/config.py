@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -90,11 +90,18 @@ class Settings(BaseSettings):
     )
     webhook_dispatch_enabled: bool = Field(default=True, alias="WEBHOOK_DISPATCH_ENABLED")
     webhook_dispatch_batch_size: int = Field(default=50, ge=1, le=500, alias="WEBHOOK_DISPATCH_BATCH_SIZE")
-    webhook_dispatch_timeout_seconds: float = Field(default=5.0, ge=1.0, le=30.0, alias="WEBHOOK_DISPATCH_TIMEOUT_SECONDS")
-    webhook_dispatch_max_attempts: int = Field(default=8, ge=1, le=25, alias="WEBHOOK_DISPATCH_MAX_ATTEMPTS")
+    webhook_dispatch_timeout_seconds: float = Field(default=5.0, ge=1.0, le=30.0, validation_alias=AliasChoices("WEBHOOK_DISPATCH_TIMEOUT_SECONDS", "BB_WEBHOOK_TIMEOUT_SECONDS"))
+    webhook_dispatch_max_attempts: int = Field(default=5, ge=1, le=25, validation_alias=AliasChoices("WEBHOOK_DISPATCH_MAX_ATTEMPTS", "BB_WEBHOOK_MAX_ATTEMPTS"))
     webhook_dispatch_initial_retry_seconds: int = Field(default=30, ge=1, le=3600, alias="WEBHOOK_DISPATCH_INITIAL_RETRY_SECONDS")
-    webhook_dispatch_max_retry_seconds: int = Field(default=3600, ge=1, le=86400, alias="WEBHOOK_DISPATCH_MAX_RETRY_SECONDS")
+    webhook_dispatch_max_retry_seconds: int = Field(default=3600, ge=1, le=86400, validation_alias=AliasChoices("WEBHOOK_DISPATCH_MAX_RETRY_SECONDS", "BB_WEBHOOK_MAX_RETRY_SECONDS"))
     webhook_dispatch_response_preview_bytes: int = Field(default=2048, ge=128, le=8192, alias="WEBHOOK_DISPATCH_RESPONSE_PREVIEW_BYTES")
+    webhook_max_payload_bytes: int = Field(default=65_536, ge=1024, le=1_000_000, alias="BB_WEBHOOK_MAX_PAYLOAD_BYTES")
+    webhook_signature_tolerance_seconds: int = Field(default=300, ge=30, le=3600, alias="BB_WEBHOOK_SIGNATURE_TOLERANCE_SECONDS")
+    webhook_allow_private_network_targets: bool = Field(default=False, alias="BB_WEBHOOK_ALLOW_PRIVATE_NETWORK_TARGETS")
+    ws_max_topics_per_connection: int = Field(default=8, ge=1, le=32, alias="BB_WS_MAX_TOPICS_PER_CONNECTION")
+    ws_max_payload_bytes: int = Field(default=65_536, ge=1024, le=1_000_000, alias="BB_WS_MAX_PAYLOAD_BYTES")
+    events_max_payload_bytes: int = Field(default=65_536, ge=1024, le=1_000_000, alias="BB_EVENTS_MAX_PAYLOAD_BYTES")
+    events_max_metadata_bytes: int = Field(default=16_384, ge=1024, le=1_000_000, alias="BB_EVENTS_MAX_METADATA_BYTES")
     citadel_score_weights_json: str = Field(default="", alias="CITADEL_SCORE_WEIGHTS_JSON")
     citadel_external_signal_factors_json: str = Field(
         default="", alias="CITADEL_EXTERNAL_SIGNAL_FACTORS_JSON"

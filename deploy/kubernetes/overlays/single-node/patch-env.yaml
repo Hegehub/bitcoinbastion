@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bitcoin-bastion-config
+data:
+  ENVIRONMENT: "single-node"
+  RUNTIME_PROFILE: "single-node"
+  BB_RUNTIME_PROFILE: "single-node"
+  LOG_LEVEL: "info"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          env:
+            - name: ENVIRONMENT
+              value: "single-node"
+            - name: RUNTIME_PROFILE
+              value: "single-node"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-worker
+spec:
+  template:
+    spec:
+      containers:
+        - name: worker
+          env:
+            - name: ENVIRONMENT
+              value: "single-node"
+            - name: RUNTIME_PROFILE
+              value: "single-node"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-beat
+spec:
+  template:
+    spec:
+      containers:
+        - name: beat
+          env:
+            - name: ENVIRONMENT
+              value: "single-node"
+            - name: RUNTIME_PROFILE
+              value: "single-node"

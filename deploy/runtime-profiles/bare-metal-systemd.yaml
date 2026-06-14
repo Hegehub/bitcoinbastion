@@ -1,0 +1,41 @@
+name: bare-metal-systemd
+runtime_type: systemd
+status: documented-fallback
+best_for:
+  - advanced operators
+  - minimal bare-metal deployment
+  - fallback deployment
+recommended_envs:
+  - dev
+  - staging
+  - advanced-self-hosted
+min_cpu: 2
+min_ram: 4Gi
+ha_supported: manual
+evidence_supported: manual
+k8s_required: false
+production_suitability: possible-but-manual
+resource_footprint: low-to-medium
+operational_complexity: high-manual
+operational_risk: high
+requires_cloud_provider: false
+supports_air_gapped: true
+supports_local_only: true
+canonical_paths:
+  - deploy/runtime-profiles/bare-metal-systemd.yaml
+commands:
+  - Metadata only in this task; full systemd guide is future work.
+limitations:
+  - Manual process supervision.
+  - Manual service hardening.
+  - Manual logs, backups, and monitoring.
+  - No Kubernetes-native NetworkPolicy, PDB, HPA, or ServiceMonitor.
+  - Operator must configure PostgreSQL, Redis, env files, migrations, health checks, and backups.
+security_notes:
+  - Requires careful OS hardening, user isolation, firewall policy, secret storage, and service supervision.
+  - No custody, signing, seed phrase, private key, wallet file, or signing material handling is allowed.
+evidence_notes:
+  - Evidence collection is manual and operator-owned.
+  - Full production claims require documented hardening, backup, restore, monitoring, and recovery evidence.
+future_extensions:
+  - A full bare-metal/systemd guide may be added later.
