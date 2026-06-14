@@ -1,0 +1,42 @@
+name: single-node
+runtime_type: kubernetes-single-node
+status: overlay-added
+best_for:
+  - constrained VPS
+  - home server
+  - sovereign minimal production
+recommended_envs:
+  - staging
+  - production-with-limitations
+min_cpu: 2
+min_ram: 4Gi
+ha_supported: false
+evidence_supported: partial-to-strong
+k8s_required: true
+production_suitability: conservative-limited
+resource_footprint: low-to-medium
+operational_complexity: medium
+operational_risk: medium-to-high
+requires_cloud_provider: false
+supports_air_gapped: true
+supports_local_only: true
+canonical_paths:
+  - deploy/runtime-profiles/single-node.yaml
+  - deploy/kubernetes
+  - deploy/kubernetes/overlays/single-node
+commands:
+  - kubectl kustomize deploy/kubernetes/overlays/single-node
+limitations:
+  - No HA.
+  - Lower resource limits.
+  - Heavy jobs should be disabled, suspended, or manual.
+  - Production suitability depends on backups, monitoring, recovery drills, and operator discipline.
+  - Not equivalent to a production cluster.
+security_notes:
+  - Harden host access, secrets, backups, updates, ingress, and monitoring.
+  - No custody, signing, seed phrase, private key, wallet file, or signing material handling is allowed.
+evidence_notes:
+  - Evidence can range from partial to strong depending on monitoring and recovery artifacts.
+  - Lack of HA must remain visible in release evidence.
+future_extensions:
+  - Later tasks can further tune HPA removal, storage guidance, and job cadence.

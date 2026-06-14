@@ -62,6 +62,8 @@ Model list aligned to `app/db/models`.
 - `TelegramDeliveryLog`
 - `AuditLog`
 - `JobRun`
+- `EventOutbox`
+- `EventOutboxStatus`
 
 
 ## Bastion Trace
@@ -245,3 +247,17 @@ These models persist replayable evidence bundles, lineage chains, artifact paylo
 
 - `BackupValidationRecord`
 - `RecoveryValidationRecord`
+
+## Webhook management models
+
+- `WebhookEndpoint` stores operator-managed endpoint configuration, target URL, enabled/status flags, secret reference placeholder, metadata, and delivery health counters.
+- `WebhookEventSubscription` stores endpoint-to-event-type subscriptions with duplicate prevention per endpoint and event type.
+- `WebhookDelivery` stores test/future delivery records, status, target URL snapshot, sanitized request/response previews, attempts, and timestamps.
+
+- `WebhookEndpoint`
+- `WebhookEndpointStatus`
+- `WebhookEventSubscription`
+- `WebhookDelivery`
+- `WebhookDeliveryStatus`
+
+Webhook models are management and delivery-history foundations only. Real signed outbound delivery is pending future dispatcher work.

@@ -18,15 +18,20 @@ Substatus:
 - Enterprise Tier: PLACEHOLDER/BASELINE
 - Integrations: BASELINE
 - Observability: BASELINE
-- Website UI: NOT IMPLEMENTED
+- Website UI: BASELINE IMPLEMENTED
 - Production Calibration: NOT COMPLETE
 
 ## Global note
 This file intentionally avoids production-ready claims for Bastion Trace.
 
+## Trace API/frontend contract alignment
+
+Trace frontend routes (`/check`, `/trace`, `/trace/[reportId]`, and `/trace/[reportId]/proof-packet`) are baseline implemented against real backend endpoints. Trace remains advisory-only, no-custody, not legal verification, not Bitcoin consensus proof, and not production-calibrated. Proof packets are unsigned application-level evidence summaries unless signing is explicitly implemented and configured.
+
+
 
 Website Backend Foundation: BASELINE IMPLEMENTED
-Frontend UI: NOT IMPLEMENTED
+Frontend UI: BASELINE IMPLEMENTED
 
 Frontend Architecture: BASELINE IMPLEMENTED
 Frontend Design System: BASELINE IMPLEMENTED
@@ -37,7 +42,7 @@ Interactive workflows are still pending.
 
 - Public Address Check UX: BASELINE IMPLEMENTED
 - Trace Lite UX: BASELINE IMPLEMENTED
-- Advanced Trace UI: NOT IMPLEMENTED
+- Advanced Trace UI: BASELINE/PARTIAL IMPLEMENTED
 
 Detailed Trace Report UI: BASELINE IMPLEMENTED
 Proof Packet Viewer: BASELINE IMPLEMENTED
@@ -263,3 +268,86 @@ Production operations now include OperationalHealthService aggregation, exact Ma
 Status: Production Candidate / Operationally Hardened.
 
 Final release-candidate audit documentation now records repository-wide validation for database migrations, API contracts, Celery/background jobs, evidence, replay, operator workflow, publishing policy, website/frontend DTOs, Telegram safety, observability, Kubernetes artifacts, security posture and sovereignty principles. Schema/runtime parity is hardened through the final release-candidate parity migration. Market Time Machine readiness is updated to 99%; overall Bitcoin Bastion readiness is updated to 99% pending only environment-specific production evidence such as live Kubernetes rendering, load testing, provider incidents, Telegram runtime proof, penetration testing and accessibility certification.
+
+## Event Taxonomy and Registry
+
+Event taxonomy and registry foundation: BASELINE CONTRACT IMPLEMENTED.
+
+This taxonomy baseline defines canonical event domains, event types, metadata, safety flags, and deterministic payload safety checks. Later prompts have added the durable outbox and internal publisher, but webhook delivery, WebSocket broadcasting, SDK clients, CLI commands, MCP server, and plugin runtime execution remain unimplemented.
+
+## Event Outbox
+
+Event outbox foundation: DURABLE INTERNAL BASELINE IMPLEMENTED.
+
+The `event_outbox` table, SQLAlchemy model, repository, service, migration, and tests now exist. This baseline records events as pending rows and prepares retry/lock/dead-letter fields only. It does not implement webhook dispatch, WebSocket streaming, Telegram delivery, SDK consumers, CLI commands, MCP connector, or plugin execution.
+
+## Event Bus
+
+Internal event bus foundation: BASELINE IMPLEMENTED.
+
+The `publish_event(...)` API validates registered event types, checks payload and metadata safety, serializes payloads deterministically, handles local idempotency keys, and writes pending rows to `event_outbox`. It does not implement external delivery.
+
+## Event Domain Integration Status
+
+Prompt 7 wires selected real backend workflows to the internal Event Bus/Event Outbox. Events are persisted internally for Signals, Trace, Treasury, Evidence/Replay, Provider Health, On-chain ingestion, Wallet health, Policy evaluation, News article ingestion, and Market candle attribution where stable hooks exist.
+
+This now includes outbox-backed webhook delivery. WebSocket streaming, SDK consumption, CLI commands, and the baseline MCP connector are implemented; plugin execution remains unimplemented. Event publication is not proof of payment, legal status, Bitcoin consensus proof, or trading correctness. Remaining event integration gaps are documented in `docs/EVENT_INTEGRATION_GAPS.md`.
+
+## Webhook Management Status
+
+Webhook management API foundation: IMPLEMENTED.
+
+The repository now includes persistent webhook endpoints, event subscriptions, delivery records, and `/api/v1/webhooks` management routes. Test delivery creates a safe signed `test_created` delivery record with canonical `X-Bastion-*` headers and sanitized delivery logs. Outbox-backed outbound network dispatch, retry dispatch, and worker execution are implemented as a foundation; live operational evidence and production runbooks remain pending.
+
+- Webhook signing baseline: HMAC SHA256 signing helpers, signed management test deliveries, and sanitized delivery logs are implemented. Full production operational evidence for dispatcher retry execution remains pending later prompts.
+
+## Webhook Dispatcher Status
+
+Webhook dispatcher worker: IMPLEMENTED FOUNDATION.
+
+`dispatch_webhook_outbox_events` processes ready outbox rows, resolves active webhook subscriptions, sends signed POST requests, records delivery attempts, and applies deterministic retry/dead-letter state. Webhook dispatch remains an infrastructure notification mechanism only; it is not legal verification, financial advice, Bitcoin consensus proof, payment approval, or transaction execution authorization.
+
+## MCP Connector status
+
+Bastion MCP Connector: BASELINE IMPLEMENTED / PRODUCTION HARDENING PENDING. The connector provides safe read-only, recommendation-only, and draft-only tools over the Bitcoin Bastion API adapter. Remaining blockers include production auth model validation, live MCP client compatibility testing, operator approval UX integration, rate-limit evidence, and security review.
+
+## TypeScript SDK status
+
+TypeScript SDK: DEVELOPER PREVIEW IMPLEMENTED. The package provides REST resources, ResponseEnvelope unwrapping, WebSocket helpers, webhook signature verification, and no-custody safety checks. Production hardening remains pending for package publication, broader browser/runtime compatibility evidence, and long-term API stability guarantees.
+
+## Plugin API foundation status
+
+Bastion Plugin API foundation: **BASELINE IMPLEMENTED / PRODUCTION HARDENING PENDING**.
+
+Implemented baseline:
+
+- typed plugin manifest and plugin type model;
+- deny-by-default permission registry;
+- forbidden custody/signing permission rejection;
+- restrictive sandbox defaults;
+- in-process registry with audit records;
+- built-in plugin interfaces and a safe dashboard smoke plugin;
+- minimal admin-gated plugin API for list/get/enable/disable/dry-run.
+
+Remaining hardening:
+
+- persisted plugin configuration and operator approval records;
+- package signing and external plugin verification;
+- production rate-limit evidence;
+- security review of any non-built-in plugin loading.
+
+## Developer layer hardening status
+
+Developer/API layer hardening: **BASELINE HARDENED / PRODUCTION EXPOSURE EVIDENCE PENDING**. Sensitive material guards, webhook replay checks, URL safety, payload limits, bounded WebSocket topics, MCP/CLI/plugin safety checks, and documentation truthfulness tests are in place. Remaining blockers are production auth, rate limits, TLS, monitoring evidence, and private-stream access control validation.
+
+## Runtime Profile Matrix
+
+Runtime Profile Matrix: IMPLEMENTED
+Runtime Profile Overlays: PENDING
+K3s Overlay: BASELINE IMPLEMENTED
+Kind Overlay: PENDING
+Minikube Overlay: PENDING
+Single-node Overlay: BASELINE IMPLEMENTED
+Bare-metal/systemd Docs: BASELINE METADATA IMPLEMENTED / FULL GUIDE PENDING
+
+Runtime profile metadata clarifies that Kubernetes is supported but optional, `deploy/kubernetes` remains the canonical Kubernetes path, and production claims still require environment-specific evidence artifacts.

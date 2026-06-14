@@ -18,6 +18,62 @@ DELIVERY_PUBLISH_EVENTS = Counter(
     "Delivery publish events by status/reason",
     ["status", "reason"],
 )
+BASTION_WEBHOOK_DISPATCH_ATTEMPTS_TOTAL = Counter(
+    "bastion_webhook_dispatch_attempts_total",
+    "Webhook dispatch attempts by bounded event family and status",
+    ["event_domain", "event_type_family", "status"],
+)
+BASTION_WEBHOOK_DISPATCH_SUCCESS_TOTAL = Counter(
+    "bastion_webhook_dispatch_success_total",
+    "Webhook dispatch successes by bounded event family and status",
+    ["event_domain", "event_type_family", "status"],
+)
+BASTION_WEBHOOK_DISPATCH_FAILURE_TOTAL = Counter(
+    "bastion_webhook_dispatch_failure_total",
+    "Webhook dispatch failures by bounded event family and status",
+    ["event_domain", "event_type_family", "status"],
+)
+BASTION_WEBHOOK_DISPATCH_DEAD_TOTAL = Counter(
+    "bastion_webhook_dispatch_dead_total",
+    "Webhook dispatch terminal failures by bounded event family and status",
+    ["event_domain", "event_type_family", "status"],
+)
+BASTION_WEBHOOK_DISPATCH_LATENCY_SECONDS = Histogram(
+    "bastion_webhook_dispatch_latency_seconds",
+    "Webhook dispatch latency by bounded event family and status",
+    ["event_domain", "event_type_family", "status"],
+)
+BASTION_WEBHOOK_OUTBOX_PENDING_TOTAL = Gauge(
+    "bastion_webhook_outbox_pending_total",
+    "Pending outbox events observed by webhook dispatcher",
+    ["status"],
+)
+BASTION_WS_CONNECTIONS_ACTIVE = Gauge(
+    "bastion_ws_connections_active",
+    "Active Bitcoin Bastion WebSocket connections",
+)
+BASTION_WS_CONNECTIONS_TOTAL = Counter(
+    "bastion_ws_connections_total",
+    "Total Bitcoin Bastion WebSocket connections",
+)
+BASTION_WS_MESSAGES_SENT_TOTAL = Counter(
+    "bastion_ws_messages_sent_total",
+    "Bitcoin Bastion WebSocket messages sent",
+    ["message_type"],
+)
+BASTION_WS_SEND_FAILURES_TOTAL = Counter(
+    "bastion_ws_send_failures_total",
+    "Bitcoin Bastion WebSocket send failures",
+    ["reason"],
+)
+BASTION_WS_INVALID_SUBSCRIPTION_TOTAL = Counter(
+    "bastion_ws_invalid_subscription_total",
+    "Bitcoin Bastion invalid WebSocket subscriptions",
+)
+BASTION_WS_HEARTBEAT_TOTAL = Counter(
+    "bastion_ws_heartbeat_total",
+    "Bitcoin Bastion WebSocket heartbeats sent",
+)
 
 BOUNDED_LABELS = {"provider", "provider_type", "signal_type", "job_name", "status", "reason_code", "endpoint", "timeframe"}
 _ALLOWED_LABEL_VALUES = {

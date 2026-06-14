@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          resources:
+            requests:
+              cpu: 75m
+              memory: 192Mi
+            limits:
+              cpu: 400m
+              memory: 512Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-worker
+spec:
+  template:
+    spec:
+      containers:
+        - name: worker
+          resources:
+            requests:
+              cpu: 75m
+              memory: 192Mi
+            limits:
+              cpu: 400m
+              memory: 512Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-bastion-beat
+spec:
+  template:
+    spec:
+      containers:
+        - name: beat
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi

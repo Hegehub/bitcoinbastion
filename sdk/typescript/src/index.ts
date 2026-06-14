@@ -1,0 +1,8 @@
+export { BitcoinBastionClient } from "./client.js";
+export type { BitcoinBastionClientConfig } from "./config.js";
+export * from "./errors.js";
+export * from "./safety.js";
+export * from "./webhooks.js";
+export * from "./schemas/common.js";
+export * from "./schemas/events.js";
+export * from "./resources/websocket.js";

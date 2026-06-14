@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from app.db.models.intelligence_signals import IntelligenceOperatorReview
+from app.db.models.intelligence_signals import IntelligenceOperatorReview, IntelligenceSignalCandidate
 from app.db.models.time_utils import utcnow
 from app.repositories.intelligence_signal_repository import IntelligenceSignalRepository
+from app.services.events.domain_event_publisher import publish_domain_event
 from app.schemas.intelligence_signals import SIGNAL_LIMITATIONS
 from app.services.intelligence.signal_governance_metrics import (
     INTELLIGENCE_OPERATOR_REVIEWS_TOTAL,
@@ -52,7 +53,43 @@ class OperatorReviewService:
             INTELLIGENCE_SIGNAL_REJECTED_TOTAL.labels(signal_type=self._bounded_type(candidate.signal_type), reason_code=self._bounded_reason(review_status)).inc()
         INTELLIGENCE_OPERATOR_REVIEWS_TOTAL.labels(status=self._bounded_review(review_status)).inc()
         self.db.flush()
+        self._publish_review_event(candidate, review_status, reviewer_id)
         return row
+
+    def _publish_review_event(self, candidate: IntelligenceSignalCandidate, review_status: str, reviewer_id: int | None) -> None:
+        event_type = None
+        if candidate.status == "published":
+            event_type = "signal.published"
+        elif review_status in {"rejected", "false_positive"}:
+            event_type = "signal.suppressed"
+        elif candidate.requires_operator_review:
+            event_type = "signal.operator_review_required"
+        if event_type is None:
+            return
+        publish_domain_event(
+            self.db,
+            event_type,
+            {
+                "signal_id": candidate.id,
+                "signal_type": candidate.signal_type,
+                "status": candidate.status,
+                "confidence": candidate.confidence_score,
+                "policy_status": candidate.policy_decision,
+                "operator_review_required": candidate.requires_operator_review,
+                "review_status": review_status,
+                "reviewer_id": reviewer_id,
+                "updated_at": candidate.updated_at.isoformat() if candidate.updated_at else None,
+                "limitations": SIGNAL_LIMITATIONS.copy(),
+                "not_financial_advice": True,
+                "correlation_not_causation": True,
+                "no_auto_execution": True,
+            },
+            aggregate_type="signal",
+            aggregate_id=candidate.id,
+            source="signal_operator_review",
+            actor_id=reviewer_id,
+            idempotency_key=f"{event_type}:signal:{candidate.id}:{review_status}",
+        )
 
     def payload(self, row: IntelligenceOperatorReview) -> dict[str, object]:
         return {

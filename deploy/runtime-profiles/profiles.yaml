@@ -1,0 +1,28 @@
+version: 1
+canonical_kubernetes_path: deploy/kubernetes
+kubernetes_required_for_all_profiles: false
+cloud_provider_required: false
+custody_allowed: false
+seed_phrase_handling_allowed: false
+private_key_handling_allowed: false
+profiles:
+  - compose
+  - k8s
+  - k3s
+  - kind
+  - minikube
+  - single-node
+  - bare-metal-systemd
+future_reserved_profiles:
+  - podman-compose
+  - nomad
+  - talos
+notes:
+  - Runtime profiles are metadata and operator guidance, not proof of production readiness.
+  - Kubernetes is supported but not mandatory.
+
+overlay_paths:
+  kind: deploy/kubernetes/overlays/kind
+  minikube: deploy/kubernetes/overlays/minikube
+  k3s: deploy/kubernetes/overlays/k3s
+  single-node: deploy/kubernetes/overlays/single-node

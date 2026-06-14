@@ -61,3 +61,9 @@ Current baseline uses native Secret references for compatibility. To adopt Exter
 - Multi-environment GitOps governance is under `deploy/kubernetes/gitops` (dev/staging/prod app topology, promotion gates, approval templates, drift checks).
 
 - Final certification artifacts: `FINAL_CHECKLIST.md`, `OPERATOR_RUNBOOK.md`, `RC_EVIDENCE_CHECKLIST.md`.
+
+## Runtime profile relationship
+
+This directory is the canonical Kubernetes manifest path for Bitcoin Bastion. Runtime profile metadata and operator guidance are documented under `deploy/runtime-profiles` and `docs/RUNTIME_PROFILES.md`.
+
+K3s and single-node overlays are available under `overlays/k3s` and `overlays/single-node`. Local testing overlays are available under `overlays/kind` and `overlays/minikube`; Kind and Minikube are local-only overlays and are not production deployment profiles. The runtime profile metadata does not replace this directory and does not introduce a new canonical `k8s/` path.

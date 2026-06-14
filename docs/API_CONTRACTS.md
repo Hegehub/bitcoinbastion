@@ -100,6 +100,7 @@ These endpoints intentionally return direct schema payloads (not `ResponseEnvelo
 - `GET /api/v1/trace/address/{address}`
 - `GET /api/v1/trace/report/{report_id}`
 - `GET /api/v1/trace/report/{report_id}/evidence`
+- `GET /api/v1/trace/report/{report_id}/proof-packet`
 - `GET /api/v1/trace/sources`
 - `GET /api/v1/trace/watchlist`
 - `POST /api/v1/trace/watchlist`
@@ -116,6 +117,13 @@ These endpoints intentionally return direct schema payloads (not `ResponseEnvelo
 - `POST /api/v1/trace/payment-intent/preview`
 - `POST /api/v1/trace/destination-review`
 - `GET /api/v1/trace/lite/{address}`
+### Plugins
+- `GET /api/v1/plugins`
+- `GET /api/v1/plugins/{plugin_id}`
+- `POST /api/v1/plugins/{plugin_id}/enable`
+- `POST /api/v1/plugins/{plugin_id}/disable`
+- `POST /api/v1/plugins/{plugin_id}/dry-run`
+
 ### Admin
 - `GET /api/v1/admin/status`
 - `GET /api/v1/admin/jobs`
@@ -531,3 +539,18 @@ Root health endpoints for Kubernetes and external probes:
 - `GET /api/v1/operations/metrics` returns SLO-oriented metrics summary.
 - `GET /api/v1/operations/readiness` returns readiness using the required news provider, price provider, timeline engine, database and scheduler checks.
 - `GET /api/v1/operations/liveness` returns process, DB and migration liveness.
+
+## Webhook management APIs
+
+- `POST /api/v1/webhooks` creates a webhook endpoint and initial event subscriptions.
+- `GET /api/v1/webhooks` lists webhook endpoints with pagination.
+- `GET /api/v1/webhooks/{webhook_id}` returns one webhook endpoint.
+- `PATCH /api/v1/webhooks/{webhook_id}` updates endpoint fields and can replace subscriptions.
+- `DELETE /api/v1/webhooks/{webhook_id}` soft-deletes a webhook endpoint.
+- `POST /api/v1/webhooks/{webhook_id}/subscriptions` adds one event subscription.
+- `GET /api/v1/webhooks/{webhook_id}/subscriptions` lists subscriptions.
+- `DELETE /api/v1/webhooks/{webhook_id}/subscriptions/{subscription_id}` removes a subscription.
+- `POST /api/v1/webhooks/{webhook_id}/test` creates a `test_created` delivery record only; no outbound HTTP is sent.
+- `GET /api/v1/webhooks/{webhook_id}/deliveries` lists webhook delivery records.
+
+Webhook delivery signing, dispatch workers, retries, and HMAC headers are pending future prompts.

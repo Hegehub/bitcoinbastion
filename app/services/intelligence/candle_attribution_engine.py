@@ -22,6 +22,7 @@ from app.db.models.news_event import NewsEvent
 from app.db.models.news_price_impact import NewsPriceImpact
 from app.db.models.time_utils import utcnow
 from app.services.intelligence.historical_similarity_service import HistoricalSimilarityService
+from app.services.events.domain_event_publisher import publish_domain_event
 from app.services.intelligence.candle_attribution.metrics import (
     ATTRIBUTION_CANDIDATES_TOTAL,
     ATTRIBUTION_CONFIDENCE_AVG,
@@ -161,6 +162,33 @@ class CandleAttributionEngine:
                     "provider_confidence": candle.provider_confidence,
                 },
             )
+            if rows:
+                primary = rows[0]
+                publish_domain_event(
+                    self.db,
+                    "market.candle.attributed",
+                    {
+                        "candle_id": candle.id,
+                        "event_id": primary.event_id,
+                        "timeframe": candle.timeframe,
+                        "regime": getattr(candle, "market_regime", "unknown"),
+                        "confidence": primary.confidence_score,
+                        "attribution_count": len(rows),
+                        "dominant_narrative": primary.candidate_category,
+                        "correlation_not_causation": True,
+                        "historical_similarity_does_not_guarantee_future_behavior": True,
+                        "evidence_refs": primary.evidence_refs_json or {},
+                        "limitations": [
+                            "Market attribution is correlation-oriented and informational only.",
+                            "Historical similarity does not predict future behavior.",
+                            "This is not financial advice.",
+                        ],
+                    },
+                    aggregate_type="market_candle",
+                    aggregate_id=candle.id,
+                    source="candle_attribution_engine",
+                    idempotency_key=f"market.candle.attributed:market_candle:{candle.id}:attribution:{primary.id}",
+                )
             return rows
         except Exception:
             CANDLE_ATTRIBUTION_FAILURES_TOTAL.inc()

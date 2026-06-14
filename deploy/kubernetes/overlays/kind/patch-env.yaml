@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bitcoin-bastion-config
+data:
+  ENVIRONMENT: "kind"
+  APP_ENV: "kind"
+  DEBUG: "false"
+  BBASTION_RUNTIME_PROFILE: "kind"
+  BBASTION_DEPLOYMENT_MODE: "local-kubernetes"
+  BBASTION_PROFILE_PRODUCTION_READY: "false"

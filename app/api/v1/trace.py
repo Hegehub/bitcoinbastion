@@ -75,6 +75,62 @@ def list_evidence(report_id: int, db: Session = Depends(db_session)) -> Response
     return ResponseEnvelope(data=items)
 
 
+
+
+@router.get("/report/{report_id}/proof-packet", response_model=ResponseEnvelope[dict[str, object]])
+def get_proof_packet(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+    repo = BastionTraceRepository(db)
+    report = repo.get_report(report_id)
+    if report is None:
+        raise HTTPException(status_code=404, detail="Trace report not found")
+    report_refs = json.loads(report.evidence_refs_json or "[]")
+    evidence_refs = [
+        {
+            "id": item.id,
+            "evidence_ref": item.evidence_ref,
+            "evidence_type": item.evidence_type,
+            "source_name": item.source_name,
+            "source_type": item.source_type,
+            "confidence": item.confidence,
+            "freshness_days": item.freshness_days,
+            "description": item.description,
+            "limitations": json.loads(item.limitations_json or "[]"),
+            "created_at": item.created_at.isoformat() if item.created_at else None,
+        }
+        for item in repo.list_evidence(report_id)
+    ]
+    return ResponseEnvelope(
+        data={
+            "report_id": report_id,
+            "address": report.address,
+            "trace_band": report.trace_band,
+            "trace_score": report.trace_score,
+            "confidence": report.confidence,
+            "advisory_only": True,
+            "not_legal_verification": True,
+            "not_bitcoin_consensus_proof": True,
+            "no_custody": True,
+            "signed": False,
+            "signature_available": False,
+            "signature_status": "unsigned",
+            "packet_type": "application_level_evidence_summary",
+            "evidence_refs": evidence_refs,
+            "report_evidence_refs": report_refs,
+            "limitations": [
+                "Proof packet is an application-level evidence summary.",
+                "This is not Bitcoin consensus proof.",
+                "This is not legal verification.",
+                "Cryptographic signing is not available unless explicitly configured.",
+            ],
+            "operator_guidance": [
+                "Use this packet as advisory evidence context only.",
+                "Verify counterparties and evidence independently before operational decisions.",
+            ],
+            "created_at": report.created_at.isoformat() if report.created_at else None,
+        }
+    )
+
+
 @router.get("/sources", response_model=ResponseEnvelope[list[TraceSourceStatus]])
 def list_sources(db: Session = Depends(db_session)) -> ResponseEnvelope[list[TraceSourceStatus]]:
     repo = BastionTraceRepository(db)

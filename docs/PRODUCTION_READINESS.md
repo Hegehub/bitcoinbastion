@@ -291,3 +291,63 @@ Remaining environment-specific evidence before a production-validated claim:
 - penetration testing and accessibility certification.
 
 Final readiness estimate: Market Time Machine 99%; overall Bitcoin Bastion 99% as a production candidate.
+
+## Trace API/frontend contract alignment
+
+Bastion Trace is implemented as a backend and frontend baseline, not a production-calibrated service. `/check`, `/trace`, `/trace/[reportId]`, and `/trace/[reportId]/proof-packet` align with real FastAPI endpoints and preserve `ResponseEnvelope.data` handling. Trace outputs are advisory-only, no-custody, not legal verification, and not Bitcoin consensus proof. Proof packets are unsigned application-level evidence summaries unless signing is explicitly implemented and configured with evidence.
+
+## Event layer readiness
+
+The event taxonomy and registry are a baseline contract. The durable outbox and internal publisher now exist, and webhook dispatcher, WebSocket broadcaster, SDK, CLI, and baseline MCP connector foundations now exist; production hardening remains pending for deployment evidence, auth/rate-limit validation, and plugin execution runtime.
+
+## Event outbox readiness
+
+The event outbox is implemented as an internal durable foundation only. It prepares persistence, retry metadata, lock metadata, and sanitized error storage, but production event delivery remains pending until dispatcher workers, delivery authorization, webhook/WebSocket transports, operational runbooks, and live deployment evidence exist.
+
+## Event bus readiness
+
+The internal Event Bus is a baseline publisher into the durable outbox only. Production delivery readiness remains pending until dispatcher workers, webhook/WebSocket authorization, delivery logs, runtime metrics, operator runbooks, and deployment evidence are implemented and validated.
+
+## Event Bus / Domain Integration Readiness Note
+
+The Event Bus and Outbox are an internal durability foundation. Selected domains now write events to the outbox, and an outbox-backed webhook dispatcher foundation is implemented. Delivery retries, outbound webhook dispatch execution, WebSocket fan-out, SDK consumption, CLI surfaces, and baseline MCP connector foundations now exist, but plugin execution and production-grade evidence require later prompts before any production-ready delivery claim.
+
+## Webhook Readiness Note
+
+Webhook endpoint/subscription/delivery persistence, management APIs, HMAC signing helpers, signed test delivery records, and sanitized delivery logs are implemented as a foundation. Production webhook delivery is not ready until live delivery metrics, secret rotation, alerting/SLO evidence, deployment-specific worker operations, and operator runbooks are implemented and validated.
+
+- Webhook security update: signed test deliveries and sanitized delivery observability are implemented as a foundation. Production live dispatcher evidence, alerting/SLO validation, and secret rotation evidence remain pending; webhooks must not be described as fully production-delivery-ready yet.
+
+## Webhook Dispatcher Readiness Note
+
+The webhook dispatcher foundation now performs outbox-backed signed POST delivery with retry/dead-letter state and sanitized delivery logs. Production readiness still requires live delivery evidence, operator runbooks, alerting/SLO validation, secret rotation, and deployment-specific dispatcher operations evidence.
+
+## MCP Connector readiness
+
+Bastion MCP Connector: BASELINE IMPLEMENTED / PRODUCTION HARDENING PENDING. It is designed as a no-custody, advisory-only AI-agent interface and is not a wallet, signing interface, trading executor, legal-verdict engine, or Bitcoin consensus oracle. Production readiness requires production auth model validation, live MCP client compatibility testing, operator approval UX integration, rate-limit evidence, and security review.
+
+## TypeScript SDK readiness
+
+TypeScript SDK: DEVELOPER PREVIEW IMPLEMENTED / PRODUCTION HARDENING PENDING. It is a no-custody client library and not a wallet, trading executor, legal-verdict engine, or Bitcoin consensus oracle. Production readiness requires package publication controls, runtime compatibility evidence, security review, and versioned API stability policy.
+
+## Plugin API readiness
+
+Bastion Plugin API foundation is **baseline implemented** and **not marketplace-ready**. The current design is manifest-first, deny-by-default, dry-run-first, and operator-controlled.
+
+Production blockers before broader plugin rollout:
+
+- persisted operator approval state;
+- package signature verification for external plugin artifacts;
+- security review gates for plugin capabilities;
+- production authorization model validation for admin actions;
+- rate-limit and audit-retention evidence.
+
+Plugins cannot access seed phrases, private keys, wallet files, or signing material. Plugins cannot sign Bitcoin transactions, broadcast Bitcoin transactions, or approve treasury actions.
+
+## Developer layer production readiness
+
+Developer/API layer is hardened for baseline self-hosted development but is not production-complete without evidence for auth, rate limits, TLS, webhook receiver verification, monitoring, and operational runbooks. WebSockets are not durable delivery. Plugins remain in-process and sandbox-limited; external plugin loading is not enabled.
+
+## Runtime profile readiness note
+
+Runtime profiles improve deployment clarity but do not by themselves prove production readiness. Production readiness still requires environment-specific evidence artifacts, secrets handling validation, monitoring validation, backup/restore evidence, and operational drills. Kubernetes is supported but not mandatory; `deploy/kubernetes` remains the canonical Kubernetes manifest path when Kubernetes is used.
