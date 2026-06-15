@@ -6,6 +6,7 @@ import reflex as rx
 
 CONSOLE_NAV_ITEMS: Final[tuple[tuple[str, str], ...]] = (
     ("Dashboard", "/console"),
+    ("Command Center", "/console/command-center"),
     ("Trace", "/console/trace"),
     ("Evidence", "/console/evidence"),
     ("Provider Health", "/console/provider-health"),

@@ -2,6 +2,7 @@ import reflex as rx
 
 from bastion_ui.routes.check import check_page
 from bastion_ui.routes.console import console_page
+from bastion_ui.routes.console_command_center import console_command_center_page
 from bastion_ui.routes.console_api_explorer import console_api_explorer_page
 from bastion_ui.routes.console_audit import console_audit_page
 from bastion_ui.routes.console_deployment import console_deployment_page
@@ -61,3 +62,5 @@ app.add_page(console_policy_page, route="/console/policy", title="Policy Engine"
 app.add_page(console_audit_page, route="/console/audit", title="Audit Log")
 app.add_page(console_deployment_page, route="/console/deployment", title="Deployment Status")
 app.add_page(console_api_explorer_page, route="/console/api-explorer", title="API Explorer")
+
+app.add_page(console_command_center_page, route="/console/command-center", title="Command Center")

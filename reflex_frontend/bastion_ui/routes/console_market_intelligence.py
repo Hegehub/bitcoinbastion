@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import reflex as rx
 
+from bastion_ui.components.wow.market_intelligence_wall import market_intelligence_wall
+from bastion_ui.components.wow.historical_similarity_lens import historical_similarity_lens
+from bastion_ui.components.wow.time_machine_timeline import time_machine_timeline
 from bastion_ui.components.console.console_page_header import console_page_header
 from bastion_ui.components.console.console_status_strip import console_status_strip
 from bastion_ui.components.console.dashboard_shell import dashboard_shell
@@ -16,6 +19,9 @@ def console_market_intelligence_page() -> rx.Component:
         rx.vstack(
             console_page_header("Market Intelligence", "Market Intelligence is evidence-based and informational only. It does not provide financial advice. It does not guarantee future market behavior."),
             console_status_strip(),
+            market_intelligence_wall(),
+            historical_similarity_lens(),
+            time_machine_timeline(),
             market_intelligence_panel(),
             safety_card(rx.text("Read-only preview. Operator review required. Evidence-based. Advisory-only. No custody. No private key or seed phrase handling. Degraded, fallback, stale, and unavailable states must remain visible."), title="Limitations"),
             operator_notice(),

@@ -1,0 +1,95 @@
+{
+  "blockers": [],
+  "files": {
+    "bare-metal-systemd": true,
+    "compose": true,
+    "k3s": true,
+    "k8s": true,
+    "kind": true,
+    "minikube": true,
+    "single-node": true
+  },
+  "kustomize": {
+    "k3s": {
+      "reason": "kubectl unavailable",
+      "status": "skipped"
+    },
+    "kind": {
+      "reason": "kubectl unavailable",
+      "status": "skipped"
+    },
+    "minikube": {
+      "reason": "kubectl unavailable",
+      "status": "skipped"
+    },
+    "single-node": {
+      "reason": "kubectl unavailable",
+      "status": "skipped"
+    }
+  },
+  "overlays": {
+    "dev": true,
+    "k3s": true,
+    "kind": true,
+    "minikube": true,
+    "production": true,
+    "single-node": true,
+    "staging": true
+  },
+  "render": {
+    "compose": {
+      "command": "/root/.pyenv/versions/3.12.13/bin/python deploy/scripts/render-runtime-profile.py --profile compose --dry-run",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Bitcoin Bastion Runtime Profile Plan\nProfile: compose\nEnvironment: local\nMode: dry-run\n\nCommand plan:\n- docker compose config\n- docker compose --env-file .env up -d --build\n\nNotes:\n- Dry-run is the default; apply requires --apply --yes.\n- No secrets are generated and no custody/signing behavior is introduced.\n- Compose is convenient for local development and small self-hosted tests; it is not HA.\n"
+    },
+    "k3s": {
+      "command": "/root/.pyenv/versions/3.12.13/bin/python deploy/scripts/render-runtime-profile.py --profile k3s --dry-run",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Bitcoin Bastion Runtime Profile Plan\nProfile: k3s\nEnvironment: local\nMode: dry-run\nOverlay: deploy/kubernetes/overlays/k3s\n\nCommand plan:\n- kubectl kustomize deploy/kubernetes/overlays/k3s\n- kubectl apply -k deploy/kubernetes/overlays/k3s\n\nNotes:\n- Dry-run is the default; apply requires --apply --yes.\n- No secrets are generated and no custody/signing behavior is introduced.\n- K3s often includes Traefik by default.\n- Verify local-path storage class if PVCs are used.\n- Intended for sovereign VPS/home server/small production with operator evidence.\n"
+    },
+    "k8s": {
+      "command": "/root/.pyenv/versions/3.12.13/bin/python deploy/scripts/render-runtime-profile.py --profile k8s --dry-run",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Bitcoin Bastion Runtime Profile Plan\nProfile: k8s\nEnvironment: local\nMode: dry-run\nOverlay: deploy/kubernetes/overlays/dev\n\nCommand plan:\n- kubectl kustomize deploy/kubernetes/overlays/dev\n- kubectl apply -k deploy/kubernetes/overlays/dev\n\nNotes:\n- Dry-run is the default; apply requires --apply --yes.\n- No secrets are generated and no custody/signing behavior is introduced.\n- Production readiness depends on environment-specific evidence artifacts.\n"
+    },
+    "kind": {
+      "command": "/root/.pyenv/versions/3.12.13/bin/python deploy/scripts/render-runtime-profile.py --profile kind --dry-run",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Bitcoin Bastion Runtime Profile Plan\nProfile: kind\nEnvironment: local\nMode: dry-run\nOverlay: deploy/kubernetes/overlays/kind\n\nCommand plan:\n- kubectl kustomize deploy/kubernetes/overlays/kind\n- kubectl apply -k deploy/kubernetes/overlays/kind\n\nNotes:\n- Dry-run is the default; apply requires --apply --yes.\n- No secrets are generated and no custody/signing behavior is introduced.\n- Local manifest validation only.\n- No production claims.\n- Use port-forward or NodePort as documented.\n"
+    },
+    "minikube": {
+      "command": "/root/.pyenv/versions/3.12.13/bin/python deploy/scripts/render-runtime-profile.py --profile minikube --dry-run",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Bitcoin Bastion Runtime Profile Plan\nProfile: minikube\nEnvironment: local\nMode: dry-run\nOverlay: deploy/kubernetes/overlays/minikube\n\nCommand plan:\n- kubectl kustomize deploy/kubernetes/overlays/minikube\n- kubectl apply -k deploy/kubernetes/overlays/minikube\n\nNotes:\n- Dry-run is the default; apply requires --apply --yes.\n- No secrets are generated and no custody/signing behavior is introduced.\n- Local operator testing only.\n- Enable ingress addon if ingress is used.\n"
+    },
+    "single-node": {
+      "command": "/root/.pyenv/versions/3.12.13/bin/python deploy/scripts/render-runtime-profile.py --profile single-node --dry-run",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Bitcoin Bastion Runtime Profile Plan\nProfile: single-node\nEnvironment: local\nMode: dry-run\nOverlay: deploy/kubernetes/overlays/single-node\n\nCommand plan:\n- kubectl kustomize deploy/kubernetes/overlays/single-node\n- kubectl apply -k deploy/kubernetes/overlays/single-node\n\nNotes:\n- Dry-run is the default; apply requires --apply --yes.\n- No secrets are generated and no custody/signing behavior is introduced.\n- Conservative single-node profile.\n- No HA claims.\n- Heavy jobs may be suspended/manual.\n- Production use requires explicit operator evidence.\n"
+    }
+  },
+  "status": "implemented",
+  "targets": {
+    "deploy-compose": true,
+    "deploy-k3s": true,
+    "deploy-k8s": true,
+    "deploy-kind": true,
+    "deploy-minikube": true,
+    "deploy-single-node": true,
+    "runtime-detect": true,
+    "runtime-profiles": true,
+    "runtime-render-compose": true,
+    "runtime-render-k3s": true,
+    "runtime-render-k8s": true,
+    "runtime-render-kind": true,
+    "runtime-render-minikube": true,
+    "runtime-render-single-node": true,
+    "systemd-notes": true
+  }
+}

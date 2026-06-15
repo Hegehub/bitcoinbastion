@@ -121,3 +121,39 @@ Advanced Console routes:
 - `/console/api-explorer`
 
 Every module is read-only, advisory, evidence-oriented, and operator-review focused. Degraded, fallback, stale, and unavailable states are intentionally visible.
+
+## Wow Layer
+
+The Wow Layer is an evidence-oriented, sovereignty-first UI foundation for the experimental Reflex Console. It adds Trace Radar, Evidence Chain Viewer, Proof Packet Explorer, Time Machine Timeline, Sovereignty Score Panel, Node Pulse, Provider Trust Matrix, Human Confirmation Firewall, Trace Story Mode, Policy Engine Simulator, Risk Heatmap, Operator Audit Replay, Market Intelligence Wall, Historical Similarity Lens, Sovereign Grid Map, API Contract Explorer, Privacy Exposure Lens, Citadel Mode, and the No-Custody Safety Layer.
+
+What it is not:
+
+- It is not a replacement for Next.js.
+- It is not a replacement for the FastAPI backend.
+- It is not a replacement for the FastAPI/Jinja `/market` dashboard.
+- It is not production-primary yet.
+- It does not calculate backend risk, score, Trace verdicts, or market conclusions in the frontend.
+- It does not perform custody, signing, transaction creation, transaction broadcasting, or risky action execution.
+
+The backend remains the source of truth. Preview mode is explicit. Degraded, fallback, stale, unavailable, and unknown states are intentionally visible. Forbidden wording is not allowed in public operator surfaces.
+
+Checklist:
+
+- [x] Trace Radar
+- [x] Evidence Chain Viewer
+- [x] Proof Packet Explorer
+- [x] Time Machine Timeline
+- [x] Sovereignty Score Panel
+- [x] Node Pulse
+- [x] Provider Trust Matrix
+- [x] Human Confirmation Firewall
+- [x] Policy Engine Simulator
+- [x] Risk Heatmap
+- [x] Operator Audit Replay
+- [x] Market Intelligence Wall
+- [x] Historical Similarity Lens
+- [x] Sovereign Grid Map
+- [x] API Contract Explorer
+- [x] Privacy Exposure Lens
+- [x] Citadel Mode
+- [x] No-Custody Safety Layer

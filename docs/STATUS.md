@@ -399,3 +399,19 @@ Pending:
 - Live backend wiring and route/API parity evidence.
 - Production deployment evidence.
 - Operator validation and accessibility review.
+
+## End-to-End Integration Status
+
+Status: FOUNDATION INTEGRATED / PRODUCTION EVIDENCE PENDING
+
+Implemented:
+- Static route/API parity checks for backend, Trace, public, Reflex, and runtime-profile contracts.
+- Integration smoke scripts that write evidence artifacts under `artifacts/`.
+- Integration tests for webhooks, WebSocket streams, SDK safety smoke, runtime renders, and Reflex contracts.
+
+Pending:
+- Live environment deployment evidence.
+- Full event publication proof for every planned domain event.
+- Live SDK/CLI/MCP smoke against a running backend.
+- Prompt 30 production readiness audit.
+

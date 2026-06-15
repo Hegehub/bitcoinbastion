@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import reflex as rx
 
+from bastion_ui.components.wow.policy_engine_simulator import policy_engine_simulator
+from bastion_ui.components.wow.human_confirmation_firewall import human_confirmation_firewall
+from bastion_ui.components.wow.risk_heatmap import risk_heatmap
 from bastion_ui.components.console.console_page_header import console_page_header
 from bastion_ui.components.console.console_status_strip import console_status_strip
 from bastion_ui.components.console.dashboard_shell import dashboard_shell
@@ -16,6 +19,9 @@ def console_policy_page() -> rx.Component:
         rx.vstack(
             console_page_header("Policy Engine", "Policy Engine output is advisory until reviewed by an operator. Risky actions require explicit human confirmation."),
             console_status_strip(),
+            policy_engine_simulator(),
+            human_confirmation_firewall(),
+            risk_heatmap(),
             policy_engine_panel(),
             safety_card(rx.text("Read-only preview. Operator review required. Evidence-based. Advisory-only. No custody. No private key or seed phrase handling. Degraded, fallback, stale, and unavailable states must remain visible."), title="Limitations"),
             operator_notice(),

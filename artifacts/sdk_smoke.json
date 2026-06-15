@@ -1,0 +1,27 @@
+{
+  "cli": {
+    "cli/bastion_cli/main.py": "implemented",
+    "pyproject.toml": "implemented"
+  },
+  "mcp": {
+    "mcp/bastion_mcp/server.py": "implemented",
+    "mcp/pyproject.toml": "implemented"
+  },
+  "plugins": {
+    "app/plugins/base.py": "implemented",
+    "app/plugins/permissions.py": "implemented",
+    "app/plugins/registry.py": "implemented",
+    "app/plugins/sandbox.py": "implemented"
+  },
+  "python_sdk": {
+    "sdk/python/bitcoin_bastion_sdk/client.py": "implemented",
+    "sdk/python/bitcoin_bastion_sdk/resources/trace.py": "implemented",
+    "sdk/python/bitcoin_bastion_sdk/resources/webhooks.py": "implemented",
+    "sdk/python/bitcoin_bastion_sdk/websocket.py": "implemented"
+  },
+  "typescript_sdk": {
+    "sdk/typescript/package.json": "implemented",
+    "sdk/typescript/src/client.ts": "implemented",
+    "sdk/typescript/src/resources/trace.ts": "implemented"
+  }
+}

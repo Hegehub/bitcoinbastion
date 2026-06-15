@@ -388,3 +388,10 @@ Production readiness still requires CI evidence, deployment evidence, route/API 
 The advanced Reflex Console modules are preview/operator-visibility pages only. They are not production control-plane mutation tools, do not replace `/market`, do not replace backend authority, and do not perform custody, signing, transaction creation, transaction broadcasting, or treasury execution.
 
 Production readiness requires live backend integration evidence, route/API parity evidence, deployment evidence, security review, accessibility validation, load testing, observability validation, and operator drill evidence. Degraded, fallback, stale, and unavailable states must remain visible.
+
+## Prompt 29 Integration Boundary
+
+The end-to-end integration pass improves repository coherence, but it does not prove production readiness. Static route parity, render dry-runs, and frontend export checks must be supplemented with environment-specific evidence before production use.
+
+Required remaining evidence includes live deployment evidence, migration smoke evidence, backup/restore drills, rollback validation, security review, load testing, incident drills, and operator sign-off. Bitcoin Bastion remains no-custody and must not accept seed phrases, private keys, wallet files, or signing material.
+
