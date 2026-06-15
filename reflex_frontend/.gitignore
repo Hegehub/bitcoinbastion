@@ -1,0 +1,16 @@
+assets/external/
+*.db
+.states
+.web
+.venv/
+.web/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+*.log
+reflex.lock/
+frontend.zip
+backend.zip

@@ -351,3 +351,47 @@ Developer/API layer is hardened for baseline self-hosted development but is not 
 ## Runtime profile readiness note
 
 Runtime profiles improve deployment clarity but do not by themselves prove production readiness. Production readiness still requires environment-specific evidence artifacts, secrets handling validation, monitoring validation, backup/restore evidence, and operational drills. Kubernetes is supported but not mandatory; `deploy/kubernetes` remains the canonical Kubernetes manifest path when Kubernetes is used.
+
+## Runtime Profile Production Readiness
+
+Runtime profiles improve deployability but do not prove production readiness. No runtime profile changes Bitcoin Bastion's no-custody posture: the system must not hold, request, store, derive, or transmit seed phrases or private keys.
+
+Production readiness still requires:
+- successful deployment evidence;
+- migration smoke evidence;
+- schema parity evidence;
+- provider health evidence;
+- observability validation;
+- backup/restore validation;
+- rollback validation;
+- security review;
+- load testing;
+- incident/drill evidence.
+
+K3s and single-node profiles have explicit limitations:
+- limited HA;
+- resource constraints;
+- manual or reduced evidence jobs;
+- operator-managed backup strategy;
+- less fault tolerance than full Kubernetes clusters.
+
+## Reflex Frontend Production Readiness
+
+The Reflex frontend is experimental and parallel at this stage. It does not replace Next.js, does not replace FastAPI, and does not replace the existing FastAPI/Jinja `/market` dashboard.
+
+Trace is migration-critical, but Reflex Trace is not production-primary until route/API parity and deployment evidence are complete. Safety warnings are required on Trace and Console pages. Proof Packet pages may remain frontend-ready placeholders if public backend proof-packet data is unavailable; missing data must be shown as unavailable and must not be faked.
+
+Production readiness still requires CI evidence, deployment evidence, route/API parity evidence, security review, load testing, accessibility validation, observability validation, and operator drill evidence.
+
+## Reflex Advanced Console Production Readiness
+
+The advanced Reflex Console modules are preview/operator-visibility pages only. They are not production control-plane mutation tools, do not replace `/market`, do not replace backend authority, and do not perform custody, signing, transaction creation, transaction broadcasting, or treasury execution.
+
+Production readiness requires live backend integration evidence, route/API parity evidence, deployment evidence, security review, accessibility validation, load testing, observability validation, and operator drill evidence. Degraded, fallback, stale, and unavailable states must remain visible.
+
+## Prompt 29 Integration Boundary
+
+The end-to-end integration pass improves repository coherence, but it does not prove production readiness. Static route parity, render dry-runs, and frontend export checks must be supplemented with environment-specific evidence before production use.
+
+Required remaining evidence includes live deployment evidence, migration smoke evidence, backup/restore drills, rollback validation, security review, load testing, incident drills, and operator sign-off. Bitcoin Bastion remains no-custody and must not accept seed phrases, private keys, wallet files, or signing material.
+

@@ -1,6 +1,6 @@
 # Kubernetes Production Foundation
 
-This directory provides a production-oriented Kubernetes baseline for Bitcoin Bastion.
+This directory is the canonical Kubernetes deployment path for Bitcoin Bastion and provides a production-oriented Kubernetes baseline.
 
 ## Important constraints
 - These manifests are a **foundation**, not proof of production readiness by themselves.
@@ -9,8 +9,13 @@ This directory provides a production-oriented Kubernetes baseline for Bitcoin Ba
 
 ## Structure
 - `base/`: shared manifests for namespace, workloads, networking, and monitoring.
-- `overlays/staging`: staging environment patch set.
-- `overlays/production`: production environment patch set.
+- `overlays/dev`: development environment patch set.
+- `overlays/staging`: staging validation environment patch set.
+- `overlays/production`: production cluster patch set.
+- `overlays/k3s`: sovereign small deployment profile.
+- `overlays/kind`: local manifest validation profile only.
+- `overlays/minikube`: local operator testing profile only.
+- `overlays/single-node`: constrained single-node deployment profile.
 
 ## Required secrets
 Create `bitcoin-bastion-secrets` from your secret manager (or External Secrets later), with:
@@ -67,3 +72,18 @@ Current baseline uses native Secret references for compatibility. To adopt Exter
 This directory is the canonical Kubernetes manifest path for Bitcoin Bastion. Runtime profile metadata and operator guidance are documented under `deploy/runtime-profiles` and `docs/RUNTIME_PROFILES.md`.
 
 K3s and single-node overlays are available under `overlays/k3s` and `overlays/single-node`. Local testing overlays are available under `overlays/kind` and `overlays/minikube`; Kind and Minikube are local-only overlays and are not production deployment profiles. The runtime profile metadata does not replace this directory and does not introduce a new canonical `k8s/` path.
+
+
+## Runtime profile table
+
+| Profile | Path | Intended Use |
+| --- | --- | --- |
+| dev | `deploy/kubernetes/overlays/dev` | development |
+| staging | `deploy/kubernetes/overlays/staging` | staging validation |
+| production | `deploy/kubernetes/overlays/production` | production cluster |
+| k3s | `deploy/kubernetes/overlays/k3s` | small sovereign deployment |
+| kind | `deploy/kubernetes/overlays/kind` | local manifest test |
+| minikube | `deploy/kubernetes/overlays/minikube` | local operator test |
+| single-node | `deploy/kubernetes/overlays/single-node` | constrained production-like deployment |
+
+`deploy/kubernetes/` is canonical. If any legacy `k8s/` compatibility path exists in downstream automation, treat it as a legacy compatibility path and not as the canonical source.

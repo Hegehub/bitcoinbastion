@@ -1,0 +1,51 @@
+{
+  "blockers": [],
+  "env": {
+    "BB_API_BASE_URL": true,
+    "BB_REQUEST_TIMEOUT_SECONDS": true
+  },
+  "frontend_nextjs_present": true,
+  "market_fastapi_jinja_present": true,
+  "navigation": {
+    "no_products": true,
+    "no_self_host": true,
+    "operations": true,
+    "platform": true
+  },
+  "reflex_core_files": {
+    "reflex_frontend/.env.example": true,
+    "reflex_frontend/Dockerfile": true,
+    "reflex_frontend/README.md": true,
+    "reflex_frontend/bastion_ui/app.py": true,
+    "reflex_frontend/pyproject.toml": true,
+    "reflex_frontend/rxconfig.py": true
+  },
+  "reflex_ports": {
+    "backend_8001": true,
+    "frontend_3001": true
+  },
+  "reflex_routes": {
+    "/check": true,
+    "/console": true,
+    "/console/audit": true,
+    "/console/command-center": true,
+    "/console/evidence": true,
+    "/console/market-intelligence": true,
+    "/console/policy": true,
+    "/console/sovereign-grid": true,
+    "/console/time-machine": true,
+    "/console/trace": true,
+    "/trace": true,
+    "/trace/[report_id]": true,
+    "/trace/[report_id]/proof-packet": true
+  },
+  "safety_copy": {
+    "Advisory-only": true,
+    "Never enter seed phrases, private keys, wallet files or signing material": true,
+    "No custody": true,
+    "Not Bitcoin consensus proof": true,
+    "Not legal verification": true,
+    "Public Bitcoin addresses only": true
+  },
+  "status": "implemented"
+}

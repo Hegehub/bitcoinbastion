@@ -67,8 +67,8 @@ def test_runtime_profiles_document_kind_and_minikube_truthfully() -> None:
 def test_makefile_has_local_overlay_targets() -> None:
     makefile = read("Makefile")
     assert "runtime-render-kind:" in makefile
-    assert "kubectl kustomize deploy/kubernetes/overlays/kind" in makefile
+    assert "--profile kind" in makefile
     assert "runtime-render-minikube:" in makefile
-    assert "kubectl kustomize deploy/kubernetes/overlays/minikube" in makefile
+    assert "--profile minikube" in makefile
     assert "deploy-kind:" in makefile
     assert "deploy-minikube:" in makefile

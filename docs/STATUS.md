@@ -351,3 +351,67 @@ Single-node Overlay: BASELINE IMPLEMENTED
 Bare-metal/systemd Docs: BASELINE METADATA IMPLEMENTED / FULL GUIDE PENDING
 
 Runtime profile metadata clarifies that Kubernetes is supported but optional, `deploy/kubernetes` remains the canonical Kubernetes path, and production claims still require environment-specific evidence artifacts.
+
+## Runtime Profiles
+
+Status: FOUNDATION IMPLEMENTED / ENVIRONMENT VALIDATION PENDING
+
+Implemented:
+- Runtime profile metadata for compose, k8s, k3s, kind, minikube, single-node, and bare-metal/systemd.
+- Canonical Kubernetes deployment path under `deploy/kubernetes`.
+- Runtime detection/render/deploy script foundation.
+- Makefile targets for runtime rendering and deployment.
+- Documentation for sovereign small deployments and local Kubernetes validation.
+
+Pending:
+- Real environment validation for each profile.
+- Production evidence artifacts.
+- Load testing.
+- Backup/restore drills.
+- Security hardening validation per runtime.
+
+## Reflex Trace and Console
+
+Status: EXPERIMENTAL / PARALLEL / NOT PRODUCTION PRIMARY
+
+Implemented:
+- Reflex Trace route shell for public address checks, Trace overview, report display, and proof-packet placeholder handling.
+- Reflex Console route shell for Trace, Evidence, and Provider Health modules.
+- Safety-first address validation and forbidden sensitive-input rejection before backend calls.
+- CI workflow for Reflex lint, typecheck, tests, and export.
+
+Pending:
+- Route/API parity evidence against the existing frontend and backend.
+- Production deployment evidence for Reflex.
+- Public proof-packet backend availability where applicable.
+- Operator validation for degraded, stale, fallback, and unavailable states.
+
+## Reflex Advanced Console Modules
+
+Status: EXPERIMENTAL PREVIEW / OPERATOR VISIBILITY / NOT PRODUCTION CONTROL PLANE
+
+Implemented:
+- Advanced Reflex Console preview routes for Market Intelligence, Time Machine, Sovereign Grid, Policy Engine, Audit Log, Deployment Status, and API Explorer.
+- Reusable console navigation, status strip, read-only badges, and operator notices.
+- Explicit degraded/fallback/stale/unavailable state visibility.
+
+Pending:
+- Live backend wiring and route/API parity evidence.
+- Production deployment evidence.
+- Operator validation and accessibility review.
+
+## End-to-End Integration Status
+
+Status: FOUNDATION INTEGRATED / PRODUCTION EVIDENCE PENDING
+
+Implemented:
+- Static route/API parity checks for backend, Trace, public, Reflex, and runtime-profile contracts.
+- Integration smoke scripts that write evidence artifacts under `artifacts/`.
+- Integration tests for webhooks, WebSocket streams, SDK safety smoke, runtime renders, and Reflex contracts.
+
+Pending:
+- Live environment deployment evidence.
+- Full event publication proof for every planned domain event.
+- Live SDK/CLI/MCP smoke against a running backend.
+- Prompt 30 production readiness audit.
+
