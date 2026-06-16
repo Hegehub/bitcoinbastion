@@ -3,22 +3,8 @@ from __future__ import annotations
 from typing import Any
 
 import httpx
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
-class ApiClientError(RuntimeError):
-    """Normalized API client error safe for public UI display."""
-
-
-class ApiSettings(BaseSettings):
-    """Environment-driven settings for the experimental frontend API client."""
-
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
-
-    api_base_url: str = Field(default="http://localhost:8000", alias="BB_API_BASE_URL")
-    request_timeout_seconds: float = Field(default=5.0, alias="BB_REQUEST_TIMEOUT_SECONDS")
-
+from bastion_ui.services.settings import Settings, get_settings
 
 INVALID_INPUT_MESSAGE = "Input is invalid. Please review and retry."
 NOT_FOUND_MESSAGE = "Requested data was not found."
@@ -27,14 +13,8 @@ TIMEOUT_MESSAGE = "Request timed out. Please retry."
 FALLBACK_MESSAGE = "Service is temporarily unavailable. Please retry shortly."
 
 
-def _normalize_http_status(status_code: int) -> str:
-    if status_code in {400, 422}:
-        return INVALID_INPUT_MESSAGE
-    if status_code == 404:
-        return NOT_FOUND_MESSAGE
-    if status_code == 429:
-        return RATE_LIMIT_MESSAGE
-    return FALLBACK_MESSAGE
+class ApiClientError(RuntimeError):
+    """Normalized API client error safe for public UI display."""
 
 
 def normalize_api_error(exc: Exception) -> str:
@@ -49,32 +29,41 @@ def normalize_api_error(exc: Exception) -> str:
     return FALLBACK_MESSAGE
 
 
+def _normalize_http_status(status_code: int) -> str:
+    if status_code in {400, 422}:
+        return INVALID_INPUT_MESSAGE
+    if status_code == 404:
+        return NOT_FOUND_MESSAGE
+    if status_code == 429:
+        return RATE_LIMIT_MESSAGE
+    return FALLBACK_MESSAGE
+
+
 def _unwrap_response_envelope(payload: Any) -> Any:
     if isinstance(payload, dict) and "data" in payload:
         return payload["data"]
     return payload
 
 
-async def _request(method: str, path: str, payload: dict[str, Any] | None = None) -> Any:
-    settings = ApiSettings()
-    normalized_path = path if path.startswith("/") else f"/{path}"
-    url = f"{settings.api_base_url.rstrip('/')}{normalized_path}"
-    try:
-        async with httpx.AsyncClient(timeout=settings.request_timeout_seconds) as client:
-            response = await client.request(method, url, json=payload)
-    except Exception as exc:
-        raise ApiClientError(normalize_api_error(exc)) from exc
-    if response.status_code >= 400:
-        raise ApiClientError(_normalize_http_status(response.status_code))
-    try:
-        return _unwrap_response_envelope(response.json())
-    except ValueError as exc:
-        raise ApiClientError(FALLBACK_MESSAGE) from exc
+class ApiClient:
+    """Minimal async API foundation for later route-specific Reflex clients."""
+
+    def __init__(self, settings: Settings | None = None) -> None:
+        self.settings = settings or get_settings()
+
+    async def get(self, path: str) -> Any:
+        normalized_path = path if path.startswith("/") else f"/{path}"
+        url = f"{self.settings.api_base_url.rstrip('/')}{normalized_path}"
+        try:
+            async with httpx.AsyncClient(timeout=self.settings.request_timeout_seconds) as client:
+                response = await client.get(url)
+                response.raise_for_status()
+                return _unwrap_response_envelope(response.json())
+        except Exception as exc:
+            raise ApiClientError(normalize_api_error(exc)) from exc
 
 
-async def api_get(path: str) -> Any:
-    return await _request("GET", path)
+async def get(path: str) -> Any:
+    """Convenience wrapper for scaffold tests and later clients."""
 
-
-async def api_post(path: str, payload: dict[str, Any]) -> Any:
-    return await _request("POST", path, payload)
+    return await ApiClient().get(path)
