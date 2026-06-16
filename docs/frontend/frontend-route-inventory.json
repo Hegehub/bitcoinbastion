@@ -1,0 +1,149 @@
+[
+  {
+    "backend_dependency": "/api/v1/public/landing",
+    "blocking_issues": [
+      "preserve fallback/safety copy"
+    ],
+    "current_owner": "nextjs",
+    "current_status": "implemented",
+    "implementation_path": "frontend/app/page.tsx",
+    "migration_priority": "P1",
+    "route": "/",
+    "safety_notes": [
+      "advisory/no-custody copy required"
+    ],
+    "should_reflex_own": true
+  },
+  {
+    "backend_dependency": "/api/v1/trace/lite/{address}; /api/v1/public/trace/{report_id}/summary",
+    "blocking_issues": [
+      "Trace parity blocker"
+    ],
+    "current_owner": "nextjs",
+    "current_status": "implemented",
+    "implementation_path": "frontend/app/check/page.tsx",
+    "migration_priority": "P0",
+    "route": "/check",
+    "safety_notes": [
+      "public Bitcoin addresses only",
+      "reject sensitive material"
+    ],
+    "should_reflex_own": true
+  },
+  {
+    "backend_dependency": "/api/v1/trace/lite/{address}",
+    "blocking_issues": [
+      "must preserve alias/check flow"
+    ],
+    "current_owner": "nextjs",
+    "current_status": "implemented",
+    "implementation_path": "frontend/app/trace/page.tsx",
+    "migration_priority": "P0",
+    "route": "/trace",
+    "safety_notes": [
+      "advisory-only copy required"
+    ],
+    "should_reflex_own": true
+  },
+  {
+    "backend_dependency": "/api/v1/public/trace/{report_id}/summary; /api/v1/trace/report/{report_id}",
+    "blocking_issues": [
+      "current route param name is reportId"
+    ],
+    "current_owner": "nextjs",
+    "current_status": "implemented",
+    "implementation_path": "frontend/app/trace/[reportId]/page.tsx",
+    "migration_priority": "P0",
+    "route": "/trace/[report_id]",
+    "safety_notes": [
+      "limitations and unavailable states visible"
+    ],
+    "should_reflex_own": true
+  },
+  {
+    "backend_dependency": "/api/v1/trace/report/{report_id}/proof-packet",
+    "blocking_issues": [
+      "proof packet parity must be proven"
+    ],
+    "current_owner": "nextjs",
+    "current_status": "implemented",
+    "implementation_path": "frontend/app/trace/[reportId]/proof-packet/page.tsx",
+    "migration_priority": "P0",
+    "route": "/trace/[report_id]/proof-packet",
+    "safety_notes": [
+      "not legal proof"
+    ],
+    "should_reflex_own": true
+  },
+  {
+    "backend_dependency": "TBD",
+    "blocking_issues": [
+      "missing in Next.js; legacy /dashboard exists"
+    ],
+    "current_owner": "reflex-partial",
+    "current_status": "partial",
+    "implementation_path": "reflex_frontend/bastion_ui/routes/console.py",
+    "migration_priority": "P1",
+    "route": "/console",
+    "safety_notes": [
+      "read-only operator review"
+    ],
+    "should_reflex_own": true
+  },
+  {
+    "backend_dependency": "/web/market-time-machine",
+    "blocking_issues": [
+      "ownership split"
+    ],
+    "current_owner": "fastapi-jinja",
+    "current_status": "delegated-to-fastapi-jinja",
+    "implementation_path": "app/web/routes_market.py",
+    "migration_priority": "P1",
+    "route": "/market",
+    "safety_notes": [
+      "limitations/stale states visible"
+    ],
+    "should_reflex_own": true
+  },
+  {
+    "backend_dependency": "/web/market-time-machine",
+    "blocking_issues": [
+      "must not break Jinja dashboard"
+    ],
+    "current_owner": "fastapi-jinja",
+    "current_status": "delegated-to-fastapi-jinja",
+    "implementation_path": "app/web/routes_market.py",
+    "migration_priority": "P1",
+    "route": "/market/time-machine",
+    "safety_notes": [
+      "Market limitations visible"
+    ],
+    "should_reflex_own": true
+  },
+  {
+    "backend_dependency": "MarketTimeMachineWebService",
+    "blocking_issues": [],
+    "current_owner": "fastapi-jinja",
+    "current_status": "implemented",
+    "implementation_path": "app/web/routes_market.py",
+    "migration_priority": "Delegated",
+    "route": "/web/market-time-machine",
+    "safety_notes": [
+      "DTO includes limitations/unavailable data"
+    ],
+    "should_reflex_own": false
+  },
+  {
+    "backend_dependency": "MarketTimeMachineWebService.timeline",
+    "blocking_issues": [],
+    "current_owner": "fastapi-jinja",
+    "current_status": "implemented",
+    "implementation_path": "app/web/routes_market.py",
+    "migration_priority": "Delegated",
+    "route": "/web/timeline",
+    "safety_notes": [
+      "DTO includes limitations"
+    ],
+    "should_reflex_own": false
+  }
+]
