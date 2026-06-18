@@ -1,23 +1,43 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 
-from bastion_ui.security.forbidden_inputs import contains_forbidden_material
+from bastion_ui.security.forbidden_inputs import looks_like_sensitive_wallet_material
 
-ADDRESS_REQUIRED = "Address is required."
-SENSITIVE_INPUT_REJECTED = "Never enter seed phrases, private keys, wallet files or signing material."
-PUBLIC_ADDRESS_REQUIRED = "Input must be a public Bitcoin address."
+SENSITIVE_INPUT_MESSAGE = (
+    "This looks like sensitive wallet material. Bitcoin Bastion Trace only accepts public "
+    "Bitcoin addresses. Never enter seed phrases, private keys, wallet files, or signing material."
+)
+EMPTY_ADDRESS_MESSAGE = "Enter a public Bitcoin address."
+INVALID_ADDRESS_MESSAGE = "Enter a plausible public Bitcoin address beginning with bc1, 1, or 3."
 
-_BECH32_RE = re.compile(r"^bc1[ac-hj-np-z02-9]{11,87}$", re.IGNORECASE)
-_LEGACY_RE = re.compile(r"^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$")
+BECH32_RE = re.compile(r"^bc1[ac-hj-np-z02-9]{11,87}$", re.IGNORECASE)
+LEGACY_RE = re.compile(r"^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$")
 
 
-def validate_public_bitcoin_address(value: str) -> tuple[bool, str | None]:
-    candidate = value.strip()
-    if not candidate:
-        return False, ADDRESS_REQUIRED
-    if contains_forbidden_material(candidate):
-        return False, SENSITIVE_INPUT_REJECTED
-    if _BECH32_RE.match(candidate) or _LEGACY_RE.match(candidate):
-        return True, None
-    return False, PUBLIC_ADDRESS_REQUIRED
+@dataclass(frozen=True)
+class AddressValidationResult:
+    ok: bool
+    normalized: str = ""
+    error: str = ""
+
+
+def normalize_public_bitcoin_address(value: str) -> str:
+    return value.strip()
+
+
+def is_plausible_public_bitcoin_address(value: str) -> bool:
+    normalized = normalize_public_bitcoin_address(value)
+    return bool(BECH32_RE.match(normalized) or LEGACY_RE.match(normalized))
+
+
+def validate_public_bitcoin_address(value: str) -> AddressValidationResult:
+    normalized = normalize_public_bitcoin_address(value)
+    if not normalized:
+        return AddressValidationResult(False, error=EMPTY_ADDRESS_MESSAGE)
+    if looks_like_sensitive_wallet_material(normalized):
+        return AddressValidationResult(False, error=SENSITIVE_INPUT_MESSAGE)
+    if not is_plausible_public_bitcoin_address(normalized):
+        return AddressValidationResult(False, error=INVALID_ADDRESS_MESSAGE)
+    return AddressValidationResult(True, normalized=normalized)

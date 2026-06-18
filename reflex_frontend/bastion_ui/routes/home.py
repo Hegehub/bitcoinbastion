@@ -1,47 +1,60 @@
 from __future__ import annotations
 
-from typing import cast
-
 import reflex as rx
 
-from bastion_ui.components.layout.public_layout import public_layout
-from bastion_ui.components.ui.button import button
+from bastion_ui.components.layout.grid import responsive_grid
+from bastion_ui.components.layout.section import section
+from bastion_ui.components.public.feature_grid import feature_grid
+from bastion_ui.components.public.hero import public_hero
+from bastion_ui.components.public.roadmap_preview import roadmap_preview
+from bastion_ui.components.public.safety_section import safety_section
+from bastion_ui.components.public.status_summary import status_summary
 from bastion_ui.components.ui.card import card
-from bastion_ui.components.ui.safety_banner import advisory_banner, degraded_state_banner, no_custody_banner
+from bastion_ui.routes._public import public_page
+
+HOME_PILLARS = (
+    ("Trace", "Advisory address and report workflows remain backend-driven.", "planned"),
+    ("Evidence", "Evidence packets favor source material over unsupported claims.", "baseline"),
+    ("Market Intelligence", "Market and Time Machine stay delegated until parity.", "planned"),
+    ("Developer API Layer", "Public API clients unwrap backend envelopes safely.", "baseline"),
+    ("Runtime Profiles", "Self-hosting paths are documented with conservative status.", "baseline"),
+    ("Operator Control", "Risky actions require human review and approval.", "baseline"),
+)
 
 
 def home_page() -> rx.Component:
-    """Render the public Reflex home route."""
-
-    return public_layout(cast(rx.Component, rx.vstack(
-        rx.badge("Experimental Reflex frontend shell.", color_scheme="orange", size="2"),
-        rx.heading("Bitcoin-first sovereign backend for evidence-driven intelligence and operations.", size="8"),
-        rx.text("Bitcoin Bastion is a no-custody, advisory-only, evidence-oriented system. FastAPI remains the source of truth. FastAPI remains authoritative for backend data and decisions."),
-        rx.text("No custody."),
-        rx.text("Never enter seed phrases, private keys, wallet files or signing material."),
-        rx.text("Advisory-only."),
-        no_custody_banner(),
-        advisory_banner(),
-        degraded_state_banner(),
-        rx.hstack(
-            button("Platform", "/platform"),
-            button("Trace", "/trace", "secondary"),
-            button("Evidence", "/evidence", "secondary"),
-            button("Status", "/status", "secondary"),
-            button("Developers", "/developers", "ghost"),
-            button("Operations", "/operations", "ghost"),
-            wrap="wrap",
+    return public_page(
+        public_hero(
+            "Sovereign Bitcoin Intelligence Backend",
+            "Bitcoin Bastion is Bitcoin-first infrastructure for advisory intelligence, "
+            "evidence review, operator control, and transparent degraded states.",
+            primary_label="Open Trace preview",
+            primary_href="/trace",
+            secondary_label="Developer API layer",
+            secondary_href="/developers",
         ),
-        rx.grid(
-            card(rx.text("Bitcoin-first posture with explicit no-custody boundaries."), title="Bitcoin-first"),
-            card(rx.text("Evidence packets, replay, provider health, and deployment evidence guide operator trust."), title="Evidence-oriented backend"),
-            card(rx.text("Reflex runs in parallel. Next.js remains available until route and API parity are proven."), title="Parallel frontend"),
-            card(rx.text("The existing FastAPI/Jinja Market dashboard keeps ownership of /market for now."), title="No /market migration"),
-            columns="2",
-            spacing="4",
-            width="100%",
+        section(
+            feature_grid(HOME_PILLARS),
+            title="Trace / Evidence / Market Intelligence",
         ),
-        spacing="5",
-        align="start",
-        width="100%",
-    )))
+        section(
+            responsive_grid(
+                card(
+                    rx.text("No custody. No signing. No wallet-secret collection."),
+                    title="No-custody safety model",
+                ),
+                card(
+                    rx.text("Local-first and self-hostable deployment paths remain central."),
+                    title="Runtime profiles",
+                ),
+                card(
+                    rx.text("Status views must show degraded, fallback, and stale conditions."),
+                    title="Status visibility",
+                ),
+            ),
+            title="Operator-first posture",
+        ),
+        safety_section(),
+        status_summary(),
+        roadmap_preview(),
+    )

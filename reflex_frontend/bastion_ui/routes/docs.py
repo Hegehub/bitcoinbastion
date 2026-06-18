@@ -2,16 +2,21 @@ from __future__ import annotations
 
 import reflex as rx
 
-from bastion_ui.routes._shared import page_shell
+from bastion_ui.components.layout.section import section
+from bastion_ui.components.public.docs_grid import docs_grid
+from bastion_ui.components.public.hero import public_hero
+from bastion_ui.routes._public import public_page
 
 
 def docs_page() -> rx.Component:
-    return page_shell("Docs", "Documentation entry points for operators and developers.", (
-        ("API docs", "Internal placeholder: /docs/api"),
-        ("Trace docs", "Internal placeholder: /docs/trace"),
-        ("Evidence docs", "Internal placeholder: /docs/evidence"),
-        ("Runtime profiles docs", "Internal placeholder: /docs/runtime-profiles"),
-        ("Developer API docs", "Internal placeholder: /docs/developer-api"),
-        ("Security docs", "Internal placeholder: /docs/security"),
-        ("Operations docs", "Internal placeholder: /docs/operations"),
-    ))
+    return public_page(
+        public_hero(
+            "Documentation landing",
+            "Docs are labeled conservatively so planned or pending areas do not appear complete.",
+            primary_label="Platform overview",
+            primary_href="/platform",
+            secondary_label="Security",
+            secondary_href="/security",
+        ),
+        section(docs_grid(), title="Documentation index"),
+    )

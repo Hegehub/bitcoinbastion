@@ -1,19 +1,10 @@
-REQUIRED_SAFETY_COPY: tuple[str, ...] = (
-    "Advisory-only.",
-    "Not legal verification.",
-    "Not Bitcoin consensus proof.",
-    "No custody.",
-    "Public Bitcoin addresses only.",
-    "Never enter seed phrases, private keys, wallet files or signing material.",
+from __future__ import annotations
+
+REQUIRED_TRACE_WARNING = "Never enter seed phrases, private keys, wallet files or signing material."
+TRACE_PUBLIC_SAFETY_COPY = (
+    "Advisory-only. Not legal verification. Not Bitcoin consensus proof. No custody. "
+    "Public Bitcoin addresses only. " + REQUIRED_TRACE_WARNING
 )
 
-TRACE_SAFETY_COPY = " ".join(REQUIRED_SAFETY_COPY)
-
-FORBIDDEN_WORDING: tuple[str, ...] = (
-    "clean address",
-    "dirty address",
-    "criminal address",
-    "guaranteed safe",
-    "approved payment",
-    "verified illicit",
-)
+NO_CUSTODY_COPY = "No custody. Bitcoin Bastion does not request or store signing material."
+ADVISORY_COPY = "Advisory-only. Manual review recommended for sensitive workflows."

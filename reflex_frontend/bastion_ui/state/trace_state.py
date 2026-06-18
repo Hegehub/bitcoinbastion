@@ -1,108 +1,87 @@
 from __future__ import annotations
 
-from typing import Any
+from datetime import UTC, datetime
 
 import reflex as rx
 
 from bastion_ui.security.address_validation import validate_public_bitcoin_address
-from bastion_ui.services.api_client import normalize_api_error
-from bastion_ui.services.trace_client import (
-    get_counterparty_lens,
-    get_origin_passport,
-    get_policy_facts,
-    get_privacy_shield,
-    get_provider_disagreement,
-    get_public_trace_summary,
-    get_trace_evidence,
-    get_trace_lite,
-    get_trace_report,
-)
+from bastion_ui.services.errors import BastionApiError
+from bastion_ui.services.trace_client import get_trace_lite
 
-PANEL_UNAVAILABLE = "This panel is temporarily unavailable. The Trace report remains advisory-only and may be incomplete."
+SAFE_TRACE_ERROR = "Unable to load Trace advisory result safely. Try again shortly."
 
 
 class TraceState(rx.State):
     address: str = ""
+    normalized_address: str = ""
     loading: bool = False
     error: str = ""
-    trace_report_id: str = ""
-    summary: dict[str, Any] = {}
-    report: dict[str, Any] = {}
-    evidence: list[dict[str, Any]] = []
-    privacy: dict[str, Any] = {}
-    origin: dict[str, Any] = {}
-    provider_disagreement: dict[str, Any] = {}
-    counterparty: dict[str, Any] = {}
-    policy_facts: dict[str, Any] = {}
+    validation_error: str = ""
+    result: dict[str, str] = {}
+    latest_report_id: str = ""
+    degraded: bool = False
+    last_checked_at: str = ""
 
     def set_address(self, value: str) -> None:
         self.address = value
+        self.validation_error = ""
+
+    def validate_address(self) -> bool:
+        validation = validate_public_bitcoin_address(self.address)
+        if not validation.ok:
+            self.validation_error = validation.error
+            self.normalized_address = ""
+            return False
+        self.normalized_address = validation.normalized
+        self.validation_error = ""
+        return True
 
     async def submit_address_check(self) -> None:
-        valid, message = validate_public_bitcoin_address(self.address)
-        if not valid:
-            self.error = message or "Input must be a public Bitcoin address."
+        self.clear_error()
+        self.reset_result()
+        if not self.validate_address():
             return
         self.loading = True
-        self.error = ""
         try:
-            self.summary = await get_trace_lite(self.address.strip())
-            self.trace_report_id = str(self.summary.get("report_id", ""))
-        except Exception as exc:
-            self.error = normalize_api_error(exc)
-        finally:
-            self.loading = False
-
-    async def load_report(self, trace_report_id: str) -> None:
-        self.loading = True
-        self.error = ""
-        self.trace_report_id = trace_report_id
-        try:
-            self.summary = await get_public_trace_summary(trace_report_id)
-            self.report = await get_trace_report(trace_report_id)
-            self.evidence = await get_trace_evidence(trace_report_id)
-            self.privacy = await self._optional_panel(get_privacy_shield, trace_report_id)
-            self.origin = await self._optional_panel(get_origin_passport, trace_report_id)
-            self.provider_disagreement = await self._optional_panel(get_provider_disagreement, trace_report_id)
-            self.counterparty = await self._optional_panel(get_counterparty_lens, trace_report_id)
-            self.policy_facts = await self._optional_panel(get_policy_facts, trace_report_id)
-        except Exception as exc:
-            self.error = normalize_api_error(exc)
-        finally:
-            self.loading = False
-
-    async def load_proof_packet(self, trace_report_id: str) -> None:
-        self.loading = True
-        self.error = ""
-        self.trace_report_id = trace_report_id
-        try:
-            self.summary = await get_public_trace_summary(trace_report_id)
-            self.evidence = await get_trace_evidence(trace_report_id)
-        except Exception as exc:
-            self.error = normalize_api_error(exc)
-        finally:
-            self.loading = False
-
-    async def _optional_panel(self, loader: Any, trace_report_id: str) -> dict[str, Any]:
-        try:
-            result = await loader(trace_report_id)
-            return result if isinstance(result, dict) else {"message": PANEL_UNAVAILABLE}
+            trace_result = await get_trace_lite(self.normalized_address)
+            self.latest_report_id = trace_result.report_id or ""
+            self.degraded = trace_result.degraded
+            self.result = {
+                "address": trace_result.address,
+                "risk_band": trace_result.risk_band or "unknown",
+                "confidence": str(trace_result.confidence)
+                if trace_result.confidence is not None
+                else "unavailable",
+                "provider_count": str(trace_result.provider_count)
+                if trace_result.provider_count is not None
+                else "unavailable",
+                "source_count": str(trace_result.source_count)
+                if trace_result.source_count is not None
+                else "unavailable",
+                "summary": trace_result.summary or "Advisory result available.",
+                "limitations_text": "; ".join(trace_result.limitations)
+                if trace_result.limitations
+                else "Manual review recommended.",
+            }
+            self.last_checked_at = datetime.now(UTC).isoformat()
+        except BastionApiError as exc:
+            self.normalize_api_error(exc)
         except Exception:
-            return {"message": PANEL_UNAVAILABLE}
+            self.error = SAFE_TRACE_ERROR
+        finally:
+            self.loading = False
+
+    def reset_result(self) -> None:
+        self.result = {}
+        self.latest_report_id = ""
+        self.degraded = False
+        self.last_checked_at = ""
 
     def clear_error(self) -> None:
         self.error = ""
 
-    def reset_trace(self) -> None:
-        self.address = ""
-        self.loading = False
-        self.error = ""
-        self.trace_report_id = ""
-        self.summary = {}
-        self.report = {}
-        self.evidence = []
-        self.privacy = {}
-        self.origin = {}
-        self.provider_disagreement = {}
-        self.counterparty = {}
-        self.policy_facts = {}
+    def normalize_api_error(self, error: Exception) -> None:
+        if isinstance(error, BastionApiError):
+            self.error = error.public_message
+        else:
+            self.error = SAFE_TRACE_ERROR

@@ -1,25 +1,28 @@
-from pathlib import Path
+from __future__ import annotations
 
-ROOT = Path(__file__).resolve().parents[1]
-APP = (ROOT / "app.py").read_text(encoding="utf-8")
+from bastion_ui.app import PUBLIC_ROUTE_REGISTRATIONS
 
-
-def test_public_routes_are_registered() -> None:
-    for route in (
-        "/",
-        "/platform",
-        "/developers",
-        "/operations",
-        "/manifesto",
-        "/evidence",
-        "/status",
-        "/roadmap",
-        "/security",
-        "/docs",
-    ):
-        assert f'route="{route}"' in APP
+REQUIRED_PUBLIC_ROUTES = {
+    "/",
+    "/platform",
+    "/developers",
+    "/operations",
+    "/manifesto",
+    "/evidence",
+    "/status",
+    "/roadmap",
+    "/security",
+    "/docs",
+}
 
 
-def test_trace_and_console_routes_are_registered_after_prompt_26() -> None:
-    assert 'route="/trace"' in APP
-    assert 'route="/console"' in APP
+def test_all_public_static_routes_are_registered() -> None:
+    routes = {route for route, _page, _title in PUBLIC_ROUTE_REGISTRATIONS}
+    assert REQUIRED_PUBLIC_ROUTES <= routes
+
+
+def test_trace_routes_are_registered_without_console_cutover() -> None:
+    routes = {route for route, _page, _title in PUBLIC_ROUTE_REGISTRATIONS}
+    assert "/check" in routes
+    assert "/trace/[report_id]" in routes
+    assert "/trace/[report_id]/proof-packet" in routes

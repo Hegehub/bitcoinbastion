@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from typing import Any
-
 import reflex as rx
 
 from bastion_ui.components.ui.card import card
 
-PANEL_UNAVAILABLE = "This panel is temporarily unavailable. The Trace report remains advisory-only and may be incomplete."
 
-
-def panel_card(title: str, data: dict[str, Any] | list[dict[str, Any]] | None = None) -> rx.Component:
-    return card(rx.text(PANEL_UNAVAILABLE), title=title)
-
-def trace_evidence_summary(data: list[dict[str, Any]] | None = None) -> rx.Component:
-    return panel_card("Evidence Summary", data)
+def trace_evidence_summary(report_id: str = "") -> rx.Component:
+    href = f"/trace/{report_id}/proof-packet" if report_id else "/trace/[report_id]/proof-packet"
+    return card(
+        rx.text("Evidence packet: Not available until provided by backend."),
+        rx.text("Freshness: Not available."),
+        rx.text("Manual review recommended when evidence is missing or limited."),
+        rx.link("Open proof packet", href=href),
+        title="Evidence summary",
+    )

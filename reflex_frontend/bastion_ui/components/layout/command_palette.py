@@ -1,52 +1,52 @@
 from __future__ import annotations
 
-from typing import Final, cast
+from typing import cast
 
 import reflex as rx
 
-COMMAND_ACTIONS: Final[tuple[tuple[str, str], ...]] = (
-    ("Open Platform", "/platform"),
-    ("Open Trace", "/trace"),
-    ("Check Bitcoin Address", "/check"),
-    ("Open Trace Report", "/trace/{report_id}"),
-    ("Open Proof Packet", "/trace/{report_id}/proof-packet"),
-    ("Open Evidence", "/evidence"),
-    ("Open Status", "/status"),
-    ("Open Developers", "/developers"),
-    ("Open Operations", "/operations"),
-    ("Open Docs", "/docs"),
-    ("Open Security", "/security"),
-    ("Open Roadmap", "/roadmap"),
-    ("Open Console", "/console"),
-    ("Open Command Center", "/console/command-center"),
-    ("Open Trace Radar", "/console/trace"),
-    ("Open Evidence Chain", "/console/evidence"),
-    ("Open Provider Trust Matrix", "/console"),
-    ("Open Time Machine Timeline", "/console/time-machine"),
-    ("Open Sovereign Grid Map", "/console/sovereign-grid"),
-    ("Open Policy Simulator", "/console/policy"),
-    ("Open Audit Replay", "/console/audit"),
-    ("Open API Contract Explorer", "/console/audit"),
-    ("Open Console Trace", "/console/trace"),
-    ("Open Console Evidence", "/console/evidence"),
-    ("Open Provider Health", "/console/provider-health"),
-    ("Open Market Intelligence", "/console/market-intelligence"),
-    ("Open Time Machine", "/console/time-machine"),
-    ("Open Sovereign Grid", "/console/sovereign-grid"),
-    ("Open Policy Engine", "/console/policy"),
-    ("Open Audit Log", "/console/audit"),
-    ("Open Deployment Status", "/console/deployment"),
-    ("Open API Explorer", "/console/api-explorer"),
-)
+from bastion_ui.navigation import CommandAction, search_command_actions
+from bastion_ui.theme.styles import CARD, FOCUS_RING, INPUT
+
+CANONICAL_PUBLIC_COMMAND_ROUTES = ("/platform", "/operations")
 
 
-def command_palette() -> rx.Component:
-    return cast(rx.Component, rx.box(
-        rx.text("Command palette", weight="bold"),
-        rx.flex(*[rx.link(label, href=href) for label, href in COMMAND_ACTIONS], wrap="wrap", gap="0.5rem"),
-        border="1px solid #E5E7EB",
-        border_radius="14px",
-        padding="0.75rem",
-        background="white",
-        width="100%",
-    ))
+def command_action_row(action: CommandAction) -> rx.Component:
+    return cast(
+        rx.Component,
+        rx.link(
+            rx.vstack(
+                rx.hstack(
+                    rx.text(action.title, weight="bold"),
+                    rx.badge(action.category, color_scheme="gray", size="1"),
+                    rx.cond(
+                        action.requires_input,
+                        rx.badge("Requires input", color_scheme="orange", size="1"),
+                        rx.fragment(),
+                    ),
+                    spacing="2",
+                ),
+                rx.text(action.route, size="2"),
+                rx.text(action.description, size="2"),
+                spacing="1",
+                align="start",
+            ),
+            href=rx.cond(action.requires_input, "/trace", action.route),
+            style=FOCUS_RING,
+            aria_label=action.title,
+        ),
+    )
+
+
+def command_palette_preview(query: str = "") -> rx.Component:
+    actions = search_command_actions(query)
+    return cast(
+        rx.Component,
+        rx.vstack(
+            rx.text("Command Palette", weight="bold"),
+            rx.input(placeholder="Search commands by title or route", value=query, style=INPUT),
+            *[command_action_row(action) for action in actions],
+            style=CARD,
+            spacing="3",
+            width="100%",
+        ),
+    )

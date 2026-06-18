@@ -2,16 +2,36 @@ from __future__ import annotations
 
 import reflex as rx
 
-from bastion_ui.routes._shared import page_shell
+from bastion_ui.components.layout.section import section
+from bastion_ui.components.public.hero import public_hero
+from bastion_ui.components.public.roadmap_preview import (
+    CONSERVATIVE_ROADMAP_STATUSES,
+    roadmap_preview,
+)
+from bastion_ui.components.ui.card import card
+from bastion_ui.routes._public import public_page
+
+ROADMAP_API_ENDPOINT = "/api/v1/public/roadmap"
 
 
 def roadmap_page() -> rx.Component:
-    return page_shell("Roadmap", "Planned work remains evidence-driven and no-custody.", (
-        ("Developer/API layer", "Expand API-oriented developer experiences safely."),
-        ("Runtime profiles", "Validate profiles with real environment evidence."),
-        ("Reflex frontend", "Build public pages first, then Trace and Console."),
-        ("Trace improvements", "Prompt 26 will add Trace routes and public workflows."),
-        ("Console", "Console routes are future work and not implemented here."),
-        ("SDK/CLI/MCP", "Developer tooling continues around backend APIs."),
-        ("Plugin API", "Plugins remain sandbox-limited and no-custody."),
-    ))
+    return public_page(
+        public_hero(
+            "Roadmap with conservative readiness labels",
+            "The Reflex migration proceeds by documented route, API, and safety parity gates.",
+            primary_label="Review blockers",
+            primary_href="/status",
+            secondary_label="Read docs",
+            secondary_href="/docs",
+        ),
+        roadmap_preview(),
+        section(
+            card(
+                rx.text("Allowed statuses: " + ", ".join(CONSERVATIVE_ROADMAP_STATUSES)),
+                rx.text(f"API dependency: {ROADMAP_API_ENDPOINT}"),
+                rx.text("No cutover occurs until all required gates pass."),
+                title="Migration labels",
+            ),
+            title="Frontend migration steps",
+        ),
+    )
