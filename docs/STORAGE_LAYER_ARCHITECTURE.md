@@ -559,3 +559,7 @@ Initial code-level storage interfaces live in `app/storage/`. These interfaces d
 ## Object Storage Implementation Note
 
 Prompt 4 begins the Object Storage implementation under `app/storage/object_store/`. The implementation currently provides a tested local filesystem backend, checksum helpers, safety checks, health probing, and an optional MinIO adapter boundary. Existing proof packets, trace reports, evidence archives, release artifacts, and access workflows are not migrated in this prompt; PostgreSQL remains the future canonical metadata and authorization store while Object Storage owns artifact bytes only.
+
+### Storage Artifact Metadata
+
+`StorageArtifact` introduces the PostgreSQL metadata source of truth for large files stored outside relational rows. PostgreSQL records artifact type, domain, object URI, bucket/key, SHA-256 hash, size, content type, retention, redaction, signature metadata, access policy, lifecycle status, and privacy-preserving creator references. Object Storage owns the artifact blob bytes. SHA-256 links metadata to content. Large proof/evidence files, release artifacts, report exports, signed receipts, SBOM/provenance files, and enterprise bundles must not be stored as SQL blobs.
