@@ -535,3 +535,19 @@ Strict storage rules apply to every engine, export, log, cache, projection, embe
 - [ ] Degraded mode behavior is documented per storage engine.
 - [ ] Implementation phases are clear enough to drive the next 64 prompts.
 - [ ] No runtime code or migrations are changed in this task.
+
+## Runtime Configuration Contract
+
+Prompt 2 introduces the runtime configuration foundation for this architecture. The settings layer exposes grouped storage configuration under `settings.storage`, including `profile`, `postgres`, `redis`, `object_storage`, `timescale`, `clickhouse`, `vector`, `local`, and `health` groups.
+
+This configuration layer is intentionally contract-first. It validates environment variables, production-like profile requirements, object storage requirements, vector redaction rules, local/offline encryption rules, and degraded-mode controls, but it does not create database clients, run migrations, or connect to TimescaleDB, ClickHouse, Qdrant, Object Storage, SQLite, or DuckDB.
+
+The runtime configuration contract preserves the architecture rules in this document:
+
+- PostgreSQL remains the critical transactional source of truth.
+- Redis remains ephemeral and is not durable truth.
+- ClickHouse remains analytics/projection only.
+- Qdrant/pgvector remain semantic projection stores only, with redaction required.
+- Object Storage stores large proof/evidence artifacts while PostgreSQL stores artifact metadata.
+- SQLite/DuckDB remain local/offline stores, not global truth.
+- No seed phrases, Bitcoin private keys, wallet files, xprv/yprv/zprv material, raw Access Pass bearer tokens, or custody material may be stored in any configured storage system.
