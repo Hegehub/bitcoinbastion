@@ -2,15 +2,33 @@ from __future__ import annotations
 
 import reflex as rx
 
-from bastion_ui.routes._shared import page_shell
+from bastion_ui.components.layout.section import section
+from bastion_ui.components.public.hero import public_hero
+from bastion_ui.components.public.runtime_profile_preview import runtime_profile_preview
+from bastion_ui.components.public.safety_section import safety_section
+from bastion_ui.components.ui.card import card
+from bastion_ui.routes._public import public_page
 
 
 def operations_page() -> rx.Component:
-    return page_shell("Operations", "Self-hosted operation with evidence-driven deployment discipline.", (
-        ("Self-hosted operation", "Bitcoin Bastion remains deployable without cloud lock-in."),
-        ("Runtime direction", "Docker Compose, Kubernetes, K3s, and constrained profiles are documented with limitations."),
-        ("Evidence-driven releases", "Deployment, migration, schema parity, provider health, and rollback evidence remain required."),
-        ("Deployment limitations", "Runtime profiles are foundations and do not prove production readiness by themselves."),
-        ("Observability", "Operators need metrics, logs, health checks, and incident evidence."),
-        ("Degraded-mode visibility", "Delayed, degraded, fallback, or unavailable states must stay visible."),
-    ))
+    return public_page(
+        public_hero(
+            "Self-hosted operations without cloud lock-in",
+            "Bitcoin Bastion favors local-first deployment, operator review, evidence-driven "
+            "posture, and transparent fallback states.",
+            primary_label="View runtime profiles",
+            primary_href="/operations",
+            secondary_label="Security posture",
+            secondary_href="/security",
+        ),
+        section(
+            runtime_profile_preview(),
+            card(
+                rx.text("Docker Compose is the baseline local path."),
+                rx.text("Kubernetes, k3s, kind, minikube, and systemd paths are not equivalent."),
+                title="Deployment philosophy",
+            ),
+            title="Runtime profile matrix preview",
+        ),
+        safety_section(),
+    )

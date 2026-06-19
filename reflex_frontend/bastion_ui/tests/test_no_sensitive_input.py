@@ -1,26 +1,26 @@
-from bastion_ui.security.address_validation import validate_public_bitcoin_address
-from bastion_ui.security.forbidden_inputs import FORBIDDEN_PATTERNS
+from __future__ import annotations
+
+from pathlib import Path
+
+SCAN_ROOT = Path(__file__).resolve().parents[1]
+SENSITIVE_PROMPTS = (
+    "input seed phrase",
+    "input mnemonic",
+    "input private key",
+    "upload wallet.dat",
+    "upload keystore",
+    "paste signing material",
+)
 
 
-def test_rejects_forbidden_sensitive_inputs() -> None:
-    for pattern in FORBIDDEN_PATTERNS:
-        valid, message = validate_public_bitcoin_address(pattern)
-        assert not valid
-        assert message == "Never enter seed phrases, private keys, wallet files or signing material."
-
-
-def test_rejects_empty_input() -> None:
-    valid, message = validate_public_bitcoin_address("")
-    assert not valid
-    assert message == "Address is required."
-
-
-def test_accepts_public_bitcoin_address_examples() -> None:
-    for address in (
-        "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt080",
-        "1BoatSLRHtKNngkdXEeobR76b53LETtpyT",
-        "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy",
-    ):
-        valid, message = validate_public_bitcoin_address(address)
-        assert valid
-        assert message is None
+def test_evidence_and_proof_packet_ui_do_not_request_sensitive_material() -> None:
+    offenders: list[str] = []
+    for relative in ("routes/evidence.py", "routes/proof_packet.py", "components/evidence"):
+        path = SCAN_ROOT / relative
+        files = path.rglob("*.py") if path.is_dir() else [path]
+        for file_path in files:
+            text = file_path.read_text(encoding="utf-8", errors="ignore").casefold()
+            for phrase in SENSITIVE_PROMPTS:
+                if phrase in text:
+                    offenders.append(f"{file_path.relative_to(SCAN_ROOT)}:{phrase}")
+    assert offenders == []

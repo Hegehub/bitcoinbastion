@@ -1,0 +1,90 @@
+[
+  {
+    "api_endpoint": "/api/v1/public/landing",
+    "backend_implementation_path": "app/api/v1/public.py",
+    "current_status": "implemented",
+    "frontend_route_or_component": "frontend/services/apiClient.ts",
+    "frontend_service": "getPublicLanding",
+    "method": "GET",
+    "mismatch": "no",
+    "recommended_action": "preserve in Reflex public client",
+    "response_model": "ResponseEnvelope[PublicLandingResponse]"
+  },
+  {
+    "api_endpoint": "/api/v1/public/status",
+    "backend_implementation_path": "app/api/v1/public.py",
+    "current_status": "implemented",
+    "frontend_route_or_component": "frontend/services/apiClient.ts",
+    "frontend_service": "getPublicStatus",
+    "method": "GET",
+    "mismatch": "no",
+    "recommended_action": "preserve with stale/fallback state",
+    "response_model": "ResponseEnvelope[PublicStatusResponse]"
+  },
+  {
+    "api_endpoint": "/api/v1/trace/lite/{address}",
+    "backend_implementation_path": "app/api/v1/trace.py",
+    "current_status": "implemented",
+    "frontend_route_or_component": "frontend/components/trace/AddressCheckForm.tsx",
+    "frontend_service": "checkTraceLite",
+    "method": "GET",
+    "mismatch": "no",
+    "recommended_action": "required P0 for Reflex Trace check",
+    "response_model": "ResponseEnvelope[dict]"
+  },
+  {
+    "api_endpoint": "/api/v1/public/trace/{report_id}/summary",
+    "backend_implementation_path": "app/api/v1/public.py",
+    "current_status": "implemented",
+    "frontend_route_or_component": "frontend/app/trace/[reportId]/page.tsx",
+    "frontend_service": "getTraceSummary",
+    "method": "GET",
+    "mismatch": "no",
+    "recommended_action": "preserve for report preview",
+    "response_model": "ResponseEnvelope[PublicTraceSummary]"
+  },
+  {
+    "api_endpoint": "/api/v1/trace/report/{report_id}/source-summary",
+    "backend_implementation_path": "app/api/v1/trace.py",
+    "current_status": "implemented",
+    "frontend_route_or_component": "frontend/services/apiClient.ts",
+    "frontend_service": "missing getTraceSourceSummary",
+    "method": "GET",
+    "mismatch": "backend-available-unused-by-frontend",
+    "recommended_action": "add Reflex service/panel or document omission",
+    "response_model": "ResponseEnvelope[list[dict]]"
+  },
+  {
+    "api_endpoint": "/api/v1/trace/report/{report_id}/payment-context",
+    "backend_implementation_path": "app/api/v1/trace.py actual /api/v1/trace/payment-context",
+    "current_status": "partial",
+    "frontend_route_or_component": "future Reflex Trace payment flow",
+    "frontend_service": "none",
+    "method": "POST",
+    "mismatch": "route-shape-mismatch",
+    "recommended_action": "align route contract before Reflex uses it",
+    "response_model": "ResponseEnvelope[dict]"
+  },
+  {
+    "api_endpoint": "/web/market-time-machine",
+    "backend_implementation_path": "app/web/routes_market.py",
+    "current_status": "implemented",
+    "frontend_route_or_component": "future Reflex Market",
+    "frontend_service": "market_client",
+    "method": "GET",
+    "mismatch": "no",
+    "recommended_action": "consume or explicitly delegate during parity",
+    "response_model": "MarketTimelineDTO + view model dict"
+  },
+  {
+    "api_endpoint": "/api/v1/market-data/*",
+    "backend_implementation_path": "app/api/v1/market_data.py actual prefix /api/v1/market",
+    "current_status": "partial",
+    "frontend_route_or_component": "future Reflex Market",
+    "frontend_service": "market_client",
+    "method": "GET",
+    "mismatch": "route-shape-mismatch",
+    "recommended_action": "use actual prefix or add compatibility alias",
+    "response_model": "market data dict DTOs"
+  }
+]

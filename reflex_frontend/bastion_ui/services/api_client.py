@@ -1,80 +1,160 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import httpx
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from bastion_ui.config import Settings, get_settings
+from bastion_ui.security.safe_logging import redact_payload, safe_error_message
+from bastion_ui.services.errors import (
+    CONNECTION_PUBLIC_MESSAGE,
+    INVALID_JSON_PUBLIC_MESSAGE,
+    TIMEOUT_PUBLIC_MESSAGE,
+    BastionApiConnectionError,
+    BastionApiError,
+    BastionApiTimeoutError,
+    error_for_status,
+)
 
 
-class ApiClientError(RuntimeError):
-    """Normalized API client error safe for public UI display."""
+class ApiClientError(BastionApiError):
+    """Backward-compatible alias for older scaffold tests."""
 
 
-class ApiSettings(BaseSettings):
-    """Environment-driven settings for the experimental frontend API client."""
-
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
-
-    api_base_url: str = Field(default="http://localhost:8000", alias="BB_API_BASE_URL")
-    request_timeout_seconds: float = Field(default=5.0, alias="BB_REQUEST_TIMEOUT_SECONDS")
+def _extract_request_id(response: httpx.Response) -> str | None:
+    return cast(
+        str | None, response.headers.get("x-request-id") or response.headers.get("x-correlation-id")
+    )
 
 
-INVALID_INPUT_MESSAGE = "Input is invalid. Please review and retry."
-NOT_FOUND_MESSAGE = "Requested data was not found."
-RATE_LIMIT_MESSAGE = "Too many requests. Please wait and try again."
-TIMEOUT_MESSAGE = "Request timed out. Please retry."
-FALLBACK_MESSAGE = "Service is temporarily unavailable. Please retry shortly."
+def _extract_error_message(payload: Any) -> str | None:
+    if isinstance(payload, dict):
+        error = payload.get("error")
+        if isinstance(error, str):
+            return error
+        if isinstance(error, dict):
+            message = error.get("message") or error.get("detail")
+            if isinstance(message, str):
+                return message
+        detail = payload.get("detail")
+        if isinstance(detail, str):
+            return detail
+    return None
 
 
-def _normalize_http_status(status_code: int) -> str:
-    if status_code in {400, 422}:
-        return INVALID_INPUT_MESSAGE
-    if status_code == 404:
-        return NOT_FOUND_MESSAGE
-    if status_code == 429:
-        return RATE_LIMIT_MESSAGE
-    return FALLBACK_MESSAGE
-
-
-def normalize_api_error(exc: Exception) -> str:
-    if isinstance(exc, ApiClientError):
-        return str(exc)
-    if isinstance(exc, httpx.TimeoutException):
-        return TIMEOUT_MESSAGE
-    if isinstance(exc, httpx.HTTPStatusError):
-        return _normalize_http_status(exc.response.status_code)
-    if isinstance(exc, httpx.HTTPError):
-        return FALLBACK_MESSAGE
-    return FALLBACK_MESSAGE
-
-
-def _unwrap_response_envelope(payload: Any) -> Any:
-    if isinstance(payload, dict) and "data" in payload:
-        return payload["data"]
+def unwrap_response_envelope(payload: Any) -> Any:
+    if isinstance(payload, dict):
+        error = payload.get("error")
+        if error is not None:
+            message = _extract_error_message(payload) or "Backend returned an error envelope."
+            raise BastionApiError(message, public_message=message, details=redact_payload(error))
+        if "data" in payload:
+            return payload["data"]
     return payload
 
 
-async def _request(method: str, path: str, payload: dict[str, Any] | None = None) -> Any:
-    settings = ApiSettings()
-    normalized_path = path if path.startswith("/") else f"/{path}"
-    url = f"{settings.api_base_url.rstrip('/')}{normalized_path}"
-    try:
-        async with httpx.AsyncClient(timeout=settings.request_timeout_seconds) as client:
-            response = await client.request(method, url, json=payload)
-    except Exception as exc:
-        raise ApiClientError(normalize_api_error(exc)) from exc
-    if response.status_code >= 400:
-        raise ApiClientError(_normalize_http_status(response.status_code))
-    try:
-        return _unwrap_response_envelope(response.json())
-    except ValueError as exc:
-        raise ApiClientError(FALLBACK_MESSAGE) from exc
+def normalize_api_error(exc: Exception) -> BastionApiError:
+    if isinstance(exc, BastionApiError):
+        return exc
+    if isinstance(exc, httpx.TimeoutException):
+        return BastionApiTimeoutError(
+            safe_error_message(exc), public_message=TIMEOUT_PUBLIC_MESSAGE
+        )
+    if isinstance(exc, httpx.ConnectError | httpx.NetworkError):
+        return BastionApiConnectionError(
+            safe_error_message(exc), public_message=CONNECTION_PUBLIC_MESSAGE
+        )
+    if isinstance(exc, httpx.HTTPStatusError):
+        response = exc.response
+        details: Any | None = None
+        message: str | None = None
+        try:
+            details = redact_payload(response.json())
+            message = _extract_error_message(details)
+        except ValueError:
+            details = None
+        return error_for_status(
+            response.status_code,
+            message=message,
+            details=details,
+            request_id=_extract_request_id(response),
+        )
+    if isinstance(exc, httpx.HTTPError):
+        return BastionApiConnectionError(
+            safe_error_message(exc), public_message=CONNECTION_PUBLIC_MESSAGE
+        )
+    return BastionApiError(safe_error_message(exc), public_message=INVALID_JSON_PUBLIC_MESSAGE)
 
 
-async def api_get(path: str) -> Any:
-    return await _request("GET", path)
+class BastionApiClient:
+    """Async API client foundation for Reflex state methods and service clients."""
+
+    def __init__(
+        self,
+        settings: Settings | None = None,
+        *,
+        transport: httpx.AsyncBaseTransport | None = None,
+    ) -> None:
+        self.settings = settings or get_settings()
+        self._transport = transport
+
+    def build_url(self, path: str) -> str:
+        normalized_path = path if path.startswith("/") else f"/{path}"
+        return f"{self.settings.api_base_url}{normalized_path}"
+
+    async def get(self, path: str, *, params: dict[str, Any] | None = None) -> Any:
+        return await self._request("GET", path, params=params)
+
+    async def post(self, path: str, *, json: dict[str, Any] | None = None) -> Any:
+        return await self._request("POST", path, json=json)
+
+    async def patch(self, path: str, *, json: dict[str, Any] | None = None) -> Any:
+        return await self._request("PATCH", path, json=json)
+
+    async def delete(self, path: str) -> Any:
+        return await self._request("DELETE", path)
+
+    async def _request(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: dict[str, Any] | None = None,
+        json: dict[str, Any] | None = None,
+    ) -> Any:
+        url = self.build_url(path)
+        safe_json = redact_payload(json) if json is not None else None
+        try:
+            async with httpx.AsyncClient(
+                timeout=self.settings.request_timeout_seconds,
+                transport=self._transport,
+            ) as client:
+                response = await client.request(method, url, params=params, json=json)
+                if response.status_code == 204:
+                    return None
+                response.raise_for_status()
+                try:
+                    payload = response.json()
+                except ValueError as exc:
+                    raise BastionApiError(
+                        "Backend response was not JSON.",
+                        status_code=response.status_code,
+                        public_message=INVALID_JSON_PUBLIC_MESSAGE,
+                        request_id=_extract_request_id(response),
+                    ) from exc
+                return unwrap_response_envelope(payload)
+        except Exception as exc:
+            normalized = normalize_api_error(exc)
+            normalized.details = normalized.details or {
+                "method": method,
+                "path": path,
+                "json": safe_json,
+            }
+            raise normalized from exc
 
 
-async def api_post(path: str, payload: dict[str, Any]) -> Any:
-    return await _request("POST", path, payload)
+ApiClient = BastionApiClient
+
+
+async def get(path: str) -> Any:
+    return await BastionApiClient().get(path)
