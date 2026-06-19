@@ -551,3 +551,7 @@ The runtime configuration contract preserves the architecture rules in this docu
 - Object Storage stores large proof/evidence artifacts while PostgreSQL stores artifact metadata.
 - SQLite/DuckDB remain local/offline stores, not global truth.
 - No seed phrases, Bitcoin private keys, wallet files, xprv/yprv/zprv material, raw Access Pass bearer tokens, or custody material may be stored in any configured storage system.
+
+## Code-Level Interface Boundary
+
+Initial code-level storage interfaces live in `app/storage/`. These interfaces define engine names, descriptors, profile expectations, safety validation, and health aggregation boundaries only. Concrete TimescaleDB, ClickHouse, Qdrant, Object Storage, SQLite, DuckDB, Redis, and PostgreSQL adapters are added in later phases and must continue to follow the source-of-truth, privacy, and rebuildability rules in this document.
