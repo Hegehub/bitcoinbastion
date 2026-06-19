@@ -21,7 +21,7 @@ StorageProfile = Literal[
     "enterprise",
     "air_gapped",
 ]
-ObjectStorageProvider = Literal["disabled", "minio", "s3", "compatible_s3"]
+ObjectStorageProvider = Literal["disabled", "local", "minio", "s3", "compatible_s3"]
 VectorStoreProvider = Literal["disabled", "pgvector", "qdrant"]
 
 
@@ -52,6 +52,7 @@ class RedisStorageSettings:
 @dataclass(frozen=True)
 class ObjectStorageSettings:
     enabled: bool
+    backend: ObjectStorageProvider
     provider: ObjectStorageProvider
     endpoint: str
     bucket: str
@@ -63,6 +64,8 @@ class ObjectStorageSettings:
     default_retention_days: int
     worm_enabled: bool
     checksum_required: bool
+    local_root: str
+    max_object_bytes: int
 
 
 @dataclass(frozen=True)
@@ -172,12 +175,16 @@ class Settings(BaseSettings):
     object_storage_provider: ObjectStorageProvider = Field(
         default="disabled", alias="OBJECT_STORAGE_PROVIDER"
     )
+    object_storage_backend: ObjectStorageProvider = Field(
+        default="disabled", alias="OBJECT_STORAGE_BACKEND"
+    )
     object_storage_endpoint: str = Field(default="", alias="OBJECT_STORAGE_ENDPOINT")
     object_storage_bucket: str = Field(default="", alias="OBJECT_STORAGE_BUCKET")
     object_storage_region: str = Field(default="", alias="OBJECT_STORAGE_REGION")
     object_storage_access_key: str = Field(default="", alias="OBJECT_STORAGE_ACCESS_KEY")
     object_storage_secret_key: str = Field(default="", alias="OBJECT_STORAGE_SECRET_KEY")
     object_storage_use_ssl: bool = Field(default=True, alias="OBJECT_STORAGE_USE_SSL")
+    object_storage_secure: bool = Field(default=True, alias="OBJECT_STORAGE_SECURE")
     object_storage_force_path_style: bool = Field(
         default=True, alias="OBJECT_STORAGE_FORCE_PATH_STYLE"
     )
@@ -187,6 +194,12 @@ class Settings(BaseSettings):
     object_storage_worm_enabled: bool = Field(default=False, alias="OBJECT_STORAGE_WORM_ENABLED")
     object_storage_checksum_required: bool = Field(
         default=True, alias="OBJECT_STORAGE_CHECKSUM_REQUIRED"
+    )
+    object_storage_local_root: str = Field(
+        default=".storage/objects", alias="OBJECT_STORAGE_LOCAL_ROOT"
+    )
+    object_storage_max_object_bytes: int = Field(
+        default=100 * 1024 * 1024, ge=1, alias="OBJECT_STORAGE_MAX_OBJECT_BYTES"
     )
 
     timescale_enabled: bool = Field(default=False, alias="TIMESCALE_ENABLED")
@@ -451,12 +464,21 @@ class Settings(BaseSettings):
                 "DATABASE_URL and POSTGRES_URL must match when both are set in production."
             )
 
+        effective_object_storage_backend = (
+            self.object_storage_backend
+            if self.object_storage_backend != "disabled"
+            else self.object_storage_provider
+        )
+
         if self.object_storage_enabled:
-            if self.object_storage_provider == "disabled":
+            if effective_object_storage_backend == "disabled":
                 raise ValueError(
-                    "OBJECT_STORAGE_PROVIDER must not be disabled when OBJECT_STORAGE_ENABLED=true."
+                    "OBJECT_STORAGE_BACKEND or OBJECT_STORAGE_PROVIDER must not be disabled when OBJECT_STORAGE_ENABLED=true."
                 )
-            if not self.object_storage_bucket.strip():
+            if (
+                effective_object_storage_backend != "local"
+                and not self.object_storage_bucket.strip()
+            ):
                 raise ValueError(
                     "OBJECT_STORAGE_BUCKET must be set when object storage is enabled."
                 )
@@ -546,6 +568,11 @@ class Settings(BaseSettings):
             ),
             object_storage=ObjectStorageSettings(
                 enabled=self.object_storage_enabled,
+                backend=(
+                    self.object_storage_backend
+                    if self.object_storage_backend != "disabled"
+                    else self.object_storage_provider
+                ),
                 provider=self.object_storage_provider,
                 endpoint=self.object_storage_endpoint,
                 bucket=self.object_storage_bucket,
@@ -557,6 +584,8 @@ class Settings(BaseSettings):
                 default_retention_days=self.object_storage_default_retention_days,
                 worm_enabled=self.object_storage_worm_enabled,
                 checksum_required=self.object_storage_checksum_required,
+                local_root=self.object_storage_local_root,
+                max_object_bytes=self.object_storage_max_object_bytes,
             ),
             timescale=TimescaleStorageSettings(
                 enabled=self.timescale_enabled,

@@ -52,3 +52,15 @@ If recovery or access material is ever represented, only hashes, fingerprints, e
 - Add health checks that report degraded state without hiding failures.
 - Preserve rebuildable projection boundaries for ClickHouse, vector stores, Redis, DuckDB, and derived views.
 - Add tests for every new source-of-truth or safety claim.
+
+## Current concrete infrastructure
+
+`app/storage/object_store/` now contains the first Object Storage infrastructure boundary:
+
+- `LocalObjectStore` for filesystem-backed development and tests;
+- an optional `MinIOObjectStore` adapter that imports the MinIO dependency lazily;
+- checksum helpers and typed object-store errors;
+- object-key and metadata safety guards;
+- object-store health probing.
+
+This does not migrate proof packets, trace reports, evidence archives, release artifacts, or access workflows yet.

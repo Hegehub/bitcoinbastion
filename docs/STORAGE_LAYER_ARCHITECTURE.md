@@ -555,3 +555,7 @@ The runtime configuration contract preserves the architecture rules in this docu
 ## Code-Level Interface Boundary
 
 Initial code-level storage interfaces live in `app/storage/`. These interfaces define engine names, descriptors, profile expectations, safety validation, and health aggregation boundaries only. Concrete TimescaleDB, ClickHouse, Qdrant, Object Storage, SQLite, DuckDB, Redis, and PostgreSQL adapters are added in later phases and must continue to follow the source-of-truth, privacy, and rebuildability rules in this document.
+
+## Object Storage Implementation Note
+
+Prompt 4 begins the Object Storage implementation under `app/storage/object_store/`. The implementation currently provides a tested local filesystem backend, checksum helpers, safety checks, health probing, and an optional MinIO adapter boundary. Existing proof packets, trace reports, evidence archives, release artifacts, and access workflows are not migrated in this prompt; PostgreSQL remains the future canonical metadata and authorization store while Object Storage owns artifact bytes only.

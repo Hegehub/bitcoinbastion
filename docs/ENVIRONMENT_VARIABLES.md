@@ -59,7 +59,7 @@ Redis is not durable truth. It is only for cache, queues, rate limits, websocket
 Object Storage stores proof packets, evidence archives, signed artifacts, and exports. PostgreSQL stores artifact metadata, object keys, hashes, signatures, lifecycle state, retention policy, and authorization metadata.
 
 - `OBJECT_STORAGE_ENABLED` defaults to `false`.
-- `OBJECT_STORAGE_PROVIDER` defaults to `disabled`. Allowed values are `disabled`, `minio`, `s3`, and `compatible_s3`.
+- `OBJECT_STORAGE_PROVIDER` defaults to `disabled`. Allowed values are `disabled`, `local`, `minio`, `s3`, and `compatible_s3`.
 - `OBJECT_STORAGE_ENDPOINT`, `OBJECT_STORAGE_BUCKET`, `OBJECT_STORAGE_REGION`, `OBJECT_STORAGE_ACCESS_KEY`, and `OBJECT_STORAGE_SECRET_KEY` configure future artifact storage access.
 - `OBJECT_STORAGE_USE_SSL` and `OBJECT_STORAGE_FORCE_PATH_STYLE` configure future client behavior.
 - `OBJECT_STORAGE_DEFAULT_RETENTION_DAYS` configures the default artifact retention window.
@@ -115,3 +115,14 @@ SQLite and DuckDB are local/offline stores for Desktop AI, PayRegister, offline 
 - `STORAGE_REQUIRE_BACKUP_EVIDENCE_IN_PRODUCTION` defaults to `true`.
 
 Production-like profiles are `staging`, `production`, `enterprise`, and `air_gapped`. In these profiles, PostgreSQL and Redis configuration must be explicit enough for critical runtime validation. The `air_gapped` profile does not require external managed cloud object storage by default; local MinIO-compatible object storage is acceptable when object storage is enabled.
+
+### Object Storage implementation additions
+
+Prompt 4 adds the first Object Storage infrastructure layer. These variables configure backend selection and local development behavior without migrating existing proof packets or evidence workflows.
+
+- `OBJECT_STORAGE_BACKEND` supports `disabled`, `local`, `minio`, and `s3`. `local` is fully implemented for development and tests; `minio` is behind optional dependency handling; `s3` is reserved for compatible future integration.
+- `OBJECT_STORAGE_SECURE` configures HTTPS/TLS behavior for MinIO/S3-compatible clients.
+- `OBJECT_STORAGE_LOCAL_ROOT` defaults to `.storage/objects` for local filesystem-backed artifacts.
+- `OBJECT_STORAGE_MAX_OBJECT_BYTES` defaults to `104857600` bytes.
+
+Every stored artifact must have a SHA-256 checksum. Object keys and metadata must not contain seed phrases, private keys, wallet files, xprv/yprv/zprv material, raw Access Pass bearer tokens, or raw secrets.
