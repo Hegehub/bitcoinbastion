@@ -499,7 +499,7 @@ Commands run for this audit should be interpreted as baseline checks, not produc
 | `cd frontend && npm run test` | passed | 9 test files and 26 tests passed; npm emitted an `http-proxy` config warning and Vite CJS deprecation notice. |
 | `cd frontend && npm run build` | passed | Next.js production build completed for 63 app routes; npm emitted an `http-proxy` config warning. |
 
-## Verification Results
+Commands run for this audit should be interpreted as baseline checks, not production readiness evidence.
 
 Prompt 1/22 freezes the current Next.js frontend as **legacy but supported until Reflex parity** and records route/API inventories for later migration prompts. The freeze did not delete Next.js, did not migrate routes, and did not attempt Reflex cutover.
 
@@ -512,4 +512,14 @@ Related documents:
 - `docs/frontend/FRONTEND_MIGRATION_BLOCKERS.md`
 - `docs/frontend/frontend-route-inventory.json`
 - `docs/frontend/frontend-api-dependencies.json`
+
+## Prompt 2/22 Scaffold Status
+
+- Reflex scaffold created: `reflex_frontend/` contains `rxconfig.py`, `pyproject.toml`, `README.md`, `.env.example`, `Dockerfile`, and `bastion_ui/`.
+- Current routes implemented: `/` only.
+- Current status: parallel shell only.
+- Next.js status: still legacy active.
+- Market dashboard status: unchanged; FastAPI/Jinja remains current owner.
+- Trace status: not migrated yet.
+- Production status: no route parity, production readiness, or frontend cutover is claimed.
 
