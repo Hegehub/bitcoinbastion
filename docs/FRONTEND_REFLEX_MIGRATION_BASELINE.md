@@ -486,22 +486,11 @@ Reflex cannot become primary frontend until all gates are checked:
 
 ## 17. Final recommendation
 
-Proceed to Prompt 1/22 by extending the existing `reflex_frontend/` scaffold into a route-registered Reflex baseline. Do not remove or disable `frontend/` or `app/web/`. Treat Trace as the first blocking parity path, and treat Market as a delegated/mirrored surface until Reflex can prove DTO, UI, degraded-state, and safety parity.
+Proceed with Prompt 1/22 by reconciling the already-present `reflex_frontend/` scaffold against this baseline. Do not create a second Reflex app and do not switch production routes. Treat Trace and Market parity as blockers. Keep Next.js and FastAPI/Jinja Market routes intact until every cutover gate is satisfied with passing tests and documented rollback.
 
-## Verification Results
+## Prompt 1/22 Legacy Freeze Addendum
 
-Commands run for this audit should be interpreted as baseline checks, not production readiness evidence.
-
-| Command | Result | Notes |
-|---|---:|---|
-| `python -m pytest -q` | failed | 864 passed, 18 failed, 2 skipped. Failures are pre-existing/known audit blockers: missing async pytest plugin, partial Reflex scaffold contract gaps, and this baseline initially triggering forbidden wording scan before terms were hyphenated. |
-| `cd frontend && npm run typecheck` | passed | Uses existing installed dependencies; npm emitted an `http-proxy` config warning. |
-| `cd frontend && npm run test` | passed | 9 test files and 26 tests passed; npm emitted an `http-proxy` config warning and Vite CJS deprecation notice. |
-| `cd frontend && npm run build` | passed | Next.js production build completed for 63 app routes; npm emitted an `http-proxy` config warning. |
-
-Commands run for this audit should be interpreted as baseline checks, not production readiness evidence.
-
-Prompt 1/22 freezes the current Next.js frontend as **legacy but supported until Reflex parity** and records route/API inventories for later migration prompts. The freeze did not delete Next.js, did not migrate routes, and did not attempt Reflex cutover.
+Prompt 1/22 froze the current Next.js frontend as **legacy-supported** while preserving it for rollback until Reflex parity is complete. No Reflex cutover, route migration, Next.js deletion, Market dashboard deletion, or backend domain rewrite occurred.
 
 Related documents:
 
@@ -521,5 +510,15 @@ Related documents:
 - Next.js status: still legacy active.
 - Market dashboard status: unchanged; FastAPI/Jinja remains current owner.
 - Trace status: not migrated yet.
-- Production status: no route parity, production readiness, or frontend cutover is claimed.
+- This scaffold does not claim route parity, API parity, production readiness, or Reflex primary frontend status.
 
+## Prompt 3/22 Design System Foundation Status
+
+- Reflex design-system foundation added under `reflex_frontend/bastion_ui/theme/` and `reflex_frontend/bastion_ui/components/`.
+- Development preview route added: `/design-system`.
+- Current status: reusable UI foundation only.
+- Next.js status: still legacy active and unchanged by this prompt.
+- Market dashboard status: unchanged; no Market API calls or dashboard migration were added.
+- Trace status: not migrated yet; no Trace API calls were added.
+- Console status: layout primitives only; no Console business logic was added.
+- This prompt does not claim route parity, API parity, production readiness, or Reflex primary frontend status.
