@@ -97,3 +97,33 @@ Prompt 3 adds the reusable foundation for later Reflex pages:
 - forbidden wording rules that prevent stigmatizing or certainty-implying address/payment phrases in user-facing modules.
 
 The design-system route is a development preview only. It is not production parity, and it is not a cutover route.
+
+## API Client Layer
+
+Prompt 5 adds the reusable API client layer for future Reflex routes. The layer keeps FastAPI as the source of truth and does not duplicate backend scoring, Trace, Evidence, Market, Console, or Policy logic.
+
+- Configuration is loaded from `BB_` environment variables in `bastion_ui.config.AppConfig`.
+- `BB_API_BASE_URL` points to the FastAPI backend and strips trailing slashes.
+- `BB_REQUEST_TIMEOUT_SECONDS` controls the HTTP timeout and must be positive.
+- `BastionApiClient` supports `GET`, `POST`, `PATCH`, and `DELETE` through `httpx.AsyncClient`.
+- Response envelopes are unwrapped by returning `data` when the backend sends `{ "data": ... }`.
+- If an envelope contains a non-null `error`, the client raises a normalized safe API error.
+- Public, Trace, Evidence, Status, Market, and Console client modules only build calls to backend endpoints; they do not fabricate data.
+- Safe logging utilities redact wallet-secret-like text, authorization headers, API keys, webhook secrets, bearer/session tokens, and mnemonic-like word sequences.
+
+Run API client tests from the repository root:
+
+```bash
+python -m pytest -q reflex_frontend/tests
+```
+
+Run the Reflex package checks:
+
+```bash
+cd reflex_frontend
+uv run ruff check .
+uv run mypy bastion_ui
+uv run pytest
+```
+
+This API client layer is not route parity, frontend parity, or production cutover readiness.
