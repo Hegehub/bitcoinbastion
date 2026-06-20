@@ -18,7 +18,7 @@ def public_layout(
         rx.Component,
         rx.box(
             header or rx.fragment(),
-            rx.box(container(safety_notice or rx.fragment(), *children)),
+            rx.box(container(safety_notice or rx.fragment(), *children), id="main-content"),
             footer or rx.fragment(),
             style=PAGE,
         ),

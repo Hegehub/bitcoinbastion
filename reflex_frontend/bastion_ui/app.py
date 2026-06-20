@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import cast
-
 import reflex as rx
 
 from bastion_ui.components.feedback.degraded_state import degraded_state
@@ -22,44 +20,8 @@ from bastion_ui.components.ui.badge import badge
 from bastion_ui.components.ui.button import button
 from bastion_ui.components.ui.card import card
 from bastion_ui.components.ui.metric import metric_card
-from bastion_ui.theme.styles import CARD, SAFETY_CARD
-from bastion_ui.theme.tokens import BASTION_BG, BASTION_GRAY
-
-
-def index() -> rx.Component:
-    """Render the isolated Reflex shell home page."""
-
-    return cast(
-        rx.Component,
-        rx.center(
-            rx.vstack(
-                rx.heading("Bitcoin Bastion Reflex Frontend", size="7"),
-                rx.text("Parallel migration shell.", color=BASTION_GRAY),
-                rx.box(
-                    rx.text(
-                        "No custody. Never enter seed phrases, private keys, wallet files, "
-                        "or signing material.",
-                        weight="bold",
-                    ),
-                    style=SAFETY_CARD,
-                    width="100%",
-                ),
-                rx.box(
-                    rx.text("Frontend parity is not complete yet."),
-                    rx.text("Next.js remains the active legacy frontend until cutover gates pass."),
-                    style=CARD,
-                    width="100%",
-                ),
-                spacing="5",
-                width="100%",
-                max_width="760px",
-            ),
-            min_height="100vh",
-            padding="32px",
-            background=BASTION_BG,
-            color="white",
-        ),
-    )
+from bastion_ui.routes import PUBLIC_ROUTE_SPECS
+from bastion_ui.routes.home import home_page as index  # noqa: F401
 
 
 def design_system_preview() -> rx.Component:
@@ -117,4 +79,9 @@ app = rx.App(
     )
 )
 
-app.add_page(index, route="/", title="Bitcoin Bastion Reflex Frontend")
+for route_spec in PUBLIC_ROUTE_SPECS:
+    app.add_page(route_spec.page, route=route_spec.route, title=route_spec.title)
+
+app.add_page(design_system_preview, route="/design-system", title="Design System Preview")
+
+__all__ = ["app", "design_system_preview", "index"]

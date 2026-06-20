@@ -553,3 +553,13 @@ Related documents:
 - Next.js status: unchanged and still legacy active.
 - Market dashboard status: unchanged; FastAPI/Jinja remains current owner until parity work verifies DTO/HTML response behavior.
 - Remaining blockers: stable JSON Evidence packet endpoint and Console audit/policy summary endpoints remain missing or uncertain; Market `/web/*` DTO behavior must be verified before page migration.
+
+## Prompt 6/22 Public Static Routes Migration Status
+
+- Routes implemented in Reflex: `/`, `/platform`, `/developers`, `/operations`, `/manifesto`, `/evidence`, `/status`, `/roadmap`, `/security`, and `/docs`.
+- Routes intentionally deferred: `/check`, `/trace`, `/trace/[report_id]`, `/trace/[report_id]/proof-packet`, Market dashboard routes, and Console modules.
+- API dependencies used: public route copy is wired for the Prompt 5 API-client contract; `/status` and `/roadmap` include safe fallback posture for `/api/v1/public/status` and `/api/v1/public/roadmap` rather than fake live data.
+- Fallbacks implemented: public status fallback states that explicitly say current backend health cannot be verified from the Reflex frontend when API data is unavailable.
+- Safety copy status: Evidence and Security pages include advisory-only, no-custody, not-legal-verification, not-Bitcoin-consensus-proof, and no wallet-secret-input warnings.
+- Tests added: public route registration, public navigation stale-route checks, safety copy checks, public forbidden-wording scan, status fallback, roadmap labels, and docs pending/planned labeling.
+- Known blockers: full Trace public flow, `/check`, Proof Packet viewer, Market dashboard parity, Console modules, and live API-backed status/roadmap rendering remain later prompts. No production cutover is claimed.

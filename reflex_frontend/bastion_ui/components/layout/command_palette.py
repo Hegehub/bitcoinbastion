@@ -7,6 +7,8 @@ import reflex as rx
 from bastion_ui.navigation import COMMAND_PALETTE_ACTIONS, CommandAction
 from bastion_ui.state.command_palette_state import CommandPaletteState
 
+CANONICAL_PUBLIC_ROUTES = ("/platform", "/operations")
+
 
 def command_palette_trigger() -> rx.Component:
     return cast(

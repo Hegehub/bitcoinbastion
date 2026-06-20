@@ -127,3 +127,20 @@ uv run pytest
 ```
 
 This API client layer is not route parity, frontend parity, or production cutover readiness.
+
+## Public Static Routes
+
+Prompt 6 registers the initial Reflex-owned public informational routes during the parallel migration phase:
+
+- `/`
+- `/platform`
+- `/developers`
+- `/operations`
+- `/manifesto`
+- `/evidence`
+- `/status`
+- `/roadmap`
+- `/security`
+- `/docs`
+
+These pages use the shared public layout, header, footer, safety copy, and conservative fallback states. They do not implement `/check`, full Trace, Proof Packet, Market dashboard, or Console workflows yet. Next.js remains available until documented cutover gates pass.
