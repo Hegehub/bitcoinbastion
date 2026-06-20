@@ -544,3 +544,12 @@ Related documents:
 - Stale route cleanup status: `/products` and `/self-host` are not canonical Reflex navigation or command-palette routes; they remain only legacy Next.js concerns.
 - Remaining blockers: route pages are still not migrated, Trace logic is not migrated, Market dashboard remains FastAPI/Jinja-owned, and no Reflex production cutover is claimed.
 
+
+## Prompt 5/22 API Client Contract Status
+
+- Reflex API client layer created for configuration, shared HTTP behavior, ResponseEnvelope unwrapping, normalized safe errors, timeout/connection handling, and no-custody logging redaction.
+- Service client foundations added for Public, Trace, Evidence, Status, Market, and Console endpoints.
+- Current status: client foundation only; no pages, routes, backend domain logic, Trace logic, Market dashboard, or Console business workflows were migrated.
+- Next.js status: unchanged and still legacy active.
+- Market dashboard status: unchanged; FastAPI/Jinja remains current owner until parity work verifies DTO/HTML response behavior.
+- Remaining blockers: stable JSON Evidence packet endpoint and Console audit/policy summary endpoints remain missing or uncertain; Market `/web/*` DTO behavior must be verified before page migration.
