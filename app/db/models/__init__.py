@@ -1,5 +1,6 @@
 from app.db.models.event_outbox import EventOutbox, EventOutboxStatus
 from app.db.models.storage_artifact import StorageArtifact, StorageArtifactStatus
+from app.db.models.storage_outbox_event import StorageOutboxEvent, StorageOutboxEventStatus
 from app.db.models.webhooks import (
     WebhookDelivery,
     WebhookDeliveryStatus,
@@ -115,6 +116,8 @@ from app.db.models.watched_entity import WatchedEntity
 __all__ = [
     "StorageArtifact",
     "StorageArtifactStatus",
+    "StorageOutboxEvent",
+    "StorageOutboxEventStatus",
     "WebhookDelivery",
     "WebhookDeliveryStatus",
     "WebhookEndpoint",

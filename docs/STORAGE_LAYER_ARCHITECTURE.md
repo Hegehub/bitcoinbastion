@@ -563,3 +563,7 @@ Prompt 4 begins the Object Storage implementation under `app/storage/object_stor
 ### Storage Artifact Metadata
 
 `StorageArtifact` introduces the PostgreSQL metadata source of truth for large files stored outside relational rows. PostgreSQL records artifact type, domain, object URI, bucket/key, SHA-256 hash, size, content type, retention, redaction, signature metadata, access policy, lifecycle status, and privacy-preserving creator references. Object Storage owns the artifact blob bytes. SHA-256 links metadata to content. Large proof/evidence files, release artifacts, report exports, signed receipts, SBOM/provenance files, and enterprise bundles must not be stored as SQL blobs.
+
+### Storage Outbox Foundation
+
+`storage_outbox_events` is the durable PostgreSQL outbox foundation for future cross-storage projection. Domain services should write canonical PostgreSQL state and enqueue storage outbox rows instead of writing directly to ClickHouse, TimescaleDB, Qdrant/pgvector, Redis, Object Storage, webhook/WebSocket, SDK, or MCP projections. See `docs/STORAGE_OUTBOX.md` for lifecycle, idempotency, retry, dead-letter, and security rules.
