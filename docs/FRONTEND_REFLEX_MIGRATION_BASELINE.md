@@ -1,356 +1,333 @@
 # Frontend Reflex Migration Baseline
 
-Date: 2026-06-16  
-Repository: `Hegehub/bitcoinbastion`  
-Scope: audit and cutover planning only. No production switch, route replacement, Next.js deletion, Market dashboard removal, or backend domain rewrite was performed.
-
 ## 1. Executive summary
 
-Bitcoin Bastion currently has three frontend/web surfaces:
+This document is the migration baseline for moving Bitcoin Bastion frontend ownership to `reflex_frontend/` under parity gates. It is an audit artifact only: no production route switch, no Next.js removal, no FastAPI/Jinja removal, and no backend domain rewrite occurred.
 
-1. **Next.js frontend** in `frontend/`: active public frontend with App Router routes, Trace pages, command palette, navigation, API clients, and Vitest/Playwright tests.
-2. **FastAPI/Jinja Market dashboard** in `app/web/`: active server-rendered Market Intelligence / Market Time Machine dashboard and DTO endpoints mounted directly on the FastAPI app.
-3. **Reflex frontend** in `reflex_frontend/`: present and partially scaffolded/implemented, not absent. It contains Reflex routes, services, state modules, safety helpers, Dockerfile, `pyproject.toml`, `uv.lock`, and tests, but this audit does **not** mark it as primary or parity-complete.
+Key findings:
 
-The migration must remain parity-controlled. Next.js and the FastAPI/Jinja Market dashboard must stay available until Reflex passes the cutover gates in this document.
-
-High-risk blockers found:
-
-- Required final console paths use `/console/*`, while current Next.js console-like routes are mostly `/dashboard/*`; some Reflex `/console/*` files exist but must be verified against production route parity.
-- Required Market public route ownership is split: Next.js command palette points to Market paths, but the actual Market pages are owned by FastAPI/Jinja.
-- Trace backend endpoints are mostly present, including `/api/v1/trace/lite/{address}`, `/api/v1/trace/address/{address}`, report, evidence, Proof Packet, and public summary endpoints. Trace remains a migration blocker until every required Reflex route, API call, warning, fallback, and forbidden-wording test passes.
-- The requested Trace API contract includes `/api/v1/trace/report/{report_id}/utxo-hygiene` and `/dust-radar`; these exist in backend but are not currently called by the Next.js `apiClient`.
-- `reflex_frontend/` already exists and must be audited as partial/experimental rather than generated from scratch in later prompts.
-- Stale route files exist for `/products/*` and `/self-host/*`. Current nav/command-palette tests assert these are absent from main nav/palette, but the pages remain in the tree and should be treated as cleanup/archival decisions, not deletion targets yet.
-
-Verification commands run for this audit are recorded in [Current tests and missing tests](#10-current-tests-and-missing-tests).
+- `frontend/` is an active Next.js public frontend with public pages, Trace pages, command palette, API clients, and test coverage.
+- `app/web/` is an active FastAPI/Jinja Market Intelligence / Market Time Machine dashboard and DTO surface.
+- `reflex_frontend/` already exists as a partial scaffold with theme, service, state, security, and tests, but it does not yet own the required route set.
+- Trace is migration-critical. Backend Trace endpoints mostly exist, including proof-packet, but frontend route naming uses `[reportId]` while the target Reflex convention should use `[report_id]`.
+- The Next.js Trace client references backend endpoints that exist, but also includes status/events/business/enterprise endpoints beyond the minimum target; these should be preserved or explicitly scoped later.
+- Market routes are currently owned by FastAPI/Jinja. Reflex should initially mirror/delegate them during parity, not replace them prematurely.
+- Stale Next.js pages/actions exist relative to the required final nav, including `/products`, `/self-host`, `/citadel`, `/treasury`, `/register`, `/enterprise`, `/blog`, and `/dashboard/*`.
 
 ## 2. Current frontend surfaces
 
 | Surface | Path | Status | Owns routes | Notes |
-|---|---:|---|---|---|
-| Next.js frontend | `frontend/` | Active legacy frontend until Reflex parity | `/`, `/platform`, `/developers`, `/operations`, `/manifesto`, `/evidence`, `/status`, `/roadmap`, `/security`, `/docs`, `/check`, `/trace`, `/trace/[reportId]`, `/trace/[reportId]/proof-packet`, many legacy/product/self-host/dashboard routes | Uses Next.js 14, React, API clients in `frontend/services/`, tests in `frontend/tests/`. |
-| FastAPI/Jinja web dashboard | `app/web/` | Active Market dashboard; keep during parity | `/market`, `/market-time-machine`, `/market/time-machine`, `/market/{section}`, `/intelligence/timeline`, `/evidence/{packet_id}`, `/candles/{candle_id}`, `/web/*` DTO/action endpoints | Mounted by `app.main`; templates under `app/web/templates/`; static assets under `app/web/static/`. |
-| Reflex frontend | `reflex_frontend/` | Present; partial/experimental until proven otherwise | Contains route modules for public and console routes, including Trace/check/proof-packet/console modules | Already has `rxconfig.py`, `pyproject.toml`, `uv.lock`, `Dockerfile`, services/state/security/tests. It is not primary until cutover gates pass. |
+|---|---|---:|---|---|
+| Next.js frontend | `frontend/` | active legacy-to-be | `/`, `/platform`, `/developers`, `/operations`, `/manifesto`, `/evidence`, `/status`, `/roadmap`, `/security`, `/docs`, `/check`, `/trace`, `/trace/[reportId]`, `/trace/[reportId]/proof-packet`, plus many stale/product/dashboard routes | Must remain intact until Reflex reaches documented parity. |
+| FastAPI/Jinja web dashboard | `app/web/` | active | `/market`, `/market-time-machine`, `/market/time-machine`, `/market/{section}`, `/intelligence/timeline`, `/evidence/{packet_id}`, `/candles/{candle_id}`, `/web/*` DTO/metric endpoints | Current owner of Market Intelligence / Market Time Machine. |
+| Reflex frontend | `reflex_frontend/` | partial scaffold | unknown/partial scaffold; target route ownership not complete | Contains `rxconfig.py`, `pyproject.toml`, `Dockerfile`, `bastion_ui/`, services, state, theme, and tests. |
 
-Inspected required paths:
+### Required inspection status
 
-| Path | Exists? | Audit note |
-|---|---:|---|
-| `README.md` | Yes | Project overview/readiness context inspected for scope. |
-| `docs/STATUS.md` | Yes | Status docs exist; must stay consistent with migration state. |
-| `docs/PRODUCTION_READINESS.md` | Yes | Production readiness claims must not imply Reflex parity until proven. |
-| `app/main.py` | Yes | Mounts API routers with `settings.api_prefix` and mounts Market web router without `/api/v1`. |
-| `app/api/v1/public.py` | Yes | Public endpoints exist under `/api/v1/public/*`. |
-| `app/api/v1/trace.py` | Yes | Trace endpoints exist under `/api/v1/trace/*`. |
-| `app/web/routes_market.py` | Yes | FastAPI/Jinja Market owner and DTO/action endpoints. |
-| `frontend/package.json` | Yes | Next.js 14 + Vitest/Playwright scripts. |
-| `frontend/app/` | Yes | App Router route tree. |
-| `frontend/components/` | Yes | Public, layout, Trace, command palette, navigation components. |
-| `frontend/services/` | Yes | `api.ts`, `apiClient.ts`. |
-| `frontend/tests/` | Yes | Vitest and Playwright coverage. |
-| `deploy/` | Yes | Kubernetes/runtime deploy assets; no Reflex compose cutover proven by this audit. |
-| `Makefile` | Yes | Repository commands; no production frontend cutover performed. |
+| Path | Status |
+|---|---|
+| `README.md` | exists; documents no-custody posture and Market/Trace status. |
+| `docs/STATUS.md` | exists; says Trace frontend routes are baseline implemented. |
+| `docs/PRODUCTION_READINESS.md` | exists; says Reflex Trace is not production-primary until parity and deployment evidence are complete. |
+| `app/main.py` | exists; mounts API routers and `routes_market`. |
+| `app/api/v1/public.py` | exists. |
+| `app/api/v1/trace.py` | exists. |
+| `app/web/routes_market.py` | exists and is included from `app/main.py`. |
+| `frontend/package.json` | exists. |
+| `frontend/app/` | exists. |
+| `frontend/components/` | exists. |
+| `frontend/services/` | exists. |
+| `frontend/tests/` | exists. |
+| `deploy/` | exists. |
+| `Makefile` | exists. |
 
 ## 3. Current route inventory
 
-### 3.1 Actual Next.js route files found
+| Route | Current owner | Current implementation path | Backend API dependency | Should Reflex own it? | Priority | Blocking issues | Safety requirements |
+|---|---|---|---|---:|---:|---|---|
+| `/` | Next.js | `frontend/app/page.tsx` | `/api/v1/public/*` hooks | Yes | P1 | Preserve fallback/stale visibility. | Advisory/no-custody copy visible. |
+| `/platform` | Next.js | `frontend/app/platform/page.tsx` | public landing/features indirectly | Yes | P1 | none known | No production-certification wording. |
+| `/developers` | Next.js | `frontend/app/developers/page.tsx` plus subroutes | public API docs | Yes | P2 | subroutes need mapping or redirects. | API examples must unwrap `ResponseEnvelope.data`. |
+| `/operations` | Next.js | `frontend/app/operations/page.tsx` | public/status or static | Yes | P2 | none known | Degraded states visible. |
+| `/manifesto` | Next.js | `frontend/app/manifesto/page.tsx` | static | Yes | P3 | none known | No custody claims. |
+| `/evidence` | Next.js | `frontend/app/evidence/page.tsx` | evidence/static dashboard | Yes | P1 | Distinguish public evidence landing from Market evidence packet. | Evidence is advisory, unsigned unless configured. |
+| `/status` | Next.js | `frontend/app/status/page.tsx` | `/api/v1/public/status` | Yes | P1 | none known | Must show unknown/degraded/fallback. |
+| `/roadmap` | Next.js | `frontend/app/roadmap/page.tsx` | `/api/v1/public/roadmap` | Yes | P2 | none known | Must not claim readiness. |
+| `/security` | Next.js | `frontend/app/security/page.tsx` | static/security | Yes | P1 | none known | No seed/private key handling. |
+| `/docs` | Next.js | `frontend/app/docs/page.tsx` | static/docs | Yes | P2 | deeper docs route inventory needed. | Public-safe copy. |
+| `/check` | Next.js | `frontend/app/check/page.tsx` | `/api/v1/trace/lite/{address}` | Yes | P0 | Must preserve address-only validation. | Never accept seed/private keys/wallet files/signing material. |
+| `/trace` | Next.js | `frontend/app/trace/page.tsx` | Trace lite/report client | Yes | P0 | Must remain alias/entry point. | All Trace warnings visible. |
+| `/trace/[report_id]` | Next.js equivalent uses `[reportId]` | `frontend/app/trace/[reportId]/page.tsx` | `/api/v1/public/trace/{id}/summary`, `/api/v1/trace/report/{id}`, evidence and panels | Yes | P0 | Dynamic param naming mismatch: target Reflex should use `[report_id]`. | Advisory-only; not legal verification; not consensus proof. |
+| `/trace/[report_id]/proof-packet` | Next.js equivalent uses `[reportId]` | `frontend/app/trace/[reportId]/proof-packet/page.tsx` | `/api/v1/trace/report/{id}/proof-packet` | Yes | P0 | Dynamic param naming mismatch. | Must show unsigned/application-level limitations. |
+| `/console` | Missing as required route; stale dashboard exists | no `frontend/app/console/page.tsx`; `frontend/app/dashboard/page.tsx` exists | TBD | Yes | P1 | Console route absent; dashboard routes are stale equivalents. | Console safety banner required. |
+| `/console/trace` | Missing | none | Trace APIs | Yes | P1 | absent | Same as Trace. |
+| `/console/evidence` | Missing | none | evidence APIs | Yes | P2 | absent | Evidence limitations. |
+| `/console/market-intelligence` | Missing | none | Market DTOs or delegated Jinja | Yes or delegate initially | P1 | absent; command palette currently points to `/market`. | Degraded/stale data visible. |
+| `/console/time-machine` | Missing | none | `/web/market-time-machine` | Yes or delegate initially | P1 | command palette currently points to `/market/time-machine`. | Historical context only. |
+| `/console/sovereign-grid` | Missing | none | TBD | Yes | P3 | absent | Avoid unsupported claims. |
+| `/console/policy` | Missing | none | policy APIs | Yes | P3 | absent | Advisory policy facts only. |
+| `/console/audit` | Missing | none | audit/events APIs | Yes | P3 | absent | No hidden failures. |
+| `/market` | FastAPI/Jinja | `app/web/routes_market.py`, templates under `app/web/templates/market/` | DB service + DTOs | Eventually; delegate during parity | P1 | Current owner is Jinja, not Next.js/Reflex. | Limitations and degraded states required. |
+| `/market/timeline` | FastAPI/Jinja via `/market/{section}` | `app/web/routes_market.py` | dashboard/timeline service | Eventually; delegate during parity | P1 | Dynamic catch-all maps invalid sections to timeline. | Historical context, not advice. |
+| `/market/time-machine` | FastAPI/Jinja | `app/web/routes_market.py` | `/web/market-time-machine` DTO equivalent | Eventually; delegate during parity | P1 | Current duplicate legacy `/market-time-machine`. | Limitations visible. |
+| `/market/signals` | FastAPI/Jinja via `/market/{section}` | `app/web/routes_market.py` | dashboard payload | Eventually | P2 | Section is dynamic. | Avoid prediction/causation. |
+| `/market/evidence` | FastAPI/Jinja via `/market/{section}` | `app/web/routes_market.py` | dashboard/evidence payload | Eventually | P2 | conflicts conceptually with `/evidence/{packet_id}`. | Evidence limitations. |
+| `/market/narratives` | FastAPI/Jinja via `/market/{section}` | `app/web/routes_market.py` | source/narrative payload | Eventually | P2 | Section is dynamic. | Avoid financial advice. |
+| `/market/sources` | FastAPI/Jinja via `/market/{section}` | `app/web/routes_market.py` | source summary | Eventually | P2 | Section is dynamic. | Source freshness/degraded visible. |
+| `/intelligence/timeline` | FastAPI/Jinja | `app/web/routes_market.py` | timeline service | Maybe redirect/delegate | P2 | Legacy/alternate route. | Same as Market. |
+| `/evidence/{packet_id}` | FastAPI/Jinja | `app/web/routes_market.py` | evidence panel/replay | Delegate or reproduce | P1 | Route conflicts with public `/evidence` prefix. | Evidence not proof of legality. |
+| `/candles/{candle_id}` | FastAPI/Jinja | `app/web/routes_market.py` | candle attribution | Delegate or reproduce | P2 | Requested route says `/candles/{candle_id}`; DTO is `/web/candle/{candle_id}` singular. | Correlation-not-causation. |
 
-Current Next.js App Router pages include:
+### Actual Next.js routes found
 
-- Public/core: `/`, `/platform`, `/developers`, `/developers/api`, `/developers/examples`, `/developers/webhooks`, `/developers/contributing`, `/developers/changelog`, `/operations`, `/manifesto`, `/evidence`, `/status`, `/roadmap`, `/security`, `/docs`, `/check`, `/trace`, `/trace/[reportId]`, `/trace/[reportId]/proof-packet`.
-- Trace extensions: `/trace/business`, `/trace/business/batch`, `/trace/business/policies`, `/trace/business/review`, `/trace/enterprise`, `/trace/enterprise/audit`, `/trace/enterprise/legal-hold`, `/trace/enterprise/retention`, `/trace/enterprise/siem`.
-- Dashboard/console-like legacy: `/dashboard`, `/dashboard/citadel`, `/dashboard/operations`, `/dashboard/platform`, `/dashboard/runtime-events`, `/dashboard/status`.
-- Other current/legacy pages: `/blog`, `/blog/[slug]`, `/citadel`, `/design-system`, `/enterprise`, `/genesis`, `/products`, `/products/*`, `/register`, `/self-host`, `/self-host/*`, `/treasury`.
+`/blog`, `/blog/[slug]`, `/check`, `/citadel`, `/dashboard`, `/dashboard/citadel`, `/dashboard/operations`, `/dashboard/platform`, `/dashboard/runtime-events`, `/dashboard/status`, `/design-system`, `/developers`, `/developers/api`, `/developers/changelog`, `/developers/contributing`, `/developers/examples`, `/developers/webhooks`, `/docs`, `/enterprise`, `/evidence`, `/genesis`, `/manifesto`, `/operations`, `/`, `/platform`, `/products`, `/products/api`, `/products/bastion-os`, `/products/core`, `/products/crypto-analytics-bot`, `/products/desktop-ai`, `/products/evidence-layer`, `/products/home-ai`, `/products/register`, `/products/sovereign-grid`, `/register`, `/roadmap`, `/security`, `/self-host`, `/self-host/docker`, `/self-host/kubernetes`, `/self-host/production-readiness`, `/self-host/quickstart`, `/self-host/security-checklist`, `/self-host/vps`, `/status`, `/trace`, `/trace/[reportId]`, `/trace/[reportId]/proof-packet`, `/trace/business`, `/trace/business/batch`, `/trace/business/policies`, `/trace/business/review`, `/trace/enterprise`, `/trace/enterprise/audit`, `/trace/enterprise/legal-hold`, `/trace/enterprise/retention`, `/trace/enterprise/siem`, `/treasury`.
 
-### 3.2 Required migration route inventory
-
-| Route | Current owner | Current implementation path | Backend API dependency | Should Reflex own it? | Migration priority | Blocking issues | Safety requirements |
-|---|---|---|---|---:|---|---|---|
-| `/` | Next.js | `frontend/app/page.tsx`; Reflex partial `reflex_frontend/bastion_ui/routes/home.py` | `/api/v1/public/landing`, `/api/v1/public/status` optional | Yes | P1 | Must preserve public safety/status/fallback copy | Advisory/no-custody/degraded visible |
-| `/platform` | Next.js | `frontend/app/platform/page.tsx`; Reflex partial route exists | Public/status/features | Yes | P1 | Match content/nav parity | No custody claims only |
-| `/developers` | Next.js | `frontend/app/developers/page.tsx`; Reflex partial route exists | Public docs/OpenAPI links | Yes | P1 | Preserve API envelope docs | Warn no secret material |
-| `/operations` | Next.js | `frontend/app/operations/page.tsx`; Reflex partial route exists | Operations/status endpoints optional | Yes | P2 | Must not claim prod readiness | Degraded/runbook visibility |
-| `/manifesto` | Next.js | `frontend/app/manifesto/page.tsx`; Reflex partial route exists | None | Yes | P2 | `/self-host` link in manifesto is stale target | No custody/no signing material |
-| `/evidence` | Next.js | `frontend/app/evidence/page.tsx`; Reflex partial route exists | Evidence/public stats optional | Yes | P1 | Distinguish public evidence vs Market evidence | Not legal proof |
-| `/status` | Next.js | `frontend/app/status/page.tsx`; Reflex partial route exists | `/api/v1/public/status`, trace status optional | Yes | P1 | Must show fallback/stale states | Degraded/stale visible |
-| `/roadmap` | Next.js | `frontend/app/roadmap/page.tsx`; Reflex partial route exists | `/api/v1/public/roadmap` optional | Yes | P2 | Avoid contradictory readiness claims | No prod readiness overclaim |
-| `/security` | Next.js | `frontend/app/security/page.tsx`; Reflex partial route exists | None | Yes | P1 | Must include sensitive-input warnings | No seed/private key/wallet files |
-| `/docs` | Next.js | `frontend/app/docs/page.tsx`; Reflex partial route exists | OpenAPI docs links | Yes | P2 | Keep API path examples accurate | No custody/API limits |
-| `/check` | Next.js | `frontend/app/check/page.tsx`; Reflex partial route exists | `/api/v1/trace/lite/{address}`, `/api/v1/public/trace/{report_id}/summary` | Yes | P0 Trace blocker | Reflex must validate public Bitcoin address and reject sensitive material | Required Trace warnings visible |
-| `/trace` | Next.js alias to Check page | `frontend/app/trace/page.tsx`; Reflex partial route exists | Same as `/check` | Yes | P0 Trace blocker | Alias must continue to work | Same as `/check` |
-| `/trace/[report_id]` | Next.js | `frontend/app/trace/[reportId]/page.tsx`; Reflex partial route exists | `/api/v1/trace/report/{id}`, evidence and panels | Yes | P0 Trace blocker | Bracket param naming differs: Next uses `[reportId]`, target says `[report_id]` | Advisory, limitations, unavailable panel states |
-| `/trace/[report_id]/proof-packet` | Next.js | `frontend/app/trace/[reportId]/proof-packet/page.tsx`; Reflex partial route exists | `/api/v1/trace/report/{id}/proof-packet` | Yes | P0 Trace blocker | Must preserve integrity/redaction/advisory fields | Not legal proof; proof packet limitations |
-| `/console` | Not in Next.js route tree; Reflex partial route exists | `reflex_frontend/bastion_ui/routes/console.py`; Next has `/dashboard` | Console/status APIs TBD | Yes | P1 | Missing Next route; needs Reflex ownership | Read-only/operator review/no custody |
-| `/console/trace` | Not in Next.js route tree; Reflex partial route exists | `reflex_frontend/bastion_ui/routes/console_trace.py` | Trace status/events | Yes | P1 | Must map from legacy dashboard/Trace surfaces | Read-only/advisory |
-| `/console/evidence` | Not in Next.js route tree; Reflex partial route exists | `reflex_frontend/bastion_ui/routes/console_evidence.py` | Evidence APIs | Yes | P2 | Missing Next equivalent | Not legal proof |
-| `/console/market-intelligence` | Not in Next.js route tree; command palette currently points to `/market` | Reflex partial route exists | Market DTOs/API | Yes, or delegate explicitly | P1 | Ownership split with FastAPI/Jinja `/market` | Stale/fallback visible |
-| `/console/time-machine` | Not in Next.js route tree; command palette points to `/market/time-machine` | Reflex partial route exists | `/web/market-time-machine` | Yes, or delegate explicitly | P1 | Must not break Jinja dashboard | Same |
-| `/console/sovereign-grid` | Not in Next.js route tree; Reflex partial route exists | `console_sovereign_grid.py` | TBD | Yes | P2 | No Next parity source | Read-only/operator review |
-| `/console/policy` | Not in Next.js route tree; Reflex partial route exists | `console_policy.py` | Policy APIs | Yes | P2 | Must avoid auto-approve semantics | Advisory/operator review |
-| `/console/audit` | Not in Next.js route tree; Reflex partial route exists | `console_audit.py` | Audit/observability APIs | Yes | P2 | Missing Next equivalent | Evidence-based/no custody |
-| `/market` | FastAPI/Jinja | `app/web/routes_market.py`, `templates/market/dashboard.html` | DB via `MarketTimeMachineWebService`; DTO `/web/market-time-machine` | Yes eventually, or delegated during parity | P1 | Currently server-rendered by FastAPI, not Next.js | Market limitations/stale data visible |
-| `/market/timeline` | FastAPI/Jinja via `/market/{section}` | `app/web/routes_market.py`, `templates/market/section.html` | DTO/service timeline | Yes eventually | P1 | Current owner is Jinja | Limitations visible |
-| `/market/time-machine` | FastAPI/Jinja | `app/web/routes_market.py`, `templates/market/time_machine.html` | `/web/market-time-machine` | Yes eventually | P1 | Current owner is Jinja | Limitations visible |
-| `/market/signals` | FastAPI/Jinja via section route | `app/web/routes_market.py` | Service metrics/signals view model | Yes eventually | P2 | Current owner is Jinja | Advisory signals only |
-| `/market/evidence` | FastAPI/Jinja via section route | `app/web/routes_market.py` | Service evidence view model | Yes eventually | P2 | Distinguish from public `/evidence` | Not legal proof |
-| `/market/narratives` | FastAPI/Jinja via section route | `app/web/routes_market.py` | Service narratives view model | Yes eventually | P2 | Current owner is Jinja | Source limitations |
-| `/market/sources` | FastAPI/Jinja via section route | `app/web/routes_market.py` | Source summary | Yes eventually | P2 | Current owner is Jinja | Provider health/staleness |
-| `/intelligence/timeline` | FastAPI/Jinja | `app/web/routes_market.py`, `templates/market_timeline.html` | Service timeline | Mirror or redirect after parity | P2 | Legacy/current route must not disappear silently | Limitations visible |
-| `/evidence/{packet_id}` | FastAPI/Jinja | `app/web/routes_market.py`, `templates/evidence_viewer.html` | `/web/evidence/{packet_id}` | Mirror or delegate | P2 | Collides conceptually with public `/evidence` | Not legal proof; packet unavailable state |
-| `/candles/{candle_id}` | FastAPI/Jinja | `app/web/routes_market.py`, `templates/candle_attribution.html` | `/web/candle/{candle_id}` | Mirror or delegate | P3 | Market-specific detail route | Attribution limitations |
+Stale or out-of-target routes requiring explicit migration disposition: `/products`, `/self-host`, `/citadel`, `/treasury`, `/register`, `/enterprise`, `/blog`, `/dashboard/*`, `/design-system`, `/genesis`, and business/enterprise Trace subroutes.
 
 ## 4. Current API dependency inventory
 
-### 4.1 Public API
+### Public API
 
-The backend public router is mounted with `settings.api_prefix`, so expected paths are `/api/v1/public/*` when `api_prefix` is `/api/v1`.
+| Endpoint | Backend status | Frontend usage | Notes |
+|---|---:|---|---|
+| `/api/v1/public/landing` | exists | `frontend/lib/api/public.ts`, `frontend/services/apiClient.ts`, hooks/pages | ResponseEnvelope must be unwrapped. |
+| `/api/v1/public/status` | exists | status/home/developers/API client | Fallback state exists. |
+| `/api/v1/public/roadmap` | exists | roadmap hook/page | Fallback state exists. |
+| `/api/v1/public/stats` | exists | public stats hook | Fallback state exists. |
+| `/api/v1/public/features` | exists | features hook | Fallback state exists. |
+| `/api/v1/public/trace/{report_id}/summary` | exists | Trace report client | `report_id` is int backend. |
 
-| Endpoint | Backend status | Current frontend usage | Notes |
-|---|---|---|---|
-| `/api/v1/public/landing` | Exists | `frontend/services/apiClient.ts` `getPublicLanding()` | Envelope unwrapped with `body.data`. |
-| `/api/v1/public/status` | Exists | `getPublicStatus()`, docs examples | Used by public/status surfaces. |
-| `/api/v1/public/roadmap` | Exists | Docs/examples and likely page service | Preserve for Reflex roadmap. |
-| `/api/v1/public/stats` | Exists | No direct `apiClient` method found | Add Reflex client if route needs stats. |
-| `/api/v1/public/features` | Exists | Developer examples | Add Reflex client if public feature grid needs live data. |
-| `/api/v1/public/trace/{report_id}/summary` | Exists | `getTraceSummary(reportId)` | Required by `/check` after lite report lookup. |
+### Trace API
 
-### 4.2 Trace API
+| Endpoint | Backend status | Frontend usage | Mismatch/recommended fix |
+|---|---:|---|---|
+| `/api/v1/trace/lite/{address}` | exists | `/check`, Trace form/client/tests | Preserve. |
+| `/api/v1/trace/address/{address}` | exists | not primary in Next.js client | Keep available; Reflex may use full analysis when needed. |
+| `/api/v1/trace/report/{report_id}` | exists | Trace report | Preserve. |
+| `/api/v1/trace/report/{report_id}/evidence` | exists | Trace report | Preserve. |
+| `/api/v1/trace/report/{report_id}/privacy-shield` | exists | Trace detail panels | Preserve. |
+| `/api/v1/trace/report/{report_id}/origin-passport` | exists | Trace detail panels | Preserve. |
+| `/api/v1/trace/report/{report_id}/source-summary` | exists | backend only/minor frontend gap | Reflex should add service method if panel requires it. |
+| `/api/v1/trace/report/{report_id}/provider-disagreement` | exists | Trace detail panels | Preserve. |
+| `/api/v1/trace/report/{report_id}/utxo-hygiene` | exists | not in current main client list | Reflex should include if panel is required. |
+| `/api/v1/trace/report/{report_id}/dust-radar` | exists | not in current main client list | Reflex should include if panel is required. |
+| `/api/v1/trace/report/{report_id}/counterparty-lens` | exists | Trace detail panels | Preserve. |
+| `/api/v1/trace/report/{report_id}/policy-facts` | exists | Trace detail panels/tests | Preserve. |
+| `/api/v1/trace/report/{report_id}/proof-packet` | exists | proof packet page | Required though not listed in original minimum Trace API table. |
+| `/api/v1/trace/status` | exists | frontend services/tests | Preserve for console. |
+| `/api/v1/trace/events` | exists | frontend services/tests | Preserve for console/audit. |
 
-| Endpoint | Backend status | Current frontend usage | Migration note |
-|---|---|---|---|
-| `/api/v1/trace/lite/{address}` | Exists | `apiClient.checkTraceLite()` | Required P0 for `/check` and `/trace`. |
-| `/api/v1/trace/address/{address}` | Exists | Not used by current Next.js API client | Reflex may need full address workflow or explicitly not use. |
-| `/api/v1/trace/report/{report_id}` | Exists | `getTraceReport()` | Required for report page. |
-| `/api/v1/trace/report/{report_id}/evidence` | Exists | `getTraceEvidence()` | Required for report evidence panel. |
-| `/api/v1/trace/report/{report_id}/proof-packet` | Exists | `getProofPacket()` | Required even though it was not in the initial public API list; it is the proof packet endpoint. |
-| `/api/v1/trace/report/{report_id}/privacy-shield` | Exists | `getTracePrivacyShield()` | Required panel. |
-| `/api/v1/trace/report/{report_id}/origin-passport` | Exists | `getTraceOriginPassport()` | Required panel. |
-| `/api/v1/trace/report/{report_id}/source-summary` | Exists | Not used by current `apiClient` | Add client or document intentional omission. |
-| `/api/v1/trace/report/{report_id}/provider-disagreement` | Exists | `getTraceProviderDisagreement()` | Required panel. |
-| `/api/v1/trace/report/{report_id}/utxo-hygiene` | Exists | Not used by current `apiClient` | Add Reflex client if UI requires it. |
-| `/api/v1/trace/report/{report_id}/dust-radar` | Exists | Not used by current `apiClient` | Add Reflex client if UI requires it. |
-| `/api/v1/trace/report/{report_id}/counterparty-lens` | Exists | `getTraceCounterpartyLens()` | Required panel. |
-| `/api/v1/trace/report/{report_id}/policy-facts` | Exists | `getTracePolicyFacts()` | Required panel. |
-| `/api/v1/trace/status` | Exists | `getTraceStatus()` | Console/status integration. |
-| `/api/v1/trace/events` | Exists | `getTraceEvents()`, `getRuntimeEvents()` | Console/runtime events integration. |
+### Market/API DTOs
 
-### 4.3 Market/API DTOs
+| Endpoint | Backend status | Current owner | Notes |
+|---|---:|---|---|
+| `/web/market-time-machine` | exists | FastAPI/Jinja | Primary DTO for dashboard/time-machine. |
+| `/web/timeline` | exists | FastAPI/Jinja | Timeline DTO. |
+| `/web/candle/{candle_id}` | exists | FastAPI/Jinja | Singular `candle`; HTML route is `/candles/{candle_id}`. |
+| `/web/evidence/{packet_id}` | exists | FastAPI/Jinja | Evidence panel DTO. |
+| `/web/market-time-machine/marker-click` | exists POST | FastAPI/Jinja | UI metric endpoint. |
+| `/web/market-time-machine/candle-click` | exists POST | FastAPI/Jinja | UI metric endpoint. |
+| `/web/market-time-machine/replay-open` | exists POST | FastAPI/Jinja | UI metric endpoint. |
+| `/web/market-time-machine/evidence-view` | exists POST | FastAPI/Jinja | UI metric endpoint. |
 
-| Endpoint | Backend status | Current owner/usage | Migration note |
-|---|---|---|---|
-| `/web/market-time-machine` | Exists | FastAPI/Jinja DTO endpoint | Reflex Market service should call/mirror this during parity unless replaced by `/api/v1` DTO later. |
-| `/web/timeline` | Exists | FastAPI/Jinja DTO endpoint | Required for timeline route parity. |
-| `/web/candle/{candle_id}` | Exists | FastAPI/Jinja detail DTO | Required for `/candles/{candle_id}` mirror/delegation. |
-| `/web/evidence/{packet_id}` | Exists | FastAPI/Jinja evidence DTO | Required for evidence packet detail mirror/delegation. |
-| `/web/market-time-machine/marker-click` | Exists POST | Jinja interaction metric | Reflex should preserve event metrics or document intentional metric change. |
-| `/web/market-time-machine/candle-click` | Exists POST | Jinja interaction metric | Same. |
-| `/web/market-time-machine/replay-open` | Exists POST | Jinja interaction metric | Same. |
-| `/web/market-time-machine/evidence-view` | Exists POST | Jinja interaction metric | Same. |
+### Frontend/backend mismatches
 
-### 4.4 Frontend/backend mismatches
-
-| Frontend path/code | Missing or mismatched backend endpoint | Recommended fix |
+| Frontend path | Missing/mismatched backend endpoint | Recommended fix |
 |---|---|---|
-| Command palette required final entries say `/console/market-intelligence` and `/console/time-machine`; current Next.js command palette links Market actions to `/market`, `/market/timeline`, `/market/time-machine`, etc. | Not a missing backend endpoint, but a route ownership mismatch. | In Reflex, add required `/console/*` entries and either keep `/market/*` as public Market routes or clearly delegate them to FastAPI/Jinja during parity. |
-| Current Next.js has `/dashboard/*`; required final target uses `/console/*`. | No current Next.js `/console` route. | Reflex should own `/console/*`; migration docs should map `/dashboard/*` legacy routes to `/console/*` or archive later. |
-| Required Trace contract lists source-summary, utxo-hygiene, dust-radar; Next.js client omits these calls. | Backend endpoints exist. | Add Reflex service methods and UI fallback panels or document not displayed. |
-| Required route `/trace/[report_id]`; current Next.js folder is `[reportId]`. | Dynamic naming mismatch only. | Reflex should use bracket syntax `route="/trace/[report_id]"` or documented Reflex-compatible equivalent, while service param can be report_id/reportId internally. |
-| `/products/*` and `/self-host/*` still exist as pages while tests assert absent from main nav/palette. | Stale route presence, not backend. | Treat as cleanup blocker for later archive/redirect decision; do not delete before parity. |
+| Next.js route `/trace/[reportId]` | Target route naming says `[report_id]`; backend uses `{report_id}`. | Reflex should use `/trace/[report_id]`; optionally Next.js can remain unchanged until archive. |
+| Required `/console/*` routes | No Next.js implementation and no Reflex parity implementation yet. | Add Reflex console routes in later prompts; delegate Market routes initially. |
+| Required command palette `/console/market-intelligence`, `/console/time-machine`, etc. | Current palette points Market to `/market` and `/market/time-machine`; lacks sovereign-grid/policy/audit entries. | Update in Reflex and later Next.js cleanup if needed. |
+| `/market/timeline` requested | Implemented by dynamic `/market/{section}`, not discrete handler. | Reflex can use explicit route while preserving backend dynamic route. |
+| `/candles/{candle_id}` HTML vs `/web/candle/{candle_id}` DTO | Different pluralization. | Document and preserve both roles. |
 
 ## 5. Trace migration blocker analysis
 
-Checklist status:
+Checklist:
 
 - [x] Trace backend router exists: `app/api/v1/trace.py`.
-- [x] Trace API prefix is known: `app.main` includes `trace_router` with `settings.api_prefix`; expected `/api/v1/trace`.
-- [x] `/trace/lite/{address}` exists under `/api/v1/trace/lite/{address}`.
-- [x] `/trace/address/{address}` exists under `/api/v1/trace/address/{address}`.
-- [x] `/trace/report/{report_id}` exists under `/api/v1/trace/report/{report_id}`.
-- [x] `/trace/report/{report_id}/evidence` exists under `/api/v1/trace/report/{report_id}/evidence`.
-- [x] `/public/trace/{report_id}/summary` exists under `/api/v1/public/trace/{report_id}/summary`.
-- [x] Proof Packet endpoint exists: `/api/v1/trace/report/{report_id}/proof-packet`.
-- [x] Trace frontend page exists: `frontend/app/trace/page.tsx` aliases check page.
+- [x] Trace API prefix is known: `settings.api_prefix` + router prefix `/trace`, normally `/api/v1/trace`.
+- [x] `/trace/lite/{address}` exists.
+- [x] `/trace/address/{address}` exists.
+- [x] `/trace/report/{report_id}` exists.
+- [x] `/trace/report/{report_id}/evidence` exists.
+- [x] `/public/trace/{report_id}/summary` exists.
+- [x] Proof Packet endpoint exists: `/trace/report/{report_id}/proof-packet`.
+- [x] Trace frontend page exists: `frontend/app/trace/page.tsx`.
 - [x] `/check` exists: `frontend/app/check/page.tsx`.
-- [x] `/trace` alias exists via import from `../check/page`.
-- [x] Trace tests exist: `frontend/tests/lite-check.test.tsx`, `frontend/tests/trace-api-contract.test.ts`, `frontend/tests/trace-report-ui.test.tsx`, `frontend/tests/e2e/trace.spec.ts`, plus backend Trace tests under `tests/integration/` and `tests/contract/`.
-- [x] Trace is present in navigation: `SiteHeader` includes `/trace`.
-- [x] Trace is present in command palette: `Open Trace`, `Check Bitcoin Address`, dynamic report/proof packet actions.
+- [x] `/trace` alias/entry exists.
+- [x] Trace tests exist: `frontend/tests/lite-check.test.tsx`, `trace-api-contract.test.ts`, `trace-report-ui.test.tsx`, `e2e/trace.spec.ts`.
+- [x] Trace is present in navigation.
+- [x] Trace is present in command palette.
 
-Trace cannot be marked Reflex-ready until all of these pass in Reflex:
+Trace is **not ready for Reflex cutover** until Reflex independently proves:
 
-- [ ] `/check` works and rejects non-address/sensitive input.
-- [ ] `/trace` works as alias or equivalent public Trace landing/check flow.
-- [ ] `/trace/[report_id]` works with report, evidence, and panel fallbacks.
-- [ ] `/trace/[report_id]/proof-packet` works with unavailable/limitations states.
-- [ ] Safety warnings are visible on check, report, and proof packet pages.
-- [ ] Forbidden wording is absent from rendered output, excluding test fixtures/constants.
-- [ ] Backend API calls match real backend endpoints and unwrap `ResponseEnvelope.data`.
-- [ ] Degraded/unavailable/fallback/stale states remain visible rather than hiding panels.
+- `/check`, `/trace`, `/trace/[report_id]`, and `/trace/[report_id]/proof-packet` route parity.
+- visible safety warnings on each Trace entry and result page.
+- forbidden wording absent.
+- backend calls match real endpoints and unwrap `ResponseEnvelope.data`.
+- no sensitive wallet material is accepted.
+- proof packet page shows unsigned/application-level limitation where applicable.
 
 ## 6. Market dashboard migration analysis
 
-Checklist status:
+Checklist:
 
-- [x] Current `/market` owner: FastAPI/Jinja web dashboard.
-- [x] Current `/market` implementation path: `app/web/routes_market.py` with `templates/market/dashboard.html`.
-- [x] Current `/market` API/DTO dependencies: `MarketTimeMachineWebService`, `MarketTimelineDTO`, `build_market_dto`, `/web/market-time-machine`.
+- [x] Current `/market` owner: FastAPI/Jinja in `app/web/routes_market.py`.
+- [x] Current `/market` implementation path: `app/web/routes_market.py` + `app/web/templates/market/dashboard.html`.
+- [x] Current `/market` API/DTO dependencies: `MarketTimeMachineWebService`, `MarketTimelineDTO`, `/web/market-time-machine`, `/web/timeline`, `/web/candle/{candle_id}`, `/web/evidence/{packet_id}`.
 - [x] Current `/market/time-machine` owner: FastAPI/Jinja.
-- [x] Current `/market/timeline` owner: FastAPI/Jinja via `/market/{section}`.
-- [x] Current `/market/signals` owner: FastAPI/Jinja via `/market/{section}`.
-- [x] Current `/market/evidence` owner: FastAPI/Jinja via `/market/{section}`.
-- [x] Current `/market/narratives` owner: FastAPI/Jinja via `/market/{section}`.
-- [x] Current `/market/sources` owner: FastAPI/Jinja via `/market/{section}`.
-- [x] Current `/web/*` DTO endpoints documented above.
-- [x] Reflex should eventually replace public `/market/*` routes only after parity, or explicitly delegate these routes to FastAPI/Jinja for an initial cutover phase.
-- [x] Reflex should initially mirror these routes in read-only mode or link/delegate to the Jinja implementation.
-- [x] FastAPI/Jinja should remain during the parity phase.
+- [x] Current `/market/timeline` owner: FastAPI/Jinja dynamic `/market/{section}`.
+- [x] Current `/market/signals` owner: FastAPI/Jinja dynamic `/market/{section}`.
+- [x] Current `/market/evidence` owner: FastAPI/Jinja dynamic `/market/{section}`.
+- [x] Current `/market/narratives` owner: FastAPI/Jinja dynamic `/market/{section}`.
+- [x] Current `/market/sources` owner: FastAPI/Jinja dynamic `/market/{section}`.
+- [x] Current `/web/*` DTO endpoints: documented above.
+- [x] Reflex should replace these routes eventually after parity.
+- [x] Reflex should initially mirror/delegate these routes during parity.
+- [x] FastAPI/Jinja should remain during parity phase.
 
-Market migration blockers:
+Market blockers:
 
-- Market route ownership currently sits outside Next.js and outside the `/api/v1` prefix.
-- Reflex needs a `market_client` that supports `/web/market-time-machine`, `/web/timeline`, `/web/candle/{id}`, `/web/evidence/{id}`, plus event metric POSTs or documented metric parity exceptions.
-- Market templates include safety limitations through `SAFETY_LIMITATIONS`; Reflex must visibly preserve limitations, data-unavailable states, source health/staleness, and replay/evidence context.
-- Current command palette uses `/market/*`; required command palette wants `/console/market-intelligence` and `/console/time-machine`. This must be reconciled without breaking existing `/market/*` routes.
+1. Reflex must model chart, timeline, markers, evidence panel, replay, source summary, limitations, degraded states, and metric POST behavior before route ownership changes.
+2. The current backend catches DB `OperationalError` and returns degraded empty states; Reflex must preserve this visibility.
+3. Route ownership conflicts exist between public `/evidence` and market packet `/evidence/{packet_id}`.
+4. Market DTOs are not ResponseEnvelope-wrapped; Reflex API client must support both raw DTOs and enveloped API responses.
 
 ## 7. Navigation and command palette gaps
 
-### Current main navigation
+### Required final main navigation
 
-`SiteHeader` current main navigation matches the required final main navigation:
+Required: Platform, Trace, Evidence, Status, Developers, Operations, Docs, Security, Roadmap.
 
-- Platform → `/platform`
-- Trace → `/trace`
-- Evidence → `/evidence`
-- Status → `/status`
-- Developers → `/developers`
-- Operations → `/operations`
-- Docs → `/docs`
-- Security → `/security`
-- Roadmap → `/roadmap`
+Current `TopNav` includes Platform, Citadel, Trace, Treasury, Register, Developers, Operations, Security, Status, Docs. Missing from required: Evidence, Roadmap. Stale/out-of-target: Citadel, Treasury, Register.
 
-`TopNav` also exists and includes older routes (`/citadel`, `/treasury`, `/register`) and should be treated as a secondary/legacy nav component unless still used by pages.
+### Required command palette entries
 
-### Current command palette
+| Entry | Current status |
+|---|---:|
+| Open Trace → `/trace` | present |
+| Check Bitcoin Address → `/check` | present |
+| Open Trace Report → `/trace/{report_id}` | present dynamically for numeric query |
+| Open Proof Packet → `/trace/{report_id}/proof-packet` | present dynamically for numeric query |
+| Open Evidence → `/evidence` | present |
+| Open Status → `/status` | present |
+| Open Console → `/console` | present, but route absent |
+| Open Market Intelligence → `/console/market-intelligence` | missing; current points to `/market` |
+| Open Time Machine → `/console/time-machine` | missing; current points to `/market/time-machine` |
+| Open Sovereign Grid → `/console/sovereign-grid` | missing |
+| Open Policy → `/console/policy` | missing |
+| Open Audit → `/console/audit` | missing |
 
-Current command palette entries include:
-
-- Present and aligned: Open Trace `/trace`, Check Bitcoin Address `/check`, dynamic Open Trace Report `/trace/{reportId}`, dynamic Open Proof Packet `/trace/{reportId}/proof-packet`, Open Evidence `/evidence`, Open Status `/status`, Open Console `/console`.
-- Present but path mismatch with required final console entries: Open Market Intelligence currently `/market`, Open Time Machine currently `/market/time-machine`.
-- Missing required final entries: `/console/market-intelligence`, `/console/time-machine`, `/console/sovereign-grid`, `/console/policy`, `/console/audit`.
-- Additional current entries: Platform, Operations, Developers, Docs, Security, Roadmap, Market Timeline, Market Signals, Market Evidence, Narratives, Sources, Manifesto.
-- Stale entries: tests assert `/products` and `/self-host` are not present in the palette, and inspection confirmed the palette does not include them. However, route files and some in-page links still exist for `/products/*` and `/self-host/*`; those remain migration cleanup blockers.
-
-Required Reflex command palette must include exactly or at least:
-
-- Open Trace → `/trace`
-- Check Bitcoin Address → `/check`
-- Open Trace Report → `/trace/{report_id}`
-- Open Proof Packet → `/trace/{report_id}/proof-packet`
-- Open Evidence → `/evidence`
-- Open Status → `/status`
-- Open Console → `/console`
-- Open Market Intelligence → `/console/market-intelligence`
-- Open Time Machine → `/console/time-machine`
-- Open Sovereign Grid → `/console/sovereign-grid`
-- Open Policy → `/console/policy`
-- Open Audit → `/console/audit`
+Stale entries explicitly flagged: `/products` exists as pages; `/self-host` exists as pages. They are not in the current command palette, but they are migration cleanup blockers because production navigation/docs may still expose them.
 
 ## 8. Safety copy audit
 
 Required safety copy:
 
-- `Advisory-only.`
-- `Not legal verification.`
-- `Not Bitcoin consensus proof.`
-- `No custody.`
-- `Public Bitcoin addresses only.`
-- `Never enter seed phrases, private keys, wallet files or signing material.`
+- Advisory-only.
+- Not legal verification.
+- Not Bitcoin consensus proof.
+- No custody.
+- Public Bitcoin addresses only.
+- Never enter seed phrases, private keys, wallet files or signing material.
 
-Current findings:
+Current compliance:
 
-| Surface | Compliance | Gaps/blockers |
-|---|---|---|
-| Next.js `/check` | Strong: warns never enter seed/private/wallet/signing material, public Bitcoin addresses only, advisory, not legal verification or consensus proof. | Copy uses `advisory-only` in some components and `Advisory only` elsewhere; Reflex should standardize required exact copy where tests require exact text. |
-| Next.js command palette | Includes advisory-only/no-custody public address workflow text and sensitive report-id rejection. | Needs required console entries and exact final paths. |
-| Next.js layout/footer/header | Header nav safe; footer includes advisory/no custody links. | In-page legacy self-host/products links need cleanup decision. |
-| FastAPI/Jinja Market | Base footer says no custody; routes inject `SAFETY_LIMITATIONS`. | Must verify every Market template renders limitations in degraded/no-data branches. |
-| Reflex scaffold | Contains safety copy constants/helpers and many components/routes with advisory/no-custody warnings. | Must be rendered and tested on every required route before cutover. |
+- `/check` visibly includes the strongest required no-custody and Trace warnings.
+- Trace proof packet backend returns explicit advisory, not legal verification, not consensus proof, no custody, unsigned limitations.
+- FastAPI/Jinja Market uses `SAFETY_LIMITATIONS` and degraded/unavailable states.
+- README and production readiness docs emphasize no custody and no seed/private-key handling.
 
-Forbidden wording:
+Potential failures/gaps:
 
-- Required forbidden phrases are `clean-address`, `dirty-address`, `criminal-address`, `guaranteed-safe`, `approved-payment`, `verified-illicit`.
-- These phrases appear in Reflex safety/test constants as forbidden-wording lists, which is acceptable in tests/security constants but must not render as claims.
-- No production copy migration should introduce those phrases outside explicit “forbidden wording” tests/docs.
+- Some copy uses variants such as `Advisory only` instead of exact `Advisory-only.`; Reflex should standardize exact strings in shared constants.
+- Market pages must continue showing limitations after migration, including provider degraded/unavailable states.
+- Console routes are absent, so required console safety copy is absent.
+
+Forbidden wording scan targets:
+
+- clean-address
+- dirty-address
+- criminal-address
+- guaranteed-safe
+- approved-payment
+- verified-illicit
+
+Existing Next.js tests assert these are absent across key Trace and UI surfaces. Reflex must add equivalent tests and scan route render output.
 
 ## 9. No-custody input audit
 
-Sensitive material explicitly checked for: `seed phrase`, `mnemonic`, `private key`, `xprv`, `yprv`, `zprv`, `wallet.dat`, `keystore`, `12 words`, `24 words`, `signing material`.
+| Route | Component/template | Input type | Sensitive-material risk | Validation present | Validation missing | Required Reflex validation |
+|---|---|---|---:|---|---|---|
+| `/check` | `AddressCheckForm` / `AddressInput` | public Bitcoin address | high if user pastes seed/key | client address validation + sensitive phrase checks in tests | backend accepts path string and rejects invalid address; frontend should stay strict | Reject seed phrase, mnemonic, private key, xprv/yprv/zprv, wallet.dat, keystore, 12/24 words, signing material before API call. |
+| `/trace` | Trace form components | public Bitcoin address/report workflow | high | Trace components and tests cover sensitive strings | Need Reflex parity | Same as `/check`; public addresses only. |
+| command palette | `BastionCommandPalette` text input | route search or numeric report id | medium | rejects URLs, slashes, non-numeric, seed/mnemonic/private key/xprv/wallet.dat/keystore/signing material for dynamic Trace actions | Does not validate general search because it does not submit to backend | Only numeric report IDs may create dynamic Trace links; never echo sensitive material into URLs. |
+| `/trace/business/batch` | batch textarea/input | list of public addresses | high | test rejects 12-word mnemonic | Not part of final required routes but must not regress if preserved | Reject all sensitive wallet material and non-public-address values client-side. |
+| `/market` | Jinja controls | timeframe/date/selects | low | limited query values/timeframe normalization | date input may be arbitrary date | Normalize timeframe/date; no wallet material field. |
+| `/market/time-machine` | Jinja controls | timeframe/date/selects | low | same as above | same as above | Same. |
+| `/intelligence/timeline` | Jinja form | filter/window/sort/selects | low | page/page_size bounds in FastAPI | filter string accepts arbitrary labels | Whitelist filters/window/sort in Reflex. |
+| `/evidence/{packet_id}` | path param only | integer packet id | low | FastAPI int path param | none | int-only route param. |
+| `/candles/{candle_id}` | path param only | integer candle id | low | FastAPI int path param | none | int-only route param. |
 
-| Route/surface | Component/template | Expected input type | Sensitive-material risk | Validation present | Validation missing | Required Reflex validation |
-|---|---|---|---|---|---|---|
-| `/check`, `/trace` | `AddressCheckForm`, `AddressInput` | Public Bitcoin address | User could paste seed/private key into address field | `validatePublicBitcoinAddress`; safety warnings; disabled submit when invalid | Need full parity in Reflex rendered route tests | Reject sensitive patterns; accept public Bitcoin addresses only; show exact warning. |
-| Command palette | `BastionCommandPalette` input | Page search or numeric Trace report id | User could paste mnemonic/private key | `getTraceReportIdFromQuery` rejects seed phrase/mnemonic/private key/xprv/yprv/zprv/wallet.dat/keystore/signing material and only allows numeric report ids | Does not detect “12 words”/“24 words” by phrase count; future test should add phrase-count rejection | Reject sensitive patterns and plausible mnemonic word counts before generating dynamic actions. |
-| `/trace/[reportId]` | Dynamic URL param | Numeric/string report id | URL param could contain arbitrary text | API call encodes via service; page route param from URL | Need numeric validation before client calls in Reflex | Only allow expected report-id format; otherwise safe error. |
-| `/trace/[reportId]/proof-packet` | Dynamic URL param | Numeric/string report id | Same as above | API call through client | Need numeric validation before client calls in Reflex | Same. |
-| Market filters | FastAPI/Jinja query params: timeframe, date, filter, page, page_size, sort, window, status | Filters/sorts/pagination | Low secret risk; user could paste arbitrary text into query params | FastAPI Query constraints for ints and allowlists for timeframes/sections | Sort/filter strings are bounded in metrics but still need UI validation in Reflex | Use allowlists, length limits, encode query params, no secrets. |
-| `/evidence/{packet_id}` | Path param | Integer packet id | Low | FastAPI typed `int` | Reflex mirror must type/validate | Numeric-only. |
-| `/candles/{candle_id}` | Path param | Integer candle id | Low | FastAPI typed `int` | Reflex mirror must type/validate | Numeric-only. |
-| Self-host readiness wizard | `ReadinessWizard` | Deployment profile selections | Low secret risk, but operator config context | Component uses predefined choices/links | Ensure no secret upload/text fields are introduced | No secrets, no seed/private keys, no wallet files. |
+Explicit sensitive strings checked for Reflex: `seed phrase`, `mnemonic`, `private key`, `xprv`, `yprv`, `zprv`, `wallet.dat`, `keystore`, `12 words`, `24 words`, `signing material`.
 
 ## 10. Current tests and missing tests
 
-### Existing Next.js frontend tests
+### Existing Next.js tests to preserve until Reflex parity
 
-Found under `frontend/tests/`:
+- `frontend/tests/api-client.test.ts`
+- `frontend/tests/api-contract.test.ts`
+- `frontend/tests/business-enterprise-ui.test.tsx`
+- `frontend/tests/command-palette.test.tsx`
+- `frontend/tests/e2e/home.spec.ts`
+- `frontend/tests/e2e/trace.spec.ts`
+- `frontend/tests/foundation.test.tsx`
+- `frontend/tests/hardening.test.tsx`
+- `frontend/tests/homepage.test.tsx`
+- `frontend/tests/lite-check.test.tsx`
+- `frontend/tests/navigation.test.tsx`
+- `frontend/tests/pages.test.tsx`
+- `frontend/tests/platform-dashboard-ui.test.tsx`
+- `frontend/tests/selfhost-wizard.test.tsx`
+- `frontend/tests/status-page.test.tsx`
+- `frontend/tests/trace-api-contract.test.ts`
+- `frontend/tests/trace-report-ui.test.tsx`
 
-- `api-client.test.ts`
-- `api-contract.test.ts`
-- `business-enterprise-ui.test.tsx`
-- `command-palette.test.tsx`
-- `foundation.test.tsx`
-- `hardening.test.tsx`
-- `homepage.test.tsx`
-- `lite-check.test.tsx`
-- `navigation.test.tsx`
-- `pages.test.tsx`
-- `platform-dashboard-ui.test.tsx`
-- `selfhost-wizard.test.tsx`
-- `status-page.test.tsx`
-- `trace-api-contract.test.ts`
-- `trace-report-ui.test.tsx`
-- E2E: `frontend/tests/e2e/home.spec.ts`, `frontend/tests/e2e/trace.spec.ts`
+### Existing Reflex tests found
 
-These must be preserved until Reflex parity is proven.
-
-### Existing Reflex tests
-
-Found under `reflex_frontend/bastion_ui/tests/` and `reflex_frontend/tests/`, including route, navigation, API client, safety, no-sensitive-input, console, and scaffold tests. These are promising but do not by themselves prove cutover readiness.
+`reflex_frontend/bastion_ui/tests/` contains scaffold/theme/safety/forbidden-input/forbidden-wording/layout tests. These are a start, not route parity.
 
 ### Required future Reflex tests
 
-- [ ] `tests/test_routes.py`
-- [ ] `tests/test_navigation.py`
-- [ ] `tests/test_command_palette.py`
-- [ ] `tests/test_api_client.py`
-- [ ] `tests/test_trace_safety.py`
-- [ ] `tests/test_no_sensitive_input.py`
-- [ ] `tests/test_forbidden_wording.py`
-- [ ] `tests/test_market_routes.py`
-- [ ] `tests/test_console_routes.py`
+- `tests/test_routes.py`
+- `tests/test_navigation.py`
+- `tests/test_command_palette.py`
+- `tests/test_api_client.py`
+- `tests/test_trace_safety.py`
+- `tests/test_no_sensitive_input.py`
+- `tests/test_forbidden_wording.py`
+- `tests/test_market_routes.py`
+- `tests/test_console_routes.py`
 
-### Verification performed for this audit
+Missing coverage blockers:
 
-- `python -m pytest -q` was run from repository root and failed: 869 passed, 2 skipped, 13 failed. The failures are async tests that are not natively supported in the current pytest environment and require a suitable async plugin such as `pytest-asyncio`; warnings also report unknown `pytest.mark.asyncio`.
-- `cd frontend && npm install` completed successfully, with npm audit warnings: 16 vulnerabilities reported by npm (3 moderate, 11 high, 2 critical).
-- `cd frontend && npm run typecheck` passed.
-- `cd frontend && npm run test` passed: 9 test files and 26 tests passed.
-- `cd frontend && npm run build` passed and generated 63 static/dynamic app routes in the Next.js build output.
+1. Reflex route existence tests for all public/console/market targets.
+2. Reflex API client tests for ResponseEnvelope unwrapping and raw `/web/*` DTO handling.
+3. Reflex command palette tests for all required final commands.
+4. Reflex no-sensitive-input tests across Trace and command palette.
+5. Reflex forbidden wording scan over rendered pages.
+6. Reflex market degraded-state tests.
+7. Reflex console route tests.
 
+### Verification run status for this audit
+
+- `python -m pytest -q` was attempted during this prompt; see Verification Results below.
+- `cd frontend && npm install` was not rerun because `frontend/node_modules` and lock state already exist; running network install is unnecessary for this documentation-only audit.
+- `cd frontend && npm run typecheck`, `npm run test`, and `npm run build` were run; see Verification Results below.
 
 ## 11. Reflex target architecture
 
-`reflex_frontend/` currently exists. Intended target structure remains:
+Target structure:
 
 ```text
 reflex_frontend/
@@ -382,11 +359,9 @@ reflex_frontend/
     tests/
 ```
 
-Current Reflex scaffold includes most top-level Python/build files and many `bastion_ui/` subpackages. `assets/` was not found in the quick file inventory and should be added later only when needed.
+Current state: `reflex_frontend/` exists and partially matches this target. Missing or not verified in current scaffold: `assets/logo.svg`, `assets/fonts/`, full route modules, final component set, final service/client set, and final tests listed above.
 
 ## 12. Reflex route target
-
-Final Reflex route target:
 
 Public:
 
@@ -426,7 +401,7 @@ Market:
 - `/market/narratives`
 - `/market/sources`
 
-Dynamic routes should use Reflex bracket syntax, for example:
+Dynamic Reflex registration should use bracket syntax:
 
 ```python
 app.add_page(trace_report_page, route="/trace/[report_id]")
@@ -437,30 +412,32 @@ app.add_page(proof_packet_page, route="/trace/[report_id]/proof-packet")
 
 Required component groups:
 
-- Layout: app shell, public layout, console layout, header, footer, responsive nav, skip link.
-- Navigation: main nav, mobile nav, footer nav, command palette, active route handling.
-- Safety: advisory banner, no-custody banner, no-sensitive-input warning, degraded/fallback/stale banners, forbidden wording checks.
-- Trace: address input, validation notice, check form, loading state, error/unavailable states, Trace Lite result card, report shell, summary card, evidence panel, privacy shield, origin passport, source summary, provider disagreement, UTXO hygiene, dust radar, counterparty lens, policy facts, proof packet viewer.
-- Evidence: public evidence dashboard/list/cards, evidence packet detail linkouts, proof packet summary widgets.
-- Market: dashboard shell, timeline, time machine chart/table placeholders, signal list, evidence panel, narratives, sources/provider health, candle detail, evidence detail, unavailable/no-data states.
-- Console: overview, Trace console, evidence console, Market Intelligence console, Time Machine console, Sovereign Grid, Policy, Audit, read-only/operator-review badges.
-- Public pages: platform, developers, operations, manifesto, status, roadmap, security, docs.
-- API state components: loading, stale, fallback, empty, degraded, error, retry.
+- Layout: `SiteShell`, `PublicLayout`, `ConsoleLayout`, `MarketLayout`, `SiteHeader`, `SiteFooter`, responsive nav.
+- Navigation: final main nav, mobile nav, breadcrumbs, command palette.
+- Safety: `SafetyBanner`, `SafetyWarning`, `NoCustodyNotice`, degraded/fallback/stale badges.
+- Public pages: hero, status strip, roadmap preview, feature grid, docs/developer API blocks.
+- Trace: address input, address validation notice, check form, lite result card, report header, summary card, limitations card, evidence summary, privacy/origin/provider/counterparty/policy panels, proof packet viewer, loading/error/unavailable states.
+- Evidence: public evidence dashboard/card list, packet summary, export links with unsigned limitations.
+- Market: market dashboard, timeframe/date controls, chart shell, marker layer, timeline list, signal panel, narrative panel, source summary, evidence panel, candle attribution panel, replay panel, degraded-state panel.
+- Console: console home, Trace console, evidence console, market intelligence console, time-machine console, sovereign grid placeholder, policy console, audit console.
+- UI primitives: cards, badges, buttons, forms, table/list, empty state, error state, skeleton, toast/alert.
 
 ## 14. Migration risks
 
-- **Route ownership risk:** `/market/*` is currently owned by FastAPI/Jinja, not Next.js. A Reflex switch that assumes all public routes are Next.js-owned will break Market routes.
-- **Console naming risk:** Current Next.js dashboard routes differ from required `/console/*` routes.
-- **API envelope risk:** All Reflex clients must unwrap `ResponseEnvelope.data` and preserve backend error semantics.
-- **Sensitive input risk:** Address/report/palette inputs must reject seed phrases, private keys, xprv/yprv/zprv, wallet files, keystores, signing material, and mnemonic-like 12/24 word input.
-- **Safety copy drift:** Required exact copy must remain visible; forbidden wording must not appear in rendered UX.
-- **Readiness overclaim risk:** Existing docs must not imply Reflex production parity until cutover gates pass.
-- **Tooling risk:** Frontend tooling passed after `npm install`, but npm audit reported vulnerabilities; future migration prompts should continue to run real checks and not fake passing tests.
-- **Rollback risk:** Next.js and FastAPI/Jinja must remain intact until Reflex has documented parity and deploy rollback.
+1. Premature route cutover could hide Market degraded/fallback states currently handled by Jinja.
+2. Trace safety wording regression could create legal/compliance risk.
+3. ResponseEnvelope unwrapping mistakes could render envelope metadata instead of data or silently fail.
+4. Raw `/web/*` DTOs differ from `/api/v1/*` envelope conventions.
+5. Dynamic route naming mismatch `[reportId]` vs `[report_id]` may break links/tests if not standardized.
+6. Stale Next.js routes may continue to attract users unless explicitly redirected or archived after parity.
+7. Console route absence is a gap in the required target IA.
+8. Market route conflicts around `/evidence` vs `/evidence/{packet_id}` need deliberate handling.
+9. No-sensitive-input validation must be centralized and tested to avoid accepting seed/private-key material.
+10. Reflex scaffold exists, so future prompts must extend it rather than recreate/overwrite it.
 
 ## 15. Cutover gates
 
-Reflex can become the primary frontend only after all are checked:
+Reflex cannot become primary frontend until all gates are checked:
 
 - [ ] Reflex builds successfully.
 - [ ] Reflex export succeeds.
@@ -482,30 +459,30 @@ Reflex can become the primary frontend only after all are checked:
 - [ ] Accessibility baseline passes.
 - [ ] Next.js is still available for rollback.
 
-## 16. Recommended prompt sequence 1/22-22/22
+## 16. Recommended prompt sequence 1/22–22/22
 
-1. **Prompt 1/22 — Reflex scaffold reconciliation:** Audit existing `reflex_frontend/`, align structure with target, do not replace routes.
-2. **Prompt 2/22 — Reflex routing registry:** Add/verify all public, console, and delegated Market route registrations with route tests.
-3. **Prompt 3/22 — Shared safety system:** Centralize exact safety copy, forbidden wording checks, and no-sensitive-input validators.
-4. **Prompt 4/22 — API client baseline:** Implement Reflex public/Trace/Market clients with `ResponseEnvelope.data` unwrapping and timeout/error states.
-5. **Prompt 5/22 — Navigation parity:** Implement header/footer/mobile nav and command palette with required final entries and stale-entry tests.
-6. **Prompt 6/22 — Public page parity:** Migrate public shell pages without changing backend logic.
-7. **Prompt 7/22 — Status/Roadmap/Docs parity:** Wire public API clients and fallback/stale states.
-8. **Prompt 8/22 — Trace check flow:** Implement `/check` and `/trace` address validation, sensitive-input rejection, and Lite summary flow.
-9. **Prompt 9/22 — Trace report flow:** Implement `/trace/[report_id]` report, evidence, panel fallback, and provider-disagreement visibility.
-10. **Prompt 10/22 — Proof Packet flow:** Implement `/trace/[report_id]/proof-packet` with integrity/redaction/advisory limitations.
-11. **Prompt 11/22 — Evidence public parity:** Implement `/evidence` and proof/evidence public components.
-12. **Prompt 12/22 — Console shell:** Implement `/console` and read-only/operator-review posture.
-13. **Prompt 13/22 — Console Trace/Evidence:** Implement `/console/trace` and `/console/evidence` clients and UI.
-14. **Prompt 14/22 — Console Market/Time Machine:** Implement `/console/market-intelligence` and `/console/time-machine`, delegating to `/web/*` DTOs.
-15. **Prompt 15/22 — Console Sovereign Grid/Policy/Audit:** Implement remaining console routes with read-only safe copy.
-16. **Prompt 16/22 — Market public mirror:** Mirror or explicitly delegate `/market/*`, `/intelligence/timeline`, `/evidence/{packet_id}`, `/candles/{candle_id}`.
-17. **Prompt 17/22 — Reflex tests:** Add route, navigation, command palette, API client, Trace safety, no-sensitive-input, forbidden-wording, Market, console tests.
-18. **Prompt 18/22 — Build/export/Docker:** Prove Reflex build/export/Dockerfile and document limitations.
-19. **Prompt 19/22 — Compose/deploy integration:** Add non-primary docker-compose/deploy integration while preserving Next.js rollback.
-20. **Prompt 20/22 — CI parity checks:** Add route/API/safety/accessibility parity checks in CI without production switch.
-21. **Prompt 21/22 — Stale route archive plan:** Decide archive/redirect strategy for `/products`, `/self-host`, `/dashboard` only after parity.
-22. **Prompt 22/22 — Controlled cutover proposal:** Produce final cutover PR plan, rollback plan, and evidence checklist; do not delete Next.js unless explicitly approved after gates pass.
+1. Scaffold/normalize Reflex app without route takeover; preserve existing scaffold and add route registry skeleton.
+2. Implement shared Reflex theme, layout shell, safety constants, and no-custody notices.
+3. Implement Reflex API client with ResponseEnvelope unwrapping, raw DTO support, timeouts, and fallback states.
+4. Build public navigation, footer, mobile nav, and command palette parity.
+5. Implement public home/platform/status/roadmap/evidence/security/docs/developers pages.
+6. Implement `/check` Trace Lite with strict public-address validation and sensitive-input rejection.
+7. Implement `/trace` entry page and Trace service methods.
+8. Implement `/trace/[report_id]` summary/detail panels against real endpoints.
+9. Implement `/trace/[report_id]/proof-packet` with unsigned/application-level limitations.
+10. Add Trace safety/forbidden wording/no-sensitive-input tests.
+11. Implement console layout and `/console` shell.
+12. Implement `/console/trace` and `/console/evidence`.
+13. Implement Market DTO client and degraded-state models.
+14. Mirror `/market` and `/market/time-machine` in Reflex while keeping Jinja available.
+15. Mirror `/market/timeline`, `/market/signals`, `/market/evidence`, `/market/narratives`, `/market/sources`.
+16. Implement `/console/market-intelligence` and `/console/time-machine` as Reflex console views.
+17. Implement `/console/sovereign-grid`, `/console/policy`, `/console/audit` placeholders with honest limitations.
+18. Add route parity and navigation/command palette tests.
+19. Add market route/degraded/fallback tests and API contract tests.
+20. Add Dockerfile/docker-compose/CI integration checks for Reflex.
+21. Run full parity audit; document remaining Next.js/Jinja dependencies and rollback plan.
+22. Controlled cutover prompt: only after gates pass, switch primary frontend routing and archive Next.js without deletion.
 
 ## 17. Final recommendation
 
@@ -515,7 +492,7 @@ Proceed with Prompt 1/22 by reconciling the already-present `reflex_frontend/` s
 
 Prompt 1/22 froze the current Next.js frontend as **legacy-supported** while preserving it for rollback until Reflex parity is complete. No Reflex cutover, route migration, Next.js deletion, Market dashboard deletion, or backend domain rewrite occurred.
 
-Related freeze and inventory documents:
+Related documents:
 
 - `frontend/LEGACY_STATUS.md`
 - `docs/frontend/FRONTEND_LEGACY_FREEZE.md`
@@ -525,15 +502,13 @@ Related freeze and inventory documents:
 - `docs/frontend/frontend-route-inventory.json`
 - `docs/frontend/frontend-api-dependencies.json`
 
-Prompt 2/22 should use these documents as the route/API inventory source before bootstrapping or reconciling Reflex scaffold work.
-
 ## Prompt 2/22 Scaffold Status
 
-- Reflex scaffold created/reconciled in `reflex_frontend/`.
-- Current Reflex routes implemented in `bastion_ui/app.py`: `/` only.
+- Reflex scaffold created: `reflex_frontend/` contains `rxconfig.py`, `pyproject.toml`, `README.md`, `.env.example`, `Dockerfile`, and `bastion_ui/`.
+- Current routes implemented: `/` only.
 - Current status: parallel shell only.
-- Next.js status: still legacy active and unchanged by this prompt.
-- Market dashboard status: unchanged; FastAPI/Jinja remains owner during parity.
+- Next.js status: still legacy active.
+- Market dashboard status: unchanged; FastAPI/Jinja remains current owner.
 - Trace status: not migrated yet.
 - This scaffold does not claim route parity, API parity, production readiness, or Reflex primary frontend status.
 

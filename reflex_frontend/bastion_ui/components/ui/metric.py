@@ -4,32 +4,30 @@ from typing import Literal, cast
 
 import reflex as rx
 
-from bastion_ui.components.ui.badge import badge
-from bastion_ui.theme.typography import METRIC
+from bastion_ui.theme.styles import PANEL
 
-MetricState = Literal["neutral", "success", "warning", "danger", "info"]
+MetricState = Literal["neutral", "success", "warning", "danger"]
 
 
 def metric_card(
     label: str,
     value: str,
     *,
-    description: str = "Informational metric.",
+    description: str | None = None,
     trend: str | None = None,
     state: MetricState = "neutral",
 ) -> rx.Component:
     return cast(
         rx.Component,
-        rx.vstack(
-            rx.hstack(
-                rx.text(label, weight="bold"),
-                badge(state.title(), state),
-                justify="between",
+        rx.box(
+            rx.vstack(
+                rx.text(label, color="#A3A3A3"),
+                rx.heading(value, size="6"),
+                rx.cond(description is not None, rx.text(description or "")),
+                rx.cond(trend is not None, rx.text(trend or "")),
+                rx.text(f"State: {state}"),
+                align="start",
             ),
-            rx.text(value, style=METRIC),
-            rx.text(description, color="gray"),
-            rx.cond(trend is not None, rx.text(trend or "", color="gray")),
-            align="start",
-            spacing="2",
+            style=PANEL,
         ),
     )
