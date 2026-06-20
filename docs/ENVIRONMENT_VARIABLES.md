@@ -47,7 +47,7 @@ In production, if `DATABASE_URL` and `POSTGRES_URL` are both set, they must matc
 
 ### Redis
 
-Redis is not durable truth. It is only for cache, queues, rate limits, websocket fanout, short-lived locks, idempotency windows, and short-lived coordination.
+Redis is not durable truth. It is only for cache, queues, rate limits, websocket fanout, short-lived locks, idempotency windows, and short-lived coordination. Redis boundary rules, TTL requirements, and key namespace policy are documented in `docs/STORAGE_REDIS_BOUNDARIES.md`.
 
 - `REDIS_URL`
 - `REDIS_TLS_ENABLED`

@@ -567,3 +567,7 @@ Prompt 4 begins the Object Storage implementation under `app/storage/object_stor
 ### Storage Outbox Foundation
 
 `storage_outbox_events` is the durable PostgreSQL outbox foundation for future cross-storage projection. Domain services should write canonical PostgreSQL state and enqueue storage outbox rows instead of writing directly to ClickHouse, TimescaleDB, Qdrant/pgvector, Redis, Object Storage, webhook/WebSocket, SDK, or MCP projections. See `docs/STORAGE_OUTBOX.md` for lifecycle, idempotency, retry, dead-letter, and security rules.
+
+## Redis Boundary Policy
+
+Redis remains an ephemeral runtime store for cache, rate limits, short-lived challenge/nonce/session hot state, worker coordination, and fanout. It must not own durable business truth, authorization truth, artifact metadata, audit chains, recovery material, or treasury policy. See `docs/STORAGE_REDIS_BOUNDARIES.md` for allowed use cases, forbidden use cases, key namespace rules, TTL requirements, degraded mode behavior, recovery behavior, and security/privacy requirements.
