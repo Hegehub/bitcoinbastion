@@ -5,10 +5,10 @@ import reflex as rx
 from bastion_ui.components.ui.card import card
 
 
-def limitations_card() -> rx.Component:
+def limitations_card(*limitations: str) -> rx.Component:
+    items = limitations or ("This view may be incomplete.", "Manual review recommended.")
     return card(
-        rx.text("Limited evidence and provider disagreement must remain visible."),
-        rx.text("Manual review recommended."),
+        rx.unordered_list(*[rx.list_item(item) for item in items]),
         title="Limitations",
         variant="safety",
     )
