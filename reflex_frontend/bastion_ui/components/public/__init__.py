@@ -1,0 +1,1 @@
+"""Public informational page components."""
