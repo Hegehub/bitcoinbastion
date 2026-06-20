@@ -4,11 +4,10 @@ from typing import Literal, cast
 
 import reflex as rx
 
-from bastion_ui.theme.styles import BADGE, RISK_INDICATOR
+from bastion_ui.theme.styles import BADGE
 from bastion_ui.theme.tokens import (
     BASTION_DANGER,
     BASTION_INFO,
-    BASTION_NEUTRAL,
     BASTION_SUCCESS,
     BASTION_WARNING,
     RISK_HIGH,
@@ -32,7 +31,7 @@ BadgeVariant = Literal[
 
 def badge(label: str, variant: BadgeVariant = "neutral") -> rx.Component:
     colors = {
-        "neutral": BASTION_NEUTRAL,
+        "neutral": "#737373",
         "success": BASTION_SUCCESS,
         "warning": BASTION_WARNING,
         "danger": BASTION_DANGER,
@@ -42,15 +41,10 @@ def badge(label: str, variant: BadgeVariant = "neutral") -> rx.Component:
         "risk_high": RISK_HIGH,
         "risk_unknown": RISK_UNKNOWN,
     }
-    color = colors[variant]
     return cast(
         rx.Component,
-        rx.box(
-            rx.hstack(
-                rx.box(width="8px", height="8px", border_radius="999px", background=color),
-                rx.text(label),
-                style=RISK_INDICATOR,
-            ),
-            style={**BADGE, "border": f"1px solid {color}"},
+        rx.badge(
+            label,
+            style={**BADGE, "border": f"1px solid {colors[variant]}", "color": colors[variant]},
         ),
     )

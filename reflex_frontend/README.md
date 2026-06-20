@@ -83,17 +83,3 @@ This shell must not request, store, transmit, derive, or display wallet secrets.
 ## 10. Migration notes
 
 Next.js remains the active legacy-supported frontend until explicit cutover gates are satisfied in later prompts. The FastAPI/Jinja Market dashboard remains unchanged. Future prompts will add design system foundations, route registration, service-specific API clients, Trace parity, Market parity, Console parity, CI, and cutover evidence.
-
-## Design System Foundation
-
-Prompt 3 adds the reusable foundation for later Reflex pages:
-
-- theme tokens for color, spacing, typography, risk bands, evidence states, and data states;
-- layout primitives for public shells, console shells, containers, sections, grids, and stacks;
-- safety components for advisory, no-custody, limitations, and forbidden-input notices;
-- degraded, stale, loading, and sanitized error state components;
-- `/design-system` preview route for development verification;
-- safety constraints that prohibit wallet-secret collection, signing workflows, auto-execution UI, legal verdict language, and financial advice language;
-- forbidden wording rules that prevent stigmatizing or certainty-implying address/payment phrases in user-facing modules.
-
-The design-system route is a development preview only. It is not production parity, and it is not a cutover route.
