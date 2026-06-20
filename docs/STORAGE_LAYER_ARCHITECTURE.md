@@ -571,3 +571,11 @@ Prompt 4 begins the Object Storage implementation under `app/storage/object_stor
 ## Redis Boundary Policy
 
 Redis remains an ephemeral runtime store for cache, rate limits, short-lived challenge/nonce/session hot state, worker coordination, and fanout. It must not own durable business truth, authorization truth, artifact metadata, audit chains, recovery material, or treasury policy. See `docs/STORAGE_REDIS_BOUNDARIES.md` for allowed use cases, forbidden use cases, key namespace rules, TTL requirements, degraded mode behavior, recovery behavior, and security/privacy requirements.
+
+## Storage Health API
+
+`GET /api/v1/storage/status` reports operational status for PostgreSQL, Redis, Object Storage, TimescaleDB, ClickHouse, Qdrant, SQLite local storage, and DuckDB local storage. The endpoint is a sanitized degraded-mode/status view, not a replacement for liveness/readiness unless operations policy explicitly adopts it. See `docs/STORAGE_HEALTH_API.md` for status meanings, required/optional roles, degraded-mode interpretation, and redaction rules.
+
+## Storage Evidence Artifacts
+
+Prompt 9 adds storage backup/restore evidence helpers under `app/storage/evidence/`. These helpers write redacted JSON artifacts under `artifacts/storage/` for PostgreSQL backup/restore hook evidence, Redis degraded-mode evidence, Object Storage integrity evidence, outbox replay evidence, and storage health evidence. The artifacts are proof inputs only; they do not claim production readiness, successful PITR, or completed restore drills unless supplied checks truthfully support those statuses. See `docs/STORAGE_BACKUP_RECOVERY.md`.
