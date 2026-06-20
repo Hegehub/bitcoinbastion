@@ -118,4 +118,3 @@ app = rx.App(
 )
 
 app.add_page(index, route="/", title="Bitcoin Bastion Reflex Frontend")
-app.add_page(design_system_preview, route="/design-system", title="Design System Preview")
