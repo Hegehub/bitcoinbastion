@@ -1,9 +1,16 @@
 from __future__ import annotations
 
-import reflex as rx
+from typing import cast
 
-from bastion_ui.components.ui.card import card
+import reflex as rx
 
 
 def timeline_stub() -> rx.Component:
-    return card(rx.text("Timeline placeholder. No backend data connected."))
+    return cast(
+        rx.Component,
+        rx.vstack(
+            rx.text("Timeline placeholder"),
+            rx.text("Future evidence-based events will appear here."),
+            align="start",
+        ),
+    )

@@ -7,7 +7,12 @@ import reflex as rx
 from bastion_ui.components.feedback.degraded_state import degraded_state
 from bastion_ui.components.feedback.loading_state import loading_state
 from bastion_ui.components.feedback.stale_data_banner import stale_data_banner
+from bastion_ui.components.layout.command_palette import command_palette
+from bastion_ui.components.layout.console_sidebar import console_sidebar
+from bastion_ui.components.layout.footer import footer
 from bastion_ui.components.layout.grid import responsive_grid
+from bastion_ui.components.layout.header import header
+from bastion_ui.components.layout.mobile_nav import mobile_nav
 from bastion_ui.components.layout.public_layout import public_layout
 from bastion_ui.components.safety.advisory_notice import advisory_notice
 from bastion_ui.components.safety.no_custody_notice import no_custody_notice
@@ -66,6 +71,11 @@ def design_system_preview() -> rx.Component:
             rx.heading("Design System Foundation", size="7"),
             rx.text("Reusable UI primitives for later public, Trace, Market, and Console pages."),
             trace_safety_banner(),
+            header(),
+            footer(),
+            mobile_nav(),
+            console_sidebar(),
+            command_palette(),
             responsive_grid(
                 card(
                     button("Primary action"),
