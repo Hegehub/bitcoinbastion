@@ -587,3 +587,7 @@ Prompt 11 connects the initial storage foundation to deployment surfaces. Local 
 ## Operational Runbooks and Production Checklist
 
 Prompt 12 adds production-facing storage operations documents. Operators should use `docs/STORAGE_LAYER_RUNBOOK.md` for incident/degraded-mode handling, `docs/STORAGE_BACKUP_RECOVERY.md` for backup/restore and evidence expectations, and `docs/STORAGE_PRODUCTION_CHECKLIST.md` before enabling the initial PostgreSQL, Redis, Object Storage, and outbox foundation in staging or production-like environments. These documents do not claim production readiness; they define the evidence and signoff required before such claims can be made.
+
+## TimescaleDB Foundation
+
+Prompt 13 begins the Time-Series Upgrade phase by adding an optional TimescaleDB foundation under `app/storage/timeseries/`. The foundation includes configuration, health/status reporting, identifier-safe hypertable helpers, and a base time-series repository abstraction. No BTC candle, provider health, metric usage, access integrity, or market domain tables are migrated in this prompt. PostgreSQL remains the transactional source of truth for access certificates, subscription entitlements, revocations, recovery quorums, policy decisions, artifact metadata, and outbox records.

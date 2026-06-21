@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 from app.core.config import Settings
 from app.storage.object_store.client import DisabledObjectStore, ObjectStoreHealthCheck
 from app.storage.object_store.local_store import LocalObjectStore
+from app.storage.timeseries.health import check_timescale
 from app.storage.schemas import (
     StorageDegradedMode,
     StorageRole,
@@ -244,12 +245,7 @@ async def collect_storage_status(
         STORE_POSTGRES: check_postgres(db),
         STORE_REDIS: check_redis(settings, redis_client_factory),
         STORE_OBJECT_STORAGE: await check_object_storage(settings),
-        STORE_TIMESCALE: future_store_status(
-            enabled=settings.timescale_enabled,
-            store=STORE_TIMESCALE,
-            purpose="time-series, candles, metrics, provider health",
-            reason="TIMESCALE_ENABLED=false",
-        ),
+        STORE_TIMESCALE: check_timescale(settings, db),
         STORE_CLICKHOUSE: future_store_status(
             enabled=settings.clickhouse_enabled,
             store=STORE_CLICKHOUSE,

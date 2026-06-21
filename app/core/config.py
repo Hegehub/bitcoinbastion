@@ -74,7 +74,10 @@ class ObjectStorageSettings:
 class TimescaleStorageSettings:
     enabled: bool
     url: str
+    create_extension: bool
     schema: str
+    default_chunk_interval: str
+    health_timeout_seconds: int
     retention_days: int | None
     compression_enabled: bool
     continuous_aggregates_enabled: bool
@@ -214,7 +217,14 @@ class Settings(BaseSettings):
 
     timescale_enabled: bool = Field(default=False, alias="TIMESCALE_ENABLED")
     timescale_url: str = Field(default="", alias="TIMESCALE_URL")
-    timescale_schema: str = Field(default="timeseries", alias="TIMESCALE_SCHEMA")
+    timescale_create_extension: bool = Field(default=False, alias="TIMESCALE_CREATE_EXTENSION")
+    timescale_schema: str = Field(default="public", alias="TIMESCALE_SCHEMA")
+    timescale_default_chunk_interval: str = Field(
+        default="1 day", alias="TIMESCALE_DEFAULT_CHUNK_INTERVAL"
+    )
+    timescale_health_timeout_seconds: int = Field(
+        default=2, ge=1, alias="TIMESCALE_HEALTH_TIMEOUT_SECONDS"
+    )
     timescale_retention_days: int | None = Field(default=None, alias="TIMESCALE_RETENTION_DAYS")
     timescale_compression_enabled: bool = Field(default=True, alias="TIMESCALE_COMPRESSION_ENABLED")
     timescale_continuous_aggregates_enabled: bool = Field(
@@ -511,6 +521,18 @@ class Settings(BaseSettings):
         ):
             raise ValueError("TIMESCALE_RETENTION_DAYS must be positive when set.")
 
+        if self.timescale_enabled:
+            from app.storage.timeseries.errors import TimescaleConfigurationError
+            from app.storage.timeseries.hypertables import validate_identifier, validate_interval
+
+            try:
+                validate_identifier(self.timescale_schema, label="schema")
+                validate_interval(
+                    self.timescale_default_chunk_interval, label="default chunk interval"
+                )
+            except TimescaleConfigurationError as exc:
+                raise ValueError(str(exc)) from exc
+
         if self.clickhouse_enabled:
             if not self.clickhouse_url.strip():
                 raise ValueError("CLICKHOUSE_URL must be set when ClickHouse is enabled.")
@@ -602,7 +624,10 @@ class Settings(BaseSettings):
             timescale=TimescaleStorageSettings(
                 enabled=self.timescale_enabled,
                 url=self.timescale_url,
+                create_extension=self.timescale_create_extension,
                 schema=self.timescale_schema,
+                default_chunk_interval=self.timescale_default_chunk_interval,
+                health_timeout_seconds=self.timescale_health_timeout_seconds,
                 retention_days=self.timescale_retention_days,
                 compression_enabled=self.timescale_compression_enabled,
                 continuous_aggregates_enabled=self.timescale_continuous_aggregates_enabled,

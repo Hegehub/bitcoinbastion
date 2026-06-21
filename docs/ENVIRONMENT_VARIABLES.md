@@ -74,7 +74,10 @@ TimescaleDB is the future time-series store for metrics, BTC candles, provider h
 
 - `TIMESCALE_ENABLED` defaults to `false`.
 - `TIMESCALE_URL` may be empty when TimescaleDB is expected to share the primary PostgreSQL URL.
-- `TIMESCALE_SCHEMA` defaults to `timeseries`.
+- `TIMESCALE_CREATE_EXTENSION` defaults to `false`; extension creation must be explicitly enabled and reviewed for the environment.
+- `TIMESCALE_SCHEMA` defaults to `public`.
+- `TIMESCALE_DEFAULT_CHUNK_INTERVAL` defaults to `1 day` and is validated before hypertable helpers use it.
+- `TIMESCALE_HEALTH_TIMEOUT_SECONDS` defaults to `2`.
 - `TIMESCALE_RETENTION_DAYS` must be positive when set.
 - `TIMESCALE_COMPRESSION_ENABLED` and `TIMESCALE_CONTINUOUS_AGGREGATES_ENABLED` configure future time-series behavior.
 

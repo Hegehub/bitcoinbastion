@@ -42,7 +42,7 @@ The response includes these store keys:
 | --- | --- |
 | `required` | Failure affects critical operational readiness for the current profile. |
 | `optional` | Failure degrades features but does not necessarily stop critical operations. |
-| `future` | Store is part of the storage roadmap but does not have a production client/check in this prompt. |
+| `future` | Store is part of the storage roadmap. It may have foundation health checks before domain data is migrated. |
 | `local_only` | Store applies to local/offline future features and must not fail server readiness by itself. |
 
 ## Degraded Mode Behavior
@@ -50,7 +50,7 @@ The response includes these store keys:
 - PostgreSQL unavailable: critical operations are unavailable.
 - Redis unavailable: cache, rate limits, queues, and websocket fanout may run in reduced mode; Redis is not durable truth.
 - Object Storage unavailable: proof packet downloads, evidence exports, and signed artifact workflows may be unavailable.
-- TimescaleDB disabled or not implemented: time-series metrics, candles, and provider health history may be unavailable.
+- TimescaleDB disabled, degraded, or unavailable: time-series metrics, candles, and provider health history may be unavailable; transactional truth remains in PostgreSQL.
 - ClickHouse disabled or not implemented: Market Time Machine and long-range analytics may be unavailable.
 - Qdrant disabled or not implemented: semantic memory and similarity search may be unavailable.
 - SQLite/DuckDB not implemented: local/offline operational and analytics features are unavailable, but server readiness is not failed by those stores alone.
@@ -79,4 +79,4 @@ Errors are returned as sanitized classes, for example:
 
 ## Future Stores
 
-TimescaleDB, ClickHouse, Qdrant, SQLite, and DuckDB may report `disabled` or `not_implemented` until their dedicated prompts add real clients and health checks. A disabled or future store must not be described as production-ready.
+TimescaleDB now has an initial foundation health check, but no domain tables have been migrated. ClickHouse, Qdrant, SQLite, and DuckDB may report `disabled` or `not_implemented` until their dedicated prompts add real clients and health checks. A disabled, degraded, or future store must not be described as production-ready.
