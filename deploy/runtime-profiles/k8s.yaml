@@ -43,3 +43,10 @@ evidence_notes:
   - Evidence artifacts remain environment-specific and must be collected by the operator.
 future_extensions:
   - Additional environment overlays may be added under deploy/kubernetes.
+storage_foundation:
+  postgres: required
+  redis: required_ephemeral
+  object_storage: managed_s3_compatible_preferred
+  object_storage_notes:
+    - Use Kubernetes secrets or ExternalSecret for object storage credentials.
+    - MinIO examples are self-hosting references, not mandatory production dependencies.
