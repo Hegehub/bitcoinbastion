@@ -60,9 +60,11 @@ Object Storage stores proof packets, evidence archives, signed artifacts, and ex
 
 - `OBJECT_STORAGE_ENABLED` defaults to `false`.
 - `OBJECT_STORAGE_PROVIDER` defaults to `disabled`. Allowed values are `disabled`, `local`, `minio`, `s3`, and `compatible_s3`.
-- `OBJECT_STORAGE_ENDPOINT`, `OBJECT_STORAGE_BUCKET`, `OBJECT_STORAGE_REGION`, `OBJECT_STORAGE_ACCESS_KEY`, and `OBJECT_STORAGE_SECRET_KEY` configure future artifact storage access.
-- `OBJECT_STORAGE_USE_SSL` and `OBJECT_STORAGE_FORCE_PATH_STYLE` configure future client behavior.
+- `OBJECT_STORAGE_ENDPOINT`, `OBJECT_STORAGE_PUBLIC_ENDPOINT`, `OBJECT_STORAGE_BUCKET`, `OBJECT_STORAGE_REGION`, `OBJECT_STORAGE_ACCESS_KEY`, and `OBJECT_STORAGE_SECRET_KEY` configure artifact storage access.
+- `OBJECT_STORAGE_USE_SSL`, `OBJECT_STORAGE_SECURE`, and `OBJECT_STORAGE_FORCE_PATH_STYLE` configure S3-compatible client behavior.
 - `OBJECT_STORAGE_DEFAULT_RETENTION_DAYS` configures the default artifact retention window.
+- `OBJECT_STORAGE_EVIDENCE_RETENTION_DAYS` configures the evidence artifact retention window.
+- `OBJECT_STORAGE_MAX_ARTIFACT_BYTES` / `OBJECT_STORAGE_MAX_OBJECT_BYTES` set the maximum artifact object size.
 - `OBJECT_STORAGE_WORM_ENABLED` defaults to `false`.
 - `OBJECT_STORAGE_CHECKSUM_REQUIRED` defaults to `true` and must remain true when object storage is enabled.
 

@@ -579,3 +579,11 @@ Redis remains an ephemeral runtime store for cache, rate limits, short-lived cha
 ## Storage Evidence Artifacts
 
 Prompt 9 adds storage backup/restore evidence helpers under `app/storage/evidence/`. These helpers write redacted JSON artifacts under `artifacts/storage/` for PostgreSQL backup/restore hook evidence, Redis degraded-mode evidence, Object Storage integrity evidence, outbox replay evidence, and storage health evidence. The artifacts are proof inputs only; they do not claim production readiness, successful PITR, or completed restore drills unless supplied checks truthfully support those statuses. See `docs/STORAGE_BACKUP_RECOVERY.md`.
+
+## Storage Deployment Foundation
+
+Prompt 11 connects the initial storage foundation to deployment surfaces. Local compose can run PostgreSQL, Redis, MinIO, API, and worker; Kubernetes exposes S3-compatible object storage settings and placeholder secrets; Helm values expose an external-object-storage-first `objectStorage` section. See `docs/STORAGE_DEPLOYMENT.md` for local, single-node, Kubernetes, Helm, health-check, degraded-mode, and security guidance.
+
+## Operational Runbooks and Production Checklist
+
+Prompt 12 adds production-facing storage operations documents. Operators should use `docs/STORAGE_LAYER_RUNBOOK.md` for incident/degraded-mode handling, `docs/STORAGE_BACKUP_RECOVERY.md` for backup/restore and evidence expectations, and `docs/STORAGE_PRODUCTION_CHECKLIST.md` before enabling the initial PostgreSQL, Redis, Object Storage, and outbox foundation in staging or production-like environments. These documents do not claim production readiness; they define the evidence and signoff required before such claims can be made.

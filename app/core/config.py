@@ -55,6 +55,7 @@ class ObjectStorageSettings:
     backend: ObjectStorageProvider
     provider: ObjectStorageProvider
     endpoint: str
+    public_endpoint: str
     bucket: str
     region: str
     access_key: str
@@ -62,6 +63,7 @@ class ObjectStorageSettings:
     use_ssl: bool
     force_path_style: bool
     default_retention_days: int
+    evidence_retention_days: int
     worm_enabled: bool
     checksum_required: bool
     local_root: str
@@ -179,6 +181,7 @@ class Settings(BaseSettings):
         default="disabled", alias="OBJECT_STORAGE_BACKEND"
     )
     object_storage_endpoint: str = Field(default="", alias="OBJECT_STORAGE_ENDPOINT")
+    object_storage_public_endpoint: str = Field(default="", alias="OBJECT_STORAGE_PUBLIC_ENDPOINT")
     object_storage_bucket: str = Field(default="", alias="OBJECT_STORAGE_BUCKET")
     object_storage_region: str = Field(default="", alias="OBJECT_STORAGE_REGION")
     object_storage_access_key: str = Field(default="", alias="OBJECT_STORAGE_ACCESS_KEY")
@@ -191,6 +194,9 @@ class Settings(BaseSettings):
     object_storage_default_retention_days: int = Field(
         default=90, ge=0, alias="OBJECT_STORAGE_DEFAULT_RETENTION_DAYS"
     )
+    object_storage_evidence_retention_days: int = Field(
+        default=2555, ge=0, alias="OBJECT_STORAGE_EVIDENCE_RETENTION_DAYS"
+    )
     object_storage_worm_enabled: bool = Field(default=False, alias="OBJECT_STORAGE_WORM_ENABLED")
     object_storage_checksum_required: bool = Field(
         default=True, alias="OBJECT_STORAGE_CHECKSUM_REQUIRED"
@@ -199,7 +205,11 @@ class Settings(BaseSettings):
         default=".storage/objects", alias="OBJECT_STORAGE_LOCAL_ROOT"
     )
     object_storage_max_object_bytes: int = Field(
-        default=100 * 1024 * 1024, ge=1, alias="OBJECT_STORAGE_MAX_OBJECT_BYTES"
+        default=100 * 1024 * 1024,
+        ge=1,
+        validation_alias=AliasChoices(
+            "OBJECT_STORAGE_MAX_OBJECT_BYTES", "OBJECT_STORAGE_MAX_ARTIFACT_BYTES"
+        ),
     )
 
     timescale_enabled: bool = Field(default=False, alias="TIMESCALE_ENABLED")
@@ -575,6 +585,7 @@ class Settings(BaseSettings):
                 ),
                 provider=self.object_storage_provider,
                 endpoint=self.object_storage_endpoint,
+                public_endpoint=self.object_storage_public_endpoint,
                 bucket=self.object_storage_bucket,
                 region=self.object_storage_region,
                 access_key=self.object_storage_access_key,
@@ -582,6 +593,7 @@ class Settings(BaseSettings):
                 use_ssl=self.object_storage_use_ssl,
                 force_path_style=self.object_storage_force_path_style,
                 default_retention_days=self.object_storage_default_retention_days,
+                evidence_retention_days=self.object_storage_evidence_retention_days,
                 worm_enabled=self.object_storage_worm_enabled,
                 checksum_required=self.object_storage_checksum_required,
                 local_root=self.object_storage_local_root,
