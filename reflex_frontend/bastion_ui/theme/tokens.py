@@ -24,7 +24,7 @@ EVIDENCE_PARTIAL = "#F59E0B"
 EVIDENCE_WEAK = "#EF4444"
 EVIDENCE_UNKNOWN = "#737373"
 
-# Backward-compatible scaffold aliases used by the shell preview.
+# Backward-compatible aliases for the scaffold shell.
 BASTION_BG = BASTION_BLACK
 BASTION_GRAY = BASTION_TEXT_MUTED
 

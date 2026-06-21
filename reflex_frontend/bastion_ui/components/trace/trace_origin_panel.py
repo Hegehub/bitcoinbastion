@@ -1,0 +1,21 @@
+from __future__ import annotations
+
+import reflex as rx
+
+from bastion_ui.components.ui.card import card
+from bastion_ui.state.trace_report_state import TraceReportState
+
+
+def trace_origin_panel() -> rx.Component:
+    return card(
+        rx.text(
+            "Observed origin signals, source limitations, and evidence-backed attribution "
+            "hints remain confidence-limited."
+        ),
+        rx.text(
+            "Backend fields are rendered only when available; "
+            "otherwise manual review is recommended."
+        ),
+        rx.cond(TraceReportState.has_degraded_data, rx.text("This panel may be incomplete.")),
+        title="Origin signals",
+    )

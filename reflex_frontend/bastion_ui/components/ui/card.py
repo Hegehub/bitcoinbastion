@@ -25,12 +25,17 @@ def card(
         "evidence": CARD,
     }
     header = []
-    if title:
-        header.append(rx.heading(title, size="4"))
+    if title or badge:
+        header.append(
+            rx.hstack(
+                rx.heading(title or "", size="4"),
+                badge or rx.fragment(),
+                justify="between",
+                width="100%",
+            )
+        )
     if subtitle:
-        header.append(rx.text(subtitle, color="gray"))
-    if badge:
-        header.append(badge)
+        header.append(rx.text(subtitle, color="#A3A3A3"))
     return cast(
         rx.Component,
         rx.box(rx.vstack(*header, *children, align="start", spacing="3"), style=styles[variant]),

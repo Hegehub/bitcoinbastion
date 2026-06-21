@@ -1,6 +1,6 @@
 # Frontend Migration Blockers
 
-Date: 2026-06-16  
+Date: 2026-06-19  
 Scope: Next.js legacy freeze, Reflex readiness blockers, Market/Jinja ownership, API parity, safety/no-custody posture.
 
 ## Critical
@@ -35,7 +35,7 @@ Scope: Next.js legacy freeze, Reflex readiness blockers, Market/Jinja ownership,
 - Affected area: Trace address form, command palette report-id input, future Reflex inputs
 - Current evidence/path: `frontend/components/trace/AddressCheckForm.tsx`, `frontend/lib/addressValidation.ts`, `frontend/components/interactive/BastionCommandPalette.tsx`
 - Recommended fixing prompt: Prompt 3/22 and Prompt 8/22
-- Notes: Current address validation rejects xprv-like values, WIF-like values, `.dat`, non-Bitcoin addresses, and 12+ word input. Command palette rejects several sensitive patterns but should add explicit 12/24-word phrase-count tests in Reflex.
+- Notes: Current address validation rejects obvious sensitive/non-address values. Command palette rejects several sensitive patterns before generating dynamic Trace actions, but Reflex should add explicit 12/24-word phrase-count tests.
 
 ## High
 
@@ -51,7 +51,7 @@ Scope: Next.js legacy freeze, Reflex readiness blockers, Market/Jinja ownership,
 
 - Severity: High
 - Affected area: console/dashboard routes
-- Current evidence/path: Next.js has `/dashboard/*`; Reflex target requires `/console/*`; partial Reflex files exist under `reflex_frontend/bastion_ui/routes/console*.py`
+- Current evidence/path: Next.js has `/dashboard/*`; required target uses `/console/*`; inspected `reflex_frontend/bastion_ui/routes/` currently has no page modules beyond `__init__.py`
 - Recommended fixing prompt: Prompt 12/22 and Prompt 15/22
 - Notes: Add route tests and redirect/delegation policy before cutover.
 
@@ -79,29 +79,29 @@ Scope: Next.js legacy freeze, Reflex readiness blockers, Market/Jinja ownership,
 - Recommended fixing prompt: Prompt 4/22
 - Notes: Align frontend contract before Reflex calls these endpoints.
 
-### npm audit vulnerabilities reported during freeze verification
+### Market API prefix expectations do not match actual backend prefixes
 
 - Severity: High
-- Affected area: frontend dependency posture
-- Current evidence/path: `cd frontend && npm install` reported 16 npm audit vulnerabilities
-- Recommended fixing prompt: maintenance prompt before cutover
-- Notes: This prompt did not upgrade packages because it is an inventory/freeze prompt.
+- Affected area: Market / intelligence API contracts
+- Current evidence/path: requested groups include `/api/v1/market-data/*`, `/api/v1/market-intelligence/*`, and `/api/v1/intelligence-timeline/*`; actual routers use `/api/v1/market`, `/api/v1/news`, and `/api/v1/intelligence/timeline`
+- Recommended fixing prompt: Prompt 4/22 and Prompt 13/22
+- Notes: Future Reflex clients must use actual paths or add explicit backend compatibility aliases.
 
 ## Medium
 
-### Root pytest async-plugin environment failures
+### Root pytest async-plugin and Reflex scaffold failures
 
 - Severity: Medium
-- Affected area: repository test environment
-- Current evidence/path: `python -m pytest -q` reports async tests are not natively supported and references plugins such as `pytest-asyncio`
-- Recommended fixing prompt: testing/tooling maintenance prompt
-- Notes: Frontend toolchain checks passed; root suite still needs async test environment alignment.
+- Affected area: repository test environment and current Reflex scaffold
+- Current evidence/path: `python -m pytest -q` reports async tests are not natively supported and current Reflex contract tests expect route/client/safety files that are not present
+- Recommended fixing prompt: testing/tooling maintenance prompt and Prompt 2/22
+- Notes: Frontend toolchain checks passed; root suite still needs async test environment alignment and Reflex scaffold work.
 
 ### Stale legacy route files require archive/redirect decisions
 
 - Severity: Medium
 - Affected area: stale Next.js routes
-- Current evidence/path: `frontend/app/products/*`, `frontend/app/self-host/*`, `frontend/app/dashboard/*`
+- Current evidence/path: `frontend/app/products/*`, `frontend/app/self-host/*`, `frontend/app/dashboard/*`, plus `/citadel`, `/treasury`, `/register`, `/enterprise`, `/blog`, `/design-system`, and `/genesis`
 - Recommended fixing prompt: Prompt 21/22
 - Notes: Do not delete during freeze; decide redirects/archive after Reflex parity.
 
@@ -111,7 +111,7 @@ Scope: Next.js legacy freeze, Reflex readiness blockers, Market/Jinja ownership,
 - Affected area: Reflex test coverage
 - Current evidence/path: baseline requires route, navigation, command palette, API client, Trace safety, no-sensitive-input, forbidden-wording, Market, and console tests
 - Recommended fixing prompt: Prompt 17/22
-- Notes: Existing Reflex tests are promising but do not prove production cutover parity.
+- Notes: Existing Reflex tests cover scaffold/theme/safety helpers but do not prove production cutover parity.
 
 ### Docs can drift from migration state
 

@@ -4,20 +4,17 @@ from typing import Literal, cast
 
 import reflex as rx
 
-from bastion_ui.theme.tokens import BASTION_PANEL_SOFT
-
-SkeletonVariant = Literal["card", "line", "table", "metric"]
+SkeletonKind = Literal["card", "line", "table", "metric"]
 
 
-def skeleton(variant: SkeletonVariant = "line") -> rx.Component:
-    sizes = {
-        "card": ("100%", "140px"),
-        "line": ("100%", "18px"),
-        "table": ("100%", "220px"),
-        "metric": ("180px", "80px"),
-    }
-    width, height = sizes[variant]
+def skeleton(kind: SkeletonKind = "line") -> rx.Component:
+    heights = {"line": "18px", "card": "120px", "table": "220px", "metric": "96px"}
     return cast(
         rx.Component,
-        rx.box(width=width, height=height, border_radius="12px", background=BASTION_PANEL_SOFT),
+        rx.box(
+            background="rgba(255,255,255,0.08)",
+            border_radius="12px",
+            height=heights[kind],
+            width="100%",
+        ),
     )
