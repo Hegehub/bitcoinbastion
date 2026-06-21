@@ -42,3 +42,10 @@ evidence_notes:
   - Production claims require additional host, backup, monitoring, and recovery evidence.
 future_extensions:
   - podman-compose metadata may be added later.
+storage_foundation:
+  postgres: required
+  redis: required_ephemeral
+  object_storage: local_minio_allowed
+  object_storage_notes:
+    - Local MinIO is acceptable for development and smoke evidence only.
+    - Production claims require real secrets, backups, retention policy, and restore evidence.
