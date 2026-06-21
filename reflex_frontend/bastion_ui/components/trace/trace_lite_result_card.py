@@ -27,7 +27,7 @@ def trace_lite_result_card() -> rx.Component:
         rx.text(TraceState.limitations_label),
         rx.text(TraceState.warnings_label),
         rx.cond(
-            TraceState.report_id != "",
+            TraceState.trace_lite_report_id != "",
             rx.text("Full report route coming in next migration step."),
         ),
         title="Trace Lite result",

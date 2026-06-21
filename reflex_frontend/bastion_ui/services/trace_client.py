@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import Any
 
 from bastion_ui.services.api_client import BastionApiClient
-from bastion_ui.services.models import TraceLiteResult
+from bastion_ui.services.errors import BastionApiError, BastionFrontendError
+from bastion_ui.services.models import ApiResult, TraceLiteResult
 
 TRACE_LITE_ENDPOINT = "/api/v1/trace/lite/{address}"
 
@@ -47,39 +48,62 @@ class TraceApiClient:
     def __init__(self, api_client: BastionApiClient | None = None) -> None:
         self.api_client = api_client or BastionApiClient()
 
+    async def _safe_get(self, path: str) -> ApiResult:
+        try:
+            payload = await self.api_client.get(path)
+            data: dict[str, Any] | list[Any] | None
+            data = payload if isinstance(payload, dict | list) else None
+            degraded = bool(payload.get("degraded")) if isinstance(payload, dict) else False
+            return ApiResult(ok=True, data=data, degraded=degraded)
+        except BastionApiError as exc:
+            return ApiResult(
+                ok=False,
+                error=exc.public_message,
+                status_code=exc.status_code,
+                degraded=True,
+            )
+        except BastionFrontendError as exc:
+            return ApiResult(ok=False, error=exc.public_message, degraded=True)
+
     async def get_trace_lite(self, address: str) -> TraceLiteResult:
         payload = await self.api_client.get(TRACE_LITE_ENDPOINT.format(address=address))
         return normalize_trace_lite_payload(address, payload)
 
-    async def get_trace_address(self, address: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/address/{address}")
+    async def get_public_trace_summary(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/public/trace/{report_id}/summary")
 
-    async def get_trace_report(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}")
+    async def get_trace_address(self, address: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/address/{address}")
 
-    async def get_trace_evidence(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/evidence")
+    async def get_trace_report(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}")
 
-    async def get_origin_passport(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/origin-passport")
+    async def get_trace_evidence(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/evidence")
 
-    async def get_privacy_shield(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/privacy-shield")
+    async def get_origin_passport(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/origin-passport")
 
-    async def get_source_summary(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/source-summary")
+    async def get_privacy_shield(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/privacy-shield")
 
-    async def get_provider_disagreement(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/provider-disagreement")
+    async def get_source_summary(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/source-summary")
 
-    async def get_utxo_hygiene(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/utxo-hygiene")
+    async def get_provider_disagreement(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/provider-disagreement")
 
-    async def get_dust_radar(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/dust-radar")
+    async def get_utxo_hygiene(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/utxo-hygiene")
 
-    async def get_counterparty_lens(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/counterparty-lens")
+    async def get_dust_radar(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/dust-radar")
 
-    async def get_policy_facts(self, report_id: str) -> Any:
-        return await self.api_client.get(f"/api/v1/trace/report/{report_id}/policy-facts")
+    async def get_counterparty_lens(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/counterparty-lens")
+
+    async def get_policy_facts(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/policy-facts")
+
+    async def get_proof_packet(self, report_id: str) -> ApiResult:
+        return await self._safe_get(f"/api/v1/trace/report/{report_id}/proof-packet")

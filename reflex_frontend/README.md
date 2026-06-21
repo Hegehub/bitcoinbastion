@@ -153,3 +153,11 @@ Prompt 7 adds two public Trace Lite entrypoints:
 - `/trace`
 
 Both routes accept public Bitcoin addresses only and use `/api/v1/trace/lite/{address}` through the shared Reflex API client. The flow rejects obvious wallet-secret material before API submission and displays advisory-only/no-custody limitations. Full report routes and Proof Packet routes remain future migration prompts.
+
+## Trace Report Dynamic Routes
+
+Prompt 8 adds Reflex dynamic Trace routes for `/trace/[report_id]` and `/trace/[report_id]/proof-packet`.
+
+The report UI is advisory-only and panel based. It calls the FastAPI Trace endpoints through the shared API client and keeps missing, partial, degraded, or stale panel states visible. The Proof Packet route does not fabricate packet contents or hashes when the backend endpoint is unavailable or access-limited.
+
+These routes do not complete Trace parity. Full Proof Packet/Evidence parity, export behavior, and deeper Evidence UI remain later migration work.

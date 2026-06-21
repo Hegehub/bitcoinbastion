@@ -11,6 +11,14 @@ class FlexibleModel(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
+class ApiResult(BaseModel):
+    ok: bool
+    data: dict[str, Any] | list[Any] | None = None
+    error: str | None = None
+    status_code: int | None = None
+    degraded: bool = False
+
+
 class PublicStatus(FlexibleModel):
     status: str | None = None
     degraded: bool | None = None

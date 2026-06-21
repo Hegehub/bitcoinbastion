@@ -573,3 +573,12 @@ Related documents:
 - Result status: Trace Lite normalizes backend payloads into a frontend DTO and shows safe loading, empty, error, degraded, limitations, warning, provider/source count, and summary states.
 - Routes intentionally deferred: `/trace/[report_id]` and `/trace/[report_id]/proof-packet` remain Prompt 8/22 and Prompt 9/22 work.
 - No backend domain logic, wallet connection, transaction signing, Market dashboard migration, Console module migration, Next.js deletion, or production cutover occurred.
+
+## Prompt 8/22 Trace Report Dynamic Routes Status
+
+- Routes implemented in Reflex: `/trace/[report_id]` and `/trace/[report_id]/proof-packet`.
+- Backend endpoints used: public Trace summary plus detailed Trace report, evidence, privacy-shield, origin-passport, source-summary, provider-disagreement, UTXO hygiene, dust radar, counterparty lens, policy-facts, and proof-packet endpoints through the shared Trace API client.
+- Dynamic parameter safety: report ids are validated for non-empty values and rejected when path traversal, script, JavaScript, file, or data URI markers are present.
+- Report behavior: detailed panels show advisory report metadata, confidence limitations, evidence summary, origin, privacy, source disagreement, UTXO hygiene, counterparty, and policy facts without fabricating missing backend data.
+- Proof packet behavior: unavailable proof-packet endpoints produce an explicit unavailable state; placeholder hashes or packet data are not rendered as real evidence.
+- Remaining blockers: Prompt 9/22 must implement deeper Evidence/Proof Packet parity; Market and Console migrations remain later prompts. No backend domain logic, Next.js deletion, Market migration, Console migration, wallet signing, or production cutover occurred.

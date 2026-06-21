@@ -22,6 +22,8 @@ from bastion_ui.components.ui.card import card
 from bastion_ui.components.ui.metric import metric_card
 from bastion_ui.routes import PUBLIC_ROUTE_SPECS
 from bastion_ui.routes.home import home_page as index  # noqa: F401
+from bastion_ui.routes.proof_packet import trace_proof_packet_page
+from bastion_ui.routes.trace_report import trace_report_page
 
 
 def design_system_preview() -> rx.Component:
@@ -82,6 +84,12 @@ app = rx.App(
 for route_spec in PUBLIC_ROUTE_SPECS:
     app.add_page(route_spec.page, route=route_spec.route, title=route_spec.title)
 
+app.add_page(trace_report_page, route="/trace/[report_id]", title="Trace Report")
+app.add_page(
+    trace_proof_packet_page,
+    route="/trace/[report_id]/proof-packet",
+    title="Trace Proof Packet",
+)
 app.add_page(design_system_preview, route="/design-system", title="Design System Preview")
 
 __all__ = ["app", "design_system_preview", "index"]

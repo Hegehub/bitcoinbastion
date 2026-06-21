@@ -25,7 +25,7 @@ class TraceState(rx.State):
     error: str = ""
     validation_error: str = ""
     result: dict[str, Any] = {}
-    report_id: str = ""
+    trace_lite_report_id: str = ""
     risk_band: str = "confidence unavailable"
     confidence_label: str = "Unavailable"
     provider_count_label: str = "Unavailable"
@@ -59,7 +59,7 @@ class TraceState(rx.State):
             trace_result = await TraceApiClient().get_trace_lite(self.normalized_address)
             payload = trace_result.model_dump(mode="json")
             self.result = payload
-            self.report_id = str(payload.get("report_id") or "")
+            self.trace_lite_report_id = str(payload.get("report_id") or "")
             self.risk_band = str(payload.get("risk_band") or "confidence unavailable")
             confidence = payload.get("confidence")
             self.confidence_label = "Unavailable" if confidence is None else str(confidence)
@@ -98,7 +98,7 @@ class TraceState(rx.State):
         self.error = ""
         self.validation_error = ""
         self.result = {}
-        self.report_id = ""
+        self.trace_lite_report_id = ""
         self.risk_band = "confidence unavailable"
         self.confidence_label = "Unavailable"
         self.provider_count_label = "Unavailable"

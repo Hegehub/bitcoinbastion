@@ -71,3 +71,14 @@ Prompt 8 should implement `/trace/[report_id]`, detailed panels, report loading,
 ## 8. Remaining work for Prompt 9/22
 
 Prompt 9 should implement `/trace/[report_id]/proof-packet`, Proof Packet display, Evidence linkage, and related limitations copy.
+
+## 9. Prompt 8/22 Trace Report Dynamic Routes
+
+Prompt 8 adds the dynamic Reflex report routes:
+
+- `/trace/[report_id]`
+- `/trace/[report_id]/proof-packet`
+
+The report route uses the shared Trace API client for public summary, report, evidence, privacy, origin, source-summary, provider-disagreement, UTXO hygiene, dust radar, counterparty lens, and policy-facts endpoints. The UI is panel-based and must keep degraded, limited, stale, or unavailable states visible.
+
+The proof-packet route calls `/api/v1/trace/report/{report_id}/proof-packet`. If the endpoint is missing or restricted, the Reflex UI shows that the proof packet is unavailable and does not fabricate hashes, metadata, sources, or packet content.

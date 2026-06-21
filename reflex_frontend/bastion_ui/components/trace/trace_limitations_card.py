@@ -19,6 +19,15 @@ TRACE_CANNOT_PROVIDE = (
     "Bitcoin consensus proof",
     "custody or transaction signing",
 )
+TRACE_REPORT_LIMITATIONS = (
+    "This report is advisory-only.",
+    "It is not legal verification.",
+    "It is not a Bitcoin consensus proof.",
+    "It may be incomplete.",
+    "Providers may disagree.",
+    "Data may be stale or unavailable.",
+    "Manual review may be required.",
+)
 
 
 def trace_limitations_card() -> rx.Component:
@@ -30,6 +39,7 @@ def trace_limitations_card() -> rx.Component:
                 title="Trace cannot provide",
             ),
         ),
+        rx.vstack(*[rx.text(item) for item in TRACE_REPORT_LIMITATIONS], align="start"),
         title="Trace limitations",
         variant="safety",
     )
