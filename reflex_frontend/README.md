@@ -144,3 +144,12 @@ Prompt 6 registers the initial Reflex-owned public informational routes during t
 - `/docs`
 
 These pages use the shared public layout, header, footer, safety copy, and conservative fallback states. They do not implement `/check`, full Trace, Proof Packet, Market dashboard, or Console workflows yet. Next.js remains available until documented cutover gates pass.
+
+## Trace Lite Public Flow
+
+Prompt 7 adds two public Trace Lite entrypoints:
+
+- `/check`
+- `/trace`
+
+Both routes accept public Bitcoin addresses only and use `/api/v1/trace/lite/{address}` through the shared Reflex API client. The flow rejects obvious wallet-secret material before API submission and displays advisory-only/no-custody limitations. Full report routes and Proof Packet routes remain future migration prompts.

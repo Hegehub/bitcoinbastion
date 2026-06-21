@@ -31,7 +31,15 @@ class PublicFeature(FlexibleModel):
 class TraceLiteResult(FlexibleModel):
     address: str | None = None
     report_id: str | int | None = None
-    status: str | None = None
+    risk_band: str | None = None
+    confidence: float | None = None
+    summary: str | None = None
+    provider_count: int | None = None
+    source_count: int | None = None
+    degraded: bool = False
+    limitations: list[str] = []
+    warnings: list[str] = []
+    generated_at: str | None = None
 
 
 class TraceReportSummary(FlexibleModel):

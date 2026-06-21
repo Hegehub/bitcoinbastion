@@ -563,3 +563,13 @@ Related documents:
 - Safety copy status: Evidence and Security pages include advisory-only, no-custody, not-legal-verification, not-Bitcoin-consensus-proof, and no wallet-secret-input warnings.
 - Tests added: public route registration, public navigation stale-route checks, safety copy checks, public forbidden-wording scan, status fallback, roadmap labels, and docs pending/planned labeling.
 - Known blockers: full Trace public flow, `/check`, Proof Packet viewer, Market dashboard parity, Console modules, and live API-backed status/roadmap rendering remain later prompts. No production cutover is claimed.
+
+## Prompt 7/22 Trace Lite Public Flow Status
+
+- Routes implemented in Reflex: `/check` and `/trace`.
+- Backend endpoint used: `/api/v1/trace/lite/{address}` through the shared Prompt 5 API client and Trace client abstraction.
+- Address validation: accepts plausible public Bitcoin addresses beginning with `bc1`, `1`, or `3`; rejects empty input, obvious non-address text, WIF-looking private keys, mnemonic-like phrases, extended private keys, wallet files, keystores, JSON key material, and signing material before API submission.
+- Safety copy status: Trace Lite includes advisory-only, no-custody, public-address-only, not-legal-verification, not-Bitcoin-consensus-proof, and never-enter-wallet-secret warnings.
+- Result status: Trace Lite normalizes backend payloads into a frontend DTO and shows safe loading, empty, error, degraded, limitations, warning, provider/source count, and summary states.
+- Routes intentionally deferred: `/trace/[report_id]` and `/trace/[report_id]/proof-packet` remain Prompt 8/22 and Prompt 9/22 work.
+- No backend domain logic, wallet connection, transaction signing, Market dashboard migration, Console module migration, Next.js deletion, or production cutover occurred.

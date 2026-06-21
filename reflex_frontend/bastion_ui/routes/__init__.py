@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 import reflex as rx
 
+from bastion_ui.routes.check import check_page
 from bastion_ui.routes.developers import developers_page
 from bastion_ui.routes.docs import docs_page
 from bastion_ui.routes.evidence import evidence_page
@@ -15,6 +16,7 @@ from bastion_ui.routes.platform import platform_page
 from bastion_ui.routes.roadmap import roadmap_page
 from bastion_ui.routes.security import security_page
 from bastion_ui.routes.status import status_page
+from bastion_ui.routes.trace import trace_page
 
 
 @dataclass(frozen=True)
@@ -27,6 +29,8 @@ class PublicRouteSpec:
 PUBLIC_ROUTE_SPECS: tuple[PublicRouteSpec, ...] = (
     PublicRouteSpec("/", "Bitcoin Bastion", home_page),
     PublicRouteSpec("/platform", "Platform", platform_page),
+    PublicRouteSpec("/check", "Check Bitcoin Address", check_page),
+    PublicRouteSpec("/trace", "Bastion Trace", trace_page),
     PublicRouteSpec("/developers", "Developers", developers_page),
     PublicRouteSpec("/operations", "Operations", operations_page),
     PublicRouteSpec("/manifesto", "Manifesto", manifesto_page),
