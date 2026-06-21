@@ -47,7 +47,37 @@ class TraceReportState(rx.State):
     summary_label: str = "Not available"
     evidence_label: str = "Evidence unavailable. Manual review recommended."
     proof_packet_status_label: str = "Proof packet is not available for this report."
+    def _route_report_id(self) -> str:
+        value = self.router.page.params.get("report_id", "")
+        return str(value or "")
 
+    async def load_trace_report_from_route(self) -> None:
+        self.reset_report()
+        self.set_report_id(self._route_report_id())
+        if self.error:
+            return
+        await self.load_trace_report()
+
+    async def load_proof_packet_from_route(self) -> None:
+        self.reset_report()
+        self.set_report_id(self._route_report_id())
+        if self.error:
+            return
+        await self.load_proof_packet()
+
+    @rx.var
+    def trace_report_href(self) -> str:
+        if not self.trace_report_id:
+            return "/trace"
+        return f"/trace/{self.trace_report_id}"
+
+    @rx.var
+    def proof_packet_href(self) -> str:
+        if not self.trace_report_id:
+            return "/trace"
+        return f"/trace/{self.trace_report_id}/proof-packet"
+
+    
     def set_report_id(self, report_id: str) -> None:
         validation = validate_report_id(report_id)
         if not validation.ok:
