@@ -40,3 +40,10 @@ evidence_notes:
   - Lack of HA must remain visible in release evidence.
 future_extensions:
   - Later tasks can further tune HPA removal, storage guidance, and job cadence.
+storage_foundation:
+  postgres: required
+  redis: required_ephemeral
+  object_storage: minio_allowed_with_persistent_volume
+  object_storage_notes:
+    - Single-node MinIO must use persistent storage and backups.
+    - Managed S3-compatible storage is safer for serious deployments.
