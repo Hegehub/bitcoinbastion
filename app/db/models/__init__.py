@@ -58,6 +58,7 @@ from app.db.models.candle_provider_snapshot import CandleProviderSnapshot
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.btc_price_point import BTCPricePoint
 from app.db.models.market_provider_health import MarketProviderHealth
+from app.db.models.mempool_fee_snapshot import MempoolFeeSnapshot
 from app.db.models.provider_health_record import ProviderHealthRecord
 
 from app.db.models.operations_control import (
@@ -181,6 +182,7 @@ __all__ = [
     "BackupValidationRecord",
     "RecoveryValidationRecord",
     "MarketProviderHealth",
+    "MempoolFeeSnapshot",
     "AuditLog",
     "CitadelAssessment",
     "User",

@@ -23,7 +23,25 @@ def _safe_error_details(exc: BaseException, *, schema: str) -> dict[str, Any]:
         "error_class": type(exc).__name__,
         "schema": schema,
         "extension_available": False,
+        "hypertables": {},
     }
+
+
+def _market_hypertable_status(db: Session) -> dict[str, bool]:
+    expected = {
+        "btc_price_points": False,
+        "btc_candles": False,
+        "mempool_fee_snapshots": False,
+    }
+    rows = db.execute(text("""
+            SELECT hypertable_name
+            FROM timescaledb_information.hypertables
+            WHERE hypertable_schema = 'public'
+              AND hypertable_name IN ('btc_price_points', 'btc_candles', 'mempool_fee_snapshots')
+            """)).fetchall()
+    for row in rows:
+        expected[str(row[0])] = True
+    return expected
 
 
 def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
@@ -41,7 +59,8 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
                 "reason": "TIMESCALE_ENABLED=false",
                 "enabled": False,
                 "schema": schema,
-                "extension_available": False,
+                "extension_available": None,
+                "hypertables": {},
             },
         )
 
@@ -56,6 +75,7 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
                 "enabled": True,
                 "schema": schema,
                 "extension_available": False,
+                "hypertables": {},
                 "reason": "TimescaleDB health requires a PostgreSQL-compatible connection",
             },
         )
@@ -65,11 +85,12 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
         row = db.execute(text("""
                 SELECT EXISTS (
                     SELECT 1
-                    FROM pg_available_extensions
-                    WHERE name = 'timescaledb'
+                    FROM pg_extension
+                    WHERE extname = 'timescaledb'
                 ) AS extension_available
                 """)).first()
         extension_available = bool(row[0]) if row is not None else False
+        hypertables = _market_hypertable_status(db) if extension_available else {}
     except SQLAlchemyError as exc:
         return StorageStoreStatus(
             status=StorageStatusValue.UNAVAILABLE,
@@ -96,6 +117,7 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
             "enabled": True,
             "schema": schema,
             "extension_available": extension_available,
+            "hypertables": hypertables,
             "create_extension": settings.timescale_create_extension,
             "default_chunk_interval": settings.timescale_default_chunk_interval,
         },

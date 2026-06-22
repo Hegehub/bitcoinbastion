@@ -591,3 +591,7 @@ Prompt 12 adds production-facing storage operations documents. Operators should 
 ## TimescaleDB Foundation
 
 Prompt 13 begins the Time-Series Upgrade phase by adding an optional TimescaleDB foundation under `app/storage/timeseries/`. The foundation includes configuration, health/status reporting, identifier-safe hypertable helpers, and a base time-series repository abstraction. No BTC candle, provider health, metric usage, access integrity, or market domain tables are migrated in this prompt. PostgreSQL remains the transactional source of truth for access certificates, subscription entitlements, revocations, recovery quorums, policy decisions, artifact metadata, and outbox records.
+
+## Prompt 14/65 Timescale Market Time-Series Status
+
+BTC price points, BTC candles, and mempool fee snapshots are now compatible with the TimescaleDB foundation. Plain PostgreSQL and SQLite-compatible test fallback remain supported when `TIMESCALE_ENABLED=false`. TimescaleDB is the operational time-series store for these bounded market queries; ClickHouse analytics projection and Market Time Machine warehouse work remain future prompts.
