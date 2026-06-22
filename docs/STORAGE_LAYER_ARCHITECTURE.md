@@ -595,3 +595,11 @@ Prompt 13 begins the Time-Series Upgrade phase by adding an optional TimescaleDB
 ## Prompt 14/65 Timescale Market Time-Series Status
 
 BTC price points, BTC candles, and mempool fee snapshots are now compatible with the TimescaleDB foundation. Plain PostgreSQL and SQLite-compatible test fallback remain supported when `TIMESCALE_ENABLED=false`. TimescaleDB is the operational time-series store for these bounded market queries; ClickHouse analytics projection and Market Time Machine warehouse work remain future prompts.
+
+## Provider and Source Health Time-Series Storage
+
+Prompt 15 moves provider/source health history into the Storage Layer without changing the canonical ownership model. PostgreSQL remains the source of truth for provider/source definitions, policy metadata, and any transactional decisions. TimescaleDB-compatible tables now store historical observations for provider health, source health, provider confidence events, and source confidence events so operators can build bounded dashboards, degraded-mode evidence, provider trust matrices, and future ClickHouse projections.
+
+Redis may cache current health state for speed, but it is not durable truth. ClickHouse remains future analytics/replay work and must receive provider/source health history through projectors rather than direct route-handler writes. The time-series records must not contain seed phrases, Bitcoin private keys, wallet files, xprv/yprv/zprv, API secrets, raw auth headers, private provider credentials, or unredacted URLs containing tokens.
+
+When TimescaleDB is disabled, the new tables operate as normal PostgreSQL-compatible tables. When TimescaleDB is enabled, migrations may convert them to hypertables on `observed_at`; failure of historical health storage should degrade dashboards and operator reporting, not critical transactional truth.

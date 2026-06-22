@@ -24,6 +24,7 @@ def _safe_error_details(exc: BaseException, *, schema: str) -> dict[str, Any]:
         "schema": schema,
         "extension_available": False,
         "hypertables": {},
+        "timescale_provider_health": "degraded",
     }
 
 
@@ -32,12 +33,24 @@ def _market_hypertable_status(db: Session) -> dict[str, bool]:
         "btc_price_points": False,
         "btc_candles": False,
         "mempool_fee_snapshots": False,
+        "provider_health_timeseries_snapshots": False,
+        "source_health_timeseries_snapshots": False,
+        "provider_confidence_timeseries_events": False,
+        "source_confidence_timeseries_events": False,
     }
     rows = db.execute(text("""
             SELECT hypertable_name
             FROM timescaledb_information.hypertables
             WHERE hypertable_schema = 'public'
-              AND hypertable_name IN ('btc_price_points', 'btc_candles', 'mempool_fee_snapshots')
+              AND hypertable_name IN (
+                  'btc_price_points',
+                  'btc_candles',
+                  'mempool_fee_snapshots',
+                  'provider_health_timeseries_snapshots',
+                  'source_health_timeseries_snapshots',
+                  'provider_confidence_timeseries_events',
+                  'source_confidence_timeseries_events'
+              )
             """)).fetchall()
     for row in rows:
         expected[str(row[0])] = True
@@ -61,6 +74,7 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
                 "schema": schema,
                 "extension_available": None,
                 "hypertables": {},
+                "timescale_provider_health": "disabled",
             },
         )
 
@@ -76,6 +90,7 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
                 "schema": schema,
                 "extension_available": False,
                 "hypertables": {},
+                "timescale_provider_health": "degraded",
                 "reason": "TimescaleDB health requires a PostgreSQL-compatible connection",
             },
         )
@@ -91,6 +106,13 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
                 """)).first()
         extension_available = bool(row[0]) if row is not None else False
         hypertables = _market_hypertable_status(db) if extension_available else {}
+        provider_health_tables = (
+            hypertables.get("provider_health_timeseries_snapshots", False)
+            and hypertables.get("source_health_timeseries_snapshots", False)
+        )
+        provider_health_status = (
+            "ok" if extension_available and provider_health_tables else "degraded"
+        )
     except SQLAlchemyError as exc:
         return StorageStoreStatus(
             status=StorageStatusValue.UNAVAILABLE,
@@ -120,5 +142,6 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
             "hypertables": hypertables,
             "create_extension": settings.timescale_create_extension,
             "default_chunk_interval": settings.timescale_default_chunk_interval,
+            "timescale_provider_health": provider_health_status,
         },
     )
