@@ -1,4 +1,6 @@
 from app.db.models.event_outbox import EventOutbox, EventOutboxStatus
+from app.db.models.storage_artifact import StorageArtifact, StorageArtifactStatus
+from app.db.models.storage_outbox_event import StorageOutboxEvent, StorageOutboxEventStatus
 from app.db.models.webhooks import (
     WebhookDelivery,
     WebhookDeliveryStatus,
@@ -56,9 +58,21 @@ from app.db.models.candle_provider_snapshot import CandleProviderSnapshot
 from app.db.models.btc_candle import BTCCandle
 from app.db.models.btc_price_point import BTCPricePoint
 from app.db.models.market_provider_health import MarketProviderHealth
+from app.db.models.mempool_fee_snapshot import MempoolFeeSnapshot
 from app.db.models.provider_health_record import ProviderHealthRecord
+from app.db.models.provider_source_health_timeseries import (
+    ProviderConfidenceTimeSeriesEvent,
+    ProviderHealthTimeSeriesSnapshot,
+    SourceConfidenceTimeSeriesEvent,
+    SourceHealthTimeSeriesSnapshot,
+)
 
-from app.db.models.operations_control import BackupValidationRecord, OperationsEvidence, OperationsSLOSnapshot, RecoveryValidationRecord
+from app.db.models.operations_control import (
+    BackupValidationRecord,
+    OperationsEvidence,
+    OperationsSLOSnapshot,
+    RecoveryValidationRecord,
+)
 from app.db.models.observability_health import (
     BackgroundJobHealth,
     DegradedComponentSnapshot,
@@ -107,6 +121,10 @@ from app.db.models.wallet import WalletHealthReport, WalletProfile
 from app.db.models.watched_entity import WatchedEntity
 
 __all__ = [
+    "StorageArtifact",
+    "StorageArtifactStatus",
+    "StorageOutboxEvent",
+    "StorageOutboxEventStatus",
     "WebhookDelivery",
     "WebhookDeliveryStatus",
     "WebhookEndpoint",
@@ -158,6 +176,10 @@ __all__ = [
     "CandleProviderSnapshot",
     "BTCPricePoint",
     "ProviderHealthRecord",
+    "SourceConfidenceTimeSeriesEvent",
+    "ProviderConfidenceTimeSeriesEvent",
+    "SourceHealthTimeSeriesSnapshot",
+    "ProviderHealthTimeSeriesSnapshot",
     "SystemHealthSnapshot",
     "ProviderHealthSnapshot",
     "BackgroundJobHealth",
@@ -170,6 +192,7 @@ __all__ = [
     "BackupValidationRecord",
     "RecoveryValidationRecord",
     "MarketProviderHealth",
+    "MempoolFeeSnapshot",
     "AuditLog",
     "CitadelAssessment",
     "User",
