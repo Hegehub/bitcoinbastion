@@ -21,12 +21,18 @@ TRACE_CANNOT_PROVIDE = (
 )
 TRACE_REPORT_LIMITATIONS = (
     "This report is advisory-only.",
+    "Trace depends on available data sources.",
+    "Provider data may be stale or incomplete.",
+    "Address clustering can be uncertain.",
+    "Risk bands are not legal labels.",
     "It is not legal verification.",
     "It is not a Bitcoin consensus proof.",
+    "A report is not financial advice.",
     "It may be incomplete.",
     "Providers may disagree.",
     "Data may be stale or unavailable.",
     "Manual review may be required.",
+    "Operators must review high-impact decisions manually.",
 )
 
 

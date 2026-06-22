@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import reflex as rx
 
+from bastion_ui.components.evidence.degraded_evidence_banner import degraded_evidence_banner
+from bastion_ui.components.evidence.source_disagreement_panel import source_disagreement_panel
 from bastion_ui.components.layout.grid import responsive_grid
 from bastion_ui.components.trace.trace_confidence_panel import trace_confidence_panel
 from bastion_ui.components.trace.trace_counterparty_panel import trace_counterparty_panel
@@ -28,6 +30,8 @@ def trace_report_page() -> rx.Component:
         trace_report_header(),
         trace_safety_banner(),
         trace_status_banner(),
+        degraded_evidence_banner(),
+        source_disagreement_panel(),
         rx.cond(TraceReportState.error != "", rx.text(TraceReportState.error)),
         responsive_grid(
             trace_overview_card(),

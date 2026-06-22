@@ -161,3 +161,9 @@ Prompt 8 adds Reflex dynamic Trace routes for `/trace/[report_id]` and `/trace/[
 The report UI is advisory-only and panel based. It calls the FastAPI Trace endpoints through the shared API client and keeps missing, partial, degraded, or stale panel states visible. The Proof Packet route does not fabricate packet contents or hashes when the backend endpoint is unavailable or access-limited.
 
 These routes do not complete Trace parity. Full Proof Packet/Evidence parity, export behavior, and deeper Evidence UI remain later migration work.
+
+## Proof Packet and Evidence UI
+
+Prompt 9 adds the Evidence and Proof Packet UI layer for the Reflex migration. The `/evidence` route explains Evidence limitations and degraded/provider-disputed states, while `/trace/[report_id]/proof-packet` shows Proof Packet status and backend-provided evidence only when available.
+
+The UI does not fabricate packet data, hashes, source lists, or legal conclusions. It remains advisory-only, no-custody, and limited by backend endpoint availability and provider quality.

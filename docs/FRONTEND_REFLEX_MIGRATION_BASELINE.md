@@ -582,3 +582,13 @@ Related documents:
 - Report behavior: detailed panels show advisory report metadata, confidence limitations, evidence summary, origin, privacy, source disagreement, UTXO hygiene, counterparty, and policy facts without fabricating missing backend data.
 - Proof packet behavior: unavailable proof-packet endpoints produce an explicit unavailable state; placeholder hashes or packet data are not rendered as real evidence.
 - Remaining blockers: Prompt 9/22 must implement deeper Evidence/Proof Packet parity; Market and Console migrations remain later prompts. No backend domain logic, Next.js deletion, Market migration, Console migration, wallet signing, or production cutover occurred.
+
+## Prompt 9/22 — Proof Packet, Evidence, Safety and Limitations UI
+
+- Implemented routes: `/evidence` remains a Reflex public route and `/trace/[report_id]/proof-packet` remains registered as the dynamic proof-packet route.
+- Implemented components: Evidence cards, evidence chain, source badges, confidence badges, evidence limitations, Proof Packet status card, Proof Packet viewer, Proof Packet actions, provider disagreement panel, degraded evidence banner, and shared UI safety banner.
+- Backend endpoints used: `/api/v1/trace/report/{report_id}/evidence`, `/api/v1/trace/report/{report_id}/provider-disagreement`, `/api/v1/trace/report/{report_id}/proof-packet`, and `/api/v1/public/trace/{report_id}/summary` through the shared API client and Evidence client.
+- Missing backend endpoints: if the proof-packet endpoint is unavailable or access-limited, Reflex shows an unavailable state and does not fabricate hashes, metadata, sources, or packet contents.
+- Safety copy status: Evidence and Proof Packet UI includes advisory-only, not-legal-verification, not-Bitcoin-consensus-proof, no-custody, public-Bitcoin-data-only, and never-enter-wallet-secret warnings.
+- Forbidden wording status: Prompt 9 adds and extends tests to prevent forbidden user-facing phrases from being rendered in Evidence and Proof Packet UI.
+- Remaining blockers: deeper Proof Packet export/download flows, cryptographic proof verification, and any enterprise access workflows remain future prompts. Next.js and FastAPI/Jinja surfaces remain intact; no production cutover occurred.
