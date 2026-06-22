@@ -36,6 +36,7 @@ from app.api.v1.public import router as public_router
 from app.api.v1.privacy import router as privacy_router
 from app.api.v1.onchain import router as onchain_router
 from app.api.v1.signals import router as signals_router
+from app.api.v1.storage_status import router as storage_status_router
 from app.api.v1.treasury import router as treasury_router
 from app.api.v1.trace import router as trace_router
 from app.api.v1.users import router as users_router
@@ -77,6 +78,7 @@ app.include_router(metrics_status_router, prefix=settings.api_prefix)
 app.include_router(intelligence_timeline_router, prefix=settings.api_prefix)
 app.include_router(intelligence_router, prefix=settings.api_prefix)
 app.include_router(signals_router, prefix=settings.api_prefix)
+app.include_router(storage_status_router, prefix=settings.api_prefix)
 app.include_router(intelligence_signals_router, prefix=settings.api_prefix)
 app.include_router(operator_signals_router, prefix=settings.api_prefix)
 app.include_router(onchain_router, prefix=settings.api_prefix)
