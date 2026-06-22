@@ -592,3 +592,14 @@ Related documents:
 - Safety copy status: Evidence and Proof Packet UI includes advisory-only, not-legal-verification, not-Bitcoin-consensus-proof, no-custody, public-Bitcoin-data-only, and never-enter-wallet-secret warnings.
 - Forbidden wording status: Prompt 9 adds and extends tests to prevent forbidden user-facing phrases from being rendered in Evidence and Proof Packet UI.
 - Remaining blockers: deeper Proof Packet export/download flows, cryptographic proof verification, and any enterprise access workflows remain future prompts. Next.js and FastAPI/Jinja surfaces remain intact; no production cutover occurred.
+
+## Prompt 11/22 status — Market Intelligence Dashboard
+
+Status: partial implemented.
+
+- Added Reflex route `/console/market-intelligence` for an operator-facing Market Intelligence overview.
+- Kept FastAPI/Jinja `/market`, `/market/time-machine`, `/market/timeline`, `/market/signals`, `/market/evidence`, `/market/narratives`, `/market/sources`, and existing `/web/*` DTO routes intact.
+- Added Market components for status, regime, latest signals, provider health, evidence availability, data freshness, and a Time Machine teaser.
+- Added `MarketState` and extended the Market service client to call existing endpoints only.
+- Visible safety posture: advisory-only, not financial advice, not a trading recommendation, no custody, no execution, degraded/stale/unavailable states shown.
+- Deferred to Prompt 12/22: full Time Machine, timeline, candle drilldowns, signal replay, evidence drilldown, narratives, sources, historical similarity, and `/console/time-machine`.

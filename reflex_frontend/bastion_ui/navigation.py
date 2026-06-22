@@ -105,7 +105,7 @@ CONSOLE_NAV_ITEMS: tuple[NavItem, ...] = (
         "Market Intelligence",
         "/console/market-intelligence",
         "console",
-        "coming_soon",
+        "preview",
         "Market intelligence console.",
     ),
     NavItem(
@@ -212,7 +212,7 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         "/console/market-intelligence",
         "Market",
         "Open Market Intelligence console.",
-        "coming_soon",
+        "preview",
     ),
     CommandAction(
         "open-time-machine",
