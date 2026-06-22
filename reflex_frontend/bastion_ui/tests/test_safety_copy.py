@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from bastion_ui.components.safety.safety_banner import REQUIRED_SAFETY_COPY
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SAFETY_ROOT = ROOT / "components" / "safety"
 
 
 def test_required_safety_copy_exists() -> None:
-    assert "Advisory-only." in REQUIRED_SAFETY_COPY
-    assert "Not legal verification." in REQUIRED_SAFETY_COPY
-    assert "Not Bitcoin consensus proof." in REQUIRED_SAFETY_COPY
-    assert "No custody." in REQUIRED_SAFETY_COPY
-    assert "Public Bitcoin addresses only." in REQUIRED_SAFETY_COPY
-    assert "Never enter seed phrases, private keys, wallet files or signing material." in (
-        REQUIRED_SAFETY_COPY
-    )
+    text = "\n".join(path.read_text() for path in SAFETY_ROOT.glob("*.py"))
+    for required in [
+        "Advisory-only.",
+        "Not legal verification.",
+        "Not Bitcoin consensus proof.",
+        "No custody.",
+        "Public Bitcoin addresses only.",
+        "Never enter seed phrases, private keys, wallet files or signing material.",
+    ]:
+        assert required in text
