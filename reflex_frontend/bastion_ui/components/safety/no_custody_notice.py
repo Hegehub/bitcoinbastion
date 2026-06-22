@@ -1,17 +1,11 @@
 from __future__ import annotations
 
-from typing import cast
-
 import reflex as rx
+
+from bastion_ui.components.ui.alert import alert
+
+NO_CUSTODY_COPY = "No custody. Public Bitcoin addresses only. Never enter seed phrases, private keys, wallet files or signing material."  # noqa: E501
 
 
 def no_custody_notice() -> rx.Component:
-    return cast(
-        rx.Component,
-        rx.vstack(
-            rx.text("No custody.", weight="bold"),
-            rx.text("Public Bitcoin addresses only."),
-            rx.text("Never enter seed phrases, private keys, wallet files or signing material."),
-            align="start",
-        ),
-    )
+    return alert(NO_CUSTODY_COPY, "warning")
