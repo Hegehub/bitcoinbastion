@@ -69,6 +69,48 @@ The platform consists of multiple layers:
 - **Market Time Machine** – web dashboard `/market` providing timeline navigation, BTC candles, deterministically scored news markers, candle context, attribution confidence, historical similarity previews, narrative heatmap and shock index【turn1file0†L152-L162】【turn1file0†L160-L163】.
 - **Event & plugin layer** – internal event taxonomy, outbox, bus and webhook management for safe notifications【turn8file0†L27-L37】【turn8file0†L49-L63】; plugin API foundation for deterministic extension points with restrictive sandbox defaults and audit records.
 
+## Services directory
+
+The `app/services` package contains the core domain services that implement the platform’s business logic.  Each service encapsulates a cohesive set of responsibilities and publishes domain events through the event bus.  At a high level:
+
+### Bastion Trace
+
+`bastion_trace` evaluates the risk associated with a Bitcoin transaction or UTXO.  `TraceService` coordinates a series of heuristics—including dust‑radar, false‑positive guards, UTXO hygiene checks, privacy shield lookups and payment‑context risk evaluations—to compute a **trace band** (low, medium, high).  It assembles a `TraceReport`, stores it, and publishes a `trace.report.created` event to the event bus for asynchronous consumers【turn48file0†L68-L97】.  A companion `LiteTraceReportService` maps trace bands to human‑readable labels and suggested operator actions【turn49file0†L9-L38】.
+
+### Citadel
+
+`citadel` assesses the resilience of a wallet or treasury across multiple dimensions.  `CitadelAssessmentService` gathers signals from UTXO hygiene and mempool risk, script analysis, policy evaluation, inheritance plan verification and sovereignty‑graph modelling to produce weighted scores and an overall resilience grade【turn50file0†L8-L24】【turn50file0†L66-L74】.  `RepairPlanService` uses these scores to generate prioritized remediation steps for operators【turn51file0†L69-L80】.  Additional services in this package compute sovereignty graphs, verify inheritance paths and generate insights; collectively they help operators detect weaknesses and plan corrective actions.
+
+### Market data and providers
+
+`market_data` collects BTC prices and market data from multiple exchanges.  `MarketDataService` periodically polls provider implementations (Binance, Kraken, Bitstamp, Coinbase, etc.), normalizes their quotes, records them in the time‑series repository, and computes a median price and provider spread【turn52file0†L18-L48】.  `aggregation.py` calculates confidence metrics by evaluating provider variance and median spread【turn54file0†L11-L31】, while `provider_health.py` tracks the success/failure history of each provider and emits degraded or recovered events when their reliability changes【turn55file0†L12-L34】.  A registry wires in new providers and exposes them to the rest of the system.
+
+### Mempool and fee analytics
+
+`mempool` models network congestion to inform fee recommendations.  `MempoolAnalyzerService` ingests mempool snapshots and block templates, computes backlog ratios and derives priority fee bands with associated confidence levels【turn61file0†L23-L77】.  `FeeMarketModel` transforms these bands into recommended sat/vbyte fee rates for different confirmation targets【turn62file0†L17-L45】.  `FeeAnalyticsService` in `analytics` wraps these insights, merges them with market data and surfaces user‑friendly fee recommendations and mempool status【turn65file0†L11-L33】.
+
+### Treasury
+
+`treasury` orchestrates treasury actions such as withdrawal requests, chain‑state verification and policy checks.  `TreasuryService` evaluates each request against policy rules, checks chain state for RBF/CPFP possibilities, ensures operator approval and logs the action.  It publishes domain events (e.g., `treasury.request.evaluated`) and interacts with Citadel to factor resilience scores into risk evaluation【turn60file0†L24-L67】【turn60file0†L106-L133】.
+
+### Event bus and domain events
+
+`events` implements the internal eventing infrastructure.  `DomainEventPublisher` is a convenience wrapper for emitting typed domain events【turn57file0†L17-L35】.  `EventBusService` persists events in an outbox, ensures idempotency, groups them by topic and dispatches them to configured webhooks and WebSocket subscribers【turn58file0†L61-L136】.  This bus underpins asynchronous coordination across the platform: trace reports, citadel assessments, evidence packets, provider‑health changes and treasury actions all publish events that consumers can subscribe to.
+
+### Observability and operations
+
+`observability` provides operational insight.  `OperationsSnapshotService` aggregates provider health, chain state, mempool congestion, background job statuses and error counts to compute a runtime severity level and determine whether the system should enter degraded mode【turn59file0†L52-L166】.  These snapshots feed dashboards and drive automated recovery or escalation.
+
+### Intelligence and evidence
+
+`intelligence` assembles multi‑source evidence.  `EvidencePacketBuilder` links news articles, market events, attribution diagnostics and narrative context into replayable evidence packets; it stores them and publishes an `evidence.packet.created` event【turn66file0†L39-L70】【turn66file0†L110-L152】.  Evidence packets are used by the market signal governance layer to justify signal publication and by the Market Time Machine UI for replay.
+
+### Additional services
+
+Other packages include `education` for static educational snippets【turn64file0†L6-L19】, `analytics` for higher‑level analytics (such as fee recommendations【turn65file0†L11-L33】), `ingestion` for scheduled jobs and `public_site` for the Market Time Machine and admin dashboards.  Each service publishes domain events and collaborates through the event bus, enabling decoupled yet coordinated functionality.
+
+These services together form the heart of Bitcoin Bastion.  By composing specialized services and linking them through a shared event bus, the platform maintains clear boundaries between domains while enabling cross‑service workflows such as risk analysis feeding into treasury policy or mempool congestion informing fee recommendations and citadel resilience scores.
+
 ## How it works
 
 At a high level the platform ingests market data and news from multiple providers, transforms them into canonical events, attributes price movements, and surfaces evidence‑rich intelligence:
@@ -120,4 +162,4 @@ While Bitcoin Bastion provides extensive evidence‑driven insight, it does not 
 
 ---
 
-This updated README further refreshes the current status, expands the high‑level system overview, and highlights how key subsystems interact while maintaining clarity on scope, design principles and limitations.
+This updated README further refreshes the current status, expands the high‑level system overview, highlights how key subsystems interact and provides a detailed explanation of the services directory while maintaining clarity on scope, design principles and limitations.
