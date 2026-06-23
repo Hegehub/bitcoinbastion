@@ -1,93 +1,66 @@
-# Roadmap (reality-aligned, 2026-04-30)
+# Roadmap and Backlog
 
-This roadmap reflects **current implemented state** and remaining gaps to production-grade finalization.
-It intentionally separates what is already delivered vs what is still partial.
+This consolidated roadmap merges the previous `ROADMAP.md`, `BACKLOG_MASTER.md`, `TECHNICAL_DEBT.md` and `RC_FREEZE.md` documents. It tracks project readiness, upcoming tasks, technical debt and release policies.
 
-## Current readiness snapshot
-- Bastion core: **~92%**
-- Citadel: **~84%**
-- Bitcoin protocol maturity: **~82%**
-- Explainability E2E: **~86%**
-- Operations hardening: **~88%**
-- Overall finalization: **~89%**
+## Current Readiness
 
----
+- Bastion core readiness: ~92%
+- Citadel: ~84%
+- Bitcoin protocol maturity: ~82%
+- Explainability end‑to‑end: ~86%
+- Operations hardening: ~88%
+- Overall finalisation: ~89%
 
-## Phase 1 — Truth & integrity (Mostly completed)
-### Delivered
-- Model/migration table parity check in repo tooling.
-- Docs truthfulness checks (routes/models/core docs heading) wired into smoke flow.
-- Status/readiness docs normalized to audit-style language.
+## Phases and Progress
 
-### Remaining
-- Add deeper schema parity checks (constraints/defaults/indexes), not only table-level coverage.
-- Enforce stricter doc release gates for roadmap/status drift.
+### Phase 1 — Truth & Integrity
 
----
+Delivered items include migration/model parity checks, docs truthfulness checks and normalised status language. Remaining work focuses on deeper schema parity checks and stricter documentation release gates.
 
-## Phase 2 — Runtime reliability (Partially completed)
-### Delivered
-- Signal deduplication with source identity paths.
-- Delivery retry/cooldown guards and failure logging.
-- Recovery SLO/drill metadata surfaced through admin/observability.
+### Phase 2 — Runtime Reliability
 
-### Remaining
-- Close remediation loop automation (detect → auto-action → verification).
-- Add stronger circuit-breaker behavior for persistent delivery/provider failures.
+Delivered items include signal deduplication, delivery retry/cooldown guards and recovery drill metadata. Remaining tasks include closing the remediation loop and adding circuit‑breaker behaviours for persistent failures.
 
----
+### Phase 3 — Protocol Depth
 
-## Phase 3 — Protocol depth (Partially completed)
-### Delivered
-- UTXO/mempool/script/descriptor analysis integrated into key service outputs.
-- Chain-state/finality/reorg context exposed and consumed at baseline level.
+Delivered features cover UTXO/mempool/script/descriptor analysis and baseline chain‑state context. Critical remaining tasks include calibrating finality/reorg and fee‑market behaviour, hardening provider realism and improving backtesting windows.
 
-### Remaining (critical)
-- Production calibration for finality/reorg and fee-market stress behavior.
-- Provider realism hardening (less fallback/default behavior in critical paths).
-- Better live-data backtesting windows for protocol scoring confidence.
+### Phase 4 — Citadel Realism
 
----
+Delivered progress includes weighted multi‑domain scoring and runtime context integration. Critical remaining items involve removing synthetic assumptions, strengthening data provenance and adding calibration validation.
 
-## Phase 4 — Citadel realism (Partially completed)
-### Delivered
-- Weighted multi-domain scoring with explainability and coverage guarantees.
-- Topology/simulation/recovery/inheritance flows are implemented and connected.
-- Runtime wallet context now participates in assessment shaping.
+### Phase 5 — Explainability Closure
 
-### Remaining (critical)
-- Remove remaining synthetic assumptions in recovery/inheritance/context fallbacks.
-- Strengthen data provenance guarantees for every score component.
-- Add deterministic calibration validation suite (golden scenarios + drift thresholds).
+Delivered progress covers cross‑domain explainability payloads and exposure of score inputs and weights. Remaining tasks include full traceability from input to output and explainability regression gates.
 
----
+### Phase 6 — Production Lock‑In
 
-## Phase 5 — Explainability closure (Advanced, not final)
-### Delivered
-- Cross-domain explainability payloads are present for high-impact outputs.
-- Score inputs/weights and domain sections are exposed in assessment output.
+Delivered steps include a release‑time checklist and final production audit format. Release blockers include final protocol calibration, closing synthetic branches, completing recovery automation and running the final release audit.
 
-### Remaining
-- Full path-level traceability for all high-impact decisions (input → transform → policy impact → output).
-- Add explainability regression gates in CI for contract stability and completeness.
+## Backlog Tasks
 
----
+Backlog items are organised by phase and labelled `BKL‑xx`. Highlights include:
 
-## Phase 6 — Production lock-in (In progress)
-### Delivered
-- Release-time production readiness checklist format.
-- Final production audit document with explicit pass/partial assessments.
+- **BKL‑01/02/03:** Align migration history and schema truth, and correct status docs.
+- **BKL‑04/05/06:** Finalise signal orchestration, Telegram delivery and recovery retries.
+- **BKL‑07/08/09/10/11:** Deepen UTXO, mempool, fee‑market, chain‑state, provider realism and descriptor awareness.
+- **BKL‑12..16:** Replace synthetic Citadel inputs, upgrade dependency topology, disaster simulation realism, verification semantics and repair prioritisation.
+- **BKL‑17/18:** Close explainability traceability and finalise policy governance.
+- **BKL‑19/20:** Close automated drills and run the final production readiness pass.
 
-### Remaining (release blockers)
-1. Finalize protocol calibration and prove stability on live-like traffic windows.
-2. Close remaining synthetic fallback branches in Citadel critical scoring paths.
-3. Complete recovery remediation automation and verification loop.
-4. Run final release audit with objective gates and sign-off evidence.
+## Technical Debt
 
----
+The technical debt registry categorises outstanding issues:
 
-## Immediate next execution queue
-1. **Protocol calibration pack**: finality/reorg + mempool stress backtesting + threshold tuning.
-2. **Citadel realism pack**: eliminate residual synthetic recovery/inheritance assumptions.
-3. **Ops closure pack**: auto-remediation workflows with post-action validation.
-4. **Release gate pack**: objective production audit checklist runbook with artifacts.
+- **Production blockers:** missing calibration evidence and staging/production deployment evidence.
+- **Intentional placeholders:** enterprise governance/observability stack placeholders and Kubernetes/Helm templates requiring adaptation.
+- **Non‑blocking polish:** frontend lint warnings, accessibility certification and full E2E coverage.
+- No critical TODO/FIXME markers were found in runtime code paths.
+
+## RC Freeze Policy
+
+During a release‑candidate freeze, only critical bug fixes, security fixes and documentation corrections are allowed; major features, schema or architecture rewrites and large dependency changes are disallowed. All RC changes require manual sign‑off and a documented rollback expectation.
+
+## Immediate Next Queue
+
+The immediate next tasks include final protocol calibration, elimination of synthetic Citadel assumptions, automation closure for recovery operations and a final release audit.
