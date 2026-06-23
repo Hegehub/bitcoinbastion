@@ -160,6 +160,20 @@ Before submitting changes, review the contribution rules (section 26 in the ori
 
 While Bitcoin Bastion provides extensive evidence‑driven insight, it does not make trading decisions or price predictions.  Historical similarity, candle attribution and narratives are informational only and should not be treated as guarantees【turn1file0†L160-L167】.  External providers can be unavailable, and production readiness requires environment‑specific validation, backup/restore testing and operator sign‑off【turn0file1†L803-L817】.
 
+## Ongoing work and future modules
+
+The repository continues to evolve beyond the baseline described above.  Key areas of development include:
+
+- **Database expansion:** Alembic migrations have recently added a rich source registry and health tables for news providers, including attributes like homepage URL, country code, default confidence, failure backoff configuration and tags, plus a `source_health_records` table for latency and health metrics【turn85file0†L19-L31】.  Additional migrations created the `market_pattern_library` and `historical_similarity_records` tables to seed deterministic market patterns and persist historical similarity results【turn86file0†L41-L76】.  A subsequent migration expanded the narrative heatmap engine with a detailed taxonomy, keyword weights and observation tables【turn87file0†L17-L48】.
+
+- **Intelligence engines:** The Intelligence layer now includes a pattern library, pattern classification service and market memory service for deterministic pattern matching and reaction profiling【turn78file0†L134-L144】【turn78file0†L149-L152】.  The narrative heatmap engine has been expanded with a taxonomy of narratives and keywords that feed classification and dominance metrics【turn87file0†L17-L48】.
+
+- **News scoring and sentiment:** A local sentiment engine and market-news scoring service are being integrated for more granular event scoring and classification.
+
+- **Frontend migration to Reflex:** A parallel `reflex_frontend/` directory contains an experimental Python‑first webapp built with the Reflex framework【turn72file0†L5-L13】.  This frontend runs alongside the legacy Next.js frontend until route parity, API parity and production evidence are complete【turn82file0†L5-L11】.  Migration baselines and route inventories for Trace Lite, Market Time Machine and Market Intelligence are documented in `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md`【turn76file0†L11-L25】, and design system details are captured in `reflex_frontend/docs/DESIGN_SYSTEM.md`【turn84file0†L5-L17】.  The Next.js frontend remains frozen except for safety, broken route and documentation fixes【turn82file0†L26-L38】, while new features are added in Reflex.  Ensure that any new user‑facing functionality includes advisory copy, no‑custody warnings and degraded‑state visibility, consistent with Reflex docs and tests.
+
+These ongoing modules are not yet fully production-ready and therefore not all documented in the main README.  Contributors should refer to the associated docs and migration files when working on these features, and avoid making major changes to the legacy frontend until cutover gates are met.
+
 ---
 
-This updated README further refreshes the current status, expands the high‑level system overview, highlights how key subsystems interact and provides a detailed explanation of the services directory while maintaining clarity on scope, design principles and limitations.
+This updated README further refreshes the current status, expands the high‑level system overview, highlights how key subsystems interact, provides a detailed explanation of the services directory and summarizes ongoing development work, while maintaining clarity on scope, design principles and limitations.
