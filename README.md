@@ -146,7 +146,17 @@ docker compose up -d --build
 curl http://localhost:8000/api/v1/health/live
 ```
 
-For Kubernetes deployment, see `deploy/kubernetes` and `docs/PRODUCTION_READINESS.md` for rendering and applying manifests, running evidence jobs and promotion checklists.
+### Deployment options
+
+In addition to local development, the repository supports multiple deployment modes to accommodate different operator capacities:
+
+- **Self‑hosted single‑node deployments:** For small‑scale or low‑power homelab setups you can run the entire stack on a single VPS or bare metal host using the standard compose stack.  Running `docker compose up db redis minio minio-init app worker` starts PostgreSQL, Redis, MinIO, the API and worker, and a `minio-init` service that creates the `bitcoin-bastion-artifacts` bucket【turn103file0†L3-L13】.  When using this mode you are responsible for persistent volume backups, restore drills, retention policies and monitoring the `/api/v1/storage/status` endpoint【turn104file0†L3-L10】.  The default `minioadmin` credentials provided in `.env.example` are unsafe for production; production deployments should use an external S3‑compatible provider【turn103file0†L15-L28】.
+
+- **Kubernetes deployments:** For production or high‑capacity environments deploy using the manifests under `deploy/kubernetes`.  The canonical base kustomization defines API, worker and beat deployments and CronJobs for health checks and recovery drills and exposes non‑secret object storage settings (`OBJECT_STORAGE_ENABLED`, `OBJECT_STORAGE_PROVIDER`, `OBJECT_STORAGE_ENDPOINT`, `OBJECT_STORAGE_BUCKET`, etc.) via a ConfigMap【turn105file0†L3-L23】.  Secrets such as `OBJECT_STORAGE_ACCESS_KEY` and `OBJECT_STORAGE_SECRET_KEY` must be provided via SealedSecret, SOPS, Vault or another secret manager【turn105file0†L24-L29】.  Use the evidence jobs defined in `docs/DEPLOYMENT_EVIDENCE_PACK.md` to run migrations, schema parity tests and release evidence (`make k8s-run-migration`, `make k8s-run-postgres-migration-smoke`, `make k8s-run-postgres-schema-parity`, `make k8s-run-release-evidence`, `make k8s-collect-evidence-artifacts`)【turn106file0†L1-L14】 and to collect sovereign runtime evidence, backup drills and promotion artifacts【turn106file0†L16-L29】.
+
+- **Frontend deployment:** The Next.js frontend can be deployed to Vercel by creating a project with root directory `frontend`, using `npm run build` as the build command and setting `NEXT_PUBLIC_API_BASE_URL` to point at your backend API【turn107file0†L4-L11】.  The backend may run on a VPS, a hosted container service (Fly.io, Render, Railway) or Kubernetes; in each case configure `CORS_ALLOW_ORIGINS` to match your frontend domain(s)【turn107file0†L12-L21】【turn107file0†L25-L34】.  Preview deployments should point at a staging backend and ensure degraded states are surfaced clearly; see the production checklist in `docs/frontend/DEPLOYMENT.md` for final verification steps【turn108file0†L9-L23】.  The experimental Reflex frontend can be deployed similarly but remains non‑production until route parity is achieved.
+
+- **VPS and container platforms:** The FastAPI backend can also run behind Nginx or Caddy on a single VPS with TLS termination, or on container platforms such as Fly.io, Render or Railway【turn107file0†L12-L21】.  When deploying this way follow the same environment‑variable conventions as the Kubernetes deployment (database, Redis, object storage) and ensure secrets are managed via your platform’s secret manager.  Use the storage health check (`/api/v1/storage/status`) and the migration smoke tests to validate your environment before exposing it to production traffic【turn104file0†L3-L10】.
 
 ## License
 
