@@ -4,7 +4,7 @@
 
 [Website](https://bitcoin-bastion.com) • [Status Documentation](docs/STATUS.md) • [License](LICENSE)
 
-![Status](https://img.shields.io/badge/status-Production%20Candidate%20--%2094%25%20readiness-blue)
+![Status](https://img.shields.io/badge/status-Production%20Candidate%20--%2099%25%20readiness-blue)
 ![Bitcoin First](https://img.shields.io/badge/bitcoin-first-f7931a)
 ![No Custody](https://img.shields.io/badge/no--custody-enforced-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
@@ -14,16 +14,16 @@
 
 ## Overview
 
-**Bitcoin Bastion** is a Bitcoin-first backend platform designed to provide operators, builders, analysts, and Bitcoin‑native systems with transparent, auditable and evidence‑driven market intelligence, provider health, operational readiness and deployment verification. It is *not* a wallet, custodian, automated trading bot, or consensus replacement.  Instead it acts as a sovereignty‑grade backend foundation for:
+**Bitcoin Bastion** is a Bitcoin-first backend platform designed to provide operators, builders, analysts, and Bitcoin native systems with transparent, auditable and evidence driven market intelligence, provider health, operational readiness and deployment verification. It is *not* a wallet, custodian, automated trading bot, or consensus replacement.  Instead it acts as a sovereignty grade backend foundation for:
 
 - Bitcoin market and news intelligence;
-- provider‑health monitoring and confidence tracking;
+- provider health monitoring and confidence tracking;
 - explainable runtime status and observability;
 - risk and evidence analysis (Citadel layer);
 - operational recovery checks and evidence collection;
-- deployment and release evidence with Kubernetes‑based production control.
+- deployment and release evidence with Kubernetes based production control.
 
-The platform aims to make Bitcoin infrastructure more transparent, auditable, reproducible, self‑hostable and evidence‑driven while preserving a strict no‑custody posture.
+The platform aims to make Bitcoin infrastructure more transparent, auditable, reproducible, self hostable and evidence driven while preserving a strict no”custody posture.
 
 ## Core documentation
 
@@ -42,21 +42,19 @@ Bitcoin Bastion follows a strict set of design principles:
 
 | Principle                     | Meaning                                                                                                  |
 |------------------------------|------------------------------------------------------------------------------------------------------------|
-| **Bitcoin‑first**            | Bitcoin is the primary design reference. Other assets, if ever supported, must remain isolated and optional. |
+| **Bitcoin”first**            | Bitcoin is the primary design reference. Other assets, if ever supported, must remain isolated and optional. |
 | **No custody**               | The system must not hold, request, store, derive, or transmit seed phrases or private keys.                  |
 | **Operator control**         | Risky actions require explicit operator awareness and approval.                                              |
 | **Evidence over claims**     | Runtime state, deployment readiness and provider quality must be backed by artifacts.                        |
 | **Self-hosted capable**      | The system should be deployable on VPS, bare metal, homelab or private Kubernetes clusters.                  |
-| **No black‑box trust**       | External providers are fallible and must be observable.                                                      |
+| **No black”box trust**       | External providers are fallible and must be observable.                                                      |
 | **Explicit limitations**     | Synthetic, degraded, fallback and baseline states must remain visible.                                       |
 | **Rollback discipline**      | Production deployment must have a documented rollback path.                                                  |
 | **Auditability**             | Release decisions should be explainable and supported by evidence.                                           |
 
 ## Current status (June 2026)
 
-As of May 2026 the project has progressed beyond the original release‑candidate plan.  The Market Time Machine subsystem is approximately **95 % production‑ready** and the overall platform readiness is about **94 %**【turn1file0†L65-L79】.  Core ingestion, scoring, candle attribution, historical similarity, pattern memory and governance layers are in place【turn1file0†L80-L87】【turn1file0†L134-L140】.  Remaining work includes richer operator workflows, environment‑specific evidence collection, production dashboards polish and final release gating.
-
-Production deployment still requires environment‑specific evidence, schema‑parity verification, and operator sign‑off.  Consult `docs/STATUS.md` for the latest audit and readiness details (audit dated 2026‑05‑23)【turn1file0†L5-L17】.
+As of June 2026 the project is a production candidate and operationally hardened.  The Market Time Machine subsystem and the overall platform are approximately **99 % production‟ready**【filecite】turn8file0【filecite】L19-L23】.  Core ingestion, scoring, candle attribution, historical similarity, pattern memory, governance, evidence packets, narrative heatmaps, plugin API, internal event registry/outbox/bus and webhook management are implemented【filecite】turn8file0【filecite】L11-L17】【filecite】turn8file0【filecite】L27-L37】.  Remaining work is limited to environment‟specific production evidence such as live Kubernetes rendering, load testing, provider incident drills, Telegram runtime proof, penetration testing and accessibility certification【filecite】turn8file0【filecite】L19-L23】.  Consult `docs/STATUS.md` (audit dated 2026‑05‑23) for the latest readiness audit and detailed task breakdown【filecite】turn7file0【filecite】L1-L6】.
 
 ## Main components
 
@@ -68,7 +66,8 @@ The platform consists of multiple layers:
 - **Background runtime** – Celery workers and beat, Redis broker/cache and scheduled jobs for health collection, recovery checks and evidence tasks.
 - **Evidence layer** – release evidence, migration smoke evidence, schema parity evidence, provider evidence, observability snapshot and deployment evidence pack.
 - **Kubernetes runtime layer** – manifests for API/worker/beat deployments, migration/evidence jobs, CronJobs for provider health and recovery drills, NetworkPolicy, ServiceMonitor, GitOps templates and production runbooks.
-- **Market Time Machine** – web dashboard `/market` providing timeline navigation, BTC candles, deterministically scored news markers, candle context, attribution confidence, historical similarity previews and narrative heatmap【turn1file0†L152-L162】【turn1file0†L160-L163】.
+- **Market Time Machine** – web dashboard `/market` providing timeline navigation, BTC candles, deterministically scored news markers, candle context, attribution confidence, historical similarity previews, narrative heatmap and shock index【filecite】turn1file0【filecite】L152-L162】【filecite】turn1file0【filecite】L160-L163】.
+- **Event & plugin layer** – internal event taxonomy, outbox, bus and webhook management for safe notifications【filecite】turn8file0【filecite】L27-L37】【filecite】turn8file0【filecite】L49-L63】; plugin API foundation for deterministic extension points with restrictive sandbox defaults and audit records.
 
 ## Installation and local development
 
@@ -96,16 +95,16 @@ For Kubernetes deployment, see `deploy/kubernetes` and `docs/PRODUCTION_READINES
 
 ## License
 
-This project is licensed under the **MIT License**【turn2file0†L3-L13】.  See the [`LICENSE`](LICENSE) file for full details.  All contributions must preserve the no‑custody posture and must not weaken lint/tests/CI gates or hide degraded states.
+This project is licensed under the **MIT License**【filecite】turn2file0【filecite】L3-L13】.  See the [`LICENSE`](LICENSE) file for full details.  All contributions must preserve the no”custody posture and must not weaken lint/tests/CI gates or hide degraded states.
 
 ## Contributing
 
-Before submitting changes, review the contribution rules (section 26 in the original README).  Contributions must preserve no‑custody rules, avoid secrets, keep documentation synchronized with code, and require evidence for production claims【turn0file1†L926-L933】.  See `docs/STATUS.md` and related documentation for the current readiness requirements.
+Before submitting changes, review the contribution rules (section 26 in the original README).  Contributions must preserve no”custody rules, avoid secrets, keep documentation synchronized with code, and require evidence for production claims【filecite】turn0file1【filecite】L926-L933】.  See `docs/STATUS.md` and related documentation for the current readiness requirements.
 
 ## Known limitations
 
-While Bitcoin Bastion provides extensive evidence‑driven insight, it does not make trading decisions or price predictions.  Historical similarity, candle attribution and narratives are informational only and should not be treated as guarantees【turn1file0†L160-L167】.  External providers can be unavailable, and production readiness requires environment‑specific validation, backup/restore testing and operator sign‑off【turn0file1†L803-L817】.
+While Bitcoin Bastion provides extensive evidence‟driven insight, it does not make trading decisions or price predictions.  Historical similarity, candle attribution and narratives are informational only and should not be treated as guarantees【filecite】turn1file0【filecite】L160-L167】.  External providers can be unavailable, and production readiness requires environment‟specific validation, backup/restore testing and operator sign‟off【filecite】turn0file1【filecite】L803-L817】.
 
 ---
 
-This updated README clarifies the current status and license, condenses repetitive sections, and surfaces key documentation and architectural information.  It addresses the original file’s shortcomings by providing clearer licensing information, up‑to‑date status details, and an improved summary of major components and capabilities.
+This updated README further refreshes the current status, reflecting the near‟production readiness and new subsystems (event bus/outbox, webhook management, plugin API) while maintaining clarity on scope, design principles and limitations.
