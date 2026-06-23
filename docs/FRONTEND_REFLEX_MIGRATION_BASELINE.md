@@ -603,3 +603,15 @@ Status: partial implemented.
 - Added `MarketState` and extended the Market service client to call existing endpoints only.
 - Visible safety posture: advisory-only, not financial advice, not a trading recommendation, no custody, no execution, degraded/stale/unavailable states shown.
 - Deferred to Prompt 12/22: full Time Machine, timeline, candle drilldowns, signal replay, evidence drilldown, narratives, sources, historical similarity, and `/console/time-machine`.
+
+## Prompt 12/22 status — Market Time Machine, Timeline, Signals, Evidence, Narratives, Sources
+
+Status: partial implemented.
+
+- Added Reflex routes `/market`, `/market/time-machine`, `/market/timeline`, `/market/signals`, `/market/evidence`, `/market/narratives`, and `/market/sources`.
+- Existing FastAPI/Jinja Market dashboard routes and `/web/*` DTO endpoints remain intact; no production ownership cutover occurred.
+- Added shared Market shell, section navigation, safety banner, limitations card, Time Machine header/controls/timeline, candle attribution, signal, evidence, narrative, source-health, empty, loading, and error components.
+- Extended the Market API client with read-only methods mapped to documented existing endpoints only.
+- Added `MarketTimeMachineState` for selected asset/range/section, timeline events, signals, evidence packets, narratives, sources, selected candle/evidence ids, degraded state, and refresh actions.
+- Visible safety posture: not financial advice, not a trading instruction, not a price guarantee, advisory-only historical similarity, operator review for signals, provider disagreement/stale-data limitations, no custody, and no execution.
+- Remaining blockers: full chart interaction parity, timeline filters/pagination, candle detail routes, Market evidence drilldowns, narrative similarity parity, source/provider trust matrix parity, and final route ownership/cutover decisions.

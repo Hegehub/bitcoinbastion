@@ -23,6 +23,13 @@ from bastion_ui.components.ui.metric import metric_card
 from bastion_ui.routes import PUBLIC_ROUTE_SPECS
 from bastion_ui.routes.console_market_intelligence import console_market_intelligence_page
 from bastion_ui.routes.home import home_page as index  # noqa: F401
+from bastion_ui.routes.market import market_page
+from bastion_ui.routes.market_evidence import market_evidence_page
+from bastion_ui.routes.market_narratives import market_narratives_page
+from bastion_ui.routes.market_signals import market_signals_page
+from bastion_ui.routes.market_sources import market_sources_page
+from bastion_ui.routes.market_time_machine import market_time_machine_page
+from bastion_ui.routes.market_timeline import market_timeline_page
 from bastion_ui.routes.proof_packet import trace_proof_packet_page
 from bastion_ui.routes.trace_report import trace_report_page
 
@@ -90,6 +97,13 @@ app.add_page(
     route="/console/market-intelligence",
     title="Market Intelligence",
 )
+app.add_page(market_page, route="/market", title="Market Intelligence")
+app.add_page(market_time_machine_page, route="/market/time-machine", title="Market Time Machine")
+app.add_page(market_timeline_page, route="/market/timeline", title="Market Timeline")
+app.add_page(market_signals_page, route="/market/signals", title="Market Signals")
+app.add_page(market_evidence_page, route="/market/evidence", title="Market Evidence")
+app.add_page(market_narratives_page, route="/market/narratives", title="Market Narratives")
+app.add_page(market_sources_page, route="/market/sources", title="Market Sources")
 app.add_page(trace_report_page, route="/trace/[report_id]", title="Trace Report")
 app.add_page(
     trace_proof_packet_page,

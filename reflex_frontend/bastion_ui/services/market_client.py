@@ -56,6 +56,30 @@ class MarketApiClient:
     async def get_market_time_machine(self) -> ApiResult:
         return await self._safe_get("/web/market-time-machine")
 
+    async def get_time_machine(self) -> ApiResult:
+        return await self._safe_get("/web/market-time-machine")
+
+    async def get_market_signals(self) -> ApiResult:
+        return await self._safe_get("/api/v1/signals/latest")
+
+    async def get_market_evidence(self) -> ApiResult:
+        return await self._safe_get(
+            "/api/v1/evidence/packets",
+            missing_reason="Market evidence endpoint is unavailable or not connected yet.",
+        )
+
+    async def get_market_narratives(self) -> ApiResult:
+        return await self._safe_get("/api/v1/intelligence/narratives")
+
+    async def get_market_sources(self) -> ApiResult:
+        return await self._safe_get("/api/v1/news/sources")
+
+    async def get_candle_detail(self, candle_id: str) -> ApiResult:
+        return await self._safe_get(f"/web/candle/{candle_id}")
+
+    async def get_evidence_packet(self, packet_id: str) -> ApiResult:
+        return await self._safe_get(f"/web/evidence/{packet_id}")
+
     async def get_timeline(self) -> ApiResult:
         return await self._safe_get("/web/timeline")
 
