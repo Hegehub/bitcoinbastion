@@ -40,3 +40,10 @@ evidence_notes:
   - Metadata alone is not production evidence.
 future_extensions:
   - Further K3s hardening can tune CronJob cadence and HPA removal in later tasks.
+storage_foundation:
+  postgres: required
+  redis: required_ephemeral
+  object_storage: managed_or_hardened_minio_possible
+  object_storage_notes:
+    - Hardened MinIO with persistent volume is possible for k3s/single-node operators.
+    - Managed S3-compatible storage remains preferred when available.
