@@ -7,6 +7,7 @@ from app.api.dependencies import db_session
 from app.core.cache import get_redis_client
 from app.core.config import get_settings
 from app.storage.health_checks import collect_storage_status
+from app.storage.timeseries.operations import TimescaleOperationsService
 from app.storage.schemas import StorageStatusResponse
 
 router = APIRouter(prefix="/storage", tags=["storage"])
@@ -25,3 +26,13 @@ async def storage_status(db: Session = Depends(db_session)) -> StorageStatusResp
         db=db,
         redis_client_factory=get_redis_client,
     )
+
+
+@router.get(
+    "/timescale/status",
+    summary="TimescaleDB operations status for continuous aggregates and policies.",
+)
+def timescale_operations_status(db: Session = Depends(db_session)) -> dict[str, object]:
+    """Return sanitized TimescaleDB aggregate, retention, and compression status."""
+
+    return TimescaleOperationsService(get_settings(), db).get_timescale_operations_status()

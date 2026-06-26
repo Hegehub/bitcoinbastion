@@ -2,6 +2,11 @@
 
 from app.storage.timeseries.config import TimescaleConfig
 from app.storage.timeseries.health import check_timescale
+from app.storage.timeseries.operations import (
+    EXPECTED_CONTINUOUS_AGGREGATES,
+    TimescaleOperationsConfig,
+    TimescaleOperationsService,
+)
 from app.storage.timeseries.hypertables import (
     create_hypertable_if_not_exists,
     ensure_timescale_extension,
@@ -16,7 +21,10 @@ from app.storage.timeseries.repositories import TimeRange, TimeSeriesRepository
 __all__ = [
     "TimeRange",
     "TimeSeriesRepository",
+    "EXPECTED_CONTINUOUS_AGGREGATES",
     "TimescaleConfig",
+    "TimescaleOperationsConfig",
+    "TimescaleOperationsService",
     "check_timescale",
     "create_hypertable_if_not_exists",
     "ensure_timescale_extension",

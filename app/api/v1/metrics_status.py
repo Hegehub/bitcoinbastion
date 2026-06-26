@@ -11,6 +11,7 @@ from app.core.telemetry import BOUNDED_LABELS, OBSERVABILITY_METRIC_NAMES
 from app.db.repositories.provider_source_health_timeseries_repository import (
     ProviderSourceHealthTimeSeriesRepository,
 )
+from app.services.usage import MetricUsageRepository, MetricUsageService
 from app.db.session import get_db
 from app.schemas.health import MetricsStatusOut
 
@@ -58,6 +59,20 @@ def _snapshot_out(snapshot: object) -> HealthSnapshotOut:
         runtime_mode=getattr(snapshot, "runtime_mode"),
         is_degraded=getattr(snapshot, "is_degraded"),
     )
+
+
+class MetricUsageSummaryOut(BaseModel):
+    window: str
+    total_requests: int
+    total_credits: int
+    allowed: int
+    denied: int
+    degraded: int
+    cached: int
+    skipped: int
+    event_count: int
+    top_metric_groups: list[dict[str, object]] = Field(default_factory=list)
+    degraded_mode: bool = False
 
 
 @router.get("/status", response_model=MetricsStatusOut)
@@ -162,3 +177,31 @@ def latest_source_health(
     if snapshot is None:
         raise HTTPException(status_code=404, detail="source health snapshot not found")
     return _snapshot_out(snapshot)
+
+
+@router.get(
+    "/usage",
+    response_model=MetricUsageSummaryOut,
+    summary="Metric/API usage summary for a bounded time window.",
+)
+def metric_usage_summary(
+    window_hours: int = Query(24, ge=1, le=168),
+    db: Session = Depends(get_db),
+) -> MetricUsageSummaryOut:
+    upper = utcnow()
+    lower = upper - timedelta(hours=window_hours)
+    service = MetricUsageService(MetricUsageRepository(db))
+    summary = service.get_usage_summary(lower, upper)
+    return MetricUsageSummaryOut(
+        window=f"{window_hours}h",
+        total_requests=summary.total_requests,
+        total_credits=summary.total_credits,
+        allowed=summary.allowed,
+        denied=summary.denied,
+        degraded=summary.degraded,
+        cached=summary.cached,
+        skipped=summary.skipped,
+        event_count=summary.event_count,
+        top_metric_groups=[],
+        degraded_mode=False,
+    )

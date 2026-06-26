@@ -603,3 +603,19 @@ Prompt 15 moves provider/source health history into the Storage Layer without ch
 Redis may cache current health state for speed, but it is not durable truth. ClickHouse remains future analytics/replay work and must receive provider/source health history through projectors rather than direct route-handler writes. The time-series records must not contain seed phrases, Bitcoin private keys, wallet files, xprv/yprv/zprv, API secrets, raw auth headers, private provider credentials, or unredacted URLs containing tokens.
 
 When TimescaleDB is disabled, the new tables operate as normal PostgreSQL-compatible tables. When TimescaleDB is enabled, migrations may convert them to hypertables on `observed_at`; failure of historical health storage should degrade dashboards and operator reporting, not critical transactional truth.
+
+## Metric Usage Time-Series Storage
+
+Prompt 16 adds `metric_usage_events` as a TimescaleDB-compatible operational usage table. It records metric/API/SDK/MCP/webhook/WebSocket usage with privacy-safe subject hashes, request counts, credit costs, decisions, and bounded metadata. TimescaleDB supports dashboards, quota analysis, access-integrity history, developer reports, and future billing evidence; it does not become canonical truth for Access Certificates, Subscription Entitlements, Payment Proofs, Revocation Records, Recovery Quorums, or Policy Rules.
+
+When TimescaleDB is disabled, `metric_usage_events` remains a normal PostgreSQL-compatible table. When enabled and available, migrations may convert it to a hypertable on `recorded_at`. Raw emails, IP addresses, API keys, access tokens, seed phrases, Bitcoin private keys, wallet files, xprv/yprv/zprv, and raw session tokens are forbidden.
+
+## Timescale Operations Layer
+
+Prompt 17 adds operational TimescaleDB definitions for continuous aggregates, retention policies, compression policies, rebuild/status checks, and operator validation scripts. These policies control operational time-series growth and dashboard speed only; they must not delete canonical PostgreSQL audit, access, payment, revocation, recovery, or policy truth. If TimescaleDB is unavailable, dashboards and time-series endpoints degrade without blocking critical PostgreSQL-owned operations.
+
+## Prompt 18/65 Status — ClickHouse Analytics Store Foundation
+
+Prompt 18 introduces the ClickHouse analytics-store foundation only. ClickHouse is disabled by default, exposed through a small `AnalyticsStore` interface, and represented in storage health as a rebuildable analytics projection store.
+
+ClickHouse is for future Market Time Machine, replay, event analytics, and dashboard workloads. PostgreSQL and TimescaleDB remain canonical for operational writes; the storage outbox is the planned handoff path for projections. No ClickHouse production tables, DDL, Market Time Machine projections, or access-control decisions are implemented in this prompt.

@@ -225,3 +225,22 @@ Escalate immediately when:
 - Backup, PITR, restore drills, WORM retention, and enterprise evidence gates require environment-specific proof before they can be claimed as operational.
 - The storage outbox currently provides the durable foundation; actual projectors must be implemented and validated separately.
 - Object Storage metadata in PostgreSQL and SHA-256 checks prove artifact integrity, not authorization truth.
+
+## Metric Usage Time-Series Operations
+
+Metric usage events are operational time-series records for metric queries, API requests, SDK/MCP usage, webhook/WebSocket activity, quota decisions, access-integrity observations, and future business reports. Operators should treat PostgreSQL entitlement/payment/policy records as canonical truth and use metric usage time-series for dashboards, audits, and reconciliation evidence.
+
+If TimescaleDB is disabled or unavailable, usage writes should continue against the normal PostgreSQL-compatible table when the application database is reachable. Dashboards and aggregate reports may be degraded. Do not treat Redis counters or ClickHouse projections as canonical access/billing truth.
+
+Operational checks:
+
+- Verify `/api/v1/storage/status` reports TimescaleDB state and metric usage degraded mode honestly.
+- Verify `/api/v1/metrics/usage` returns bounded summaries without exposing subject hashes.
+- Confirm usage metadata does not include seed phrases, Bitcoin private keys, wallet files, xprv/yprv/zprv, raw API keys, raw access tokens, or raw session tokens.
+- Reconcile future billing/access reports against PostgreSQL entitlement truth before taking enforcement action.
+
+## Timescale Operations Runbook
+
+Use `/api/v1/storage/timescale/status` or `scripts/timescale-validate-policies.sh` to inspect expected continuous aggregates, retention policies, compression policies, and degraded mode. If aggregates are missing, refresh/rebuild from an authenticated operator shell with `TimescaleOperationsService.refresh_all_recent()` after validating the target window. Do not expose aggregate refresh as an unauthenticated public mutation endpoint.
+
+Retention policies apply only to Timescale operational history and must never remove canonical PostgreSQL audit, access, payment, revocation, recovery, or policy truth. Compression may be disabled with `TIMESCALE_COMPRESSION_ENABLED=false` if operators need to investigate old chunks.

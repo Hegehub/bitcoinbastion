@@ -13,6 +13,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings
+from app.storage.analytics_store.health import check_analytics_store
+from app.storage.analytics_store.schemas import AnalyticsStoreStatusValue
 from app.storage.object_store.client import DisabledObjectStore, ObjectStoreHealthCheck
 from app.storage.object_store.local_store import LocalObjectStore
 from app.storage.timeseries.health import check_timescale
@@ -246,12 +248,7 @@ async def collect_storage_status(
         STORE_REDIS: check_redis(settings, redis_client_factory),
         STORE_OBJECT_STORAGE: await check_object_storage(settings),
         STORE_TIMESCALE: check_timescale(settings, db),
-        STORE_CLICKHOUSE: future_store_status(
-            enabled=settings.clickhouse_enabled,
-            store=STORE_CLICKHOUSE,
-            purpose="analytics warehouse, Market Time Machine, replay",
-            reason="CLICKHOUSE_ENABLED=false",
-        ),
+        STORE_CLICKHOUSE: _clickhouse_store_status(await check_analytics_store(settings)),
         STORE_QDRANT: future_store_status(
             enabled=settings.qdrant_enabled,
             store=STORE_QDRANT,
@@ -277,6 +274,30 @@ async def collect_storage_status(
         summary=summary,
         stores=ordered_stores,
         degraded_mode=degraded_mode,
+    )
+
+
+def _clickhouse_store_status(health: Any) -> StorageStoreStatus:
+    status_map = {
+        AnalyticsStoreStatusValue.OK: StorageStatusValue.OK,
+        AnalyticsStoreStatusValue.DISABLED: StorageStatusValue.DISABLED,
+        AnalyticsStoreStatusValue.DEGRADED: StorageStatusValue.DEGRADED,
+        AnalyticsStoreStatusValue.UNAVAILABLE: StorageStatusValue.UNAVAILABLE,
+        AnalyticsStoreStatusValue.MISCONFIGURED: StorageStatusValue.MISCONFIGURED,
+        AnalyticsStoreStatusValue.UNKNOWN: StorageStatusValue.UNKNOWN,
+    }
+    details = {
+        "enabled": health.enabled,
+        "database": health.database,
+        "error": health.error,
+        **health.details,
+    }
+    return StorageStoreStatus(
+        status=status_map.get(health.status, StorageStatusValue.UNKNOWN),
+        role=StorageRole.FUTURE,
+        purpose="analytics warehouse, Market Time Machine, replay",
+        latency_ms=health.latency_ms,
+        details=details,
     )
 
 

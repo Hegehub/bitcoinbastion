@@ -23,6 +23,14 @@ StorageProfile = Literal[
 ]
 ObjectStorageProvider = Literal["disabled", "local", "minio", "s3", "compatible_s3"]
 VectorStoreProvider = Literal["disabled", "pgvector", "qdrant"]
+ClickHouseProfile = Literal[
+    "disabled",
+    "development",
+    "single_node",
+    "staging",
+    "production",
+    "enterprise",
+]
 
 
 @dataclass(frozen=True)
@@ -79,7 +87,17 @@ class TimescaleStorageSettings:
     default_chunk_interval: str
     health_timeout_seconds: int
     retention_days: int | None
+    retention_enabled: bool
+    raw_market_retention_days: int
+    raw_health_retention_days: int
+    raw_usage_retention_days: int
+    aggregate_retention_days: int
+    access_history_retention_days: int
     compression_enabled: bool
+    compress_after_days: int
+    compress_market_after_days: int
+    compress_health_after_days: int
+    compress_usage_after_days: int
     continuous_aggregates_enabled: bool
 
 
@@ -87,10 +105,17 @@ class TimescaleStorageSettings:
 class ClickHouseStorageSettings:
     enabled: bool
     url: str
+    host: str
+    port: int
     database: str
-    user: str
+    username: str
     password: str
     secure: bool
+    connect_timeout_seconds: int
+    query_timeout_seconds: int
+    insert_timeout_seconds: int
+    max_retries: int
+    profile: ClickHouseProfile
     projection_lag_warn_seconds: int
     projection_lag_critical_seconds: int
 
@@ -226,17 +251,60 @@ class Settings(BaseSettings):
         default=2, ge=1, alias="TIMESCALE_HEALTH_TIMEOUT_SECONDS"
     )
     timescale_retention_days: int | None = Field(default=None, alias="TIMESCALE_RETENTION_DAYS")
+    timescale_retention_enabled: bool = Field(default=True, alias="TIMESCALE_RETENTION_ENABLED")
+    timescale_raw_market_retention_days: int = Field(
+        default=180, ge=1, alias="TIMESCALE_RAW_MARKET_RETENTION_DAYS"
+    )
+    timescale_raw_health_retention_days: int = Field(
+        default=90, ge=1, alias="TIMESCALE_RAW_HEALTH_RETENTION_DAYS"
+    )
+    timescale_raw_usage_retention_days: int = Field(
+        default=180, ge=1, alias="TIMESCALE_RAW_USAGE_RETENTION_DAYS"
+    )
+    timescale_aggregate_retention_days: int = Field(
+        default=3650, ge=1, alias="TIMESCALE_AGGREGATE_RETENTION_DAYS"
+    )
+    timescale_access_history_retention_days: int = Field(
+        default=730, ge=1, alias="TIMESCALE_ACCESS_HISTORY_RETENTION_DAYS"
+    )
     timescale_compression_enabled: bool = Field(default=True, alias="TIMESCALE_COMPRESSION_ENABLED")
+    timescale_compress_after_days: int = Field(
+        default=7, ge=1, alias="TIMESCALE_COMPRESS_AFTER_DAYS"
+    )
+    timescale_compress_market_after_days: int = Field(
+        default=7, ge=1, alias="TIMESCALE_COMPRESS_MARKET_AFTER_DAYS"
+    )
+    timescale_compress_health_after_days: int = Field(
+        default=14, ge=1, alias="TIMESCALE_COMPRESS_HEALTH_AFTER_DAYS"
+    )
+    timescale_compress_usage_after_days: int = Field(
+        default=14, ge=1, alias="TIMESCALE_COMPRESS_USAGE_AFTER_DAYS"
+    )
     timescale_continuous_aggregates_enabled: bool = Field(
         default=True, alias="TIMESCALE_CONTINUOUS_AGGREGATES_ENABLED"
     )
 
     clickhouse_enabled: bool = Field(default=False, alias="CLICKHOUSE_ENABLED")
-    clickhouse_url: str = Field(default="", alias="CLICKHOUSE_URL")
+    clickhouse_url: str = Field(default="http://localhost:8123", alias="CLICKHOUSE_URL")
+    clickhouse_host: str = Field(default="localhost", alias="CLICKHOUSE_HOST")
+    clickhouse_port: int = Field(default=8123, ge=1, le=65535, alias="CLICKHOUSE_PORT")
     clickhouse_database: str = Field(default="bitcoin_bastion", alias="CLICKHOUSE_DATABASE")
-    clickhouse_user: str = Field(default="", alias="CLICKHOUSE_USER")
+    clickhouse_username: str = Field(
+        default="default", validation_alias=AliasChoices("CLICKHOUSE_USERNAME", "CLICKHOUSE_USER")
+    )
     clickhouse_password: str = Field(default="", alias="CLICKHOUSE_PASSWORD")
-    clickhouse_secure: bool = Field(default=True, alias="CLICKHOUSE_SECURE")
+    clickhouse_secure: bool = Field(default=False, alias="CLICKHOUSE_SECURE")
+    clickhouse_connect_timeout_seconds: int = Field(
+        default=5, ge=1, alias="CLICKHOUSE_CONNECT_TIMEOUT_SECONDS"
+    )
+    clickhouse_query_timeout_seconds: int = Field(
+        default=15, ge=1, alias="CLICKHOUSE_QUERY_TIMEOUT_SECONDS"
+    )
+    clickhouse_insert_timeout_seconds: int = Field(
+        default=30, ge=1, alias="CLICKHOUSE_INSERT_TIMEOUT_SECONDS"
+    )
+    clickhouse_max_retries: int = Field(default=2, ge=0, alias="CLICKHOUSE_MAX_RETRIES")
+    clickhouse_profile: ClickHouseProfile = Field(default="disabled", alias="CLICKHOUSE_PROFILE")
     clickhouse_projection_lag_warn_seconds: int = Field(
         default=300, ge=1, alias="CLICKHOUSE_PROJECTION_LAG_WARN_SECONDS"
     )
@@ -536,8 +604,16 @@ class Settings(BaseSettings):
         if self.clickhouse_enabled:
             if not self.clickhouse_url.strip():
                 raise ValueError("CLICKHOUSE_URL must be set when ClickHouse is enabled.")
+            if not self.clickhouse_host.strip():
+                raise ValueError("CLICKHOUSE_HOST must be set when ClickHouse is enabled.")
             if not self.clickhouse_database.strip():
                 raise ValueError("CLICKHOUSE_DATABASE must be set when ClickHouse is enabled.")
+            if not self.clickhouse_username.strip():
+                raise ValueError("CLICKHOUSE_USERNAME must be set when ClickHouse is enabled.")
+            if self.clickhouse_profile == "disabled":
+                raise ValueError(
+                    "CLICKHOUSE_PROFILE must not be disabled when ClickHouse is enabled."
+                )
             if (
                 self.clickhouse_projection_lag_warn_seconds
                 >= self.clickhouse_projection_lag_critical_seconds
@@ -546,6 +622,12 @@ class Settings(BaseSettings):
                     "CLICKHOUSE_PROJECTION_LAG_WARN_SECONDS must be less than "
                     "CLICKHOUSE_PROJECTION_LAG_CRITICAL_SECONDS."
                 )
+            if production_like:
+                weak_clickhouse_passwords = {"", "default", "password", "changeme", "clickhouse"}
+                if self.clickhouse_password.strip().lower() in weak_clickhouse_passwords:
+                    raise ValueError(
+                        "CLICKHOUSE_PASSWORD must be non-placeholder in production-like profiles."
+                    )
 
         if self.vector_store_provider == "qdrant":
             if not self.qdrant_enabled:
@@ -629,16 +711,33 @@ class Settings(BaseSettings):
                 default_chunk_interval=self.timescale_default_chunk_interval,
                 health_timeout_seconds=self.timescale_health_timeout_seconds,
                 retention_days=self.timescale_retention_days,
+                retention_enabled=self.timescale_retention_enabled,
+                raw_market_retention_days=self.timescale_raw_market_retention_days,
+                raw_health_retention_days=self.timescale_raw_health_retention_days,
+                raw_usage_retention_days=self.timescale_raw_usage_retention_days,
+                aggregate_retention_days=self.timescale_aggregate_retention_days,
+                access_history_retention_days=self.timescale_access_history_retention_days,
                 compression_enabled=self.timescale_compression_enabled,
+                compress_after_days=self.timescale_compress_after_days,
+                compress_market_after_days=self.timescale_compress_market_after_days,
+                compress_health_after_days=self.timescale_compress_health_after_days,
+                compress_usage_after_days=self.timescale_compress_usage_after_days,
                 continuous_aggregates_enabled=self.timescale_continuous_aggregates_enabled,
             ),
             clickhouse=ClickHouseStorageSettings(
                 enabled=self.clickhouse_enabled,
                 url=self.clickhouse_url,
+                host=self.clickhouse_host,
+                port=self.clickhouse_port,
                 database=self.clickhouse_database,
-                user=self.clickhouse_user,
+                username=self.clickhouse_username,
                 password=self.clickhouse_password,
                 secure=self.clickhouse_secure,
+                connect_timeout_seconds=self.clickhouse_connect_timeout_seconds,
+                query_timeout_seconds=self.clickhouse_query_timeout_seconds,
+                insert_timeout_seconds=self.clickhouse_insert_timeout_seconds,
+                max_retries=self.clickhouse_max_retries,
+                profile=self.clickhouse_profile,
                 projection_lag_warn_seconds=self.clickhouse_projection_lag_warn_seconds,
                 projection_lag_critical_seconds=self.clickhouse_projection_lag_critical_seconds,
             ),

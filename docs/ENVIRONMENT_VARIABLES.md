@@ -86,9 +86,12 @@ TimescaleDB is the future time-series store for metrics, BTC candles, provider h
 ClickHouse is analytics/projection only. It must not be used for transactional access decisions, entitlement truth, revocation truth, or billing truth.
 
 - `CLICKHOUSE_ENABLED` defaults to `false`.
-- `CLICKHOUSE_URL` is required when ClickHouse is enabled.
+- `CLICKHOUSE_URL` defaults to `http://localhost:8123` and must not include credentials.
+- `CLICKHOUSE_HOST` and `CLICKHOUSE_PORT` configure the client endpoint.
 - `CLICKHOUSE_DATABASE` defaults to `bitcoin_bastion`.
-- `CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`, and `CLICKHOUSE_SECURE` configure future client behavior.
+- `CLICKHOUSE_USERNAME`, `CLICKHOUSE_PASSWORD`, and `CLICKHOUSE_SECURE` configure future client behavior.
+- `CLICKHOUSE_CONNECT_TIMEOUT_SECONDS`, `CLICKHOUSE_QUERY_TIMEOUT_SECONDS`, and `CLICKHOUSE_INSERT_TIMEOUT_SECONDS` bound client operations.
+- `CLICKHOUSE_PROFILE` defaults to `disabled` and must be non-disabled when ClickHouse is enabled.
 - `CLICKHOUSE_PROJECTION_LAG_WARN_SECONDS` must be lower than `CLICKHOUSE_PROJECTION_LAG_CRITICAL_SECONDS`.
 
 ### Qdrant / pgvector
@@ -131,3 +134,33 @@ Prompt 4 adds the first Object Storage infrastructure layer. These variables con
 - `OBJECT_STORAGE_MAX_OBJECT_BYTES` defaults to `104857600` bytes.
 
 Every stored artifact must have a SHA-256 checksum. Object keys and metadata must not contain seed phrases, private keys, wallet files, xprv/yprv/zprv material, raw Access Pass bearer tokens, or raw secrets.
+
+#### TimescaleDB operations policies
+
+- `TIMESCALE_RETENTION_ENABLED` enables retention policy installation for operational time-series hypertables.
+- `TIMESCALE_RAW_MARKET_RETENTION_DAYS`, `TIMESCALE_RAW_HEALTH_RETENTION_DAYS`, and `TIMESCALE_RAW_USAGE_RETENTION_DAYS` configure raw hypertable retention windows.
+- `TIMESCALE_AGGREGATE_RETENTION_DAYS` and `TIMESCALE_ACCESS_HISTORY_RETENTION_DAYS` document longer-lived aggregate/access-history expectations.
+- `TIMESCALE_COMPRESSION_ENABLED`, `TIMESCALE_COMPRESS_AFTER_DAYS`, `TIMESCALE_COMPRESS_MARKET_AFTER_DAYS`, `TIMESCALE_COMPRESS_HEALTH_AFTER_DAYS`, and `TIMESCALE_COMPRESS_USAGE_AFTER_DAYS` configure compression timing.
+- Retention must not delete canonical PostgreSQL audit, access, payment, revocation, recovery, or policy truth.
+
+## ClickHouse Analytics Store
+
+ClickHouse is disabled by default and is used only as a rebuildable analytics projection store.
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `CLICKHOUSE_ENABLED` | `false` | Enables the ClickHouse analytics-store client foundation. |
+| `CLICKHOUSE_URL` | `http://localhost:8123` | Operator-facing ClickHouse HTTP URL; do not include credentials. |
+| `CLICKHOUSE_HOST` | `localhost` | Host passed to the ClickHouse client. |
+| `CLICKHOUSE_PORT` | `8123` | HTTP port passed to the ClickHouse client. |
+| `CLICKHOUSE_DATABASE` | `bitcoin_bastion` | Analytics projection database name. |
+| `CLICKHOUSE_USERNAME` | `default` | ClickHouse username. |
+| `CLICKHOUSE_PASSWORD` | empty | ClickHouse password; production-like profiles reject placeholders when enabled. |
+| `CLICKHOUSE_SECURE` | `false` | Enables TLS for the ClickHouse client. |
+| `CLICKHOUSE_CONNECT_TIMEOUT_SECONDS` | `5` | ClickHouse connection timeout. |
+| `CLICKHOUSE_QUERY_TIMEOUT_SECONDS` | `15` | ClickHouse query timeout. |
+| `CLICKHOUSE_INSERT_TIMEOUT_SECONDS` | `30` | ClickHouse insert timeout. |
+| `CLICKHOUSE_MAX_RETRIES` | `2` | Reserved retry budget for analytics operations. |
+| `CLICKHOUSE_PROFILE` | `disabled` | One of `disabled`, `development`, `single_node`, `staging`, `production`, `enterprise`. |
+
+ClickHouse must not store seed phrases, Bitcoin private keys, wallet files, raw access tokens, raw Access Pass values, raw API secrets, or custody material. It is not a source of truth for access, policy, revocation, subscription, payment, or recovery decisions.

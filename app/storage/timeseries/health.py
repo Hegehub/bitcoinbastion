@@ -25,6 +25,7 @@ def _safe_error_details(exc: BaseException, *, schema: str) -> dict[str, Any]:
         "extension_available": False,
         "hypertables": {},
         "timescale_provider_health": "degraded",
+        "timescale_metric_usage": "degraded",
     }
 
 
@@ -37,6 +38,7 @@ def _market_hypertable_status(db: Session) -> dict[str, bool]:
         "source_health_timeseries_snapshots": False,
         "provider_confidence_timeseries_events": False,
         "source_confidence_timeseries_events": False,
+        "metric_usage_events": False,
     }
     rows = db.execute(text("""
             SELECT hypertable_name
@@ -49,7 +51,8 @@ def _market_hypertable_status(db: Session) -> dict[str, bool]:
                   'provider_health_timeseries_snapshots',
                   'source_health_timeseries_snapshots',
                   'provider_confidence_timeseries_events',
-                  'source_confidence_timeseries_events'
+                  'source_confidence_timeseries_events',
+                  'metric_usage_events'
               )
             """)).fetchall()
     for row in rows:
@@ -75,6 +78,7 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
                 "extension_available": None,
                 "hypertables": {},
                 "timescale_provider_health": "disabled",
+                "timescale_metric_usage": "disabled",
             },
         )
 
@@ -91,6 +95,7 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
                 "extension_available": False,
                 "hypertables": {},
                 "timescale_provider_health": "degraded",
+                "timescale_metric_usage": "degraded",
                 "reason": "TimescaleDB health requires a PostgreSQL-compatible connection",
             },
         )
@@ -106,12 +111,16 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
                 """)).first()
         extension_available = bool(row[0]) if row is not None else False
         hypertables = _market_hypertable_status(db) if extension_available else {}
-        provider_health_tables = (
-            hypertables.get("provider_health_timeseries_snapshots", False)
-            and hypertables.get("source_health_timeseries_snapshots", False)
-        )
+        provider_health_tables = hypertables.get(
+            "provider_health_timeseries_snapshots", False
+        ) and hypertables.get("source_health_timeseries_snapshots", False)
         provider_health_status = (
             "ok" if extension_available and provider_health_tables else "degraded"
+        )
+        metric_usage_status = (
+            "ok"
+            if extension_available and hypertables.get("metric_usage_events", False)
+            else "degraded"
         )
     except SQLAlchemyError as exc:
         return StorageStoreStatus(
@@ -143,5 +152,6 @@ def check_timescale(settings: Settings, db: Session) -> StorageStoreStatus:
             "create_extension": settings.timescale_create_extension,
             "default_chunk_interval": settings.timescale_default_chunk_interval,
             "timescale_provider_health": provider_health_status,
+            "timescale_metric_usage": metric_usage_status,
         },
     )

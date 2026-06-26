@@ -52,8 +52,8 @@ def test_redis_is_marked_ephemeral_only_by_default() -> None:
     assert settings.storage.redis.ephemeral_only is True
 
 
-def test_clickhouse_enabled_requires_url() -> None:
-    with pytest.raises(ValidationError, match="CLICKHOUSE_URL"):
+def test_clickhouse_enabled_requires_non_disabled_profile() -> None:
+    with pytest.raises(ValidationError, match="CLICKHOUSE_PROFILE"):
         make_settings(CLICKHOUSE_ENABLED=True)
 
 

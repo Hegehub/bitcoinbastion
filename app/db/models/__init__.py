@@ -59,6 +59,7 @@ from app.db.models.btc_candle import BTCCandle
 from app.db.models.btc_price_point import BTCPricePoint
 from app.db.models.market_provider_health import MarketProviderHealth
 from app.db.models.mempool_fee_snapshot import MempoolFeeSnapshot
+from app.db.models.metric_usage_event import MetricUsageEvent
 from app.db.models.provider_health_record import ProviderHealthRecord
 from app.db.models.provider_source_health_timeseries import (
     ProviderConfidenceTimeSeriesEvent,
@@ -193,6 +194,7 @@ __all__ = [
     "RecoveryValidationRecord",
     "MarketProviderHealth",
     "MempoolFeeSnapshot",
+    "MetricUsageEvent",
     "AuditLog",
     "CitadelAssessment",
     "User",
