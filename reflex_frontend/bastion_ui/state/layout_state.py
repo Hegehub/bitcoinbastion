@@ -4,7 +4,7 @@ import reflex as rx
 
 
 class LayoutState(rx.State):
-    sidebar_open: bool = True
+    sidebar_open: bool = False
 
     def set_sidebar_open(self, value: bool) -> None:
         self.sidebar_open = value
