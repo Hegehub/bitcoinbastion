@@ -77,12 +77,12 @@ PUBLIC_NAV_ITEMS: tuple[NavItem, ...] = (
 FOOTER_NAV_ITEMS: tuple[NavItem, ...] = PUBLIC_NAV_ITEMS
 
 CONSOLE_NAV_ITEMS: tuple[NavItem, ...] = (
-    NavItem("Dashboard", "/console", "console", "coming_soon", "Console overview."),
+    NavItem("Dashboard", "/console", "console", "preview", "Console overview."),
     NavItem(
         label="Trace",
         route="/console/trace",
         section="console",
-        status="coming_soon",
+        status="preview",
         description="Trace operations.",
         safety_note=TRACE_SAFETY_NOTE,
     ),
@@ -90,7 +90,7 @@ CONSOLE_NAV_ITEMS: tuple[NavItem, ...] = (
         label="Evidence",
         route="/console/evidence",
         section="console",
-        status="coming_soon",
+        status="preview",
         description="Evidence review.",
         safety_note=EVIDENCE_SAFETY_NOTE,
     ),
@@ -98,7 +98,7 @@ CONSOLE_NAV_ITEMS: tuple[NavItem, ...] = (
         "Provider Health",
         "/console/provider-health",
         "console",
-        "coming_soon",
+        "preview",
         "Provider status.",
     ),
     NavItem(
@@ -112,25 +112,25 @@ CONSOLE_NAV_ITEMS: tuple[NavItem, ...] = (
         "Time Machine",
         "/console/time-machine",
         "console",
-        "coming_soon",
+        "preview",
         "Market Time Machine console.",
     ),
     NavItem(
         "Sovereign Grid",
         "/console/sovereign-grid",
         "console",
-        "coming_soon",
+        "preview",
         "Sovereign Grid console.",
     ),
     NavItem(
         label="Policy Engine",
         route="/console/policy",
         section="console",
-        status="coming_soon",
+        status="preview",
         description="Policy review.",
         safety_note=POLICY_SAFETY_NOTE,
     ),
-    NavItem("Audit Log", "/console/audit", "console", "coming_soon", "Audit events."),
+    NavItem("Audit Log", "/console/audit", "console", "preview", "Audit events."),
     NavItem(
         "Deployment Status",
         "/console/deployment",
@@ -138,7 +138,7 @@ CONSOLE_NAV_ITEMS: tuple[NavItem, ...] = (
         "coming_soon",
         "Deployment status.",
     ),
-    NavItem("API Explorer", "/console/api", "console", "coming_soon", "API explorer."),
+    NavItem("API Explorer", "/console/api-explorer", "console", "preview", "API explorer."),
 )
 
 COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
@@ -204,7 +204,7 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         "/console",
         "Console",
         "Open console.",
-        "coming_soon",
+        "preview",
     ),
     CommandAction(
         "open-market-intelligence",
@@ -268,7 +268,7 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         "/console/time-machine",
         "Market",
         "Open Time Machine console.",
-        "coming_soon",
+        "preview",
     ),
     CommandAction(
         "open-sovereign-grid",
@@ -276,7 +276,7 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         "/console/sovereign-grid",
         "Console",
         "Open Sovereign Grid console.",
-        "coming_soon",
+        "preview",
     ),
     CommandAction(
         "open-policy",
@@ -284,7 +284,7 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         "/console/policy",
         "Console",
         "Open Policy Engine.",
-        "coming_soon",
+        "preview",
         safety_note=POLICY_SAFETY_NOTE,
     ),
     CommandAction(
@@ -293,15 +293,15 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         "/console/audit",
         "Console",
         "Open Audit Log.",
-        "coming_soon",
+        "preview",
     ),
     CommandAction(
         "open-api",
         "Open API Explorer",
-        "/console/api",
+        "/console/api-explorer",
         "Developer",
         "Open API Explorer.",
-        "coming_soon",
+        "preview",
     ),
     CommandAction(
         "open-operations",

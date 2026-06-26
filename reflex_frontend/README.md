@@ -167,3 +167,9 @@ These routes do not complete Trace parity. Full Proof Packet/Evidence parity, ex
 Prompt 9 adds the Evidence and Proof Packet UI layer for the Reflex migration. The `/evidence` route explains Evidence limitations and degraded/provider-disputed states, while `/trace/[report_id]/proof-packet` shows Proof Packet status and backend-provided evidence only when available.
 
 The UI does not fabricate packet data, hashes, source lists, or legal conclusions. It remains advisory-only, no-custody, and limited by backend endpoint availability and provider quality.
+
+## Bastion Console Shell
+
+The Reflex app includes a foundational Bastion Console shell at `/console` with safe placeholder routes for `/console/trace`, `/console/evidence`, `/console/provider-health`, `/console/policy`, and `/console/audit`.
+
+The console shell is advisory/operator-review focused. Module internals are implemented progressively in later prompts; the shell does not execute risky actions, sign transactions, request wallet secrets, or claim production readiness. Unknown, degraded, stale, and fallback states are shown explicitly instead of being hardcoded as healthy.

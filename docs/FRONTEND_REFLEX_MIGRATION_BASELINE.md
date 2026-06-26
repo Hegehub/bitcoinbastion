@@ -615,3 +615,34 @@ Status: partial implemented.
 - Added `MarketTimeMachineState` for selected asset/range/section, timeline events, signals, evidence packets, narratives, sources, selected candle/evidence ids, degraded state, and refresh actions.
 - Visible safety posture: not financial advice, not a trading instruction, not a price guarantee, advisory-only historical similarity, operator review for signals, provider disagreement/stale-data limitations, no custody, and no execution.
 - Remaining blockers: full chart interaction parity, timeline filters/pagination, candle detail routes, Market evidence drilldowns, narrative similarity parity, source/provider trust matrix parity, and final route ownership/cutover decisions.
+
+## Prompt 13/22 status — Bastion Console Shell
+
+Status: partial implemented.
+
+- Added Reflex console shell routes `/console`, `/console/trace`, `/console/evidence`, `/console/provider-health`, `/console/policy`, and `/console/audit`.
+- Added reusable console shell components for dashboard layout, module tiles, console sidebar, topbar, status strip, degraded mode banner, and operator safety panel.
+- Added conservative `ConsoleState` defaults where API, Trace, Evidence, Providers, Market, Policy, Audit, Runtime, and environment status begin as `unknown` unless backend status is safely loaded.
+- Console safety posture: advisory-only, no custody, no seed/private-key/wallet-file/signing-material input, no transaction signing, no automatic treasury execution, no legal-verdict UI, no Bitcoin-consensus-proof UI, no financial-advice UI.
+- Module internals remain deferred to Prompt 14/22 and Prompt 15/22; placeholder module pages do not fabricate backend data.
+- Existing Next.js, FastAPI/Jinja Market routes, public routes, Trace routes, and Market routes remain intact; no production cutover occurred.
+
+## Prompt 14/22 status — Console Modules: Trace, Evidence, Provider Health, Policy, Audit
+
+Status: partial implemented.
+
+- Completed the first Reflex Console module pages for `/console/trace`, `/console/evidence`, `/console/provider-health`, `/console/policy`, and `/console/audit` using the shared Console shell.
+- Added read-first module panels for Trace monitoring, Evidence packet context, Provider Health baseline visibility, read-only Policy facts, and Audit baseline references.
+- Added conservative service/state foundations for Provider Health, Policy, Audit, Trace console lookups, and Evidence console lookups.
+- Missing backend endpoints remain explicitly documented in `docs/FRONTEND_REFLEX_MIGRATION_PROGRESS.md`; placeholder panels do not fabricate production data.
+- Safety posture remains no-custody, advisory-only, non-executing, and manual-review focused. Market, Time Machine, Sovereign Grid, and API Explorer remain deferred to Prompt 15/22.
+
+## Prompt 15/22 status — Advanced Console Modules: Market, Time Machine, Sovereign Grid, API Explorer
+
+Status: partial implemented.
+
+- Added Reflex routes `/console/market-intelligence`, `/console/time-machine`, `/console/sovereign-grid`, and `/console/api-explorer` under the existing Console shell.
+- Added advanced Console panels for market intelligence, Time Machine context, Sovereign Grid readiness posture, and a safe API Explorer.
+- Added service/state foundations for Time Machine, Sovereign Grid, API Explorer, and Market Intelligence refresh flows using existing shared API client behavior.
+- Missing backend endpoints and placeholder/degraded states are documented in `docs/FRONTEND_REFLEX_MIGRATION_STATUS.md`.
+- Safety posture remains no-custody, read-first, advisory-only, non-executing, and provider/degraded-state visible. No Market route ownership cutover occurred.

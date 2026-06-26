@@ -21,7 +21,16 @@ from bastion_ui.components.ui.button import button
 from bastion_ui.components.ui.card import card
 from bastion_ui.components.ui.metric import metric_card
 from bastion_ui.routes import PUBLIC_ROUTE_SPECS
+from bastion_ui.routes.console import console_page
+from bastion_ui.routes.console_api_explorer import console_api_explorer_page
+from bastion_ui.routes.console_audit import console_audit_page
+from bastion_ui.routes.console_evidence import console_evidence_page
 from bastion_ui.routes.console_market_intelligence import console_market_intelligence_page
+from bastion_ui.routes.console_policy import console_policy_page
+from bastion_ui.routes.console_provider_health import console_provider_health_page
+from bastion_ui.routes.console_sovereign_grid import console_sovereign_grid_page
+from bastion_ui.routes.console_time_machine import console_time_machine_page
+from bastion_ui.routes.console_trace import console_trace_page
 from bastion_ui.routes.home import home_page as index  # noqa: F401
 from bastion_ui.routes.market import market_page
 from bastion_ui.routes.market_evidence import market_evidence_page
@@ -92,10 +101,31 @@ app = rx.App(
 for route_spec in PUBLIC_ROUTE_SPECS:
     app.add_page(route_spec.page, route=route_spec.route, title=route_spec.title)
 
+app.add_page(console_page, route="/console", title="Bastion Console")
+app.add_page(console_trace_page, route="/console/trace", title="Trace Console")
+app.add_page(console_evidence_page, route="/console/evidence", title="Evidence Console")
+app.add_page(
+    console_provider_health_page,
+    route="/console/provider-health",
+    title="Provider Health Console",
+)
+app.add_page(console_policy_page, route="/console/policy", title="Policy Engine Console")
+app.add_page(console_audit_page, route="/console/audit", title="Audit Log Console")
 app.add_page(
     console_market_intelligence_page,
     route="/console/market-intelligence",
     title="Market Intelligence",
+)
+app.add_page(console_time_machine_page, route="/console/time-machine", title="Console Time Machine")
+app.add_page(
+    console_sovereign_grid_page,
+    route="/console/sovereign-grid",
+    title="Sovereign Grid",
+)
+app.add_page(
+    console_api_explorer_page,
+    route="/console/api-explorer",
+    title="API Explorer",
 )
 app.add_page(market_page, route="/market", title="Market Intelligence")
 app.add_page(market_time_machine_page, route="/market/time-machine", title="Market Time Machine")
