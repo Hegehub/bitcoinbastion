@@ -114,6 +114,68 @@ class StorageOutboxRepository:
             self.db.refresh(event)
         return events
 
+    def list_projectable_events(
+        self,
+        *,
+        target_store: str,
+        limit: int = 100,
+        event_type: str | None = None,
+    ) -> list[StorageOutboxEvent]:
+        now = utcnow()
+        stmt = (
+            select(StorageOutboxEvent)
+            .where(
+                StorageOutboxEvent.status.in_(
+                    [StorageOutboxEventStatus.PENDING.value, StorageOutboxEventStatus.RETRY.value]
+                )
+            )
+            .where(StorageOutboxEvent.available_at <= now)
+            .where(StorageOutboxEvent.retry_count < StorageOutboxEvent.max_retries)
+            .order_by(
+                StorageOutboxEvent.priority.asc(),
+                StorageOutboxEvent.created_at.asc(),
+                StorageOutboxEvent.id.asc(),
+            )
+        )
+        if event_type:
+            stmt = stmt.where(StorageOutboxEvent.event_type == event_type)
+        candidates = list(self.db.execute(stmt.limit(max(limit * 3, limit))).scalars())
+        return [
+            event
+            for event in candidates
+            if target_store in [str(item) for item in event.target_stores]
+        ][:limit]
+
+    def claim_projectable_events(
+        self,
+        *,
+        target_store: str,
+        worker_id: str,
+        limit: int = 100,
+        event_type: str | None = None,
+    ) -> list[StorageOutboxEvent]:
+        now = utcnow()
+        events = self.list_projectable_events(
+            target_store=target_store,
+            limit=limit,
+            event_type=event_type,
+        )
+        for event in events:
+            event.status = StorageOutboxEventStatus.PROCESSING.value
+            event.locked_by = worker_id
+            event.locked_at = now
+            event.updated_at = now
+        try:
+            self.db.commit()
+        except SQLAlchemyError as exc:
+            self.db.rollback()
+            raise StorageOutboxRepositoryError(
+                "could not claim storage outbox projection events"
+            ) from exc
+        for event in events:
+            self.db.refresh(event)
+        return events
+
     def mark_processed(self, event_id: str) -> StorageOutboxEvent:
         event = self._require_event(event_id)
         now = utcnow()

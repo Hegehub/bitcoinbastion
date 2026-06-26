@@ -619,3 +619,7 @@ Prompt 17 adds operational TimescaleDB definitions for continuous aggregates, re
 Prompt 18 introduces the ClickHouse analytics-store foundation only. ClickHouse is disabled by default, exposed through a small `AnalyticsStore` interface, and represented in storage health as a rebuildable analytics projection store.
 
 ClickHouse is for future Market Time Machine, replay, event analytics, and dashboard workloads. PostgreSQL and TimescaleDB remain canonical for operational writes; the storage outbox is the planned handoff path for projections. No ClickHouse production tables, DDL, Market Time Machine projections, or access-control decisions are implemented in this prompt.
+
+## Prompt 20/65 Status — ClickHouse Projection Worker
+
+Prompt 20 adds the initial outbox-to-ClickHouse projection worker. It reads `storage_outbox_events` targeted to `clickhouse`, maps supported event families into analytics rows, inserts through the analytics-store abstraction, and marks outbox events processed only after successful insert. See `docs/STORAGE_CLICKHOUSE_PROJECTIONS.md` for idempotency, retry, dry-run, and privacy rules.
