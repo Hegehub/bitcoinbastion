@@ -57,3 +57,18 @@ No runtime profile implies custody. No runtime profile requires seed/private-key
 | `bare-metal/systemd` | `make systemd-notes`; run systemd units manually from `docs/BARE_METAL_SYSTEMD.md` |
 
 Each profile entry in the comparison matrix identifies best hardware, complexity, production suitability, evidence support, HA support, resource footprint, operational risk, recommended use, and limitations. Commands render or apply the existing runtime metadata and manifests; they do not create custody, cloud lock-in, seed handling, private-key handling, or automatic production certification.
+
+## Frontend runtime modes
+
+The runtime profile metadata now includes frontend mode information for the Reflex migration. These modes do not change route ownership by themselves and do not make Reflex primary before Prompt 21/22.
+
+| Mode | Best for | Ports | Services | Limitations | Rollback path | Production suitability |
+| --- | --- | --- | --- | --- | --- | --- |
+| `api-only` | SDK/API deployments and backend-only tests | `8000` | FastAPI and backend dependencies | No browser frontend | Enable `nextjs` or `parallel` | Possible with backend production evidence |
+| `nextjs` | Current legacy/stable frontend | `8000`, `3000` | Backend plus legacy Next.js | Reflex not active | Existing default mode | Current stable frontend path |
+| `reflex` | Exercising the migration target | `8000`, `3001`, `8001` | Backend plus Reflex | Not primary; parity/cutover gates still pending | Switch back to `nextjs` | Migration target only |
+| `parallel` | Migration comparison and rollback-safe validation | `8000`, `3000`, `3001`, `8001` | Backend, Next.js, Reflex | Higher local resource use; not final cutover | Stop Reflex and keep Next.js | Recommended migration mode, not final production cutover |
+
+Runtime metadata fields include `frontend.mode`, `frontend.primary`, `nextjs_enabled`, `reflex_enabled`, `cutover_ready`, and `rollback_available`. The current migration default keeps `primary: nextjs`, `cutover_ready: false`, and `rollback_available: true`.
+
+No frontend mode may request seed phrases, private keys, wallet files, keystore files, signing material, or custody services.
