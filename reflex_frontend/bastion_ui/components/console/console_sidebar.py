@@ -18,6 +18,7 @@ PRIMARY_CONSOLE_ROUTES = {
     "/console/policy",
     "/console/audit",
     "/console/api-explorer",
+    "/console/wow",
 }
 
 

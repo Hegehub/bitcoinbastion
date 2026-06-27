@@ -6,6 +6,10 @@ from bastion_ui.components.console.dashboard_shell import dashboard_shell
 from bastion_ui.components.console.module_tile import module_tile
 from bastion_ui.components.layout.grid import responsive_grid
 from bastion_ui.components.ui.card import card
+from bastion_ui.components.wow.degraded_mode_banner import wow_degraded_mode_banner
+from bastion_ui.components.wow.node_pulse import node_pulse
+from bastion_ui.components.wow.provider_trust_matrix import provider_trust_matrix
+from bastion_ui.components.wow.sovereignty_score_panel import sovereignty_score_panel
 
 
 def console_page() -> rx.Component:
@@ -81,7 +85,16 @@ def console_page() -> rx.Component:
                     "partial",
                     True,
                 ),
+                module_tile(
+                    "Wow Layer",
+                    "Operator visualizations for evidence, providers, risk, and runtime posture.",
+                    "/console/wow",
+                    "partial",
+                    True,
+                ),
             ),
+            responsive_grid(node_pulse(), sovereignty_score_panel(), provider_trust_matrix()),
+            wow_degraded_mode_banner(),
             card(
                 rx.text("Console shell exists; module internals are implemented progressively."),
                 rx.text("Risky actions are not executed by this console shell."),

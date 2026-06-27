@@ -31,6 +31,7 @@ from bastion_ui.routes.console_provider_health import console_provider_health_pa
 from bastion_ui.routes.console_sovereign_grid import console_sovereign_grid_page
 from bastion_ui.routes.console_time_machine import console_time_machine_page
 from bastion_ui.routes.console_trace import console_trace_page
+from bastion_ui.routes.console_wow import console_wow_page
 from bastion_ui.routes.home import home_page as index  # noqa: F401
 from bastion_ui.routes.market import market_page
 from bastion_ui.routes.market_evidence import market_evidence_page
@@ -102,6 +103,7 @@ for route_spec in PUBLIC_ROUTE_SPECS:
     app.add_page(route_spec.page, route=route_spec.route, title=route_spec.title)
 
 app.add_page(console_page, route="/console", title="Bastion Console")
+app.add_page(console_wow_page, route="/console/wow", title="Bastion Wow Layer")
 app.add_page(console_trace_page, route="/console/trace", title="Trace Console")
 app.add_page(console_evidence_page, route="/console/evidence", title="Evidence Console")
 app.add_page(

@@ -173,3 +173,7 @@ The UI does not fabricate packet data, hashes, source lists, or legal conclusion
 The Reflex app includes a foundational Bastion Console shell at `/console` with safe placeholder routes for `/console/trace`, `/console/evidence`, `/console/provider-health`, `/console/policy`, and `/console/audit`.
 
 The console shell is advisory/operator-review focused. Module internals are implemented progressively in later prompts; the shell does not execute risky actions, sign transactions, request wallet secrets, or claim production readiness. Unknown, degraded, stale, and fallback states are shown explicitly instead of being hardcoded as healthy.
+
+## Wow Layer
+
+The wow layer provides operator-oriented visualizations for Trace, Evidence, Provider Health, Market Intelligence, Policy, Audit, and runtime posture. It does not create legal verdicts, financial advice, custody flows, or Bitcoin consensus proofs.

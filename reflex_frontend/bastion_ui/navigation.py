@@ -139,6 +139,7 @@ CONSOLE_NAV_ITEMS: tuple[NavItem, ...] = (
         "Deployment status.",
     ),
     NavItem("API Explorer", "/console/api-explorer", "console", "preview", "API explorer."),
+    NavItem("Wow Layer", "/console/wow", "console", "preview", "Operator visual layer."),
 )
 
 COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
@@ -301,6 +302,14 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         "/console/api-explorer",
         "Developer",
         "Open API Explorer.",
+        "preview",
+    ),
+    CommandAction(
+        "open-wow",
+        "Open Wow Layer",
+        "/console/wow",
+        "Console",
+        "Open operator visual layer.",
         "preview",
     ),
     CommandAction(
