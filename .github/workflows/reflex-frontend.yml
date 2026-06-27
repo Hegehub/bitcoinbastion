@@ -1,32 +1,142 @@
-name: Reflex Frontend
+name: Reflex Frontend CI
 
 on:
   pull_request:
+    paths:
+      - "reflex_frontend/**"
+      - ".github/workflows/reflex-frontend.yml"
+      - "docs/REFLEX_FRONTEND_CI.md"
+      - "docs/FRONTEND_REFLEX_MIGRATION_STATUS.md"
+      - "Makefile"
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - "reflex_frontend/**"
+      - ".github/workflows/reflex-frontend.yml"
+      - "docs/REFLEX_FRONTEND_CI.md"
+      - "docs/FRONTEND_REFLEX_MIGRATION_STATUS.md"
+      - "Makefile"
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  reflex-frontend:
+  reflex-quality:
+    name: Reflex lint and typecheck
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: reflex_frontend
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install dependencies
+      - name: Install Reflex dependencies
         run: uv sync
-      - name: Ruff
+      - name: Ruff lint
         run: uv run ruff check .
-      - name: Mypy
+      - name: Mypy typecheck
         run: uv run mypy bastion_ui
-      - name: Pytest
+
+  reflex-tests:
+    name: Reflex tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: reflex_frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Reflex dependencies
+        run: uv sync
+      - name: Run route, client, safety, market, and console tests
         run: uv run pytest
-      - name: Reflex export
+
+  reflex-export:
+    name: Reflex export build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: reflex_frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Reflex dependencies
+        run: uv sync
+      - name: Export Reflex app
+        env:
+          BB_API_BASE_URL: http://localhost:8000
+          BB_PUBLIC_SITE_MODE: "true"
+          BB_ENABLE_TRACE: "true"
+          BB_ENABLE_TIME_MACHINE: "true"
+          BB_ENABLE_SOVEREIGN_GRID: "true"
+          BB_ENABLE_CONSOLE: "true"
+          BB_REQUEST_TIMEOUT_SECONDS: "5"
+          BB_DEFAULT_LANGUAGE: en
         run: uv run reflex export
+
+  reflex-docker-build:
+    name: Reflex Docker build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Reflex Docker image
+        run: docker build -f reflex_frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:test reflex_frontend
+
+  frontend-safety-checks:
+    name: Reflex safety wording checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: reflex_frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Reflex dependencies
+        run: uv sync
+      - name: Run safety, no-custody, and forbidden-wording tests
+        run: >-
+          uv run pytest
+          bastion_ui/tests/test_forbidden_wording.py
+          bastion_ui/tests/test_no_sensitive_input.py
+          bastion_ui/tests/test_trace_safety.py
+          bastion_ui/tests/test_market_no_trading_claims.py
+          bastion_ui/tests/test_console_safety.py
+          bastion_ui/tests/test_public_forbidden_wording.py
+
+  route-parity-checks:
+    name: Reflex route parity checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: reflex_frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Reflex dependencies
+        run: uv sync
+      - name: Run route, navigation, and command-palette tests
+        run: >-
+          uv run pytest
+          bastion_ui/tests/test_routes.py
+          bastion_ui/tests/test_navigation.py
+          bastion_ui/tests/test_command_palette.py
+          bastion_ui/tests/test_market_routes.py
+          bastion_ui/tests/test_console_routes.py
+          bastion_ui/tests/test_console_advanced_routes.py

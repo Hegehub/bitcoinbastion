@@ -1,5 +1,58 @@
 # Reflex Frontend Migration Status
 
+## Prompt 20/22 — CI Workflow, Reflex Export, Build Verification
+
+### Checklist
+
+Reflex scaffold:
+  [x] complete
+  [ ] partial
+  [ ] blocked
+
+Public routes:
+  [x] complete
+  [ ] partial
+  [ ] blocked
+
+Trace routes:
+  [ ] complete
+  [x] partial
+  [ ] blocked
+
+Console routes:
+  [ ] complete
+  [x] partial
+  [ ] blocked
+
+Market routes:
+  [ ] migrated to Reflex
+  [x] delegated to FastAPI/Jinja
+  [x] partial
+  [ ] blocked
+
+CI:
+  [x] lint
+  [x] typecheck
+  [x] tests
+  [x] export
+  [x] Docker build
+  [x] safety checks
+  [x] route parity checks
+
+Cutover:
+  [x] not ready
+  [ ] ready for gated switch
+  [ ] completed
+
+### CI status
+
+- `.github/workflows/reflex-frontend.yml` adds Reflex lint/typecheck, test, export, Docker build, safety, and route-parity jobs.
+- `make reflex-ci` wires local sync, lint, typecheck, tests, export, safety, and route-parity checks.
+- Docker build is wired in CI and Makefile targets, but local Docker verification is environment-dependent.
+- Next.js remains intact and covered by the existing frontend workflow; Reflex does not become primary in Prompt 20/22.
+- Prompt 21/22 must still perform the gated route/API parity decision and controlled primary frontend switch.
+
+
 ## Prompt 15/22 — Advanced Console Modules
 
 Status: partial implemented. Frontend shell complete, backend data source pending for several advanced module panels.

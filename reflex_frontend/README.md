@@ -233,3 +233,27 @@ docker compose -f ../deploy/compose/full-parallel-frontends.compose.yaml up --bu
 `BB_API_BASE_URL` controls the FastAPI backend target. In container-to-container compose mode it is `http://api:8000`; in standalone local Docker runs it usually points to `http://host.docker.internal:8000` or another operator-provided API URL.
 
 Known limitations: Reflex remains a parallel migration target, Next.js is still the rollback surface, FastAPI/Jinja Market routes are not removed, and production cutover is not complete until later migration gates pass. Do not commit secrets or mount wallet files/signing material into the Reflex container.
+
+## CI expectations
+
+The Reflex-specific CI workflow runs on Reflex, workflow, and Reflex CI documentation changes. It checks:
+
+1. `uv sync`
+2. `uv run ruff check .`
+3. `uv run mypy bastion_ui`
+4. `uv run pytest`
+5. `uv run reflex export`
+6. `docker build -f reflex_frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:test reflex_frontend`
+7. focused safety/no-custody/forbidden-wording tests
+8. focused route/navigation/command-palette parity tests
+
+Local equivalent:
+
+```bash
+make reflex-ci
+make frontend-safety-check
+make frontend-route-parity
+make reflex-docker-build
+```
+
+CI passing does not make Reflex the primary frontend. Next.js remains the rollback surface and the primary switch is controlled by the Prompt 21/22 cutover gates.

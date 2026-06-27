@@ -673,3 +673,11 @@ Status: partial implemented.
 - Makefile target status: Reflex Docker, compose, and runtime-render targets were added for local operator workflows.
 - Verification command results: Reflex local `uv sync`, `uv run ruff check .`, `uv run mypy bastion_ui`, and `uv run pytest` passed. Docker, compose config, Docker build, and Makefile Docker targets could not run in this environment because the `docker` executable is unavailable.
 - Remaining deployment blockers: no final frontend cutover, no production readiness claim, no legacy Next.js Dockerfile, and production-grade health/readiness/secret management evidence still required.
+
+## Prompt 20/22 CI Workflow, Reflex Export, Build Verification Status
+
+- CI workflow status: `.github/workflows/reflex-frontend.yml` now defines Reflex quality, tests, export, Docker build, safety, and route-parity jobs.
+- Makefile status: `reflex-sync`, `reflex-lint`, `reflex-typecheck`, `reflex-test`, `reflex-export`, `reflex-ci`, `frontend-safety-check`, and `frontend-route-parity` targets are available.
+- Local verification status: `make reflex-ci`, individual Reflex Makefile targets, and direct Reflex commands passed in the local environment.
+- Docker verification status: Docker build is wired in CI and Makefile, but local Docker execution was skipped because Docker is unavailable in this environment.
+- Cutover status: Reflex is still not the primary frontend; Prompt 21/22 remains required for the route/API parity gate and controlled switch.
