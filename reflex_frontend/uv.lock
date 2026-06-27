@@ -93,6 +93,8 @@ dependencies = [
 dev = [
     { name = "mypy" },
     { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "respx" },
     { name = "ruff" },
 ]
 
@@ -109,6 +111,8 @@ requires-dist = [
 dev = [
     { name = "mypy" },
     { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "respx" },
     { name = "ruff" },
 ]
 
@@ -577,6 +581,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-asyncio"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/43/7c/d36d04db312ecf4298932ef77e6e4a9e8ad017906e24e34f0b0c361a2473/pytest_asyncio-1.4.0.tar.gz", hash = "sha256:c6c0d2259945122819f171a32ecea2c349ead889ee28176caaf492143424be42", size = 58514, upload-time = "2026-05-26T09:56:04.083Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/03/e2/08a497ef684b88559c9cc5f4ad53a37e7b99e727094a86d6ea32536d5d3c/pytest_asyncio-1.4.0-py3-none-any.whl", hash = "sha256:933ca923a23075a87fb7070c0ec272a6848489824d887c85c812670932835aa1", size = 16930, upload-time = "2026-05-26T09:56:02.576Z" },
+]
+
+[[package]]
 name = "python-dotenv"
 version = "1.2.2"
 source = { registry = "https://pypi.org/simple" }
@@ -856,6 +873,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/34/02/e00c9237f592666beae06fc656130bb49ab9fc42c57be838b28b31fb814a/reflex_hosting_cli-0.1.66.tar.gz", hash = "sha256:0f55b089abed5d7fa0d106f55b05db9d14523c92b9dddc9b9ab4c3aff0262497", size = 37637, upload-time = "2026-05-22T00:03:09.32Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ab/59/9944e84336f149b48c694c28f35eb78322d1cf488843dabd75abbdd9bba6/reflex_hosting_cli-0.1.66-py3-none-any.whl", hash = "sha256:b14addbd4ca118dc91155c12b7d8db3550d3d9cdb42279159702bc5771c0a979", size = 47333, upload-time = "2026-05-22T00:03:08.15Z" },
+]
+
+[[package]]
+name = "respx"
+version = "0.23.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/43/98/4e55c9c486404ec12373708d015ebce157966965a5ebe7f28ff2c784d41b/respx-0.23.1.tar.gz", hash = "sha256:242dcc6ce6b5b9bf621f5870c82a63997e8e82bc7c947f9ffe272b8f3dd5a780", size = 29243, upload-time = "2026-04-08T14:37:16.008Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1d/4a/221da6ca167db45693d8d26c7dc79ccfc978a440251bf6721c9aaf251ac0/respx-0.23.1-py2.py3-none-any.whl", hash = "sha256:b18004b029935384bccfa6d7d9d74b4ec9af73a081cc28600fffc0447f4b8c1a", size = 25557, upload-time = "2026-04-08T14:37:14.613Z" },
 ]
 
 [[package]]

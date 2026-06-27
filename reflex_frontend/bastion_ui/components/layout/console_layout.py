@@ -4,6 +4,7 @@ from typing import cast
 
 import reflex as rx
 
+from bastion_ui.accessibility.focus import SKIP_LINK_STYLE
 from bastion_ui.theme.styles import PAGE
 
 
@@ -17,12 +18,13 @@ def console_layout(
     return cast(
         rx.Component,
         rx.box(
+            rx.link("Skip to main content", href="#main-content", style=SKIP_LINK_STYLE),
             rx.hstack(
                 sidebar or rx.fragment(),
                 rx.vstack(
                     topbar or rx.fragment(),
                     degraded_banner or rx.fragment(),
-                    rx.box(*children),
+                    rx.box(*children, id="main-content", role="main"),
                     audit_footer or rx.fragment(),
                     width="100%",
                 ),

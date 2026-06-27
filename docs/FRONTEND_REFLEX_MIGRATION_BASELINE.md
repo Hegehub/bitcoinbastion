@@ -646,3 +646,30 @@ Status: partial implemented.
 - Added service/state foundations for Time Machine, Sovereign Grid, API Explorer, and Market Intelligence refresh flows using existing shared API client behavior.
 - Missing backend endpoints and placeholder/degraded states are documented in `docs/FRONTEND_REFLEX_MIGRATION_STATUS.md`.
 - Safety posture remains no-custody, read-first, advisory-only, non-executing, and provider/degraded-state visible. No Market route ownership cutover occurred.
+
+## Prompt 17/22 status — Accessibility, Responsive UI, i18n, Safety Copy Hardening
+
+Status: partial implemented.
+
+- Added accessibility helpers, skip-to-content support, ARIA labels, focus tokens, keyboard notes, and reduced-motion scaffolding.
+- Added English/Russian i18n foundations for navigation, safety, Trace, Evidence, Console, degraded-state, and error copy.
+- Centralized safety copy for advisory/no-custody/not-legal-verification/not-consensus-proof and sensitive-material warnings.
+- Added reusable degraded, stale-data, and fallback-mode UI copy components.
+- Added docs for accessibility, i18n, and safety copy; manual accessibility audit remains recommended before production cutover.
+
+## Prompt 18/22 Test Coverage Status
+
+- Test files added or hardened under `reflex_frontend/bastion_ui/tests/` for route coverage, navigation coverage, command-palette coverage, API-client behavior, Trace safety, no-sensitive-input rejection, forbidden wording, Market routes, and Console routes.
+- `docs/FRONTEND_REFLEX_TESTING.md` documents the test suite purpose, coverage areas, run commands, limitations, and root-suite blockers.
+- Passing status must be verified with `cd reflex_frontend && uv run pytest` before any future Reflex cutover.
+- Failing status for repository-root `python -m pytest -q` remains a known non-Reflex baseline blocker until the async/test-environment issues are fixed.
+- Skipped status: no live backend integration tests are required for this prompt because API behavior is covered with mocked transports.
+
+## Prompt 19/22 Deployment Integration Status
+
+- Dockerfile status: `reflex_frontend/Dockerfile` builds a Python 3.12 slim, uv-managed Reflex image with ports `3001` and `8001`, non-secret `BB_` defaults, and an HTTP healthcheck.
+- Compose status: `deploy/compose/reflex-frontend.compose.yaml`, `deploy/compose/full-reflex.compose.yaml`, and `deploy/compose/full-parallel-frontends.compose.yaml` support Reflex-only, backend-plus-Reflex, and backend-plus-Next.js-plus-Reflex migration workflows.
+- Runtime profile integration status: runtime metadata now documents frontend modes `api-only`, `nextjs`, `reflex`, and `parallel`; Reflex is not marked primary and `cutover_ready` remains false.
+- Makefile target status: Reflex Docker, compose, and runtime-render targets were added for local operator workflows.
+- Verification command results: Reflex local `uv sync`, `uv run ruff check .`, `uv run mypy bastion_ui`, and `uv run pytest` passed. Docker, compose config, Docker build, and Makefile Docker targets could not run in this environment because the `docker` executable is unavailable.
+- Remaining deployment blockers: no final frontend cutover, no production readiness claim, no legacy Next.js Dockerfile, and production-grade health/readiness/secret management evidence still required.

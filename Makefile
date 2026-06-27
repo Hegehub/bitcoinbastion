@@ -385,3 +385,37 @@ ts-sdk-test:
 	cd sdk/typescript && npm test
 
 ts-sdk-check: ts-sdk-typecheck ts-sdk-test
+
+.PHONY: reflex-docker-build reflex-docker-run compose-reflex compose-reflex-down compose-full-reflex compose-full-reflex-down compose-parallel-frontends compose-parallel-frontends-down runtime-render-reflex runtime-render-parallel-frontends
+
+reflex-docker-build:
+	docker build -t bitcoin-bastion-reflex-frontend:local ./reflex_frontend
+
+reflex-docker-run:
+	docker run --rm -p 3001:3001 -p 8001:8001 -e BB_API_BASE_URL=$${BB_API_BASE_URL:-http://host.docker.internal:8000} bitcoin-bastion-reflex-frontend:local
+
+compose-reflex:
+	docker compose -f deploy/compose/reflex-frontend.compose.yaml up -d --build
+
+compose-reflex-down:
+	docker compose -f deploy/compose/reflex-frontend.compose.yaml down
+
+compose-full-reflex:
+	docker compose -f deploy/compose/full-reflex.compose.yaml up -d --build
+
+compose-full-reflex-down:
+	docker compose -f deploy/compose/full-reflex.compose.yaml down
+
+compose-parallel-frontends:
+	docker compose -f deploy/compose/full-parallel-frontends.compose.yaml up -d --build
+
+compose-parallel-frontends-down:
+	docker compose -f deploy/compose/full-parallel-frontends.compose.yaml down
+
+runtime-render-reflex:
+	docker compose -f deploy/compose/full-reflex.compose.yaml config >/dev/null
+	python deploy/scripts/render-runtime-profile.py --profile compose --env local --dry-run
+
+runtime-render-parallel-frontends:
+	docker compose -f deploy/compose/full-parallel-frontends.compose.yaml config >/dev/null
+	python deploy/scripts/render-runtime-profile.py --profile compose --env local --dry-run

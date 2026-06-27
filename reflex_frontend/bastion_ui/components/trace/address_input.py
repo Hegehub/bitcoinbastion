@@ -12,8 +12,10 @@ def address_input() -> rx.Component:
     return cast(
         rx.Component,
         rx.vstack(
-            rx.text("Public Bitcoin address", weight="bold"),
+            rx.text("Public Bitcoin address", id="trace-address-label", weight="bold"),
             rx.input(
+                aria_label="Public Bitcoin address",
+                aria_describedby="trace-address-help",
                 placeholder="bc1..., 1..., or 3...",
                 value=TraceState.address,
                 on_change=TraceState.set_address,
@@ -23,7 +25,7 @@ def address_input() -> rx.Component:
                 TraceState.validation_error != "",
                 rx.text(TraceState.validation_error, color="#EF4444"),
             ),
-            rx.text("Only public Bitcoin addresses are accepted."),
+            rx.text("Only public Bitcoin addresses are accepted.", id="trace-address-help"),
             align="start",
             width="100%",
         ),

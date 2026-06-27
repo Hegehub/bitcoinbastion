@@ -4,6 +4,7 @@ from typing import cast
 
 import reflex as rx
 
+from bastion_ui.accessibility.focus import SKIP_LINK_STYLE
 from bastion_ui.components.layout.container import container
 from bastion_ui.theme.styles import PAGE
 
@@ -17,8 +18,13 @@ def public_layout(
     return cast(
         rx.Component,
         rx.box(
+            rx.link("Skip to main content", href="#main-content", style=SKIP_LINK_STYLE),
             header or rx.fragment(),
-            rx.box(container(safety_notice or rx.fragment(), *children), id="main-content"),
+            rx.box(
+                container(safety_notice or rx.fragment(), *children),
+                id="main-content",
+                role="main",
+            ),
             footer or rx.fragment(),
             style=PAGE,
         ),

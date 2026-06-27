@@ -15,6 +15,8 @@ def mobile_nav_trigger() -> rx.Component:
             "Menu",
             on_click=NavigationState.toggle_mobile_nav,
             aria_label="Open mobile navigation",
+            aria_controls="mobile-navigation",
+            aria_expanded=NavigationState.mobile_nav_open,
         ),
     )
 
@@ -31,6 +33,9 @@ def mobile_nav() -> rx.Component:
             rx.text(TRACE_SAFETY_NOTE),
             align="start",
             spacing="3",
+            id="mobile-navigation",
+            role="navigation",
+            aria_label="Mobile navigation",
             display=rx.cond(NavigationState.mobile_nav_open, "flex", "none"),
         ),
     )

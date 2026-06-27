@@ -17,6 +17,8 @@ def command_palette_trigger() -> rx.Component:
             "Command",
             on_click=CommandPaletteState.toggle_open,
             aria_label="Open command palette",
+            aria_controls="command-palette",
+            aria_expanded=CommandPaletteState.open,
         ),
     )
 
@@ -44,6 +46,7 @@ def command_palette() -> rx.Component:
             rx.vstack(
                 rx.heading("Command palette", size="4"),
                 rx.input(
+                    aria_label="Search command palette actions",
                     placeholder="Search actions",
                     value=CommandPaletteState.query,
                     on_change=CommandPaletteState.set_query,
@@ -52,6 +55,9 @@ def command_palette() -> rx.Component:
                 align="start",
                 spacing="3",
             ),
+            id="command-palette",
+            role="dialog",
+            aria_label="Command palette",
             display=rx.cond(CommandPaletteState.open, "block", "none"),
         ),
     )

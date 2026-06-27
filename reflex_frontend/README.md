@@ -177,3 +177,59 @@ The console shell is advisory/operator-review focused. Module internals are impl
 ## Wow Layer
 
 The wow layer provides operator-oriented visualizations for Trace, Evidence, Provider Health, Market Intelligence, Policy, Audit, and runtime posture. It does not create legal verdicts, financial advice, custody flows, or Bitcoin consensus proofs.
+
+## Accessibility, i18n, and Safety Copy
+
+Accessibility baseline helpers, English/Russian i18n scaffolding, and centralized safety copy are documented in `docs/ACCESSIBILITY.md`, `docs/I18N.md`, and `docs/SAFETY_COPY.md`. Manual accessibility audit is still recommended before production cutover.
+
+## Testing
+
+Run the Reflex migration test suite from this directory:
+
+```bash
+uv sync
+uv run ruff check .
+uv run mypy bastion_ui
+uv run pytest
+uv run reflex export
+```
+
+The broader repository suite can be run from the repository root with `python -m pytest -q`, but root-level failures outside `reflex_frontend/` are tracked as migration blockers until the baseline async/test-environment gaps are resolved.
+
+## Docker and Compose
+
+Build the standalone Reflex image from the repository root:
+
+```bash
+docker build -t bitcoin-bastion-reflex-frontend:local ./reflex_frontend
+```
+
+Run Reflex as a standalone container against an externally reachable FastAPI backend:
+
+```bash
+docker run --rm -p 3001:3001 -p 8001:8001 \
+  -e BB_API_BASE_URL=http://host.docker.internal:8000 \
+  bitcoin-bastion-reflex-frontend:local
+```
+
+Run only the Reflex frontend service with compose:
+
+```bash
+docker compose -f ../deploy/compose/reflex-frontend.compose.yaml up --build
+```
+
+Run backend dependencies plus Reflex:
+
+```bash
+docker compose -f ../deploy/compose/full-reflex.compose.yaml up --build
+```
+
+Run legacy Next.js and Reflex in parallel for migration comparison:
+
+```bash
+docker compose -f ../deploy/compose/full-parallel-frontends.compose.yaml up --build
+```
+
+`BB_API_BASE_URL` controls the FastAPI backend target. In container-to-container compose mode it is `http://api:8000`; in standalone local Docker runs it usually points to `http://host.docker.internal:8000` or another operator-provided API URL.
+
+Known limitations: Reflex remains a parallel migration target, Next.js is still the rollback surface, FastAPI/Jinja Market routes are not removed, and production cutover is not complete until later migration gates pass. Do not commit secrets or mount wallet files/signing material into the Reflex container.
