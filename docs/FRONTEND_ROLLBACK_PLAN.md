@@ -47,3 +47,7 @@ Run the focused safety/forbidden wording tests where available and manually insp
 - FastAPI/Jinja Market remains intentionally active during migration.
 - Root pytest still has known non-Reflex/root-suite blockers that should be fixed independently.
 - Rollback must not introduce custody, signing, mining, Stratum, or backend-mesh behavior.
+
+## Final cutover cleanup note (2026-06-28)
+
+The destructive removal gate did not pass, so rollback still uses the intact `frontend/` directory. Do not remove this directory from operational deployments until the full cutover audit blockers are cleared and maintainers approve losing the runnable Next.js fallback.

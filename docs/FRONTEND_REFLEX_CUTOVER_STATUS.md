@@ -45,3 +45,11 @@ Reflex remains the preferred primary frontend in runtime profile metadata. Next.
 3. Complete a formal accessibility/responsive/manual browser audit.
 4. Decide whether Market detail routes stay delegated permanently or receive full Reflex parity.
 5. Keep Next.js available until maintainers approve a separate archive PR.
+
+## Final destructive cleanup gate (2026-06-28)
+
+Decision: **blocked; keep `frontend/` intact**.
+
+The full cutover audit in `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md` confirms that Reflex remains the preferred primary migration frontend, but the old Next.js frontend cannot be deleted yet. The blockers are the failing root test suite, Docker verification being unavailable in this agent environment, Market detail/drill-down delegation, active rollback references in deployment/docs/CI material, and incomplete formal accessibility/manual browser evidence.
+
+No runnable frontend was removed in this pass.

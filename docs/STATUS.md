@@ -422,3 +422,7 @@ Reflex is now the preferred primary frontend for migration runtime profiles unde
 ## Prompt 22/22 final frontend audit status
 
 Final archive decision: **B. Mark Next.js as legacy but keep in `frontend/`**. Reflex remains preferred primary for migration runtime profiles. Market detail routes remain delegated to FastAPI/Jinja, root-suite and local Docker blockers remain, and production readiness is not claimed.
+
+## Frontend full cutover status
+
+The final destructive frontend cleanup is blocked. Reflex remains preferred, but `frontend/` is kept as legacy rollback until the blockers in `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md` are resolved.

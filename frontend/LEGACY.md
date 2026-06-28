@@ -30,3 +30,7 @@ These passed in Prompt 22/22 with existing npm audit/config warnings.
 ## Rollback notes
 
 Set `BASTION_PRIMARY_FRONTEND=nextjs`, run the legacy frontend, and keep FastAPI/Jinja Market routes active. See `docs/FRONTEND_ROLLBACK_PLAN.md`.
+
+## Final cutover cleanup status
+
+As of 2026-06-28, the destructive cleanup gate is blocked. This directory remains intentionally present as the runnable rollback frontend while Reflex is the preferred migration frontend.

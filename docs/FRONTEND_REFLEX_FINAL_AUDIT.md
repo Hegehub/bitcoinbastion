@@ -262,3 +262,7 @@ Status: **PARTIAL PASS**.
 - Next.js archive status: **legacy rollback, keep in `frontend/`**.
 - Market status: **partial/delegated**.
 - Production readiness: **not claimed**.
+
+## Full destructive cleanup audit update (2026-06-28)
+
+The final destructive cleanup gate is documented in `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md`. The decision is **deletion blocked**: Reflex remains the preferred primary migration frontend, but `frontend/` stays in place for rollback until root-suite, Docker, Market ownership, deployment-reference, and formal accessibility evidence blockers are resolved.

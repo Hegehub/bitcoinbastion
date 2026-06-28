@@ -261,3 +261,7 @@ CI passing does not make Reflex the primary frontend. Next.js remains the rollba
 ## Final migration audit status
 
 Prompt 22/22 confirms Reflex as the preferred primary migration frontend, but not a blanket production-ready replacement. Next.js remains in `frontend/` as rollback, FastAPI/Jinja Market detail routes remain delegated where documented, and formal accessibility/live deployment/root-suite/Docker evidence remains required before any physical legacy archive. See `../docs/FRONTEND_REFLEX_FINAL_AUDIT.md`.
+
+## Final cutover cleanup status
+
+Reflex is the preferred primary migration frontend, but the final destructive cleanup gate did not pass. The legacy Next.js frontend remains in `../frontend/` for rollback until root-suite, Docker, Market ownership, deployment-reference, and accessibility-evidence blockers are resolved.

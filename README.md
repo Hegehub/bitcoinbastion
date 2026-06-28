@@ -618,3 +618,7 @@ Prompt 21/22 sets Reflex as the preferred primary frontend for migration runtime
 ## Final Reflex migration audit
 
 Prompt 22/22 keeps Reflex as the preferred primary migration frontend, but Next.js remains in `frontend/` as a legacy rollback surface. The archive decision is **B. Mark Next.js as legacy but keep in `frontend/`**. Market detail routes remain FastAPI/Jinja-delegated where documented, and production readiness is not claimed until root-suite, Docker, accessibility, and live deployment evidence blockers are resolved. See `docs/FRONTEND_REFLEX_FINAL_AUDIT.md`, `docs/FRONTEND_REFLEX_CUTOVER_STATUS.md`, `docs/NEXTJS_LEGACY_ARCHIVE_PLAN.md`, and `docs/FRONTEND_ROLLBACK_PLAN.md`.
+
+## Frontend cutover status
+
+Reflex in `reflex_frontend/` is the preferred primary migration frontend. The legacy Next.js frontend in `frontend/` remains intentionally present for rollback because the final destructive cleanup gate is blocked by root-suite, Docker, Market delegation, deployment-reference, and accessibility-evidence blockers. See `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md` and `docs/legacy/NEXTJS_FRONTEND_ARCHIVE.md`.

@@ -47,3 +47,7 @@ The physical archive/move/delete gate does not pass yet. Reflex is the preferred
 - Accessibility/responsive audit evidence.
 - Market delegation accepted as permanent or full Reflex Market parity completed.
 - Updated operational runbooks proving rollback without Next.js or with archived Next.js.
+
+## Final destructive cleanup audit update (2026-06-28)
+
+The final deletion prompt did not remove `frontend/`. The archive record is now captured in `docs/legacy/NEXTJS_FRONTEND_ARCHIVE.md` as a pending archive rather than a completed removal. Next.js remains legacy rollback until the full cutover blockers are cleared.

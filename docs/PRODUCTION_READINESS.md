@@ -407,3 +407,7 @@ The controlled switch decision is **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**. Refl
 ## Prompt 22/22 final frontend audit
 
 The final Reflex migration audit does not establish broad production readiness. Reflex remains preferred primary for migration runtime profiles, Next.js remains rollback in `frontend/`, FastAPI/Jinja Market detail routes remain delegated, root-suite failures remain outside Reflex-local checks, local Docker is unavailable in this agent environment, and formal accessibility/responsive evidence is still required.
+
+## Frontend deletion readiness
+
+Legacy Next.js removal is not production-ready yet. The full cutover audit blocks deletion of `frontend/` because root tests fail, Docker verification is unavailable in the agent environment, Market detail ownership is delegated, and formal accessibility/manual browser evidence remains incomplete.
