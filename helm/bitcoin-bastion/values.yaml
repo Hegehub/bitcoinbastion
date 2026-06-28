@@ -2,3 +2,23 @@ replicaCount: 2
 image:
   api: ghcr.io/hegehub/bitcoinbastion-api:latest
   frontend: ghcr.io/hegehub/bitcoinbastion-frontend:latest
+
+objectStorage:
+  enabled: false
+  provider: s3
+  endpoint: ""
+  publicEndpoint: ""
+  bucket: bitcoin-bastion-artifacts
+  region: ""
+  secure: true
+  forcePathStyle: false
+  defaultRetentionDays: 365
+  evidenceRetentionDays: 2555
+  maxArtifactBytes: 104857600
+  existingSecret: ""
+  accessKeySecretKey: OBJECT_STORAGE_ACCESS_KEY
+  secretKeySecretKey: OBJECT_STORAGE_SECRET_KEY
+  # External object storage is preferred by default. Bundled MinIO is not enabled
+  # by this chart and must not be treated as a production dependency.
+  # Never store seed phrases, Bitcoin private keys, wallet files, xprv/yprv/zprv,
+  # raw Access Pass bearer tokens, raw API secrets, or unredacted sensitive material.
