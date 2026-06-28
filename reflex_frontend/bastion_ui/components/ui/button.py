@@ -25,8 +25,9 @@ def button(
         "warning": {**BUTTON_SECONDARY, "border": f"1px solid {BASTION_WARNING}"},
         "success": {**BUTTON_SECONDARY, "border": f"1px solid {BASTION_SUCCESS}"},
     }
-    text = loading_label if loading_label else label
     return cast(
         rx.Component,
-        rx.button(text, disabled=disabled, style={**styles[variant], **FOCUS_RING}),
+        rx.button(
+            loading_label or label, disabled=disabled, style={**styles[variant], **FOCUS_RING}
+        ),
     )

@@ -415,3 +415,6 @@ Pending:
 - Live SDK/CLI/MCP smoke against a running backend.
 - Prompt 30 production readiness audit.
 
+## Prompt 21/22 frontend switch status
+
+Reflex is now the preferred primary frontend for migration runtime profiles under **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**. Next.js remains available as the rollback frontend and FastAPI/Jinja Market detail routes remain delegated where parity is intentionally partial. No legacy frontend files were deleted and no backend domain behavior was changed.

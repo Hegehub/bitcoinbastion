@@ -1101,3 +1101,7 @@ make deploy-single-node
 ```
 
 No runtime profile is automatically production-ready. Production readiness requires environment-specific evidence artifacts, including deployment evidence, migration smoke evidence, schema parity evidence, provider health evidence, observability validation, backup/restore validation, rollback validation, security review, load testing, and incident/drill evidence.
+
+## Frontend primary switch status
+
+Prompt 21/22 sets Reflex as the preferred primary frontend for migration runtime profiles with `BASTION_PRIMARY_FRONTEND=reflex`, while preserving Next.js as the rollback frontend with `BASTION_LEGACY_FRONTEND=nextjs`. The decision is **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**: public, Trace, Console, safety, API-client, and Reflex build/export gates passed, while FastAPI/Jinja Market detail routes remain delegated and Next.js remains intact for rollback. See `docs/FRONTEND_PRIMARY_SWITCH.md`, `docs/FRONTEND_ROLLBACK.md`, `docs/FRONTEND_REFLEX_ROUTE_PARITY.md`, `docs/FRONTEND_REFLEX_API_PARITY.md`, and `docs/FRONTEND_REFLEX_TEST_STATUS.md`.

@@ -1,0 +1,129 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-bitcoin_bastion}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bitcoin_bastion_local_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-bitcoin_bastion}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    command: bash scripts/start_api.sh
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-dev}
+      DATABASE_URL: postgresql+psycopg://postgres:${POSTGRES_PASSWORD:-bitcoin_bastion_local_password}@postgres:5432/${POSTGRES_DB:-bitcoin_bastion}
+      REDIS_URL: redis://redis:6379/0
+      CORS_ALLOW_ORIGINS: http://localhost:3000,http://localhost:3001
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/live', timeout=3)\""]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    command: bash scripts/start_worker.sh
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-dev}
+      DATABASE_URL: postgresql+psycopg://postgres:${POSTGRES_PASSWORD:-bitcoin_bastion_local_password}@postgres:5432/${POSTGRES_DB:-bitcoin_bastion}
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  beat:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    command: bash scripts/start_beat.sh
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-dev}
+      DATABASE_URL: postgresql+psycopg://postgres:${POSTGRES_PASSWORD:-bitcoin_bastion_local_password}@postgres:5432/${POSTGRES_DB:-bitcoin_bastion}
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --hostname 0.0.0.0 --port 3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../frontend:/app
+    depends_on:
+      api:
+        condition: service_started
+
+  reflex-frontend:
+    build:
+      context: ../../reflex_frontend
+      dockerfile: Dockerfile
+    image: bitcoin-bastion-reflex-frontend:local
+    environment:
+      BB_API_BASE_URL: http://api:8000
+      BB_PUBLIC_SITE_MODE: "true"
+      BB_ENABLE_TRACE: "true"
+      BB_ENABLE_MARKET: "true"
+      BB_ENABLE_TIME_MACHINE: "true"
+      BB_ENABLE_SOVEREIGN_GRID: "true"
+      BB_ENABLE_CONSOLE: "true"
+      BB_REQUEST_TIMEOUT_SECONDS: "5"
+      BB_DEFAULT_LANGUAGE: en
+      BB_LOG_LEVEL: INFO
+    ports:
+      - "3001:3001"
+      - "8001:8001"
+    depends_on:
+      api:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:3001/', timeout=3)\""]
+      interval: 30s
+      timeout: 5s
+      start_period: 45s
+      retries: 5
+
+volumes:
+  pg_data:
