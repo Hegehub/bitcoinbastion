@@ -23,6 +23,7 @@ from app.api.v1.news import router as news_router
 from app.api.v1.market_intelligence import router as market_intelligence_router
 from app.api.v1.market_data import router as market_data_router
 from app.api.v1.market import router as market_router
+from app.api.v1.market_time_machine import router as market_time_machine_router
 from app.api.v1.metrics_status import router as metrics_status_router
 from app.api.v1.intelligence_timeline import router as intelligence_timeline_router
 from app.api.v1.intelligence import router as intelligence_router
@@ -36,6 +37,7 @@ from app.api.v1.public import router as public_router
 from app.api.v1.privacy import router as privacy_router
 from app.api.v1.onchain import router as onchain_router
 from app.api.v1.signals import router as signals_router
+from app.api.v1.storage_status import router as storage_status_router
 from app.api.v1.treasury import router as treasury_router
 from app.api.v1.trace import router as trace_router
 from app.api.v1.users import router as users_router
@@ -73,10 +75,12 @@ app.include_router(news_router, prefix=settings.api_prefix)
 app.include_router(market_intelligence_router, prefix=settings.api_prefix)
 app.include_router(market_data_router, prefix=settings.api_prefix)
 app.include_router(market_router, prefix=settings.api_prefix)
+app.include_router(market_time_machine_router, prefix=settings.api_prefix)
 app.include_router(metrics_status_router, prefix=settings.api_prefix)
 app.include_router(intelligence_timeline_router, prefix=settings.api_prefix)
 app.include_router(intelligence_router, prefix=settings.api_prefix)
 app.include_router(signals_router, prefix=settings.api_prefix)
+app.include_router(storage_status_router, prefix=settings.api_prefix)
 app.include_router(intelligence_signals_router, prefix=settings.api_prefix)
 app.include_router(operator_signals_router, prefix=settings.api_prefix)
 app.include_router(onchain_router, prefix=settings.api_prefix)
