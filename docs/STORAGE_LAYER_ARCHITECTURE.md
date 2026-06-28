@@ -623,3 +623,7 @@ ClickHouse is for future Market Time Machine, replay, event analytics, and dashb
 ## Prompt 20/65 Status — ClickHouse Projection Worker
 
 Prompt 20 adds the initial outbox-to-ClickHouse projection worker. It reads `storage_outbox_events` targeted to `clickhouse`, maps supported event families into analytics rows, inserts through the analytics-store abstraction, and marks outbox events processed only after successful insert. See `docs/STORAGE_CLICKHOUSE_PROJECTIONS.md` for idempotency, retry, dry-run, and privacy rules.
+
+## Prompt 21/65 Status — Market Time Machine Analytics Query Layer
+
+Prompt 21 adds a bounded ClickHouse-backed query service for Market Time Machine analytics. It uses the analytics-store abstraction, isolates SQL builders, returns runtime metadata and degraded-mode responses, and keeps ClickHouse as projection-only analytics storage. See `docs/MARKET_TIME_MACHINE_ANALYTICS.md` for query limits and endpoint behavior.

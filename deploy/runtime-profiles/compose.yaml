@@ -42,30 +42,10 @@ evidence_notes:
   - Production claims require additional host, backup, monitoring, and recovery evidence.
 future_extensions:
   - podman-compose metadata may be added later.
-frontend:
-  supported_modes:
-    - api-only
-    - nextjs
-    - reflex
-    - parallel
-  default_mode: reflex
-  recommended_migration_mode: parallel
-  primary: reflex
-  reflex_enabled: optional
-  nextjs_enabled: true
-  cutover_ready: true
-  rollback_available: true
-  compose_files:
-    api_only: docker-compose.yml
-    nextjs: docker-compose.yml
-    reflex: deploy/compose/full-reflex.compose.yaml
-    parallel: deploy/compose/full-parallel-frontends.compose.yaml
-  ports:
-    fastapi: 8000
-    nextjs: 3000
-    reflex_frontend: 3001
-    reflex_backend_control: 8001
-  safety_notes:
-    - Reflex is the preferred primary frontend after Prompt 21/22.
-    - Next.js remains available for rollback after the controlled switch.
-    - No frontend mode may request seed phrases, private keys, wallet files, or signing material.
+storage_foundation:
+  postgres: required
+  redis: required_ephemeral
+  object_storage: local_minio_allowed
+  object_storage_notes:
+    - Local MinIO is acceptable for development and smoke evidence only.
+    - Production claims require real secrets, backups, retention policy, and restore evidence.

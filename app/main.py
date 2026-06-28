@@ -23,6 +23,7 @@ from app.api.v1.news import router as news_router
 from app.api.v1.market_intelligence import router as market_intelligence_router
 from app.api.v1.market_data import router as market_data_router
 from app.api.v1.market import router as market_router
+from app.api.v1.market_time_machine import router as market_time_machine_router
 from app.api.v1.metrics_status import router as metrics_status_router
 from app.api.v1.intelligence_timeline import router as intelligence_timeline_router
 from app.api.v1.intelligence import router as intelligence_router
@@ -74,6 +75,7 @@ app.include_router(news_router, prefix=settings.api_prefix)
 app.include_router(market_intelligence_router, prefix=settings.api_prefix)
 app.include_router(market_data_router, prefix=settings.api_prefix)
 app.include_router(market_router, prefix=settings.api_prefix)
+app.include_router(market_time_machine_router, prefix=settings.api_prefix)
 app.include_router(metrics_status_router, prefix=settings.api_prefix)
 app.include_router(intelligence_timeline_router, prefix=settings.api_prefix)
 app.include_router(intelligence_router, prefix=settings.api_prefix)
