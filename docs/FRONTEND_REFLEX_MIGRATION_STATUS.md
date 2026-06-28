@@ -117,3 +117,13 @@ Status: partial implemented. Frontend shell complete, backend data source pendin
 - `cd reflex_frontend && uv run pytest` passed with 90 tests.
 - `cd reflex_frontend && uv run reflex export` passed; Reflex emitted existing sitemap/theme and Node-version warnings.
 - Repository root `python -m pytest -q` still fails with known baseline async-plugin failures and a pre-existing route-contract assertion unrelated to Prompt 15. Latest run: 14 failed, 868 passed, 2 skipped.
+
+## Prompt 21/22 Controlled Primary Switch Status
+
+- [x] Reflex scaffold: complete for controlled switch.
+- [x] Public routes: complete for controlled switch.
+- [x] Trace routes: complete for controlled switch.
+- [x] Console routes: complete for controlled switch.
+- [x] Market routes: partial/delegated; FastAPI/Jinja remains active for market-detail routes.
+- [x] CI/local gates: Reflex lint, typecheck, tests, export, safety checks, and route parity passed locally.
+- [x] Cutover: `SWITCH_PARTIAL_WITH_DELEGATED_ROUTES`; Reflex is preferred primary in runtime profiles, Next.js remains rollback.

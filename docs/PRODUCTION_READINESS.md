@@ -399,3 +399,7 @@ Required remaining evidence includes live deployment evidence, migration smoke e
 ## Reflex frontend CI readiness
 
 Reflex frontend CI now covers lint, typecheck, tests, export, Docker build wiring, safety wording, forbidden wording, no-sensitive-input checks, and route parity checks. This improves migration evidence but does not make Reflex production-primary. Prompt 21/22 must still complete the route/API parity gate and controlled primary frontend switch before any production cutover claim.
+
+## Prompt 21/22 frontend switch readiness
+
+The controlled switch decision is **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**. Reflex is the preferred primary frontend in migration runtime profiles, but this is not a blanket production-readiness claim. Next.js remains rollback, FastAPI/Jinja Market detail routes remain delegated, Docker build evidence depends on CI/host Docker availability, and a formal accessibility/responsive audit is still required before production-primary claims.

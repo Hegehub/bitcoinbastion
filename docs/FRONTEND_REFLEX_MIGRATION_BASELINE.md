@@ -681,3 +681,13 @@ Status: partial implemented.
 - Local verification status: `make reflex-ci`, individual Reflex Makefile targets, and direct Reflex commands passed in the local environment.
 - Docker verification status: Docker build is wired in CI and Makefile, but local Docker execution was skipped because Docker is unavailable in this environment.
 - Cutover status: Reflex is still not the primary frontend; Prompt 21/22 remains required for the route/API parity gate and controlled switch.
+
+## Prompt 21/22 Route/API Parity Gate and Controlled Switch Status
+
+- Switch decision: **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**.
+- Reflex build/export status: local Reflex sync, lint, typecheck, tests, and export passed.
+- Public/Trace/Console parity status: required Reflex routes and tests passed.
+- Market ownership status: Reflex has migration-preview Market routes, while FastAPI/Jinja Market detail routes remain delegated.
+- Runtime profile status: `reflex` and `parallel` frontend modes now mark Reflex as primary with Next.js rollback available.
+- Rollback status: `docs/FRONTEND_ROLLBACK.md` documents switching back to Next.js and side-by-side validation.
+- Remaining blockers: root pytest has known non-Reflex async/test-environment failures, local Docker is unavailable in this agent environment, and formal accessibility audit remains required before production-readiness claims.

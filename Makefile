@@ -444,3 +444,17 @@ frontend-route-parity:
 	cd reflex_frontend && uv run pytest bastion_ui/tests/test_routes.py bastion_ui/tests/test_navigation.py bastion_ui/tests/test_command_palette.py bastion_ui/tests/test_market_routes.py bastion_ui/tests/test_console_routes.py bastion_ui/tests/test_console_advanced_routes.py
 
 reflex-ci: reflex-sync reflex-lint reflex-typecheck reflex-test reflex-export frontend-safety-check frontend-route-parity
+
+.PHONY: frontend-reflex-check frontend-reflex-export frontend-legacy-check frontend-parity-check frontend-primary-switch-check
+
+frontend-reflex-check: reflex-sync reflex-lint reflex-typecheck reflex-test
+
+frontend-reflex-export: reflex-export
+
+frontend-legacy-check:
+	cd frontend && npm run typecheck && npm run test && npm run build
+
+frontend-parity-check: frontend-safety-check frontend-route-parity
+
+frontend-primary-switch-check: frontend-reflex-check frontend-reflex-export frontend-parity-check
+	@echo "Frontend primary switch check passed for Reflex-specific gates; see docs/FRONTEND_PRIMARY_SWITCH.md for delegated Market and known root-suite blockers."

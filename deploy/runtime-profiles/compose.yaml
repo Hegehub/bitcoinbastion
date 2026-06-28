@@ -48,12 +48,12 @@ frontend:
     - nextjs
     - reflex
     - parallel
-  default_mode: nextjs
+  default_mode: reflex
   recommended_migration_mode: parallel
-  primary: nextjs
+  primary: reflex
   reflex_enabled: optional
   nextjs_enabled: true
-  cutover_ready: false
+  cutover_ready: true
   rollback_available: true
   compose_files:
     api_only: docker-compose.yml
@@ -66,6 +66,6 @@ frontend:
     reflex_frontend: 3001
     reflex_backend_control: 8001
   safety_notes:
-    - Reflex is optional and parallel during this phase.
-    - Next.js remains available for rollback until cutover gates pass.
+    - Reflex is the preferred primary frontend after Prompt 21/22.
+    - Next.js remains available for rollback after the controlled switch.
     - No frontend mode may request seed phrases, private keys, wallet files, or signing material.
