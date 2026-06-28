@@ -415,3 +415,14 @@ Pending:
 - Live SDK/CLI/MCP smoke against a running backend.
 - Prompt 30 production readiness audit.
 
+## Prompt 21/22 frontend switch status
+
+Reflex is now the preferred primary frontend for migration runtime profiles under **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**. Next.js remains available as the rollback frontend and FastAPI/Jinja Market detail routes remain delegated where parity is intentionally partial. No legacy frontend files were deleted and no backend domain behavior was changed.
+
+## Prompt 22/22 final frontend audit status
+
+Final archive decision: **B. Mark Next.js as legacy but keep in `frontend/`**. Reflex remains preferred primary for migration runtime profiles. Market detail routes remain delegated to FastAPI/Jinja, root-suite and local Docker blockers remain, and production readiness is not claimed.
+
+## Frontend full cutover status
+
+The final destructive frontend cleanup is blocked. Reflex remains preferred, but `frontend/` is kept as legacy rollback until the blockers in `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md` are resolved.

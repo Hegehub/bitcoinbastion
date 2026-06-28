@@ -7,10 +7,7 @@ from bastion_ui.components.layout.public_layout import public_layout
 
 
 def page_shell(title: str, *children: rx.Component) -> rx.Component:
-    return public_layout(
-        rx.heading(title, size="6"),
-        rx.vstack(*children, align="start", spacing="4"),
-    )
+    return public_layout(rx.heading(title, size="6"), *children)
 
 
 def public_shell(*children: rx.Component) -> rx.Component:
