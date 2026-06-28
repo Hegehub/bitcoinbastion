@@ -127,3 +127,15 @@ Status: partial implemented. Frontend shell complete, backend data source pendin
 - [x] Market routes: partial/delegated; FastAPI/Jinja remains active for market-detail routes.
 - [x] CI/local gates: Reflex lint, typecheck, tests, export, safety checks, and route parity passed locally.
 - [x] Cutover: `SWITCH_PARTIAL_WITH_DELEGATED_ROUTES`; Reflex is preferred primary in runtime profiles, Next.js remains rollback.
+
+## Prompt 22/22 Final Audit Status
+
+- [x] Final ownership audit documented.
+- [x] API parity audit documented.
+- [x] Trace final audit documented.
+- [x] Market status documented as partial/delegated.
+- [x] Console status documented as baseline/preview.
+- [x] Safety/no-custody status documented.
+- [x] Rollback plan documented.
+- [x] Next.js archive decision documented: keep in `frontend/` as legacy rollback.
+- [ ] Physical archive/delete complete: blocked and intentionally not performed.

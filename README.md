@@ -614,3 +614,7 @@ No runtime profile is automatically production-ready. Production readiness requi
 ## Frontend primary switch status
 
 Prompt 21/22 sets Reflex as the preferred primary frontend for migration runtime profiles with `BASTION_PRIMARY_FRONTEND=reflex`, while preserving Next.js as the rollback frontend with `BASTION_LEGACY_FRONTEND=nextjs`. The decision is **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**: public, Trace, Console, safety, API-client, and Reflex build/export gates passed, while FastAPI/Jinja Market detail routes remain delegated and Next.js remains intact for rollback. See `docs/FRONTEND_PRIMARY_SWITCH.md`, `docs/FRONTEND_ROLLBACK.md`, `docs/FRONTEND_REFLEX_ROUTE_PARITY.md`, `docs/FRONTEND_REFLEX_API_PARITY.md`, and `docs/FRONTEND_REFLEX_TEST_STATUS.md`.
+
+## Final Reflex migration audit
+
+Prompt 22/22 keeps Reflex as the preferred primary migration frontend, but Next.js remains in `frontend/` as a legacy rollback surface. The archive decision is **B. Mark Next.js as legacy but keep in `frontend/`**. Market detail routes remain FastAPI/Jinja-delegated where documented, and production readiness is not claimed until root-suite, Docker, accessibility, and live deployment evidence blockers are resolved. See `docs/FRONTEND_REFLEX_FINAL_AUDIT.md`, `docs/FRONTEND_REFLEX_CUTOVER_STATUS.md`, `docs/NEXTJS_LEGACY_ARCHIVE_PLAN.md`, and `docs/FRONTEND_ROLLBACK_PLAN.md`.

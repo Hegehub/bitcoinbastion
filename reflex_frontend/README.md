@@ -257,3 +257,7 @@ make reflex-docker-build
 ```
 
 CI passing does not make Reflex the primary frontend. Next.js remains the rollback surface and the primary switch is controlled by the Prompt 21/22 cutover gates.
+
+## Final migration audit status
+
+Prompt 22/22 confirms Reflex as the preferred primary migration frontend, but not a blanket production-ready replacement. Next.js remains in `frontend/` as rollback, FastAPI/Jinja Market detail routes remain delegated where documented, and formal accessibility/live deployment/root-suite/Docker evidence remains required before any physical legacy archive. See `../docs/FRONTEND_REFLEX_FINAL_AUDIT.md`.

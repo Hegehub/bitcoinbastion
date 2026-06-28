@@ -691,3 +691,12 @@ Status: partial implemented.
 - Runtime profile status: `reflex` and `parallel` frontend modes now mark Reflex as primary with Next.js rollback available.
 - Rollback status: `docs/FRONTEND_ROLLBACK.md` documents switching back to Next.js and side-by-side validation.
 - Remaining blockers: root pytest has known non-Reflex async/test-environment failures, local Docker is unavailable in this agent environment, and formal accessibility audit remains required before production-readiness claims.
+
+## Prompt 22/22 Final Reflex Migration Audit Status
+
+- Final frontend decision: Reflex remains preferred primary migration frontend.
+- Next.js archive decision: **B. Mark Next.js as legacy but keep in `frontend/`**.
+- Market decision: partial/delegated; FastAPI/Jinja remains canonical for detail/fallback routes.
+- Safety decision: no-custody and sensitive-input protections remain required and tested.
+- Remaining blockers: root-suite failures, local Docker unavailability, formal accessibility/responsive audit, and final Market archive policy.
+- New audit docs: `docs/FRONTEND_REFLEX_FINAL_AUDIT.md`, `docs/FRONTEND_REFLEX_CUTOVER_STATUS.md`, `docs/NEXTJS_LEGACY_ARCHIVE_PLAN.md`, and `docs/FRONTEND_ROLLBACK_PLAN.md`.

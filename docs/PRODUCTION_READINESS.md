@@ -403,3 +403,7 @@ Reflex frontend CI now covers lint, typecheck, tests, export, Docker build wirin
 ## Prompt 21/22 frontend switch readiness
 
 The controlled switch decision is **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**. Reflex is the preferred primary frontend in migration runtime profiles, but this is not a blanket production-readiness claim. Next.js remains rollback, FastAPI/Jinja Market detail routes remain delegated, Docker build evidence depends on CI/host Docker availability, and a formal accessibility/responsive audit is still required before production-primary claims.
+
+## Prompt 22/22 final frontend audit
+
+The final Reflex migration audit does not establish broad production readiness. Reflex remains preferred primary for migration runtime profiles, Next.js remains rollback in `frontend/`, FastAPI/Jinja Market detail routes remain delegated, root-suite failures remain outside Reflex-local checks, local Docker is unavailable in this agent environment, and formal accessibility/responsive evidence is still required.
