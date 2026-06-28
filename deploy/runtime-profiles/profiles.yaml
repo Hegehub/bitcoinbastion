@@ -26,3 +26,44 @@ overlay_paths:
   minikube: deploy/kubernetes/overlays/minikube
   k3s: deploy/kubernetes/overlays/k3s
   single-node: deploy/kubernetes/overlays/single-node
+frontend_modes:
+  api-only:
+    mode: api-only
+    primary: none
+    nextjs_enabled: false
+    reflex_enabled: false
+    cutover_ready: false
+    rollback_available: true
+    compose_file: docker-compose.yml
+    notes:
+      - FastAPI backend/API only; useful for SDK and API deployments.
+  nextjs:
+    mode: nextjs
+    primary: nextjs
+    nextjs_enabled: true
+    reflex_enabled: false
+    cutover_ready: false
+    rollback_available: true
+    compose_file: docker-compose.yml
+    notes:
+      - Legacy-supported frontend remains active during migration.
+  reflex:
+    mode: reflex
+    primary: reflex
+    nextjs_enabled: false
+    reflex_enabled: true
+    cutover_ready: true
+    rollback_available: true
+    compose_file: deploy/compose/full-reflex.compose.yaml
+    notes:
+      - Reflex is the preferred primary migration entrypoint after Prompt 21/22; Next.js remains rollback.
+  parallel:
+    mode: parallel
+    primary: reflex
+    nextjs_enabled: true
+    reflex_enabled: true
+    cutover_ready: true
+    rollback_available: true
+    compose_file: deploy/compose/full-parallel-frontends.compose.yaml
+    notes:
+      - Recommended migration mode after Prompt 21/22: Reflex primary with Next.js rollback available.

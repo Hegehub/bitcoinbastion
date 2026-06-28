@@ -5,5 +5,5 @@ from typing import cast
 import reflex as rx
 
 
-def tooltip(label: str, content: str) -> rx.Component:
-    return cast(rx.Component, rx.tooltip(rx.text(label), content=content))
+def tooltip(label: str, content: rx.Component) -> rx.Component:
+    return cast(rx.Component, rx.tooltip(content, content=label))
