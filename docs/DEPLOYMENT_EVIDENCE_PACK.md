@@ -64,11 +64,17 @@ Collect and attach additional evidence artifacts/logs from:
 These extend (not replace) the core RC blocker artifacts.
 
 - Evidence re-check CronJob is available: `deploy/kubernetes/evidence/evidence-recheck-cronjob.yaml`.
-
 - Add burn-in, cutover, sign-off, backup verification, outage drill, and retention-policy evidence references from `deploy/kubernetes/operations/`.
-
 - Attach observability validation job output plus active alert routing config and dashboard import evidence.
-
 - Include GitOps promotion evidence: digest PR link, approval template, drift-check output, and evidence-gate checklist.
-
 - Final RC certification references: `docs/KUBERNETES_RC_CERTIFICATION.md`, `docs/FINAL_KUBERNETES_READINESS_MATRIX.md`, `deploy/kubernetes/RC_EVIDENCE_CHECKLIST.md`.
+
+## Deployment handoff requirements
+
+Deployment handoff is the final step before promotion to production. Validate that:
+
+- Required environment variables are configured as described in `docs/ENVIRONMENT_VARIABLES.md`.
+- GitOps overlays and external secret management are used for all sensitive configuration.
+- The observability stack and alerting are properly configured.
+- A documented rollback path exists and has been tested.
+- Promotion from staging occurs only after all evidence gates pass and the release has operator sign‑off.

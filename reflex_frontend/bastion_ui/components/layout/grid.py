@@ -15,8 +15,18 @@ def responsive_grid(*children: rx.Component) -> rx.Component:
 
 
 def two_column_grid(*children: rx.Component) -> rx.Component:
-    return cast(rx.Component, rx.grid(*children, columns="2", gap="16px", width="100%"))
+    return cast(
+        rx.Component,
+        rx.grid(
+            *children, grid_template_columns="repeat(2, minmax(0, 1fr))", gap="16px", width="100%"
+        ),
+    )
 
 
 def three_column_grid(*children: rx.Component) -> rx.Component:
-    return cast(rx.Component, rx.grid(*children, columns="3", gap="16px", width="100%"))
+    return cast(
+        rx.Component,
+        rx.grid(
+            *children, grid_template_columns="repeat(3, minmax(0, 1fr))", gap="16px", width="100%"
+        ),
+    )

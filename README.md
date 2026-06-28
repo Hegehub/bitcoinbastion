@@ -1,679 +1,188 @@
-[Main README](README.md) · [License](LICENSE) · [Certificate](CERTIFICATE.md)
 # Bitcoin Bastion
 
 > **Bitcoin-first sovereign backend for evidence-driven market intelligence, operational resilience, and production-grade self-hosted deployment.**
 
-- Website (Vercel): https://bitcoin-bastion.vercel.app
-- Primary domain: https://bitcoin-bastion.com
-- License: MNT (repo license file: MIT)
+[Website](https://bitcoin-bastion.com) • [Status Documentation](docs/STATUS.md) • [License](LICENSE)
 
-![Status](https://img.shields.io/badge/status-RC--ready%20pending%20environment%20evidence-orange)
+![Status](https://img.shields.io/badge/status-Production%20Candidate%20--%2099%25%20readiness-blue)
 ![Bitcoin First](https://img.shields.io/badge/bitcoin-first-f7931a)
 ![No Custody](https://img.shields.io/badge/no--custody-enforced-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688)
 ![Kubernetes](https://img.shields.io/badge/kubernetes-supported-326ce5)
-![License](https://img.shields.io/badge/license-MNT-informational)
+![License](https://img.shields.io/badge/license-MIT-green)
 
----
+## Overview
+
+**Bitcoin Bastion** is a Bitcoin-first backend platform designed to provide operators, builders, analysts, and Bitcoin‑native systems with transparent, auditable and evidence‑driven market intelligence, provider health, operational readiness and deployment verification. It is *not* a wallet, custodian, automated trading bot, or consensus replacement.  Instead it acts as a sovereignty‑grade backend foundation for:
+
+- Bitcoin market and news intelligence;
+- provider‑health monitoring and confidence tracking;
+- explainable runtime status and observability;
+- risk and evidence analysis (Citadel layer);
+- operational recovery checks and evidence collection;
+- deployment and release evidence with Kubernetes‑based production control.
+
+The platform aims to make Bitcoin infrastructure more transparent, auditable, reproducible, self‑hostable and evidence‑driven while preserving a strict no‑custody posture.
 
 ## Core documentation
 
-- Historical Similarity Foundation: `docs/HISTORICAL_SIMILARITY_ENGINE.md` documents pattern matching, reaction profiles, similarity scoring, limitations, and API contracts.
-- Market Signal Governance: `docs/MARKET_SIGNAL_GOVERNANCE.md` documents candidate lifecycle, publishing policy gates, operator review, delivery logs, and no-causation safety.
-- Evidence Packets and Replay: `docs/EVIDENCE_PACKETS.md` and `docs/EVIDENCE_REPLAY.md` document replayable evidence bundles, lineage, integrity snapshots, timeline replay, exports, and no-causation safety.
-- Market Time Machine UI: `docs/MARKET_TIME_MACHINE_UI.md` documents the `/market` interface for BTC candles, news markers, candle explanations, evidence packets, historical similarity, replay timeline, shock index, narratives, and provider health.
-- Market Intelligence Dashboard: `/market` provides the web intelligence console for BTC price context, News Shock Index, Market Time Machine, narratives, signals, evidence/replay, and source quality without trading-terminal or financial-advice framing.
-
-- `docs/STATUS.md`
-- `docs/PRODUCTION_READINESS.md`
-- `docs/OPERATIONS_RUNBOOK.md`
-- `docs/DEPLOYMENT_EVIDENCE_PACK.md`
-- `docs/FINAL_PRODUCTION_GAP_AUDIT.md`
-- `docs/KUBERNETES_RC_CERTIFICATION.md`
-- `docs/FINAL_PRODUCTION_AUDIT.md`
-- `docs/SOVEREIGNTY_CERTIFICATION.md`
-- `docs/RELEASE_CANDIDATE_REPORT.md`
-
-## 1. What is Bitcoin Bastion?
-
-**Bitcoin Bastion** is a Bitcoin-first backend platform designed to help operators, builders, analysts, and future Bitcoin-native systems work with market intelligence, provider evidence, operational readiness, and deployment verification in a controlled, auditable way.
-
-The project is not a wallet.
-The project is not a custodian.
-The project is not a trading bot that blindly executes actions.
-The project is not a consensus replacement.
-
-Bitcoin Bastion is a **sovereignty-grade backend foundation** for:
-
-* Bitcoin market/news intelligence;
-* provider-health monitoring;
-* explainable runtime status;
-* Citadel risk/evidence analysis;
-* operational recovery checks;
-* deployment evidence collection;
-* Kubernetes-based production control;
-* no-custody Bitcoin-aligned infrastructure.
-
-Its main purpose is to make Bitcoin-related backend systems more:
-
-* transparent;
-* auditable;
-* reproducible;
-* self-hostable;
-* operationally safe;
-* evidence-driven;
-* resistant to silent failure.
-
----
-
-## 2. Core Philosophy
-
-Bitcoin Bastion follows a strict set of design principles.
-
-| Principle                     | Meaning                                                                                                      |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **Bitcoin-first**             | Bitcoin is the primary design reference. Other assets, if ever supported, must remain isolated and optional. |
-| **No custody**                | The system must not hold, request, store, derive, or transmit seed phrases or private keys.                  |
-| **Operator control**          | Risky actions require explicit operator awareness and approval.                                              |
-| **Evidence over claims**      | Runtime state, deployment readiness, and provider quality must be backed by artifacts.                       |
-| **Local/self-hosted capable** | The system should be deployable on a VPS, bare metal, homelab, or private Kubernetes cluster.                |
-| **No black-box trust**        | External providers must be treated as fallible and observable.                                               |
-| **Explicit limitations**      | Synthetic, advisory, degraded, fallback, and baseline states must remain visible.                            |
-| **Rollback discipline**       | Production deployment must have a documented rollback path.                                                  |
-| **Auditability**              | Release decisions should be explainable and supported by evidence.                                           |
-
----
-
-## 3. What Bitcoin Bastion Is Not
-
-Bitcoin Bastion intentionally avoids dangerous or misleading roles.
-
-It is **not**:
-
-* a custodial wallet;
-* a seed phrase manager;
-* a private key storage service;
-* a fully automated trading executor;
-* a financial advisor;
-* a Bitcoin consensus replacement;
-* a mining/Stratum system;
-* a centralized SaaS dependency;
-* a system that hides degraded state.
-
-Any future feature that touches funds, signing, wallet operations, or Bitcoin transaction creation must preserve the **no-custody** model and require strict human confirmation.
-
----
-
-## 4. High-Level Architecture
-
-```text
-Bitcoin Bastion
-│
-├── FastAPI Backend
-│   ├── API routes
-│   ├── health/readiness endpoints
-│   ├── admin/status endpoints
-│   ├── observability endpoints
-│   └── metrics endpoint
-│
-├── Core Services
-│   ├── provider health
-│   ├── market/news intelligence
-│   ├── delivery logic
-│   ├── recovery checks
-│   ├── protocol advisory layer
-│   └── Citadel risk/evidence layer
-│
-├── Data Layer
-│   ├── PostgreSQL
-│   ├── SQLAlchemy
-│   ├── Alembic migrations
-│   └── schema parity validation
-│
-├── Background Runtime
-│   ├── Celery worker
-│   ├── Celery beat
-│   ├── Redis broker/cache
-│   └── scheduled jobs
-│
-├── Evidence Layer
-│   ├── release evidence
-│   ├── migration smoke evidence
-│   ├── schema parity evidence
-│   ├── provider evidence
-│   ├── observability snapshot
-│   └── deployment evidence pack
-│
-└── Kubernetes Runtime Layer
-    ├── API deployment
-    ├── worker deployment
-    ├── beat deployment
-    ├── migration jobs
-    ├── evidence jobs
-    ├── provider-health CronJobs
-    ├── recovery drill CronJobs
-    ├── NetworkPolicy
-    ├── ServiceMonitor
-    ├── GitOps templates
-    ├── security policies
-    └── production runbooks
-```
+The repository includes extensive documentation covering every major subsystem:
 
----
+- **Historical Similarity Engine** – pattern matching, reaction profiles, similarity scoring and limitations (`docs/HISTORICAL_SIMILARITY_ENGINE.md`);
+- **Market Signal Governance** – candidate lifecycle, publishing gates, operator review and delivery logs (`docs/MARKET_SIGNAL_GOVERNANCE.md`);
+- **Evidence Packets & Replay** – replayable evidence bundles, lineage, integrity snapshots, timeline replay and exports (`docs/EVIDENCE_PACKETS.md`, `docs/EVIDENCE_REPLAY.md`);
+- **Market Time Machine UI** – `/market` interface for BTC candles, news markers, evidence packets, historical similarity, replay timeline, shock index, narratives and provider health (`docs/MARKET_TIME_MACHINE_UI.md`);
+- **Market Intelligence Dashboard** – web console for BTC price context, shock index, Market Time Machine, narratives, signals, evidence/replay and source quality;
+- Additional production docs: `docs/STATUS.md`, `docs/PRODUCTION_READINESS.md`, `docs/OPERATIONS_RUNBOOK.md`, `docs/DEPLOYMENT_EVIDENCE_PACK.md`, `docs/FINAL_PRODUCTION_AUDIT.md`, `docs/SOVEREIGNTY_CERTIFICATION.md`, `docs/RELEASE_CANDIDATE_REPORT.md`, and others in the `docs/` directory.
 
-## 5. Main Components
+## Design philosophy
 
-### 5.1 FastAPI Backend
+Bitcoin Bastion follows a strict set of design principles:
 
-The backend exposes application APIs, health checks, readiness checks, observability endpoints, and administrative status endpoints.
+| Principle                     | Meaning                                                                                                  |
+|------------------------------|------------------------------------------------------------------------------------------------------------|
+| **Bitcoin‑first**            | Bitcoin is the primary design reference. Other assets, if ever supported, must remain isolated and optional. |
+| **No custody**               | The system must not hold, request, store, derive, or transmit seed phrases or private keys.                  |
+| **Operator control**         | Risky actions require explicit operator awareness and approval.                                              |
+| **Evidence over claims**     | Runtime state, deployment readiness and provider quality must be backed by artifacts.                        |
+| **Self-hosted capable**      | The system should be deployable on VPS, bare metal, homelab or private Kubernetes clusters.                  |
+| **No black‑box trust**       | External providers are fallible and must be observable.                                                      |
+| **Explicit limitations**     | Synthetic, degraded, fallback and baseline states must remain visible.                                       |
+| **Rollback discipline**      | Production deployment must have a documented rollback path.                                                  |
+| **Auditability**             | Release decisions should be explainable and supported by evidence.                                           |
 
-Typical responsibilities:
+## Current status (June 2026)
 
-* serve API requests;
-* expose `/metrics`;
-* expose health/readiness status;
-* provide runtime status;
-* coordinate service-layer operations;
-* support release evidence collection.
+As of June 2026 the project is a production candidate and operationally hardened.  The Market Time Machine subsystem and the overall platform are approximately **99 % production‑ready**【turn8file0†L19-L23】.  Core ingestion, scoring, candle attribution, historical similarity, pattern memory, governance, evidence packets, narrative heatmaps, plugin API, internal event registry/outbox/bus and webhook management are implemented【turn8file0†L11-L17】【turn8file0†L27-L37】.  Remaining work is limited to environment‑specific production evidence such as live Kubernetes rendering, load testing, provider incident drills, Telegram runtime proof, penetration testing and accessibility certification【turn8file0†L19-L23】.  Consult `docs/STATUS.md` (audit dated 2026‑05‑23) for the latest readiness audit and detailed task breakdown【turn7file0†L1-L6】.
 
----
+## Main components
 
-### 5.2 PostgreSQL Persistence
+The platform consists of multiple layers:
 
-Bitcoin Bastion uses PostgreSQL as the production-grade persistence target.
+- **FastAPI backend** – exposes application APIs, health/readiness and admin endpoints, coordinates core services and collects release evidence.
+- **Core services** – provider health, market/news intelligence, delivery logic, recovery checks, protocol advisory and Citadel evidence layer.
+- **Data layer** – PostgreSQL with SQLAlchemy and Alembic migrations; supports migration smoke tests and schema parity validation.
+- **Background runtime** – Celery workers and beat, Redis broker/cache and scheduled jobs for health collection, recovery checks and evidence tasks.
+- **Evidence layer** – release evidence, migration smoke evidence, schema parity evidence, provider evidence, observability snapshot and deployment evidence pack.
+- **Kubernetes runtime layer** – manifests for API/worker/beat deployments, migration/evidence jobs, CronJobs for provider health and recovery drills, NetworkPolicy, ServiceMonitor, GitOps templates and production runbooks.
+- **Market Time Machine** – web dashboard `/market` providing timeline navigation, BTC candles, deterministically scored news markers, candle context, attribution confidence, historical similarity previews, narrative heatmap and shock index【turn1file0†L152-L162】【turn1file0†L160-L163】.
+- **Event & plugin layer** – internal event taxonomy, outbox, bus and webhook management for safe notifications【turn8file0†L27-L37】【turn8file0†L49-L63】; plugin API foundation for deterministic extension points with restrictive sandbox defaults and audit records.
 
-The repository includes migration and validation tooling for:
+## Services directory
 
-* Alembic migrations;
-* migration smoke checks;
-* schema parity checks;
-* PostgreSQL staging validation;
-* deployment evidence artifacts.
+The `app/services` package contains the core domain services that implement the platform’s business logic.  Each service encapsulates a cohesive set of responsibilities and publishes domain events through the event bus.  At a high level:
 
-Required evidence artifacts include:
+### Bastion Trace
 
-```text
-artifacts/postgres_migration_smoke.json
-artifacts/postgres_schema_parity.json
-```
+`bastion_trace` evaluates the risk associated with a Bitcoin transaction or UTXO.  `TraceService` coordinates a series of heuristics—including dust‑radar, false‑positive guards, UTXO hygiene checks, privacy shield lookups and payment‑context risk evaluations—to compute a **trace band** (low, medium, high).  It assembles a `TraceReport`, stores it, and publishes a `trace.report.created` event to the event bus for asynchronous consumers【turn48file0†L68-L97】.  A companion `LiteTraceReportService` maps trace bands to human‑readable labels and suggested operator actions【turn49file0†L9-L38】.
 
----
+### Citadel
 
-### 5.3 Redis + Celery
+`citadel` assesses the resilience of a wallet or treasury across multiple dimensions.  `CitadelAssessmentService` gathers signals from UTXO hygiene and mempool risk, script analysis, policy evaluation, inheritance plan verification and sovereignty‑graph modelling to produce weighted scores and an overall resilience grade【turn50file0†L8-L24】【turn50file0†L66-L74】.  `RepairPlanService` uses these scores to generate prioritized remediation steps for operators【turn51file0†L69-L80】.  Additional services in this package compute sovereignty graphs, verify inheritance paths and generate insights; collectively they help operators detect weaknesses and plan corrective actions.
 
-Redis and Celery are used for asynchronous background execution.
+### Market data and providers
 
-Typical background responsibilities:
+`market_data` collects BTC prices and market data from multiple exchanges.  `MarketDataService` periodically polls provider implementations (Binance, Kraken, Bitstamp, Coinbase, etc.), normalizes their quotes, records them in the time‑series repository, and computes a median price and provider spread【turn52file0†L18-L48】.  `aggregation.py` calculates confidence metrics by evaluating provider variance and median spread【turn54file0†L11-L31】, while `provider_health.py` tracks the success/failure history of each provider and emits degraded or recovered events when their reliability changes【turn55file0†L12-L34】.  A registry wires in new providers and exposes them to the rest of the system.
 
-* provider health collection;
-* scheduled recovery checks;
-* delivery jobs;
-* evidence-related tasks;
-* operational checks;
-* future drill execution.
+### Mempool and fee analytics
 
----
+`mempool` models network congestion to inform fee recommendations.  `MempoolAnalyzerService` ingests mempool snapshots and block templates, computes backlog ratios and derives priority fee bands with associated confidence levels【turn61file0†L23-L77】.  `FeeMarketModel` transforms these bands into recommended sat/vbyte fee rates for different confirmation targets【turn62file0†L17-L45】.  `FeeAnalyticsService` in `analytics` wraps these insights, merges them with market data and surfaces user‑friendly fee recommendations and mempool status【turn65file0†L11-L33】.
 
-### 5.4 Provider Health Layer
+### Treasury
 
-External providers are treated as fallible.
+`treasury` orchestrates treasury actions such as withdrawal requests, chain‑state verification and policy checks.  `TreasuryService` evaluates each request against policy rules, checks chain state for RBF/CPFP possibilities, ensures operator approval and logs the action.  It publishes domain events (e.g., `treasury.request.evaluated`) and interacts with Citadel to factor resilience scores into risk evaluation【turn60file0†L24-L67】【turn60file0†L106-L133】.
 
-The provider-health layer is responsible for:
-
-* tracking provider availability;
-* tracking provider confidence;
-* detecting fallback/mock states;
-* exposing provider evidence;
-* supporting degraded-mode visibility;
-* feeding observability and release evidence.
+### Event bus and domain events
 
-The system should never silently trust a single external source.
+`events` implements the internal eventing infrastructure.  `DomainEventPublisher` is a convenience wrapper for emitting typed domain events【turn57file0†L17-L35】.  `EventBusService` persists events in an outbox, ensures idempotency, groups them by topic and dispatches them to configured webhooks and WebSocket subscribers【turn58file0†L61-L136】.  This bus underpins asynchronous coordination across the platform: trace reports, citadel assessments, evidence packets, provider‑health changes and treasury actions all publish events that consumers can subscribe to.
 
----
+### Observability and operations
 
-### 5.5 Citadel Layer
+`observability` provides operational insight.  `OperationsSnapshotService` aggregates provider health, chain state, mempool congestion, background job statuses and error counts to compute a runtime severity level and determine whether the system should enter degraded mode【turn59file0†L52-L166】.  These snapshots feed dashboards and drive automated recovery or escalation.
 
-The **Citadel** layer is an advisory risk/evidence layer.
+### Intelligence and evidence
 
-It may include:
+`intelligence` assembles multi‑source evidence.  `EvidencePacketBuilder` links news articles, market events, attribution diagnostics and narrative context into replayable evidence packets; it stores them and publishes an `evidence.packet.created` event【turn66file0†L39-L70】【turn66file0†L110-L152】.  Evidence packets are used by the market signal governance layer to justify signal publication and by the Market Time Machine UI for replay.
 
-* runtime risk assessment;
-* recovery readiness indicators;
-* synthetic/baseline labeling;
-* confidence penalties;
-* provider evidence correlation;
-* operator guidance;
-* limitations and warning surfaces.
-
-Important:
-
-> Citadel is advisory. It is not Bitcoin consensus. It must not be described as a source of final truth.
-
----
-
-### 5.6 Protocol Advisory Layer
-
-Bitcoin-related protocol analysis is treated as advisory.
+### Additional services
 
-The system may analyze or surface:
-
-* chain-state related signals;
-* provider corroboration;
-* finality/reorg-related risk indicators;
-* protocol warnings;
-* external provider consistency.
-
-Important:
-
-> Protocol analytics are not consensus proof. Bitcoin consensus remains with Bitcoin nodes and the Bitcoin protocol itself.
-
----
-
-### 5.7 Evidence Layer
-
-Bitcoin Bastion is designed around evidence-based readiness.
-
-Expected release evidence may include:
-
-```text
-artifacts/release_evidence.json
-artifacts/postgres_migration_smoke.json
-artifacts/postgres_schema_parity.json
-artifacts/sbom.spdx.json
-artifacts/sbom.cyclonedx.json
-artifacts/vulnerability_report.json
-artifacts/provenance.json
-```
-
-Evidence should include, where available:
-
-* git SHA;
-* image digest;
-* environment;
-* timestamp;
-* health status;
-* readiness status;
-* migration result;
-* schema parity result;
-* observability snapshot;
-* provider health summary;
-* known limitations;
-* operator acknowledgement.
-
----
-
-## 6. Kubernetes Runtime Control Plane
-
-Bitcoin Bastion supports Kubernetes as a **sovereign runtime control plane**.
-
-Kubernetes is used for:
-
-* reproducible deployment;
-* runtime isolation;
-* health/readiness enforcement;
-* migration jobs;
-* evidence jobs;
-* provider-health CronJobs;
-* recovery drill CronJobs;
-* observability;
-* NetworkPolicy;
-* GitOps promotion;
-* rollback discipline;
-* production runbooks.
-
-Kubernetes is not used to create cloud lock-in.
-The deployment should remain compatible with self-hosted clusters, VPS clusters, homelabs, and private infrastructure.
-
----
-
-## 7. Kubernetes Capabilities
-
-The Kubernetes layer may include:
-
-| Capability                | Purpose                                          |
-| ------------------------- | ------------------------------------------------ |
-| `Deployment`              | API, worker, beat runtime                        |
-| `Job`                     | migrations, evidence generation, validation      |
-| `CronJob`                 | provider-health checks, recovery drills, backups |
-| `ConfigMap`               | non-secret configuration                         |
-| `Secret` / ExternalSecret | secret injection without committing credentials  |
-| `NetworkPolicy`           | network blast-radius reduction                   |
-| `ServiceMonitor`          | Prometheus scraping                              |
-| `HPA` / KEDA              | scaling API/workers                              |
-| GitOps                    | controlled promotion dev → staging → production  |
-| Kyverno / OPA examples    | policy-as-code guardrails                        |
-| Grafana dashboards        | operational visibility                           |
-| Alertmanager routing      | incident notification                            |
-| Backup/restore jobs       | operational recovery                             |
-| DR drills                 | failure simulation                               |
-| Evidence archive          | release auditability                             |
-
----
-
-## 8. Repository Structure
-
-Typical repository layout:
-
-```text
-.
-├── app/
-│   ├── api/
-│   ├── core/
-│   ├── db/
-│   ├── repositories/
-│   ├── schemas/
-│   ├── services/
-│   └── tasks/
-│
-├── scripts/
-│   ├── collect_release_evidence.py
-│   ├── run_postgres_migration_smoke.py
-│   └── check_postgres_schema_parity.py
-│
-├── deploy/
-│   └── kubernetes/
-│       ├── base/
-│       ├── overlays/
-│       ├── gitops/
-│       ├── security/
-│       ├── observability/
-│       ├── autoscaling/
-│       ├── evidence/
-│       ├── rollout/
-│       ├── backup/
-│       ├── drills/
-│       └── operations/
-│
-├── docs/
-│   ├── STATUS.md
-│   ├── PRODUCTION_READINESS.md
-│   ├── FINAL_PRODUCTION_GAP_AUDIT.md
-│   ├── DEPLOYMENT_EVIDENCE_PACK.md
-│   ├── OPERATIONS_RUNBOOK.md
-│   └── ...
-│
-├── tests/
-├── Dockerfile
-├── docker-compose.yml
-├── Makefile
-└── README.md
-```
-
----
-
-## 9. Current Status
-
-Current intended status:
-
-```text
-RC-ready pending environment evidence
-```
-
-This means:
-
-* code quality gates may pass;
-* Kubernetes manifests may exist;
-* evidence jobs may exist;
-* production-oriented documentation may exist;
-* but final RC status still requires real environment evidence.
-
-A full **Production Release Candidate** decision should only be declared after:
-
-```bash
-make lint
-python -m pytest -q
-make migration-smoke
-make docs-truthfulness
-make ci-release-gates
-```
-
-and after target-environment evidence artifacts are generated and reviewed.
-
----
-
-## 10. Local Development
-
-### 10.1 Clone
+Other packages include `education` for static educational snippets【turn64file0†L6-L19】, `analytics` for higher‑level analytics (such as fee recommendations【turn65file0†L11-L33】), `ingestion` for scheduled jobs and `public_site` for the Market Time Machine and admin dashboards.  Each service publishes domain events and collaborates through the event bus, enabling decoupled yet coordinated functionality.
+
+These services together form the heart of Bitcoin Bastion.  By composing specialized services and linking them through a shared event bus, the platform maintains clear boundaries between domains while enabling cross‑service workflows such as risk analysis feeding into treasury policy or mempool congestion informing fee recommendations and citadel resilience scores.
+
+## How it works
+
+At a high level the platform ingests market data and news from multiple providers, transforms them into canonical events, attributes price movements, and surfaces evidence‑rich intelligence:
+
+- **Ingestion & normalization:** Price points, candles, news articles and mempool data are collected from multiple providers, deduplicated and normalized. Deterministic event clustering produces canonical news events and BTC candles.
+- **Impact & attribution:** The candle attribution engine computes impact windows around BTC candles and ranks news events by confidence; impact diagnostics and delayed‑reaction detection highlight potential causes【turn8file0†L11-L17】. Historical similarity compares current events and candles against seeded market patterns, generating reaction profiles and analog evidence【turn8file0†L15-L17】.
+- **Narratives & shock index:** The narrative heatmap engine classifies news into evolving narratives and generates heat/impact/dominance metrics; the shock index service quantifies combined market/narrative shock to highlight unusual market stress【turn8file0†L11-L17】.
+- **Evidence & governance:** Evidence packets record end‑to‑end state — migrations, schema parity, runtime health, provider quality, recovered evidence and deployment artifacts. The Market Signal Governance layer evaluates candidate signals against publishing policy and requires operator review before publication【turn21file0†L20-L33】.
+- **Event bus & plugin platform:** An internal event taxonomy, outbox and bus persist and dispatch domain events. Webhook and WebSocket services deliver signed notifications; the plugin API allows safe extensions with restrictive permissions【turn19file0†L5-L17】【turn19file0†L35-L43】.
+- **User interfaces:** The web console provides dashboards for price context, shock index, similarity and narrative panels; the Market Time Machine UI shows timeline navigation, candle context, evidence replay and narrative heatmaps.
+
+This layered architecture ensures that market intelligence remains evidence‑based, explainable and safe for self‑hosted environments.
+
+## Installation and local development
+
+A Makefile provides convenient targets for development.  Typical workflow:
 
 ```bash
 git clone https://github.com/Hegehub/bitcoinbastion.git
 cd bitcoinbastion
+make install-dev      # install Python dependencies
+cp .env.example .env  # configure local environment
+make migrate          # run initial database migrations
+make run              # start the application
 ```
 
-### 10.2 Install
+Use `make lint`, `pytest -q`, `make migration-smoke`, `make docs-truthfulness` and `make ci-release-gates` to run verification gates before contributing.
 
-```bash
-make install-dev
-```
-
-If the Makefile target is unavailable, use the repository-specific Python installation flow.
-
-### 10.3 Configure environment
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and set required local values.
-
-Never commit real secrets.
-
-### 10.4 Run migrations
-
-```bash
-make migrate
-```
-
-### 10.5 Run application
-
-```bash
-make run
-```
-
----
-
-## 11. Local Verification
-
-Run the standard verification gates:
-
-```bash
-make lint
-python -m pytest -q
-make migration-smoke
-make docs-truthfulness
-make ci-release-gates
-```
-
-Expected production-grade behavior:
-
-* lint passes;
-* mypy passes;
-* tests pass;
-* migration smoke passes;
-* docs truthfulness passes;
-* CI release gates pass.
-
-If any of these fail, the project should not be marked as RC.
-
----
-
-## 12. Docker / Compose
-
-For local containerized execution:
+For containerized development:
 
 ```bash
 docker compose up -d --build
-```
-
-Then check service health:
-
-```bash
-docker compose ps
-```
-
-If available:
-
-```bash
 curl http://localhost:8000/api/v1/health/live
-curl http://localhost:8000/api/v1/health/ready
-curl http://localhost:8000/metrics
 ```
 
----
+### Deployment options
 
-## 13. Kubernetes Deployment
+In addition to local development, the repository supports multiple deployment modes to accommodate different operator capacities:
 
-### 13.1 Render manifests
+- **Self‑hosted single‑node deployments:** For small‑scale or low‑power homelab setups you can run the entire stack on a single VPS or bare metal host using the standard compose stack.  Running `docker compose up db redis minio minio-init app worker` starts PostgreSQL, Redis, MinIO, the API and worker, and a `minio-init` service that creates the `bitcoin-bastion-artifacts` bucket【turn103file0†L3-L13】.  When using this mode you are responsible for persistent volume backups, restore drills, retention policies and monitoring the `/api/v1/storage/status` endpoint【turn104file0†L3-L10】.  The default `minioadmin` credentials provided in `.env.example` are unsafe for production; production deployments should use an external S3‑compatible provider【turn103file0†L15-L28】.
 
-```bash
-make k8s-render-dev
-make k8s-render-staging
-make k8s-render-production
-```
+- **Kubernetes deployments:** For production or high‑capacity environments deploy using the manifests under `deploy/kubernetes`.  The canonical base kustomization defines API, worker and beat deployments and CronJobs for health checks and recovery drills and exposes non‑secret object storage settings (`OBJECT_STORAGE_ENABLED`, `OBJECT_STORAGE_PROVIDER`, `OBJECT_STORAGE_ENDPOINT`, `OBJECT_STORAGE_BUCKET`, etc.) via a ConfigMap【turn105file0†L3-L23】.  Secrets such as `OBJECT_STORAGE_ACCESS_KEY` and `OBJECT_STORAGE_SECRET_KEY` must be provided via SealedSecret, SOPS, Vault or another secret manager【turn105file0†L24-L29】.  Use the evidence jobs defined in `docs/DEPLOYMENT_EVIDENCE_PACK.md` to run migrations, schema parity tests and release evidence (`make k8s-run-migration`, `make k8s-run-postgres-migration-smoke`, `make k8s-run-postgres-schema-parity`, `make k8s-run-release-evidence`, `make k8s-collect-evidence-artifacts`)【turn106file0†L1-L14】 and to collect sovereign runtime evidence, backup drills and promotion artifacts【turn106file0†L16-L29】.
 
-Or directly:
+- **Frontend deployment:** The Next.js frontend can be deployed to Vercel by creating a project with root directory `frontend`, using `npm run build` as the build command and setting `NEXT_PUBLIC_API_BASE_URL` to point at your backend API【turn107file0†L4-L11】.  The backend may run on a VPS, a hosted container service (Fly.io, Render, Railway) or Kubernetes; in each case configure `CORS_ALLOW_ORIGINS` to match your frontend domain(s)【turn107file0†L12-L21】【turn107file0†L25-L34】.  Preview deployments should point at a staging backend and ensure degraded states are surfaced clearly; see the production checklist in `docs/frontend/DEPLOYMENT.md` for final verification steps【turn108file0†L9-L23】.  The experimental Reflex frontend can be deployed similarly but remains non‑production until route parity is achieved.
 
-```bash
-kubectl kustomize deploy/kubernetes/overlays/dev
-kubectl kustomize deploy/kubernetes/overlays/staging
-kubectl kustomize deploy/kubernetes/overlays/production
-```
+- **VPS and container platforms:** The FastAPI backend can also run behind Nginx or Caddy on a single VPS with TLS termination, or on container platforms such as Fly.io, Render or Railway【turn107file0†L12-L21】.  When deploying this way follow the same environment‑variable conventions as the Kubernetes deployment (database, Redis, object storage) and ensure secrets are managed via your platform’s secret manager.  Use the storage health check (`/api/v1/storage/status`) and the migration smoke tests to validate your environment before exposing it to production traffic【turn104file0†L3-L10】.
 
-### 13.2 Apply staging
+## License
 
-```bash
-make k8s-apply-staging
-make k8s-status
-```
+This project is licensed under the **MIT License**【turn2file0†L3-L13】.  See the [`LICENSE`](LICENSE) file for full details.  All contributions must preserve the no‑custody posture and must not weaken lint/tests/CI gates or hide degraded states.
 
-### 13.3 Run migration and evidence jobs
+## Contributing
 
-```bash
-make k8s-run-migration
-make k8s-run-postgres-migration-smoke
-make k8s-run-postgres-schema-parity
-make k8s-run-release-evidence
-make k8s-collect-evidence-artifacts
-```
+Before submitting changes, review the contribution rules (section 26 in the original README).  Contributions must preserve no‑custody rules, avoid secrets, keep documentation synchronized with code, and require evidence for production claims【turn0file1†L926-L933】.  See `docs/STATUS.md` and related documentation for the current readiness requirements.
 
-Expected artifacts:
+## Known limitations
 
-```text
-artifacts/release_evidence.json
-artifacts/postgres_migration_smoke.json
-artifacts/postgres_schema_parity.json
-```
+While Bitcoin Bastion provides extensive evidence‑driven insight, it does not make trading decisions or price predictions.  Historical similarity, candle attribution and narratives are informational only and should not be treated as guarantees【turn1file0†L160-L167】.  External providers can be unavailable, and production readiness requires environment‑specific validation, backup/restore testing and operator sign‑off【turn0file1†L803-L817】.
 
-### 13.4 Production promotion
+## Ongoing work and future modules
 
-Before production promotion:
+The repository continues to evolve beyond the baseline described above.  Key areas of development include:
 
-```bash
-make k8s-promotion-checklist
-make k8s-production-approval-template
-```
+- **Database expansion:** Alembic migrations have recently added a rich source registry and health tables for news providers, including attributes like homepage URL, country code, default confidence, failure backoff configuration and tags, plus a `source_health_records` table for latency and health metrics【turn85file0†L19-L31】.  Additional migrations created the `market_pattern_library` and `historical_similarity_records` tables to seed deterministic market patterns and persist historical similarity results【turn86file0†L41-L76】.  A subsequent migration expanded the narrative heatmap engine with a detailed taxonomy, keyword weights and observation tables【turn87file0†L17-L48】.
 
-Then apply production only after evidence and approval:
+- **Intelligence engines:** The Intelligence layer now includes a pattern library, pattern classification service and market memory service for deterministic pattern matching and reaction profiling【turn78file0†L134-L144】【turn78file0†L149-L152】.  The narrative heatmap engine has been expanded with a taxonomy of narratives and keywords that feed classification and dominance metrics【turn87file0†L17-L48】.
 
-```bash
-make k8s-apply-production
-make k8s-status
-```
+- **News scoring and sentiment:** A local sentiment engine and market-news scoring service are being integrated for more granular event scoring and classification.
 
----
+- **Frontend migration to Reflex:** A parallel `reflex_frontend/` directory contains an experimental Python‑first webapp built with the Reflex framework【turn72file0†L5-L13】.  This frontend runs alongside the legacy Next.js frontend until route parity, API parity and production evidence are complete【turn82file0†L5-L11】.  Migration baselines and route inventories for Trace Lite, Market Time Machine and Market Intelligence are documented in `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md`【turn76file0†L11-L25】, and design system details are captured in `reflex_frontend/docs/DESIGN_SYSTEM.md`【turn84file0†L5-L17】.  The Next.js frontend remains frozen except for safety, broken route and documentation fixes【turn82file0†L26-L38】, while new features are added in Reflex.  Ensure that any new user‑facing functionality includes advisory copy, no‑custody warnings and degraded‑state visibility, consistent with Reflex docs and tests.
 
-## 14. Production Readiness Gates
-
-A production release candidate requires:
-
-| Gate                          | Required               |
-| ----------------------------- | ---------------------- |
-| Lint                          | PASS                   |
-| Mypy                          | PASS                   |
-| Tests                         | PASS                   |
-| Migration smoke               | PASS                   |
-| Docs truthfulness             | PASS                   |
-| CI release gates              | PASS                   |
-| Kubernetes render             | PASS                   |
-| PostgreSQL staging validation | PASS                   |
-| Release evidence              | PRESENT                |
-| Schema parity evidence        | PRESENT                |
-| Observability validation      | PASS                   |
-| Backup strategy               | DOCUMENTED / VALIDATED |
-| Rollback plan                 | DOCUMENTED             |
-| Operator sign-off             | PRESENT                |
-| No-custody posture            | PRESERVED              |
-
----
-
-## 15. Evidence Artifacts
-
-Important artifacts:
-
-```text
-artifacts/release_evidence.json
-artifacts/postgres_migration_smoke.json
-artifacts/postgres_schema_parity.json
-artifacts/sbom.spdx.json
-artifacts/sbom.cyclonedx.json
-artifacts/vulnerability_report.json
-artifacts/provenance.json
-```
-
-These artifacts support:
-
-* release auditability;
-* deployment reproducibility;
-* production readiness decisions;
-* incident review;
-* rollback analysis;
-* operator sign-off.
-
----
-
-## 16. Security Model
-
-Bitcoin Bastion security posture includes:
-
-* no custody;
-* no seed phrase handling;
-* no private key handling;
-* no silent provider trust;
-* explicit fallback/degraded states;
-* strict environment configuration;
-* Kubernetes NetworkPolicy;
-* non-root containers;
-* resource limits;
-* secret separation;
-* optional External Secrets integration;
-* optional Kyverno/OPA policy-as-code;
-* optional image signing and SBOM generation;
-* evidence-based release process.
-
----
-
-## 17. No-Custody Rules
-
-The following must remain true:
-
-* Do not request seed phrases.
-* Do not store seed phrases.
-* Do not transmit seed phrases.
-* Do not request private keys.
-* Do not store private keys.
-* Do not sign Bitcoin transactions automatically.
-* Do not execute financial actions without explicit operator approval.
-* Do not hide risk state from the operator.
-
-If wallet or transaction-related functionality is ever added, it must be designed around:
-
-* watch-only mode;
-* PSBT-first workflows;
-* external signing;
-* explicit human confirmation;
-* audit logs;
-* policy enforcement.
+These ongoing modules are not yet fully production-ready and therefore not all documented in the main README.  Contributors should refer to the associated docs and migration files when working on these features, and avoid making major changes to the legacy frontend until cutover gates are met.
 
 ---
 
@@ -1101,3 +610,11 @@ make deploy-single-node
 ```
 
 No runtime profile is automatically production-ready. Production readiness requires environment-specific evidence artifacts, including deployment evidence, migration smoke evidence, schema parity evidence, provider health evidence, observability validation, backup/restore validation, rollback validation, security review, load testing, and incident/drill evidence.
+
+## Frontend primary switch status
+
+Prompt 21/22 sets Reflex as the preferred primary frontend for migration runtime profiles with `BASTION_PRIMARY_FRONTEND=reflex`, while preserving Next.js as the rollback frontend with `BASTION_LEGACY_FRONTEND=nextjs`. The decision is **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**: public, Trace, Console, safety, API-client, and Reflex build/export gates passed, while FastAPI/Jinja Market detail routes remain delegated and Next.js remains intact for rollback. See `docs/FRONTEND_PRIMARY_SWITCH.md`, `docs/FRONTEND_ROLLBACK.md`, `docs/FRONTEND_REFLEX_ROUTE_PARITY.md`, `docs/FRONTEND_REFLEX_API_PARITY.md`, and `docs/FRONTEND_REFLEX_TEST_STATUS.md`.
+
+## Final Reflex migration audit
+
+Prompt 22/22 keeps Reflex as the preferred primary migration frontend, but Next.js remains in `frontend/` as a legacy rollback surface. The archive decision is **B. Mark Next.js as legacy but keep in `frontend/`**. Market detail routes remain FastAPI/Jinja-delegated where documented, and production readiness is not claimed until root-suite, Docker, accessibility, and live deployment evidence blockers are resolved. See `docs/FRONTEND_REFLEX_FINAL_AUDIT.md`, `docs/FRONTEND_REFLEX_CUTOVER_STATUS.md`, `docs/NEXTJS_LEGACY_ARCHIVE_PLAN.md`, and `docs/FRONTEND_ROLLBACK_PLAN.md`.
