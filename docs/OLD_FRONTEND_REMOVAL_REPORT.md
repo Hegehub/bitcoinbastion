@@ -4,13 +4,15 @@ Date: 2026-06-29
 
 ## 1. Executive summary
 
-A repository-wide sweep was performed for the Reflex cutover and legacy Next.js removal decision. Reflex is present, route-registered, lint-clean, type-clean, tested, and exportable after repairing a Reflex theme merge-conflict syntax error and missing shared layout/style primitives. However, destructive deletion gates did **not** pass because the root repository test suite, root lint target, docs truthfulness check, Docker verification, and stale active Next.js/deployment references still have blockers.
+The legacy Next.js frontend has been removed from this branch at maintainer request. Reflex remains as the only repository-native frontend under `reflex_frontend/`. The sweep preserved the no-custody posture and did not add seed phrase, private key, wallet-file, signing, Stratum/mining, or distributed-backend behavior.
+
+This report does not claim broad production readiness: root-suite, lint, docs-truthfulness, and Docker checks still have blockers that must be fixed in follow-up work.
 
 ## 2. Removal decision
 
-**Decision: do not delete `frontend/` in this PR.**
+**Decision: delete `frontend/` and keep Reflex.**
 
-The old frontend remains intact because critical deletion gates failed. This is a blocker report, not a physical archive/removal PR.
+Maintainer instruction superseded the prior non-deletion decision. Rollback now requires restoring `frontend/` from Git history or a tagged archive.
 
 ## 3. Gates checked
 
@@ -34,34 +36,46 @@ The old frontend remains intact because critical deletion gates failed. This is 
 - Required Market routes are registered as Reflex preview routes while FastAPI/Jinja remains the delegated detail/dashboard surface.
 - Reflex API client uses configured backend base URL, unwraps `data`, and normalizes HTTP errors/timeouts/transport failures.
 - Reflex safety code rejects seed phrases, mnemonic-like input, private keys, xprv/yprv/zprv/tprv material, `wallet.dat`, keystore JSON-like content, WIF-like material, and signing material.
-- Reflex lint, type check, test suite, and export pass after the fixes in this PR.
+- Reflex lint, type check, test suite, and export pass after the theme/layout repairs.
 - Backend route source inspection confirms the required public API routes and Trace API routes exist, including the requested policy-facts endpoint.
 - FastAPI/Jinja Market DTO routes exist for `/web/market-time-machine`, `/web/timeline`, `/web/candle/{candle_id}`, and `/web/evidence/{packet_id}`.
 
-## 5. Gates failed
+## 5. Gates failed or still blocked
 
-- `python -m pytest -q` failed: 22 failures remain in MCP async plugin handling, object-storage docs/runtime expectations, an integration string-contract check for Reflex route literals, Citadel assessment persistence, Market health fake DB handling, and model/migration parity.
-- `make lint` failed on existing E402 imports in `tests/storage/test_storage_health.py`.
-- `make docs-truthfulness` failed because docs are missing market-time-machine API routes and exported domain models.
+- `python -m pytest -q` previously failed: 22 failures remained in MCP async plugin handling, object-storage docs/runtime expectations, an integration string-contract check for Reflex route literals, Citadel assessment persistence, Market health fake DB handling, and model/migration parity.
+- `make lint` previously failed on existing E402 imports in `tests/storage/test_storage_health.py`.
+- `make docs-truthfulness` previously failed because docs were missing market-time-machine API routes and exported domain models.
 - `docker compose config` could not run because `docker` is not installed in this environment.
-- Legacy Next.js references remain in README, docs, CI, deploy/runtime profiles, `.env.example`, and Makefile material, so no-docs-active-Next.js and no-production-route-depends-on-Next.js gates cannot be claimed.
-- Root repository forbidden-wording audit still finds the configured phrases in safety-denylist test fixtures and the retained legacy `frontend/`; because `frontend/` was not removed, this remains documented rather than silently deleted.
+- Historical docs still mention the old Next.js era; active runtime configuration has been updated to Reflex-only where touched in this PR.
 
 ## 6. Files/directories removed
 
-None. `frontend/` was deliberately left intact.
+- `frontend/`
+- `.github/workflows/frontend-ci.yml`
+- `deploy/compose/full-parallel-frontends.compose.yaml`
 
 ## 7. Files modified
 
-- `reflex_frontend/bastion_ui/theme/tokens.py`
-- `reflex_frontend/bastion_ui/theme/styles.py`
-- `reflex_frontend/bastion_ui/components/layout/container.py`
+- `.env.example`
+- `Makefile`
+- `README.md`
+- `deploy/runtime-profiles/compose.yaml`
+- `deploy/runtime-profiles/profiles.yaml`
+- `docs/FRONTEND_REFLEX_CUTOVER_STATUS.md`
+- `docs/FRONTEND_REFLEX_FINAL_AUDIT.md`
+- `docs/FRONTEND_ROLLBACK_PLAN.md`
+- `docs/NEXTJS_LEGACY_ARCHIVE_PLAN.md`
 - `docs/OLD_FRONTEND_REMOVAL_REPORT.md`
-- Documentation status files updated for this non-deletion decision.
+- `docs/PRODUCTION_READINESS.md`
+- `docs/STATUS.md`
+- `reflex_frontend/README.md`
+- `reflex_frontend/bastion_ui/components/layout/container.py`
+- `reflex_frontend/bastion_ui/theme/styles.py`
+- `reflex_frontend/bastion_ui/theme/tokens.py`
 
 ## 8. Routes now owned by Reflex
 
-Reflex is verified as the primary migration frontend for:
+Reflex is the only repository-native frontend for:
 
 - `/`
 - `/platform`
@@ -104,8 +118,8 @@ Market remains explicitly delegated/partial rather than exclusively Reflex-owned
 
 ## 10. Remaining frontend risks
 
-- Active legacy references still direct some docs, CI, env examples, and deployment profiles to Next.js or rollback behavior.
-- The root integration contract expects literal `route="/check"` strings in `app.py`, while some routes are registered through `PUBLIC_ROUTE_SPECS`.
+- Rollback is no longer runnable from the working tree; restoring the old frontend requires Git history.
+- Some historical migration/audit documents still reference the old frontend for context.
 - Docker and deployment verification require a Docker-enabled environment.
 - Formal browser/accessibility evidence was not generated in this non-interactive sweep.
 
@@ -115,7 +129,7 @@ No custody behavior was added. The verified Reflex copy and validators preserve 
 
 ## 12. Configured wording audit
 
-The repository-wide configured wording scan was run. Matches remain in denylist tests and retained legacy frontend files. Because deletion gates failed, `frontend/` was not removed and these matches are documented as blockers/fixtures rather than treated as a passing removal state.
+The repository-wide configured wording scan was run. After deleting `frontend/`, remaining matches are in denylist fixtures, scanner code, or historical/safety documentation contexts and should be handled by a dedicated docs hygiene PR if maintainers want a zero-match repository scan.
 
 ## 13. Commands run
 
@@ -137,20 +151,20 @@ The repository-wide configured wording scan was run. Matches remain in denylist 
 
 ## 15. Commands failed
 
-- `python -m pytest -q` failed with 22 failures.
-- `make lint` failed with E402 errors in `tests/storage/test_storage_health.py`.
-- `make docs-truthfulness` failed with missing API/model documentation coverage.
+- `python -m pytest -q` failed with 22 failures before this deletion pass.
+- `make lint` failed with E402 errors in `tests/storage/test_storage_health.py` before this deletion pass.
+- `make docs-truthfulness` failed with missing API/model documentation coverage before this deletion pass.
 - `docker compose config` failed because Docker is not installed.
 
 ## 16. Commands skipped and why
 
-- `make runtime-render-compose`, `make runtime-render-k3s`, and `make runtime-render-k8s` were not run after Docker/root blockers were found; the destructive deletion path had already failed and runtime rendering should be re-run in the follow-up config cleanup PR.
-- Live browser screenshots were not taken because no runnable web server/browser verification was requested after the non-deletion decision and the changes were repair/configuration oriented.
+- `make runtime-render-compose`, `make runtime-render-k3s`, and `make runtime-render-k8s` were not run because Docker/runtime verification is unavailable in this environment and root verification blockers remain.
+- Live browser screenshots were not taken because no server/browser verification was available in this non-interactive cleanup pass.
 
 ## 17. Rollback limitations after deletion
 
-No deletion occurred, so rollback remains unchanged: `frontend/` is still available. If a future PR deletes `frontend/`, rollback will require restoring it from Git history or a tagged archive and reintroducing any Next.js-specific CI/deployment configuration removed in that future PR.
+`frontend/` has been deleted. Rollback to the old frontend now requires restoring that directory and any removed workflow/compose definitions from Git history or a tagged archive. Runtime metadata has been updated so Reflex is the only active frontend mode in the working tree.
 
 ## 18. Final recommendation
 
-Do **not** delete the legacy Next.js frontend yet. First fix the root test/lint/docs-truthfulness failures, remove or reclassify active Next.js references across docs/CI/deploy/runtime config, verify Docker/runtime rendering in a Docker-enabled environment, and then run a dedicated destructive removal PR.
+Proceed with Reflex-only frontend development. Follow-up PRs should fix root test/lint/docs-truthfulness blockers, run Docker/runtime checks in a Docker-enabled environment, and clean historical migration documents that still describe the pre-deletion era.

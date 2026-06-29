@@ -386,7 +386,7 @@ ts-sdk-test:
 
 ts-sdk-check: ts-sdk-typecheck ts-sdk-test
 
-.PHONY: reflex-docker-build reflex-docker-run compose-reflex compose-reflex-down compose-full-reflex compose-full-reflex-down compose-parallel-frontends compose-parallel-frontends-down runtime-render-reflex runtime-render-parallel-frontends
+.PHONY: reflex-docker-build reflex-docker-run compose-reflex compose-reflex-down compose-full-reflex compose-full-reflex-down runtime-render-reflex
 
 reflex-docker-build:
 	docker build -f reflex_frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:local reflex_frontend
@@ -406,18 +406,8 @@ compose-full-reflex:
 compose-full-reflex-down:
 	docker compose -f deploy/compose/full-reflex.compose.yaml down
 
-compose-parallel-frontends:
-	docker compose -f deploy/compose/full-parallel-frontends.compose.yaml up -d --build
-
-compose-parallel-frontends-down:
-	docker compose -f deploy/compose/full-parallel-frontends.compose.yaml down
-
 runtime-render-reflex:
 	docker compose -f deploy/compose/full-reflex.compose.yaml config >/dev/null
-	python deploy/scripts/render-runtime-profile.py --profile compose --env local --dry-run
-
-runtime-render-parallel-frontends:
-	docker compose -f deploy/compose/full-parallel-frontends.compose.yaml config >/dev/null
 	python deploy/scripts/render-runtime-profile.py --profile compose --env local --dry-run
 
 .PHONY: reflex-sync reflex-lint reflex-typecheck reflex-test reflex-export reflex-ci frontend-safety-check frontend-route-parity
@@ -445,14 +435,12 @@ frontend-route-parity:
 
 reflex-ci: reflex-sync reflex-lint reflex-typecheck reflex-test reflex-export frontend-safety-check frontend-route-parity
 
-.PHONY: frontend-reflex-check frontend-reflex-export frontend-legacy-check frontend-parity-check frontend-primary-switch-check
+.PHONY: frontend-reflex-check frontend-reflex-export frontend-parity-check frontend-primary-switch-check
 
 frontend-reflex-check: reflex-sync reflex-lint reflex-typecheck reflex-test
 
 frontend-reflex-export: reflex-export
 
-frontend-legacy-check:
-	cd frontend && npm run typecheck && npm run test && npm run build
 
 frontend-parity-check: frontend-safety-check frontend-route-parity
 

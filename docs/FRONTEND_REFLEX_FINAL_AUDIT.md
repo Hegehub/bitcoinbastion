@@ -270,3 +270,7 @@ The final destructive cleanup gate is documented in `docs/FRONTEND_REFLEX_FULL_C
 ## Old frontend removal sweep update (2026-06-29)
 
 The old frontend was not removed. Reflex local route/build safety evidence passed after theme/layout repairs, but repository deletion gates failed on root pytest, root lint, docs-truthfulness, Docker availability, and stale active Next.js/deployment references. The canonical current report is `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
+
+## Reflex-only frontend removal update (2026-06-29)
+
+The old frontend is now removed from the working tree at maintainer request. Earlier entries in this audit describe the pre-deletion migration state for historical context. Current state: Reflex is the only repository-native frontend, and rollback requires restoring deleted files from Git history.

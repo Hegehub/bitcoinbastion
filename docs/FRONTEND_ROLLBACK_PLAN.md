@@ -55,3 +55,7 @@ The destructive removal gate did not pass, so rollback still uses the intact `fr
 ## Old frontend removal sweep update (2026-06-29)
 
 Because `frontend/` was not deleted, rollback remains available through the intact legacy Next.js tree. A future deletion PR must explicitly document that rollback would require restoring `frontend/` from Git history or a tagged archive.
+
+## Rollback after old frontend deletion (2026-06-29)
+
+The old frontend directory has been deleted. Runtime rollback to that implementation is no longer available from the working tree; restore `frontend/`, the legacy CI workflow, and the parallel compose definition from Git history if maintainers need that path again.

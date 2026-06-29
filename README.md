@@ -154,7 +154,6 @@ In addition to local development, the repository supports multiple deployment mo
 
 - **Kubernetes deployments:** For production or high‑capacity environments deploy using the manifests under `deploy/kubernetes`.  The canonical base kustomization defines API, worker and beat deployments and CronJobs for health checks and recovery drills and exposes non‑secret object storage settings (`OBJECT_STORAGE_ENABLED`, `OBJECT_STORAGE_PROVIDER`, `OBJECT_STORAGE_ENDPOINT`, `OBJECT_STORAGE_BUCKET`, etc.) via a ConfigMap【turn105file0†L3-L23】.  Secrets such as `OBJECT_STORAGE_ACCESS_KEY` and `OBJECT_STORAGE_SECRET_KEY` must be provided via SealedSecret, SOPS, Vault or another secret manager【turn105file0†L24-L29】.  Use the evidence jobs defined in `docs/DEPLOYMENT_EVIDENCE_PACK.md` to run migrations, schema parity tests and release evidence (`make k8s-run-migration`, `make k8s-run-postgres-migration-smoke`, `make k8s-run-postgres-schema-parity`, `make k8s-run-release-evidence`, `make k8s-collect-evidence-artifacts`)【turn106file0†L1-L14】 and to collect sovereign runtime evidence, backup drills and promotion artifacts【turn106file0†L16-L29】.
 
-- **Frontend deployment:** The Next.js frontend can be deployed to Vercel by creating a project with root directory `frontend`, using `npm run build` as the build command and setting `NEXT_PUBLIC_API_BASE_URL` to point at your backend API【turn107file0†L4-L11】.  The backend may run on a VPS, a hosted container service (Fly.io, Render, Railway) or Kubernetes; in each case configure `CORS_ALLOW_ORIGINS` to match your frontend domain(s)【turn107file0†L12-L21】【turn107file0†L25-L34】.  Preview deployments should point at a staging backend and ensure degraded states are surfaced clearly; see the production checklist in `docs/frontend/DEPLOYMENT.md` for final verification steps【turn108file0†L9-L23】.  The experimental Reflex frontend can be deployed similarly but remains non‑production until route parity is achieved.
 
 - **VPS and container platforms:** The FastAPI backend can also run behind Nginx or Caddy on a single VPS with TLS termination, or on container platforms such as Fly.io, Render or Railway【turn107file0†L12-L21】.  When deploying this way follow the same environment‑variable conventions as the Kubernetes deployment (database, Redis, object storage) and ensure secrets are managed via your platform’s secret manager.  Use the storage health check (`/api/v1/storage/status`) and the migration smoke tests to validate your environment before exposing it to production traffic【turn104file0†L3-L10】.
 
@@ -180,7 +179,6 @@ The repository continues to evolve beyond the baseline described above.  Key are
 
 - **News scoring and sentiment:** A local sentiment engine and market-news scoring service are being integrated for more granular event scoring and classification.
 
-- **Frontend migration to Reflex:** A parallel `reflex_frontend/` directory contains an experimental Python‑first webapp built with the Reflex framework【turn72file0†L5-L13】.  This frontend runs alongside the legacy Next.js frontend until route parity, API parity and production evidence are complete【turn82file0†L5-L11】.  Migration baselines and route inventories for Trace Lite, Market Time Machine and Market Intelligence are documented in `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md`【turn76file0†L11-L25】, and design system details are captured in `reflex_frontend/docs/DESIGN_SYSTEM.md`【turn84file0†L5-L17】.  The Next.js frontend remains frozen except for safety, broken route and documentation fixes【turn82file0†L26-L38】, while new features are added in Reflex.  Ensure that any new user‑facing functionality includes advisory copy, no‑custody warnings and degraded‑state visibility, consistent with Reflex docs and tests.
 
 These ongoing modules are not yet fully production-ready and therefore not all documented in the main README.  Contributors should refer to the associated docs and migration files when working on these features, and avoid making major changes to the legacy frontend until cutover gates are met.
 
@@ -613,16 +611,16 @@ No runtime profile is automatically production-ready. Production readiness requi
 
 ## Frontend primary switch status
 
-Prompt 21/22 sets Reflex as the preferred primary frontend for migration runtime profiles with `BASTION_PRIMARY_FRONTEND=reflex`, while preserving Next.js as the rollback frontend with `BASTION_LEGACY_FRONTEND=nextjs`. The decision is **SWITCH_PARTIAL_WITH_DELEGATED_ROUTES**: public, Trace, Console, safety, API-client, and Reflex build/export gates passed, while FastAPI/Jinja Market detail routes remain delegated and Next.js remains intact for rollback. See `docs/FRONTEND_PRIMARY_SWITCH.md`, `docs/FRONTEND_ROLLBACK.md`, `docs/FRONTEND_REFLEX_ROUTE_PARITY.md`, `docs/FRONTEND_REFLEX_API_PARITY.md`, and `docs/FRONTEND_REFLEX_TEST_STATUS.md`.
 
 ## Final Reflex migration audit
 
-Prompt 22/22 keeps Reflex as the preferred primary migration frontend, but Next.js remains in `frontend/` as a legacy rollback surface. The archive decision is **B. Mark Next.js as legacy but keep in `frontend/`**. Market detail routes remain FastAPI/Jinja-delegated where documented, and production readiness is not claimed until root-suite, Docker, accessibility, and live deployment evidence blockers are resolved. See `docs/FRONTEND_REFLEX_FINAL_AUDIT.md`, `docs/FRONTEND_REFLEX_CUTOVER_STATUS.md`, `docs/NEXTJS_LEGACY_ARCHIVE_PLAN.md`, and `docs/FRONTEND_ROLLBACK_PLAN.md`.
 
 ## Frontend cutover status
 
-Reflex in `reflex_frontend/` is the preferred primary migration frontend. The legacy Next.js frontend in `frontend/` remains intentionally present for rollback because the final destructive cleanup gate is blocked by root-suite, Docker, Market delegation, deployment-reference, and accessibility-evidence blockers. See `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md` and `docs/legacy/NEXTJS_FRONTEND_ARCHIVE.md`.
 
 ## Old frontend removal sweep (2026-06-29)
 
-A full removal sweep was run for the Reflex migration. Reflex remains the preferred primary migration frontend and passed its local lint, type, test, and export checks after repairing Reflex theme/layout defects. The legacy Next.js frontend was **not deleted** because the root pytest suite, root lint target, docs-truthfulness check, Docker availability check, and active Next.js/deployment references still block destructive cleanup. Market remains delegated/partial: Reflex provides Market preview routes, while FastAPI/Jinja still owns detail/dashboard DTO routes. See `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
+
+## Reflex-only frontend status (2026-06-29)
+
+The old Next.js frontend directory has been removed from this branch at maintainer request. `reflex_frontend/` is now the only repository-native frontend. FastAPI remains the backend source of truth, and FastAPI/Jinja still owns delegated Market detail/dashboard routes where documented. Rollback to the old frontend now requires restoring `frontend/` from Git history or a tagged archive. See `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.

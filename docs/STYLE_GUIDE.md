@@ -19,11 +19,10 @@ The backend codebase lives primarily in the `app/` directory and supports FastAP
 
 There are currently three frontend surfaces:
 
-- `frontend/` – the legacy Next.js React application.  It remains frozen except for critical fixes until the Reflex cut‑over is complete【turn82file0†L26-L38】.
 - `app/web/` – FastAPI + Jinja templates used for lightweight pages such as status dashboards and health probes.  They remain supported until Reflex covers their routes【turn76file0†L11-L25】.
-- `reflex_frontend/` – an experimental Python‑first frontend built on the Reflex framework【turn72file0†L5-L13】.  This directory mirrors the Next.js UI while incrementally achieving route and API parity; new user‑facing functionality should be added here.  Refer to `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md` for the baseline inventory【turn76file0†L11-L25】 and `reflex_frontend/docs/DESIGN_SYSTEM.md` for design principles【turn84file0†L5-L17】.
+- `reflex_frontend/` – the Python-first frontend built on the Reflex framework. New user-facing functionality should be added here.  Refer to `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md` for the baseline inventory【turn76file0†L11-L25】 and `reflex_frontend/docs/DESIGN_SYSTEM.md` for design principles【turn84file0†L5-L17】.
 
-Future work may consolidate these surfaces once Reflex achieves full parity; until then, do **not** remove files from `frontend/` or `app/web/` and ensure any UI changes are reflected in the Reflex migration documentation.
+The old frontend has been removed; do **not** reintroduce it. Do not remove `app/web/` Market routes without a separate ownership plan.
 
 ## Documentation conventions
 
@@ -44,7 +43,7 @@ When adding new documentation:
 
 ### Frontend doc style
 
-Docs describing frontend pages (for both Next.js and Reflex) should list the route(s), the backend endpoint(s) they depend on, and the safety copy and degraded‑state handling.  They should also note any missing endpoints or gaps to parity【turn74file0†L6-L19】.  The `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md` file provides an inventory of routes and should be updated as new pages are added.
+Docs describing frontend pages (Reflex and any delegated Jinja surfaces) should list the route(s), the backend endpoint(s) they depend on, and the safety copy and degraded‑state handling.  They should also note any missing endpoints or gaps to parity【turn74file0†L6-L19】.  The `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md` file provides an inventory of routes and should be updated as new pages are added.
 
 ### Migration docs
 
@@ -71,7 +70,7 @@ When database migrations add new tables or columns or seed data, include a corre
 To reduce confusion between backend services and frontend user interfaces, create subfolders within `docs/`:
 
 - `docs/backend/` – houses docs for backend subsystems (e.g., Historical Similarity Engine, Market Signal Governance, Evidence Packets).  These should focus on APIs, data models and internal logic.
-- `docs/frontend/` – houses docs for UI surfaces (Next.js, Reflex, Jinja).  Each file should correspond to a page or group of pages and include routes, backend dependencies, safety copy and state handling.
+- `docs/frontend/` – historical UI planning docs; current frontend implementation lives in `reflex_frontend/`.  Each file should correspond to a page or group of pages and include routes, backend dependencies, safety copy and state handling.
 
 Existing docs can be moved into these subfolders over time.  When moving files, ensure all links in other docs and the README are updated accordingly.
 

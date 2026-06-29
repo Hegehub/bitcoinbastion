@@ -57,3 +57,7 @@ No runnable frontend was removed in this pass.
 ## Old frontend removal sweep update (2026-06-29)
 
 Decision remains **blocked; keep `frontend/` intact**. Reflex is verified as the preferred primary migration frontend locally, Trace remains Reflex-owned for migration purposes, and Market remains partial/delegated to FastAPI/Jinja for detail/dashboard routes. See `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
+
+## Reflex-only frontend removal update (2026-06-29)
+
+Maintainer requested removal of the old frontend. `frontend/` and the legacy frontend CI/parallel compose support have been deleted. Reflex remains the only frontend in the working tree; Market detail/dashboard routes remain delegated to FastAPI/Jinja.

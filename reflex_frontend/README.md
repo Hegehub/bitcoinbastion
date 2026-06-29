@@ -269,3 +269,7 @@ Reflex is the preferred primary migration frontend, but the final destructive cl
 ## Old frontend removal sweep (2026-06-29)
 
 Reflex passed local verification (`ruff`, `mypy`, `pytest`, and `reflex export`) after theme/layout repairs. It remains the preferred primary migration frontend, but not a deletion-complete production claim: the old Next.js `../frontend/` directory was kept because repository-level gates failed. Market remains partial/delegated to FastAPI/Jinja for detail/dashboard routes. See `../docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
+
+## Reflex-only status (2026-06-29)
+
+The old Next.js frontend has been removed from the repository working tree. This directory is now the only repository-native frontend. Use `BB_API_BASE_URL` to point Reflex clients at FastAPI, and restore deleted files from Git history if an old-frontend rollback is ever required.
