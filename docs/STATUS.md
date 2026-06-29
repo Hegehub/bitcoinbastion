@@ -426,3 +426,11 @@ Final archive decision: **B. Mark Next.js as legacy but keep in `frontend/`**. R
 ## Frontend full cutover status
 
 The final destructive frontend cleanup is blocked. Reflex remains preferred, but `frontend/` is kept as legacy rollback until the blockers in `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md` are resolved.
+
+## Old frontend removal sweep (2026-06-29)
+
+The latest destructive deletion gate is **blocked**. Reflex is the preferred primary migration frontend and its local checks pass, but `frontend/` remains intact because root tests, lint, docs-truthfulness, Docker verification, and stale active Next.js references still have blockers. See `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
+
+## Reflex-only frontend status (2026-06-29)
+
+`frontend/` has been removed. Reflex is now the only frontend kept in the working tree. Rollback to the old Next.js implementation requires restoring deleted files from Git history. Root-suite, lint, docs-truthfulness, and Docker blockers remain tracked in `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.

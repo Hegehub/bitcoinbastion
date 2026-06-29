@@ -1,3 +1,5 @@
+> Current note (2026-06-29): the old Next.js frontend has been removed; historical references below are retained only for migration context. Reflex is the only repository-native frontend.
+
 # Frontend Rollback Guide
 
 ## 1. When to rollback
