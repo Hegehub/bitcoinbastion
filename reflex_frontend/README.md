@@ -265,3 +265,7 @@ Prompt 22/22 confirms Reflex as the preferred primary migration frontend, but no
 ## Final cutover cleanup status
 
 Reflex is the preferred primary migration frontend, but the final destructive cleanup gate did not pass. The legacy Next.js frontend remains in `../frontend/` for rollback until root-suite, Docker, Market ownership, deployment-reference, and accessibility-evidence blockers are resolved.
+
+## Old frontend removal sweep (2026-06-29)
+
+Reflex passed local verification (`ruff`, `mypy`, `pytest`, and `reflex export`) after theme/layout repairs. It remains the preferred primary migration frontend, but not a deletion-complete production claim: the old Next.js `../frontend/` directory was kept because repository-level gates failed. Market remains partial/delegated to FastAPI/Jinja for detail/dashboard routes. See `../docs/OLD_FRONTEND_REMOVAL_REPORT.md`.

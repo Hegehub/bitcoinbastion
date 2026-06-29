@@ -51,3 +51,7 @@ The physical archive/move/delete gate does not pass yet. Reflex is the preferred
 ## Final destructive cleanup audit update (2026-06-28)
 
 The final deletion prompt did not remove `frontend/`. The archive record is now captured in `docs/legacy/NEXTJS_FRONTEND_ARCHIVE.md` as a pending archive rather than a completed removal. Next.js remains legacy rollback until the full cutover blockers are cleared.
+
+## Old frontend removal sweep update (2026-06-29)
+
+Archive/removal remains pending. The 2026-06-29 sweep did not delete `frontend/` because repository-level verification and deployment-reference gates failed. Treat Next.js as legacy rollback, not primary development surface, until a follow-up removal PR clears the blockers in `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
