@@ -169,8 +169,10 @@ class MinIOObjectStore:
 
         if expires_seconds <= 0:
             raise ObjectStoreConfigurationError("Presigned URL expiry must be positive.")
-        return self._client.presigned_get_object(
-            validate_bucket_name(bucket),
-            normalize_object_key(object_key),
-            expires=timedelta(seconds=expires_seconds),
+        return str(
+            self._client.presigned_get_object(
+                validate_bucket_name(bucket),
+                normalize_object_key(object_key),
+                expires=timedelta(seconds=expires_seconds),
+            )
         )

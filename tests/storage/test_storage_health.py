@@ -1,6 +1,13 @@
+import asyncio
 from dataclasses import dataclass
 
-import asyncio
+from fastapi.testclient import TestClient
+from redis import RedisError
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.api.v1 import storage_status as storage_status_module
+from app.core.config import Settings
+from app.main import app
 
 from app.storage.constants import CLICKHOUSE, POSTGRES
 from app.storage.health import StorageHealthAggregator
@@ -62,15 +69,6 @@ def test_health_summary_returns_degraded_if_optional_analytical_store_unavailabl
     summary = asyncio.run(aggregator.summary())
     assert summary["status"] == "degraded"
     assert summary["degraded"] is True
-
-
-from fastapi.testclient import TestClient
-from redis import RedisError
-from sqlalchemy.exc import SQLAlchemyError
-
-from app.api.v1 import storage_status as storage_status_module
-from app.core.config import Settings
-from app.main import app
 
 
 class FakeStatusDB:

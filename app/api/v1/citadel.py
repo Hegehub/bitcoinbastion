@@ -43,11 +43,15 @@ def _build_assessment(
     service = CitadelAssessmentService()
     signature = inspect.signature(service.build_assessment)
     if "wallet_context" in signature.parameters:
-        return service.build_assessment(owner_type=owner_type, owner_id=owner_id, wallet_context=context)
+        return service.build_assessment(
+            owner_type=owner_type, owner_id=owner_id, wallet_context=context
+        )
     return service.build_assessment(owner_type=owner_type, owner_id=owner_id)
 
 
-def _load_wallet_context(*, owner_id: int, db: Session) -> CitadelAssessmentService.WalletRuntimeContext:
+def _load_wallet_context(
+    *, owner_id: int, db: Session
+) -> CitadelAssessmentService.WalletRuntimeContext:
     wallet_repo = WalletRepository(db)
     profile = None
     report = None
@@ -55,10 +59,12 @@ def _load_wallet_context(*, owner_id: int, db: Session) -> CitadelAssessmentServ
         profiles = wallet_repo.list_by_user(user_id=owner_id, limit=1, offset=0)
         if profiles:
             profile = profiles[0]
-            reports = wallet_repo.list_health_reports(wallet_profile_id=profile.id, limit=1, offset=0)
+            reports = wallet_repo.list_health_reports(
+                wallet_profile_id=profile.id, limit=1, offset=0
+            )
             if reports:
                 report = reports[0]
-    except SQLAlchemyError:
+    except (AttributeError, SQLAlchemyError):
         profile = None
         report = None
     return CitadelAssessmentService.build_wallet_context(
@@ -71,12 +77,16 @@ def _load_wallet_context(*, owner_id: int, db: Session) -> CitadelAssessmentServ
 
 
 def _is_snapshot_fresh(*, generated_at: datetime, max_age_hours: int) -> bool:
-    generated_utc = generated_at if generated_at.tzinfo is not None else generated_at.replace(tzinfo=UTC)
+    generated_utc = (
+        generated_at if generated_at.tzinfo is not None else generated_at.replace(tzinfo=UTC)
+    )
     return generated_utc >= (datetime.now(UTC) - timedelta(hours=max_age_hours))
 
 
 def _cache_age_seconds(*, generated_at: datetime) -> int:
-    generated_utc = generated_at if generated_at.tzinfo is not None else generated_at.replace(tzinfo=UTC)
+    generated_utc = (
+        generated_at if generated_at.tzinfo is not None else generated_at.replace(tzinfo=UTC)
+    )
     return max(0, int((datetime.now(UTC) - generated_utc).total_seconds()))
 
 
@@ -90,7 +100,9 @@ def _load_assessment(
 ) -> CitadelAssessmentOut:
     repo = CitadelAssessmentRepository(db)
     cached = repo.latest(owner_type=owner_type, owner_id=owner_id)
-    cached_is_fresh = cached is not None and _is_snapshot_fresh(generated_at=cached.generated_at, max_age_hours=max_age_hours)
+    cached_is_fresh = cached is not None and _is_snapshot_fresh(
+        generated_at=cached.generated_at, max_age_hours=max_age_hours
+    )
     if cached is not None and cached_is_fresh and not force_refresh:
         cached_data = repo.to_schema(cached)
         cached_freshness = CitadelFreshnessOut.model_validate(cached_data.freshness)
@@ -182,14 +194,18 @@ def recalculate_citadel(
 ) -> ResponseEnvelope[CitadelAssessmentOut]:
     repo = CitadelAssessmentRepository(db)
     context = _load_wallet_context(owner_id=payload.owner_id, db=db)
-    data = _build_assessment(owner_type=payload.owner_type, owner_id=payload.owner_id, context=context)
+    data = _build_assessment(
+        owner_type=payload.owner_type, owner_id=payload.owner_id, context=context
+    )
     repo.save(assessment=data)
     return ResponseEnvelope(data=data)
 
 
 @router.get("/dependencies", response_model=ResponseEnvelope[CitadelDependencyGraphOut])
 def citadel_dependencies(owner_id: int = 1) -> ResponseEnvelope[CitadelDependencyGraphOut]:
-    data = CitadelDependencyGraphOut.model_validate(SovereigntyGraphService().build(owner_id=owner_id))
+    data = CitadelDependencyGraphOut.model_validate(
+        SovereigntyGraphService().build(owner_id=owner_id)
+    )
     return ResponseEnvelope(data=data)
 
 
@@ -202,7 +218,9 @@ def citadel_recovery(owner_id: int = 1) -> ResponseEnvelope[RecoveryReadinessOut
 @router.post("/simulations", response_model=ResponseEnvelope[CitadelSimulationOut])
 def create_simulation(payload: CitadelSimulationIn) -> ResponseEnvelope[CitadelSimulationOut]:
     data = CitadelSimulationOut.model_validate(
-        DisasterSimulationService().simulate(owner_id=payload.owner_id, scenario_code=payload.scenario_code)
+        DisasterSimulationService().simulate(
+            owner_id=payload.owner_id, scenario_code=payload.scenario_code
+        )
     )
     return ResponseEnvelope(data=data)
 
@@ -219,7 +237,9 @@ def list_simulations(owner_id: int = 1) -> ResponseEnvelope[list[CitadelSimulati
 
 @router.get("/inheritance", response_model=ResponseEnvelope[CitadelInheritanceOut])
 def citadel_inheritance(owner_id: int = 1) -> ResponseEnvelope[CitadelInheritanceOut]:
-    data = CitadelInheritanceOut.model_validate(InheritanceVerificationService().evaluate(owner_id=owner_id))
+    data = CitadelInheritanceOut.model_validate(
+        InheritanceVerificationService().evaluate(owner_id=owner_id)
+    )
     return ResponseEnvelope(data=data)
 
 
