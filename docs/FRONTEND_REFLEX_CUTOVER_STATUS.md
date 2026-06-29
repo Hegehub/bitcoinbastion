@@ -53,3 +53,7 @@ Decision: **blocked; keep `frontend/` intact**.
 The full cutover audit in `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md` confirms that Reflex remains the preferred primary migration frontend, but the old Next.js frontend cannot be deleted yet. The blockers are the failing root test suite, Docker verification being unavailable in this agent environment, Market detail/drill-down delegation, active rollback references in deployment/docs/CI material, and incomplete formal accessibility/manual browser evidence.
 
 No runnable frontend was removed in this pass.
+
+## Old frontend removal sweep update (2026-06-29)
+
+Decision remains **blocked; keep `frontend/` intact**. Reflex is verified as the preferred primary migration frontend locally, Trace remains Reflex-owned for migration purposes, and Market remains partial/delegated to FastAPI/Jinja for detail/dashboard routes. See `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.

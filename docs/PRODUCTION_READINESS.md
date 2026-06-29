@@ -411,3 +411,7 @@ The final Reflex migration audit does not establish broad production readiness. 
 ## Frontend deletion readiness
 
 Legacy Next.js removal is not production-ready yet. The full cutover audit blocks deletion of `frontend/` because root tests fail, Docker verification is unavailable in the agent environment, Market detail ownership is delegated, and formal accessibility/manual browser evidence remains incomplete.
+
+## Old frontend removal sweep (2026-06-29)
+
+No production-readiness claim is made from the old-frontend removal sweep. Reflex passed local verification, but repository-level tests/lint/docs-truthfulness and Docker verification did not pass. The old Next.js frontend remains a rollback surface until those blockers and active Next.js references are resolved.

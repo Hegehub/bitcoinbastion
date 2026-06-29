@@ -622,3 +622,7 @@ Prompt 22/22 keeps Reflex as the preferred primary migration frontend, but Next.
 ## Frontend cutover status
 
 Reflex in `reflex_frontend/` is the preferred primary migration frontend. The legacy Next.js frontend in `frontend/` remains intentionally present for rollback because the final destructive cleanup gate is blocked by root-suite, Docker, Market delegation, deployment-reference, and accessibility-evidence blockers. See `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md` and `docs/legacy/NEXTJS_FRONTEND_ARCHIVE.md`.
+
+## Old frontend removal sweep (2026-06-29)
+
+A full removal sweep was run for the Reflex migration. Reflex remains the preferred primary migration frontend and passed its local lint, type, test, and export checks after repairing Reflex theme/layout defects. The legacy Next.js frontend was **not deleted** because the root pytest suite, root lint target, docs-truthfulness check, Docker availability check, and active Next.js/deployment references still block destructive cleanup. Market remains delegated/partial: Reflex provides Market preview routes, while FastAPI/Jinja still owns detail/dashboard DTO routes. See `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.

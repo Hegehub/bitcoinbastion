@@ -266,3 +266,7 @@ Status: **PARTIAL PASS**.
 ## Full destructive cleanup audit update (2026-06-28)
 
 The final destructive cleanup gate is documented in `docs/FRONTEND_REFLEX_FULL_CUTOVER_AUDIT.md`. The decision is **deletion blocked**: Reflex remains the preferred primary migration frontend, but `frontend/` stays in place for rollback until root-suite, Docker, Market ownership, deployment-reference, and formal accessibility evidence blockers are resolved.
+
+## Old frontend removal sweep update (2026-06-29)
+
+The old frontend was not removed. Reflex local route/build safety evidence passed after theme/layout repairs, but repository deletion gates failed on root pytest, root lint, docs-truthfulness, Docker availability, and stale active Next.js/deployment references. The canonical current report is `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
