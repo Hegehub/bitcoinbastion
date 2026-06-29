@@ -42,6 +42,13 @@ evidence_notes:
   - Production claims require additional host, backup, monitoring, and recovery evidence.
 future_extensions:
   - podman-compose metadata may be added later.
+storage_foundation:
+  postgres: required
+  redis: required_ephemeral
+  object_storage: local_minio_default
+  object_storage_notes:
+    - Local MinIO is intended for development and smoke evidence only.
+    - Replace unsafe defaults and add backups before any production-like use.
 frontend:
   supported_modes:
     - api-only

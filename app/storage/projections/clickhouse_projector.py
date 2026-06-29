@@ -238,8 +238,8 @@ def map_outbox_event_to_clickhouse_row(event: StorageOutboxEvent) -> ProjectedCl
         "source_store": str(metadata.get("source_store") or "storage_outbox"),
         "source_table": str(metadata.get("source_table") or event.aggregate_type),
         "source_id_hash": str(payload.get("source_id_hash") or _hash_value(event.aggregate_id)),
-        "projection_version": int(metadata.get("projection_version") or 1),
-        "schema_version": int(metadata.get("schema_version") or 1),
+        "projection_version": _coerce_int(metadata.get("projection_version"), 1),
+        "schema_version": _coerce_int(metadata.get("schema_version"), 1),
         "created_at": now,
         "payload_json": _safe_payload_json(payload),
     }
@@ -280,7 +280,7 @@ def _table_defaults(
             "news_event_hash": str(payload.get("news_event_hash") or common_hash),
             "source_hash": str(payload.get("source_hash") or common_hash),
             "source_tier": str(payload.get("source_tier") or "unknown"),
-            "narrative_tags": list(payload.get("narrative_tags") or []),
+            "narrative_tags": _coerce_list(payload.get("narrative_tags")),
             "asset": str(payload.get("asset") or "btc"),
             "impact_window": str(payload.get("impact_window") or "unknown"),
             "sentiment_band": str(payload.get("sentiment_band") or "unknown"),
@@ -295,9 +295,9 @@ def _table_defaults(
             ),
             "candidate_type": str(payload.get("candidate_type") or "unknown"),
             "candidate_hash": str(payload.get("candidate_hash") or common_hash),
-            "candidate_rank": int(payload.get("candidate_rank") or 0),
+            "candidate_rank": _coerce_int(payload.get("candidate_rank"), 0),
             "explanation_hash": str(payload.get("explanation_hash") or common_hash),
-            "limitations": list(payload.get("limitations") or []),
+            "limitations": _coerce_list(payload.get("limitations")),
         }
     if table == "trace_runtime_events":
         return {
@@ -307,7 +307,7 @@ def _table_defaults(
             "workspace_id_hash": str(payload.get("workspace_id_hash") or common_hash),
             "risk_band": str(payload.get("risk_band") or "unknown"),
             "confidence_band": str(payload.get("confidence_band") or "unknown"),
-            "provider_count": int(payload.get("provider_count") or 0),
+            "provider_count": _coerce_int(payload.get("provider_count"), 0),
             "disagreement_band": str(payload.get("disagreement_band") or "unknown"),
             "privacy_exposure_band": str(payload.get("privacy_exposure_band") or "unknown"),
             "review_status": str(payload.get("review_status") or "unknown"),
@@ -318,7 +318,7 @@ def _table_defaults(
             "workspace_id_hash": str(payload.get("workspace_id_hash") or common_hash),
             "event_type": event.event_type,
             "delivery_status": str(payload.get("delivery_status") or "unknown"),
-            "attempt_number": int(payload.get("attempt_number") or 1),
+            "attempt_number": _coerce_int(payload.get("attempt_number"), 1),
             "error_class": str(payload.get("error_class") or "none"),
         }
     if table == "api_usage_events":
@@ -333,7 +333,7 @@ def _table_defaults(
             "pass_lookup_hash": str(payload.get("pass_lookup_hash") or common_hash),
             "api_key_hash": str(payload.get("api_key_hash") or common_hash),
             "session_id_hash": str(payload.get("session_id_hash") or common_hash),
-            "rate_limited": int(payload.get("rate_limited") or 0),
+            "rate_limited": _coerce_int(payload.get("rate_limited"), 0),
             "policy_decision": str(payload.get("policy_decision") or "unknown"),
         }
     return {
@@ -359,6 +359,26 @@ def _require_metadata(metadata: object) -> Mapping[str, object]:
     if not isinstance(metadata, Mapping):
         return {}
     return metadata
+
+
+def _coerce_int(value: object, default: int) -> int:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, (int, float, str, bytes, bytearray)):
+        return int(value)
+    return default
+
+
+def _coerce_list(value: object) -> list[object]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    if isinstance(value, tuple):
+        return list(value)
+    return []
 
 
 def _validate_no_sensitive_payload(value: object) -> None:
@@ -427,6 +447,18 @@ def _timed_out(started_at: float, max_runtime_seconds: int | None) -> bool:
 
 
 def project_batch_sync(
-    projector: ClickHouseOutboxProjector, **kwargs: object
+    projector: ClickHouseOutboxProjector,
+    *,
+    batch_size: int = 100,
+    event_type: str | None = None,
+    max_runtime_seconds: int | None = None,
+    dry_run: bool = False,
 ) -> ClickHouseProjectionSummary:
-    return asyncio.run(projector.project_batch(**kwargs))
+    return asyncio.run(
+        projector.project_batch(
+            batch_size=batch_size,
+            event_type=event_type,
+            max_runtime_seconds=max_runtime_seconds,
+            dry_run=dry_run,
+        )
+    )

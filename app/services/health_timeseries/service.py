@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Protocol
 
 from app.db.models.time_utils import utcnow
 from app.db.repositories.provider_source_health_timeseries_repository import (
     ProviderSourceHealthTimeSeriesRepository,
+)
+from app.db.models.provider_source_health_timeseries import (
+    ProviderConfidenceTimeSeriesEvent,
+    ProviderHealthTimeSeriesSnapshot,
+    SourceConfidenceTimeSeriesEvent,
+    SourceHealthTimeSeriesSnapshot,
 )
 
 FORBIDDEN_METADATA_TERMS = (
@@ -26,6 +32,18 @@ FORBIDDEN_METADATA_TERMS = (
     "api_key",
     "bearer",
 )
+
+
+class HealthEventOutbox(Protocol):
+    def enqueue_event(
+        self,
+        *,
+        event_type: str,
+        aggregate_type: str,
+        aggregate_id: str,
+        payload_json: dict[str, object],
+        target_stores: list[str],
+    ) -> object: ...
 
 
 def _assert_safe_label(value: str, field_name: str) -> str:
@@ -65,7 +83,7 @@ class HealthSnapshotService:
         self,
         repository: ProviderSourceHealthTimeSeriesRepository,
         *,
-        outbox: object | None = None,
+        outbox: HealthEventOutbox | None = None,
     ) -> None:
         self.repository = repository
         self.outbox = outbox
@@ -89,7 +107,7 @@ class HealthSnapshotService:
         runtime_mode: str = "normal",
         is_degraded: bool = False,
         metadata_json: dict[str, object] | None = None,
-    ):
+    ) -> ProviderHealthTimeSeriesSnapshot:
         metadata = metadata_json or {}
         validate_safe_metadata(metadata)
         snapshot = self.repository.record_provider_snapshot(
@@ -132,7 +150,7 @@ class HealthSnapshotService:
         runtime_mode: str = "normal",
         is_degraded: bool = False,
         metadata_json: dict[str, object] | None = None,
-    ):
+    ) -> SourceHealthTimeSeriesSnapshot:
         metadata = metadata_json or {}
         validate_safe_metadata(metadata)
         snapshot = self.repository.record_source_snapshot(
@@ -156,7 +174,7 @@ class HealthSnapshotService:
         self._emit_source_events(snapshot)
         return snapshot
 
-    def record_provider_confidence_change(self, **values: Any):
+    def record_provider_confidence_change(self, **values: Any) -> ProviderConfidenceTimeSeriesEvent:
         metadata = values.get("metadata_json") or {}
         validate_safe_metadata(metadata)
         values["metadata_json"] = metadata
@@ -164,7 +182,7 @@ class HealthSnapshotService:
         values.setdefault("observed_at", utcnow())
         return self.repository.record_provider_confidence_event(**values)
 
-    def record_source_confidence_change(self, **values: Any):
+    def record_source_confidence_change(self, **values: Any) -> SourceConfidenceTimeSeriesEvent:
         metadata = values.get("metadata_json") or {}
         validate_safe_metadata(metadata)
         values["metadata_json"] = metadata

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Protocol
 from uuid import uuid4
 
 from app.db.models.metric_usage_event import MetricUsageEvent
@@ -17,8 +18,22 @@ from app.services.usage.metric_usage_safety import (
 )
 
 
+class MetricUsageOutbox(Protocol):
+    def enqueue_event(
+        self,
+        *,
+        event_type: str,
+        aggregate_type: str,
+        aggregate_id: str,
+        payload_json: dict[str, object],
+        target_stores: list[str],
+    ) -> object: ...
+
+
 class MetricUsageService:
-    def __init__(self, repository: MetricUsageRepository, *, outbox: object | None = None) -> None:
+    def __init__(
+        self, repository: MetricUsageRepository, *, outbox: MetricUsageOutbox | None = None
+    ) -> None:
         self.repository = repository
         self.outbox = outbox
 

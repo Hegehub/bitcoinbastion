@@ -111,7 +111,7 @@ class StorageOutboxService:
         return self.repository.count_by_status()
 
     def backoff_seconds(self, retry_count: int) -> int:
-        return min(3600, (2**retry_count) * 30)
+        return int(min(3600, (2**retry_count) * 30))
 
     def _create_from_payload(self, payload: StorageOutboxEventCreate) -> StorageOutboxEvent:
         event = StorageOutboxEvent(

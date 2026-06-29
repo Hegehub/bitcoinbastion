@@ -68,8 +68,8 @@ class StorageRegistry:
             )
 
         for vector_engine in (QDRANT, PGVECTOR):
-            descriptor = self._descriptors.get(vector_engine)
-            if descriptor and descriptor.source_of_truth:
+            vector_descriptor = self._descriptors.get(vector_engine)
+            if vector_descriptor and vector_descriptor.source_of_truth:
                 warnings.append(f"{vector_engine} must not be marked as canonical source_of_truth")
 
         object_storage = self._descriptors.get(OBJECT_STORAGE)
