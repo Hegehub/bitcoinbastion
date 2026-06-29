@@ -14,12 +14,21 @@ class NewsScoringEngine:
     def score_article(self, db: Session, article: NewsArticle) -> NewsScore:
         factors = calculate_factor_scores(article.title, article.summary, article.content_text)
         btc = btc_keyword_score(article.title, article.summary, article.content_text)
-        pos = score_keywords(article.title, article.summary, article.content_text, POSITIVE_KEYWORDS)
-        neg = score_keywords(article.title, article.summary, article.content_text, NEGATIVE_KEYWORDS)
+        pos = score_keywords(
+            article.title, article.summary, article.content_text, POSITIVE_KEYWORDS
+        )
+        neg = score_keywords(
+            article.title, article.summary, article.content_text, NEGATIVE_KEYWORDS
+        )
         sentiment = max(0.0, min(1.0, 0.5 + (pos - neg) / 2))
         novelty = 0.2 if article.is_duplicate else 0.85
         source_cred = max(0.0, min(1.0, article.provider_confidence))
-        market_impact = max(factors["institutional_score"], factors["macro_score"], factors["regulatory_score"], factors["security_risk_score"])
+        market_impact = max(
+            factors["institutional_score"],
+            factors["macro_score"],
+            factors["regulatory_score"],
+            factors["security_risk_score"],
+        )
         confidence = calculate_confidence(article.provider_confidence, source_cred, novelty)
         scores = {
             "btc_relevance_score": btc,
@@ -65,9 +74,16 @@ class NewsScoringEngine:
             confidence_score=event.event_confidence,
             provider_confidence=event.provider_confidence,
             score_version=SCORE_VERSION,
-            explanation_json={"summary": "Event score is aggregated from linked article and event metadata."},
-            factor_breakdown_json={"event_article_count": event.article_count, "event_source_count": event.source_count},
-            limitations_json={"limitations": ["Event scoring is aggregated and may hide article-level nuances."]},
+            explanation_json={
+                "summary": "Event score is aggregated from linked article and event metadata."
+            },
+            factor_breakdown_json={
+                "event_article_count": event.article_count,
+                "event_source_count": event.source_count,
+            },
+            limitations_json={
+                "limitations": ["Event scoring is aggregated and may hide article-level nuances."]
+            },
         )
         db.add(s)
         return s

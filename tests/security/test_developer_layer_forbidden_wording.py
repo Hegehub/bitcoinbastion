@@ -13,7 +13,15 @@ FORBIDDEN = (
     "custody-ready",
     "auto-approved transaction",
 )
-SEARCH_ROOTS = [Path("app/events"), Path("app/services/events"), Path("sdk"), Path("cli"), Path("mcp"), Path("app/plugins"), Path("docs")]
+SEARCH_ROOTS = [
+    Path("app/events"),
+    Path("app/services/events"),
+    Path("sdk"),
+    Path("cli"),
+    Path("mcp"),
+    Path("app/plugins"),
+    Path("docs"),
+]
 
 
 def test_developer_layer_forbidden_wording_absent() -> None:

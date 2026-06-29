@@ -15,7 +15,9 @@ from app.db.session import SessionLocal
 from app.services.intelligence.candle_attribution_engine import CandleAttributionEngine
 
 
-def _candle_statement(timeframe: str | None, lookback_minutes: int, limit: int, backfill: bool) -> Any:
+def _candle_statement(
+    timeframe: str | None, lookback_minutes: int, limit: int, backfill: bool
+) -> Any:
     stmt = select(BTCCandle).order_by(BTCCandle.open_time.desc()).limit(limit)
     if not backfill:
         cutoff = utcnow() - timedelta(minutes=lookback_minutes)
@@ -25,13 +27,17 @@ def _candle_statement(timeframe: str | None, lookback_minutes: int, limit: int, 
     return stmt
 
 
-def _attribute_candles_impl(timeframe: str | None, lookback_minutes: int, limit: int, mode: str) -> dict[str, int]:
+def _attribute_candles_impl(
+    timeframe: str | None, lookback_minutes: int, limit: int, mode: str
+) -> dict[str, int]:
     with SessionLocal() as db:
         engine = CandleAttributionEngine(db)
         processed = 0
         attributed = 0
         backfill = mode == "backfill"
-        for candle in db.execute(_candle_statement(timeframe, lookback_minutes, limit, backfill)).scalars():
+        for candle in db.execute(
+            _candle_statement(timeframe, lookback_minutes, limit, backfill)
+        ).scalars():
             rows = engine.attribute_candle_object(candle)
             processed += 1
             attributed += len(rows)
@@ -69,14 +75,28 @@ def rebuild_candle_attributions(
     backfill: bool = False,
 ) -> dict[str, int]:
     with SessionLocal() as db:
-        candles = list(db.execute(_candle_statement(timeframe, lookback_minutes, limit, backfill)).scalars())
+        candles = list(
+            db.execute(_candle_statement(timeframe, lookback_minutes, limit, backfill)).scalars()
+        )
         candle_ids = [candle.id for candle in candles]
         if candle_ids:
             db.execute(delete(CandleAttribution).where(CandleAttribution.candle_id.in_(candle_ids)))
-            db.execute(delete(CandleAttributionCandidate).where(CandleAttributionCandidate.candle_id.in_(candle_ids)))
-            db.execute(delete(AttributionContextSnapshot).where(AttributionContextSnapshot.candle_id.in_(candle_ids)))
-            db.execute(delete(CandleContextSnapshot).where(CandleContextSnapshot.candle_id.in_(candle_ids)))
-            db.execute(delete(AttributionReplayLog).where(AttributionReplayLog.candle_id.in_(candle_ids)))
+            db.execute(
+                delete(CandleAttributionCandidate).where(
+                    CandleAttributionCandidate.candle_id.in_(candle_ids)
+                )
+            )
+            db.execute(
+                delete(AttributionContextSnapshot).where(
+                    AttributionContextSnapshot.candle_id.in_(candle_ids)
+                )
+            )
+            db.execute(
+                delete(CandleContextSnapshot).where(CandleContextSnapshot.candle_id.in_(candle_ids))
+            )
+            db.execute(
+                delete(AttributionReplayLog).where(AttributionReplayLog.candle_id.in_(candle_ids))
+            )
         engine = CandleAttributionEngine(db)
         attributed = 0
         for candle in candles:
@@ -95,8 +115,12 @@ def refresh_candle_context(
     with SessionLocal() as db:
         engine = CandleAttributionEngine(db)
         refreshed = 0
-        for candle in db.execute(_candle_statement(timeframe, lookback_minutes, limit, False)).scalars():
-            db.execute(delete(CandleContextSnapshot).where(CandleContextSnapshot.candle_id == candle.id))
+        for candle in db.execute(
+            _candle_statement(timeframe, lookback_minutes, limit, False)
+        ).scalars():
+            db.execute(
+                delete(CandleContextSnapshot).where(CandleContextSnapshot.candle_id == candle.id)
+            )
             engine.get_context_snapshot(candle.id)
             refreshed += 1
         db.commit()

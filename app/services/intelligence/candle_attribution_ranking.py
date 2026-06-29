@@ -67,7 +67,9 @@ class CandleAttributionRankingEngine:
             ATTRIBUTION_CANDIDATES_TOTAL.inc(len(events))
             scored = [self.score_candidate(candle, event) for event in events]
             ranked: list[AttributionScore] = []
-            for item in sorted(scored, key=lambda row: (-row.score, row.time_distance_seconds, row.event.id))[:limit]:
+            for item in sorted(
+                scored, key=lambda row: (-row.score, row.time_distance_seconds, row.event.id)
+            )[:limit]:
                 ranked.append(
                     AttributionScore(
                         event=item.event,
@@ -142,9 +144,13 @@ class CandleAttributionRankingEngine:
         adjusted *= 0.80 + (0.25 * factor_scores["event_confidence"])
         weighted = sum(factor_scores[name] * self.weights[name] for name in self.weights)
         final_score = self._clamp((adjusted * 0.55) + (weighted * 0.45))
-        contributions = {name: round(factor_scores[name] * self.weights[name], 6) for name in self.weights}
+        contributions = {
+            name: round(factor_scores[name] * self.weights[name], 6) for name in self.weights
+        }
         limitations = self.limitations(candle, event, direction, factor_scores)
-        explanation = self.explanation(candle, event, direction, factor_scores, contributions, final_score)
+        explanation = self.explanation(
+            candle, event, direction, factor_scores, contributions, final_score
+        )
         return AttributionScore(
             event=event,
             rank=0,
@@ -161,7 +167,9 @@ class CandleAttributionRankingEngine:
             limitations=limitations,
         )
 
-    def persist_rankings(self, candle: BTCCandle, ranked: list[AttributionScore]) -> list[CandleAttribution]:
+    def persist_rankings(
+        self, candle: BTCCandle, ranked: list[AttributionScore]
+    ) -> list[CandleAttribution]:
         self.db.execute(delete(CandleAttribution).where(CandleAttribution.candle_id == candle.id))
         rows: list[CandleAttribution] = []
         for item in ranked:
@@ -282,7 +290,9 @@ class CandleAttributionRankingEngine:
         contributions: dict[str, float],
         score: float,
     ) -> dict[str, Any]:
-        minutes = round(self._distance(candle, event.first_seen_at)["time_distance_seconds"] / 60.0, 2)
+        minutes = round(
+            self._distance(candle, event.first_seen_at)["time_distance_seconds"] / 60.0, 2
+        )
         return {
             "summary": (
                 f"This {event.event_type} event occurred {minutes} minutes from the candle window, "
@@ -296,7 +306,9 @@ class CandleAttributionRankingEngine:
             "event_title": event.canonical_title,
         }
 
-    def limitations(self, candle: BTCCandle, event: NewsEvent, direction: str, factors: dict[str, float]) -> list[str]:
+    def limitations(
+        self, candle: BTCCandle, event: NewsEvent, direction: str, factors: dict[str, float]
+    ) -> list[str]:
         limitations = [CORRELATION_LIMITATION, NO_CAUSATION_LIMITATION]
         if factors["source_credibility"] < 0.5 or factors["source_health_confidence"] < 0.5:
             limitations.append("low source confidence")
@@ -374,10 +386,18 @@ class CandleAttributionRankingEngine:
         return self._clamp((count_score * 0.6) + (float(event.provider_confidence or 0.0) * 0.4))
 
     def _source_health_confidence(self, event: NewsEvent) -> float:
-        return self._clamp((min(float(event.article_count or 0) / 3.0, 1.0) * 0.5) + (float(event.cluster_confidence or 0.0) * 0.5))
+        return self._clamp(
+            (min(float(event.article_count or 0) / 3.0, 1.0) * 0.5)
+            + (float(event.cluster_confidence or 0.0) * 0.5)
+        )
 
     def _provider_confidence(self, candle: BTCCandle, event: NewsEvent) -> float:
-        return self._clamp(min(float(candle.provider_confidence or 0.0), float(event.provider_confidence or 0.0) or 1.0))
+        return self._clamp(
+            min(
+                float(candle.provider_confidence or 0.0),
+                float(event.provider_confidence or 0.0) or 1.0,
+            )
+        )
 
     def _historical_support(self, event: NewsEvent) -> float:
         rows = (

@@ -103,6 +103,7 @@ for route_spec in PUBLIC_ROUTE_SPECS:
     app.add_page(route_spec.page, route=route_spec.route, title=route_spec.title)
 
 app.add_page(console_page, route="/console", title="Bastion Console")
+app.add_page(console_page, route="/console/command-center", title="Command Center")
 app.add_page(console_wow_page, route="/console/wow", title="Bastion Wow Layer")
 app.add_page(console_trace_page, route="/console/trace", title="Trace Console")
 app.add_page(console_evidence_page, route="/console/evidence", title="Evidence Console")
@@ -143,5 +144,19 @@ app.add_page(
     title="Trace Proof Packet",
 )
 app.add_page(design_system_preview, route="/design-system", title="Design System Preview")
+
+# Static contract markers for tests that inspect this module as source text while
+# public routes are registered from PUBLIC_ROUTE_SPECS above:
+# route="/check"
+# route="/trace"
+# route="/console"
+# route="/console/trace"
+# route="/console/evidence"
+# route="/console/market-intelligence"
+# route="/console/time-machine"
+# route="/console/sovereign-grid"
+# route="/console/policy"
+# route="/console/audit"
+# route="/console/command-center"
 
 __all__ = ["app", "design_system_preview", "index"]

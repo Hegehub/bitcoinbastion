@@ -30,8 +30,6 @@ def check_policy(
     return ResponseEnvelope(data=result)
 
 
-
-
 @router.post("/simulate", response_model=ResponseEnvelope[PolicySimulationOut])
 def simulate_policy(
     payload: PolicySimulationRequest,
@@ -74,8 +72,6 @@ def upsert_policy_catalog(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return ResponseEnvelope(data=data)
-
-
 
 
 @router.post("/catalog/compare", response_model=ResponseEnvelope[PolicyCatalogCompareOut])

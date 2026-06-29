@@ -44,7 +44,9 @@ class CitadelAssessmentRepository:
             fee_survivability_score=assessment.fee_survivability_score,
             policy_maturity_score=assessment.policy_maturity_score,
             operational_hygiene_score=assessment.operational_hygiene_score,
-            critical_findings_json=json.dumps([item.model_dump() for item in assessment.critical_findings]),
+            critical_findings_json=json.dumps(
+                [item.model_dump() for item in assessment.critical_findings]
+            ),
             warnings_json=json.dumps([item.model_dump() for item in assessment.warnings]),
             recommendations_json=json.dumps(assessment.recommendations),
             explainability_json=json.dumps(assessment.explainability.model_dump()),
@@ -58,8 +60,9 @@ class CitadelAssessmentRepository:
             self.db.commit()
             self.db.refresh(row)
             return row
-        except SQLAlchemyError:
-            self.db.rollback()
+        except (AttributeError, SQLAlchemyError):
+            if hasattr(self.db, "rollback"):
+                self.db.rollback()
             return None
 
     @staticmethod
@@ -78,8 +81,13 @@ class CitadelAssessmentRepository:
             fee_survivability_score=row.fee_survivability_score,
             policy_maturity_score=row.policy_maturity_score,
             operational_hygiene_score=row.operational_hygiene_score,
-            critical_findings=[CitadelFindingOut.model_validate(item) for item in json.loads(row.critical_findings_json)],
-            warnings=[CitadelFindingOut.model_validate(item) for item in json.loads(row.warnings_json)],
+            critical_findings=[
+                CitadelFindingOut.model_validate(item)
+                for item in json.loads(row.critical_findings_json)
+            ],
+            warnings=[
+                CitadelFindingOut.model_validate(item) for item in json.loads(row.warnings_json)
+            ],
             recommendations=list(json.loads(row.recommendations_json)),
             explainability=ExplainabilityOut.model_validate(json.loads(row.explainability_json)),
             freshness=CitadelFreshnessOut.model_validate(json.loads(row.freshness_json)),

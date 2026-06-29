@@ -14,6 +14,7 @@ from app.services.market_intelligence.validation.urls import validate_http_url
 
 yaml_any: Any = yaml
 
+
 class SourceCategory(StrEnum):
     BITCOIN_CORE = "bitcoin_core"
     BITCOIN_MEDIA = "bitcoin_media"
@@ -94,13 +95,17 @@ class SourceRegistryService:
     def enable_source(self, db: Session, source_id: int) -> None:
         self.update_source(db, source_id, {"is_active": True})
 
-    def sync_from_yaml(self, db: Session, yaml_path: Path, *, override_activity: bool = False) -> SourceSeedResult:
+    def sync_from_yaml(
+        self, db: Session, yaml_path: Path, *, override_activity: bool = False
+    ) -> SourceSeedResult:
         rows = yaml_any.safe_load(yaml_path.read_text()) or []
         created = 0
         updated = 0
         for row in rows:
             payload = self._yaml_to_payload(row)
-            existing = db.execute(select(NewsSource).where(NewsSource.slug == payload["slug"])).scalar_one_or_none()
+            existing = db.execute(
+                select(NewsSource).where(NewsSource.slug == payload["slug"])
+            ).scalar_one_or_none()
             if existing is None:
                 self.create_source(db, payload)
                 created += 1
@@ -113,7 +118,9 @@ class SourceRegistryService:
         db.commit()
         return SourceSeedResult(created=created, updated=updated)
 
-    def calculate_source_baseline_confidence(self, tier: SourceTier, category: SourceCategory) -> float:
+    def calculate_source_baseline_confidence(
+        self, tier: SourceTier, category: SourceCategory
+    ) -> float:
         base = 0.55
         if tier in {SourceTier.SOVEREIGN, SourceTier.OFFICIAL, SourceTier.INSTITUTIONAL}:
             base += 0.25
@@ -128,7 +135,12 @@ class SourceRegistryService:
             value = payload.get(url_field)
             if value:
                 validate_http_url(str(value))
-        for score_field in ("credibility_weight", "signal_quality_weight", "sovereignty_weight", "default_confidence"):
+        for score_field in (
+            "credibility_weight",
+            "signal_quality_weight",
+            "sovereignty_weight",
+            "default_confidence",
+        ):
             value = payload.get(score_field)
             if value is not None and not (0.0 <= float(str(value)) <= 1.0):
                 raise ValueError(f"invalid {score_field}")
@@ -158,7 +170,14 @@ class SourceRegistryService:
             "credibility_weight": float(str(row.get("credibility_weight", 0.7))),
             "signal_quality_weight": float(str(row.get("signal_quality_weight", 0.7))),
             "sovereignty_weight": float(str(row.get("sovereignty_weight", 0.7))),
-            "default_confidence": float(str(row.get("default_confidence", self.calculate_source_baseline_confidence(tier, category)))),
+            "default_confidence": float(
+                str(
+                    row.get(
+                        "default_confidence",
+                        self.calculate_source_baseline_confidence(tier, category),
+                    )
+                )
+            ),
             "is_active": bool(row.get("is_active", True)),
             "is_public": bool(row.get("is_public", True)),
             "fetch_interval_minutes": int(str(row.get("fetch_interval_minutes", 15))),

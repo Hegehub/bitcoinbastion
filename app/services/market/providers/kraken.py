@@ -25,7 +25,14 @@ class KrakenProvider(BaseMarketProvider):
         price = float(data["result"][key]["c"][0])
         if price <= 0:
             raise ProviderPayloadError("negative price")
-        return ProviderPrice("kraken", "XBTUSD", price, datetime.now(UTC), int((time.perf_counter() - start) * 1000), data)
+        return ProviderPrice(
+            "kraken",
+            "XBTUSD",
+            price,
+            datetime.now(UTC),
+            int((time.perf_counter() - start) * 1000),
+            data,
+        )
 
     def healthcheck(self) -> bool:
         try:

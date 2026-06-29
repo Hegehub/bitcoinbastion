@@ -18,8 +18,6 @@ class TreasuryApprovalActionIn(BaseModel):
     note: str = Field(default="", max_length=1000)
 
 
-
-
 class TreasuryRejectActionIn(BaseModel):
     note: str = Field(default="", max_length=1000)
 
@@ -28,6 +26,7 @@ class TreasuryRejectOut(BaseModel):
     request_id: int
     status: str
     note: str
+
 
 class TreasuryApprovalOut(BaseModel):
     request_id: int
@@ -67,7 +66,9 @@ class TreasuryRequestOut(BaseModel):
         allowed_flag = snapshot.get("allowed")
         parsed.policy_allowed = allowed_flag if isinstance(allowed_flag, bool) else None
         raw_violations = snapshot.get("violations", [])
-        parsed.policy_violations = [str(item) for item in raw_violations] if isinstance(raw_violations, list) else []
+        parsed.policy_violations = (
+            [str(item) for item in raw_violations] if isinstance(raw_violations, list) else []
+        )
 
         if isinstance(approved_by_json, str):
             try:

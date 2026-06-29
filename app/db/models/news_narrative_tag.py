@@ -14,8 +14,12 @@ class NewsNarrativeTag(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     article_id: Mapped[int] = mapped_column(ForeignKey("news_articles.id"), index=True)
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), nullable=True, index=True)
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), nullable=True, index=True
+    )
     tag: Mapped[str] = mapped_column(String(64), index=True)
     confidence: Mapped[float] = mapped_column(Float, default=0.0)
-    evidence_keywords_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    evidence_keywords_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

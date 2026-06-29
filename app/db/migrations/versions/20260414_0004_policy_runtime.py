@@ -8,7 +8,6 @@ Create Date: 2026-04-14
 from alembic import op
 import sqlalchemy as sa
 
-
 revision = "20260414_0004"
 down_revision = "20260413_0003"
 branch_labels = None

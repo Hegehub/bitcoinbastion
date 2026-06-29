@@ -38,7 +38,9 @@ def approve_request(
 ) -> ResponseEnvelope[TreasuryApprovalOut]:
     service = TreasuryService(TreasuryRepository(db))
     try:
-        result = service.approve_request(request_id=request_id, approver_user_id=current_user.id, payload=payload)
+        result = service.approve_request(
+            request_id=request_id, approver_user_id=current_user.id, payload=payload
+        )
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     return ResponseEnvelope(data=result)
@@ -53,13 +55,18 @@ def reject_request(
 ) -> ResponseEnvelope[TreasuryRejectOut]:
     service = TreasuryService(TreasuryRepository(db))
     try:
-        result = service.reject_request(request_id=request_id, actor_user_id=current_user.id, payload=payload)
+        result = service.reject_request(
+            request_id=request_id, actor_user_id=current_user.id, payload=payload
+        )
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     return ResponseEnvelope(data=result)
 
 
-@router.get("/requests/pending-approvals", response_model=ResponseEnvelope[PaginatedData[TreasuryRequestOut]])
+@router.get(
+    "/requests/pending-approvals",
+    response_model=ResponseEnvelope[PaginatedData[TreasuryRequestOut]],
+)
 def list_pending_approvals(
     limit: int = 20,
     offset: int = 0,
@@ -72,7 +79,9 @@ def list_pending_approvals(
         for item in service.list_pending_approvals(limit=limit, offset=offset)
     ]
     total = service.count_pending_approvals()
-    return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=total, limit=limit, offset=offset)
+    )
 
 
 @router.get("/requests", response_model=ResponseEnvelope[PaginatedData[TreasuryRequestOut]])
@@ -89,4 +98,6 @@ def list_requests(
         for item in service.list_requests(limit=limit, offset=offset, status=status)
     ]
     total = service.count_requests(status=status)
-    return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=total, limit=limit, offset=offset)
+    )

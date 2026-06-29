@@ -84,13 +84,26 @@ def test_heatmap_dominance_evidence_timeline_and_rotation() -> None:
     db = _session()
     first_time = datetime(2026, 5, 31, 12, 0, 0)
     second_time = datetime(2026, 5, 31, 14, 0, 0)
-    db.add(_event("Bitcoin mining difficulty and miner capitulation dominate discussion", first_time - timedelta(minutes=30), impact=0.6))
+    db.add(
+        _event(
+            "Bitcoin mining difficulty and miner capitulation dominate discussion",
+            first_time - timedelta(minutes=30),
+            impact=0.6,
+        )
+    )
     db.commit()
 
     service = NarrativeHeatmapService(db)
     first = service.build_heatmap(window="1h", snapshot_time=first_time)
     db.commit()
-    db.add(_event("Spot Bitcoin ETF inflow spikes as BlackRock fund allocation rises", second_time - timedelta(minutes=20), impact=0.95, source_count=4))
+    db.add(
+        _event(
+            "Spot Bitcoin ETF inflow spikes as BlackRock fund allocation rises",
+            second_time - timedelta(minutes=20),
+            impact=0.95,
+            source_count=4,
+        )
+    )
     db.commit()
     second = service.build_heatmap(window="1h", snapshot_time=second_time)
     db.commit()
@@ -100,7 +113,12 @@ def test_heatmap_dominance_evidence_timeline_and_rotation() -> None:
     assert second["top_narratives"][0]["dominance_pct"] > 0
     assert second["top_narratives"][0]["evidence"]["top_events"]
     assert NARRATIVE_LIMITATION in second["limitations"]
-    assert db.query(IntelligenceTimelineEvent).filter(IntelligenceTimelineEvent.event_type == "NARRATIVE_HEATMAP").count() >= 1
+    assert (
+        db.query(IntelligenceTimelineEvent)
+        .filter(IntelligenceTimelineEvent.event_type == "NARRATIVE_HEATMAP")
+        .count()
+        >= 1
+    )
 
     rotations = NarrativeRotationService(db).detect_rotations()
 
@@ -112,7 +130,12 @@ def test_heatmap_dominance_evidence_timeline_and_rotation() -> None:
 def test_narrative_api_contracts() -> None:
     db = _session()
     now = utcnow()
-    db.add(_event("SEC regulation and ETF approval discussion lifts Bitcoin narrative", now - timedelta(minutes=10)))
+    db.add(
+        _event(
+            "SEC regulation and ETF approval discussion lifts Bitcoin narrative",
+            now - timedelta(minutes=10),
+        )
+    )
     db.commit()
 
     def override_db() -> Iterator[Session]:
@@ -155,13 +178,17 @@ def test_bmtm33_taxonomy_classifier_observations_and_heat_scores() -> None:
     classifier = NarrativeClassificationService(db)
     etf_obs = classifier.observe_event(etf)
     fed_types = {match.narrative.narrative_type for match in classifier.classify_event(fed)}
-    lightning_types = {match.narrative.narrative_type for match in classifier.classify_event(lightning)}
+    lightning_types = {
+        match.narrative.narrative_type for match in classifier.classify_event(lightning)
+    }
 
     assert {row.narrative_type for row in etf_obs} >= {"ETF", "INSTITUTIONAL_ADOPTION"}
     assert {"MACRO", "FED", "LIQUIDITY"}.issubset(fed_types)
     assert {"LIGHTNING", "LAYER2"}.issubset(lightning_types)
 
-    heatmap = NarrativeHeatmapService(db).build_heatmap(window="1h", snapshot_time=now + timedelta(minutes=5))
+    heatmap = NarrativeHeatmapService(db).build_heatmap(
+        window="1h", snapshot_time=now + timedelta(minutes=5)
+    )
     db.commit()
 
     top = heatmap["top_narratives"][0]
@@ -174,7 +201,11 @@ def test_bmtm33_taxonomy_classifier_observations_and_heat_scores() -> None:
     assert isinstance(top["supporting_events"], list)
     assert "dominance_index" in heatmap
 
-    snapshot = db.query(NarrativeSnapshot).filter(NarrativeSnapshot.heat_score == top["heat_score"]).first()
+    snapshot = (
+        db.query(NarrativeSnapshot)
+        .filter(NarrativeSnapshot.heat_score == top["heat_score"])
+        .first()
+    )
     observation = db.query(NarrativeObservation).first()
 
     assert snapshot is not None
@@ -191,7 +222,13 @@ def test_bmtm33_taxonomy_classifier_observations_and_heat_scores() -> None:
 def test_bmtm33_dominance_history_and_api_contracts() -> None:
     db = _session()
     now = utcnow()
-    db.add(_event("CFTC regulation and SEC ETF market structure narrative", now - timedelta(minutes=5), impact=0.8))
+    db.add(
+        _event(
+            "CFTC regulation and SEC ETF market structure narrative",
+            now - timedelta(minutes=5),
+            impact=0.8,
+        )
+    )
     db.commit()
     service = NarrativeHeatmapService(db)
     service.build_heatmap(window="1h", snapshot_time=now)
@@ -203,7 +240,9 @@ def test_bmtm33_dominance_history_and_api_contracts() -> None:
     assert dominance["data"]
     assert history["top_narratives"]
     assert history["growth_leaders"]
-    assert "Major BTC move correlation requires candle attribution backfill." in history["limitations"]
+    assert (
+        "Major BTC move correlation requires candle attribution backfill." in history["limitations"]
+    )
 
     def override_db() -> Iterator[Session]:
         yield db

@@ -23,8 +23,12 @@ def upgrade() -> None:
         sa.Column("timeframe", sa.String(length=16), nullable=False, server_default=""),
         sa.Column("candle_open_time", sa.DateTime(), nullable=False),
         sa.Column("candle_close_time", sa.DateTime(), nullable=False),
-        sa.Column("attribution_type", sa.String(length=32), nullable=False, server_default="UNKNOWN"),
-        sa.Column("candidate_category", sa.String(length=32), nullable=False, server_default="UNKNOWN"),
+        sa.Column(
+            "attribution_type", sa.String(length=32), nullable=False, server_default="UNKNOWN"
+        ),
+        sa.Column(
+            "candidate_category", sa.String(length=32), nullable=False, server_default="UNKNOWN"
+        ),
         sa.Column("time_distance_seconds", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("time_distance_weight", sa.Float(), nullable=False, server_default="0"),
         sa.Column("price_move_pct", sa.Float(), nullable=False, server_default="0"),
@@ -50,17 +54,30 @@ def upgrade() -> None:
         "attribution_replay_logs",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("candle_id", sa.Integer(), sa.ForeignKey("btc_candles.id"), nullable=False),
-        sa.Column("engine_version", sa.String(length=32), nullable=False, server_default="candle-attribution-v1"),
+        sa.Column(
+            "engine_version",
+            sa.String(length=32),
+            nullable=False,
+            server_default="candle-attribution-v1",
+        ),
         sa.Column("input_hash", sa.String(length=64), nullable=False),
         sa.Column("candidate_event_count", sa.Integer(), nullable=False, server_default="0"),
-        sa.Column("timeline_window_before_seconds", sa.Integer(), nullable=False, server_default="0"),
-        sa.Column("timeline_window_after_seconds", sa.Integer(), nullable=False, server_default="0"),
+        sa.Column(
+            "timeline_window_before_seconds", sa.Integer(), nullable=False, server_default="0"
+        ),
+        sa.Column(
+            "timeline_window_after_seconds", sa.Integer(), nullable=False, server_default="0"
+        ),
         sa.Column("ranking_snapshot_json", sa.JSON(), nullable=False),
         sa.Column("explanation_snapshot_json", sa.JSON(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
     )
-    op.create_index("ix_attribution_replay_logs_candle_id", "attribution_replay_logs", ["candle_id"])
-    op.create_index("ix_attribution_replay_logs_input_hash", "attribution_replay_logs", ["input_hash"])
+    op.create_index(
+        "ix_attribution_replay_logs_candle_id", "attribution_replay_logs", ["candle_id"]
+    )
+    op.create_index(
+        "ix_attribution_replay_logs_input_hash", "attribution_replay_logs", ["input_hash"]
+    )
 
 
 def downgrade() -> None:

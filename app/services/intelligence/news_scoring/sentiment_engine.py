@@ -8,7 +8,9 @@ class SentimentEngine:
         lowered = text.lower()
         return sum(1 for k in KEYWORD_PROFILES[key] if k in lowered)
 
-    def analyze(self, title: str, summary: str = "", content: str = "") -> tuple[float, str, dict[str, int]]:
+    def analyze(
+        self, title: str, summary: str = "", content: str = ""
+    ) -> tuple[float, str, dict[str, int]]:
         text = f"{title} {summary} {content}"
         pos, neg = self._hits(text, "positive"), self._hits(text, "negative")
         base = max(1, pos + neg)

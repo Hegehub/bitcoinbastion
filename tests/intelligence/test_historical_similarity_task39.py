@@ -29,7 +29,9 @@ def _session() -> Session:
     return Session(engine)
 
 
-def _event(title: str, seen_at: datetime, sentiment: str = "POSITIVE", category: str = "ETF") -> NewsEvent:
+def _event(
+    title: str, seen_at: datetime, sentiment: str = "POSITIVE", category: str = "ETF"
+) -> NewsEvent:
     return NewsEvent(
         event_key=title.lower().replace(" ", "-"),
         canonical_title=title,
@@ -109,7 +111,12 @@ def test_task39_similarity_evidence_statistics_and_limitations_are_deterministic
     base = datetime(2026, 6, 1, 12, 0, 0)
     reference = _event("Bitcoin ETF inflows hit record high", base)
     same = _event("Bitcoin ETF inflow shock drives demand", base - timedelta(days=7))
-    different = _event("Exchange hack triggers custody concern", base - timedelta(days=8), sentiment="NEGATIVE", category="SECURITY")
+    different = _event(
+        "Exchange hack triggers custody concern",
+        base - timedelta(days=8),
+        sentiment="NEGATIVE",
+        category="SECURITY",
+    )
     db.add_all([reference, same, different])
     db.flush()
     db.add_all([_impact(reference, 2.6), _impact(same, 2.4), _impact(different, -3.0)])
@@ -137,10 +144,17 @@ def test_task39_similarity_evidence_statistics_and_limitations_are_deterministic
     ]:
         assert limitation in context["limitations"]
 
-    pattern_id = db.query(PatternOccurrence).filter(PatternOccurrence.event_id == same.id).first().pattern_id
+    pattern_id = (
+        db.query(PatternOccurrence).filter(PatternOccurrence.event_id == same.id).first().pattern_id
+    )
     stats = service.build_reaction_statistics(pattern_id)
     assert stats["samples"] >= 1
-    assert db.query(HistoricalReactionStatistics).filter(HistoricalReactionStatistics.pattern_id == pattern_id).count() == 1
+    assert (
+        db.query(HistoricalReactionStatistics)
+        .filter(HistoricalReactionStatistics.pattern_id == pattern_id)
+        .count()
+        == 1
+    )
     evidence = service.build_similarity_evidence(reference.id, limit=3)
     assert evidence["historical_samples_used"] >= 1
     assert "reaction_statistics" in evidence

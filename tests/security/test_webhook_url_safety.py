@@ -28,4 +28,7 @@ def test_unsafe_webhook_urls_are_rejected_by_default(url: str) -> None:
 
 
 def test_public_https_webhook_url_allowed() -> None:
-    assert service()._validate_target_url("https://example.com/bastion") == "https://example.com/bastion"
+    assert (
+        service()._validate_target_url("https://example.com/bastion")
+        == "https://example.com/bastion"
+    )

@@ -14,9 +14,13 @@ def build_timeline_events(self: Any) -> dict[str, int]:
         norm = TimelineNormalizationService()
         svc = TimelineService()
         payloads = []
-        for a in list(db.execute(select(NewsArticle).order_by(NewsArticle.id.desc()).limit(50)).scalars()):
+        for a in list(
+            db.execute(select(NewsArticle).order_by(NewsArticle.id.desc()).limit(50)).scalars()
+        ):
             payloads.append(norm.normalize_news_article(a))
-        for c in list(db.execute(select(BTCCandle).order_by(BTCCandle.id.desc()).limit(50)).scalars()):
+        for c in list(
+            db.execute(select(BTCCandle).order_by(BTCCandle.id.desc()).limit(50)).scalars()
+        ):
             payloads.append(norm.normalize_btc_candle(c))
         inserted = svc.bulk_store(db, payloads)
         return {"inserted": inserted}

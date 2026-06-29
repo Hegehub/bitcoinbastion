@@ -15,7 +15,9 @@ from app.services.intelligence.candle_attribution_ranking import CandleAttributi
 from app.services.intelligence.historical_similarity.historical_similarity_service import (
     HistoricalSimilarityService as PackagedHistoricalSimilarityService,
 )
-from app.services.intelligence.market_memory.engine import HistoricalSimilarityEngine as MarketMemoryHistoricalSimilarityEngine
+from app.services.intelligence.market_memory.engine import (
+    HistoricalSimilarityEngine as MarketMemoryHistoricalSimilarityEngine,
+)
 from app.services.intelligence.market_memory.review import OperatorReviewService
 from app.services.intelligence.market_memory.safety import MARKET_MEMORY_SAFETY_LIMITATIONS
 from app.services.intelligence.historical_similarity_foundation import (
@@ -176,9 +178,15 @@ def _pattern_payload(row: object) -> dict[str, object]:
             row, "expected_sentiment", getattr(row, "default_sentiment", "UNKNOWN")
         ),
         "expected_direction": getattr(row, "expected_direction", "UNKNOWN"),
-        "typical_sentiment": getattr(row, "typical_sentiment", getattr(row, "expected_sentiment", "UNKNOWN")),
-        "typical_direction": getattr(row, "typical_direction", getattr(row, "expected_direction", "UNKNOWN")),
-        "default_time_window": getattr(row, "default_time_window", getattr(row, "typical_impact_window", "1h")),
+        "typical_sentiment": getattr(
+            row, "typical_sentiment", getattr(row, "expected_sentiment", "UNKNOWN")
+        ),
+        "typical_direction": getattr(
+            row, "typical_direction", getattr(row, "expected_direction", "UNKNOWN")
+        ),
+        "default_time_window": getattr(
+            row, "default_time_window", getattr(row, "typical_impact_window", "1h")
+        ),
         "typical_impact_window": getattr(
             row, "typical_impact_window", getattr(row, "expected_reaction_window", "unknown")
         ),
@@ -299,7 +307,9 @@ def get_event_market_memory_similarity(
     event_id: int, limit: int = 10, db: Session = Depends(db_session)
 ) -> dict[str, object]:
     try:
-        payload = MarketMemoryHistoricalSimilarityEngine(db).find_similar_events(event_id, limit=limit)
+        payload = MarketMemoryHistoricalSimilarityEngine(db).find_similar_events(
+            event_id, limit=limit
+        )
         db.commit()
         return payload
     except OperationalError:
@@ -402,7 +412,10 @@ def get_market_pattern_occurrences(
             "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION]),
         }
     except OperationalError:
-        return {"data": [], "limitations": _market_memory_safety(["Pattern occurrence storage is unavailable."])}
+        return {
+            "data": [],
+            "limitations": _market_memory_safety(["Pattern occurrence storage is unavailable."]),
+        }
 
 
 @router.get("/patterns/{pattern_id}")
@@ -411,7 +424,10 @@ def get_market_pattern(pattern_id: str, db: Session = Depends(db_session)) -> di
         row = MarketMemoryService(db).get_pattern(pattern_id)
         if row is None:
             raise HTTPException(status_code=404, detail="pattern_not_found")
-        return {"data": _pattern_payload(row), "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION])}
+        return {
+            "data": _pattern_payload(row),
+            "limitations": _market_memory_safety([HISTORICAL_OUTCOME_LIMITATION]),
+        }
     except OperationalError:
         return {"data": None, "limitations": ["Pattern library storage is unavailable."]}
 
@@ -432,7 +448,10 @@ def get_market_pattern_statistics(
             "limitations": _market_memory_safety([]),
         }
     except OperationalError:
-        return {"data": None, "limitations": _market_memory_safety(["Pattern statistics storage is unavailable."])}
+        return {
+            "data": None,
+            "limitations": _market_memory_safety(["Pattern statistics storage is unavailable."]),
+        }
 
 
 @router.get("/events/{event_id}/memory/replay")
@@ -444,7 +463,11 @@ def get_event_market_memory_replay(
         db.commit()
         return payload
     except OperationalError:
-        return {"event_analyzed": {"event_id": event_id}, "candidate_events": [], "limitations": _market_memory_safety(["Replay storage is unavailable."])}
+        return {
+            "event_analyzed": {"event_id": event_id},
+            "candidate_events": [],
+            "limitations": _market_memory_safety(["Replay storage is unavailable."]),
+        }
 
 
 @router.post("/events/{event_id}/memory/operator-review")
@@ -476,9 +499,15 @@ def create_event_market_memory_operator_review(
             operator=str(payload.get("operator", "operator")),
         )
         db.commit()
-        return {"data": OperatorReviewService(db).payload(row), "limitations": _market_memory_safety([])}
+        return {
+            "data": OperatorReviewService(db).payload(row),
+            "limitations": _market_memory_safety([]),
+        }
     except OperationalError:
-        return {"data": None, "limitations": _market_memory_safety(["Operator review storage is unavailable."])}
+        return {
+            "data": None,
+            "limitations": _market_memory_safety(["Operator review storage is unavailable."]),
+        }
 
 
 @router.get("/narratives")
@@ -558,9 +587,11 @@ def get_narrative_dominance(db: Session = Depends(db_session)) -> dict[str, obje
     try:
         return NarrativeHeatmapService(db).dominance()
     except OperationalError:
-        return {"data": {}, "items": [], "limitations": ["Narrative dominance storage is unavailable."]}
-
-
+        return {
+            "data": {},
+            "items": [],
+            "limitations": ["Narrative dominance storage is unavailable."],
+        }
 
 
 @router.get("/narratives/active")
@@ -625,15 +656,22 @@ def get_narrative(slug: str, db: Session = Depends(db_session)) -> dict[str, obj
 
 
 @router.get("/candles/{candle_id}")
-def get_candle_dashboard_dto(candle_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_candle_dashboard_dto(
+    candle_id: int, db: Session = Depends(db_session)
+) -> dict[str, object]:
     try:
         return MarketTimeMachineWebService(db).candle_api_payload(candle_id)
     except OperationalError:
-        return {"data": None, "limitations": SAFETY_LIMITATIONS + ["Candle storage is unavailable."]}
+        return {
+            "data": None,
+            "limitations": SAFETY_LIMITATIONS + ["Candle storage is unavailable."],
+        }
 
 
 @router.get("/candles/{candle_id}/events")
-def get_candle_events_dashboard_dto(candle_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_candle_events_dashboard_dto(
+    candle_id: int, db: Session = Depends(db_session)
+) -> dict[str, object]:
     try:
         candle = MarketTimeMachineWebService(db).candle_attribution(candle_id)
         return {
@@ -646,42 +684,67 @@ def get_candle_events_dashboard_dto(candle_id: int, db: Session = Depends(db_ses
             "limitations": candle.limitations,
         }
     except OperationalError:
-        return {"data": [], "limitations": SAFETY_LIMITATIONS + ["Candle event storage is unavailable."]}
+        return {
+            "data": [],
+            "limitations": SAFETY_LIMITATIONS + ["Candle event storage is unavailable."],
+        }
 
 
 @router.get("/candles/{candle_id}/evidence")
-def get_candle_evidence_dashboard_dto(candle_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_candle_evidence_dashboard_dto(
+    candle_id: int, db: Session = Depends(db_session)
+) -> dict[str, object]:
     EVIDENCE_PANEL_REQUESTS_TOTAL.labels(surface="api").inc()
     try:
         return MarketTimeMachineWebService(db).evidence_for_candle(candle_id).model_dump()
     except OperationalError:
-        return {"packet_id": None, "limitations": SAFETY_LIMITATIONS + ["Evidence storage is unavailable."]}
+        return {
+            "packet_id": None,
+            "limitations": SAFETY_LIMITATIONS + ["Evidence storage is unavailable."],
+        }
 
 
 @router.get("/candles/{candle_id}/similar")
-def get_candle_similarity_dashboard_dto(candle_id: int, limit: int = 5, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_candle_similarity_dashboard_dto(
+    candle_id: int, limit: int = 5, db: Session = Depends(db_session)
+) -> dict[str, object]:
     SIMILARITY_PANEL_REQUESTS_TOTAL.labels(surface="api").inc()
     try:
         return {
-            "data": MarketTimeMachineWebService(db).candle_similarity_preview(candle_id, limit=limit),
+            "data": MarketTimeMachineWebService(db).candle_similarity_preview(
+                candle_id, limit=limit
+            ),
             "limitations": SAFETY_LIMITATIONS + ["Historical similarity is reference-only."],
         }
     except OperationalError:
-        return {"data": [], "limitations": SAFETY_LIMITATIONS + ["Similarity storage is unavailable."]}
+        return {
+            "data": [],
+            "limitations": SAFETY_LIMITATIONS + ["Similarity storage is unavailable."],
+        }
 
 
 @router.get("/events/{event_id}/timeline")
-def get_event_timeline_dashboard_dto(event_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_event_timeline_dashboard_dto(
+    event_id: int, db: Session = Depends(db_session)
+) -> dict[str, object]:
     try:
         service = MarketTimeMachineWebService(db)
         return {
             "data": service.event_context(event_id),
             "timeline_items": service.timeline_for_event(event_id),
-            "chart_markers": [item.model_dump() for item in service.news_markers(limit=1000) if item.event_id == event_id],
+            "chart_markers": [
+                item.model_dump()
+                for item in service.news_markers(limit=1000)
+                if item.event_id == event_id
+            ],
             "limitations": SAFETY_LIMITATIONS,
         }
     except OperationalError:
-        return {"data": None, "timeline_items": [], "limitations": SAFETY_LIMITATIONS + ["Event timeline storage is unavailable."]}
+        return {
+            "data": None,
+            "timeline_items": [],
+            "limitations": SAFETY_LIMITATIONS + ["Event timeline storage is unavailable."],
+        }
 
 
 @router.get("/candles/{candle_id}/attribution")

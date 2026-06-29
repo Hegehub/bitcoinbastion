@@ -1,7 +1,13 @@
 from app.schemas.bastion_trace import BatchTraceItemResult, BatchTraceResult, BusinessContextType
 
 
-def make_batch_result(batch_id: int, label: str | None, context: BusinessContextType, items: list[BatchTraceItemResult], limitations: list[str]) -> BatchTraceResult:
+def make_batch_result(
+    batch_id: int,
+    label: str | None,
+    context: BusinessContextType,
+    items: list[BatchTraceItemResult],
+    limitations: list[str],
+) -> BatchTraceResult:
     return BatchTraceResult(
         batch_id=batch_id,
         batch_label=label,

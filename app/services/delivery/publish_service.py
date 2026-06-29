@@ -75,7 +75,9 @@ class SignalPublishService:
 
         for signal in pending_signals:
             if signal.id in seen_signal_ids:
-                self.logger.warning("signal_publish.duplicate_suppressed_in_batch", signal_id=signal.id)
+                self.logger.warning(
+                    "signal_publish.duplicate_suppressed_in_batch", signal_id=signal.id
+                )
                 increment_delivery_publish_event(status="skipped", reason="duplicate_in_batch")
                 skipped += 1
                 continue

@@ -46,7 +46,12 @@ class EvidenceReplayService:
         normalized = self.builder.normalize_entity_type(entity_type)
         EVIDENCE_REPLAY_REQUESTS_TOTAL.labels(entity_type=self._bounded_entity(normalized)).inc()
         input_hash = ""
-        log = EvidenceReplayLog(entity_type=normalized, entity_id=entity_id, step_name=f"replay_{normalized}", input_hash="")
+        log = EvidenceReplayLog(
+            entity_type=normalized,
+            entity_id=entity_id,
+            step_name=f"replay_{normalized}",
+            input_hash="",
+        )
         self.repo.add_replay_log(log)
         try:
             input_hash = self.builder.entity_hash(normalized, entity_id)
@@ -112,7 +117,9 @@ class EvidenceReplayService:
                 "entity_type": normalized,
                 "entity_id": entity_id,
                 "success": False,
-                "failures": [{"error_code": reason, "message": "Replay failed and the failure is exposed."}],
+                "failures": [
+                    {"error_code": reason, "message": "Replay failed and the failure is exposed."}
+                ],
                 "correlation_not_causation": True,
                 "evidence_based": False,
                 "replayable": False,
@@ -137,7 +144,9 @@ class EvidenceReplayService:
                 source="evidence_replay_service",
                 idempotency_key=f"evidence.replay.failed:{normalized}:{entity_id}:{log.id}",
             )
-            EVIDENCE_REPLAY_FAILURES_TOTAL.labels(entity_type=self._bounded_entity(normalized), reason_code=reason).inc()
+            EVIDENCE_REPLAY_FAILURES_TOTAL.labels(
+                entity_type=self._bounded_entity(normalized), reason_code=reason
+            ).inc()
             return failure_output
 
     def replay_timeline(self, entity_type: str, entity_id: int) -> list[dict[str, Any]]:
@@ -154,9 +163,13 @@ class EvidenceReplayService:
         else:
             matches = snapshot.content_hash == current_hash
             status = "match" if matches else "mismatch"
-        EVIDENCE_INTEGRITY_CHECKS_TOTAL.labels(entity_type=self._bounded_entity(normalized), status=status).inc()
+        EVIDENCE_INTEGRITY_CHECKS_TOTAL.labels(
+            entity_type=self._bounded_entity(normalized), status=status
+        ).inc()
         if not matches:
-            EVIDENCE_INTEGRITY_MISMATCHES_TOTAL.labels(entity_type=self._bounded_entity(normalized)).inc()
+            EVIDENCE_INTEGRITY_MISMATCHES_TOTAL.labels(
+                entity_type=self._bounded_entity(normalized)
+            ).inc()
         return {
             "entity_type": normalized,
             "entity_id": entity_id,
@@ -170,7 +183,9 @@ class EvidenceReplayService:
             "replayable": True,
         }
 
-    def export_replay(self, entity_type: str, entity_id: int, *, fmt: str = "json") -> dict[str, Any] | str:
+    def export_replay(
+        self, entity_type: str, entity_id: int, *, fmt: str = "json"
+    ) -> dict[str, Any] | str:
         payload = self.replay(entity_type, entity_id)
         if fmt == "json":
             return payload
@@ -188,7 +203,9 @@ class EvidenceReplayService:
     def _payload_hash(self, payload: dict[str, Any]) -> str:
         import hashlib
 
-        encoded = json.dumps(payload, sort_keys=True, default=str, separators=(",", ":")).encode("utf-8")
+        encoded = json.dumps(payload, sort_keys=True, default=str, separators=(",", ":")).encode(
+            "utf-8"
+        )
         return hashlib.sha256(encoded).hexdigest()
 
     def _input_entities(self, payload: dict[str, Any]) -> dict[str, Any]:
@@ -206,10 +223,28 @@ class EvidenceReplayService:
         return {"policy_adjustments": breakdown.get("policy_adjustments")}
 
     def _reviews(self, payload: dict[str, Any]) -> dict[str, Any]:
-        return {"operator_review_status": payload.get("operator_review_status"), "operator_overrides": payload.get("confidence_breakdown", {}).get("operator_overrides", [])}
+        return {
+            "operator_review_status": payload.get("operator_review_status"),
+            "operator_overrides": payload.get("confidence_breakdown", {}).get(
+                "operator_overrides", []
+            ),
+        }
 
     def _bounded_entity(self, value: str) -> str:
-        return value if value in {"article", "event", "impact", "attribution", "signal", "publication"} else "other"
+        return (
+            value
+            if value in {"article", "event", "impact", "attribution", "signal", "publication"}
+            else "other"
+        )
 
     def _bounded_reason(self, value: str) -> str:
-        return value if value in {"evidence_entity_not_found", "unsupported_evidence_entity_type", "unsupported_export_format"} else "other"
+        return (
+            value
+            if value
+            in {
+                "evidence_entity_not_found",
+                "unsupported_evidence_entity_type",
+                "unsupported_export_format",
+            }
+            else "other"
+        )
