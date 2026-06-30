@@ -47,11 +47,15 @@ def test_citadel_assessment_prefers_cached_snapshot(monkeypatch) -> None:
     )
     monkeypatch.setattr(
         "app.api.v1.citadel.CitadelAssessmentService.build_assessment",
-        lambda self, owner_type, owner_id: (_ for _ in ()).throw(AssertionError("unexpected recalculation")),
+        lambda self, owner_type, owner_id: (_ for _ in ()).throw(
+            AssertionError("unexpected recalculation")
+        ),
     )
 
     client = TestClient(app)
-    response = client.get("/api/v1/citadel/assessment", params={"owner_type": "user", "owner_id": 42})
+    response = client.get(
+        "/api/v1/citadel/assessment", params={"owner_type": "user", "owner_id": 42}
+    )
 
     assert response.status_code == 200
     assert response.json()["data"]["id"] == 10
@@ -79,7 +83,9 @@ def test_citadel_assessment_recalculates_when_snapshot_stale(monkeypatch) -> Non
     )
 
     client = TestClient(app)
-    response = client.get("/api/v1/citadel/assessment", params={"owner_type": "user", "owner_id": 55})
+    response = client.get(
+        "/api/v1/citadel/assessment", params={"owner_type": "user", "owner_id": 55}
+    )
 
     assert response.status_code == 200
     assert response.json()["data"]["owner_id"] == 55
@@ -127,7 +133,9 @@ def test_citadel_recalculate_persists_snapshot(monkeypatch) -> None:
     )
 
     client = TestClient(app)
-    response = client.post("/api/v1/citadel/recalculate", json={"owner_type": "user", "owner_id": 99})
+    response = client.post(
+        "/api/v1/citadel/recalculate", json={"owner_type": "user", "owner_id": 99}
+    )
 
     assert response.status_code == 200
     assert response.json()["data"]["owner_id"] == 99

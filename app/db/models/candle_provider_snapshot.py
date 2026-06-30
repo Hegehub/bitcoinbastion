@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 from app.db.models.time_utils import utcnow
 
+
 class CandleProviderSnapshot(Base):
     __tablename__ = "candle_provider_snapshots"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -18,5 +19,7 @@ class CandleProviderSnapshot(Base):
     provider_volume: Mapped[float | None] = mapped_column(Float, nullable=True)
     provider_latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     provider_confidence: Mapped[float] = mapped_column(Float, default=0.0)
-    provider_health_snapshot: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    provider_health_snapshot: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

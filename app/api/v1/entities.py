@@ -32,7 +32,9 @@ def list_entities(
         )
     ]
     total = repo.count_entities(query=q, entity_type=entity_type, min_confidence=min_confidence)
-    return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=total, limit=limit, offset=offset)
+    )
 
 
 @router.get("/watchlist", response_model=ResponseEnvelope[PaginatedData[WatchedEntityOut]])
@@ -48,7 +50,9 @@ def list_watchlist(
         for item in repo.list_watchlist(user_id=current_user.id, limit=limit, offset=offset)
     ]
     total = repo.count_watchlist(user_id=current_user.id)
-    return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=total, limit=limit, offset=offset)
+    )
 
 
 @router.post("/provenance/refresh", response_model=ResponseEnvelope[ProvenanceRefreshOut])

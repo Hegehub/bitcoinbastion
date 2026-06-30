@@ -38,7 +38,12 @@ class WalletHealthService:
 
         health = max(
             0.0,
-            min(1.0, 1 - (0.35 * fragmentation + 0.25 * fee_exposure + 0.15 * spend_complexity) + 0.25 * privacy),
+            min(
+                1.0,
+                1
+                - (0.35 * fragmentation + 0.25 * fee_exposure + 0.15 * spend_complexity)
+                + 0.25 * privacy,
+            ),
         )
 
         recommendations: list[str] = []
@@ -107,11 +112,13 @@ class WalletHealthService:
             recommendations=recommendations,
             confidence=confidence,
             explainability=ExplainabilityOut.model_validate(explainability),
-            freshness=FreshnessOut.model_validate({
-                "computed_at": datetime.now(UTC).isoformat(),
-                "ttl_seconds": 300,
-                "is_stale": False,
-            }),
+            freshness=FreshnessOut.model_validate(
+                {
+                    "computed_at": datetime.now(UTC).isoformat(),
+                    "ttl_seconds": 300,
+                    "is_stale": False,
+                }
+            ),
         )
 
     def to_report_out(self, report: WalletHealthReport) -> WalletHealthReportOut:

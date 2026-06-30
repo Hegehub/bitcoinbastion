@@ -22,7 +22,14 @@ class CoinbaseProvider(BaseMarketProvider):
         price = float(data["data"]["amount"])
         if price <= 0:
             raise ProviderPayloadError("negative price")
-        return ProviderPrice("coinbase", "BTCUSD", price, datetime.now(UTC), int((time.perf_counter() - start) * 1000), data)
+        return ProviderPrice(
+            "coinbase",
+            "BTCUSD",
+            price,
+            datetime.now(UTC),
+            int((time.perf_counter() - start) * 1000),
+            data,
+        )
 
     def healthcheck(self) -> bool:
         try:

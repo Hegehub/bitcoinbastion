@@ -50,9 +50,14 @@ class SignalDeliveryLogService:
             if candidate is not None:
                 candidate.status = "published"
                 candidate.published_at = candidate.published_at or row.delivered_at
-                INTELLIGENCE_SIGNAL_PUBLISHED_TOTAL.labels(signal_type=self._bounded_type(candidate.signal_type), channel=bounded_channel).inc()
+                INTELLIGENCE_SIGNAL_PUBLISHED_TOTAL.labels(
+                    signal_type=self._bounded_type(candidate.signal_type), channel=bounded_channel
+                ).inc()
         else:
-            INTELLIGENCE_SIGNAL_DELIVERY_FAILURES_TOTAL.labels(channel=bounded_channel, reason_code=self._sanitize_error_type(error_type) or "unknown").inc()
+            INTELLIGENCE_SIGNAL_DELIVERY_FAILURES_TOTAL.labels(
+                channel=bounded_channel,
+                reason_code=self._sanitize_error_type(error_type) or "unknown",
+            ).inc()
         self.repo.add_delivery_log(row)
         return row
 
@@ -82,7 +87,24 @@ class SignalDeliveryLogService:
     def _sanitize_message(self, value: str | None) -> str | None:
         if value is None:
             return None
-        return re.sub(r"(token|secret|key|password)=\S+", r"\1=[redacted]", value, flags=re.IGNORECASE)[:500]
+        return re.sub(
+            r"(token|secret|key|password)=\S+", r"\1=[redacted]", value, flags=re.IGNORECASE
+        )[:500]
 
     def _bounded_type(self, value: str) -> str:
-        return value if value in {"news_market_impact", "candle_attribution", "delayed_reaction", "false_signal", "security_shock", "regulatory_risk", "macro_shock", "narrative_spike", "news_shock_index"} else "other"
+        return (
+            value
+            if value
+            in {
+                "news_market_impact",
+                "candle_attribution",
+                "delayed_reaction",
+                "false_signal",
+                "security_shock",
+                "regulatory_risk",
+                "macro_shock",
+                "narrative_spike",
+                "news_shock_index",
+            }
+            else "other"
+        )

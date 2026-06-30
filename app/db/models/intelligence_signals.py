@@ -14,11 +14,21 @@ class IntelligenceSignalCandidate(Base):
     signal_type: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     source_entity_type: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     source_entity_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
-    article_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True, index=True)
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), nullable=True, index=True)
-    candle_id: Mapped[int | None] = mapped_column(ForeignKey("btc_candles.id"), nullable=True, index=True)
-    impact_id: Mapped[int | None] = mapped_column(ForeignKey("news_price_impacts.id"), nullable=True, index=True)
-    attribution_id: Mapped[int | None] = mapped_column(ForeignKey("candle_attributions.id"), nullable=True, index=True)
+    article_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_articles.id"), nullable=True, index=True
+    )
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), nullable=True, index=True
+    )
+    candle_id: Mapped[int | None] = mapped_column(
+        ForeignKey("btc_candles.id"), nullable=True, index=True
+    )
+    impact_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_price_impacts.id"), nullable=True, index=True
+    )
+    attribution_id: Mapped[int | None] = mapped_column(
+        ForeignKey("candle_attributions.id"), nullable=True, index=True
+    )
     title: Mapped[str] = mapped_column(String(500), default="")
     summary: Mapped[str] = mapped_column(Text, default="")
     confidence_score: Mapped[float] = mapped_column(Float, default=0.0, index=True)
@@ -42,7 +52,9 @@ class IntelligenceOperatorReview(Base):
     __tablename__ = "intelligence_operator_reviews"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    signal_candidate_id: Mapped[int] = mapped_column(ForeignKey("intelligence_signal_candidates.id"), index=True, nullable=False)
+    signal_candidate_id: Mapped[int] = mapped_column(
+        ForeignKey("intelligence_signal_candidates.id"), index=True, nullable=False
+    )
     review_status: Mapped[str] = mapped_column(String(32), default="pending", index=True)
     reviewer_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
     operator_note: Mapped[str] = mapped_column(Text, default="")
@@ -80,7 +92,9 @@ class IntelligenceSignalDeliveryLog(Base):
     __tablename__ = "intelligence_signal_delivery_logs"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    signal_candidate_id: Mapped[int] = mapped_column(ForeignKey("intelligence_signal_candidates.id"), index=True, nullable=False)
+    signal_candidate_id: Mapped[int] = mapped_column(
+        ForeignKey("intelligence_signal_candidates.id"), index=True, nullable=False
+    )
     channel: Mapped[str] = mapped_column(String(32), index=True, nullable=False)
     delivery_status: Mapped[str] = mapped_column(String(32), index=True, nullable=False)
     target: Mapped[str] = mapped_column(String(160), default="")

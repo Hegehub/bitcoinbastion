@@ -1,10 +1,17 @@
 from app.schemas.bastion_trace import LiteTraceReport, TraceReport
-from app.services.bastion_trace.lite_explainer import map_confidence_label, map_privacy_label, map_risk_label, map_status
+from app.services.bastion_trace.lite_explainer import (
+    map_confidence_label,
+    map_privacy_label,
+    map_risk_label,
+    map_status,
+)
 from app.services.bastion_trace.public_safety import default_warnings
 
 
 class LiteTraceReportService:
-    def from_trace_report(self, trace_report: TraceReport, privacy_band: str = "UNKNOWN") -> LiteTraceReport:
+    def from_trace_report(
+        self, trace_report: TraceReport, privacy_band: str = "UNKNOWN"
+    ) -> LiteTraceReport:
         risk_label = map_risk_label(trace_report.trace_band)
         status = map_status(trace_report.trace_band)
         summary = {
@@ -29,7 +36,11 @@ class LiteTraceReportService:
             privacy_label=map_privacy_label(privacy_band),
             origin_label="Source-limited origin summary",
             confidence_label=map_confidence_label(trace_report.confidence),
-            safe_to_send_advisory="INSUFFICIENT_INFORMATION" if trace_report.trace_band.value == "UNKNOWN" else "PROCEED_WITH_CAUTION",
+            safe_to_send_advisory=(
+                "INSUFFICIENT_INFORMATION"
+                if trace_report.trace_band.value == "UNKNOWN"
+                else "PROCEED_WITH_CAUTION"
+            ),
             short_summary=summary,
             what_this_means="Advisory only. Uncertainty is explicitly preserved.",
             recommended_next_step=next_step,

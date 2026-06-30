@@ -6,7 +6,12 @@ from typing import Any
 from pydantic import BaseModel, Field, field_validator
 
 from app.plugins.errors import PluginSandboxError
-from app.plugins.permissions import FORBIDDEN_PERMISSIONS, PluginPermission, validate_permission, validate_permissions
+from app.plugins.permissions import (
+    FORBIDDEN_PERMISSIONS,
+    PluginPermission,
+    validate_permission,
+    validate_permissions,
+)
 
 
 class PluginSandboxPolicy(BaseModel):

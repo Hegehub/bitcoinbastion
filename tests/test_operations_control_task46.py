@@ -35,7 +35,15 @@ def test_operations_api_contracts_task46() -> None:
         response = client.get(path)
         assert response.status_code == 200
     payload = client.get("/api/v1/operations/status").json()
-    assert {"platform_status", "dependency_status", "provider_status", "operations_timeline", "recovery_drills", "system_health", "alert_summary"}.issubset(payload)
+    assert {
+        "platform_status",
+        "dependency_status",
+        "provider_status",
+        "operations_timeline",
+        "recovery_drills",
+        "system_health",
+        "alert_summary",
+    }.issubset(payload)
 
 
 def test_bastion_metrics_registration_and_bounded_endpoint_labels_task46() -> None:
@@ -53,7 +61,9 @@ def test_bastion_metrics_registration_and_bounded_endpoint_labels_task46() -> No
 
 
 def test_alert_rules_and_dashboards_task46() -> None:
-    rules = yaml.safe_load(Path("deploy/kubernetes/observability/prometheus-rules-operations.yaml").read_text())
+    rules = yaml.safe_load(
+        Path("deploy/kubernetes/observability/prometheus-rules-operations.yaml").read_text()
+    )
     alerts = {rule["alert"] for group in rules["spec"]["groups"] for rule in group["rules"]}
     assert "BitcoinBastionDatabaseUnavailable" in alerts
     assert "BitcoinBastionEvidenceIntegrityFailures" in alerts
@@ -83,7 +93,9 @@ def test_operations_cronjob_generation_and_gitops_inclusion_task46() -> None:
         "bitcoin-bastion-integrity-verification",
     ]:
         assert name in cronjob_text
-    assert "operations-cronjobs.yaml" in Path("deploy/kubernetes/base/kustomization.yaml").read_text()
+    assert (
+        "operations-cronjobs.yaml" in Path("deploy/kubernetes/base/kustomization.yaml").read_text()
+    )
     assert "/health/startup" in Path("deploy/kubernetes/base/api-deployment.yaml").read_text()
 
 

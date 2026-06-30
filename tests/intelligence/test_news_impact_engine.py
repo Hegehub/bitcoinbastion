@@ -20,13 +20,22 @@ def _db() -> Session:
 
 
 def _source(db: Session) -> NewsSource:
-    src = NewsSource(name="Impact Source", slug="impact-source", kind="RSS", base_url="https://impact.example", category="markets", tier="MARKET_MEDIA")
+    src = NewsSource(
+        name="Impact Source",
+        slug="impact-source",
+        kind="RSS",
+        base_url="https://impact.example",
+        category="markets",
+        tier="MARKET_MEDIA",
+    )
     db.add(src)
     db.flush()
     return src
 
 
-def _article(db: Session, src: NewsSource, sentiment: str = "POSITIVE", published_at: datetime | None = None) -> NewsArticle:
+def _article(
+    db: Session, src: NewsSource, sentiment: str = "POSITIVE", published_at: datetime | None = None
+) -> NewsArticle:
     published_at = published_at or datetime(2026, 5, 28, 12, 0, 0)
     article = NewsArticle(
         source_id=src.id,
@@ -51,7 +60,9 @@ def _article(db: Session, src: NewsSource, sentiment: str = "POSITIVE", publishe
     return article
 
 
-def _candle(open_time: datetime, price: float, provider_count: int = 3, volatility: float = 0.1) -> BTCCandle:
+def _candle(
+    open_time: datetime, price: float, provider_count: int = 3, volatility: float = 0.1
+) -> BTCCandle:
     return BTCCandle(
         timeframe="1m",
         open_time=open_time,
@@ -67,9 +78,22 @@ def _candle(open_time: datetime, price: float, provider_count: int = 3, volatili
     )
 
 
-def _add_price_windows(db: Session, start: datetime, prices: dict[int, float], provider_count: int = 3, volatility: float = 0.1) -> None:
+def _add_price_windows(
+    db: Session,
+    start: datetime,
+    prices: dict[int, float],
+    provider_count: int = 3,
+    volatility: float = 0.1,
+) -> None:
     for minutes, price in prices.items():
-        db.add(_candle(start + timedelta(minutes=minutes), price, provider_count=provider_count, volatility=volatility))
+        db.add(
+            _candle(
+                start + timedelta(minutes=minutes),
+                price,
+                provider_count=provider_count,
+                volatility=volatility,
+            )
+        )
     db.flush()
 
 
@@ -77,7 +101,9 @@ def test_positive_sentiment_positive_move_persists_windows_and_breakdown() -> No
     db = _db()
     src = _source(db)
     article = _article(db, src)
-    _add_price_windows(db, article.published_at, {0: 100000, 15: 101000, 60: 103000, 240: 102000, 1440: 101500})
+    _add_price_windows(
+        db, article.published_at, {0: 100000, 15: 101000, 60: 103000, 240: 102000, 1440: 101500}
+    )
 
     impact = NewsImpactEngine().calculate_article_impact(db, article.id)
     db.commit()
@@ -96,7 +122,9 @@ def test_negative_sentiment_down_move_matches_direction() -> None:
     db = _db()
     src = _source(db)
     article = _article(db, src, sentiment="NEGATIVE")
-    _add_price_windows(db, article.published_at, {0: 100000, 15: 99000, 60: 97000, 240: 98000, 1440: 98500})
+    _add_price_windows(
+        db, article.published_at, {0: 100000, 15: 99000, 60: 97000, 240: 98000, 1440: 98500}
+    )
 
     impact = NewsImpactEngine().calculate_article_impact(db, article.id)
 
@@ -109,7 +137,9 @@ def test_direction_mismatch_and_partial_flat_move() -> None:
     db = _db()
     src = _source(db)
     mismatch = _article(db, src, sentiment="POSITIVE")
-    _add_price_windows(db, mismatch.published_at, {0: 100000, 15: 99900, 60: 99000, 240: 99500, 1440: 99600})
+    _add_price_windows(
+        db, mismatch.published_at, {0: 100000, 15: 99900, 60: 99000, 240: 99500, 1440: 99600}
+    )
 
     impact = NewsImpactEngine().calculate_article_impact(db, mismatch.id)
     assert impact is not None
@@ -122,7 +152,9 @@ def test_degraded_missing_candles_lower_confidence_and_emit_limitations() -> Non
     db = _db()
     src = _source(db)
     article = _article(db, src)
-    _add_price_windows(db, article.published_at, {0: 100000, 15: 100800}, provider_count=1, volatility=0.8)
+    _add_price_windows(
+        db, article.published_at, {0: 100000, 15: 100800}, provider_count=1, volatility=0.8
+    )
 
     impact = NewsImpactEngine().calculate_article_impact(db, article.id)
 

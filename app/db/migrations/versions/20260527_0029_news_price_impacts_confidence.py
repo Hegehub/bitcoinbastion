@@ -20,17 +20,26 @@ def upgrade() -> None:
         sa.Column("article_id", sa.Integer(), sa.ForeignKey("news_articles.id"), nullable=False),
         sa.Column("event_id", sa.Integer(), sa.ForeignKey("news_events.id"), nullable=True),
         sa.Column("confidence_score", sa.Float(), nullable=False, server_default="0"),
-        sa.Column("confidence_band", sa.String(length=16), nullable=False, server_default="very_low"),
+        sa.Column(
+            "confidence_band", sa.String(length=16), nullable=False, server_default="very_low"
+        ),
         sa.Column("confidence_contributions_json", sa.JSON(), nullable=False),
         sa.Column("degradation_factors_json", sa.JSON(), nullable=False),
         sa.Column("uncertainty_flags_json", sa.JSON(), nullable=False),
-        sa.Column("delayed_reaction_detected", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column(
+            "delayed_reaction_detected", sa.Boolean(), nullable=False, server_default=sa.false()
+        ),
         sa.Column("false_signal_detected", sa.Boolean(), nullable=False, server_default=sa.false()),
         sa.Column("freshness_weight", sa.Float(), nullable=False, server_default="1"),
         sa.Column("volatility_context_weight", sa.Float(), nullable=False, server_default="1"),
         sa.Column("event_confirmation_weight", sa.Float(), nullable=False, server_default="0.5"),
         sa.Column("explanation_summary", sa.String(length=500), nullable=False, server_default=""),
-        sa.Column("limitation", sa.String(length=200), nullable=False, server_default="Correlation-based attribution is not proof of causation."),
+        sa.Column(
+            "limitation",
+            sa.String(length=200),
+            nullable=False,
+            server_default="Correlation-based attribution is not proof of causation.",
+        ),
         sa.Column("created_at", sa.DateTime(), nullable=False),
     )
     op.create_index("ix_news_price_impacts_article_id", "news_price_impacts", ["article_id"])

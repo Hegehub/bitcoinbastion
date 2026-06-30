@@ -1,7 +1,11 @@
 import inspect
 
 from app.services.events import webhook_signature as signature_module
-from app.services.events.webhook_signature import build_signed_payload, verify_signature, webhook_signature
+from app.services.events.webhook_signature import (
+    build_signed_payload,
+    verify_signature,
+    webhook_signature,
+)
 
 
 def test_signature_generation_is_deterministic_for_fixed_input() -> None:
@@ -11,9 +15,7 @@ def test_signature_generation_is_deterministic_for_fixed_input() -> None:
         raw_body='{"event_type":"signal.published"}',
     )
 
-    assert signature == (
-        "v1=2333c244f651a34b4fca8c55df09beef3acb01e1f6fa4fa0cd3139fb57ca16ba"
-    )
+    assert signature == ("v1=2333c244f651a34b4fca8c55df09beef3acb01e1f6fa4fa0cd3139fb57ca16ba")
 
 
 def test_valid_signature_verifies_and_wrong_secret_fails() -> None:
@@ -48,9 +50,7 @@ def test_valid_signature_verifies_and_wrong_secret_fails() -> None:
 
 def test_replay_tolerance_and_signature_prefix_are_enforced() -> None:
     raw_body = "{}"
-    signature = webhook_signature(
-        secret="whsec_test_secret", timestamp=100, raw_body=raw_body
-    )
+    signature = webhook_signature(secret="whsec_test_secret", timestamp=100, raw_body=raw_body)
 
     assert not verify_signature(
         secret="whsec_test_secret",

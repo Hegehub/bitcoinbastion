@@ -35,7 +35,13 @@ def _candle(open_time: datetime) -> BTCCandle:
     )
 
 
-def _event(seen_at: datetime, title: str, sentiment: str = "POSITIVE", relevance: float = 0.95, impact: float = 0.9) -> NewsEvent:
+def _event(
+    seen_at: datetime,
+    title: str,
+    sentiment: str = "POSITIVE",
+    relevance: float = 0.95,
+    impact: float = 0.9,
+) -> NewsEvent:
     return NewsEvent(
         event_key=title.lower().replace(" ", "-"),
         canonical_title=title,
@@ -103,7 +109,9 @@ def test_candle_attribution_no_candidates_generates_replay_when_enabled() -> Non
     assert rows == []
     replay = db.query(AttributionReplayLog).one()
     assert replay.candidate_event_count == 0
-    assert "Correlation is not proof of causation." in replay.explanation_snapshot_json["limitations"]
+    assert (
+        "Correlation is not proof of causation." in replay.explanation_snapshot_json["limitations"]
+    )
 
 
 def test_candle_attribution_stale_event_is_not_selected() -> None:

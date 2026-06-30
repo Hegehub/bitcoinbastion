@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 from app.db.models.time_utils import utcnow
 
+
 class BTCCandle(Base):
     __tablename__ = "btc_candles"
     __table_args__ = (
@@ -44,13 +45,17 @@ class BTCCandle(Base):
     market_regime: Mapped[str] = mapped_column(String(16), default="normal")
     volatility_score: Mapped[float] = mapped_column(Float, default=0.0)
     evidence_packet_id: Mapped[str] = mapped_column(String(64), default="")
-    provider_snapshot_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    provider_snapshot_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     integrity_status: Mapped[str] = mapped_column(String(32), default="valid", index=True)
     integrity_notes: Mapped[str] = mapped_column(String(500), default="")
     is_finalized: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     revision: Mapped[int] = mapped_column(Integer, default=1)
     rebuild_reason: Mapped[str] = mapped_column(String(255), default="")
     rebuilt_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)

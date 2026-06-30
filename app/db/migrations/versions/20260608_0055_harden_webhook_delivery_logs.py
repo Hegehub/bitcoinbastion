@@ -20,7 +20,9 @@ def upgrade() -> None:
         "webhook_deliveries",
         sa.Column("attempt_number", sa.Integer(), nullable=False, server_default="1"),
     )
-    op.add_column("webhook_deliveries", sa.Column("request_body_hash", sa.String(length=64), nullable=True))
+    op.add_column(
+        "webhook_deliveries", sa.Column("request_body_hash", sa.String(length=64), nullable=True)
+    )
     op.add_column("webhook_deliveries", sa.Column("duration_ms", sa.Integer(), nullable=True))
     op.add_column("webhook_deliveries", sa.Column("next_retry_at", sa.DateTime(), nullable=True))
     op.create_index("ix_webhook_deliveries_next_retry_at", "webhook_deliveries", ["next_retry_at"])

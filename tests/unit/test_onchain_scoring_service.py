@@ -103,7 +103,9 @@ def test_onchain_scoring_exposes_evidence_chain() -> None:
         observed_at=datetime.now(UTC),
         payload={"source_type": "provider"},
     )
-    state = ChainStateService().evaluate(tip_height=101, observed_block_height=100, data_source="provider_probe")
+    state = ChainStateService().evaluate(
+        tip_height=101, observed_block_height=100, data_source="provider_probe"
+    )
     out = OnchainScoringService().score(event, chain_state=state)
     chain = out.explainability["evidence_chain"]
     assert len(chain) >= 2
@@ -115,9 +117,27 @@ def test_onchain_scoring_degrades_with_fallback_stale_chain_state() -> None:
     from datetime import UTC, datetime
     from app.integrations.bitcoin.provider import ChainEvent
 
-    event = ChainEvent(event_type="large_transfer", txid="ev2", address="bc1q2", value_sats=2_000_000_000, block_height=100, observed_at=datetime.now(UTC), payload={"source_type": "provider"})
-    fresh = ChainStateService().evaluate(tip_height=101, observed_block_height=100, data_source="provider_probe", provider_data_age_seconds=10)
-    stale_fallback = ChainStateService().evaluate(tip_height=101, observed_block_height=100, data_source="provider_fallback", provider_data_age_seconds=1200)
+    event = ChainEvent(
+        event_type="large_transfer",
+        txid="ev2",
+        address="bc1q2",
+        value_sats=2_000_000_000,
+        block_height=100,
+        observed_at=datetime.now(UTC),
+        payload={"source_type": "provider"},
+    )
+    fresh = ChainStateService().evaluate(
+        tip_height=101,
+        observed_block_height=100,
+        data_source="provider_probe",
+        provider_data_age_seconds=10,
+    )
+    stale_fallback = ChainStateService().evaluate(
+        tip_height=101,
+        observed_block_height=100,
+        data_source="provider_fallback",
+        provider_data_age_seconds=1200,
+    )
     fresh_score = OnchainScoringService().score(event, chain_state=fresh)
     stale_score = OnchainScoringService().score(event, chain_state=stale_fallback)
     assert stale_score.confidence < fresh_score.confidence

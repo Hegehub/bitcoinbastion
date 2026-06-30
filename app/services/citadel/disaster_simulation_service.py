@@ -1,4 +1,7 @@
-from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecord, RecoveryArtifactService
+from app.services.citadel.recovery_artifact_service import (
+    RecoveryArtifactRecord,
+    RecoveryArtifactService,
+)
 from app.services.citadel.sovereignty_graph_service import SovereigntyGraphService
 from app.services.mempool.fee_market_model import FeeMarketModel
 from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService, MempoolSnapshot
@@ -63,7 +66,10 @@ class DisasterSimulationService:
         },
         "descriptor_corruption": {
             "aliases": {"descriptor_corruption", "descriptor_loss"},
-            "affected_dependency_types": {"descriptor_dependency", "inheritance_descriptor_dependency"},
+            "affected_dependency_types": {
+                "descriptor_dependency",
+                "inheritance_descriptor_dependency",
+            },
             "base_shock": 0.32,
             "fee_pressure_multiplier": 1.0,
             "remediations": [
@@ -136,7 +142,9 @@ class DisasterSimulationService:
         return f"{edge['source']}->{edge['target']}"
 
     @staticmethod
-    def _recovery_state(owner_id: int, has_descriptor: bool, has_recent_health_report: bool) -> dict[str, object]:
+    def _recovery_state(
+        owner_id: int, has_descriptor: bool, has_recent_health_report: bool
+    ) -> dict[str, object]:
         artifacts = [
             RecoveryArtifactRecord(
                 artifact_type="descriptor",
@@ -170,12 +178,25 @@ class DisasterSimulationService:
         graph = SovereigntyGraphService().build(
             owner_id=owner_id,
             has_descriptor=descriptor_required,
-            has_recent_health_report=scenario_key in {"high_fee_emergency_spend", "provider_outage"},
-            wallet_type="multisig-2of3" if scenario_key in {"signer_loss", "high_fee_emergency_spend"} else "single-sig",
+            has_recent_health_report=scenario_key
+            in {"high_fee_emergency_spend", "provider_outage"},
+            wallet_type=(
+                "multisig-2of3"
+                if scenario_key in {"signer_loss", "high_fee_emergency_spend"}
+                else "single-sig"
+            ),
         )
-        edges = [item for item in self._as_object_list(graph.get("edges", [])) if isinstance(item, dict)]
-        spofs = [item for item in self._as_object_list(graph.get("single_points_of_failure", [])) if isinstance(item, dict)]
-        nodes = [item for item in self._as_object_list(graph.get("nodes", [])) if isinstance(item, dict)]
+        edges = [
+            item for item in self._as_object_list(graph.get("edges", [])) if isinstance(item, dict)
+        ]
+        spofs = [
+            item
+            for item in self._as_object_list(graph.get("single_points_of_failure", []))
+            if isinstance(item, dict)
+        ]
+        nodes = [
+            item for item in self._as_object_list(graph.get("nodes", [])) if isinstance(item, dict)
+        ]
         has_descriptor = any(node.get("node_type") == "descriptor" for node in nodes)
         has_recent_health_report = self._as_float(graph.get("confidence", 0.0)) >= 0.8
         recovery_state = self._recovery_state(
@@ -187,13 +208,16 @@ class DisasterSimulationService:
         affected_types = self._as_str_set(scenario_rule["affected_dependency_types"])
         blocked_edges = [edge for edge in edges if edge.get("dependency_type") in affected_types]
         blocked_paths = [self._path(edge) for edge in blocked_edges]
-        remaining_paths = [self._path(edge) for edge in edges if edge.get("dependency_type") not in affected_types]
+        remaining_paths = [
+            self._path(edge) for edge in edges if edge.get("dependency_type") not in affected_types
+        ]
 
         critical_failure_points = sorted(
             {
                 str(edge["target"])
                 for edge in spofs
-                if edge.get("dependency_type") in affected_types or edge.get("single_point_of_failure")
+                if edge.get("dependency_type") in affected_types
+                or edge.get("single_point_of_failure")
             }
         )
 
@@ -215,22 +239,33 @@ class DisasterSimulationService:
             + (0.08 if scenario_key == "descriptor_corruption" and not has_descriptor else 0.0),
         )
 
-        fee_pressure_multiplier = self._as_float(scenario_rule["fee_pressure_multiplier"], default=1.0)
+        fee_pressure_multiplier = self._as_float(
+            scenario_rule["fee_pressure_multiplier"], default=1.0
+        )
         mempool_snapshot = MempoolSnapshot(
             backlog_tx_count=int(35_000 + (len(blocked_edges) * 12_000 * fee_pressure_multiplier)),
             backlog_vbytes=int(50_000_000 + (len(spofs) * 10_000_000 * fee_pressure_multiplier)),
             median_fee_rate_sat_vb=8.0 + (len(blocked_edges) * 3.5 * fee_pressure_multiplier),
-            high_priority_fee_rate_sat_vb=18.0 + (len(blocked_edges) * 7.0 * fee_pressure_multiplier),
+            high_priority_fee_rate_sat_vb=18.0
+            + (len(blocked_edges) * 7.0 * fee_pressure_multiplier),
         )
         mempool_state = MempoolAnalyzerService().analyze(mempool_snapshot)
         mempool_market = FeeMarketModel().estimate(mempool=mempool_state, target_blocks=3)
         mempool_penalty = min(0.2, mempool_market.high_fee_scenario_sat_vb / 900)
 
         chain_state = ChainStateService().evaluate(
-            tip_height=900_001 if scenario_key in {"weak_finality_stress", "provider_outage"} else 900_008,
+            tip_height=(
+                900_001 if scenario_key in {"weak_finality_stress", "provider_outage"} else 900_008
+            ),
             observed_block_height=900_000,
-            headers_height=900_003 if scenario_key in {"weak_finality_stress", "provider_outage"} else 900_008,
-            data_source="repository_fallback" if scenario_key in {"weak_finality_stress", "provider_outage"} else "query",
+            headers_height=(
+                900_003 if scenario_key in {"weak_finality_stress", "provider_outage"} else 900_008
+            ),
+            data_source=(
+                "repository_fallback"
+                if scenario_key in {"weak_finality_stress", "provider_outage"}
+                else "query"
+            ),
         )
         chain_state_penalty = min(0.22, chain_state.reorg_risk_score * 0.22)
 
@@ -270,7 +305,9 @@ class DisasterSimulationService:
             "blocked_paths": blocked_paths,
             "remaining_paths": remaining_paths,
             "critical_failure_points": critical_failure_points,
-            "recommended_remediations": [str(item) for item in self._as_object_list(scenario_rule["remediations"])],
+            "recommended_remediations": [
+                str(item) for item in self._as_object_list(scenario_rule["remediations"])
+            ],
             "freshness": {"source": "deterministic_ruleset", "version": "citadel_disaster_v3"},
             "confidence": confidence,
             "synthetic_component": True,
@@ -279,7 +316,9 @@ class DisasterSimulationService:
             "confidence_penalty": 0.15,
             "operator_warning": "Synthetic/baseline Citadel output: validate with real operational evidence before critical action.",
             "evidence_refs": ["citadel:baseline_model"],
-            "limitations": ["Output includes synthetic or baseline assumptions and is not full production attestation."],
+            "limitations": [
+                "Output includes synthetic or baseline assumptions and is not full production attestation."
+            ],
             "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "rule_set": "citadel_disaster_v3",
@@ -291,7 +330,9 @@ class DisasterSimulationService:
                 "graph_spof_count": len(spofs),
                 "graph_edge_count": len(edges),
                 "affected_dependency_types": sorted(affected_types),
-                "blocked_edge_types": sorted({str(edge.get("dependency_type")) for edge in blocked_edges}),
+                "blocked_edge_types": sorted(
+                    {str(edge.get("dependency_type")) for edge in blocked_edges}
+                ),
                 "recovery_completeness_score": recovery_state.get("completeness_score", 0.0),
                 "descriptor_completeness_score": descriptor_profile.completeness_score,
                 "mempool_state": mempool_state.congestion_state,

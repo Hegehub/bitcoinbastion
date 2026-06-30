@@ -21,7 +21,6 @@ from app.services.intelligence.historical_similarity_metrics import (
 )
 
 MARKET_PATTERNS: list[dict[str, object]] = [
-
     {
         "slug": "REGULATORY_APPROVAL",
         "name": "Regulatory approval",
@@ -139,7 +138,6 @@ MARKET_PATTERNS: list[dict[str, object]] = [
         "expected_direction": "DOWN",
         "typical_impact_window": "4h",
     },
-
     {
         "slug": "FED_LIQUIDITY_SHOCK",
         "name": "Fed liquidity shock",
@@ -230,7 +228,6 @@ MARKET_PATTERNS: list[dict[str, object]] = [
         "expected_direction": "DOWN",
         "typical_impact_window": "15m",
     },
-
     {
         "slug": "SECURITY_INCIDENT",
         "name": "Security incident",
@@ -294,7 +291,6 @@ MARKET_PATTERNS: list[dict[str, object]] = [
         "expected_direction": "UP",
         "typical_impact_window": "15m",
     },
-
     {
         "slug": "LARGE_LIQUIDATION_CASCADE",
         "name": "Large liquidation cascade",
@@ -322,7 +318,6 @@ MARKET_PATTERNS: list[dict[str, object]] = [
         "expected_direction": "UP",
         "typical_impact_window": "24h",
     },
-
     {
         "slug": "RATE_CUT_SIGNAL",
         "name": "Rate cut signal",
@@ -412,7 +407,14 @@ class MarketMemoryService:
             payload.setdefault("typical_direction", payload.get("expected_direction", "UNKNOWN"))
             payload.setdefault("default_impact_window", payload.get("typical_impact_window", "1h"))
             payload.setdefault("default_time_window", payload.get("typical_impact_window", "1h"))
-            payload.setdefault("risk_profile", "elevated" if "SHOCK" in slug or "HACK" in slug or "CASCADE" in slug else "standard")
+            payload.setdefault(
+                "risk_profile",
+                (
+                    "elevated"
+                    if "SHOCK" in slug or "HACK" in slug or "CASCADE" in slug
+                    else "standard"
+                ),
+            )
             row = self.db.query(MarketPattern).filter(MarketPattern.slug == slug).first()
             if row is None:
                 row = MarketPattern(
@@ -718,7 +720,12 @@ class MarketMemoryService:
             "MACRO_RISK_OFF": ["risk-off", "panic"],
             "LIQUIDATION_CASCADE_LONG": ["long", "liquidation", "cascade"],
             "LIQUIDATION_CASCADE_SHORT": ["short", "squeeze", "liquidation"],
-            "LARGE_LIQUIDATION_CASCADE": ["large liquidation", "liquidation", "cascade", "deleveraging"],
+            "LARGE_LIQUIDATION_CASCADE": [
+                "large liquidation",
+                "liquidation",
+                "cascade",
+                "deleveraging",
+            ],
             "LARGE_LIQUIDATION": ["large liquidation", "liquidation", "deleveraging"],
             "HALVING_NARRATIVE": ["halving"],
             "SELF_CUSTODY_WAVE": ["self-custody", "withdrawal"],

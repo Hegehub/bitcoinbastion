@@ -2,7 +2,6 @@ from datetime import UTC
 
 from app.integrations.rss.client import RSSClient
 
-
 RSS_XML = """<?xml version='1.0' encoding='UTF-8'?>
 <rss version='2.0'>
   <channel>

@@ -49,7 +49,9 @@ class RecoveryArtifactService:
             status = (
                 artifact.verification_status
                 if artifact.verification_status not in {"", "unknown", "unverified"}
-                else self._normalized_status(is_verified=artifact.is_verified, freshness_band=freshness_band)
+                else self._normalized_status(
+                    is_verified=artifact.is_verified, freshness_band=freshness_band
+                )
             )
             normalized_artifacts.append(
                 artifact.model_copy(
@@ -66,13 +68,16 @@ class RecoveryArtifactService:
 
         missing_required = [a.label for a in required if a.verification_status != "verified"]
         freshness_penalty = (len(stale_required) / len(required)) if required else 0.0
-        fallback_required = [a for a in required if a.source_type in {"fallback", "synthetic", "unknown"}]
+        fallback_required = [
+            a for a in required if a.source_type in {"fallback", "synthetic", "unknown"}
+        ]
         provenance_penalty = (len(fallback_required) / len(required)) * 0.2 if required else 0.0
         completeness = len(verified_required) / len(required) if required else 0.0
         completeness = max(0.0, completeness - (freshness_penalty * 0.25) - provenance_penalty)
 
         confidence = (
-            sum(max(0.0, min(1.0, float(a.confidence))) for a in normalized_artifacts) / len(normalized_artifacts)
+            sum(max(0.0, min(1.0, float(a.confidence))) for a in normalized_artifacts)
+            / len(normalized_artifacts)
             if normalized_artifacts
             else 0.0
         )

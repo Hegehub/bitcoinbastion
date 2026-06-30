@@ -13,8 +13,28 @@ def test_1m_candle_generation() -> None:
     Base.metadata.create_all(bind=engine)
     with Session(engine) as db:
         t = datetime(2026, 5, 26, 14, 0, 10, tzinfo=UTC)
-        db.add(BTCPricePoint(provider="binance", provider_name="binance", pair="BTCUSD", symbol="BTC", price_usd=100.0, observed_at=t, raw_payload_hash="h1"))
-        db.add(BTCPricePoint(provider="kraken", provider_name="kraken", pair="BTCUSD", symbol="BTC", price_usd=101.0, observed_at=t, raw_payload_hash="h2"))
+        db.add(
+            BTCPricePoint(
+                provider="binance",
+                provider_name="binance",
+                pair="BTCUSD",
+                symbol="BTC",
+                price_usd=100.0,
+                observed_at=t,
+                raw_payload_hash="h1",
+            )
+        )
+        db.add(
+            BTCPricePoint(
+                provider="kraken",
+                provider_name="kraken",
+                pair="BTCUSD",
+                symbol="BTC",
+                price_usd=101.0,
+                observed_at=t,
+                raw_payload_hash="h2",
+            )
+        )
         db.commit()
         candle = BTCCandleBuilderService().build_candle(db, "1m", t)
         assert candle is not None
@@ -27,7 +47,17 @@ def test_deterministic_rebuild() -> None:
     Base.metadata.create_all(bind=engine)
     with Session(engine) as db:
         t = datetime(2026, 5, 26, 14, 5, 10, tzinfo=UTC)
-        db.add(BTCPricePoint(provider="binance", provider_name="binance", pair="BTCUSD", symbol="BTC", price_usd=100.0, observed_at=t, raw_payload_hash="h1"))
+        db.add(
+            BTCPricePoint(
+                provider="binance",
+                provider_name="binance",
+                pair="BTCUSD",
+                symbol="BTC",
+                price_usd=100.0,
+                observed_at=t,
+                raw_payload_hash="h1",
+            )
+        )
         db.commit()
         svc = BTCCandleBuilderService()
         first = svc.build_candle(db, "1m", t)

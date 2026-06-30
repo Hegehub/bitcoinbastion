@@ -21,14 +21,26 @@ def upgrade() -> None:
         batch_op.add_column(sa.Column("matched_event_id", sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column("matched_signal_id", sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column("matched_article_id", sa.Integer(), nullable=True))
-        batch_op.add_column(sa.Column("pattern_type", sa.String(length=64), nullable=False, server_default="UNKNOWN"))
+        batch_op.add_column(
+            sa.Column(
+                "pattern_type", sa.String(length=64), nullable=False, server_default="UNKNOWN"
+            )
+        )
         batch_op.add_column(sa.Column("reaction_15m_pct", sa.Float(), nullable=True))
         batch_op.add_column(sa.Column("reaction_1h_pct", sa.Float(), nullable=True))
         batch_op.add_column(sa.Column("reaction_4h_pct", sa.Float(), nullable=True))
         batch_op.add_column(sa.Column("reaction_24h_pct", sa.Float(), nullable=True))
-        batch_op.add_column(sa.Column("reaction_direction", sa.String(length=16), nullable=False, server_default="UNKNOWN"))
-        batch_op.add_column(sa.Column("confidence_score", sa.Float(), nullable=False, server_default="0"))
-        batch_op.add_column(sa.Column("limitations_json", sa.JSON(), nullable=False, server_default="{}"))
+        batch_op.add_column(
+            sa.Column(
+                "reaction_direction", sa.String(length=16), nullable=False, server_default="UNKNOWN"
+            )
+        )
+        batch_op.add_column(
+            sa.Column("confidence_score", sa.Float(), nullable=False, server_default="0")
+        )
+        batch_op.add_column(
+            sa.Column("limitations_json", sa.JSON(), nullable=False, server_default="{}")
+        )
         batch_op.create_foreign_key(
             "fk_historical_similarity_results_reference_article_id_news_articles",
             "news_articles",
@@ -53,23 +65,71 @@ def upgrade() -> None:
             ["matched_article_id"],
             ["id"],
         )
-    op.create_index("ix_historical_similarity_results_reference_signal_id", "historical_similarity_results", ["reference_signal_id"])
-    op.create_index("ix_historical_similarity_results_reference_article_id", "historical_similarity_results", ["reference_article_id"])
-    op.create_index("ix_historical_similarity_results_reference_candle_id", "historical_similarity_results", ["reference_candle_id"])
-    op.create_index("ix_historical_similarity_results_matched_event_id", "historical_similarity_results", ["matched_event_id"])
-    op.create_index("ix_historical_similarity_results_matched_signal_id", "historical_similarity_results", ["matched_signal_id"])
-    op.create_index("ix_historical_similarity_results_matched_article_id", "historical_similarity_results", ["matched_article_id"])
-    op.create_index("ix_historical_similarity_results_pattern_type", "historical_similarity_results", ["pattern_type"])
+    op.create_index(
+        "ix_historical_similarity_results_reference_signal_id",
+        "historical_similarity_results",
+        ["reference_signal_id"],
+    )
+    op.create_index(
+        "ix_historical_similarity_results_reference_article_id",
+        "historical_similarity_results",
+        ["reference_article_id"],
+    )
+    op.create_index(
+        "ix_historical_similarity_results_reference_candle_id",
+        "historical_similarity_results",
+        ["reference_candle_id"],
+    )
+    op.create_index(
+        "ix_historical_similarity_results_matched_event_id",
+        "historical_similarity_results",
+        ["matched_event_id"],
+    )
+    op.create_index(
+        "ix_historical_similarity_results_matched_signal_id",
+        "historical_similarity_results",
+        ["matched_signal_id"],
+    )
+    op.create_index(
+        "ix_historical_similarity_results_matched_article_id",
+        "historical_similarity_results",
+        ["matched_article_id"],
+    )
+    op.create_index(
+        "ix_historical_similarity_results_pattern_type",
+        "historical_similarity_results",
+        ["pattern_type"],
+    )
 
 
 def downgrade() -> None:
-    op.drop_index("ix_historical_similarity_results_pattern_type", table_name="historical_similarity_results")
-    op.drop_index("ix_historical_similarity_results_matched_article_id", table_name="historical_similarity_results")
-    op.drop_index("ix_historical_similarity_results_matched_signal_id", table_name="historical_similarity_results")
-    op.drop_index("ix_historical_similarity_results_matched_event_id", table_name="historical_similarity_results")
-    op.drop_index("ix_historical_similarity_results_reference_candle_id", table_name="historical_similarity_results")
-    op.drop_index("ix_historical_similarity_results_reference_article_id", table_name="historical_similarity_results")
-    op.drop_index("ix_historical_similarity_results_reference_signal_id", table_name="historical_similarity_results")
+    op.drop_index(
+        "ix_historical_similarity_results_pattern_type", table_name="historical_similarity_results"
+    )
+    op.drop_index(
+        "ix_historical_similarity_results_matched_article_id",
+        table_name="historical_similarity_results",
+    )
+    op.drop_index(
+        "ix_historical_similarity_results_matched_signal_id",
+        table_name="historical_similarity_results",
+    )
+    op.drop_index(
+        "ix_historical_similarity_results_matched_event_id",
+        table_name="historical_similarity_results",
+    )
+    op.drop_index(
+        "ix_historical_similarity_results_reference_candle_id",
+        table_name="historical_similarity_results",
+    )
+    op.drop_index(
+        "ix_historical_similarity_results_reference_article_id",
+        table_name="historical_similarity_results",
+    )
+    op.drop_index(
+        "ix_historical_similarity_results_reference_signal_id",
+        table_name="historical_similarity_results",
+    )
     with op.batch_alter_table("historical_similarity_results") as batch_op:
         batch_op.drop_constraint(
             "fk_historical_similarity_results_matched_article_id_news_articles",

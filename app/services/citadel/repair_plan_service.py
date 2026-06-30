@@ -53,7 +53,9 @@ class RepairPlanService:
             "production_replacement_path": "Replace with production-grade telemetry, attestations, and provider-linked evidence.",
             "confidence_penalty": 0.15,
             "operator_warning": "Synthetic/baseline Citadel output: validate with real operational evidence before critical action.",
-            "limitations": ["Output includes synthetic or baseline assumptions and is not full production attestation."],
+            "limitations": [
+                "Output includes synthetic or baseline assumptions and is not full production attestation."
+            ],
             "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "driven_by": evidence,
@@ -76,16 +78,32 @@ class RepairPlanService:
         inheritance = InheritanceVerificationService().evaluate(
             owner_id=owner_id,
             recovery_readiness_score=recovery.recovery_readiness_score,
-            has_instructions=not any("instructions" in warning.lower() for warning in recovery.warnings),
+            has_instructions=not any(
+                "instructions" in warning.lower() for warning in recovery.warnings
+            ),
             human_dependency_score=recovery.human_dependency_score,
             descriptor_available=descriptor_profile.has_descriptor,
-            artifact_completeness_score=self._as_float(recovery.artifact_summary.get("completeness_score", 0.0)),
+            artifact_completeness_score=self._as_float(
+                recovery.artifact_summary.get("completeness_score", 0.0)
+            ),
             verification_freshness_score=max(
                 0.0,
                 1.0
                 - (
-                    self._as_float(self._as_dict(recovery.artifact_summary.get("freshness", {})).get("stale_required_count", 0.0))
-                    / max(1.0, self._as_float(self._as_dict(recovery.artifact_summary.get("freshness", {})).get("artifact_count", 1.0), default=1.0))
+                    self._as_float(
+                        self._as_dict(recovery.artifact_summary.get("freshness", {})).get(
+                            "stale_required_count", 0.0
+                        )
+                    )
+                    / max(
+                        1.0,
+                        self._as_float(
+                            self._as_dict(recovery.artifact_summary.get("freshness", {})).get(
+                                "artifact_count", 1.0
+                            ),
+                            default=1.0,
+                        ),
+                    )
                 ),
             ),
             emergency_contact_coverage=0.4,
@@ -104,7 +122,9 @@ class RepairPlanService:
                     dependency_area="recovery_artifacts",
                     expected_resilience_improvement="Increase deterministic recovery readiness and reduce custody loss risk.",
                     effort_estimate="4-8 hours",
-                    evidence=self._as_str_list(recovery.artifact_summary.get("missing_required_labels", [])),
+                    evidence=self._as_str_list(
+                        recovery.artifact_summary.get("missing_required_labels", [])
+                    ),
                 )
             )
         if recovery.artifact_summary.get("stale_required_labels"):
@@ -117,12 +137,18 @@ class RepairPlanService:
                     dependency_area="verification_freshness",
                     expected_resilience_improvement="Reduce stale-proof risk and improve recovery confidence.",
                     effort_estimate="2-6 hours",
-                    evidence=self._as_str_list(recovery.artifact_summary.get("stale_required_labels", [])),
+                    evidence=self._as_str_list(
+                        recovery.artifact_summary.get("stale_required_labels", [])
+                    ),
                 )
             )
 
         for gap in self._as_str_list(inheritance.get("critical_gaps", [])):
-            area = "inheritance" if "inheritance" in gap.lower() else "descriptor" if "descriptor" in gap.lower() else "operations"
+            area = (
+                "inheritance"
+                if "inheritance" in gap.lower()
+                else "descriptor" if "descriptor" in gap.lower() else "operations"
+            )
             items.append(
                 self._item(
                     priority=82 if area == "inheritance" else 78,
@@ -164,7 +190,9 @@ class RepairPlanService:
                 )
             )
 
-        items.sort(key=lambda item: int(self._as_float(item["priority_score"], default=0.0)), reverse=True)
+        items.sort(
+            key=lambda item: int(self._as_float(item["priority_score"], default=0.0)), reverse=True
+        )
 
         return {
             "owner_id": owner_id,
@@ -177,7 +205,9 @@ class RepairPlanService:
             "confidence_penalty": 0.15,
             "operator_warning": "Repair plan is advisory and synthetic-influenced; validate against live operations evidence.",
             "evidence_refs": ["citadel:repair_plan", "citadel:baseline_model"],
-            "limitations": ["Heuristic prioritization may differ from production incident reality."],
+            "limitations": [
+                "Heuristic prioritization may differ from production incident reality."
+            ],
             "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "priority_logic": "derived from recovery artifacts, inheritance gaps, human dependency, descriptor readiness",

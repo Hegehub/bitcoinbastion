@@ -139,4 +139,6 @@ def test_existing_partial_graph_is_reconciled_with_missing_source_edges() -> Non
         result = SignalExplainabilityService().get_explanation(db=db, signal_id=signal.id)
 
     assert any(item.node_key == "source:news" for item in result.nodes)
-    assert any(item.relation == "supports" and item.from_node_key == "source:news" for item in result.edges)
+    assert any(
+        item.relation == "supports" and item.from_node_key == "source:news" for item in result.edges
+    )

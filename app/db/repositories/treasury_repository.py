@@ -29,7 +29,12 @@ class TreasuryRepository:
         return self.db.execute(stmt).scalar_one_or_none()
 
     def list(self, limit: int, offset: int, status: str | None = None) -> List[TreasuryRequest]:
-        stmt = select(TreasuryRequest).order_by(TreasuryRequest.created_at.desc()).limit(limit).offset(offset)
+        stmt = (
+            select(TreasuryRequest)
+            .order_by(TreasuryRequest.created_at.desc())
+            .limit(limit)
+            .offset(offset)
+        )
         if status:
             stmt = stmt.where(TreasuryRequest.status == status)
         return list(self.db.execute(stmt).scalars())

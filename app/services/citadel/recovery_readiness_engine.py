@@ -1,4 +1,7 @@
-from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecord, RecoveryArtifactService
+from app.services.citadel.recovery_artifact_service import (
+    RecoveryArtifactRecord,
+    RecoveryArtifactService,
+)
 
 
 class RecoveryReadinessEngine:
@@ -27,8 +30,12 @@ class RecoveryReadinessEngine:
         return 0.0
 
     @staticmethod
-    def _build_recovery_slo(*, artifact_summary: dict[str, object], readiness_score: float, confidence: float) -> dict[str, object]:
-        required_count = RecoveryReadinessEngine._as_int(artifact_summary.get("required_count", 0), 0)
+    def _build_recovery_slo(
+        *, artifact_summary: dict[str, object], readiness_score: float, confidence: float
+    ) -> dict[str, object]:
+        required_count = RecoveryReadinessEngine._as_int(
+            artifact_summary.get("required_count", 0), 0
+        )
         verified_required = RecoveryReadinessEngine._as_int(
             artifact_summary.get("verified_required_count", 0), 0
         )
@@ -44,7 +51,9 @@ class RecoveryReadinessEngine:
         degraded_recovery_confidence = confidence < 0.7 or readiness_score < 0.65
         unresolved_critical_findings = len(stale_required_labels) + len(missing_required_labels)
 
-        if unresolved_critical_findings >= 3 or (stale_verification and overdue_recovery_validation):
+        if unresolved_critical_findings >= 3 or (
+            stale_verification and overdue_recovery_validation
+        ):
             status = "critical"
         elif stale_verification or overdue_recovery_validation or degraded_recovery_confidence:
             status = "degraded"
@@ -77,7 +86,9 @@ class RecoveryReadinessEngine:
             "confidence_penalty": 0.15,
             "operator_warning": "Synthetic/baseline Citadel output: validate with real operational evidence before critical action.",
             "evidence_refs": ["citadel:baseline_model"],
-            "limitations": ["Output includes synthetic or baseline assumptions and is not full production attestation."],
+            "limitations": [
+                "Output includes synthetic or baseline assumptions and is not full production attestation."
+            ],
             "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "stale_required_labels": stale_required_labels,
@@ -112,19 +123,29 @@ class RecoveryReadinessEngine:
 
         warnings: list[str] = []
         if not has_descriptor:
-            warnings.append("Descriptor metadata missing; deterministic recovery path cannot be verified.")
+            warnings.append(
+                "Descriptor metadata missing; deterministic recovery path cannot be verified."
+            )
         elif descriptor_score < 0.6:
-            warnings.append("Descriptor completeness is degraded; recovery path assumptions are partially trusted.")
+            warnings.append(
+                "Descriptor completeness is degraded; recovery path assumptions are partially trusted."
+            )
         if not has_instructions:
             warnings.append("Recovery instructions missing; inheritance/operator risk is elevated.")
         if human_dependency_score > 0.7:
             warnings.append("High human dependency detected; recovery is operationally fragile.")
         if script_risk_score > 0.7:
-            warnings.append("High script complexity risk detected; recovery path requires additional validation.")
-        if RecoveryReadinessEngine._as_str_list(artifact_summary.get("missing_required_labels", [])):
+            warnings.append(
+                "High script complexity risk detected; recovery path requires additional validation."
+            )
+        if RecoveryReadinessEngine._as_str_list(
+            artifact_summary.get("missing_required_labels", [])
+        ):
             warnings.append("Required recovery artifacts are not verified.")
         if artifact_summary.get("stale_required_labels"):
-            warnings.append("Some required recovery artifacts are stale and require reverification.")
+            warnings.append(
+                "Some required recovery artifacts are stale and require reverification."
+            )
         provenance = artifact_summary.get("provenance", [])
         provenance_items = provenance if isinstance(provenance, list) else []
         fallback_required = [
@@ -135,7 +156,9 @@ class RecoveryReadinessEngine:
             and item.get("source_type") in {"fallback", "synthetic", "unknown"}
         ]
         if fallback_required:
-            warnings.append("Recovery readiness includes fallback/synthetic required artifacts; confidence is reduced.")
+            warnings.append(
+                "Recovery readiness includes fallback/synthetic required artifacts; confidence is reduced."
+            )
 
         confidence = self._score_from_summary(artifact_summary.get("confidence", 0.0))
         recovery_slo = self._build_recovery_slo(
@@ -149,7 +172,9 @@ class RecoveryReadinessEngine:
             "artifact_summary": artifact_summary,
             "human_dependency_score": human_dependency_score,
             "warnings": warnings,
-            "recoverability_assumption": "strong" if score >= 0.8 else "moderate" if score >= 0.5 else "weak",
+            "recoverability_assumption": (
+                "strong" if score >= 0.8 else "moderate" if score >= 0.5 else "weak"
+            ),
             "freshness": artifact_summary["freshness"],
             "confidence": confidence,
             "synthetic_component": True,
@@ -158,7 +183,9 @@ class RecoveryReadinessEngine:
             "confidence_penalty": 0.15,
             "operator_warning": "Recovery readiness score includes synthetic assumptions; require drill evidence for critical decisions.",
             "evidence_refs": ["citadel:recovery_readiness", "artifact_registry"],
-            "limitations": ["Heuristic scoring is conservative and not a guaranteed recovery proof."],
+            "limitations": [
+                "Heuristic scoring is conservative and not a guaranteed recovery proof."
+            ],
             "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "recovery_slo": recovery_slo,
             "explainability": {
@@ -167,7 +194,7 @@ class RecoveryReadinessEngine:
                     "descriptor": 0.25,
                     "instructions": 0.15,
                     "human_dependency": 0.1,
-                "script_risk": -0.1,
+                    "script_risk": -0.1,
                 },
                 "artifact_summary": artifact_summary,
                 "script_risk_score": script_risk_score,

@@ -48,7 +48,12 @@ class OnchainRepository:
             return 0
 
     def recent(self, limit: int = 50, offset: int = 0) -> list[OnchainEvent]:
-        stmt = select(OnchainEvent).order_by(OnchainEvent.observed_at.desc()).limit(limit).offset(offset)
+        stmt = (
+            select(OnchainEvent)
+            .order_by(OnchainEvent.observed_at.desc())
+            .limit(limit)
+            .offset(offset)
+        )
         try:
             return list(self.db.execute(stmt).scalars())
         except SQLAlchemyError:

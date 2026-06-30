@@ -24,4 +24,6 @@ class MarketProviderHealth(Base):
     last_error: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     is_degraded: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=utcnow, onupdate=utcnow, index=True
+    )

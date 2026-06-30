@@ -30,11 +30,23 @@ def upgrade() -> None:
         sa.Column("limitations", json_type, nullable=False, server_default="[]"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_backup_validation_records_backup_id", "backup_validation_records", ["backup_id"])
-    op.create_index("ix_backup_validation_records_started_at", "backup_validation_records", ["started_at"])
-    op.create_index("ix_backup_validation_records_success", "backup_validation_records", ["success"])
-    op.create_index("ix_backup_validation_records_integrity_verified", "backup_validation_records", ["integrity_verified"])
-    op.create_index("ix_backup_validation_records_created_at", "backup_validation_records", ["created_at"])
+    op.create_index(
+        "ix_backup_validation_records_backup_id", "backup_validation_records", ["backup_id"]
+    )
+    op.create_index(
+        "ix_backup_validation_records_started_at", "backup_validation_records", ["started_at"]
+    )
+    op.create_index(
+        "ix_backup_validation_records_success", "backup_validation_records", ["success"]
+    )
+    op.create_index(
+        "ix_backup_validation_records_integrity_verified",
+        "backup_validation_records",
+        ["integrity_verified"],
+    )
+    op.create_index(
+        "ix_backup_validation_records_created_at", "backup_validation_records", ["created_at"]
+    )
 
     op.create_table(
         "recovery_validation_records",
@@ -44,17 +56,34 @@ def upgrade() -> None:
         sa.Column("started_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
         sa.Column("finished_at", sa.DateTime(), nullable=True),
         sa.Column("success", sa.Boolean(), nullable=False, server_default=sa.false()),
-        sa.Column("deterministic_rebuild_verified", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column(
+            "deterministic_rebuild_verified",
+            sa.Boolean(),
+            nullable=False,
+            server_default=sa.false(),
+        ),
         sa.Column("integrity_verified", sa.Boolean(), nullable=False, server_default=sa.false()),
         sa.Column("replay_types", json_type, nullable=False, server_default="[]"),
         sa.Column("limitations", json_type, nullable=False, server_default="[]"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_recovery_validation_records_recovery_id", "recovery_validation_records", ["recovery_id"])
-    op.create_index("ix_recovery_validation_records_validation_type", "recovery_validation_records", ["validation_type"])
-    op.create_index("ix_recovery_validation_records_started_at", "recovery_validation_records", ["started_at"])
-    op.create_index("ix_recovery_validation_records_success", "recovery_validation_records", ["success"])
-    op.create_index("ix_recovery_validation_records_created_at", "recovery_validation_records", ["created_at"])
+    op.create_index(
+        "ix_recovery_validation_records_recovery_id", "recovery_validation_records", ["recovery_id"]
+    )
+    op.create_index(
+        "ix_recovery_validation_records_validation_type",
+        "recovery_validation_records",
+        ["validation_type"],
+    )
+    op.create_index(
+        "ix_recovery_validation_records_started_at", "recovery_validation_records", ["started_at"]
+    )
+    op.create_index(
+        "ix_recovery_validation_records_success", "recovery_validation_records", ["success"]
+    )
+    op.create_index(
+        "ix_recovery_validation_records_created_at", "recovery_validation_records", ["created_at"]
+    )
 
 
 def downgrade() -> None:

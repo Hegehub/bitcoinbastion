@@ -51,10 +51,16 @@ class SignalEngine:
         onchain_explainability = self._decode_object(event.explainability_json)
         raw_payload = self._decode_object(event.raw_payload_json)
 
-        tip_height = self._payload_int(raw_payload, "tip_height", default=max(1, int(event.block_height or 0) + 1))
+        tip_height = self._payload_int(
+            raw_payload, "tip_height", default=max(1, int(event.block_height or 0) + 1)
+        )
         headers_height = self._payload_int(raw_payload, "headers_height", default=tip_height)
-        provider_tip_height: int | None = self._payload_int(raw_payload, "provider_tip_height", default=0) or None
-        provider_confidence = self._payload_float(raw_payload, "provider_confidence", default=0.0) or None
+        provider_tip_height: int | None = (
+            self._payload_int(raw_payload, "provider_tip_height", default=0) or None
+        )
+        provider_confidence = (
+            self._payload_float(raw_payload, "provider_confidence", default=0.0) or None
+        )
         provider_data_age_seconds: int | None = self._payload_int(
             raw_payload, "provider_data_age_seconds", default=-1
         )
@@ -93,7 +99,9 @@ class SignalEngine:
             "Track subsequent confirmations before irreversible action.",
         ]
         if chain_state.finality_band == "weak":
-            recommendations.append("Delay high-impact automation until finality reaches moderate or strong.")
+            recommendations.append(
+                "Delay high-impact automation until finality reaches moderate or strong."
+            )
         elif chain_state.finality_band == "moderate":
             recommendations.append("Re-check chain-state in next blocks for stronger finality.")
 

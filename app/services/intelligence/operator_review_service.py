@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from app.db.models.intelligence_signals import IntelligenceOperatorReview, IntelligenceSignalCandidate
+from app.db.models.intelligence_signals import (
+    IntelligenceOperatorReview,
+    IntelligenceSignalCandidate,
+)
 from app.db.models.time_utils import utcnow
 from app.repositories.intelligence_signal_repository import IntelligenceSignalRepository
 from app.services.events.domain_event_publisher import publish_domain_event
@@ -45,18 +48,28 @@ class OperatorReviewService:
         )
         self.repo.add_review(row)
         candidate.status = self._candidate_status(review_status)
-        candidate.requires_operator_review = review_status in {"pending", "held", "needs_more_evidence", "false_positive"}
+        candidate.requires_operator_review = review_status in {
+            "pending",
+            "held",
+            "needs_more_evidence",
+            "false_positive",
+        }
         if review_status == "approved" and publish_override:
             candidate.status = "published"
             candidate.published_at = utcnow()
         if review_status in {"rejected", "false_positive"}:
-            INTELLIGENCE_SIGNAL_REJECTED_TOTAL.labels(signal_type=self._bounded_type(candidate.signal_type), reason_code=self._bounded_reason(review_status)).inc()
+            INTELLIGENCE_SIGNAL_REJECTED_TOTAL.labels(
+                signal_type=self._bounded_type(candidate.signal_type),
+                reason_code=self._bounded_reason(review_status),
+            ).inc()
         INTELLIGENCE_OPERATOR_REVIEWS_TOTAL.labels(status=self._bounded_review(review_status)).inc()
         self.db.flush()
         self._publish_review_event(candidate, review_status, reviewer_id)
         return row
 
-    def _publish_review_event(self, candidate: IntelligenceSignalCandidate, review_status: str, reviewer_id: int | None) -> None:
+    def _publish_review_event(
+        self, candidate: IntelligenceSignalCandidate, review_status: str, reviewer_id: int | None
+    ) -> None:
         event_type = None
         if candidate.status == "published":
             event_type = "signal.published"
@@ -115,10 +128,30 @@ class OperatorReviewService:
         }.get(review_status, "pending_review")
 
     def _bounded_review(self, value: str) -> str:
-        return value if value in {"pending", "approved", "rejected", "held", "needs_more_evidence", "false_positive"} else "other"
+        return (
+            value
+            if value
+            in {"pending", "approved", "rejected", "held", "needs_more_evidence", "false_positive"}
+            else "other"
+        )
 
     def _bounded_type(self, value: str) -> str:
-        return value if value in {"news_market_impact", "candle_attribution", "delayed_reaction", "false_signal", "security_shock", "regulatory_risk", "macro_shock", "narrative_spike", "news_shock_index"} else "other"
+        return (
+            value
+            if value
+            in {
+                "news_market_impact",
+                "candle_attribution",
+                "delayed_reaction",
+                "false_signal",
+                "security_shock",
+                "regulatory_risk",
+                "macro_shock",
+                "narrative_spike",
+                "news_shock_index",
+            }
+            else "other"
+        )
 
     def _bounded_reason(self, value: str) -> str:
         return value if value in {"rejected", "false_positive"} else "other"

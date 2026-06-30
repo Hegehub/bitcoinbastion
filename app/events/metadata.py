@@ -61,7 +61,10 @@ def sanitize_metadata_value(key: str, value: object) -> object:
 
 
 def sanitize_metadata(metadata: Mapping[str, object] | None) -> dict[str, object]:
-    return {str(key): sanitize_metadata_value(str(key), value) for key, value in (metadata or {}).items()}
+    return {
+        str(key): sanitize_metadata_value(str(key), value)
+        for key, value in (metadata or {}).items()
+    }
 
 
 def build_event_metadata(

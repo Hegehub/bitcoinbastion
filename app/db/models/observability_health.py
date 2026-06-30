@@ -6,7 +6,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 from app.db.models.time_utils import utcnow
 
-
 HEALTH_STATES = {"healthy", "degraded", "critical", "maintenance", "offline"}
 
 

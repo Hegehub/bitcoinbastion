@@ -14,7 +14,9 @@ from app.db.models.time_utils import utcnow
 class NewsArticle(Base):
     __tablename__ = "news_articles"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    uuid: Mapped[str] = mapped_column(String(36), default=lambda: str(uuid4()), unique=True, nullable=False)
+    uuid: Mapped[str] = mapped_column(
+        String(36), default=lambda: str(uuid4()), unique=True, nullable=False
+    )
     source_id: Mapped[int] = mapped_column(ForeignKey("news_sources.id"), index=True)
     external_id: Mapped[str] = mapped_column(String(255), default="")
     title: Mapped[str] = mapped_column(String(500), nullable=False)
@@ -59,15 +61,23 @@ class NewsArticle(Base):
     is_duplicate: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     is_duplicate_candidate: Mapped[bool] = mapped_column(Boolean, default=False)
     duplicate_candidate_reason: Mapped[str] = mapped_column(String(120), default="")
-    duplicate_of_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True, index=True)
+    duplicate_of_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_articles.id"), nullable=True, index=True
+    )
     deduplication_status: Mapped[str] = mapped_column(String(32), default="UNKNOWN")
     similarity_score: Mapped[float | None] = mapped_column(Float, nullable=True)
-    cluster_id: Mapped[int | None] = mapped_column(ForeignKey("news_article_clusters.id"), nullable=True, index=True)
+    cluster_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_article_clusters.id"), nullable=True, index=True
+    )
     is_canonical: Mapped[bool] = mapped_column(Boolean, default=False)
     deduplication_reason: Mapped[str] = mapped_column(String(255), default="")
-    deduplication_metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    deduplication_metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     explainability_json: Mapped[str] = mapped_column(Text, default="{}")
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
@@ -85,7 +95,9 @@ def _fill_news_article_defaults(_mapper: object, _connection: object, target: Ne
     if not target.url_hash:
         target.url_hash = sha256(url.encode("utf-8")).hexdigest()
     if not target.canonical_url_hash:
-        target.canonical_url_hash = sha256((target.canonical_url or url).encode("utf-8")).hexdigest()
+        target.canonical_url_hash = sha256(
+            (target.canonical_url or url).encode("utf-8")
+        ).hexdigest()
     if not target.canonical_hash:
         target.canonical_hash = target.canonical_url_hash
     if not target.title_hash:
