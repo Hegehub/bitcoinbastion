@@ -9,6 +9,9 @@ MARKET_VOLATILITY_READ = "market:volatility:read"
 BITCOIN_NETWORK_READ = "bitcoin:network:read"
 BITCOIN_MEMPOOL_READ = "bitcoin:mempool:read"
 BITCOIN_FEES_READ = "bitcoin:fees:read"
+BITCOIN_BLOCKS_READ = "bitcoin:blocks:read"
+MEMPOOL_FEES_READ = "mempool:fees:read"
+RISK_MARKET_READ = "risk:market:read"
 MARKET_INTELLIGENCE_READ = "market:intelligence:read"
 MARKET_REGIME_READ = "market:regime:read"
 MARKET_LIQUIDITY_READ = "market:liquidity:read"
@@ -62,6 +65,9 @@ ACCESS_SCOPES: frozenset[str] = frozenset(
         BITCOIN_NETWORK_READ,
         BITCOIN_MEMPOOL_READ,
         BITCOIN_FEES_READ,
+        BITCOIN_BLOCKS_READ,
+        MEMPOOL_FEES_READ,
+        RISK_MARKET_READ,
         MARKET_INTELLIGENCE_READ,
         MARKET_REGIME_READ,
         MARKET_LIQUIDITY_READ,

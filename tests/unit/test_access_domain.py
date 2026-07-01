@@ -40,7 +40,7 @@ def test_normalize_plan_code_rejects_invalid_values() -> None:
 
 
 def test_scope_and_metric_constants_have_expected_counts() -> None:
-    assert len(ACCESS_SCOPES) == 50
+    assert len(ACCESS_SCOPES) == 53
     assert len(METRIC_GROUPS) == 24
 
 
