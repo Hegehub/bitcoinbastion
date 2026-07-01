@@ -6,7 +6,11 @@ from sqlalchemy.orm import Session
 
 from app.db.models.operations_control import BackupValidationRecord, RecoveryValidationRecord
 from app.schemas.health import BackgroundJobHealthOut, HealthOut
-from app.schemas.operations import OperationalHealthOut, OperationalProviderStatusOut, OperationsMetricsSummaryOut
+from app.schemas.operations import (
+    OperationalHealthOut,
+    OperationalProviderStatusOut,
+    OperationsMetricsSummaryOut,
+)
 from app.services.observability.operations_control_service import OperationsControlService
 
 ENGINE_PROVIDERS = [
@@ -36,9 +40,15 @@ class OperationalHealthService:
         last_restore = self._last_restore(db)
         readiness = self.readiness(db).status
         limitations = list(status.operational_limitations)
-        offline_required = [p for p in providers if p.provider_type in {"news", "price"} and p.status not in {"healthy", "recovering"}]
+        offline_required = [
+            p
+            for p in providers
+            if p.provider_type in {"news", "price"} and p.status not in {"healthy", "recovering"}
+        ]
         if offline_required:
-            limitations.append("One or more required provider groups are degraded; readiness is degraded until provider recovery is validated.")
+            limitations.append(
+                "One or more required provider groups are degraded; readiness is degraded until provider recovery is validated."
+            )
         return OperationalHealthOut(
             system_status=status.system_health,
             provider_status=providers,
@@ -48,11 +58,21 @@ class OperationalHealthService:
             signal_queue_status=status.platform_status.signal_pipeline_state,
             last_backup=last_backup.finished_at if last_backup else None,
             last_restore_test=last_restore.finished_at if last_restore else None,
-            last_integrity_scan=last_restore.finished_at if last_restore and last_restore.integrity_verified else None,
+            last_integrity_scan=(
+                last_restore.finished_at
+                if last_restore and last_restore.integrity_verified
+                else None
+            ),
             readiness_status=readiness,
             degraded_state_visible=True,
-            backup_verified=bool(last_backup and last_backup.success and last_backup.integrity_verified),
-            restore_verified=bool(last_restore and last_restore.success and last_restore.deterministic_rebuild_verified),
+            backup_verified=bool(
+                last_backup and last_backup.success and last_backup.integrity_verified
+            ),
+            restore_verified=bool(
+                last_restore
+                and last_restore.success
+                and last_restore.deterministic_rebuild_verified
+            ),
             integrity_verified=bool(last_restore and last_restore.integrity_verified),
             operator_visible=True,
             operational_limitations=limitations,
@@ -71,7 +91,11 @@ class OperationalHealthService:
                 failure_count=row.failure_count,
                 provider_confidence=row.provider_confidence,
                 backoff_until=row.backoff_until,
-                last_error_sanitized="provider degraded" if row.health_state not in {"healthy", "maintenance"} else "",
+                last_error_sanitized=(
+                    "provider degraded"
+                    if row.health_state not in {"healthy", "maintenance"}
+                    else ""
+                ),
             )
             for row in runtime_providers
         ]
@@ -81,7 +105,9 @@ class OperationalHealthService:
                 provider_type=provider_type,
                 status=state,
                 provider_confidence=1.0 if state == "healthy" else 0.5,
-                last_error_sanitized="awaiting scheduler heartbeat" if state == "maintenance" else "",
+                last_error_sanitized=(
+                    "awaiting scheduler heartbeat" if state == "maintenance" else ""
+                ),
             )
             for name, provider_type, state in ENGINE_PROVIDERS
         )
@@ -95,12 +121,19 @@ class OperationalHealthService:
 
     def readiness(self, db: Session) -> HealthOut:
         providers = self.providers(db)
-        news_ok = any(p.provider_type == "news" and p.status in {"healthy", "recovering"} for p in providers)
-        price_ok = any(p.provider_type == "price" and p.status in {"healthy", "recovering"} for p in providers)
+        news_ok = any(
+            p.provider_type == "news" and p.status in {"healthy", "recovering"} for p in providers
+        )
+        price_ok = any(
+            p.provider_type == "price" and p.status in {"healthy", "recovering"} for p in providers
+        )
         timeline_ok = self._engine_status(providers, "timeline") in {"healthy", "recovering"}
         dependencies = self.operations.dependencies(db)
         db_ok = any(dep.name == "database" and dep.status == "healthy" for dep in dependencies)
-        scheduler_ok = any(p.provider_type == "scheduler" and p.status in {"healthy", "maintenance", "recovering"} for p in providers)
+        scheduler_ok = any(
+            p.provider_type == "scheduler" and p.status in {"healthy", "maintenance", "recovering"}
+            for p in providers
+        )
         ready = news_ok and price_ok and timeline_ok and db_ok and scheduler_ok
         return HealthOut(
             status="ready" if ready else "degraded",
@@ -115,21 +148,33 @@ class OperationalHealthService:
         )
 
     def liveness(self, db: Session) -> HealthOut:
-        return HealthOut(status="live", app="Bitcoin Bastion", details=self.operations.runtime.liveness(db))
+        return HealthOut(
+            status="live", app="Bitcoin Bastion", details=self.operations.runtime.liveness(db)
+        )
 
     def _last_backup(self, db: Session) -> BackupValidationRecord | None:
         try:
-            return db.execute(select(BackupValidationRecord).order_by(BackupValidationRecord.started_at.desc()).limit(1)).scalar_one_or_none()
+            return db.execute(
+                select(BackupValidationRecord)
+                .order_by(BackupValidationRecord.started_at.desc())
+                .limit(1)
+            ).scalar_one_or_none()
         except SQLAlchemyError:
             return None
 
     def _last_restore(self, db: Session) -> RecoveryValidationRecord | None:
         try:
-            return db.execute(select(RecoveryValidationRecord).order_by(RecoveryValidationRecord.started_at.desc()).limit(1)).scalar_one_or_none()
+            return db.execute(
+                select(RecoveryValidationRecord)
+                .order_by(RecoveryValidationRecord.started_at.desc())
+                .limit(1)
+            ).scalar_one_or_none()
         except SQLAlchemyError:
             return None
 
-    def _engine_status(self, providers: list[OperationalProviderStatusOut], provider_type: str) -> str:
+    def _engine_status(
+        self, providers: list[OperationalProviderStatusOut], provider_type: str
+    ) -> str:
         states = [p.status for p in providers if p.provider_type == provider_type]
         if not states:
             return "maintenance"
@@ -139,7 +184,15 @@ class OperationalHealthService:
         return "healthy"
 
     def _normalize_status(self, state: str) -> str:
-        return "offline" if state == "critical" else state if state in {"healthy", "degraded", "offline", "maintenance", "recovering"} else "degraded"
+        return (
+            "offline"
+            if state == "critical"
+            else (
+                state
+                if state in {"healthy", "degraded", "offline", "maintenance", "recovering"}
+                else "degraded"
+            )
+        )
 
     def _normalize_provider_type(self, value: str) -> str:
         lowered = value.lower()

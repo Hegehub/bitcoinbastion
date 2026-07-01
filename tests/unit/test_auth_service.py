@@ -21,7 +21,9 @@ def test_register_and_login() -> None:
     repo = FakeUserRepo()
     service = AuthService(repo)  # type: ignore[arg-type]
 
-    service.register(RegisterRequest(email="u@example.com", username="satoshi", password="password123"))
+    service.register(
+        RegisterRequest(email="u@example.com", username="satoshi", password="password123")
+    )
     token = service.login(LoginRequest(username="satoshi", password="password123"))
     assert token.access_token
 
@@ -29,7 +31,9 @@ def test_register_and_login() -> None:
 def test_login_with_invalid_password_raises() -> None:
     repo = FakeUserRepo()
     service = AuthService(repo)  # type: ignore[arg-type]
-    service.register(RegisterRequest(email="u@example.com", username="satoshi", password="password123"))
+    service.register(
+        RegisterRequest(email="u@example.com", username="satoshi", password="password123")
+    )
 
     try:
         service.login(LoginRequest(username="satoshi", password="bad-pass"))

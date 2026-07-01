@@ -42,8 +42,16 @@ def test_runtime_targets_are_phony() -> None:
 def test_runtime_targets_call_real_scripts_or_commands() -> None:
     for target in TARGETS:
         target_body = body(target)
-        assert "echo \"Runtime detected\"" not in target_body
-        assert any(token in target_body for token in ("deploy/scripts/", "kubectl ", "docker compose", "cat docs/BARE_METAL_SYSTEMD.md")), target
+        assert 'echo "Runtime detected"' not in target_body
+        assert any(
+            token in target_body
+            for token in (
+                "deploy/scripts/",
+                "kubectl ",
+                "docker compose",
+                "cat docs/BARE_METAL_SYSTEMD.md",
+            )
+        ), target
 
 
 def test_runtime_render_targets_reference_expected_profiles_and_paths() -> None:

@@ -1,4 +1,8 @@
-from app.schemas.public_site import PublicFeatureAvailability, PublicFeatureEntry, PublicFeatureStatus
+from app.schemas.public_site import (
+    PublicFeatureAvailability,
+    PublicFeatureEntry,
+    PublicFeatureStatus,
+)
 
 
 def list_features() -> list[PublicFeatureEntry]:
@@ -22,7 +26,11 @@ def list_features() -> list[PublicFeatureEntry]:
             category="Trace",
             summary="Baseline capability in Bastion Trace presentation layer.",
             status=PublicFeatureStatus.BASELINE,
-            availability=PublicFeatureAvailability.PUBLIC if i == "trace-lite" else PublicFeatureAvailability.INTERNAL,
+            availability=(
+                PublicFeatureAvailability.PUBLIC
+                if i == "trace-lite"
+                else PublicFeatureAvailability.INTERNAL
+            ),
             safety_notes=["Advisory-only", "No-custody"],
             limitations=["Not production-calibrated"],
         )

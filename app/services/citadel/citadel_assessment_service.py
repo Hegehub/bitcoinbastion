@@ -29,8 +29,6 @@ from app.services.explainability.contract import propagate_confidence
 from app.services.explainability.contract import build_audit_packet
 
 
-
-
 @dataclass
 class InputQualityMeta:
     source_type: str
@@ -38,6 +36,7 @@ class InputQualityMeta:
     confidence: float
     quality_classification: str
     note: str = ""
+
 
 class CitadelAssessmentService:
     @dataclass
@@ -156,7 +155,9 @@ class CitadelAssessmentService:
             return {}, "configured_invalid"
         return factors, "configured_valid"
 
-    def _utxo_signal(self, *, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+    def _utxo_signal(
+        self, *, context: "CitadelAssessmentService.WalletRuntimeContext"
+    ) -> dict[str, object]:
         utxo_values = context.utxo_values_sats or []
         if not utxo_values:
             # Conservative fallback for missing runtime context.
@@ -175,7 +176,11 @@ class CitadelAssessmentService:
             high_fee_score = min(100.0, (high_fee_projection.estimated_fee_sats / 200_000) * 100)
 
         burden_score = min(100.0, analysis.high_fee_burden_ratio * 220.0)
-        liquidity_penalty = 100.0 if not analysis.urgent_spend_feasible else min(100.0, (analysis.liquidity_shortfall_sats / 50_000) * 100)
+        liquidity_penalty = (
+            100.0
+            if not analysis.urgent_spend_feasible
+            else min(100.0, (analysis.liquidity_shortfall_sats / 50_000) * 100)
+        )
 
         return {
             "analysis": analysis,
@@ -191,7 +196,9 @@ class CitadelAssessmentService:
         }
 
     @staticmethod
-    def _mempool_signal(*, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+    def _mempool_signal(
+        *, context: "CitadelAssessmentService.WalletRuntimeContext"
+    ) -> dict[str, object]:
         fee_exposure = max(0.0, min(1.0, context.fee_exposure_score))
         backlog_scale = int(30_000 + fee_exposure * 120_000)
         snapshot = MempoolSnapshot(
@@ -205,7 +212,9 @@ class CitadelAssessmentService:
         return {"snapshot": snapshot, "state": state, "market": market}
 
     @staticmethod
-    def _script_descriptor_signal(*, context: "CitadelAssessmentService.WalletRuntimeContext") -> dict[str, object]:
+    def _script_descriptor_signal(
+        *, context: "CitadelAssessmentService.WalletRuntimeContext"
+    ) -> dict[str, object]:
         hint = (context.descriptor_hint or context.wallet_type or "single-sig").strip()
         script = ScriptAnalyzerService().analyze(script_hint=hint)
         descriptor = DescriptorAwarenessService().evaluate(
@@ -220,10 +229,15 @@ class CitadelAssessmentService:
         )
         return {"script": script, "descriptor": descriptor}
 
-
     @staticmethod
-    def _quality_meta(*, source_type: str, freshness: str, confidence: float, note: str = "") -> dict[str, object]:
-        source = source_type if source_type in {"real", "fallback", "synthetic", "unknown"} else "unknown"
+    def _quality_meta(
+        *, source_type: str, freshness: str, confidence: float, note: str = ""
+    ) -> dict[str, object]:
+        source = (
+            source_type
+            if source_type in {"real", "fallback", "synthetic", "unknown"}
+            else "unknown"
+        )
         classification = {
             "real": "REAL",
             "fallback": "FALLBACK",
@@ -266,32 +280,51 @@ class CitadelAssessmentService:
             ),
             "inheritance": self._quality_meta(
                 source_type="synthetic",
-                freshness=str(self._as_object_dict(inheritance.get("freshness", {})).get("source", "unknown")),
+                freshness=str(
+                    self._as_object_dict(inheritance.get("freshness", {})).get("source", "unknown")
+                ),
                 confidence=self._safe_float(inheritance.get("confidence", 0.0), default=0.0),
                 note="Current inheritance scoring includes owner-derived deterministic heuristics",
             ),
             "policy": self._quality_meta(
                 source_type="real" if context.wallet_health_score is not None else "fallback",
-                freshness=str(self._as_object_dict(policy.get("freshness", {})).get("source", "unknown")),
+                freshness=str(
+                    self._as_object_dict(policy.get("freshness", {})).get("source", "unknown")
+                ),
                 confidence=self._safe_float(policy.get("confidence", 0.0), default=0.0),
                 note="Policy maturity uses runtime health score when available",
             ),
             "sovereignty_graph": self._quality_meta(
                 source_type="real" if context.descriptor_hint else "fallback",
-                freshness=str(self._as_object_dict(graph.get("freshness", {})).get("source", "unknown")),
+                freshness=str(
+                    self._as_object_dict(graph.get("freshness", {})).get("source", "unknown")
+                ),
                 confidence=self._safe_float(graph.get("confidence", 0.0), default=0.0),
                 note="Topology is deterministic from wallet profile assumptions",
             ),
             "utxo": self._quality_meta(
-                source_type="fallback" if bool(cast(Any, utxo["analysis"]).freshness.get("is_fallback")) else ("real" if context.utxo_values_sats else "fallback"),
+                source_type=(
+                    "fallback"
+                    if bool(cast(Any, utxo["analysis"]).freshness.get("is_fallback"))
+                    else ("real" if context.utxo_values_sats else "fallback")
+                ),
                 freshness="runtime_session",
-                confidence=0.78 if not bool(cast(Any, utxo["analysis"]).freshness.get("is_fallback")) else 0.45,
+                confidence=(
+                    0.78
+                    if not bool(cast(Any, utxo["analysis"]).freshness.get("is_fallback"))
+                    else 0.45
+                ),
                 note="Uses fallback UTXO set when runtime values are absent",
             ),
             "mempool": self._quality_meta(
-                source_type="fallback" if bool(cast(Any, mempool["state"]).freshness.get("is_fallback")) else "synthetic",
+                source_type=(
+                    "fallback"
+                    if bool(cast(Any, mempool["state"]).freshness.get("is_fallback"))
+                    else "synthetic"
+                ),
                 freshness=str(cast(Any, mempool["market"]).freshness),
-                confidence=float(cast(Any, mempool["market"]).confidence) * (0.75 if bool(cast(Any, mempool["state"]).freshness.get("is_fallback")) else 1.0),
+                confidence=float(cast(Any, mempool["market"]).confidence)
+                * (0.75 if bool(cast(Any, mempool["state"]).freshness.get("is_fallback")) else 1.0),
                 note="Mempool snapshot is synthesized from fee exposure context",
             ),
             "script": self._quality_meta(
@@ -307,8 +340,14 @@ class CitadelAssessmentService:
                 note="Completeness depends on descriptor and health-report proxies",
             ),
             "chain_state": self._quality_meta(
-                source_type="fallback" if bool(getattr(chain_state, "freshness", {}).get("is_fallback")) else "real",
-                freshness=str(getattr(chain_state, "freshness", {}).get("provider_freshness_band", "unknown")),
+                source_type=(
+                    "fallback"
+                    if bool(getattr(chain_state, "freshness", {}).get("is_fallback"))
+                    else "real"
+                ),
+                freshness=str(
+                    getattr(chain_state, "freshness", {}).get("provider_freshness_band", "unknown")
+                ),
                 confidence=float(getattr(chain_state, "confidence_score", 0.0)),
                 note="Chain-state quality depends on provider freshness and fallback source path.",
             ),
@@ -341,7 +380,9 @@ class CitadelAssessmentService:
             descriptor_hint=descriptor_hint or "",
             fee_exposure_score=max(0.0, min(1.0, float(fee_exposure_score or 0.5))),
             wallet_health_score=(
-                None if wallet_health_score is None else max(0.0, min(1.0, float(wallet_health_score)))
+                None
+                if wallet_health_score is None
+                else max(0.0, min(1.0, float(wallet_health_score)))
             ),
             utxo_values_sats=utxo_values_sats or [],
             has_recent_health_report=has_recent_health_report,
@@ -366,7 +407,11 @@ class CitadelAssessmentService:
         wallet_context: "CitadelAssessmentService.WalletRuntimeContext | None" = None,
     ) -> RecoveryReadinessOut:
         context = wallet_context or self.build_wallet_context()
-        has_descriptor = bool(context.descriptor_verified) if context.descriptor_verified is not None else bool(context.descriptor_hint)
+        has_descriptor = (
+            bool(context.descriptor_verified)
+            if context.descriptor_verified is not None
+            else bool(context.descriptor_hint)
+        )
         has_recent_health = context.has_recent_health_report
         script_profile = ScriptAnalyzerService().analyze(
             script_hint=context.descriptor_hint or context.wallet_type or "single-sig"
@@ -387,26 +432,48 @@ class CitadelAssessmentService:
                 label=f"owner-{owner_id}-descriptor",
                 is_verified=has_descriptor,
                 required_for_recovery=True,
-                verification_age_days=context.artifact_verification_age_days if context.artifact_verification_age_days is not None else (14 if has_recent_health else 180),
+                verification_age_days=(
+                    context.artifact_verification_age_days
+                    if context.artifact_verification_age_days is not None
+                    else (14 if has_recent_health else 180)
+                ),
             ),
             RecoveryArtifactRecord(
                 artifact_type="backup",
                 label=f"owner-{owner_id}-backup",
-                is_verified=(context.backup_verified if context.backup_verified is not None else has_recent_health),
+                is_verified=(
+                    context.backup_verified
+                    if context.backup_verified is not None
+                    else has_recent_health
+                ),
                 required_for_recovery=True,
-                verification_age_days=context.artifact_verification_age_days if context.artifact_verification_age_days is not None else (30 if has_recent_health else 210),
+                verification_age_days=(
+                    context.artifact_verification_age_days
+                    if context.artifact_verification_age_days is not None
+                    else (30 if has_recent_health else 210)
+                ),
             ),
             RecoveryArtifactRecord(
                 artifact_type="instructions",
                 label=f"owner-{owner_id}-runbook",
-                is_verified=(context.backup_verified if context.backup_verified is not None else has_recent_health),
+                is_verified=(
+                    context.backup_verified
+                    if context.backup_verified is not None
+                    else has_recent_health
+                ),
                 required_for_recovery=False,
-                verification_age_days=context.artifact_verification_age_days if context.artifact_verification_age_days is not None else (30 if has_recent_health else 180),
+                verification_age_days=(
+                    context.artifact_verification_age_days
+                    if context.artifact_verification_age_days is not None
+                    else (30 if has_recent_health else 180)
+                ),
             ),
         ]
         wallet_type = (context.wallet_type or "").lower()
         if context.signer_count is not None:
-            human_dependency_score = 0.35 if context.signer_count >= 3 else 0.55 if context.signer_count == 2 else 0.75
+            human_dependency_score = (
+                0.35 if context.signer_count >= 3 else 0.55 if context.signer_count == 2 else 0.75
+            )
         elif "multi" in wallet_type:
             human_dependency_score = 0.45
         elif "watch" in wallet_type:
@@ -466,14 +533,10 @@ class CitadelAssessmentService:
                 1.0
                 - min(
                     1.0,
-                    self._safe_float(
-                        recovery_freshness.get("stale_required_count"), default=0.0
-                    )
+                    self._safe_float(recovery_freshness.get("stale_required_count"), default=0.0)
                     / max(
                         1.0,
-                        self._safe_float(
-                            recovery_freshness.get("artifact_count"), default=1.0
-                        ),
+                        self._safe_float(recovery_freshness.get("artifact_count"), default=1.0),
                     ),
                 )
             ),
@@ -484,9 +547,17 @@ class CitadelAssessmentService:
             ),
         )
 
-        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
-        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
-        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        observed_height = (
+            context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        )
+        tip_height = (
+            context.chain_tip_height
+            if context.chain_tip_height is not None
+            else observed_height + 1
+        )
+        headers_height = (
+            context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        )
         chain_state = ChainStateService().evaluate(
             tip_height=tip_height,
             observed_block_height=observed_height,
@@ -510,14 +581,10 @@ class CitadelAssessmentService:
                 1.0
                 - min(
                     1.0,
-                    self._safe_float(
-                        recovery_freshness.get("stale_required_count"), default=0.0
-                    )
+                    self._safe_float(recovery_freshness.get("stale_required_count"), default=0.0)
                     / max(
                         1.0,
-                        self._safe_float(
-                            recovery_freshness.get("artifact_count"), default=1.0
-                        ),
+                        self._safe_float(recovery_freshness.get("artifact_count"), default=1.0),
                     ),
                 )
             ),
@@ -528,9 +595,17 @@ class CitadelAssessmentService:
             ),
         )
 
-        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
-        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
-        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        observed_height = (
+            context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        )
+        tip_height = (
+            context.chain_tip_height
+            if context.chain_tip_height is not None
+            else observed_height + 1
+        )
+        headers_height = (
+            context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        )
         chain_state = ChainStateService().evaluate(
             tip_height=tip_height,
             observed_block_height=observed_height,
@@ -554,14 +629,10 @@ class CitadelAssessmentService:
                 1.0
                 - min(
                     1.0,
-                    self._safe_float(
-                        recovery_freshness.get("stale_required_count"), default=0.0
-                    )
+                    self._safe_float(recovery_freshness.get("stale_required_count"), default=0.0)
                     / max(
                         1.0,
-                        self._safe_float(
-                            recovery_freshness.get("artifact_count"), default=1.0
-                        ),
+                        self._safe_float(recovery_freshness.get("artifact_count"), default=1.0),
                     ),
                 )
             ),
@@ -572,9 +643,17 @@ class CitadelAssessmentService:
             ),
         )
 
-        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
-        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
-        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        observed_height = (
+            context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        )
+        tip_height = (
+            context.chain_tip_height
+            if context.chain_tip_height is not None
+            else observed_height + 1
+        )
+        headers_height = (
+            context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        )
         chain_state = ChainStateService().evaluate(
             tip_height=tip_height,
             observed_block_height=observed_height,
@@ -598,14 +677,10 @@ class CitadelAssessmentService:
                 1.0
                 - min(
                     1.0,
-                    self._safe_float(
-                        recovery_freshness.get("stale_required_count"), default=0.0
-                    )
+                    self._safe_float(recovery_freshness.get("stale_required_count"), default=0.0)
                     / max(
                         1.0,
-                        self._safe_float(
-                            recovery_freshness.get("artifact_count"), default=1.0
-                        ),
+                        self._safe_float(recovery_freshness.get("artifact_count"), default=1.0),
                     ),
                 )
             ),
@@ -616,9 +691,17 @@ class CitadelAssessmentService:
             ),
         )
 
-        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
-        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
-        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        observed_height = (
+            context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        )
+        tip_height = (
+            context.chain_tip_height
+            if context.chain_tip_height is not None
+            else observed_height + 1
+        )
+        headers_height = (
+            context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        )
         chain_state = ChainStateService().evaluate(
             tip_height=tip_height,
             observed_block_height=observed_height,
@@ -642,14 +725,10 @@ class CitadelAssessmentService:
                 1.0
                 - min(
                     1.0,
-                    self._safe_float(
-                        recovery_freshness.get("stale_required_count"), default=0.0
-                    )
+                    self._safe_float(recovery_freshness.get("stale_required_count"), default=0.0)
                     / max(
                         1.0,
-                        self._safe_float(
-                            recovery_freshness.get("artifact_count"), default=1.0
-                        ),
+                        self._safe_float(recovery_freshness.get("artifact_count"), default=1.0),
                     ),
                 )
             ),
@@ -660,9 +739,17 @@ class CitadelAssessmentService:
             ),
         )
 
-        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
-        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
-        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        observed_height = (
+            context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        )
+        tip_height = (
+            context.chain_tip_height
+            if context.chain_tip_height is not None
+            else observed_height + 1
+        )
+        headers_height = (
+            context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        )
         chain_state = ChainStateService().evaluate(
             tip_height=tip_height,
             observed_block_height=observed_height,
@@ -686,14 +773,10 @@ class CitadelAssessmentService:
                 1.0
                 - min(
                     1.0,
-                    self._safe_float(
-                        recovery_freshness.get("stale_required_count"), default=0.0
-                    )
+                    self._safe_float(recovery_freshness.get("stale_required_count"), default=0.0)
                     / max(
                         1.0,
-                        self._safe_float(
-                            recovery_freshness.get("artifact_count"), default=1.0
-                        ),
+                        self._safe_float(recovery_freshness.get("artifact_count"), default=1.0),
                     ),
                 )
             ),
@@ -704,9 +787,17 @@ class CitadelAssessmentService:
             ),
         )
 
-        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
-        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
-        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        observed_height = (
+            context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        )
+        tip_height = (
+            context.chain_tip_height
+            if context.chain_tip_height is not None
+            else observed_height + 1
+        )
+        headers_height = (
+            context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        )
         chain_state = ChainStateService().evaluate(
             tip_height=tip_height,
             observed_block_height=observed_height,
@@ -730,14 +821,10 @@ class CitadelAssessmentService:
                 1.0
                 - min(
                     1.0,
-                    self._safe_float(
-                        recovery_freshness.get("stale_required_count"), default=0.0
-                    )
+                    self._safe_float(recovery_freshness.get("stale_required_count"), default=0.0)
                     / max(
                         1.0,
-                        self._safe_float(
-                            recovery_freshness.get("artifact_count"), default=1.0
-                        ),
+                        self._safe_float(recovery_freshness.get("artifact_count"), default=1.0),
                     ),
                 )
             ),
@@ -748,9 +835,17 @@ class CitadelAssessmentService:
             ),
         )
 
-        observed_height = context.chain_observed_height if context.chain_observed_height is not None else 900_000
-        tip_height = context.chain_tip_height if context.chain_tip_height is not None else observed_height + 1
-        headers_height = context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        observed_height = (
+            context.chain_observed_height if context.chain_observed_height is not None else 900_000
+        )
+        tip_height = (
+            context.chain_tip_height
+            if context.chain_tip_height is not None
+            else observed_height + 1
+        )
+        headers_height = (
+            context.chain_headers_height if context.chain_headers_height is not None else tip_height
+        )
         chain_state = ChainStateService().evaluate(
             tip_height=tip_height,
             observed_block_height=observed_height,
@@ -774,14 +869,10 @@ class CitadelAssessmentService:
                 1.0
                 - min(
                     1.0,
-                    self._safe_float(
-                        recovery_freshness.get("stale_required_count"), default=0.0
-                    )
+                    self._safe_float(recovery_freshness.get("stale_required_count"), default=0.0)
                     / max(
                         1.0,
-                        self._safe_float(
-                            recovery_freshness.get("artifact_count"), default=1.0
-                        ),
+                        self._safe_float(recovery_freshness.get("artifact_count"), default=1.0),
                     ),
                 )
             ),
@@ -810,7 +901,9 @@ class CitadelAssessmentService:
         vendor = self._clamp_percent(max(40.0, 72.0 - (spof_count * 8.0)))
         chain_reorg_penalty_100 = round(chain_state.reorg_risk_score * 18.0, 2)
         chain_operational_penalty_100 = round(chain_state.reorg_risk_score * 16.0, 2)
-        recovery_score_100 = self._clamp_percent((recovery.recovery_readiness_score * 100) - chain_reorg_penalty_100)
+        recovery_score_100 = self._clamp_percent(
+            (recovery.recovery_readiness_score * 100) - chain_reorg_penalty_100
+        )
         inheritance_score_100 = self._clamp_percent(
             (self._safe_float(inheritance.get("completeness_score"), default=0.0) * 100)
             - ((100.0 - descriptor_completeness_score_100) * 0.22)
@@ -1021,12 +1114,14 @@ class CitadelAssessmentService:
         protocol_fallback_domains = [
             name
             for name in ("chain_state", "utxo", "mempool", "script", "descriptor_awareness")
-            if input_quality.get(name, {}).get("quality_classification") in {"FALLBACK", "SYNTHETIC", "UNKNOWN"}
+            if input_quality.get(name, {}).get("quality_classification")
+            in {"FALLBACK", "SYNTHETIC", "UNKNOWN"}
         ]
         protocol_confidence = propagate_confidence(
             base_confidence=protocol_confidence_raw,
             freshness_band=str(chain_state.freshness.get("provider_freshness_band", "unknown")),
-            is_fallback=bool(chain_state.freshness.get("is_fallback", False)) or bool(protocol_fallback_domains),
+            is_fallback=bool(chain_state.freshness.get("is_fallback", False))
+            or bool(protocol_fallback_domains),
             is_synthetic=bool("mempool" in protocol_fallback_domains),
         )
         evidence_chain = append_evidence_step(
@@ -1042,7 +1137,9 @@ class CitadelAssessmentService:
             audit_packets.append(
                 build_audit_packet(
                     packet_type="citadel_findings",
-                    evidence_refs=[f"{item.domain}:{item.title}" for item in findings[:5] + warnings[:5]],
+                    evidence_refs=[
+                        f"{item.domain}:{item.title}" for item in findings[:5] + warnings[:5]
+                    ],
                     source_quality={
                         "source_type": "runtime",
                         "is_fallback": bool(protocol_fallback_domains),
@@ -1059,10 +1156,22 @@ class CitadelAssessmentService:
             audit_packets.append(
                 build_audit_packet(
                     packet_type="recovery_failure",
-                    evidence_refs=[str(item) for item in self._as_object_list(recovery.artifact_summary.get("missing_required_labels", []))],
-                    source_quality={"source_type": "runtime", "is_fallback": True, "freshness": recovery.freshness},
+                    evidence_refs=[
+                        str(item)
+                        for item in self._as_object_list(
+                            recovery.artifact_summary.get("missing_required_labels", [])
+                        )
+                    ],
+                    source_quality={
+                        "source_type": "runtime",
+                        "is_fallback": True,
+                        "freshness": recovery.freshness,
+                    },
                     confidence=float(recovery.confidence),
-                    transformations=["recovery_artifact_summarization", "recovery_readiness_scoring"],
+                    transformations=[
+                        "recovery_artifact_summarization",
+                        "recovery_readiness_scoring",
+                    ],
                     policy_context={"human_dependency_score": recovery.human_dependency_score},
                     recommendation_rationale="Resolve missing or stale required recovery artifacts before risk acceptance.",
                     lineage=evidence_chain,
@@ -1139,9 +1248,9 @@ class CitadelAssessmentService:
                 "explainability": mempool_market.explainability,
             },
             "script": script_model.model_dump(),
-                "descriptor_awareness": descriptor_model.model_dump(),
-                "descriptor_completeness_score_100": descriptor_completeness_score_100,
-                "descriptor_gap_penalty": round(descriptor_gap_penalty, 2),
+            "descriptor_awareness": descriptor_model.model_dump(),
+            "descriptor_completeness_score_100": descriptor_completeness_score_100,
+            "descriptor_gap_penalty": round(descriptor_gap_penalty, 2),
             "scoring_weights": {
                 "uniform": False,
                 "weights": weights,
@@ -1253,13 +1362,25 @@ class CitadelAssessmentService:
             created_at=now,
             updated_at=now,
             synthetic_component=bool(protocol_fallback_domains),
-            synthetic_reason=("Protocol domains include fallback/synthetic inputs." if protocol_fallback_domains else ""),
+            synthetic_reason=(
+                "Protocol domains include fallback/synthetic inputs."
+                if protocol_fallback_domains
+                else ""
+            ),
             production_replacement_path="Replace synthetic domains with provider-attested, live protocol/runtime evidence.",
             confidence_penalty=round(max(0.0, protocol_confidence_raw - protocol_confidence), 3),
-            operator_warning=("Citadel assessment includes synthetic/baseline assumptions; validate before critical operations." if protocol_fallback_domains else ""),
+            operator_warning=(
+                "Citadel assessment includes synthetic/baseline assumptions; validate before critical operations."
+                if protocol_fallback_domains
+                else ""
+            ),
             evidence_refs=[f"domain:{d}" for d in protocol_fallback_domains][:8],
             limitations=["Citadel combines real, fallback, and synthetic domains."],
-            source_quality={"source_type": "mixed", "is_fallback": bool(protocol_fallback_domains), "confidence": protocol_confidence},
+            source_quality={
+                "source_type": "mixed",
+                "is_fallback": bool(protocol_fallback_domains),
+                "confidence": protocol_confidence,
+            },
         )
 
     def recovery_artifacts(self, *, owner_id: int) -> list[RecoveryArtifactOut]:

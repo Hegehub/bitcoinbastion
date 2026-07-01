@@ -23,7 +23,9 @@ class OnchainScoringService:
 
     LARGE_TRANSFER_THRESHOLD = 1_000_000_000
 
-    def score(self, event: ChainEvent, *, chain_state: ChainStateEvaluation | None = None) -> OnchainScore:
+    def score(
+        self, event: ChainEvent, *, chain_state: ChainStateEvaluation | None = None
+    ) -> OnchainScore:
         transfer_component = min(1.0, event.value_sats / 2_000_000_000)
         dormancy_days = self._payload_int(event.payload, "dormancy_days")
         watched_entity = bool(event.payload.get("watched_entity"))
@@ -32,7 +34,12 @@ class OnchainScoringService:
         watched_component = 0.2 if watched_entity else 0.0
         event_type_component = 0.2 if event.event_type == "large_transfer" else 0.1
 
-        raw_score = (transfer_component * 0.6) + (dormancy_component * 0.25) + watched_component + event_type_component
+        raw_score = (
+            (transfer_component * 0.6)
+            + (dormancy_component * 0.25)
+            + watched_component
+            + event_type_component
+        )
         significance = min(1.0, raw_score)
 
         confidence = 0.65
@@ -47,7 +54,9 @@ class OnchainScoringService:
         if chain_state is not None:
             if chain_state.finality_band == "weak":
                 chain_state_penalty = 0.22
-                chain_state_warning = "Low finality context reduces confidence; monitor for reorg risk."
+                chain_state_warning = (
+                    "Low finality context reduces confidence; monitor for reorg risk."
+                )
             elif chain_state.finality_band == "moderate":
                 chain_state_penalty = 0.08
             else:
@@ -96,16 +105,33 @@ class OnchainScoringService:
         explainability["contract"] = build_explainability_contract(
             domain="signals",
             confidence=confidence,
-            freshness=(chain_state.freshness if chain_state is not None else {"source": "event_payload"}),
-            source_type=(str(chain_state.freshness.get("source_type", "runtime")) if chain_state is not None else str(event.payload.get("source_type", "unknown"))),
-            provider_name=(str(chain_state.freshness.get("provider_name", "unknown")) if chain_state is not None else str(event.payload.get("provider_name", "unknown"))),
+            freshness=(
+                chain_state.freshness if chain_state is not None else {"source": "event_payload"}
+            ),
+            source_type=(
+                str(chain_state.freshness.get("source_type", "runtime"))
+                if chain_state is not None
+                else str(event.payload.get("source_type", "unknown"))
+            ),
+            provider_name=(
+                str(chain_state.freshness.get("provider_name", "unknown"))
+                if chain_state is not None
+                else str(event.payload.get("provider_name", "unknown"))
+            ),
             is_mock=bool(event.payload.get("is_mock", False)),
-            is_fallback=bool(chain_state.freshness.get("is_fallback", False)) if chain_state is not None else bool(event.payload.get("is_fallback", False)),
+            is_fallback=(
+                bool(chain_state.freshness.get("is_fallback", False))
+                if chain_state is not None
+                else bool(event.payload.get("is_fallback", False))
+            ),
             limitations=[
                 "Signal confidence is operational and non-deterministic with respect to settlement guarantees.",
                 "Fallback/stale chain-state lowers trust.",
             ],
-            signals={"chain_state_penalty": chain_state_penalty, "chain_state_bonus": chain_state_bonus},
+            signals={
+                "chain_state_penalty": chain_state_penalty,
+                "chain_state_bonus": chain_state_bonus,
+            },
         )
         if chain_state is not None and (chain_state.finality_band == "weak" or confidence < 0.5):
             explainability["audit_packet"] = build_audit_packet(

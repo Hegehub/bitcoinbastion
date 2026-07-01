@@ -22,37 +22,52 @@ def get_operator_signal(signal_id: int, db: Session = Depends(db_session)) -> di
     payload = SignalGovernanceService(db).get_public(signal_id)
     if payload is None:
         raise HTTPException(status_code=404, detail="signal_candidate_not_found")
-    reviews = [OperatorReviewService(db).payload(row) for row in IntelligenceSignalRepository(db).reviews_for(signal_id)]
+    reviews = [
+        OperatorReviewService(db).payload(row)
+        for row in IntelligenceSignalRepository(db).reviews_for(signal_id)
+    ]
     return {"data": payload, "reviews": reviews, "limitations": SIGNAL_LIMITATIONS}
 
 
 @router.post("/{signal_id}/approve")
-def approve_signal(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def approve_signal(
+    signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)
+) -> dict[str, object]:
     return _review(db, signal_id, "approved", request)
 
 
 @router.post("/{signal_id}/reject")
-def reject_signal(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def reject_signal(
+    signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)
+) -> dict[str, object]:
     return _review(db, signal_id, "rejected", request)
 
 
 @router.post("/{signal_id}/hold")
-def hold_signal(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def hold_signal(
+    signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)
+) -> dict[str, object]:
     return _review(db, signal_id, "held", request)
 
 
 @router.post("/{signal_id}/needs-more-evidence")
-def needs_more_evidence(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def needs_more_evidence(
+    signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)
+) -> dict[str, object]:
     return _review(db, signal_id, "needs_more_evidence", request)
 
 
 @router.post("/{signal_id}/mark-false-positive")
-def mark_false_positive(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def mark_false_positive(
+    signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)
+) -> dict[str, object]:
     return _review(db, signal_id, "false_positive", request, false_positive_marker=True)
 
 
 @router.post("/{signal_id}/confidence-override")
-def confidence_override(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def confidence_override(
+    signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)
+) -> dict[str, object]:
     return _review(db, signal_id, "held", request)
 
 

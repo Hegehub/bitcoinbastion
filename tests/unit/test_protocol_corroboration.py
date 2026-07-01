@@ -14,15 +14,30 @@ def test_chain_state_protocol_corroboration_fields_present() -> None:
     )
     f = out.freshness
     for key in [
-        "provider_count","corroborated_by","conflicting_providers","confidence_adjustment","freshness_band",
-        "fallback_active","single_source_advisory","advisory_not_consensus_proof","operator_guidance","limitations",
+        "provider_count",
+        "corroborated_by",
+        "conflicting_providers",
+        "confidence_adjustment",
+        "freshness_band",
+        "fallback_active",
+        "single_source_advisory",
+        "advisory_not_consensus_proof",
+        "operator_guidance",
+        "limitations",
     ]:
         assert key in f
     assert f["single_source_advisory"] is True
 
 
 def test_mempool_and_utxo_protocol_advisory_flags() -> None:
-    mem = MempoolAnalyzerService().analyze(MempoolSnapshot(backlog_tx_count=1, backlog_vbytes=1000, median_fee_rate_sat_vb=2, high_priority_fee_rate_sat_vb=5))
+    mem = MempoolAnalyzerService().analyze(
+        MempoolSnapshot(
+            backlog_tx_count=1,
+            backlog_vbytes=1000,
+            median_fee_rate_sat_vb=2,
+            high_priority_fee_rate_sat_vb=5,
+        )
+    )
     assert mem.freshness["single_source_advisory"] is True
     assert mem.freshness["advisory_not_consensus_proof"] is True
 

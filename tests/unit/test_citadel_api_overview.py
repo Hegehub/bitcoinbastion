@@ -6,7 +6,9 @@ from app.main import app
 from app.schemas.citadel import CitadelAssessmentOut, CitadelFindingOut
 
 
-def test_citadel_overview_uses_assessment_payload_without_secondary_recovery_call(monkeypatch) -> None:
+def test_citadel_overview_uses_assessment_payload_without_secondary_recovery_call(
+    monkeypatch,
+) -> None:
     fixed_time = datetime.now(UTC)
     assessment = CitadelAssessmentOut(
         id=1,
@@ -23,9 +25,13 @@ def test_citadel_overview_uses_assessment_payload_without_secondary_recovery_cal
         policy_maturity_score=66.0,
         operational_hygiene_score=84.0,
         critical_findings=[
-            CitadelFindingOut(title="Critical one", severity="critical", domain="recovery", detail="x")
+            CitadelFindingOut(
+                title="Critical one", severity="critical", domain="recovery", detail="x"
+            )
         ],
-        warnings=[CitadelFindingOut(title="Warning one", severity="warning", domain="policy", detail="y")],
+        warnings=[
+            CitadelFindingOut(title="Warning one", severity="warning", domain="policy", detail="y")
+        ],
         recommendations=[],
         explainability={},
         freshness={},
@@ -48,7 +54,9 @@ def test_citadel_overview_uses_assessment_payload_without_secondary_recovery_cal
     )
     monkeypatch.setattr(
         "app.api.v1.citadel.CitadelAssessmentService.recovery_report",
-        lambda self, owner_id: (_ for _ in ()).throw(AssertionError("unexpected recovery_report call")),
+        lambda self, owner_id: (_ for _ in ()).throw(
+            AssertionError("unexpected recovery_report call")
+        ),
     )
 
     client = TestClient(app)
@@ -98,7 +106,9 @@ def test_citadel_overview_surfaces_cache_metadata(monkeypatch) -> None:
     )
     monkeypatch.setattr(
         "app.api.v1.citadel.CitadelAssessmentService.build_assessment",
-        lambda self, owner_type, owner_id: (_ for _ in ()).throw(AssertionError("unexpected recalculation")),
+        lambda self, owner_type, owner_id: (_ for _ in ()).throw(
+            AssertionError("unexpected recalculation")
+        ),
     )
 
     client = TestClient(app)

@@ -31,7 +31,6 @@ class JobRunRepository:
         stmt = select(JobRun).order_by(JobRun.started_at.desc()).limit(limit)
         return list(self.db.execute(stmt).scalars())
 
-
     def list_recent_failures(self, limit: int = 20) -> list[JobRun]:
         stmt = (
             select(JobRun)

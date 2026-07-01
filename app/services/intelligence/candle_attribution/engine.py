@@ -23,7 +23,10 @@ from app.services.intelligence.candle_attribution.metrics import (
     CANDLE_ATTRIBUTION_FAILURES_TOTAL,
     CANDLE_ATTRIBUTION_RUNS_TOTAL,
 )
-from app.services.intelligence.candle_attribution.scoring import AttributionScoringService, ScoredCandidate
+from app.services.intelligence.candle_attribution.scoring import (
+    AttributionScoringService,
+    ScoredCandidate,
+)
 
 logger = logging.getLogger(__name__)
 ENGINE_VERSION = "candle-attribution-v1"
@@ -61,7 +64,11 @@ class CandleAttributionEngine:
                     CANDLE_ATTRIBUTION_CONFIDENCE_AVG.set(avg)
                 logger.info(
                     "candle_attribution_completed",
-                    extra={"candle_id": candle.id, "candidate_count": len(candidates), "persisted_count": len(rows)},
+                    extra={
+                        "candle_id": candle.id,
+                        "candidate_count": len(candidates),
+                        "persisted_count": len(rows),
+                    },
                 )
                 return rows
             except Exception:
@@ -77,16 +84,24 @@ class CandleAttributionEngine:
 
     def rank_candidates(self, scored: list[ScoredCandidate]) -> list[ScoredCandidate]:
         limit = int(self.settings.attribution_top_candidates)
-        ordered = sorted(scored, key=lambda item: (item.confidence_score, item.event.btc_relevance_score, item.event.id), reverse=True)
+        ordered = sorted(
+            scored,
+            key=lambda item: (item.confidence_score, item.event.btc_relevance_score, item.event.id),
+            reverse=True,
+        )
         ranked: list[ScoredCandidate] = []
         for idx, item in enumerate(ordered[:limit], start=1):
             ranked.append(ScoredCandidate(**{**item.__dict__, "rank": idx}))
         return ranked
 
-    def build_explanation(self, candle: BTCCandle, candidate: ScoredCandidate, candidate_count: int) -> tuple[str, dict[str, object], dict[str, object]]:
+    def build_explanation(
+        self, candle: BTCCandle, candidate: ScoredCandidate, candidate_count: int
+    ) -> tuple[str, dict[str, object], dict[str, object]]:
         return self.explainer.build(candle, candidate, candidate_count)
 
-    def persist_attributions(self, candle: BTCCandle, ranked: list[ScoredCandidate]) -> list[CandleAttribution]:
+    def persist_attributions(
+        self, candle: BTCCandle, ranked: list[ScoredCandidate]
+    ) -> list[CandleAttribution]:
         self.db.execute(delete(CandleAttribution).where(CandleAttribution.candle_id == candle.id))
         rows: list[CandleAttribution] = []
         for item in ranked:
@@ -121,7 +136,9 @@ class CandleAttributionEngine:
         self.db.flush()
         return rows
 
-    def generate_replay_log(self, candle: BTCCandle, ranked: list[ScoredCandidate]) -> AttributionReplayLog:
+    def generate_replay_log(
+        self, candle: BTCCandle, ranked: list[ScoredCandidate]
+    ) -> AttributionReplayLog:
         ranking_snapshot = [self._ranking_entry(item) for item in ranked]
         if ranked:
             _, explanation_snapshot, _ = self.build_explanation(candle, ranked[0], len(ranked))
@@ -135,7 +152,9 @@ class CandleAttributionEngine:
             "close_time": candle.close_time.isoformat(),
             "ranking_snapshot": ranking_snapshot,
         }
-        input_hash = hashlib.sha256(json.dumps(replay_input, sort_keys=True, default=str).encode("utf-8")).hexdigest()
+        input_hash = hashlib.sha256(
+            json.dumps(replay_input, sort_keys=True, default=str).encode("utf-8")
+        ).hexdigest()
         before_seconds = int(self.settings.attribution_window_before_minutes) * 60
         after_seconds = int(self.settings.attribution_window_after_minutes) * 60
         row = AttributionReplayLog(

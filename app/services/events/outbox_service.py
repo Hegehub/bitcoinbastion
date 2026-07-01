@@ -154,7 +154,10 @@ class EventOutboxService:
                 self._assert_no_additional_forbidden_values(child)
 
     def _sanitize_metadata(self, metadata: Mapping[str, object]) -> dict[str, object]:
-        return {str(key): self._sanitize_metadata_value(str(key), value) for key, value in metadata.items()}
+        return {
+            str(key): self._sanitize_metadata_value(str(key), value)
+            for key, value in metadata.items()
+        }
 
     def _sanitize_metadata_value(self, key: str, value: object) -> object:
         normalized_key = key.casefold().replace("-", "_")

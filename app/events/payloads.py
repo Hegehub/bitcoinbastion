@@ -5,7 +5,13 @@ from uuid import uuid4
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from app.events.safety import SafetyFlag, assert_event_payload_safe
-from app.events.types import ActorType, BastionEventType, EventDomain, EventSeverity, EventVisibility
+from app.events.types import (
+    ActorType,
+    BastionEventType,
+    EventDomain,
+    EventSeverity,
+    EventVisibility,
+)
 
 
 class BastionEventEnvelope(BaseModel):

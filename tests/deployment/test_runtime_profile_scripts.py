@@ -13,7 +13,11 @@ def test_runtime_profile_scripts_exist() -> None:
 
 
 def test_python_runtime_scripts_are_syntactically_valid() -> None:
-    for filename in ("detect-runtime-profile.py", "render-runtime-profile.py", "runtime_profile_lib.py"):
+    for filename in (
+        "detect-runtime-profile.py",
+        "render-runtime-profile.py",
+        "runtime_profile_lib.py",
+    ):
         py_compile.compile(str(SCRIPTS / filename), doraise=True)
 
 

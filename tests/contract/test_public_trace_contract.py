@@ -33,7 +33,9 @@ def trace_db_override():
         bastion_trace.TraceBusinessEventModel.__table__,
     ]
     bastion_trace.Base.metadata.create_all(engine, tables=trace_tables)
-    TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, class_=Session)
+    TestingSessionLocal = sessionmaker(
+        bind=engine, autoflush=False, autocommit=False, class_=Session
+    )
 
     def override_db():
         db = TestingSessionLocal()
@@ -53,19 +55,19 @@ client = TestClient(app)
 
 
 def test_public_trace_summary_endpoint_uses_response_envelope() -> None:
-    created = client.get('/api/v1/trace/address/1BoatSLRHtKNngkdXEeobR76b53LETtpyT')
+    created = client.get("/api/v1/trace/address/1BoatSLRHtKNngkdXEeobR76b53LETtpyT")
     assert created.status_code == 200
-    report_id = created.json()['data']['id']
-    response = client.get(f'/api/v1/public/trace/{report_id}/summary')
+    report_id = created.json()["data"]["id"]
+    response = client.get(f"/api/v1/public/trace/{report_id}/summary")
     assert response.status_code == 200
     body = response.json()
-    assert body['success'] is True
-    data = body['data']
-    assert data['report_id'] == report_id
-    assert data['limitations']
-    assert data['safety_warnings']
+    assert body["success"] is True
+    data = body["data"]
+    assert data["report_id"] == report_id
+    assert data["limitations"]
+    assert data["safety_warnings"]
 
 
 def test_public_trace_summary_missing_report_returns_404() -> None:
-    response = client.get('/api/v1/public/trace/999999999/summary')
+    response = client.get("/api/v1/public/trace/999999999/summary")
     assert response.status_code == 404

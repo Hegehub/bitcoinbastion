@@ -36,7 +36,11 @@ class ProviderHealthService:
             if is_mock:
                 confidence -= 0.3
             return ProviderHealthEvidenceOut(
-                provider_name=str(payload.get("provider_name", getattr(provider, "__class__", type(provider)).__name__)),
+                provider_name=str(
+                    payload.get(
+                        "provider_name", getattr(provider, "__class__", type(provider)).__name__
+                    )
+                ),
                 provider_type="bitcoin",
                 checked_at=now,
                 healthy=len(events) > 0,
@@ -46,8 +50,13 @@ class ProviderHealthService:
                 is_mock=is_mock,
                 confidence=max(0.1, min(1.0, confidence)),
                 freshness_seconds=0,
-                limitations=[str(payload.get("limitations", ""))] if payload.get("limitations") else [],
-                evidence_refs=[f"onchain_events:{len(events)}", f"provider:{payload.get('provider_name', 'unknown')}"]
+                limitations=(
+                    [str(payload.get("limitations", ""))] if payload.get("limitations") else []
+                ),
+                evidence_refs=[
+                    f"onchain_events:{len(events)}",
+                    f"provider:{payload.get('provider_name', 'unknown')}",
+                ],
             )
         except Exception as exc:  # noqa: BLE001
             latency_ms = int((time.perf_counter() - start) * 1000)
@@ -80,7 +89,9 @@ class ProviderHealthService:
             source_type="passive",
             confidence=0.6,
             freshness_seconds=freshness_seconds,
-            limitations=["RSS provider health not actively probed in this pipeline; passive status only."],
+            limitations=[
+                "RSS provider health not actively probed in this pipeline; passive status only."
+            ],
             evidence_refs=["rss:passive_health"],
         )
 
@@ -96,7 +107,9 @@ class ProviderHealthService:
             source_type="delivery_logs",
             confidence=0.85 if healthy else 0.55,
             freshness_seconds=300,
-            limitations=["Delivery health is inferred from persisted logs, not active Telegram probe."],
+            limitations=[
+                "Delivery health is inferred from persisted logs, not active Telegram probe."
+            ],
             evidence_refs=[f"delivery_failures_24h:{failed}"],
             error_type="DeliveryFailures" if not healthy else None,
             error_message="Delivery failures in past 24h" if not healthy else None,

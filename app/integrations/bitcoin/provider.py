@@ -6,6 +6,7 @@ import httpx
 
 from app.core.config import Settings
 
+
 @dataclass
 class ChainEvent:
     event_type: str
@@ -18,8 +19,7 @@ class ChainEvent:
 
 
 class BitcoinProvider(Protocol):
-    def recent_events(self) -> list[ChainEvent]:
-        ...
+    def recent_events(self) -> list[ChainEvent]: ...
 
 
 class BitcoinProviderError(RuntimeError):

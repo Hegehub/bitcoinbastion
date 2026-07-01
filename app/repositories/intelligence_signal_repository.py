@@ -30,7 +30,13 @@ class IntelligenceSignalRepository:
             query = query.filter(IntelligenceSignalCandidate.status == status)
         if signal_type is not None:
             query = query.filter(IntelligenceSignalCandidate.signal_type == signal_type)
-        return query.order_by(IntelligenceSignalCandidate.created_at.desc(), IntelligenceSignalCandidate.id.desc()).limit(limit).all()
+        return (
+            query.order_by(
+                IntelligenceSignalCandidate.created_at.desc(), IntelligenceSignalCandidate.id.desc()
+            )
+            .limit(limit)
+            .all()
+        )
 
     def duplicate_count(self, candidate: IntelligenceSignalCandidate) -> int:
         query = self.db.query(IntelligenceSignalCandidate).filter(
@@ -51,7 +57,9 @@ class IntelligenceSignalRepository:
         return (
             self.db.query(IntelligenceOperatorReview)
             .filter(IntelligenceOperatorReview.signal_candidate_id == signal_id)
-            .order_by(IntelligenceOperatorReview.created_at.desc(), IntelligenceOperatorReview.id.desc())
+            .order_by(
+                IntelligenceOperatorReview.created_at.desc(), IntelligenceOperatorReview.id.desc()
+            )
             .all()
         )
 
@@ -63,7 +71,9 @@ class IntelligenceSignalRepository:
             .first()
         )
         if policy is None:
-            policy = IntelligencePublishingPolicy(name="default", is_active=True, allow_auto_publish=False)
+            policy = IntelligencePublishingPolicy(
+                name="default", is_active=True, allow_auto_publish=False
+            )
             self.db.add(policy)
             self.db.flush()
         return policy
@@ -77,6 +87,9 @@ class IntelligenceSignalRepository:
         return (
             self.db.query(IntelligenceSignalDeliveryLog)
             .filter(IntelligenceSignalDeliveryLog.signal_candidate_id == signal_id)
-            .order_by(IntelligenceSignalDeliveryLog.created_at.desc(), IntelligenceSignalDeliveryLog.id.desc())
+            .order_by(
+                IntelligenceSignalDeliveryLog.created_at.desc(),
+                IntelligenceSignalDeliveryLog.id.desc(),
+            )
             .all()
         )

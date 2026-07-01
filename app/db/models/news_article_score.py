@@ -14,7 +14,9 @@ class NewsArticleScore(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     article_id: Mapped[int] = mapped_column(ForeignKey("news_articles.id"), index=True)
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), nullable=True, index=True)
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), nullable=True, index=True
+    )
     btc_relevance_score: Mapped[float] = mapped_column(Float, default=0.0)
     market_impact_score: Mapped[float] = mapped_column(Float, default=0.0)
     urgency_score: Mapped[float] = mapped_column(Float, default=0.0)
@@ -30,8 +32,14 @@ class NewsArticleScore(Base):
     risk_band: Mapped[str] = mapped_column(String(16), default="UNKNOWN")
     score_version: Mapped[str] = mapped_column(String(32), default="v1_rule_based")
     scoring_method: Mapped[str] = mapped_column(String(32), default="RULE_BASED")
-    explanation_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
-    factor_breakdown_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
-    limitations_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    explanation_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
+    factor_breakdown_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
+    limitations_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)

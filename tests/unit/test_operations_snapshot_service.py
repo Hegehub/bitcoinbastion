@@ -81,7 +81,9 @@ def test_operations_snapshot_surfaces_critical_runtime_severity(monkeypatch) -> 
         finality_band="weak",
         confidence_score=0.3,
         freshness={"source": "provider_fallback", "provider_freshness_band": "very_stale"},
-        explainability={"degradation_governance": {"degraded_runtime_state": True, "fallback_activated": True}},
+        explainability={
+            "degradation_governance": {"degraded_runtime_state": True, "fallback_activated": True}
+        },
     )
     monkeypatch.setattr(
         "app.services.observability.operations_service.ChainStateService.evaluate",
@@ -125,7 +127,9 @@ def test_operations_snapshot_emits_runtime_metrics(monkeypatch) -> None:
     def _capture(**kwargs):
         captured.update(kwargs)
 
-    monkeypatch.setattr("app.services.observability.operations_service.set_observability_runtime_metrics", _capture)
+    monkeypatch.setattr(
+        "app.services.observability.operations_service.set_observability_runtime_metrics", _capture
+    )
 
     with Session(engine) as db:
         snapshot = OperationsSnapshotService().snapshot(db=db)
@@ -138,7 +142,10 @@ def test_operations_snapshot_emits_runtime_metrics(monkeypatch) -> None:
 
 
 def test_provider_health_metrics_bounded_labels() -> None:
-    from app.core.telemetry import set_provider_health_detail_metrics, set_provider_health_state_metric
+    from app.core.telemetry import (
+        set_provider_health_detail_metrics,
+        set_provider_health_state_metric,
+    )
 
     set_provider_health_state_metric(
         provider_type="some_unbounded_external_type",

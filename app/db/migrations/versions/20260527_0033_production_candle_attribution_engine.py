@@ -21,7 +21,9 @@ CANDLE_ATTRIBUTION_COLUMNS: list[sa.Column[Any]] = [
     sa.Column("event_inside_candle", sa.Boolean(), nullable=False, server_default=sa.false()),
     sa.Column("event_after_candle_seconds", sa.Integer(), nullable=False, server_default="0"),
     sa.Column("candle_direction", sa.String(length=16), nullable=False, server_default="UNKNOWN"),
-    sa.Column("sentiment_direction_match", sa.String(length=16), nullable=False, server_default="unknown"),
+    sa.Column(
+        "sentiment_direction_match", sa.String(length=16), nullable=False, server_default="unknown"
+    ),
     sa.Column("btc_relevance_score", sa.Float(), nullable=False, server_default="0"),
     sa.Column("market_impact_score", sa.Float(), nullable=False, server_default="0"),
     sa.Column("source_credibility_score", sa.Float(), nullable=False, server_default="0"),
@@ -35,7 +37,9 @@ CANDLE_ATTRIBUTION_COLUMNS: list[sa.Column[Any]] = [
     sa.Column("is_primary_candidate", sa.Boolean(), nullable=False, server_default=sa.false()),
     sa.Column("is_operator_reviewed", sa.Boolean(), nullable=False, server_default=sa.false()),
     sa.Column("is_operator_approved", sa.Boolean(), nullable=False, server_default=sa.false()),
-    sa.Column("operator_review_status", sa.String(length=32), nullable=False, server_default="pending"),
+    sa.Column(
+        "operator_review_status", sa.String(length=32), nullable=False, server_default="pending"
+    ),
     sa.Column("operator_note", sa.Text(), nullable=False, server_default=""),
     sa.Column("evidence_refs_json", sa.JSON(), nullable=False, server_default="{}"),
 ]
@@ -53,7 +57,9 @@ def upgrade() -> None:
         "candle_attribution_candidates",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("candle_id", sa.Integer(), sa.ForeignKey("btc_candles.id"), nullable=False),
-        sa.Column("candidate_type", sa.String(length=64), nullable=False, server_default="news_event"),
+        sa.Column(
+            "candidate_type", sa.String(length=64), nullable=False, server_default="news_event"
+        ),
         sa.Column("event_id", sa.Integer(), sa.ForeignKey("news_events.id"), nullable=True),
         sa.Column("article_id", sa.Integer(), sa.ForeignKey("news_articles.id"), nullable=True),
         sa.Column("raw_score", sa.Float(), nullable=False, server_default="0"),
@@ -63,7 +69,11 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
     for column_name in ["candle_id", "event_id", "article_id", "created_at"]:
-        op.create_index(f"ix_candle_attribution_candidates_{column_name}", "candle_attribution_candidates", [column_name])
+        op.create_index(
+            f"ix_candle_attribution_candidates_{column_name}",
+            "candle_attribution_candidates",
+            [column_name],
+        )
 
     op.create_table(
         "attribution_context_snapshots",
@@ -81,16 +91,29 @@ def upgrade() -> None:
         sa.Column("timeline_snapshot_json", sa.JSON(), nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_attribution_context_snapshots_candle_id", "attribution_context_snapshots", ["candle_id"])
-    op.create_index("ix_attribution_context_snapshots_created_at", "attribution_context_snapshots", ["created_at"])
+    op.create_index(
+        "ix_attribution_context_snapshots_candle_id", "attribution_context_snapshots", ["candle_id"]
+    )
+    op.create_index(
+        "ix_attribution_context_snapshots_created_at",
+        "attribution_context_snapshots",
+        ["created_at"],
+    )
 
 
 def downgrade() -> None:
-    op.drop_index("ix_attribution_context_snapshots_created_at", table_name="attribution_context_snapshots")
-    op.drop_index("ix_attribution_context_snapshots_candle_id", table_name="attribution_context_snapshots")
+    op.drop_index(
+        "ix_attribution_context_snapshots_created_at", table_name="attribution_context_snapshots"
+    )
+    op.drop_index(
+        "ix_attribution_context_snapshots_candle_id", table_name="attribution_context_snapshots"
+    )
     op.drop_table("attribution_context_snapshots")
     for column_name in ["created_at", "article_id", "event_id", "candle_id"]:
-        op.drop_index(f"ix_candle_attribution_candidates_{column_name}", table_name="candle_attribution_candidates")
+        op.drop_index(
+            f"ix_candle_attribution_candidates_{column_name}",
+            table_name="candle_attribution_candidates",
+        )
     op.drop_table("candle_attribution_candidates")
     with op.batch_alter_table("candle_attributions") as batch_op:
         batch_op.drop_index("ix_candle_attributions_created_at")

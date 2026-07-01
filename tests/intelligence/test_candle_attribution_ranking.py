@@ -23,7 +23,9 @@ def _session() -> Session:
     return Session(engine)
 
 
-def _candle(open_time: datetime, close: float = 102000.0, provider_confidence: float = 0.9) -> BTCCandle:
+def _candle(
+    open_time: datetime, close: float = 102000.0, provider_confidence: float = 0.9
+) -> BTCCandle:
     return BTCCandle(
         timeframe="1h",
         open_time=open_time,
@@ -87,7 +89,10 @@ def test_single_candidate_ranking_persists_score_explanation_and_limitations() -
     assert row.sentiment_direction_match == "strong_match"
     assert row.confidence_band in {"LOW", "MEDIUM", "HIGH"}
     assert "factor_contributions" in row.explanation_json
-    assert "Correlation-based attribution. Not proof of causation." in row.limitations_json["limitations"]
+    assert (
+        "Correlation-based attribution. Not proof of causation."
+        in row.limitations_json["limitations"]
+    )
 
 
 def test_multiple_candidates_rank_by_time_proximity_and_summary_mentions_combination() -> None:
@@ -127,15 +132,25 @@ def test_provider_degradation_low_source_confidence_and_historical_bonus() -> No
     db = _session()
     open_time = datetime(2026, 5, 30, 12, 0, 0)
     candle = _candle(open_time, provider_confidence=0.4)
-    weak = _event(open_time - timedelta(minutes=8), "Single source ETF rumor", source_count=1, confidence=0.35)
-    supported = _event(open_time - timedelta(minutes=9), "Supported ETF inflow analog", confidence=0.85)
+    weak = _event(
+        open_time - timedelta(minutes=8), "Single source ETF rumor", source_count=1, confidence=0.35
+    )
+    supported = _event(
+        open_time - timedelta(minutes=9), "Supported ETF inflow analog", confidence=0.85
+    )
     db.add_all([candle, weak, supported])
     db.flush()
-    db.add(HistoricalSimilarityResult(reference_event_id=supported.id, candidate_event_id=weak.id, similarity_score=0.88))
+    db.add(
+        HistoricalSimilarityResult(
+            reference_event_id=supported.id, candidate_event_id=weak.id, similarity_score=0.88
+        )
+    )
     db.commit()
 
     payload = CandleAttributionRankingEngine(db).attribute_candle(candle.id)
-    supported_payload = next(item for item in payload["candidate_events"] if item["event_id"] == supported.id)
+    supported_payload = next(
+        item for item in payload["candidate_events"] if item["event_id"] == supported.id
+    )
     weak_payload = next(item for item in payload["candidate_events"] if item["event_id"] == weak.id)
 
     assert supported_payload["explanation"]["factor_scores"]["historical_pattern_support"] >= 0.88

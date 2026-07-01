@@ -25,5 +25,7 @@ class CandleContextSnapshot(Base):
     security_event_count: Mapped[int] = mapped_column(Integer, default=0)
     regulatory_event_count: Mapped[int] = mapped_column(Integer, default=0)
     institutional_event_count: Mapped[int] = mapped_column(Integer, default=0)
-    summary_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    summary_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)

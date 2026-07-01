@@ -13,8 +13,12 @@ class HistoricalEventProfile(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     event_type: Mapped[str] = mapped_column(String(64), index=True, default="unknown")
     pattern_type: Mapped[str] = mapped_column(String(64), index=True, default="UNKNOWN")
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), nullable=True, index=True)
-    article_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True, index=True)
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), nullable=True, index=True
+    )
+    article_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_articles.id"), nullable=True, index=True
+    )
     canonical_title: Mapped[str] = mapped_column(String(500), default="")
     primary_narrative: Mapped[str] = mapped_column(String(128), default="unknown")
     sentiment_label: Mapped[str] = mapped_column(String(32), default="UNKNOWN")

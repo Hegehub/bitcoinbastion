@@ -1,8 +1,17 @@
-from app.services.intelligence.candle_attribution.schemas import CandidateScoringInputs, ConfidenceResult
+from app.services.intelligence.candle_attribution.schemas import (
+    CandidateScoringInputs,
+    ConfidenceResult,
+)
 
 
 class CandleAttributionConfidenceBuilder:
-    def build(self, inputs: CandidateScoringInputs, event_density: int, volatility_penalty: float, limitations: list[str]) -> ConfidenceResult:
+    def build(
+        self,
+        inputs: CandidateScoringInputs,
+        event_density: int,
+        volatility_penalty: float,
+        limitations: list[str],
+    ) -> ConfidenceResult:
         base = (
             inputs.relevance_score
             * inputs.direction_match_score
@@ -18,4 +27,6 @@ class CandleAttributionConfidenceBuilder:
             band = "MEDIUM"
         else:
             band = "HIGH"
-        return ConfidenceResult(confidence_score=score, confidence_band=band, limitations=limitations)
+        return ConfidenceResult(
+            confidence_score=score, confidence_band=band, limitations=limitations
+        )

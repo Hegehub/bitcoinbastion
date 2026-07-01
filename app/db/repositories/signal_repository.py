@@ -20,7 +20,9 @@ class SignalRepository:
         self.db.refresh(signal)
         return signal
 
-    def add_with_source(self, *, signal: Signal, source_type: str, source_id: str, weight: float = 1.0) -> Signal:
+    def add_with_source(
+        self, *, signal: Signal, source_type: str, source_id: str, weight: float = 1.0
+    ) -> Signal:
         self.db.add(signal)
         self.db.flush()
         self.db.add(
@@ -102,17 +104,27 @@ class SignalRepository:
         return self.db.execute(stmt).scalars().first()
 
     def list_nodes(self, signal_id: int) -> list[EvidenceNode]:
-        stmt = select(EvidenceNode).where(EvidenceNode.signal_id == signal_id).order_by(EvidenceNode.id.asc())
+        stmt = (
+            select(EvidenceNode)
+            .where(EvidenceNode.signal_id == signal_id)
+            .order_by(EvidenceNode.id.asc())
+        )
         return list(self.db.execute(stmt).scalars())
 
     def list_edges(self, signal_id: int) -> list[EvidenceEdge]:
-        stmt = select(EvidenceEdge).where(EvidenceEdge.signal_id == signal_id).order_by(EvidenceEdge.id.asc())
+        stmt = (
+            select(EvidenceEdge)
+            .where(EvidenceEdge.signal_id == signal_id)
+            .order_by(EvidenceEdge.id.asc())
+        )
         return list(self.db.execute(stmt).scalars())
 
     def create_default_explanation(self, signal: Signal) -> SignalExplanation:
         payload = json.loads(signal.explainability_json or "{}")
         source_counts = self.source_type_counts(signal.id)
-        source_summary = ", ".join(f"{source_type}({count})" for source_type, count in source_counts)
+        source_summary = ", ".join(
+            f"{source_type}({count})" for source_type, count in source_counts
+        )
         source_total = sum(count for _, count in source_counts)
         explanation = SignalExplanation(
             signal_id=signal.id,
@@ -145,7 +157,10 @@ class SignalRepository:
 
     def ensure_evidence_graph(self, *, signal: Signal) -> None:
         existing_nodes = {item.node_key for item in self.list_nodes(signal.id)}
-        existing_edges = {(item.from_node_key, item.to_node_key, item.relation) for item in self.list_edges(signal.id)}
+        existing_edges = {
+            (item.from_node_key, item.to_node_key, item.relation)
+            for item in self.list_edges(signal.id)
+        }
         signal_node_key = f"signal:{signal.id}"
 
         if signal_node_key not in existing_nodes:

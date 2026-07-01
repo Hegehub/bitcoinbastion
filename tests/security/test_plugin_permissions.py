@@ -1,7 +1,11 @@
 import pytest
 
 from app.plugins.errors import PluginPermissionError
-from app.plugins.permissions import FORBIDDEN_PERMISSIONS, default_allowed_permissions, validate_permission
+from app.plugins.permissions import (
+    FORBIDDEN_PERMISSIONS,
+    default_allowed_permissions,
+    validate_permission,
+)
 from app.plugins.sandbox import PluginSandboxPolicy
 
 

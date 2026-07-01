@@ -19,7 +19,12 @@ class NewsRepository:
         return article
 
     def latest(self, limit: int = 20, offset: int = 0) -> list[NewsArticle]:
-        stmt = select(NewsArticle).order_by(NewsArticle.published_at.desc()).limit(limit).offset(offset)
+        stmt = (
+            select(NewsArticle)
+            .order_by(NewsArticle.published_at.desc())
+            .limit(limit)
+            .offset(offset)
+        )
         return list(self.db.execute(stmt).scalars())
 
     def count(self) -> int:

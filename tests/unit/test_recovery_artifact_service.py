@@ -1,4 +1,7 @@
-from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecord, RecoveryArtifactService
+from app.services.citadel.recovery_artifact_service import (
+    RecoveryArtifactRecord,
+    RecoveryArtifactService,
+)
 
 
 def test_recovery_artifact_service_summarizes_verified_and_missing_required() -> None:

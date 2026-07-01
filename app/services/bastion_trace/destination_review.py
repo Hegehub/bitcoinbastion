@@ -1,4 +1,8 @@
-from app.schemas.bastion_trace import DestinationReviewLevel, DestinationReviewResult, SafeToSendAdvisory
+from app.schemas.bastion_trace import (
+    DestinationReviewLevel,
+    DestinationReviewResult,
+    SafeToSendAdvisory,
+)
 
 
 def review(advisory: SafeToSendAdvisory | str) -> DestinationReviewResult:
@@ -14,4 +18,11 @@ def review(advisory: SafeToSendAdvisory | str) -> DestinationReviewResult:
         level = DestinationReviewLevel.SENIOR_REVIEW
         reason = ["DESTINATION_REVIEW_SENIOR"]
         manual = True
-    return DestinationReviewResult(review_level=level, manual_review_recommended=manual, review_reasons=reason, operator_guidance=["Manual review is recommended before proceeding due to risk/context uncertainty."])
+    return DestinationReviewResult(
+        review_level=level,
+        manual_review_recommended=manual,
+        review_reasons=reason,
+        operator_guidance=[
+            "Manual review is recommended before proceeding due to risk/context uncertainty."
+        ],
+    )
