@@ -1,0 +1,351 @@
+version: 1
+repository: Hegehub/bitcoinbastion
+purpose: Non-breaking architecture layer manifest for Bitcoin Bastion.
+conventions:
+  directory_case: kebab-case
+  executable_code_policy: "Keep existing runtime imports stable until a dedicated migration PR moves code."
+  secret_policy: "Never commit secret material; store only documentation and templates."
+layers:
+  - id: frontend
+    label: Frontend
+    directory: platform/frontend
+    current_paths:
+      - reflex_frontend/
+      - app/web/
+      - app/api/v1/public.py
+    owns:
+      - web UI
+      - frontend contracts
+      - static assets
+  - id: backend
+    label: Backend
+    directory: platform/backend
+    current_paths:
+      - app/main.py
+      - app/api/
+      - app/services/
+      - app/core/
+    owns:
+      - FastAPI runtime
+      - domain services
+      - API composition
+  - id: database
+    label: Database
+    directory: platform/database
+    current_paths:
+      - app/models/
+      - alembic/
+    owns:
+      - SQLAlchemy models
+      - Alembic migrations
+      - schema validation
+  - id: cache
+    label: Cache
+    directory: platform/cache
+    current_paths:
+      - app/core/config.py
+    owns:
+      - Redis cache policy
+      - TTL strategy
+  - id: queue
+    label: Queue
+    directory: platform/queue
+    current_paths:
+      - app/tasks/
+    owns:
+      - broker contracts
+      - async queue topology
+  - id: workers
+    label: Workers
+    directory: platform/workers
+    current_paths:
+      - app/tasks/
+      - app/services/
+    owns:
+      - Celery consumers
+      - background processing
+  - id: scheduler
+    label: Scheduler
+    directory: platform/scheduler
+    current_paths:
+      - app/tasks/
+      - deploy/
+    owns:
+      - periodic jobs
+      - recovery drills
+  - id: auth
+    label: Auth
+    directory: platform/auth
+    current_paths:
+      - app/api/v1/auth.py
+      - app/api/v1/users.py
+      - app/services/access/
+    owns:
+      - identity
+      - session/access flows
+      - proof-of-access boundaries
+  - id: object-storage
+    label: Object storage
+    directory: platform/object-storage
+    current_paths:
+      - app/api/v1/storage_status.py
+      - artifacts/
+    owns:
+      - S3/MinIO artifact storage
+      - evidence retention
+  - id: search
+    label: Search
+    directory: platform/search
+    current_paths:
+      - app/services/
+    owns:
+      - index strategy
+      - discovery surfaces
+  - id: ci-cd
+    label: CI/CD
+    directory: platform/ci-cd
+    current_paths:
+      - .github/workflows/
+      - Makefile
+    owns:
+      - CI gates
+      - release automation
+  - id: docker
+    label: Docker
+    directory: platform/docker
+    current_paths:
+      - Dockerfile
+      - docker/
+      - docker-compose.yml
+    owns:
+      - container images
+      - local runtime profiles
+  - id: monitoring
+    label: Monitoring
+    directory: platform/monitoring
+    current_paths:
+      - app/core/telemetry.py
+      - deploy/
+    owns:
+      - metrics
+      - probes
+      - SLO signals
+  - id: logging
+    label: Logging
+    directory: platform/logging
+    current_paths:
+      - app/core/logging.py
+      - app/api/middleware.py
+    owns:
+      - structured logs
+      - request correlation
+  - id: alerts
+    label: Alerts
+    directory: platform/alerts
+    current_paths:
+      - deploy/
+      - docs/OPERATIONS_RUNBOOK.md
+    owns:
+      - alert rules
+      - escalation policy
+  - id: backup
+    label: Backup
+    directory: platform/backup
+    current_paths:
+      - docs/
+      - deploy/
+    owns:
+      - backup plans
+      - restore validation
+  - id: secrets
+    label: Secrets
+    directory: platform/secrets
+    current_paths:
+      - .env.example
+      - deploy/
+    owns:
+      - secret injection policy
+      - rotation guidance
+  - id: security
+    label: Security
+    directory: platform/security
+    current_paths:
+      - app/api/middleware.py
+      - docs/SECURITY_MODEL.md
+    owns:
+      - hardening
+      - safe defaults
+      - threat model
+  - id: admin-panel
+    label: Admin panel
+    directory: platform/admin-panel
+    current_paths:
+      - app/api/v1/admin.py
+      - app/web/
+    owns:
+      - operator console
+      - protected workflows
+  - id: docs
+    label: Docs
+    directory: platform/docs
+    current_paths:
+      - docs/
+    owns:
+      - architecture docs
+      - truthfulness checks
+  - id: tests
+    label: Tests
+    directory: platform/tests
+    current_paths:
+      - tests/
+    owns:
+      - test strategy
+      - fixtures
+      - smoke checks
+  - id: api-gateway
+    label: API gateway
+    directory: platform/api-gateway
+    current_paths:
+      - app/api/middleware.py
+      - deploy/
+    owns:
+      - ingress policy
+      - external routing
+      - rate limits
+  - id: service-mesh
+    label: Service mesh
+    directory: platform/service-mesh
+    current_paths:
+      - deploy/
+    owns:
+      - internal service routing
+      - mTLS policy
+  - id: event-bus
+    label: Event bus
+    directory: platform/event-bus
+    current_paths:
+      - app/services/events/
+    owns:
+      - domain events
+      - outbox
+      - webhook/event delivery
+  - id: distributed-tracing
+    label: Distributed tracing
+    directory: platform/distributed-tracing
+    current_paths:
+      - app/core/telemetry.py
+    owns:
+      - trace context
+      - spans
+  - id: observability-stack
+    label: Observability stack
+    directory: platform/observability-stack
+    current_paths:
+      - app/services/observability/
+      - deploy/
+    owns:
+      - metrics/logs/traces integration
+      - dashboards
+      - evidence snapshots
+  - id: audit-logs
+    label: Audit logs
+    directory: platform/audit-logs
+    current_paths:
+      - app/services/
+      - docs/
+    owns:
+      - operator audit records
+      - security audit exports
+  - id: rbac-abac
+    label: RBAC/ABAC
+    directory: platform/rbac-abac
+    current_paths:
+      - app/api/v1/policy.py
+      - app/services/access/
+    owns:
+      - roles
+      - attributes
+      - permissions
+  - id: feature-flags
+    label: Feature flags
+    directory: platform/feature-flags
+    current_paths:
+      - app/core/config.py
+    owns:
+      - runtime gates
+      - rollout controls
+  - id: multi-region-infra
+    label: Multi-region infra
+    directory: platform/multi-region-infra
+    current_paths:
+      - deploy/
+      - docs/
+    owns:
+      - region topology
+      - failover design
+  - id: disaster-recovery
+    label: Disaster recovery
+    directory: platform/disaster-recovery
+    current_paths:
+      - docs/OPERATIONS_RUNBOOK.md
+      - deploy/
+    owns:
+      - RTO/RPO targets
+      - recovery drills
+  - id: zero-trust-networking
+    label: Zero-trust networking
+    directory: platform/zero-trust-networking
+    current_paths:
+      - deploy/
+      - docs/
+    owns:
+      - identity-aware access
+      - segmentation
+  - id: policy-engine
+    label: Policy engine
+    directory: platform/policy-engine
+    current_paths:
+      - app/api/v1/policy.py
+      - app/services/
+    owns:
+      - policy decisions
+      - enforcement points
+  - id: data-warehouse
+    label: Data warehouse
+    directory: platform/data-warehouse
+    current_paths:
+      - app/services/analytics/
+      - artifacts/
+    owns:
+      - analytical datasets
+      - historical aggregates
+  - id: ml-analytics-layer
+    label: ML/analytics layer
+    directory: platform/ml-analytics-layer
+    current_paths:
+      - app/services/analytics/
+      - app/services/intelligence/
+    owns:
+      - scoring
+      - analytical models
+      - model governance
+  - id: compliance-layer
+    label: Compliance layer
+    directory: platform/compliance-layer
+    current_paths:
+      - docs/
+      - app/services/
+    owns:
+      - control mapping
+      - compliance evidence
+  - id: internal-developer-platform
+    label: Internal developer platform
+    directory: platform/internal-developer-platform
+    current_paths:
+      - Makefile
+      - scripts/
+      - docs/DEVELOPER_API.md
+    owns:
+      - developer workflows
+      - templates
+      - golden paths
