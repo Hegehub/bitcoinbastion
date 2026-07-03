@@ -164,3 +164,36 @@ ClickHouse is disabled by default and is used only as a rebuildable analytics pr
 | `CLICKHOUSE_PROFILE` | `disabled` | One of `disabled`, `development`, `single_node`, `staging`, `production`, `enterprise`. |
 
 ClickHouse must not store seed phrases, Bitcoin private keys, wallet files, raw access tokens, raw Access Pass values, raw API secrets, or custody material. It is not a source of truth for access, policy, revocation, subscription, payment, or recovery decisions.
+## Bastion Proof-of-Access issuer signing
+
+These variables configure future Access Certificate and Subscription Entitlement signing. They do not enable the full Proof-of-Access auth flow by themselves.
+
+- `ACCESS_ISSUER_KEY_ID` is a stable, non-secret key identifier for the active issuer key.
+- `ACCESS_ISSUER_PRIVATE_KEY` is secret Ed25519 issuer private-key material. Production must inject it from a secret manager or Kubernetes secret and must never commit it to the repository or bake it into an image.
+- `ACCESS_CRYPTO_EPOCH` defaults to `1` and identifies the active Access crypto epoch.
+- `ACCESS_SIGNATURE_ALG` defaults to `ed25519`. Future PQ signature suites must remain disabled unless real audited implementations and tests are integrated.
+## Bastion Access payment provider foundation
+
+These variables configure the payment intent foundation. They do not enable BTCPay integration or certificate issuance by themselves.
+
+- `ACCESS_ALLOW_MANUAL_GRANTS` defaults to `false`; manual grants must remain disabled unless explicitly authorized for local development, tests, emergency admin grants, or controlled contract grants.
+- `ACCESS_DEFAULT_PAYMENT_PROVIDER` defaults to `manual` as a placeholder until a production payment provider is configured. Public endpoints must not expose manual grants without admin/internal authorization.
+- `ACCESS_PAYMENT_INTENT_TTL_SECONDS` defaults to `900` and controls payment intent invoice expiry windows.
+- `ACCESS_CHALLENGE_TTL_SECONDS` defaults to `300` and controls origin-bound challenge lifetime before Proof-of-Possession session creation.
+- `ACCESS_SESSION_TTL_SECONDS` defaults to `900` and controls short-lived Proof-of-Possession session lifetime; raw session tokens must never be stored.
+- `ACCESS_REQUEST_MAX_SKEW_SECONDS` defaults to `300` and limits timestamp skew for per-request Proof-of-Possession signatures.
+- `ACCESS_REQUEST_SIGNATURE_REQUIRED` defaults to `true`; protected Access requests must fail closed if request signatures are missing or invalid.
+
+## Bastion Access BTCPay Server provider
+
+These variables configure the future production BTCPay payment provider for Access payment intents. Enabling BTCPay does not make invoice creation an entitlement and does not issue Access Certificates by itself. Only verified settled provider events may mark an Access payment intent as paid.
+
+- `ACCESS_BTCPAY_ENABLED` defaults to `false`.
+- `ACCESS_BTCPAY_BASE_URL` is the BTCPay Server base URL and is required in production when BTCPay is enabled.
+- `ACCESS_BTCPAY_API_KEY` is secret provider API-key material and must be injected from a secret manager or Kubernetes secret.
+- `ACCESS_BTCPAY_STORE_ID` identifies the BTCPay store used for Bastion Access invoices.
+- `ACCESS_BTCPAY_WEBHOOK_SECRET` is required for webhook HMAC verification and must never be logged or committed.
+- `ACCESS_BTCPAY_DEFAULT_CURRENCY` defaults to `BTC`.
+- `ACCESS_BTCPAY_CHECKOUT_EXPIRY_MINUTES` defaults to `30`.
+- `ACCESS_BTCPAY_HTTP_TIMEOUT_SECONDS` defaults to `10`.
+- `ACCESS_BTCPAY_WEBHOOK_TOLERANCE_SECONDS` defaults to `300` for future timestamp-aware webhook policy.
