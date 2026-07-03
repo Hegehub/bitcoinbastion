@@ -49,7 +49,9 @@ def compute_confidence(
 
     if freshness == TraceFreshness.STALE:
         confidence -= 0.15
-        ledger.append(TraceConfidenceLedgerEntry(factor="freshness", delta=-0.15, reason="Evidence is stale."))
+        ledger.append(
+            TraceConfidenceLedgerEntry(factor="freshness", delta=-0.15, reason="Evidence is stale.")
+        )
 
     disagreement_delta = min(0.25, provider_disagreement * 0.25)
     confidence -= disagreement_delta

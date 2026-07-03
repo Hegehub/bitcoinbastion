@@ -17,8 +17,12 @@ class NewsPriceImpact(Base):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    article_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True, index=True)
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), nullable=True, index=True)
+    article_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_articles.id"), nullable=True, index=True
+    )
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), nullable=True, index=True
+    )
 
     price_at_publish: Mapped[float | None] = mapped_column(Float, nullable=True)
     price_after_15m: Mapped[float | None] = mapped_column(Float, nullable=True)
@@ -47,23 +51,37 @@ class NewsPriceImpact(Base):
     volatility_context: Mapped[float] = mapped_column(Float, default=0.0)
     liquidity_context: Mapped[str] = mapped_column(String(32), default="unknown")
     impact_band: Mapped[str] = mapped_column(String(16), default="VERY_LOW", index=True)
-    explanation_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
-    limitations_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    explanation_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
+    limitations_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     calculated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
     # Compatibility fields used by earlier impact-confidence endpoints.
     confidence_score: Mapped[float] = mapped_column(Float, default=0.0)
     confidence_band: Mapped[str] = mapped_column(String(16), default="VERY_LOW")
-    confidence_contributions_json: Mapped[list[dict[str, object]]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
-    degradation_factors_json: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
-    uncertainty_flags_json: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
+    confidence_contributions_json: Mapped[list[dict[str, object]]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
+    degradation_factors_json: Mapped[list[str]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
+    uncertainty_flags_json: Mapped[list[str]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
     delayed_reaction_detected: Mapped[bool] = mapped_column(Boolean, default=False)
     false_signal_detected: Mapped[bool] = mapped_column(Boolean, default=False)
     freshness_weight: Mapped[float] = mapped_column(Float, default=1.0)
     volatility_context_weight: Mapped[float] = mapped_column(Float, default=1.0)
     event_confirmation_weight: Mapped[float] = mapped_column(Float, default=0.5)
     explanation_summary: Mapped[str] = mapped_column(String(500), default="")
-    limitation: Mapped[str] = mapped_column(String(200), default="Correlation-based attribution is not proof of causation.")
+    limitation: Mapped[str] = mapped_column(
+        String(200), default="Correlation-based attribution is not proof of causation."
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

@@ -17,5 +17,7 @@ def compute_confidence(
     return max(0.0, min(1.0, score))
 
 
-def calculate_confidence(provider_confidence: float, source_credibility: float, novelty: float) -> float:
+def calculate_confidence(
+    provider_confidence: float, source_credibility: float, novelty: float
+) -> float:
     return compute_confidence(source_credibility, novelty, novelty, 0.8, 0.8, provider_confidence)

@@ -9,14 +9,57 @@ class SentimentResult:
 
 
 class LocalSentimentEngine:
-    positive_keywords = {"approval","inflow","adoption","accumulation","partnership","launch","buying","expansion"}
-    negative_keywords = {"ban","lawsuit","hack","exploit","outflow","liquidation","rejection","crackdown","failure"}
-    institutional_keywords = {"etf","blackrock","fidelity","treasury","fund","institutional","issuer"}
-    macro_keywords = {"fed","rates","cpi","inflation","dollar","liquidity","bond yields"}
-    security_keywords = {"exploit","malware","private key leak","hack","breach","attack"}
-    regulatory_keywords = {"sec","cftc","treasury","compliance","regulation","approval","enforcement"}
-    sovereignty_keywords = {"self-custody","bitcoin core","lightning","privacy","sovereign","open-source","node"}
-    urgency_keywords = {"breaking","urgent","immediate","alert","emergency"}
+    positive_keywords = {
+        "approval",
+        "inflow",
+        "adoption",
+        "accumulation",
+        "partnership",
+        "launch",
+        "buying",
+        "expansion",
+    }
+    negative_keywords = {
+        "ban",
+        "lawsuit",
+        "hack",
+        "exploit",
+        "outflow",
+        "liquidation",
+        "rejection",
+        "crackdown",
+        "failure",
+    }
+    institutional_keywords = {
+        "etf",
+        "blackrock",
+        "fidelity",
+        "treasury",
+        "fund",
+        "institutional",
+        "issuer",
+    }
+    macro_keywords = {"fed", "rates", "cpi", "inflation", "dollar", "liquidity", "bond yields"}
+    security_keywords = {"exploit", "malware", "private key leak", "hack", "breach", "attack"}
+    regulatory_keywords = {
+        "sec",
+        "cftc",
+        "treasury",
+        "compliance",
+        "regulation",
+        "approval",
+        "enforcement",
+    }
+    sovereignty_keywords = {
+        "self-custody",
+        "bitcoin core",
+        "lightning",
+        "privacy",
+        "sovereign",
+        "open-source",
+        "node",
+    }
+    urgency_keywords = {"breaking", "urgent", "immediate", "alert", "emergency"}
 
     def _count(self, text: str, keywords: set[str]) -> int:
         t = text.lower()

@@ -2,7 +2,12 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from app.schemas.health import DegradedComponentOut, DependencyHealthOut, ProviderHealthSnapshotOut, RuntimeStatusOut
+from app.schemas.health import (
+    DegradedComponentOut,
+    DependencyHealthOut,
+    ProviderHealthSnapshotOut,
+    RuntimeStatusOut,
+)
 
 
 class OperationsDrillOut(BaseModel):

@@ -15,21 +15,45 @@ depends_on = None
 
 def upgrade() -> None:
     op.add_column("narrative_observations", sa.Column("narrative_id", sa.Integer(), nullable=True))
-    op.add_column("narrative_observations", sa.Column("observation_time", sa.DateTime(), nullable=False, server_default=sa.func.now()))
-    op.add_column("narrative_observations", sa.Column("strength_score", sa.Float(), nullable=False, server_default="0"))
-    op.add_column("narrative_observations", sa.Column("relevance_score", sa.Float(), nullable=False, server_default="0"))
-    op.create_index("ix_narrative_observations_narrative_id", "narrative_observations", ["narrative_id"])
-    op.create_index("ix_narrative_observations_observation_time", "narrative_observations", ["observation_time"])
+    op.add_column(
+        "narrative_observations",
+        sa.Column("observation_time", sa.DateTime(), nullable=False, server_default=sa.func.now()),
+    )
+    op.add_column(
+        "narrative_observations",
+        sa.Column("strength_score", sa.Float(), nullable=False, server_default="0"),
+    )
+    op.add_column(
+        "narrative_observations",
+        sa.Column("relevance_score", sa.Float(), nullable=False, server_default="0"),
+    )
+    op.create_index(
+        "ix_narrative_observations_narrative_id", "narrative_observations", ["narrative_id"]
+    )
+    op.create_index(
+        "ix_narrative_observations_observation_time", "narrative_observations", ["observation_time"]
+    )
 
-    op.add_column("narrative_snapshots", sa.Column("velocity_score", sa.Float(), nullable=False, server_default="0"))
-    op.add_column("narrative_snapshots", sa.Column("dominance_score", sa.Float(), nullable=False, server_default="0"))
-    op.add_column("narrative_snapshots", sa.Column("supporting_events_count", sa.Integer(), nullable=False, server_default="0"))
+    op.add_column(
+        "narrative_snapshots",
+        sa.Column("velocity_score", sa.Float(), nullable=False, server_default="0"),
+    )
+    op.add_column(
+        "narrative_snapshots",
+        sa.Column("dominance_score", sa.Float(), nullable=False, server_default="0"),
+    )
+    op.add_column(
+        "narrative_snapshots",
+        sa.Column("supporting_events_count", sa.Integer(), nullable=False, server_default="0"),
+    )
 
     conn = op.get_bind()
-    conn.execute(sa.text("update narrative_observations set observation_time = observed_at where observed_at is not null"))
     conn.execute(
         sa.text(
-            """
+            "update narrative_observations set observation_time = observed_at where observed_at is not null"
+        )
+    )
+    conn.execute(sa.text("""
             update narrative_observations
             set narrative_id = (
                 select market_narratives.id
@@ -38,12 +62,22 @@ def upgrade() -> None:
                 limit 1
             )
             where narrative_id is null
-            """
+            """))
+    conn.execute(
+        sa.text(
+            "update narrative_observations set strength_score = observation_score where strength_score = 0"
         )
     )
-    conn.execute(sa.text("update narrative_observations set strength_score = observation_score where strength_score = 0"))
-    conn.execute(sa.text("update narrative_observations set relevance_score = observation_score where relevance_score = 0"))
-    conn.execute(sa.text("update narrative_snapshots set velocity_score = case when growth_score > 0 then growth_score else 0 end"))
+    conn.execute(
+        sa.text(
+            "update narrative_observations set relevance_score = observation_score where relevance_score = 0"
+        )
+    )
+    conn.execute(
+        sa.text(
+            "update narrative_snapshots set velocity_score = case when growth_score > 0 then growth_score else 0 end"
+        )
+    )
     conn.execute(sa.text("update narrative_snapshots set supporting_events_count = event_count"))
 
 

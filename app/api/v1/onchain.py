@@ -20,8 +20,12 @@ def onchain_events(
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[PaginatedData[OnchainEventOut]]:
     repo = OnchainRepository(db)
-    items = [OnchainEventOut.model_validate(item) for item in repo.recent(limit=limit, offset=offset)]
-    return ResponseEnvelope(data=PaginatedData(items=items, total=repo.count(), limit=limit, offset=offset))
+    items = [
+        OnchainEventOut.model_validate(item) for item in repo.recent(limit=limit, offset=offset)
+    ]
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=repo.count(), limit=limit, offset=offset)
+    )
 
 
 @router.get("/state", response_model=ResponseEnvelope[OnchainChainStateOut])

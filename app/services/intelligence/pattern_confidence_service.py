@@ -62,14 +62,22 @@ class PatternConfidenceService:
         )
         event_ids = [row.event_id for row in matches]
         events = self.db.query(NewsEvent).filter(NewsEvent.id.in_(event_ids or [0])).all()
-        impacts = self.db.query(NewsPriceImpact).filter(NewsPriceImpact.event_id.in_(event_ids or [0])).all()
+        impacts = (
+            self.db.query(NewsPriceImpact)
+            .filter(NewsPriceImpact.event_id.in_(event_ids or [0]))
+            .all()
+        )
         moves = [impact.change_4h_pct for impact in impacts if impact.change_4h_pct is not None]
         source_counts = [event.source_count for event in events]
         categories = {event.event_category for event in events if event.event_category}
-        provider_values = [event.provider_confidence for event in events if event.provider_confidence is not None]
+        provider_values = [
+            event.provider_confidence for event in events if event.provider_confidence is not None
+        ]
         return PatternConfidenceBreakdown(
             sample_size=round(min(1.0, len(matches) / 20.0), 6),
-            source_diversity=round(min(1.0, (mean(source_counts) if source_counts else 0.0) / 5.0), 6),
+            source_diversity=round(
+                min(1.0, (mean(source_counts) if source_counts else 0.0) / 5.0), 6
+            ),
             market_regime_diversity=round(min(1.0, len(categories) / 4.0), 6),
             reaction_consistency=self._reaction_consistency(moves),
             provider_confidence=round(mean(provider_values), 6) if provider_values else 0.0,

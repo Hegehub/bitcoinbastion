@@ -1,4 +1,11 @@
-def make_status(*, reports_count: int, lite_checks_count: int, batches_count: int, source_count: int, last_report_at: str | None) -> dict[str, object]:
+def make_status(
+    *,
+    reports_count: int,
+    lite_checks_count: int,
+    batches_count: int,
+    source_count: int,
+    last_report_at: str | None,
+) -> dict[str, object]:
     return {
         "status": "baseline",
         "trace_available": True,

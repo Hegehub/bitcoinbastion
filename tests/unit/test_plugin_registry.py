@@ -12,7 +12,9 @@ class DummyPlugin(BasePlugin):
     pass
 
 
-def make_plugin(plugin_id: str = "test.plugin", plugin_type: PluginType = PluginType.PROVIDER) -> DummyPlugin:
+def make_plugin(
+    plugin_id: str = "test.plugin", plugin_type: PluginType = PluginType.PROVIDER
+) -> DummyPlugin:
     return DummyPlugin(
         PluginManifest(
             plugin_id=plugin_id,

@@ -18,7 +18,17 @@ def test_operations_health_readiness_liveness_endpoints_task47() -> None:
         response = client.get(path)
         assert response.status_code == 200
     payload = client.get("/api/v1/operations/health").json()
-    assert {"system_status", "provider_status", "scheduler_status", "timeline_status", "evidence_status", "signal_queue_status", "last_backup", "last_restore_test", "last_integrity_scan"}.issubset(payload)
+    assert {
+        "system_status",
+        "provider_status",
+        "scheduler_status",
+        "timeline_status",
+        "evidence_status",
+        "signal_queue_status",
+        "last_backup",
+        "last_restore_test",
+        "last_integrity_scan",
+    }.issubset(payload)
     assert payload["degraded_state_visible"] is True
     assert payload["operator_visible"] is True
 
@@ -47,7 +57,9 @@ def test_exact_cronjob_registration_task47() -> None:
 
 
 def test_disaster_recovery_alert_rules_and_runbooks_task47() -> None:
-    rules = yaml.safe_load(Path("deploy/kubernetes/observability/prometheus-rules-disaster-recovery.yaml").read_text())
+    rules = yaml.safe_load(
+        Path("deploy/kubernetes/observability/prometheus-rules-disaster-recovery.yaml").read_text()
+    )
     alerts = {rule["alert"] for group in rules["spec"]["groups"] for rule in group["rules"]}
     assert "BitcoinBastionAllNewsProvidersOffline" in alerts
     assert "BitcoinBastionBackupValidationFailure" in alerts

@@ -63,13 +63,17 @@ def _settings() -> None:
 
 def test_send_message_success_returns_provider_message_id(monkeypatch: pytest.MonkeyPatch) -> None:
     _settings()
-    fake_http = _FakeHttpClient(response=_FakeResponse(payload={"ok": True, "result": {"message_id": 9988}}))
+    fake_http = _FakeHttpClient(
+        response=_FakeResponse(payload={"ok": True, "result": {"message_id": 9988}})
+    )
     monkeypatch.setattr(
         "app.services.delivery.telegram_delivery.httpx.Client",
         lambda timeout: fake_http,
     )
 
-    result = TelegramDeliveryClient(get_settings()).send_message(destination="@alerts", message="hello")
+    result = TelegramDeliveryClient(get_settings()).send_message(
+        destination="@alerts", message="hello"
+    )
 
     assert result.destination == "@alerts"
     assert result.message_id == "9988"
@@ -84,20 +88,29 @@ def test_send_message_fails_when_bot_token_missing() -> None:
     settings = get_settings()
     settings.telegram_bot_token = ""
 
-    with pytest.raises(TelegramDeliveryNonRetryableError, match="TELEGRAM_BOT_TOKEN is not configured"):
+    with pytest.raises(
+        TelegramDeliveryNonRetryableError, match="TELEGRAM_BOT_TOKEN is not configured"
+    ):
         TelegramDeliveryClient(settings).send_message(destination="@alerts", message="hello")
 
 
 def test_send_message_raises_on_non_ok_payload(monkeypatch: pytest.MonkeyPatch) -> None:
     _settings()
-    fake_http = _FakeHttpClient(response=_FakeResponse(payload={"ok": False, "description": "blocked"}))
+    fake_http = _FakeHttpClient(
+        response=_FakeResponse(payload={"ok": False, "description": "blocked"})
+    )
     monkeypatch.setattr(
         "app.services.delivery.telegram_delivery.httpx.Client",
         lambda timeout: fake_http,
     )
 
-    with pytest.raises(TelegramDeliveryError, match="Telegram API returned non-ok response\\. Telegram says: blocked"):
-        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(destination="@alerts", message="hello")
+    with pytest.raises(
+        TelegramDeliveryError,
+        match="Telegram API returned non-ok response\\. Telegram says: blocked",
+    ):
+        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(
+            destination="@alerts", message="hello"
+        )
 
 
 def test_send_message_raises_with_request_context(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -108,11 +121,17 @@ def test_send_message_raises_with_request_context(monkeypatch: pytest.MonkeyPatc
         lambda timeout: fake_http,
     )
 
-    with pytest.raises(TelegramDeliveryError, match="Telegram API request failed: http status error"):
-        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(destination="@alerts", message="hello")
+    with pytest.raises(
+        TelegramDeliveryError, match="Telegram API request failed: http status error"
+    ):
+        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(
+            destination="@alerts", message="hello"
+        )
 
 
-def test_send_message_retries_transient_request_errors_three_times(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_send_message_retries_transient_request_errors_three_times(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _settings()
     counter = {"calls": 0}
     monkeypatch.setattr(
@@ -120,8 +139,12 @@ def test_send_message_retries_transient_request_errors_three_times(monkeypatch: 
         lambda timeout: _FailingHttpClient(counter),
     )
 
-    with pytest.raises(TelegramDeliveryError, match="Telegram API request failed: http status error"):
-        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(destination="@alerts", message="hello")
+    with pytest.raises(
+        TelegramDeliveryError, match="Telegram API request failed: http status error"
+    ):
+        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(
+            destination="@alerts", message="hello"
+        )
 
     assert counter["calls"] == 3
 
@@ -141,9 +164,14 @@ def test_send_message_non_retryable_payload_does_not_retry(monkeypatch: pytest.M
             counter["calls"] += 1
             return _FakeResponse(payload={"ok": False, "description": "chat not found"})
 
-    monkeypatch.setattr("app.services.delivery.telegram_delivery.httpx.Client", lambda timeout: _NonRetryableBodyClient())
+    monkeypatch.setattr(
+        "app.services.delivery.telegram_delivery.httpx.Client",
+        lambda timeout: _NonRetryableBodyClient(),
+    )
 
     with pytest.raises(TelegramDeliveryNonRetryableError, match="non-retryable"):
-        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(destination="@alerts", message="hello")
+        TelegramDeliveryClient(get_settings(), sleep=lambda _: None).send_message(
+            destination="@alerts", message="hello"
+        )
 
     assert counter["calls"] == 1

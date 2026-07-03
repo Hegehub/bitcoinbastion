@@ -10,7 +10,14 @@ SAFE_TOOLS = {
     "explain_signal",
     "get_provider_health",
 }
-FORBIDDEN_TOOL_PARTS = ("sign_transaction", "broadcast", "private_key", "seed_phrase", "approve_request", "override")
+FORBIDDEN_TOOL_PARTS = (
+    "sign_transaction",
+    "broadcast",
+    "private_key",
+    "seed_phrase",
+    "approve_request",
+    "override",
+)
 
 
 def test_mcp_tools_are_read_draft_recommendation_only() -> None:

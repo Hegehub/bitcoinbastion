@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 
-def provider_confidence(success_count: int, failure_count: int, consecutive_failures: int, avg_latency_ms: float | None) -> float:
+def provider_confidence(
+    success_count: int, failure_count: int, consecutive_failures: int, avg_latency_ms: float | None
+) -> float:
     value = 0.75
     value -= min(0.35, failure_count * 0.01)
     value -= min(0.25, consecutive_failures * 0.03)

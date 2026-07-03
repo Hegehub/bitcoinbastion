@@ -17,13 +17,25 @@ def _db() -> Session:
 
 
 def test_keyword_scoring_positive() -> None:
-    score = score_keywords("Bitcoin ETF approval", "large inflow", "institutional adoption", {"etf", "approval", "inflow"})
+    score = score_keywords(
+        "Bitcoin ETF approval",
+        "large inflow",
+        "institutional adoption",
+        {"etf", "approval", "inflow"},
+    )
     assert score > 0.5
 
 
 def test_article_scoring_sets_expected_fields() -> None:
     db = _db()
-    source = NewsSource(name="Test", slug="test-source", kind="RSS", base_url="https://example.com", category="general", tier="MARKET_MEDIA")
+    source = NewsSource(
+        name="Test",
+        slug="test-source",
+        kind="RSS",
+        base_url="https://example.com",
+        category="general",
+        tier="MARKET_MEDIA",
+    )
     db.add(source)
     db.flush()
     article = NewsArticle(

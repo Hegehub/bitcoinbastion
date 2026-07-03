@@ -66,11 +66,25 @@ def test_signal_recommendation_service_prefers_weighted_evidence_nodes() -> None
     ]
 
     edges = [
-        EvidenceEdge(signal_id=3, from_node_key="n:high", to_node_key="n:mid", relation="supports", weight=0.8),
-        EvidenceEdge(signal_id=3, from_node_key="n:mid", to_node_key="n:low", relation="correlates", weight=0.4),
+        EvidenceEdge(
+            signal_id=3,
+            from_node_key="n:high",
+            to_node_key="n:mid",
+            relation="supports",
+            weight=0.8,
+        ),
+        EvidenceEdge(
+            signal_id=3,
+            from_node_key="n:mid",
+            to_node_key="n:low",
+            relation="correlates",
+            weight=0.4,
+        ),
     ]
 
-    result = SignalRecommendationService().build(signal=signal, evidence_nodes=nodes, evidence_edges=edges)
+    result = SignalRecommendationService().build(
+        signal=signal, evidence_nodes=nodes, evidence_edges=edges
+    )
 
     assert result.recommendations[0].evidence_refs == ["n:high", "n:mid", "n:low"]
     assert result.recommendations[0].evidence_paths == [
@@ -153,10 +167,14 @@ def test_signal_recommendation_service_ignores_incomplete_evidence_edges() -> No
     nodes = [EvidenceNode(signal_id=7, node_key="n:1", weight=1.0)]
     edges = [
         EvidenceEdge(signal_id=7, from_node_key="n:1", to_node_key="n:2", relation="", weight=1.0),
-        EvidenceEdge(signal_id=7, from_node_key="n:1", to_node_key="n:2", relation="supports", weight=1.0),
+        EvidenceEdge(
+            signal_id=7, from_node_key="n:1", to_node_key="n:2", relation="supports", weight=1.0
+        ),
     ]
 
-    result = SignalRecommendationService().build(signal=signal, evidence_nodes=nodes, evidence_edges=edges)
+    result = SignalRecommendationService().build(
+        signal=signal, evidence_nodes=nodes, evidence_edges=edges
+    )
 
     assert result.recommendations[0].evidence_paths == ["n:1 --supports--> n:2"]
 
@@ -214,13 +232,23 @@ def test_signal_recommendation_service_collects_unique_paths_up_to_cap() -> None
         EvidenceNode(signal_id=10, node_key="n:2", weight=0.9),
     ]
     edges = [
-        EvidenceEdge(signal_id=10, from_node_key="n:1", to_node_key="n:2", relation="supports", weight=1.0),
-        EvidenceEdge(signal_id=10, from_node_key="n:1", to_node_key="n:2", relation="supports", weight=0.8),
-        EvidenceEdge(signal_id=10, from_node_key="n:2", to_node_key="n:3", relation="correlates", weight=0.7),
-        EvidenceEdge(signal_id=10, from_node_key="n:1", to_node_key="n:4", relation="explains", weight=0.6),
+        EvidenceEdge(
+            signal_id=10, from_node_key="n:1", to_node_key="n:2", relation="supports", weight=1.0
+        ),
+        EvidenceEdge(
+            signal_id=10, from_node_key="n:1", to_node_key="n:2", relation="supports", weight=0.8
+        ),
+        EvidenceEdge(
+            signal_id=10, from_node_key="n:2", to_node_key="n:3", relation="correlates", weight=0.7
+        ),
+        EvidenceEdge(
+            signal_id=10, from_node_key="n:1", to_node_key="n:4", relation="explains", weight=0.6
+        ),
     ]
 
-    result = SignalRecommendationService().build(signal=signal, evidence_nodes=nodes, evidence_edges=edges)
+    result = SignalRecommendationService().build(
+        signal=signal, evidence_nodes=nodes, evidence_edges=edges
+    )
 
     assert result.recommendations[0].evidence_paths == [
         "n:1 --supports--> n:2",

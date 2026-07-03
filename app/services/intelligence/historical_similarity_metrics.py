@@ -55,9 +55,7 @@ SIMILARITY_MATCHES_FOUND = Counter(
 HISTORICAL_SIMILARITY_MATCHES_TOTAL = Counter(
     "historical_similarity_matches_total", "Total historical similarity matches returned."
 )
-MARKET_PATTERNS_TOTAL = Counter(
-    "market_patterns_total", "Total market pattern rows ensured."
-)
+MARKET_PATTERNS_TOTAL = Counter("market_patterns_total", "Total market pattern rows ensured.")
 PATTERN_OCCURRENCES_TOTAL = Counter(
     "pattern_occurrences_total", "Total pattern occurrences recorded."
 )

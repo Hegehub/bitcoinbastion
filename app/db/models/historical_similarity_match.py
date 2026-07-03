@@ -13,9 +13,15 @@ class HistoricalSimilarityMatch(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("news_events.id"), index=True, nullable=False)
-    reference_occurrence_id: Mapped[int | None] = mapped_column(ForeignKey("pattern_occurrences.id"), index=True, nullable=True)
-    candidate_occurrence_id: Mapped[int | None] = mapped_column(ForeignKey("pattern_occurrences.id"), index=True, nullable=True)
-    similar_event_id: Mapped[int] = mapped_column(ForeignKey("news_events.id"), index=True, nullable=False)
+    reference_occurrence_id: Mapped[int | None] = mapped_column(
+        ForeignKey("pattern_occurrences.id"), index=True, nullable=True
+    )
+    candidate_occurrence_id: Mapped[int | None] = mapped_column(
+        ForeignKey("pattern_occurrences.id"), index=True, nullable=True
+    )
+    similar_event_id: Mapped[int] = mapped_column(
+        ForeignKey("news_events.id"), index=True, nullable=False
+    )
     similarity_score: Mapped[float] = mapped_column(Float, default=0.0, index=True)
     pattern_match_score: Mapped[float] = mapped_column(Float, default=0.0)
     sentiment_match_score: Mapped[float] = mapped_column(Float, default=0.0)

@@ -22,11 +22,21 @@ from app.db.models.time_utils import utcnow
 
 logger = logging.getLogger(__name__)
 
-NEWS_IMPACT_CALCULATIONS_TOTAL = Counter("news_impact_calculations_total", "Total news impact calculations.")
-NEWS_IMPACT_FAILURES_TOTAL = Counter("news_impact_failures_total", "Total failed news impact calculations.")
-NEWS_IMPACT_DEGRADED_TOTAL = Counter("news_impact_degraded_total", "Total degraded news impact calculations.")
-NEWS_IMPACT_AVG_CONFIDENCE = Gauge("news_impact_avg_confidence", "Latest news impact confidence score.")
-NEWS_IMPACT_WINDOW_DISTRIBUTION = Counter("news_impact_window_distribution", "Dominant news impact windows.", ["window"])
+NEWS_IMPACT_CALCULATIONS_TOTAL = Counter(
+    "news_impact_calculations_total", "Total news impact calculations."
+)
+NEWS_IMPACT_FAILURES_TOTAL = Counter(
+    "news_impact_failures_total", "Total failed news impact calculations."
+)
+NEWS_IMPACT_DEGRADED_TOTAL = Counter(
+    "news_impact_degraded_total", "Total degraded news impact calculations."
+)
+NEWS_IMPACT_AVG_CONFIDENCE = Gauge(
+    "news_impact_avg_confidence", "Latest news impact confidence score."
+)
+NEWS_IMPACT_WINDOW_DISTRIBUTION = Counter(
+    "news_impact_window_distribution", "Dominant news impact windows.", ["window"]
+)
 
 CORRELATION_LIMITATION = "correlation_not_causation"
 
@@ -84,8 +94,16 @@ class NewsImpactEngine:
                 "title": article.title,
                 "published_at": published_at,
                 "sentiment_label": sentiment,
-                "btc_relevance_score": clamp(float(article.btc_relevance_score or (score.btc_relevance_score if score else 0.0))),
-                "market_impact_score": clamp(float(article.market_impact_score or (score.market_impact_score if score else 0.0))),
+                "btc_relevance_score": clamp(
+                    float(
+                        article.btc_relevance_score or (score.btc_relevance_score if score else 0.0)
+                    )
+                ),
+                "market_impact_score": clamp(
+                    float(
+                        article.market_impact_score or (score.market_impact_score if score else 0.0)
+                    )
+                ),
                 "source_credibility_score": source_credibility,
                 "source_count": 1,
             }
@@ -101,7 +119,10 @@ class NewsImpactEngine:
         if event is None:
             return None
         try:
-            source_credibility = clamp((float(event.cluster_confidence or 0.0) + float(event.provider_confidence or 0.0)) / 2.0)
+            source_credibility = clamp(
+                (float(event.cluster_confidence or 0.0) + float(event.provider_confidence or 0.0))
+                / 2.0
+            )
             source_count_boost = min(0.15, max(0, int(event.source_count or 1) - 1) * 0.03)
             context: dict[str, Any] = {
                 "article_id": None,
@@ -121,14 +142,22 @@ class NewsImpactEngine:
             logger.exception("news_impact_event_failed", extra={"event_id": event_id})
             raise
 
-    def calculate_price_window(self, db: Session, published_at: datetime, window_minutes: int, sentiment_label: str) -> WindowImpact:
+    def calculate_price_window(
+        self, db: Session, published_at: datetime, window_minutes: int, sentiment_label: str
+    ) -> WindowImpact:
         before = self._lookup_price(db, published_at)
         after = self._lookup_price(db, published_at + timedelta(minutes=window_minutes))
         change_pct = self._change(before.price, after.price)
-        absolute_change = abs((after.price or 0.0) - (before.price or 0.0)) if before.price is not None and after.price is not None else None
+        absolute_change = (
+            abs((after.price or 0.0) - (before.price or 0.0))
+            if before.price is not None and after.price is not None
+            else None
+        )
         volatility = max(before.volatility_score, after.volatility_score)
         provider_confidence = min(before.provider_confidence, after.provider_confidence)
-        direction_match = self.calculate_direction_match(sentiment_label, self._direction(change_pct), change_pct)
+        direction_match = self.calculate_direction_match(
+            sentiment_label, self._direction(change_pct), change_pct
+        )
         return WindowImpact(
             name=self._window_name(window_minutes),
             minutes=window_minutes,
@@ -143,7 +172,9 @@ class NewsImpactEngine:
             degraded=before.degraded or after.degraded,
         )
 
-    def calculate_direction_match(self, sentiment_label: str, actual_direction: str, change_pct: float | None) -> str:
+    def calculate_direction_match(
+        self, sentiment_label: str, actual_direction: str, change_pct: float | None
+    ) -> str:
         expected = self._expected_direction(sentiment_label)
         if expected == "UNKNOWN" or actual_direction == "UNKNOWN":
             return "unknown"
@@ -162,7 +193,9 @@ class NewsImpactEngine:
         freshness_weight: float,
         volatility_adjustment: float,
     ) -> tuple[float, dict[str, float]]:
-        sentiment_component = {"true": 1.0, "partial": 0.6, "unknown": 0.45, "false": 0.2}.get(direction_match, 0.45)
+        sentiment_component = {"true": 1.0, "partial": 0.6, "unknown": 0.45, "false": 0.2}.get(
+            direction_match, 0.45
+        )
         components = {
             "btc_relevance_component": clamp(btc_relevance_score),
             "source_credibility_component": clamp(source_credibility_score),
@@ -177,7 +210,9 @@ class NewsImpactEngine:
             confidence *= value
         return clamp(confidence), components
 
-    def build_explanation(self, context: dict[str, Any], dominant: WindowImpact, confidence: float, band: str) -> dict[str, object]:
+    def build_explanation(
+        self, context: dict[str, Any], dominant: WindowImpact, confidence: float, band: str
+    ) -> dict[str, object]:
         sentiment = str(context["sentiment_label"]).lower()
         direction = self._direction(dominant.change_pct).lower()
         return {
@@ -198,7 +233,13 @@ class NewsImpactEngine:
             "safety": "This is correlation-based attribution and not proof of causation or financial advice.",
         }
 
-    def build_limitations(self, windows: list[WindowImpact], provider_confidence: float, source_credibility: float, volatility_context: float) -> dict[str, list[str]]:
+    def build_limitations(
+        self,
+        windows: list[WindowImpact],
+        provider_confidence: float,
+        source_credibility: float,
+        volatility_context: float,
+    ) -> dict[str, list[str]]:
         limitations = [CORRELATION_LIMITATION]
         if any(w.price_before is None or w.price_after is None for w in windows):
             limitations.append("insufficient_price_data")
@@ -215,13 +256,22 @@ class NewsImpactEngine:
         limitations.append("incomplete_market_context")
         return {"limitations": list(dict.fromkeys(limitations))}
 
-    def _calculate(self, db: Session, context: dict[str, Any], published_at: datetime) -> NewsPriceImpact:
-        windows = [self.calculate_price_window(db, published_at, minutes, str(context["sentiment_label"])) for minutes in self.windows]
+    def _calculate(
+        self, db: Session, context: dict[str, Any], published_at: datetime
+    ) -> NewsPriceImpact:
+        windows = [
+            self.calculate_price_window(db, published_at, minutes, str(context["sentiment_label"]))
+            for minutes in self.windows
+        ]
         available = [w for w in windows if w.change_pct is not None]
-        dominant = max(available, key=lambda w: abs(w.change_pct or 0.0) * w.window_weight, default=windows[0])
+        dominant = max(
+            available, key=lambda w: abs(w.change_pct or 0.0) * w.window_weight, default=windows[0]
+        )
         provider_confidence = self._aggregate_provider_confidence(windows)
         volatility_context = max((w.volatility_score for w in windows), default=0.0)
-        price_strength = self._price_move_strength(dominant.change_pct, volatility_context, dominant.minutes)
+        price_strength = self._price_move_strength(
+            dominant.change_pct, volatility_context, dominant.minutes
+        )
         volatility_adjustment = self._volatility_adjustment(volatility_context)
         confidence, components = self.calculate_impact_confidence(
             btc_relevance_score=float(context["btc_relevance_score"]),
@@ -233,16 +283,36 @@ class NewsImpactEngine:
             volatility_adjustment=volatility_adjustment,
         )
         band = self._confidence_band(confidence)
-        limitations = self.build_limitations(windows, provider_confidence, float(context["source_credibility_score"]), volatility_context)
+        limitations = self.build_limitations(
+            windows,
+            provider_confidence,
+            float(context["source_credibility_score"]),
+            volatility_context,
+        )
         if len(limitations["limitations"]) > 2:
             NEWS_IMPACT_DEGRADED_TOTAL.inc()
         explanation = self.build_explanation(context, dominant, confidence, band)
         impact = self._upsert_impact(db, context)
-        self._apply_impact_fields(impact, context, windows, dominant, confidence, band, provider_confidence, volatility_context, explanation, limitations)
+        self._apply_impact_fields(
+            impact,
+            context,
+            windows,
+            dominant,
+            confidence,
+            band,
+            provider_confidence,
+            volatility_context,
+            explanation,
+            limitations,
+        )
         db.add(impact)
         db.flush()
         db.execute(delete(ImpactWindowSnapshot).where(ImpactWindowSnapshot.impact_id == impact.id))
-        db.execute(delete(ImpactConfidenceBreakdown).where(ImpactConfidenceBreakdown.impact_id == impact.id))
+        db.execute(
+            delete(ImpactConfidenceBreakdown).where(
+                ImpactConfidenceBreakdown.impact_id == impact.id
+            )
+        )
         for window in windows:
             db.add(self._window_row(impact.id, window))
         db.add(self._confidence_row(impact.id, components, confidence, explanation))
@@ -299,17 +369,28 @@ class NewsImpactEngine:
         impact.impact_band = band
         impact.explanation_json = explanation
         impact.limitations_json = cast(dict[str, object], limitations)
-        impact.metadata_json = {"engine_version": "news-impact-v1", "windows": self.windows, "source_count": context.get("source_count", 1)}
+        impact.metadata_json = {
+            "engine_version": "news-impact-v1",
+            "windows": self.windows,
+            "source_count": context.get("source_count", 1),
+        }
         impact.calculated_at = utcnow()
         impact.updated_at = utcnow()
         impact.confidence_score = confidence
         impact.confidence_band = band
-        impact.confidence_contributions_json = [{"factor": key, "value": value} for key, value in self._confidence_values(impact).items()]
+        impact.confidence_contributions_json = [
+            {"factor": key, "value": value}
+            for key, value in self._confidence_values(impact).items()
+        ]
         impact.degradation_factors_json = limitations["limitations"]
-        impact.uncertainty_flags_json = [item for item in limitations["limitations"] if item != CORRELATION_LIMITATION]
+        impact.uncertainty_flags_json = [
+            item for item in limitations["limitations"] if item != CORRELATION_LIMITATION
+        ]
         impact.freshness_weight = dominant.window_weight
         impact.volatility_context_weight = self._volatility_adjustment(volatility_context)
-        impact.event_confirmation_weight = min(1.0, 0.5 + max(0, int(context.get("source_count", 1)) - 1) * 0.1)
+        impact.event_confirmation_weight = min(
+            1.0, 0.5 + max(0, int(context.get("source_count", 1)) - 1) * 0.1
+        )
         impact.explanation_summary = str(explanation["summary"])
         impact.limitation = CORRELATION_LIMITATION
 
@@ -339,7 +420,13 @@ class NewsImpactEngine:
             degraded=window.degraded,
         )
 
-    def _confidence_row(self, impact_id: int, components: dict[str, float], confidence: float, explanation: dict[str, object]) -> ImpactConfidenceBreakdown:
+    def _confidence_row(
+        self,
+        impact_id: int,
+        components: dict[str, float],
+        confidence: float,
+        explanation: dict[str, object],
+    ) -> ImpactConfidenceBreakdown:
         return ImpactConfidenceBreakdown(
             impact_id=impact_id,
             btc_relevance_component=components["btc_relevance_component"],
@@ -361,16 +448,23 @@ class NewsImpactEngine:
             .limit(1)
         ).scalar_one_or_none()
         if candle is None:
-            tolerance = timedelta(minutes=int(self.settings.news_impact_nearest_price_tolerance_minutes))
+            tolerance = timedelta(
+                minutes=int(self.settings.news_impact_nearest_price_tolerance_minutes)
+            )
             nearby_candles = list(
                 db.execute(
                     select(BTCCandle)
-                    .where(BTCCandle.open_time >= timestamp - tolerance, BTCCandle.open_time <= timestamp + tolerance)
+                    .where(
+                        BTCCandle.open_time >= timestamp - tolerance,
+                        BTCCandle.open_time <= timestamp + tolerance,
+                    )
                     .limit(20)
                 ).scalars()
             )
             if nearby_candles:
-                candle = min(nearby_candles, key=lambda c: abs((c.open_time - timestamp).total_seconds()))
+                candle = min(
+                    nearby_candles, key=lambda c: abs((c.open_time - timestamp).total_seconds())
+                )
         if candle is not None and candle.close is not None:
             degraded = bool(candle.is_degraded or candle.provider_count <= 1)
             return PriceObservation(
@@ -391,14 +485,26 @@ class NewsImpactEngine:
                 source="btc_price_points",
                 degraded=True,
             )
-        return PriceObservation(price=None, provider_confidence=0.0, provider_count=0, volatility_score=0.0, source="missing", degraded=True)
+        return PriceObservation(
+            price=None,
+            provider_confidence=0.0,
+            provider_count=0,
+            volatility_score=0.0,
+            source="missing",
+            degraded=True,
+        )
 
     def _nearest_price_point(self, db: Session, timestamp: datetime) -> BTCPricePoint | None:
-        tolerance = timedelta(minutes=int(self.settings.news_impact_nearest_price_tolerance_minutes))
+        tolerance = timedelta(
+            minutes=int(self.settings.news_impact_nearest_price_tolerance_minutes)
+        )
         points = list(
             db.execute(
                 select(BTCPricePoint)
-                .where(BTCPricePoint.observed_at >= timestamp - tolerance, BTCPricePoint.observed_at <= timestamp + tolerance)
+                .where(
+                    BTCPricePoint.observed_at >= timestamp - tolerance,
+                    BTCPricePoint.observed_at <= timestamp + tolerance,
+                )
                 .limit(50)
             ).scalars()
         )
@@ -409,7 +515,12 @@ class NewsImpactEngine:
         return min(candidates, key=lambda p: abs((p.observed_at - timestamp).total_seconds()))
 
     def _latest_score(self, db: Session, article_id: int) -> NewsScore | None:
-        return db.query(NewsScore).filter(NewsScore.article_id == article_id).order_by(NewsScore.id.desc()).first()
+        return (
+            db.query(NewsScore)
+            .filter(NewsScore.article_id == article_id)
+            .order_by(NewsScore.id.desc())
+            .first()
+        )
 
     def _article_sentiment(self, article: NewsArticle, score: NewsScore | None) -> str:
         if article.sentiment_label and article.sentiment_label.upper() != "UNKNOWN":
@@ -445,7 +556,9 @@ class NewsImpactEngine:
             return "DOWN"
         return "UNKNOWN"
 
-    def _price_move_strength(self, change_pct: float | None, volatility_context: float, minutes: int) -> float:
+    def _price_move_strength(
+        self, change_pct: float | None, volatility_context: float, minutes: int
+    ) -> float:
         if change_pct is None:
             return 0.0
         timeframe_factor = 1.0 if minutes <= 60 else 0.85 if minutes <= 240 else 0.65

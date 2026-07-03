@@ -107,8 +107,14 @@ class PolicyRepository:
         self.db.flush()
 
         resolved_rules = rules or [
-            PolicyRuleUpsertIn(rule_key="min_wallet_health_score", comparator="gte", threshold=min_wallet_health_score),
-            PolicyRuleUpsertIn(rule_key="max_single_tx_sats", comparator="lte", threshold=max_single_tx_sats),
+            PolicyRuleUpsertIn(
+                rule_key="min_wallet_health_score",
+                comparator="gte",
+                threshold=min_wallet_health_score,
+            ),
+            PolicyRuleUpsertIn(
+                rule_key="max_single_tx_sats", comparator="lte", threshold=max_single_tx_sats
+            ),
         ]
 
         self.db.execute(delete(PolicyRule).where(PolicyRule.policy_id == policy.id))
@@ -128,7 +134,11 @@ class PolicyRepository:
         return policy
 
     def list_rules(self, policy_id: int) -> list[PolicyRule]:
-        stmt = select(PolicyRule).where(PolicyRule.policy_id == policy_id).order_by(PolicyRule.id.asc())
+        stmt = (
+            select(PolicyRule)
+            .where(PolicyRule.policy_id == policy_id)
+            .order_by(PolicyRule.id.asc())
+        )
         return list(self.db.execute(stmt).scalars())
 
     def list_policies(self) -> list[TreasuryPolicy]:

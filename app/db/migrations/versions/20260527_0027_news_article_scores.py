@@ -30,10 +30,16 @@ def upgrade() -> None:
         sa.Column("security_risk_score", sa.Float(), nullable=False, server_default="0"),
         sa.Column("sovereignty_score", sa.Float(), nullable=False, server_default="0"),
         sa.Column("confidence_score", sa.Float(), nullable=False, server_default="0"),
-        sa.Column("sentiment_label", sa.String(length=16), nullable=False, server_default="UNCERTAIN"),
+        sa.Column(
+            "sentiment_label", sa.String(length=16), nullable=False, server_default="UNCERTAIN"
+        ),
         sa.Column("risk_band", sa.String(length=16), nullable=False, server_default="UNKNOWN"),
-        sa.Column("score_version", sa.String(length=32), nullable=False, server_default="v1_rule_based"),
-        sa.Column("scoring_method", sa.String(length=32), nullable=False, server_default="RULE_BASED"),
+        sa.Column(
+            "score_version", sa.String(length=32), nullable=False, server_default="v1_rule_based"
+        ),
+        sa.Column(
+            "scoring_method", sa.String(length=32), nullable=False, server_default="RULE_BASED"
+        ),
         sa.Column("explanation_json", sa.JSON(), nullable=False),
         sa.Column("factor_breakdown_json", sa.JSON(), nullable=False),
         sa.Column("limitations_json", sa.JSON(), nullable=False),

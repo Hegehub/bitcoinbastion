@@ -58,7 +58,9 @@ def _event(
     )
 
 
-def _impact(event: NewsEvent, move_15m: float, move_1h: float, move_4h: float, move_24h: float) -> NewsPriceImpact:
+def _impact(
+    event: NewsEvent, move_15m: float, move_1h: float, move_4h: float, move_24h: float
+) -> NewsPriceImpact:
     return NewsPriceImpact(
         event_id=event.id,
         sentiment_label=event.event_sentiment,
@@ -107,7 +109,13 @@ def test_same_pattern_similarity_ranks_above_different_pattern() -> None:
     )
     db.add_all([reference, same, different])
     db.flush()
-    db.add_all([_impact(reference, 0.4, 1.1, 2.2, 1.8), _impact(same, 0.5, 1.0, 2.0, 1.7), _impact(different, -0.7, -1.3, -2.7, -3.0)])
+    db.add_all(
+        [
+            _impact(reference, 0.4, 1.1, 2.2, 1.8),
+            _impact(same, 0.5, 1.0, 2.0, 1.7),
+            _impact(different, -0.7, -1.3, -2.7, -3.0),
+        ]
+    )
     db.commit()
 
     results = HistoricalSimilarityService(db).find_similar_events(reference.id, limit=10)
@@ -124,10 +132,18 @@ def test_sentiment_and_price_behavior_penalties_are_explainable() -> None:
     base = datetime(2026, 5, 28, 12, 0, 0)
     reference = _event(base, "Bitcoin ETF inflow shock")
     positive = _event(base - timedelta(days=1), "Bitcoin ETF inflow expands")
-    negative = _event(base - timedelta(days=2), "Bitcoin ETF inflow headline fades", sentiment="NEGATIVE")
+    negative = _event(
+        base - timedelta(days=2), "Bitcoin ETF inflow headline fades", sentiment="NEGATIVE"
+    )
     db.add_all([reference, positive, negative])
     db.flush()
-    db.add_all([_impact(reference, 0.2, 0.8, 1.8, 2.0), _impact(positive, 0.3, 0.7, 1.7, 1.9), _impact(negative, -0.5, -1.0, -2.2, -2.5)])
+    db.add_all(
+        [
+            _impact(reference, 0.2, 0.8, 1.8, 2.0),
+            _impact(positive, 0.3, 0.7, 1.7, 1.9),
+            _impact(negative, -0.5, -1.0, -2.2, -2.5),
+        ]
+    )
     db.commit()
 
     results = HistoricalSimilarityService(db).find_similar_news_events(reference.id, limit=2)
@@ -146,7 +162,11 @@ def test_top_n_ranking_and_profile_vector_builder() -> None:
     db.flush()
     db.add(_impact(reference, 0.1, 0.8, 1.5, 2.0))
     for index in range(12):
-        candidate = _event(base - timedelta(days=index + 1), f"Bitcoin ETF inflow similar case {index}", impact=0.9 - index * 0.02)
+        candidate = _event(
+            base - timedelta(days=index + 1),
+            f"Bitcoin ETF inflow similar case {index}",
+            impact=0.9 - index * 0.02,
+        )
         db.add(candidate)
         db.flush()
         db.add(_impact(candidate, 0.1, 0.8, 1.5 - index * 0.05, 2.0 - index * 0.05))
@@ -158,7 +178,10 @@ def test_top_n_ranking_and_profile_vector_builder() -> None:
 
     assert len(results) == 5
     assert vector.narrative[1] == MarketPattern.ETF_INFLOW_SHOCK.value
-    assert all(results[index]["similarity_score"] >= results[index + 1]["similarity_score"] for index in range(4))
+    assert all(
+        results[index]["similarity_score"] >= results[index + 1]["similarity_score"]
+        for index in range(4)
+    )
 
 
 def test_candle_similarity_and_evidence_packet_include_historical_events() -> None:
@@ -178,7 +201,10 @@ def test_candle_similarity_and_evidence_packet_include_historical_events() -> No
     assert results
     assert rows[0].evidence_refs_json["similar_historical_events"]
     assert "historical_similarity_summary" in rows[0].evidence_refs_json
-    assert "Past reactions do not guarantee future market behavior." in rows[0].evidence_refs_json["limitations"]
+    assert (
+        "Past reactions do not guarantee future market behavior."
+        in rows[0].evidence_refs_json["limitations"]
+    )
 
 
 def test_similarity_api_contract_returns_frontend_ready_payload() -> None:
@@ -195,7 +221,9 @@ def test_similarity_api_contract_returns_frontend_ready_payload() -> None:
 def test_pattern_classification_library_and_similarity_report_statistics() -> None:
     from app.db.models.historical_similarity_record import HistoricalSimilarityRecord
     from app.db.models.market_pattern_library import MarketPatternLibrary
-    from app.services.intelligence.pattern_classification_service import PatternClassificationService
+    from app.services.intelligence.pattern_classification_service import (
+        PatternClassificationService,
+    )
 
     db = _session()
     base = datetime(2026, 5, 28, 12, 0, 0)
@@ -204,7 +232,13 @@ def test_pattern_classification_library_and_similarity_report_statistics() -> No
     analog_two = _event(base - timedelta(days=2), "Bitcoin ETF inflows lift institutional demand")
     db.add_all([reference, analog_one, analog_two])
     db.flush()
-    db.add_all([_impact(reference, 0.5, 1.0, 2.0, 2.5), _impact(analog_one, 0.6, 1.2, 2.4, 2.8), _impact(analog_two, 0.4, 1.0, 2.0, 2.2)])
+    db.add_all(
+        [
+            _impact(reference, 0.5, 1.0, 2.0, 2.5),
+            _impact(analog_one, 0.6, 1.2, 2.4, 2.8),
+            _impact(analog_two, 0.4, 1.0, 2.0, 2.2),
+        ]
+    )
     db.commit()
 
     patterns = PatternClassificationService(db).ensure_pattern_library()
@@ -213,8 +247,18 @@ def test_pattern_classification_library_and_similarity_report_statistics() -> No
 
     assert len(patterns) >= 20
     pattern_codes = {pattern.pattern_code for pattern in patterns}
-    assert {"ETF_APPROVAL", "ETF_DELAY", "FED_LIQUIDITY_SHOCK", "MINING_DIFFICULTY_SHOCK", "HALVING_NARRATIVE"}.issubset(pattern_codes)
-    etf_pattern = db.query(MarketPatternLibrary).filter(MarketPatternLibrary.pattern_code == "ETF_INFLOW_SHOCK").first()
+    assert {
+        "ETF_APPROVAL",
+        "ETF_DELAY",
+        "FED_LIQUIDITY_SHOCK",
+        "MINING_DIFFICULTY_SHOCK",
+        "HALVING_NARRATIVE",
+    }.issubset(pattern_codes)
+    etf_pattern = (
+        db.query(MarketPatternLibrary)
+        .filter(MarketPatternLibrary.pattern_code == "ETF_INFLOW_SHOCK")
+        .first()
+    )
     assert etf_pattern is not None
     assert etf_pattern.default_sentiment == "POSITIVE"
     assert etf_pattern.expected_reaction_window == "15m"
@@ -231,11 +275,25 @@ def test_pattern_classification_library_and_similarity_report_statistics() -> No
 def test_single_analog_and_empty_report_are_safe() -> None:
     db = _session()
     base = datetime(2026, 5, 28, 12, 0, 0)
-    reference = _event(base, "Exchange hack security incident", sentiment="NEGATIVE", event_type="security_shock", category="SECURITY")
-    analog = _event(base - timedelta(days=3), "Exchange hack security incident repeats", sentiment="NEGATIVE", event_type="security_shock", category="SECURITY")
+    reference = _event(
+        base,
+        "Exchange hack security incident",
+        sentiment="NEGATIVE",
+        event_type="security_shock",
+        category="SECURITY",
+    )
+    analog = _event(
+        base - timedelta(days=3),
+        "Exchange hack security incident repeats",
+        sentiment="NEGATIVE",
+        event_type="security_shock",
+        category="SECURITY",
+    )
     db.add_all([reference, analog])
     db.flush()
-    db.add_all([_impact(reference, -0.4, -1.0, -2.0, -2.8), _impact(analog, -0.5, -1.1, -2.1, -2.9)])
+    db.add_all(
+        [_impact(reference, -0.4, -1.0, -2.0, -2.8), _impact(analog, -0.5, -1.1, -2.1, -2.9)]
+    )
     db.commit()
 
     report = HistoricalSimilarityService(db).build_event_report(reference.id, limit=1)
@@ -268,7 +326,10 @@ def test_similarity_report_and_pattern_api_endpoints() -> None:
 
         assert event_response.status_code == 200
         assert event_response.json()["sample_size"] == 0
-        assert "Historical similarity does not guarantee future outcomes." in event_response.json()["limitations"]
+        assert (
+            "Historical similarity does not guarantee future outcomes."
+            in event_response.json()["limitations"]
+        )
         assert article_response.status_code == 200
         assert article_response.json()["sample_size"] == 0
         assert patterns_response.status_code == 200

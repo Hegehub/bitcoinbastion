@@ -13,8 +13,12 @@ class NarrativeObservation(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     narrative_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
     narrative_type: Mapped[str] = mapped_column(String(64), index=True)
-    article_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True, index=True)
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), nullable=True, index=True)
+    article_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_articles.id"), nullable=True, index=True
+    )
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), nullable=True, index=True
+    )
     observation_score: Mapped[float] = mapped_column(Float, default=0.0)
     strength_score: Mapped[float] = mapped_column(Float, default=0.0)
     relevance_score: Mapped[float] = mapped_column(Float, default=0.0)

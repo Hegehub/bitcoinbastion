@@ -11,7 +11,9 @@ class DeliveryLog(Base):
     __tablename__ = "delivery_logs"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    signal_id: Mapped[int | None] = mapped_column(ForeignKey("signals.id"), nullable=True, index=True)
+    signal_id: Mapped[int | None] = mapped_column(
+        ForeignKey("signals.id"), nullable=True, index=True
+    )
     digest_id: Mapped[str] = mapped_column(String(120), default="")
     user_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
     channel_type: Mapped[str] = mapped_column(String(40), default="telegram")

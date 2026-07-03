@@ -23,7 +23,12 @@ def decode_user_id_from_token(token: str) -> int:
             settings.jwt_secret_key,
             algorithms=[settings.jwt_algorithm],
             issuer=settings.jwt_issuer,
-            options={"require_sub": True, "require_exp": True, "require_iat": True, "require_iss": True},
+            options={
+                "require_sub": True,
+                "require_exp": True,
+                "require_iat": True,
+                "require_iss": True,
+            },
         )
     except JWTError as exc:
         raise UnauthorizedError("Invalid access token") from exc
