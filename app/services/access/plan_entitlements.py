@@ -28,6 +28,7 @@ class PlanLimits:
     child_api_keys: int | str | None
     delegated_passes: bool | str | int
     offline_validity_pack: bool | str
+    batch_query: bool
 
 
 _PLAN_DISPLAY: dict[PlanCode, dict[str, str]] = {
@@ -40,12 +41,12 @@ _PLAN_DISPLAY: dict[PlanCode, dict[str, str]] = {
 }
 
 _PLAN_LIMITS: dict[PlanCode, PlanLimits] = {
-    PlanCode.LITE: PlanLimits(30, 2_000, 1_000, 20_000, 30, "1h", 0, 0, 0, False),
-    PlanCode.BASIC: PlanLimits(60, 10_000, 10_000, 250_000, 90, "15m", 1, 1, 0, False),
-    PlanCode.PLUS: PlanLimits(120, 50_000, 50_000, 1_500_000, 730, "5m", 3, 3, "limited", "limited_cached"),
-    PlanCode.PRO: PlanLimits(300, 250_000, 250_000, 7_500_000, 1825, "1m", 10, 10, True, "non_critical_12_24h"),
-    PlanCode.BUSINESS: PlanLimits(600, 1_000_000, 1_000_000, 30_000_000, 1825, "1m", 25, "role_based", True, "shift_based"),
-    PlanCode.ENTERPRISE: PlanLimits(None, None, None, None, None, None, None, "custom", True, "custom_policy"),
+    PlanCode.LITE: PlanLimits(30, 2_000, 1_000, 20_000, 30, "1h", 0, 0, 0, False, False),
+    PlanCode.BASIC: PlanLimits(60, 10_000, 10_000, 250_000, 90, "15m", 1, 1, 0, False, False),
+    PlanCode.PLUS: PlanLimits(120, 50_000, 50_000, 1_500_000, 730, "5m", 3, 3, 1, "limited_cached", False),
+    PlanCode.PRO: PlanLimits(300, 250_000, 250_000, 7_500_000, 1825, "1m", 10, 10, 10, "non_critical_12_24h", True),
+    PlanCode.BUSINESS: PlanLimits(600, 1_000_000, 1_000_000, 30_000_000, 1825, "1m", 25, "role_based", "role_based", "shift_based", True),
+    PlanCode.ENTERPRISE: PlanLimits(None, None, None, None, None, None, None, "custom", "custom", "custom_policy", True),
 }
 
 _PLAN_GROUPS: dict[PlanCode, set[str]] = {

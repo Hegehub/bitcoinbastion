@@ -15,6 +15,18 @@ Only a verified settled BTCPay webhook or trusted provider status check may mark
 - Bastion never asks for a Bitcoin seed phrase or Bitcoin private key.
 - Raw webhook bodies, API keys, checkout secrets, Access Pass values, session tokens, and recovery material must not be logged.
 
+## Per-request Proof-of-Possession signatures
+
+Protected Access requests must not rely on `Authorization: Bearer` or on `X-Bastion-Session` alone. A protected request must include:
+
+- `X-Bastion-Session`
+- `X-Bastion-Timestamp`
+- `X-Bastion-Nonce`
+- `X-Bastion-Body-Hash`
+- `X-Bastion-Signature`
+
+The canonical request digest is newline-delimited as `METHOD`, path, body hash, timestamp, and nonce. The verifier checks the body hash, enforces timestamp skew, records a per-session nonce hash for replay protection, and verifies the request signature with the bound device public key. Raw session tokens, signatures, nonces, Access Pass values, recovery material, and request bodies must not be logged.
+
 ## Operational troubleshooting
 
 | Symptom | Expected handling |

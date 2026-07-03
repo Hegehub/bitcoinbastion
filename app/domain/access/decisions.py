@@ -19,6 +19,8 @@ class PolicyDecision(StrEnum):
     QUOTA_EXCEEDED = "quota_exceeded"
     METRIC_NOT_ALLOWED = "metric_not_allowed"
     REVOKED = "revoked"
+    FROZEN = "frozen"
+    CANCELLED = "cancelled"
     EXPIRED = "expired"
     RECOVERY_REQUIRED = "recovery_required"
     ONLINE_CHECK_REQUIRED = "online_check_required"

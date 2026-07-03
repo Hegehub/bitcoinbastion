@@ -35,6 +35,7 @@ class PlanLimits(BaseModel):
     child_api_keys: int | str | None = None
     delegated_passes: bool | str | int
     offline_validity_pack: bool | str
+    batch_query: bool | None = None
 
 
 class LockedMetricGroup(BaseModel):
@@ -56,6 +57,7 @@ class MetricCatalogResponse(BaseModel):
     child_api_keys: int | str | None
     delegated_passes: bool | str | int
     offline_validity_pack: bool | str
+    batch_query: bool | None = None
     metric_groups: list[MetricGroup] = Field(default_factory=list)
 
 
@@ -82,7 +84,62 @@ class SubscriptionEntitlementOverlay(BaseModel):
     issuer_signature: dict[str, Any] | None = None
 
 
+class SubscriptionEntitlementResponse(BaseModel):
+    plan_code: PlanCode
+    status: str
+    valid_from: Any
+    valid_until: Any
+    grace_until: Any | None = None
+    metric_groups: list[str]
+    scopes: list[str]
+    limits: dict[str, Any]
+    crypto_epoch: int
+    issuer_key_id: str | None = None
+    created_at: Any
+
+
+class AccessChallengeCreate(BaseModel):
+    certificate_fingerprint: str
+    origin: str
+    requested_scopes: list[str] = Field(min_length=1)
+    device_key_fingerprint: str | None = None
+
+
+class AccessChallengeResponse(BaseModel):
+    challenge_id: str
+    challenge_hash: str
+    challenge_payload: dict[str, Any]
+    expires_at: Any
+    status: str
+
+
+class AccessSessionCreate(BaseModel):
+    certificate_fingerprint: str
+    challenge_id: str
+    origin: str
+    device_key_fingerprint: str
+    challenge_signature: str
+    client_session_public_key: str | None = None
+    requested_scopes: list[str] | None = None
+
+
+class AccessSessionResponse(BaseModel):
+    session_token: str
+    session_hash_fingerprint: str
+    certificate_fingerprint: str
+    device_key_fingerprint: str
+    plan_code: PlanCode
+    scopes: list[str]
+    expires_at: Any
+    policy_mode: str
+    requires_request_signing: bool
+
+
 __all__ = [
+    "AccessChallengeCreate",
+    "AccessChallengeResponse",
+    "AccessSessionCreate",
+    "AccessSessionResponse",
     "LockedMetricGroup",
     "MetricCatalogResponse",
     "MetricCostEstimateRequest",
@@ -91,4 +148,5 @@ __all__ = [
     "MetricGroup",
     "PlanLimits",
     "SubscriptionEntitlementOverlay",
+    "SubscriptionEntitlementResponse",
 ]

@@ -367,6 +367,10 @@ class Settings(BaseSettings):
     access_payment_intent_ttl_seconds: int = Field(
         default=900, ge=60, alias="ACCESS_PAYMENT_INTENT_TTL_SECONDS"
     )
+    access_challenge_ttl_seconds: int = Field(default=300, ge=30, alias="ACCESS_CHALLENGE_TTL_SECONDS")
+    access_session_ttl_seconds: int = Field(default=900, ge=60, alias="ACCESS_SESSION_TTL_SECONDS")
+    access_request_max_skew_seconds: int = Field(default=300, ge=1, alias="ACCESS_REQUEST_MAX_SKEW_SECONDS")
+    access_request_signature_required: bool = Field(default=True, alias="ACCESS_REQUEST_SIGNATURE_REQUIRED")
     access_btcpay_enabled: bool = Field(default=False, alias="ACCESS_BTCPAY_ENABLED")
     access_btcpay_base_url: str = Field(default="", alias="ACCESS_BTCPAY_BASE_URL")
     access_btcpay_api_key: str = Field(default="", alias="ACCESS_BTCPAY_API_KEY")

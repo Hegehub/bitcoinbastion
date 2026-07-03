@@ -179,6 +179,10 @@ These variables configure the payment intent foundation. They do not enable BTCP
 - `ACCESS_ALLOW_MANUAL_GRANTS` defaults to `false`; manual grants must remain disabled unless explicitly authorized for local development, tests, emergency admin grants, or controlled contract grants.
 - `ACCESS_DEFAULT_PAYMENT_PROVIDER` defaults to `manual` as a placeholder until a production payment provider is configured. Public endpoints must not expose manual grants without admin/internal authorization.
 - `ACCESS_PAYMENT_INTENT_TTL_SECONDS` defaults to `900` and controls payment intent invoice expiry windows.
+- `ACCESS_CHALLENGE_TTL_SECONDS` defaults to `300` and controls origin-bound challenge lifetime before Proof-of-Possession session creation.
+- `ACCESS_SESSION_TTL_SECONDS` defaults to `900` and controls short-lived Proof-of-Possession session lifetime; raw session tokens must never be stored.
+- `ACCESS_REQUEST_MAX_SKEW_SECONDS` defaults to `300` and limits timestamp skew for per-request Proof-of-Possession signatures.
+- `ACCESS_REQUEST_SIGNATURE_REQUIRED` defaults to `true`; protected Access requests must fail closed if request signatures are missing or invalid.
 
 ## Bastion Access BTCPay Server provider
 
