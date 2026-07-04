@@ -1,12 +1,4 @@
-from datetime import UTC, datetime, timedelta
-from typing import cast
-
-from jose import jwt
-from passlib.context import CryptContext
-
-from app.core.config import get_settings
-
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+from typing import NoReturn
 
 SECURITY_HEADERS = {
     "X-Frame-Options": "DENY",
@@ -21,24 +13,35 @@ SECURITY_HEADERS = {
 CSP_POLICY = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
 
 
+def _legacy_auth_disabled() -> NoReturn:
+    from app.core.exceptions import AppError
+
+    raise AppError(
+        message="Legacy email/password authentication is disabled. Use Bastion Proof-of-Access.",
+        status_code=410,
+        code="legacy_auth_disabled",
+    )
+
+
 def hash_password(password: str) -> str:
-    return cast(str, pwd_context.hash(password))
+    """Disabled legacy password hashing helper retained for import stability."""
+    _ = password
+    _legacy_auth_disabled()
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    return cast(bool, pwd_context.verify(password, hashed_password))
+    """Disabled legacy password verifier retained for import stability."""
+    _ = (password, hashed_password)
+    _legacy_auth_disabled()
 
 
 def create_access_token(subject: str, expires_minutes: int = 60) -> str:
-    settings = get_settings()
-    ttl_minutes = max(1, int(expires_minutes or settings.jwt_access_token_expires_minutes))
-    now = datetime.now(UTC)
-    expires_at = now + timedelta(minutes=ttl_minutes)
-    payload = {
-        "sub": subject,
-        "exp": int(expires_at.timestamp()),
-        "iat": int(now.timestamp()),
-        "iss": settings.jwt_issuer,
-    }
-    token = jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
-    return cast(str, token)
+    """Disabled legacy JWT issuer retained for import stability."""
+    _ = (subject, expires_minutes)
+    from app.core.exceptions import AppError
+
+    raise AppError(
+        message="Legacy bearer-token authentication is disabled. Use Bastion Proof-of-Access.",
+        status_code=410,
+        code="legacy_auth_disabled",
+    )

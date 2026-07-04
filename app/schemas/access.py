@@ -96,6 +96,75 @@ class SubscriptionEntitlementResponse(BaseModel):
     crypto_epoch: int
     issuer_key_id: str | None = None
     created_at: Any
+    locked_metric_groups: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class AccessPaymentIntentCreate(BaseModel):
+    plan_code: PlanCode
+    payment_method: str = Field(default="manual", description="Payment provider method such as manual, btcpay, or bitcoin_lightning.")
+    amount_sats: int | None = Field(default=None, gt=0)
+    metadata: dict[str, Any] | None = None
+    return_url: str | None = None
+
+
+class AccessPaymentIntentResponse(BaseModel):
+    payment_intent_id: int
+    status: str
+    provider: str | None = None
+    payment_method: str
+    amount_sats: int
+    plan_code: PlanCode
+    checkout_url: str | None = None
+    expires_at: Any | None = None
+    certificate_available: bool = False
+
+
+class AccessPaymentIntentStatusResponse(AccessPaymentIntentResponse):
+    pass
+
+
+class AccessCertificateIssueRequest(BaseModel):
+    payment_intent_id: int
+    device_public_key: str
+    device_class: str = "unknown"
+    device_key_fingerprint: str | None = None
+    device_attestation: dict[str, Any] | None = None
+    requested_origin: str | None = None
+    subscription_period_days: int = Field(default=30, ge=1, le=3660)
+
+
+class AccessCertificateIssueResponse(BaseModel):
+    raw_access_pass: str | None = Field(default=None, description="Returned once at issuance only; never use as bearer auth.")
+    access_certificate: dict[str, Any]
+    certificate_fingerprint: str
+    plan_code: PlanCode
+    expires_at: Any
+    save_warning: str
+    subscription_entitlement: SubscriptionEntitlementResponse | None = None
+    recovery_setup_recommended: bool = True
+
+
+class AccessMeResponse(BaseModel):
+    certificate_fingerprint: str
+    plan_code: str
+    entitlement_status: str
+    active_scopes: list[str]
+    device_status: str
+    session_expires_at: Any
+    access_integrity_summary: dict[str, Any]
+    recovery_status_summary: dict[str, Any]
+
+
+class AccessLimitsResponse(BaseModel):
+    plan_code: str
+    limits: dict[str, Any]
+    offline_validity_status: bool | str | None = None
+
+
+class AccessLockdownResponse(BaseModel):
+    status: str
+    frozen_sessions: int
+    certificate_fingerprint: str
 
 
 class AccessChallengeCreate(BaseModel):
@@ -136,6 +205,14 @@ class AccessSessionResponse(BaseModel):
 
 
 __all__ = [
+    "AccessPaymentIntentCreate",
+    "AccessPaymentIntentResponse",
+    "AccessPaymentIntentStatusResponse",
+    "AccessCertificateIssueRequest",
+    "AccessCertificateIssueResponse",
+    "AccessMeResponse",
+    "AccessLimitsResponse",
+    "AccessLockdownResponse",
     "AccessChallengeCreate",
     "AccessChallengeResponse",
     "AccessSessionCreate",

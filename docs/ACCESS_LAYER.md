@@ -36,3 +36,13 @@ The canonical request digest is newline-delimited as `METHOD`, path, body hash, 
 | Provider unavailable | Return a safe provider-unavailable error without leaking API details. |
 | Duplicate webhook | Treat duplicate settled events idempotently; do not issue duplicate downstream certificates. |
 | Unpaid invoice | Do not issue Access Certificates or Subscription Entitlements. |
+
+## Legacy authentication disabled
+
+Bitcoin Bastion uses Proof-of-Access authorization for protected APIs. Legacy email/password authentication is disabled.
+
+- `/api/v1/auth/register` no longer creates password accounts.
+- `/api/v1/auth/login` no longer authenticates username/password credentials and never issues bearer/JWT access tokens.
+- `Authorization: Bearer` is rejected as Proof-of-Access credential material.
+- Protected APIs must use Proof-of-Access sessions, per-request signatures, revocation checks, and policy decisions.
+- Bastion will never ask for a Bitcoin seed phrase or Bitcoin private key for authentication or recovery.

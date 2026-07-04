@@ -362,6 +362,7 @@ class Settings(BaseSettings):
 
     rate_limit_per_minute: int = Field(default=120, alias="RATE_LIMIT_PER_MINUTE")
 
+    access_server_pepper: str = Field(default="", alias="ACCESS_SERVER_PEPPER")
     access_allow_manual_grants: bool = Field(default=False, alias="ACCESS_ALLOW_MANUAL_GRANTS")
     access_default_payment_provider: str = Field(default="manual", alias="ACCESS_DEFAULT_PAYMENT_PROVIDER")
     access_payment_intent_ttl_seconds: int = Field(
@@ -542,28 +543,10 @@ class Settings(BaseSettings):
         if self.environment.lower() not in PRODUCTION_ENVIRONMENTS:
             return self
 
-        weak_secret_values = {
-            "",
-            "change-me-in-prod",
-            "changeme",
-            "default",
-            "secret",
-            "insecure",
-        }
-        secret = self.jwt_secret_key.strip()
-        if secret.lower() in weak_secret_values or len(secret) < 32:
-            raise ValueError(
-                "JWT_SECRET_KEY must be non-default and at least 32 characters in production."
-            )
-
-        if self.jwt_algorithm != "HS256":
-            raise ValueError(
-                "JWT_ALGORITHM must remain HS256 unless explicit cryptographic review is completed."
-            )
-
-        if not self.jwt_issuer.strip():
-            raise ValueError("JWT_ISSUER must be set in production.")
-
+        # Legacy JWT authentication is disabled. Production auth hardening now
+        # belongs to the Proof-of-Access settings and service-level startup checks;
+        # JWT_* values are retained only for transitional non-auth import/config
+        # compatibility and must not block production deploys as primary auth.
         return self
 
     @model_validator(mode="after")

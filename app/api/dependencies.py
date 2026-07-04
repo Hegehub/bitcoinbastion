@@ -1,66 +1,51 @@
 from collections.abc import Generator
+from typing import NoReturn
 
 from fastapi import Depends, Header
-from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app.core.config import get_settings
-from app.core.exceptions import UnauthorizedError
+from app.core.exceptions import AppError, UnauthorizedError
 from app.db.models.auth import User
-from app.db.repositories.user_repository import UserRepository
 from app.db.session import get_db
+
+LEGACY_BEARER_REJECTED_MESSAGE = (
+    "Proof-of-Access requires Bastion access headers, not Authorization Bearer."
+)
 
 
 def db_session() -> Generator[Session, None, None]:
     yield from get_db()
 
 
-def decode_user_id_from_token(token: str) -> int:
-    settings = get_settings()
-    try:
-        payload = jwt.decode(
-            token,
-            settings.jwt_secret_key,
-            algorithms=[settings.jwt_algorithm],
-            issuer=settings.jwt_issuer,
-            options={
-                "require_sub": True,
-                "require_exp": True,
-                "require_iat": True,
-                "require_iss": True,
-            },
-        )
-    except JWTError as exc:
-        raise UnauthorizedError("Invalid access token") from exc
+def _access_session_required() -> NoReturn:
+    raise UnauthorizedError("Proof-of-Access session headers are required for protected APIs.")
 
-    user_id = payload.get("sub")
-    if user_id is None:
-        raise UnauthorizedError("Invalid token subject")
 
-    try:
-        return int(user_id)
-    except (TypeError, ValueError) as exc:
-        raise UnauthorizedError("Invalid token subject type") from exc
+def _legacy_bearer_rejected() -> NoReturn:
+    raise AppError(
+        message=LEGACY_BEARER_REJECTED_MESSAGE,
+        status_code=401,
+        code="access_legacy_bearer_rejected",
+    )
+
+
+def decode_user_id_from_token(token: str) -> NoReturn:
+    """Fail closed: JWT/bearer tokens are no longer authentication credentials."""
+    _legacy_bearer_rejected()
 
 
 def get_current_user(
     authorization: str | None = Header(default=None),
     db: Session = Depends(db_session),
 ) -> User:
-    if not authorization or not authorization.startswith("Bearer "):
-        raise UnauthorizedError()
-
-    token = authorization.split(" ", 1)[1]
-    user_id = decode_user_id_from_token(token)
-
-    repo = UserRepository(db)
-    user = repo.by_id(user_id)
-    if user is None:
-        raise UnauthorizedError("User not found")
-    return user
+    """Disabled legacy dependency retained only to reject old protected paths."""
+    _ = db
+    if authorization and authorization.lower().startswith("bearer "):
+        _legacy_bearer_rejected()
+    _access_session_required()
 
 
 def get_admin_user(current_user: User = Depends(get_current_user)) -> User:
-    if not current_user.is_admin or str(current_user.role).lower() != "admin":
-        raise UnauthorizedError("Admin privileges required")
-    return current_user
+    """Disabled legacy admin dependency retained only to fail closed."""
+    _ = current_user
+    _access_session_required()

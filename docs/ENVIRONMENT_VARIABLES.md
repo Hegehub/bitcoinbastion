@@ -7,7 +7,7 @@ This repository uses environment-driven configuration; never commit real secrets
 - `DEBUG` (`true`/`false`)
 - `DATABASE_URL`
 - `REDIS_URL`
-- `JWT_SECRET_KEY`
+- `JWT_SECRET_KEY` (legacy JWT auth is disabled; do not use as a primary auth secret)
 - `CORS_ALLOW_ORIGINS` (comma-separated origins, never `*`)
 
 ## Frontend
@@ -168,6 +168,7 @@ ClickHouse must not store seed phrases, Bitcoin private keys, wallet files, raw 
 
 These variables configure future Access Certificate and Subscription Entitlement signing. They do not enable the full Proof-of-Access auth flow by themselves.
 
+- `ACCESS_SERVER_PEPPER` is secret HMAC pepper material for Access Pass/session lookup hashes and must be injected from a secret manager.
 - `ACCESS_ISSUER_KEY_ID` is a stable, non-secret key identifier for the active issuer key.
 - `ACCESS_ISSUER_PRIVATE_KEY` is secret Ed25519 issuer private-key material. Production must inject it from a secret manager or Kubernetes secret and must never commit it to the repository or bake it into an image.
 - `ACCESS_CRYPTO_EPOCH` defaults to `1` and identifies the active Access crypto epoch.

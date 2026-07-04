@@ -1,42 +1,24 @@
-from app.api.dependencies import decode_user_id_from_token
-from app.core.config import get_settings
-from app.core.exceptions import UnauthorizedError
-from jose import jwt
+import pytest
+
+from app.api.dependencies import decode_user_id_from_token, get_current_user
+from app.core.exceptions import AppError, UnauthorizedError
 
 
-def test_decode_user_id_from_token_success() -> None:
-    settings = get_settings()
-    token = jwt.encode(
-        {"sub": "42", "exp": 4102444800, "iat": 1700000000, "iss": settings.jwt_issuer},
-        settings.jwt_secret_key,
-        algorithm=settings.jwt_algorithm,
-    )
-    assert decode_user_id_from_token(token) == 42
+def test_decode_user_id_from_token_rejects_legacy_jwt() -> None:
+    with pytest.raises(AppError) as exc_info:
+        decode_user_id_from_token("legacy.jwt.token")
+
+    assert exc_info.value.code == "access_legacy_bearer_rejected"
+    assert exc_info.value.status_code == 401
 
 
-def test_decode_user_id_from_token_invalid_subject() -> None:
-    settings = get_settings()
-    token = jwt.encode(
-        {"sub": "bad", "exp": 4102444800, "iat": 1700000000, "iss": settings.jwt_issuer},
-        settings.jwt_secret_key,
-        algorithm=settings.jwt_algorithm,
-    )
-    try:
-        decode_user_id_from_token(token)
-        assert False, "Expected UnauthorizedError"
-    except UnauthorizedError:
-        assert True
+def test_get_current_user_rejects_authorization_bearer() -> None:
+    with pytest.raises(AppError) as exc_info:
+        get_current_user(authorization="Bearer legacy.jwt.token", db=None)  # type: ignore[arg-type]
+
+    assert exc_info.value.code == "access_legacy_bearer_rejected"
 
 
-def test_decode_user_id_from_token_rejects_missing_issuer() -> None:
-    settings = get_settings()
-    token = jwt.encode(
-        {"sub": "42", "exp": 4102444800, "iat": 1700000000},
-        settings.jwt_secret_key,
-        algorithm=settings.jwt_algorithm,
-    )
-    try:
-        decode_user_id_from_token(token)
-        assert False, "Expected UnauthorizedError"
-    except UnauthorizedError:
-        assert True
+def test_get_current_user_without_access_headers_requires_proof_of_access() -> None:
+    with pytest.raises(UnauthorizedError):
+        get_current_user(authorization=None, db=None)  # type: ignore[arg-type]
