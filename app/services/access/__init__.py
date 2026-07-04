@@ -5,6 +5,9 @@ from __future__ import annotations
 from typing import Any
 
 __all__ = [
+    "ChildApiKeyService",
+    "DelegatedPassService",
+    "ParentAccessContext",
     "AccessAuditChain",
     "AccessAuditEventType",
     "AccessChallengeResult",
@@ -17,12 +20,19 @@ __all__ = [
     "AccessSessionContext",
     "AccessSessionCreateResult",
     "AccessSessionService",
+    "AccessRecoveryService",
+    "RecoveryPhraseStrength",
+    "RecoveryFactorType",
+    "RecoveryPolicy",
     "RevocationRegistry",
     "RevocationStatus",
     "VerifiedAccessRequest",
 ]
 
 _EXPORT_MODULES = {
+    "ParentAccessContext": "app.services.access.key_constraints",
+    "DelegatedPassService": "app.services.access.delegated_passes",
+    "ChildApiKeyService": "app.services.access.child_api_keys",
     "AccessAuditChain": "app.services.access.audit_chain",
     "AccessAuditEventType": "app.services.access.audit_chain",
     "AccessChallengeResult": "app.services.access.challenge_service",
@@ -35,6 +45,10 @@ _EXPORT_MODULES = {
     "AccessSessionContext": "app.services.access.session_service",
     "AccessSessionCreateResult": "app.services.access.session_service",
     "AccessSessionService": "app.services.access.session_service",
+    "AccessRecoveryService": "app.services.access.recovery_service",
+    "RecoveryPhraseStrength": "app.services.access.recovery_seed",
+    "RecoveryFactorType": "app.services.access.recovery_quorum",
+    "RecoveryPolicy": "app.services.access.recovery_policy",
     "RevocationRegistry": "app.services.access.revocation_registry",
     "RevocationStatus": "app.services.access.revocation_registry",
     "VerifiedAccessRequest": "app.services.access.request_verifier",

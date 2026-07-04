@@ -42,3 +42,14 @@ def build_proof_of_access_headers(
         }
     )
     return merged
+
+
+def redact_access_secret(value: str) -> str:
+    """Redact Proof-of-Access secrets including child keys and delegated passes."""
+    if value.startswith("bbk_live_"):
+        return "bbk_live_…redacted"
+    if value.startswith("bbd_live_"):
+        return "bbd_live_…redacted"
+    if value.startswith("bap_"):
+        return "bap_…redacted"
+    return "<redacted>"

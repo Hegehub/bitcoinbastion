@@ -32,6 +32,7 @@ REVOCATION_TARGET_TYPES: frozenset[str] = frozenset(
         "issuer_key",
         "business_role",
         "recovery_attempt",
+        "recovery_factor",
     }
 )
 REVOCATION_REASONS: frozenset[str] = frozenset(

@@ -3,7 +3,16 @@ import json
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.api.access_dependencies import (
+    require_any_plan,
+    require_human_intent,
+    require_metric_entitlement,
+    require_plan,
+    require_scope,
+)
 from app.api.dependencies import db_session
+from app.domain.access.context import AccessContext
+from app.domain.access.plans import PlanCode
 from app.db.repositories.bastion_trace_repository import BastionTraceRepository
 from app.schemas.base import ResponseEnvelope
 from app.schemas.bastion_trace import (
@@ -95,7 +104,9 @@ def list_evidence(
 
 @router.get("/report/{report_id}/proof-packet", response_model=ResponseEnvelope[dict[str, object]])
 def get_proof_packet(
-    report_id: int, db: Session = Depends(db_session)
+    report_id: int,
+    access_context: AccessContext = Depends(require_scope("evidence:packet:create")),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     repo = BastionTraceRepository(db)
     report = repo.get_report(report_id)
@@ -169,6 +180,7 @@ def list_sources(db: Session = Depends(db_session)) -> ResponseEnvelope[list[Tra
 
 @router.get("/watchlist", response_model=ResponseEnvelope[list[TraceWatchlistEntry]])
 def list_watchlist(
+    access_context: AccessContext = Depends(require_scope("trace:standard:read")),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[TraceWatchlistEntry]]:
     repo = BastionTraceRepository(db)
@@ -182,7 +194,9 @@ def list_watchlist(
 
 @router.post("/watchlist", response_model=ResponseEnvelope[TraceWatchlistEntry])
 def add_watchlist(
-    payload: TraceWatchlistCreate, db: Session = Depends(db_session)
+    payload: TraceWatchlistCreate,
+    access_context: AccessContext = Depends(require_scope("trace:standard:read")),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[TraceWatchlistEntry]:
     service = TraceService(BastionTraceRepository(db))
     try:
@@ -292,7 +306,9 @@ def get_counterparty_lens(
 
 @router.post("/payment-context", response_model=ResponseEnvelope[dict[str, object]])
 def payment_context(
-    payload: PaymentContextRiskRequest, db: Session = Depends(db_session)
+    payload: PaymentContextRiskRequest,
+    access_context: AccessContext = Depends(require_metric_entitlement("trace.standard")),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     return ResponseEnvelope(data=service.evaluate_payment_context(payload))
@@ -300,7 +316,9 @@ def payment_context(
 
 @router.post("/payment-intent/preview", response_model=ResponseEnvelope[dict[str, object]])
 def payment_intent_preview(
-    payload: PaymentContextRiskRequest, db: Session = Depends(db_session)
+    payload: PaymentContextRiskRequest,
+    access_context: AccessContext = Depends(require_metric_entitlement("trace.standard")),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     return ResponseEnvelope(data=service.preview_payment_intent(payload))
@@ -308,7 +326,9 @@ def payment_intent_preview(
 
 @router.post("/destination-review", response_model=ResponseEnvelope[dict[str, object]])
 def destination_review(
-    payload: PaymentContextRiskRequest, db: Session = Depends(db_session)
+    payload: PaymentContextRiskRequest,
+    access_context: AccessContext = Depends(require_metric_entitlement("trace.advanced")),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     return ResponseEnvelope(data=service.destination_review(payload))
@@ -326,7 +346,12 @@ def lite_address_check(
 
 
 @router.get("/business/profile", response_model=ResponseEnvelope[dict[str, object]])
-def business_profile(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def business_profile(
+    access_context: AccessContext = Depends(
+        require_any_plan([PlanCode.BUSINESS, PlanCode.ENTERPRISE])
+    ),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(
         data=TraceService(BastionTraceRepository(db)).get_business_tier_profile()
     )
@@ -334,7 +359,11 @@ def business_profile(db: Session = Depends(db_session)) -> ResponseEnvelope[dict
 
 @router.post("/business/batch", response_model=ResponseEnvelope[dict[str, object]])
 def business_batch(
-    payload: BatchTraceRequest, db: Session = Depends(db_session)
+    payload: BatchTraceRequest,
+    access_context: AccessContext = Depends(
+        require_any_plan([PlanCode.BUSINESS, PlanCode.ENTERPRISE])
+    ),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     try:
@@ -345,13 +374,21 @@ def business_batch(
 
 @router.get("/business/policy-profiles", response_model=ResponseEnvelope[list[dict[str, object]]])
 def business_policy_profiles(
+    access_context: AccessContext = Depends(
+        require_any_plan([PlanCode.BUSINESS, PlanCode.ENTERPRISE])
+    ),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[dict[str, object]]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).list_policy_profiles())
 
 
 @router.get("/business/events", response_model=ResponseEnvelope[list[dict[str, object]]])
-def business_events(db: Session = Depends(db_session)) -> ResponseEnvelope[list[dict[str, object]]]:
+def business_events(
+    access_context: AccessContext = Depends(
+        require_any_plan([PlanCode.BUSINESS, PlanCode.ENTERPRISE])
+    ),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[list[dict[str, object]]]:
     items = BastionTraceRepository(db).list_business_events()
     return ResponseEnvelope(
         data=[
@@ -368,19 +405,28 @@ def business_events(db: Session = Depends(db_session)) -> ResponseEnvelope[list[
 
 
 @router.get("/enterprise/profile", response_model=ResponseEnvelope[dict[str, object]])
-def enterprise_profile(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def enterprise_profile(
+    access_context: AccessContext = Depends(require_plan(PlanCode.ENTERPRISE)),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(
         data=TraceService(BastionTraceRepository(db)).get_enterprise_tier_profile()
     )
 
 
 @router.get("/enterprise/rbac/roles", response_model=ResponseEnvelope[list[str]])
-def enterprise_roles(db: Session = Depends(db_session)) -> ResponseEnvelope[list[str]]:
+def enterprise_roles(
+    access_context: AccessContext = Depends(require_plan(PlanCode.ENTERPRISE)),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[list[str]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).list_enterprise_roles())
 
 
 @router.get("/enterprise/rbac/permissions", response_model=ResponseEnvelope[list[str]])
-def enterprise_permissions(db: Session = Depends(db_session)) -> ResponseEnvelope[list[str]]:
+def enterprise_permissions(
+    access_context: AccessContext = Depends(require_plan(PlanCode.ENTERPRISE)),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[list[str]]:
     return ResponseEnvelope(
         data=TraceService(BastionTraceRepository(db)).list_enterprise_permissions()
     )
@@ -388,6 +434,7 @@ def enterprise_permissions(db: Session = Depends(db_session)) -> ResponseEnvelop
 
 @router.get("/enterprise/rbac/default-policy", response_model=ResponseEnvelope[dict[str, object]])
 def enterprise_default_policy(
+    access_context: AccessContext = Depends(require_plan(PlanCode.ENTERPRISE)),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(
@@ -396,7 +443,10 @@ def enterprise_default_policy(
 
 
 @router.get("/enterprise/sso", response_model=ResponseEnvelope[dict[str, object]])
-def enterprise_sso(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def enterprise_sso(
+    access_context: AccessContext = Depends(require_plan(PlanCode.ENTERPRISE)),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).get_sso_placeholder())
 
 
@@ -404,7 +454,9 @@ def enterprise_sso(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[s
     "/enterprise/evidence-access/evaluate", response_model=ResponseEnvelope[dict[str, object]]
 )
 def enterprise_evidence_access(
-    payload: EvidenceAccessRequest, db: Session = Depends(db_session)
+    payload: EvidenceAccessRequest,
+    access_context: AccessContext = Depends(require_plan(PlanCode.ENTERPRISE)),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(
         data=TraceService(BastionTraceRepository(db)).evaluate_evidence_access_enterprise(payload)
@@ -413,7 +465,9 @@ def enterprise_evidence_access(
 
 @router.post("/enterprise/proof-packet", response_model=ResponseEnvelope[dict[str, object]])
 def enterprise_proof_packet(
-    report_id: int, db: Session = Depends(db_session)
+    report_id: int,
+    access_context: AccessContext = Depends(require_human_intent("export_data")),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(
         data=TraceService(BastionTraceRepository(db)).create_enterprise_proof_packet(report_id)
@@ -444,7 +498,9 @@ def trace_policy_facts(
 
 @router.post("/treasury/destination-check", response_model=ResponseEnvelope[dict[str, object]])
 def trace_treasury_check(
-    payload: BastionTraceTreasuryCheckRequest, db: Session = Depends(db_session)
+    payload: BastionTraceTreasuryCheckRequest,
+    access_context: AccessContext = Depends(require_scope("treasury:read")),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(
         data=TraceService(BastionTraceRepository(db)).treasury_destination_check(payload)
@@ -453,7 +509,11 @@ def trace_treasury_check(
 
 @router.post("/register/payment-advisory", response_model=ResponseEnvelope[dict[str, object]])
 def trace_register_advisory(
-    payload: BastionTraceRegisterAdvisoryRequest, db: Session = Depends(db_session)
+    payload: BastionTraceRegisterAdvisoryRequest,
+    access_context: AccessContext = Depends(
+        require_any_plan([PlanCode.BUSINESS, PlanCode.ENTERPRISE])
+    ),
+    db: Session = Depends(db_session),
 ) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(
         data=TraceService(BastionTraceRepository(db)).register_payment_advisory(payload)

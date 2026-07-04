@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -203,6 +204,183 @@ class AccessSessionResponse(BaseModel):
     policy_mode: str
     requires_request_signing: bool
 
+class ChildApiKeyCreate(BaseModel):
+    name: str
+    description: str | None = None
+    scopes: list[str] = Field(min_length=1)
+    denied_scopes: list[str] = Field(default_factory=list)
+    metric_entitlements: dict[str, Any] = Field(default_factory=dict)
+    limits: dict[str, Any] = Field(default_factory=dict)
+    expires_at: datetime
+    requires_request_signing: bool = True
+    can_delegate: bool = False
+
+    model_config = {"extra": "forbid"}
+
+
+class ChildApiKeyCreateResponse(BaseModel):
+    key_id: str
+    raw_child_api_key: str
+    scopes: list[str]
+    limits: dict[str, Any]
+    expires_at: Any
+    warning: str = "Store this key now. It will not be shown again."
+
+
+class ChildApiKeyPublic(BaseModel):
+    key_id: str
+    name: str | None = None
+    scopes: list[str]
+    denied_scopes: list[str] = Field(default_factory=list)
+    limits: dict[str, Any] = Field(default_factory=dict)
+    status: str
+    created_at: Any
+    expires_at: Any
+    last_used_at: Any | None = None
+    requires_request_signing: bool = True
+    can_delegate: bool = False
+
+
+class DelegatedPassCreate(BaseModel):
+    name: str
+    delegated_to_label: str | None = None
+    scopes: list[str] = Field(min_length=1)
+    denied_scopes: list[str] = Field(default_factory=list)
+    metric_entitlements: dict[str, Any] = Field(default_factory=dict)
+    constraints: dict[str, Any] = Field(default_factory=dict)
+    valid_from: datetime | None = None
+    expires_at: datetime
+    can_create_child_keys: bool = False
+    can_delegate: bool = False
+
+    model_config = {"extra": "forbid"}
+
+
+class DelegatedPassCreateResponse(BaseModel):
+    delegated_pass_id: str
+    raw_delegated_pass: str
+    scopes: list[str]
+    constraints: dict[str, Any]
+    expires_at: Any
+    warning: str = "Store this delegated pass now. It will not be shown again."
+
+
+class DelegatedPassPublic(BaseModel):
+    delegated_pass_id: str
+    name: str | None = None
+    delegated_to_label: str | None = None
+    scopes: list[str]
+    constraints: dict[str, Any] = Field(default_factory=dict)
+    status: str
+    valid_from: Any
+    expires_at: Any
+    last_used_at: Any | None = None
+    can_create_child_keys: bool = False
+    can_delegate: bool = False
+
+class RecoverySafetyWarning(BaseModel):
+    message: str = Field(description="Bastion recovery safety warning; never a Bitcoin wallet seed.")
+
+
+class RecoverySetupRequest(BaseModel):
+    pass_lookup_hash: str
+    certificate_fingerprint: str | None = None
+    plan_code: PlanCode
+
+    model_config = {"extra": "forbid"}
+
+
+class RecoverySetupResponse(BaseModel):
+    recovery_factor_id: str
+    bastion_recovery_phrase: list[str]
+    word_count: int
+    warning: str
+    display_once: bool = True
+
+
+class RecoveryStartRequest(BaseModel):
+    pass_lookup_hash: str
+    declared_plan_code: PlanCode
+    certificate_fingerprint: str | None = None
+    new_device_key_fingerprint: str | None = None
+    recovery_reason: str = "device_recovery"
+
+    model_config = {"extra": "forbid"}
+
+
+class RecoveryStartResponse(BaseModel):
+    recovery_attempt_id: str
+    required_factors: list[str]
+    allowed_factors: list[str]
+    threshold: int
+    cooldown_until: Any
+    safety_warnings: list[str]
+    status: str
+
+
+class RecoveryFactorSubmitRequest(BaseModel):
+    recovery_attempt_id: str
+    factor_type: str
+    recovery_factor: str
+
+    model_config = {"extra": "forbid"}
+
+
+class RecoveryFactorSubmitResponse(BaseModel):
+    recovery_attempt_id: str
+    status: str
+    verified_factors: list[str]
+    threshold: int
+    decision: str
+    reason: str
+
+
+class RecoveryStatusResponse(BaseModel):
+    recovery_attempt_id: str
+    status: str
+    threshold: int
+    verified_factor_count: int
+    missing_factor_count: int
+    decision: str
+    reason: str
+    cooldown_until: Any | None = None
+
+
+class RecoveryCompleteRequest(BaseModel):
+    recovery_attempt_id: str
+    new_device_public_key: str | None = None
+    new_device_key_fingerprint: str | None = None
+    revoke_old_sessions: bool = True
+
+    model_config = {"extra": "forbid"}
+
+
+class RecoveryCompleteResponse(BaseModel):
+    recovery_attempt_id: str
+    status: str
+    certificate_fingerprint: str | None = None
+    device_key_fingerprint: str | None = None
+    old_sessions_revoked: int
+    safety_warnings: list[str]
+
+
+class RecoveryRotateRequest(BaseModel):
+    pass_lookup_hash: str
+    certificate_fingerprint: str | None = None
+    plan_code: PlanCode
+
+    model_config = {"extra": "forbid"}
+
+
+class RecoveryRotateResponse(RecoverySetupResponse):
+    pass
+
+
+class RecoveryCancelRequest(BaseModel):
+    recovery_attempt_id: str
+
+    model_config = {"extra": "forbid"}
+
 
 __all__ = [
     "AccessPaymentIntentCreate",
@@ -217,6 +395,12 @@ __all__ = [
     "AccessChallengeResponse",
     "AccessSessionCreate",
     "AccessSessionResponse",
+    "ChildApiKeyCreate",
+    "ChildApiKeyCreateResponse",
+    "ChildApiKeyPublic",
+    "DelegatedPassCreate",
+    "DelegatedPassCreateResponse",
+    "DelegatedPassPublic",
     "LockedMetricGroup",
     "MetricCatalogResponse",
     "MetricCostEstimateRequest",
@@ -225,5 +409,18 @@ __all__ = [
     "MetricGroup",
     "PlanLimits",
     "SubscriptionEntitlementOverlay",
+    "RecoverySafetyWarning",
+    "RecoverySetupRequest",
+    "RecoverySetupResponse",
+    "RecoveryStartRequest",
+    "RecoveryStartResponse",
+    "RecoveryFactorSubmitRequest",
+    "RecoveryFactorSubmitResponse",
+    "RecoveryStatusResponse",
+    "RecoveryCompleteRequest",
+    "RecoveryCompleteResponse",
+    "RecoveryRotateRequest",
+    "RecoveryRotateResponse",
+    "RecoveryCancelRequest",
     "SubscriptionEntitlementResponse",
 ]

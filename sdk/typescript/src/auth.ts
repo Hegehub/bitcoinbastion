@@ -31,3 +31,10 @@ export function proofOfAccessHeaders(input: ProofOfAccessHeaderInput): Record<st
     "X-Bastion-Signature": input.signature,
   };
 }
+
+export function redactAccessSecret(value: string): string {
+  if (value.startsWith("bbk_live_")) return "bbk_live_…redacted";
+  if (value.startsWith("bbd_live_")) return "bbd_live_…redacted";
+  if (value.startsWith("bap_")) return "bap_…redacted";
+  return "<redacted>";
+}

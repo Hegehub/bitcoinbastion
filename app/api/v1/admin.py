@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import db_session, get_admin_user
-from app.db.models.auth import User
+from app.api.access_dependencies import require_enterprise_policy, require_human_intent, require_plan
+from app.api.dependencies import db_session
+from app.domain.access.context import AccessContext
+from app.domain.access.plans import PlanCode
 from app.db.repositories.audit_repository import AuditRepository
 from app.db.repositories.job_run_repository import JobRunRepository
 from app.schemas.admin import (
@@ -20,12 +22,12 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.get("/status", response_model=ResponseEnvelope[dict[str, str]])
-def admin_status(_: User = Depends(get_admin_user)) -> ResponseEnvelope[dict[str, str]]:
+def admin_status(_: AccessContext = Depends(require_plan(PlanCode.ENTERPRISE))) -> ResponseEnvelope[dict[str, str]]:
     return ResponseEnvelope(data={"status": "ok", "module": "admin"})
 
 
 @router.get("/jobs", response_model=ResponseEnvelope[list[str]])
-def admin_jobs(_: User = Depends(get_admin_user)) -> ResponseEnvelope[list[str]]:
+def admin_jobs(_: AccessContext = Depends(require_enterprise_policy("admin:jobs:read"))) -> ResponseEnvelope[list[str]]:
     names = sorted(name for name in celery_app.tasks.keys() if not name.startswith("celery."))
     return ResponseEnvelope(data=names)
 
@@ -33,7 +35,7 @@ def admin_jobs(_: User = Depends(get_admin_user)) -> ResponseEnvelope[list[str]]
 @router.get("/jobs/runs", response_model=ResponseEnvelope[list[JobRunOut]])
 def admin_job_runs(
     limit: int = 50,
-    _: User = Depends(get_admin_user),
+    _: AccessContext = Depends(require_enterprise_policy("admin:jobs:read")),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[JobRunOut]]:
     rows = JobRunRepository(db).list_recent(limit=limit)
@@ -44,7 +46,7 @@ def admin_job_runs(
 def admin_audit_logs(
     limit: int = 50,
     action: str | None = None,
-    _: User = Depends(get_admin_user),
+    _: AccessContext = Depends(require_enterprise_policy("admin:audit:read")),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[AuditLogOut]]:
     rows = AuditRepository(db).list_recent(limit=limit, action=action)
@@ -54,7 +56,7 @@ def admin_audit_logs(
 @router.post("/jobs/retry", response_model=ResponseEnvelope[JobRetryResponse])
 def admin_retry_job(
     payload: JobRetryRequest,
-    _: User = Depends(get_admin_user),
+    _: AccessContext = Depends(require_human_intent("enterprise_policy_change")),
 ) -> ResponseEnvelope[JobRetryResponse]:
     result = celery_app.send_task(payload.task_name)
     return ResponseEnvelope(data=JobRetryResponse(task_name=payload.task_name, task_id=result.id))
@@ -62,7 +64,7 @@ def admin_retry_job(
 
 @router.get("/jobs/recovery-check", response_model=ResponseEnvelope[RecoveryCheckOut])
 def admin_jobs_recovery_check(
-    _: User = Depends(get_admin_user),
+    _: AccessContext = Depends(require_enterprise_policy("admin:recovery:read")),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[RecoveryCheckOut]:
     data = RecoveryCheckService().evaluate(db=db)

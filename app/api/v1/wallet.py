@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import db_session, get_current_user
-from app.db.models.auth import User
+from app.api.access_dependencies import require_metric_entitlement, require_scope
+from app.api.dependencies import db_session
+from app.domain.access.context import AccessContext
 from app.db.repositories.wallet_repository import WalletRepository
 from app.schemas.base import PaginatedData, ResponseEnvelope
 from app.schemas.wallet import (
@@ -28,12 +29,12 @@ def wallet_health(payload: WalletHealthRequest) -> ResponseEnvelope[WalletHealth
 def generate_wallet_profile_health_report(
     wallet_profile_id: int,
     payload: WalletHealthRequest,
-    current_user: User = Depends(get_current_user),
+    access_context: AccessContext = Depends(require_scope("wallet:health:read")),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[WalletHealthReportOut]:
     repo = WalletRepository(db)
     profile = repo.get_profile(wallet_profile_id)
-    if profile is None or profile.user_id != current_user.id:
+    if profile is None or profile.user_id != _access_actor_id(access_context):
         raise HTTPException(status_code=404, detail="Wallet profile not found")
 
     service = WalletHealthService()
@@ -50,12 +51,12 @@ def list_wallet_profile_health_reports(
     wallet_profile_id: int,
     limit: int = 20,
     offset: int = 0,
-    current_user: User = Depends(get_current_user),
+    access_context: AccessContext = Depends(require_scope("wallet:health:read")),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[PaginatedData[WalletHealthReportOut]]:
     repo = WalletRepository(db)
     profile = repo.get_profile(wallet_profile_id)
-    if profile is None or profile.user_id != current_user.id:
+    if profile is None or profile.user_id != _access_actor_id(access_context):
         raise HTTPException(status_code=404, detail="Wallet profile not found")
 
     service = WalletHealthService()
@@ -73,15 +74,17 @@ def list_wallet_profile_health_reports(
 def list_profiles(
     limit: int = 20,
     offset: int = 0,
-    current_user: User = Depends(get_current_user),
+    access_context: AccessContext = Depends(require_metric_entitlement("wallet.health")),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[PaginatedData[WalletProfileOut]]:
     repo = WalletRepository(db)
     items = [
         WalletProfileOut.model_validate(item)
-        for item in repo.list_by_user(user_id=current_user.id, limit=limit, offset=offset)
+        for item in repo.list_by_user(user_id=_access_actor_id(access_context), limit=limit, offset=offset)
     ]
-    total = repo.count_by_user(current_user.id)
-    return ResponseEnvelope(
-        data=PaginatedData(items=items, total=total, limit=limit, offset=offset)
-    )
+    total = repo.count_by_user(_access_actor_id(access_context))
+    return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+
+
+def _access_actor_id(context: AccessContext) -> int:
+    return abs(hash(context.pass_lookup_hash)) % 2_000_000_000

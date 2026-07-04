@@ -387,6 +387,13 @@ class Settings(BaseSettings):
     access_btcpay_webhook_tolerance_seconds: int = Field(
         default=300, ge=1, alias="ACCESS_BTCPAY_WEBHOOK_TOLERANCE_SECONDS"
     )
+    access_recovery_enabled: bool = Field(default=True, alias="ACCESS_RECOVERY_ENABLED")
+    access_recovery_cooldown_seconds: int = Field(default=900, ge=60, alias="ACCESS_RECOVERY_COOLDOWN_SECONDS")
+    access_recovery_max_attempts_per_hour: int = Field(default=5, ge=1, alias="ACCESS_RECOVERY_MAX_ATTEMPTS_PER_HOUR")
+    access_recovery_require_quorum_for_pro: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_PRO")
+    access_recovery_require_quorum_for_business: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_BUSINESS")
+    access_recovery_require_quorum_for_enterprise: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_ENTERPRISE")
+    access_recovery_reject_bitcoin_seed_inputs: bool = Field(default=True, alias="ACCESS_RECOVERY_REJECT_BITCOIN_SEED_INPUTS")
 
     @model_validator(mode="after")
     def _validate_btcpay_access_config(self) -> "Settings":
