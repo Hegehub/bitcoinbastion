@@ -6,16 +6,32 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
 }
 
 describe("BitcoinBastionClient", () => {
-  it("creates resources and applies bearer auth", async () => {
+  it("rejects legacy bearer apiKey auth", async () => {
     const calls: RequestInit[] = [];
     const fetchImpl: typeof fetch = async (_input, init) => {
       calls.push(init ?? {});
       return jsonResponse({ data: { ok: true }, error: null });
     };
     const client = new BitcoinBastionClient({ baseUrl: "http://localhost:8000/", apiKey: "token", fetchImpl });
+    await expect(client.providerHealth.status()).rejects.toThrow("Legacy auth is disabled");
+    expect(calls).toHaveLength(0);
+  });
+
+  it("creates resources with Proof-of-Access headers", async () => {
+    const calls: RequestInit[] = [];
+    const fetchImpl: typeof fetch = async (_input, init) => {
+      calls.push(init ?? {});
+      return jsonResponse({ data: { ok: true }, error: null });
+    };
+    const client = new BitcoinBastionClient({
+      baseUrl: "http://localhost:8000/",
+      headers: { "X-Bastion-Session": "session" },
+      fetchImpl,
+    });
     await client.providerHealth.status();
     expect(client.trace).toBeDefined();
-    expect(calls[0]?.headers).toMatchObject({ Authorization: "Bearer token" });
+    expect(calls[0]?.headers).toMatchObject({ "X-Bastion-Session": "session" });
+    expect(calls[0]?.headers).not.toMatchObject({ Authorization: "Bearer token" });
   });
 
   it("supports raw transport access", async () => {

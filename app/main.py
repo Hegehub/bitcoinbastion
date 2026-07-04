@@ -11,6 +11,7 @@ from app.api.middleware import (
     SecurityHeadersMiddleware,
 )
 from app.api.openapi import apply_openapi_defaults
+from app.api.v1.access import router as access_router
 from app.api.v1.admin import router as admin_router
 from app.api.v1.citadel import router as citadel_router
 from app.api.v1.auth import router as auth_router
@@ -71,6 +72,7 @@ apply_openapi_defaults(app)
 app.include_router(health_root_router)
 app.include_router(health_router, prefix=settings.api_prefix)
 app.include_router(auth_router, prefix=settings.api_prefix)
+app.include_router(access_router, prefix=settings.api_prefix)
 app.include_router(news_router, prefix=settings.api_prefix)
 app.include_router(market_intelligence_router, prefix=settings.api_prefix)
 app.include_router(market_data_router, prefix=settings.api_prefix)

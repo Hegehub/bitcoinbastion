@@ -624,3 +624,9 @@ No runtime profile is automatically production-ready. Production readiness requi
 ## Reflex-only frontend status (2026-06-29)
 
 The old Next.js frontend directory has been removed from this branch at maintainer request. `reflex_frontend/` is now the only repository-native frontend. FastAPI remains the backend source of truth, and FastAPI/Jinja still owns delegated Market detail/dashboard routes where documented. Rollback to the old frontend now requires restoring `frontend/` from Git history or a tagged archive. See `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
+
+## Authentication
+
+Bitcoin Bastion uses Proof-of-Access authorization for protected APIs. Legacy email/password authentication is disabled. Use the `/api/v1/access/*` payment, certificate, challenge, session, and signed-request flow instead of `/api/v1/auth/login` or bearer tokens.
+
+Bastion will never ask for your Bitcoin seed or Bitcoin private key.
