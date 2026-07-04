@@ -34,48 +34,341 @@ from app.services.intelligence.narrative_types import NarrativeType
 from app.services.market_intelligence.source_registry import yaml_any as yaml_loader
 
 NARRATIVE_LIMITATION = "Narrative heatmap output is correlation-based and does not prove causation."
-NARRATIVE_SAFETY = "Narratives may be associated with market context, but they do not predict price movement."
+NARRATIVE_SAFETY = (
+    "Narratives may be associated with market context, but they do not predict price movement."
+)
 
 NARRATIVE_SEEDS: tuple[tuple[str, str, str, str, tuple[tuple[str, float], ...]], ...] = (
-    ("etf", "ETF", "ETF inflows, outflows, approvals, issuers, and fund-flow narratives.", "institutional", (("etf", 2.0), ("spot bitcoin etf", 3.0), ("inflow", 1.4), ("outflow", 1.4), ("blackrock", 1.2), ("fidelity", 1.2))),
-    ("institutional-adoption", "Institutional Adoption", "Institutional Bitcoin adoption and allocation narratives.", "institutional", (("institutional", 2.0), ("asset manager", 1.5), ("allocation", 1.4), ("fund", 1.1))),
-    ("treasury-adoption", "Treasury Adoption", "Corporate and treasury Bitcoin adoption narratives.", "treasury", (("treasury", 2.0), ("corporate bitcoin", 2.2), ("balance sheet", 1.3), ("reserve asset", 1.4))),
-    ("mining", "Mining", "Mining, hash rate, difficulty, and miner balance-sheet narratives.", "mining", (("miner", 2.0), ("mining", 2.0), ("hash rate", 1.7), ("difficulty", 1.4), ("capitulation", 1.3))),
-    ("bitcoin-core", "Bitcoin Core", "Bitcoin Core releases, maintenance, and protocol software narratives.", "bitcoin_core", (("bitcoin core", 3.0), ("core release", 2.0), ("protocol", 1.0), ("node", 1.0))),
-    ("lightning", "Lightning", "Lightning Network adoption, infrastructure, and liquidity narratives.", "lightning", (("lightning", 2.5), ("ln", 1.0), ("channel", 1.0), ("payment", 0.8))),
-    ("macro-liquidity", "Macro Liquidity", "Global liquidity and macro risk appetite narratives.", "macro", (("liquidity", 2.0), ("global liquidity", 2.5), ("risk-on", 1.4), ("risk off", 1.4))),
-    ("fed", "Fed", "Federal Reserve policy, rates, and liquidity narratives.", "macro", (("fed", 2.0), ("federal reserve", 2.0), ("rate cut", 1.5), ("rate hike", 1.5), ("powell", 1.2))),
-    ("inflation", "Inflation", "Inflation, CPI, real-rate, and purchasing-power narratives.", "macro", (("inflation", 2.0), ("cpi", 1.5), ("ppi", 1.2), ("real yield", 1.3))),
-    ("dollar-strength", "Dollar Strength", "USD strength, DXY, and currency pressure narratives.", "macro", (("dollar", 1.8), ("dxy", 2.0), ("usd", 1.0), ("currency", 1.0))),
-    ("regulation", "Regulation", "Regulatory policy and jurisdictional treatment narratives.", "regulatory", (("regulation", 2.0), ("regulatory", 2.0), ("law", 1.0), ("policy", 1.0), ("approval", 1.2))),
-    ("sec", "SEC", "SEC enforcement, approval, delay, and litigation narratives.", "regulatory", (("sec", 2.5), ("securities and exchange commission", 2.5), ("enforcement", 1.3), ("lawsuit", 1.2))),
-    ("self-custody", "Self Custody", "Self-custody, withdrawal, and key-sovereignty narratives.", "sovereignty", (("self custody", 2.5), ("self-custody", 2.5), ("withdrawal", 1.2), ("private keys", 1.7))),
-    ("sovereignty", "Sovereignty", "Bitcoin sovereignty, censorship resistance, and self-determination narratives.", "sovereignty", (("sovereignty", 2.0), ("censorship resistance", 2.0), ("permissionless", 1.4), ("freedom", 0.8))),
-    ("exchange-risk", "Exchange Risk", "Exchange solvency, hacks, reserves, and counterparty-risk narratives.", "security", (("exchange", 1.6), ("proof of reserves", 2.0), ("solvency", 1.8), ("withdrawals halted", 2.0))),
-    ("security-incidents", "Security Incidents", "Security incidents, exploits, vulnerabilities, and custody failures.", "security", (("hack", 2.0), ("exploit", 2.0), ("vulnerability", 2.0), ("custody failure", 2.0), ("breach", 1.5))),
-    ("liquidations", "Liquidations", "Liquidation cascades, leverage flushes, and forced-deleveraging narratives.", "market_structure", (("liquidation", 2.5), ("cascade", 1.8), ("leverage", 1.2), ("forced selling", 1.4))),
-    ("stablecoin-liquidity", "Stablecoin Liquidity", "Stablecoin liquidity and dollar-rail narratives around Bitcoin markets.", "market_structure", (("stablecoin liquidity", 2.4), ("stablecoin", 2.0), ("usdt", 1.2), ("usdc", 1.2))),
-    ("market-structure", "Market Structure", "Liquidity, order-book, volatility, basis, and market-structure narratives.", "market_structure", (("market structure", 2.5), ("liquidity", 1.2), ("order book", 1.5), ("volatility", 1.3), ("basis", 1.2))),
-    ("hashrate", "Hashrate", "Hashrate and mining difficulty narratives.", "mining", (("hashrate", 2.0), ("hash rate", 2.0), ("difficulty", 1.5))),
-    ("macro", "Macro", "Macro market narratives.", "macro", (("macro", 1.6), ("global market", 1.0), ("risk appetite", 1.2))),
-    ("interest-rates", "Interest Rates", "Rate-cut, rate-hike, and yield narratives.", "macro", (("interest rates", 2.0), ("rate cut", 1.5), ("rate hike", 1.5), ("yields", 1.2))),
-    ("liquidity", "Liquidity", "Global liquidity and market liquidity narratives.", "macro", (("liquidity", 2.0), ("global liquidity", 2.5), ("dollar liquidity", 1.8))),
-    ("cftc", "CFTC", "CFTC policy and enforcement narratives.", "regulatory", (("cftc", 2.5), ("commodity futures", 1.5))),
-    ("banking", "Banking", "Banking stress and fiat-rail narratives.", "macro", (("bank", 1.5), ("banking", 1.8), ("bank failure", 2.2), ("deposit", 1.0))),
-    ("exchange-liquidity", "Exchange Liquidity", "Exchange liquidity and order-book narratives.", "market_structure", (("exchange liquidity", 2.4), ("order book", 1.5), ("market depth", 1.5))),
-    ("exchange-failure", "Exchange Failure", "Exchange solvency, halt, and failure narratives.", "security", (("exchange failure", 2.5), ("withdrawals halted", 2.0), ("insolvency", 1.8))),
-    ("security", "Security", "Security and exploit narratives.", "security", (("security", 1.6), ("exploit", 1.7), ("vulnerability", 1.7))),
-    ("exchange-hack", "Exchange Hack", "Exchange hack and breach narratives.", "security", (("exchange hack", 2.5), ("hack", 1.5), ("breach", 1.4))),
-    ("wallet-security", "Wallet Security", "Wallet and key-management security narratives.", "security", (("wallet security", 2.5), ("private keys", 1.7), ("seed phrase", 1.5))),
-    ("privacy", "Privacy", "Bitcoin privacy narratives.", "sovereignty", (("privacy", 2.0), ("coinjoin", 1.6), ("surveillance", 1.2))),
-    ("nation-state-adoption", "Nation State Adoption", "Nation-state adoption and reserve narratives.", "sovereignty", (("nation state", 2.2), ("sovereign", 1.4), ("strategic reserve", 1.8))),
-    ("corporate-adoption", "Corporate Adoption", "Corporate Bitcoin adoption narratives.", "treasury", (("corporate", 1.6), ("company", 0.8), ("balance sheet", 1.3))),
-    ("energy", "Energy", "Energy, grid, and mining power narratives.", "mining", (("energy", 1.8), ("grid", 1.2), ("power", 1.0))),
-    ("layer2", "Layer2", "Bitcoin Layer 2 narratives.", "layer2", (("layer 2", 2.0), ("layer2", 2.0), ("lightning", 1.2))),
-    ("stablecoins", "Stablecoins", "Stablecoin and dollar-rail narratives around Bitcoin markets.", "market_structure", (("stablecoin", 2.0), ("usdt", 1.2), ("usdc", 1.2))),
-    ("liquidation-cascade", "Liquidation Cascade", "Liquidation cascade and forced-deleveraging narratives.", "market_structure", (("liquidation cascade", 2.7), ("liquidations", 2.0), ("forced deleveraging", 1.7))),
-    ("risk-off", "Risk Off", "Risk-off macro narratives.", "macro", (("risk off", 2.0), ("risk-off", 2.0), ("panic", 1.2))),
-    ("risk-on", "Risk On", "Risk-on macro narratives.", "macro", (("risk on", 2.0), ("risk-on", 2.0), ("recovery", 1.0))),
+    (
+        "etf",
+        "ETF",
+        "ETF inflows, outflows, approvals, issuers, and fund-flow narratives.",
+        "institutional",
+        (
+            ("etf", 2.0),
+            ("spot bitcoin etf", 3.0),
+            ("inflow", 1.4),
+            ("outflow", 1.4),
+            ("blackrock", 1.2),
+            ("fidelity", 1.2),
+        ),
+    ),
+    (
+        "institutional-adoption",
+        "Institutional Adoption",
+        "Institutional Bitcoin adoption and allocation narratives.",
+        "institutional",
+        (("institutional", 2.0), ("asset manager", 1.5), ("allocation", 1.4), ("fund", 1.1)),
+    ),
+    (
+        "treasury-adoption",
+        "Treasury Adoption",
+        "Corporate and treasury Bitcoin adoption narratives.",
+        "treasury",
+        (
+            ("treasury", 2.0),
+            ("corporate bitcoin", 2.2),
+            ("balance sheet", 1.3),
+            ("reserve asset", 1.4),
+        ),
+    ),
+    (
+        "mining",
+        "Mining",
+        "Mining, hash rate, difficulty, and miner balance-sheet narratives.",
+        "mining",
+        (
+            ("miner", 2.0),
+            ("mining", 2.0),
+            ("hash rate", 1.7),
+            ("difficulty", 1.4),
+            ("capitulation", 1.3),
+        ),
+    ),
+    (
+        "bitcoin-core",
+        "Bitcoin Core",
+        "Bitcoin Core releases, maintenance, and protocol software narratives.",
+        "bitcoin_core",
+        (("bitcoin core", 3.0), ("core release", 2.0), ("protocol", 1.0), ("node", 1.0)),
+    ),
+    (
+        "lightning",
+        "Lightning",
+        "Lightning Network adoption, infrastructure, and liquidity narratives.",
+        "lightning",
+        (("lightning", 2.5), ("ln", 1.0), ("channel", 1.0), ("payment", 0.8)),
+    ),
+    (
+        "macro-liquidity",
+        "Macro Liquidity",
+        "Global liquidity and macro risk appetite narratives.",
+        "macro",
+        (("liquidity", 2.0), ("global liquidity", 2.5), ("risk-on", 1.4), ("risk off", 1.4)),
+    ),
+    (
+        "fed",
+        "Fed",
+        "Federal Reserve policy, rates, and liquidity narratives.",
+        "macro",
+        (
+            ("fed", 2.0),
+            ("federal reserve", 2.0),
+            ("rate cut", 1.5),
+            ("rate hike", 1.5),
+            ("powell", 1.2),
+        ),
+    ),
+    (
+        "inflation",
+        "Inflation",
+        "Inflation, CPI, real-rate, and purchasing-power narratives.",
+        "macro",
+        (("inflation", 2.0), ("cpi", 1.5), ("ppi", 1.2), ("real yield", 1.3)),
+    ),
+    (
+        "dollar-strength",
+        "Dollar Strength",
+        "USD strength, DXY, and currency pressure narratives.",
+        "macro",
+        (("dollar", 1.8), ("dxy", 2.0), ("usd", 1.0), ("currency", 1.0)),
+    ),
+    (
+        "regulation",
+        "Regulation",
+        "Regulatory policy and jurisdictional treatment narratives.",
+        "regulatory",
+        (
+            ("regulation", 2.0),
+            ("regulatory", 2.0),
+            ("law", 1.0),
+            ("policy", 1.0),
+            ("approval", 1.2),
+        ),
+    ),
+    (
+        "sec",
+        "SEC",
+        "SEC enforcement, approval, delay, and litigation narratives.",
+        "regulatory",
+        (
+            ("sec", 2.5),
+            ("securities and exchange commission", 2.5),
+            ("enforcement", 1.3),
+            ("lawsuit", 1.2),
+        ),
+    ),
+    (
+        "self-custody",
+        "Self Custody",
+        "Self-custody, withdrawal, and key-sovereignty narratives.",
+        "sovereignty",
+        (("self custody", 2.5), ("self-custody", 2.5), ("withdrawal", 1.2), ("private keys", 1.7)),
+    ),
+    (
+        "sovereignty",
+        "Sovereignty",
+        "Bitcoin sovereignty, censorship resistance, and self-determination narratives.",
+        "sovereignty",
+        (
+            ("sovereignty", 2.0),
+            ("censorship resistance", 2.0),
+            ("permissionless", 1.4),
+            ("freedom", 0.8),
+        ),
+    ),
+    (
+        "exchange-risk",
+        "Exchange Risk",
+        "Exchange solvency, hacks, reserves, and counterparty-risk narratives.",
+        "security",
+        (
+            ("exchange", 1.6),
+            ("proof of reserves", 2.0),
+            ("solvency", 1.8),
+            ("withdrawals halted", 2.0),
+        ),
+    ),
+    (
+        "security-incidents",
+        "Security Incidents",
+        "Security incidents, exploits, vulnerabilities, and custody failures.",
+        "security",
+        (
+            ("hack", 2.0),
+            ("exploit", 2.0),
+            ("vulnerability", 2.0),
+            ("custody failure", 2.0),
+            ("breach", 1.5),
+        ),
+    ),
+    (
+        "liquidations",
+        "Liquidations",
+        "Liquidation cascades, leverage flushes, and forced-deleveraging narratives.",
+        "market_structure",
+        (("liquidation", 2.5), ("cascade", 1.8), ("leverage", 1.2), ("forced selling", 1.4)),
+    ),
+    (
+        "stablecoin-liquidity",
+        "Stablecoin Liquidity",
+        "Stablecoin liquidity and dollar-rail narratives around Bitcoin markets.",
+        "market_structure",
+        (("stablecoin liquidity", 2.4), ("stablecoin", 2.0), ("usdt", 1.2), ("usdc", 1.2)),
+    ),
+    (
+        "market-structure",
+        "Market Structure",
+        "Liquidity, order-book, volatility, basis, and market-structure narratives.",
+        "market_structure",
+        (
+            ("market structure", 2.5),
+            ("liquidity", 1.2),
+            ("order book", 1.5),
+            ("volatility", 1.3),
+            ("basis", 1.2),
+        ),
+    ),
+    (
+        "hashrate",
+        "Hashrate",
+        "Hashrate and mining difficulty narratives.",
+        "mining",
+        (("hashrate", 2.0), ("hash rate", 2.0), ("difficulty", 1.5)),
+    ),
+    (
+        "macro",
+        "Macro",
+        "Macro market narratives.",
+        "macro",
+        (("macro", 1.6), ("global market", 1.0), ("risk appetite", 1.2)),
+    ),
+    (
+        "interest-rates",
+        "Interest Rates",
+        "Rate-cut, rate-hike, and yield narratives.",
+        "macro",
+        (("interest rates", 2.0), ("rate cut", 1.5), ("rate hike", 1.5), ("yields", 1.2)),
+    ),
+    (
+        "liquidity",
+        "Liquidity",
+        "Global liquidity and market liquidity narratives.",
+        "macro",
+        (("liquidity", 2.0), ("global liquidity", 2.5), ("dollar liquidity", 1.8)),
+    ),
+    (
+        "cftc",
+        "CFTC",
+        "CFTC policy and enforcement narratives.",
+        "regulatory",
+        (("cftc", 2.5), ("commodity futures", 1.5)),
+    ),
+    (
+        "banking",
+        "Banking",
+        "Banking stress and fiat-rail narratives.",
+        "macro",
+        (("bank", 1.5), ("banking", 1.8), ("bank failure", 2.2), ("deposit", 1.0)),
+    ),
+    (
+        "exchange-liquidity",
+        "Exchange Liquidity",
+        "Exchange liquidity and order-book narratives.",
+        "market_structure",
+        (("exchange liquidity", 2.4), ("order book", 1.5), ("market depth", 1.5)),
+    ),
+    (
+        "exchange-failure",
+        "Exchange Failure",
+        "Exchange solvency, halt, and failure narratives.",
+        "security",
+        (("exchange failure", 2.5), ("withdrawals halted", 2.0), ("insolvency", 1.8)),
+    ),
+    (
+        "security",
+        "Security",
+        "Security and exploit narratives.",
+        "security",
+        (("security", 1.6), ("exploit", 1.7), ("vulnerability", 1.7)),
+    ),
+    (
+        "exchange-hack",
+        "Exchange Hack",
+        "Exchange hack and breach narratives.",
+        "security",
+        (("exchange hack", 2.5), ("hack", 1.5), ("breach", 1.4)),
+    ),
+    (
+        "wallet-security",
+        "Wallet Security",
+        "Wallet and key-management security narratives.",
+        "security",
+        (("wallet security", 2.5), ("private keys", 1.7), ("seed phrase", 1.5)),
+    ),
+    (
+        "privacy",
+        "Privacy",
+        "Bitcoin privacy narratives.",
+        "sovereignty",
+        (("privacy", 2.0), ("coinjoin", 1.6), ("surveillance", 1.2)),
+    ),
+    (
+        "nation-state-adoption",
+        "Nation State Adoption",
+        "Nation-state adoption and reserve narratives.",
+        "sovereignty",
+        (("nation state", 2.2), ("sovereign", 1.4), ("strategic reserve", 1.8)),
+    ),
+    (
+        "corporate-adoption",
+        "Corporate Adoption",
+        "Corporate Bitcoin adoption narratives.",
+        "treasury",
+        (("corporate", 1.6), ("company", 0.8), ("balance sheet", 1.3)),
+    ),
+    (
+        "energy",
+        "Energy",
+        "Energy, grid, and mining power narratives.",
+        "mining",
+        (("energy", 1.8), ("grid", 1.2), ("power", 1.0)),
+    ),
+    (
+        "layer2",
+        "Layer2",
+        "Bitcoin Layer 2 narratives.",
+        "layer2",
+        (("layer 2", 2.0), ("layer2", 2.0), ("lightning", 1.2)),
+    ),
+    (
+        "stablecoins",
+        "Stablecoins",
+        "Stablecoin and dollar-rail narratives around Bitcoin markets.",
+        "market_structure",
+        (("stablecoin", 2.0), ("usdt", 1.2), ("usdc", 1.2)),
+    ),
+    (
+        "liquidation-cascade",
+        "Liquidation Cascade",
+        "Liquidation cascade and forced-deleveraging narratives.",
+        "market_structure",
+        (("liquidation cascade", 2.7), ("liquidations", 2.0), ("forced deleveraging", 1.7)),
+    ),
+    (
+        "risk-off",
+        "Risk Off",
+        "Risk-off macro narratives.",
+        "macro",
+        (("risk off", 2.0), ("risk-off", 2.0), ("panic", 1.2)),
+    ),
+    (
+        "risk-on",
+        "Risk On",
+        "Risk-on macro narratives.",
+        "macro",
+        (("risk on", 2.0), ("risk-on", 2.0), ("recovery", 1.0)),
+    ),
 )
 
 WINDOWS: dict[str, timedelta] = {
@@ -112,6 +405,7 @@ def narrative_seed_rows(path: Path = Path("config/narratives.yaml")) -> tuple[Na
             )
         )
     return tuple(seed for seed in seeds if seed[0] and seed[1]) or NARRATIVE_SEEDS
+
 
 SLUG_TO_TYPE: dict[str, NarrativeType] = {
     "etf": NarrativeType.ETF,
@@ -189,18 +483,32 @@ class NarrativeClassificationService:
                 narrative.description = description
                 narrative.category = category
                 narrative.is_active = True
-            existing = {row.keyword: row for row in self.db.query(NarrativeKeyword).filter(NarrativeKeyword.narrative_id == narrative.id)}
+            existing = {
+                row.keyword: row
+                for row in self.db.query(NarrativeKeyword).filter(
+                    NarrativeKeyword.narrative_id == narrative.id
+                )
+            }
             for keyword, weight in keywords:
                 row = existing.get(keyword)
                 if row is None:
-                    self.db.add(NarrativeKeyword(narrative_id=narrative.id, keyword=keyword, weight=weight))
+                    self.db.add(
+                        NarrativeKeyword(narrative_id=narrative.id, keyword=keyword, weight=weight)
+                    )
                 else:
                     row.weight = weight
         self.db.flush()
-        return self.db.query(MarketNarrative).filter(MarketNarrative.is_active.is_(True)).order_by(MarketNarrative.slug.asc()).all()
+        return (
+            self.db.query(MarketNarrative)
+            .filter(MarketNarrative.is_active.is_(True))
+            .order_by(MarketNarrative.slug.asc())
+            .all()
+        )
 
     def classify_article(self, article: NewsArticle) -> list[NarrativeMatch]:
-        text = f"{article.title} {article.summary} {article.content_text} {article.category}".lower()
+        text = (
+            f"{article.title} {article.summary} {article.content_text} {article.category}".lower()
+        )
         return self._classify_text(text)
 
     def classify_event(self, event: NewsEvent) -> list[NarrativeMatch]:
@@ -208,7 +516,9 @@ class NarrativeClassificationService:
         return self._classify_text(text)
 
     def observe_article(self, article: NewsArticle) -> list[NarrativeObservation]:
-        return self._persist_observations(self.classify_article(article), article=article, event=None)
+        return self._persist_observations(
+            self.classify_article(article), article=article, event=None
+        )
 
     def observe_event(self, event: NewsEvent) -> list[NarrativeObservation]:
         return self._persist_observations(self.classify_event(event), article=None, event=event)
@@ -220,12 +530,22 @@ class NarrativeClassificationService:
         event: NewsEvent | None,
     ) -> list[NarrativeObservation]:
         rows: list[NarrativeObservation] = []
-        observed_at = getattr(article, "published_at", None) or getattr(event, "first_seen_at", None) or utcnow()
-        source_confidence = float(getattr(article, "provider_confidence", getattr(event, "provider_confidence", 0.5)) or 0.5)
+        observed_at = (
+            getattr(article, "published_at", None)
+            or getattr(event, "first_seen_at", None)
+            or utcnow()
+        )
+        source_confidence = float(
+            getattr(article, "provider_confidence", getattr(event, "provider_confidence", 0.5))
+            or 0.5
+        )
         article_id = article.id if article is not None else None
         event_id = event.id if event is not None else None
         for match in matches:
-            narrative_type = match.narrative.narrative_type or SLUG_TO_TYPE.get(match.narrative.slug, NarrativeType.MARKET_STRUCTURE).value
+            narrative_type = (
+                match.narrative.narrative_type
+                or SLUG_TO_TYPE.get(match.narrative.slug, NarrativeType.MARKET_STRUCTURE).value
+            )
             existing = (
                 self.db.query(NarrativeObservation)
                 .filter(
@@ -260,9 +580,15 @@ class NarrativeClassificationService:
         try:
             self.ensure_narratives()
             matches: list[NarrativeMatch] = []
-            narratives = self.db.query(MarketNarrative).filter(MarketNarrative.is_active.is_(True)).all()
+            narratives = (
+                self.db.query(MarketNarrative).filter(MarketNarrative.is_active.is_(True)).all()
+            )
             for narrative in narratives:
-                keywords = self.db.query(NarrativeKeyword).filter(NarrativeKeyword.narrative_id == narrative.id).all()
+                keywords = (
+                    self.db.query(NarrativeKeyword)
+                    .filter(NarrativeKeyword.narrative_id == narrative.id)
+                    .all()
+                )
                 matched = [keyword for keyword in keywords if keyword.keyword.lower() in text]
                 if not matched:
                     continue
@@ -276,7 +602,9 @@ class NarrativeClassificationService:
                         confidence=round(confidence, 6),
                     )
                 )
-            matches.sort(key=lambda match: (match.keyword_score, match.narrative.slug), reverse=True)
+            matches.sort(
+                key=lambda match: (match.keyword_score, match.narrative.slug), reverse=True
+            )
             NARRATIVE_CLASSIFICATIONS_TOTAL.inc(len(matches))
             NARRATIVES_DETECTED_TOTAL.inc(len({match.narrative.slug for match in matches}))
             return matches
@@ -287,11 +615,21 @@ class NarrativeClassificationService:
 
 
 class NarrativeScoringService:
-    def score_match(self, match: NarrativeMatch, item: NewsArticle | NewsEvent, snapshot_time: datetime, window: timedelta) -> dict[str, float]:
+    def score_match(
+        self,
+        match: NarrativeMatch,
+        item: NewsArticle | NewsEvent,
+        snapshot_time: datetime,
+        window: timedelta,
+    ) -> dict[str, float]:
         keyword_score = min(match.keyword_score / 8.0, 1.0)
-        impact = self._float(getattr(item, "market_impact_score", getattr(item, "impact_score", 0.0)))
+        impact = self._float(
+            getattr(item, "market_impact_score", getattr(item, "impact_score", 0.0))
+        )
         btc_relevance = self._float(getattr(item, "btc_relevance_score", 0.0))
-        confidence = self._float(getattr(item, "event_confidence", getattr(item, "confidence_score", 0.5)))
+        confidence = self._float(
+            getattr(item, "event_confidence", getattr(item, "confidence_score", 0.5))
+        )
         source_credibility = self._float(getattr(item, "credibility_score", 0.7)) or 0.7
         source_count = min(self._float(getattr(item, "source_count", 1.0)) / 5.0, 1.0)
         freshness = self._freshness(item, snapshot_time, window)
@@ -316,10 +654,22 @@ class NarrativeScoringService:
             "provider_confidence": round(provider, 6),
         }
 
-    def _freshness(self, item: NewsArticle | NewsEvent, snapshot_time: datetime, window: timedelta) -> float:
-        when = cast(datetime, getattr(item, "published_at", getattr(item, "first_seen_at", snapshot_time)))
-        comparable_snapshot = snapshot_time.replace(tzinfo=None) if snapshot_time.tzinfo and when.tzinfo is None else snapshot_time
-        comparable_when = when.replace(tzinfo=None) if when.tzinfo and comparable_snapshot.tzinfo is None else when
+    def _freshness(
+        self, item: NewsArticle | NewsEvent, snapshot_time: datetime, window: timedelta
+    ) -> float:
+        when = cast(
+            datetime, getattr(item, "published_at", getattr(item, "first_seen_at", snapshot_time))
+        )
+        comparable_snapshot = (
+            snapshot_time.replace(tzinfo=None)
+            if snapshot_time.tzinfo and when.tzinfo is None
+            else snapshot_time
+        )
+        comparable_when = (
+            when.replace(tzinfo=None)
+            if when.tzinfo and comparable_snapshot.tzinfo is None
+            else when
+        )
         age = max((comparable_snapshot - comparable_when).total_seconds(), 0.0)
         denominator = max(window.total_seconds(), 1.0)
         return round(max(0.0, 1.0 - min(age / denominator, 1.0)), 6)
@@ -337,7 +687,12 @@ class NarrativeHeatEngine:
         self, volume_score: float, impact_score: float, confidence_score: float, growth_score: float
     ) -> float:
         normalized_growth = max(0.0, min(growth_score, 100.0))
-        score = (volume_score * 0.35) + (impact_score * 0.30) + (confidence_score * 100.0 * 0.20) + (normalized_growth * 0.15)
+        score = (
+            (volume_score * 0.35)
+            + (impact_score * 0.30)
+            + (confidence_score * 100.0 * 0.20)
+            + (normalized_growth * 0.15)
+        )
         return round(max(0.0, min(score, 100.0)), 6)
 
     def band(self, heat_score: float) -> str:
@@ -373,9 +728,14 @@ class NarrativeDominanceIndex:
     def calculate(self, snapshots: list[NarrativeSnapshot]) -> dict[str, float]:
         total = sum(max(snapshot.weighted_score, 0.0) for snapshot in snapshots)
         if total <= 0:
-            return {str(snapshot.metadata_json.get("slug", snapshot.narrative_id)): 0.0 for snapshot in snapshots}
+            return {
+                str(snapshot.metadata_json.get("slug", snapshot.narrative_id)): 0.0
+                for snapshot in snapshots
+            }
         return {
-            str(snapshot.metadata_json.get("slug", snapshot.narrative_id)): round((max(snapshot.weighted_score, 0.0) / total) * 100.0, 6)
+            str(snapshot.metadata_json.get("slug", snapshot.narrative_id)): round(
+                (max(snapshot.weighted_score, 0.0) / total) * 100.0, 6
+            )
             for snapshot in snapshots
         }
 
@@ -385,7 +745,12 @@ class NarrativeRotationService:
         self.db = db
 
     def detect_rotations(self, window: str = "24h") -> list[dict[str, object]]:
-        latest_time = self.db.query(NarrativeSnapshot.snapshot_time).order_by(NarrativeSnapshot.snapshot_time.desc()).limit(1).scalar()
+        latest_time = (
+            self.db.query(NarrativeSnapshot.snapshot_time)
+            .order_by(NarrativeSnapshot.snapshot_time.desc())
+            .limit(1)
+            .scalar()
+        )
         if latest_time is None:
             return []
         previous_time = (
@@ -424,11 +789,24 @@ class NarrativeRotationService:
         ]
 
     def _snapshots_at(self, snapshot_time: datetime) -> list[NarrativeSnapshot]:
-        return self.db.query(NarrativeSnapshot).filter(NarrativeSnapshot.snapshot_time == snapshot_time).all()
+        return (
+            self.db.query(NarrativeSnapshot)
+            .filter(NarrativeSnapshot.snapshot_time == snapshot_time)
+            .all()
+        )
 
-    def _largest_delta(self, current: dict[str, float], previous: dict[str, float], positive: bool) -> tuple[str, float] | None:
-        deltas = [(slug, current.get(slug, 0.0) - previous.get(slug, 0.0)) for slug in set(current) | set(previous)]
-        filtered = [item for item in deltas if item[1] > 0] if positive else [item for item in deltas if item[1] < 0]
+    def _largest_delta(
+        self, current: dict[str, float], previous: dict[str, float], positive: bool
+    ) -> tuple[str, float] | None:
+        deltas = [
+            (slug, current.get(slug, 0.0) - previous.get(slug, 0.0))
+            for slug in set(current) | set(previous)
+        ]
+        filtered = (
+            [item for item in deltas if item[1] > 0]
+            if positive
+            else [item for item in deltas if item[1] < 0]
+        )
         if not filtered:
             return None
         return max(filtered, key=lambda item: abs(item[1]))
@@ -442,7 +820,9 @@ class NarrativeHeatmapService:
         self.trends = NarrativeTrendService()
         self.heat = NarrativeHeatEngine()
 
-    def build_heatmap(self, window: str = "24h", snapshot_time: datetime | None = None) -> dict[str, object]:
+    def build_heatmap(
+        self, window: str = "24h", snapshot_time: datetime | None = None
+    ) -> dict[str, object]:
         snapshot_at = snapshot_time or utcnow()
         delta = WINDOWS.get(window, WINDOWS["24h"])
         self.classifier.ensure_narratives()
@@ -453,7 +833,9 @@ class NarrativeHeatmapService:
         NARRATIVE_HEAT_UPDATES_TOTAL.inc(len(snapshots))
         dominance = NarrativeDominanceIndex().calculate(snapshots)
         for snapshot in snapshots:
-            snapshot.dominance_score = dominance.get(str(snapshot.metadata_json.get("slug", snapshot.narrative_id)), 0.0)
+            snapshot.dominance_score = dominance.get(
+                str(snapshot.metadata_json.get("slug", snapshot.narrative_id)), 0.0
+            )
         self.db.flush()
         NARRATIVE_DOMINANCE_UPDATES_TOTAL.inc()
         confidence_values = [snapshot.confidence_score for snapshot in snapshots]
@@ -463,10 +845,24 @@ class NarrativeHeatmapService:
         return {
             "window": window,
             "snapshot_time": snapshot_at,
-            "top_narratives": [self.snapshot_payload(snapshot, dominance) for snapshot in sorted(snapshots, key=lambda row: row.weighted_score, reverse=True)],
-            "top_rising_narratives": [self.snapshot_payload(snapshot, dominance) for snapshot in snapshots if snapshot.trend_direction in {"RISING", "SPIKING"}],
-            "top_falling_narratives": [self.snapshot_payload(snapshot, dominance) for snapshot in snapshots if snapshot.trend_direction in {"FALLING", "COOLING"}],
-            "highest_impact_narratives": [self.snapshot_payload(snapshot, dominance) for snapshot in sorted(snapshots, key=lambda row: row.impact_score, reverse=True)],
+            "top_narratives": [
+                self.snapshot_payload(snapshot, dominance)
+                for snapshot in sorted(snapshots, key=lambda row: row.weighted_score, reverse=True)
+            ],
+            "top_rising_narratives": [
+                self.snapshot_payload(snapshot, dominance)
+                for snapshot in snapshots
+                if snapshot.trend_direction in {"RISING", "SPIKING"}
+            ],
+            "top_falling_narratives": [
+                self.snapshot_payload(snapshot, dominance)
+                for snapshot in snapshots
+                if snapshot.trend_direction in {"FALLING", "COOLING"}
+            ],
+            "highest_impact_narratives": [
+                self.snapshot_payload(snapshot, dominance)
+                for snapshot in sorted(snapshots, key=lambda row: row.impact_score, reverse=True)
+            ],
             "dominance_index": dominance,
             "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
             "generated_at": utcnow(),
@@ -490,45 +886,97 @@ class NarrativeHeatmapService:
         )
         if row is None:
             return None
-        keywords = self.db.query(NarrativeKeyword).filter(NarrativeKeyword.narrative_id == row.id).order_by(NarrativeKeyword.weight.desc()).all()
+        keywords = (
+            self.db.query(NarrativeKeyword)
+            .filter(NarrativeKeyword.narrative_id == row.id)
+            .order_by(NarrativeKeyword.weight.desc())
+            .all()
+        )
         latest = self._latest_snapshot(row.id)
         return {
             **self.narrative_payload(row),
-            "keywords": [{"keyword": keyword.keyword, "weight": keyword.weight} for keyword in keywords],
+            "keywords": [
+                {"keyword": keyword.keyword, "weight": keyword.weight} for keyword in keywords
+            ],
             "latest_snapshot": self.snapshot_payload(latest, {}) if latest else None,
             "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
         }
 
     def latest_snapshots(self) -> list[NarrativeSnapshot]:
-        latest_time = self.db.query(NarrativeSnapshot.snapshot_time).order_by(NarrativeSnapshot.snapshot_time.desc()).limit(1).scalar()
+        latest_time = (
+            self.db.query(NarrativeSnapshot.snapshot_time)
+            .order_by(NarrativeSnapshot.snapshot_time.desc())
+            .limit(1)
+            .scalar()
+        )
         if latest_time is None:
             return []
-        return self.db.query(NarrativeSnapshot).filter(NarrativeSnapshot.snapshot_time == latest_time).all()
+        return (
+            self.db.query(NarrativeSnapshot)
+            .filter(NarrativeSnapshot.snapshot_time == latest_time)
+            .all()
+        )
 
     def top(self) -> dict[str, object]:
         snapshots = self.latest_snapshots()
         dominance = NarrativeDominanceIndex().calculate(snapshots)
-        return {"data": [self.snapshot_payload(row, dominance) for row in sorted(snapshots, key=lambda row: row.weighted_score, reverse=True)], "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
+        return {
+            "data": [
+                self.snapshot_payload(row, dominance)
+                for row in sorted(snapshots, key=lambda row: row.weighted_score, reverse=True)
+            ],
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
 
     def rising(self) -> dict[str, object]:
-        snapshots = [row for row in self.latest_snapshots() if row.trend_direction in {"RISING", "SPIKING"}]
+        snapshots = [
+            row for row in self.latest_snapshots() if row.trend_direction in {"RISING", "SPIKING"}
+        ]
         dominance = NarrativeDominanceIndex().calculate(snapshots)
-        return {"data": [self.snapshot_payload(row, dominance) for row in snapshots], "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
+        return {
+            "data": [self.snapshot_payload(row, dominance) for row in snapshots],
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
 
     def falling(self) -> dict[str, object]:
-        snapshots = [row for row in self.latest_snapshots() if row.trend_direction in {"FALLING", "COOLING"}]
+        snapshots = [
+            row for row in self.latest_snapshots() if row.trend_direction in {"FALLING", "COOLING"}
+        ]
         dominance = NarrativeDominanceIndex().calculate(snapshots)
-        return {"data": [self.snapshot_payload(row, dominance) for row in snapshots], "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
+        return {
+            "data": [self.snapshot_payload(row, dominance) for row in snapshots],
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
 
     def emerging(self) -> dict[str, object]:
-        snapshots = [row for row in self.latest_snapshots() if row.trend_direction in {"RISING", "SPIKING"} or row.velocity_score >= 10.0]
+        snapshots = [
+            row
+            for row in self.latest_snapshots()
+            if row.trend_direction in {"RISING", "SPIKING"} or row.velocity_score >= 10.0
+        ]
         dominance = NarrativeDominanceIndex().calculate(snapshots)
-        return {"data": [self.snapshot_payload(row, dominance) for row in sorted(snapshots, key=lambda row: row.velocity_score, reverse=True)], "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
+        return {
+            "data": [
+                self.snapshot_payload(row, dominance)
+                for row in sorted(snapshots, key=lambda row: row.velocity_score, reverse=True)
+            ],
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
 
     def dominant(self) -> dict[str, object]:
-        snapshots = [row for row in self.latest_snapshots() if row.dominance_score >= 20.0 or row.heat_score >= 60.0]
+        snapshots = [
+            row
+            for row in self.latest_snapshots()
+            if row.dominance_score >= 20.0 or row.heat_score >= 60.0
+        ]
         dominance = NarrativeDominanceIndex().calculate(snapshots)
-        return {"data": [self.snapshot_payload(row, dominance) for row in sorted(snapshots, key=lambda row: row.dominance_score, reverse=True)], "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY]}
+        return {
+            "data": [
+                self.snapshot_payload(row, dominance)
+                for row in sorted(snapshots, key=lambda row: row.dominance_score, reverse=True)
+            ],
+            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
+        }
 
     def narrative_payload(self, row: MarketNarrative) -> dict[str, object]:
         return {
@@ -544,7 +992,9 @@ class NarrativeHeatmapService:
             "updated_at": row.updated_at,
         }
 
-    def snapshot_payload(self, row: NarrativeSnapshot | None, dominance: dict[str, float]) -> dict[str, object] | None:
+    def snapshot_payload(
+        self, row: NarrativeSnapshot | None, dominance: dict[str, float]
+    ) -> dict[str, object] | None:
         if row is None:
             return None
         slug = str(row.metadata_json.get("slug", row.narrative_id))
@@ -587,23 +1037,50 @@ class NarrativeHeatmapService:
         dominance = NarrativeDominanceIndex().calculate(snapshots)
         return {
             "data": dominance,
-            "items": [self.snapshot_payload(row, dominance) for row in sorted(snapshots, key=lambda row: row.heat_score, reverse=True)],
+            "items": [
+                self.snapshot_payload(row, dominance)
+                for row in sorted(snapshots, key=lambda row: row.heat_score, reverse=True)
+            ],
             "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
         }
 
     def history(self, period: str = "month", limit: int = 20) -> dict[str, object]:
-        snapshots = self.db.query(NarrativeSnapshot).order_by(NarrativeSnapshot.snapshot_time.desc(), NarrativeSnapshot.heat_score.desc()).limit(limit).all()
+        snapshots = (
+            self.db.query(NarrativeSnapshot)
+            .order_by(NarrativeSnapshot.snapshot_time.desc(), NarrativeSnapshot.heat_score.desc())
+            .limit(limit)
+            .all()
+        )
         return {
             "period": period,
             "top_narratives": [self.snapshot_payload(row, {}) for row in snapshots],
-            "most_impactful_narratives": [self.snapshot_payload(row, {}) for row in sorted(snapshots, key=lambda row: row.impact_score, reverse=True)[:limit]],
-            "growth_leaders": [self.snapshot_payload(row, {}) for row in sorted(snapshots, key=lambda row: row.growth_score, reverse=True)[:limit]],
-            "declining_narratives": [self.snapshot_payload(row, {}) for row in sorted(snapshots, key=lambda row: row.growth_score)[:limit]],
+            "most_impactful_narratives": [
+                self.snapshot_payload(row, {})
+                for row in sorted(snapshots, key=lambda row: row.impact_score, reverse=True)[:limit]
+            ],
+            "growth_leaders": [
+                self.snapshot_payload(row, {})
+                for row in sorted(snapshots, key=lambda row: row.growth_score, reverse=True)[:limit]
+            ],
+            "declining_narratives": [
+                self.snapshot_payload(row, {})
+                for row in sorted(snapshots, key=lambda row: row.growth_score)[:limit]
+            ],
             "before_major_btc_moves": [],
-            "limitations": [NARRATIVE_LIMITATION, NARRATIVE_SAFETY, "Major BTC move correlation requires candle attribution backfill."],
+            "limitations": [
+                NARRATIVE_LIMITATION,
+                NARRATIVE_SAFETY,
+                "Major BTC move correlation requires candle attribution backfill.",
+            ],
         }
 
-    def _aggregate(self, articles: list[NewsArticle], events: list[NewsEvent], snapshot_time: datetime, window: timedelta) -> dict[int, dict[str, Any]]:
+    def _aggregate(
+        self,
+        articles: list[NewsArticle],
+        events: list[NewsEvent],
+        snapshot_time: datetime,
+        window: timedelta,
+    ) -> dict[int, dict[str, Any]]:
         aggregates: dict[int, dict[str, Any]] = {}
         for article in articles:
             matches = self.classifier.classify_article(article)
@@ -659,7 +1136,9 @@ class NarrativeHeatmapService:
             for keyword in match.matched_keywords:
                 aggregate["keywords"][keyword] = aggregate["keywords"].get(keyword, 0) + 1
 
-    def _store_snapshots(self, aggregates: dict[int, dict[str, Any]], snapshot_time: datetime) -> list[NarrativeSnapshot]:
+    def _store_snapshots(
+        self, aggregates: dict[int, dict[str, Any]], snapshot_time: datetime
+    ) -> list[NarrativeSnapshot]:
         snapshots: list[NarrativeSnapshot] = []
         for narrative_id, aggregate in aggregates.items():
             narrative = aggregate["narrative"]
@@ -673,9 +1152,22 @@ class NarrativeHeatmapService:
             trend = self.trends.detect_trend(score, previous_heat if previous else None)
             NARRATIVE_GROWTH_RECALCULATIONS_TOTAL.inc()
             provider_confidence = self._average(aggregate["provider_confidences"], 0.5)
-            confidence = round(min(1.0, (provider_confidence * 0.45) + (min(aggregate["mention_count"] / 5.0, 1.0) * 0.35) + (min(score / 100.0, 1.0) * 0.20)), 6)
-            heat_score = self.heat.compute_heat_score(volume_score, impact_score, confidence, growth_score)
-            narrative_type = narrative.narrative_type or SLUG_TO_TYPE.get(narrative.slug, NarrativeType.MARKET_STRUCTURE).value
+            confidence = round(
+                min(
+                    1.0,
+                    (provider_confidence * 0.45)
+                    + (min(aggregate["mention_count"] / 5.0, 1.0) * 0.35)
+                    + (min(score / 100.0, 1.0) * 0.20),
+                ),
+                6,
+            )
+            heat_score = self.heat.compute_heat_score(
+                volume_score, impact_score, confidence, growth_score
+            )
+            narrative_type = (
+                narrative.narrative_type
+                or SLUG_TO_TYPE.get(narrative.slug, NarrativeType.MARKET_STRUCTURE).value
+            )
             snapshot = NarrativeSnapshot(
                 snapshot_time=snapshot_time,
                 narrative_id=narrative_id,
@@ -701,9 +1193,15 @@ class NarrativeHeatmapService:
                     "name": narrative.name,
                     "category": narrative.category,
                     "evidence": {
-                        "top_articles": [item for item in aggregate["top_titles"] if "article_id" in item][:5],
-                        "top_events": [item for item in aggregate["top_titles"] if "event_id" in item][:5],
-                        "top_keywords": sorted(aggregate["keywords"].items(), key=lambda item: item[1], reverse=True)[:8],
+                        "top_articles": [
+                            item for item in aggregate["top_titles"] if "article_id" in item
+                        ][:5],
+                        "top_events": [
+                            item for item in aggregate["top_titles"] if "event_id" in item
+                        ][:5],
+                        "top_keywords": sorted(
+                            aggregate["keywords"].items(), key=lambda item: item[1], reverse=True
+                        )[:8],
                         "provider_state": "HEALTHY" if provider_confidence >= 0.7 else "DEGRADED",
                         "confidence_reasoning": "Confidence combines provider confidence, sample size, and weighted narrative score.",
                         "scoring_factors": {
@@ -725,13 +1223,38 @@ class NarrativeHeatmapService:
         return snapshots
 
     def _articles(self, start: datetime, end: datetime) -> list[NewsArticle]:
-        return self.db.query(NewsArticle).filter(and_(NewsArticle.published_at >= start, NewsArticle.published_at <= end, NewsArticle.is_duplicate.is_(False))).all()
+        return (
+            self.db.query(NewsArticle)
+            .filter(
+                and_(
+                    NewsArticle.published_at >= start,
+                    NewsArticle.published_at <= end,
+                    NewsArticle.is_duplicate.is_(False),
+                )
+            )
+            .all()
+        )
 
     def _events(self, start: datetime, end: datetime) -> list[NewsEvent]:
-        return self.db.query(NewsEvent).filter(and_(NewsEvent.first_seen_at >= start, NewsEvent.first_seen_at <= end, NewsEvent.is_active.is_(True))).all()
+        return (
+            self.db.query(NewsEvent)
+            .filter(
+                and_(
+                    NewsEvent.first_seen_at >= start,
+                    NewsEvent.first_seen_at <= end,
+                    NewsEvent.is_active.is_(True),
+                )
+            )
+            .all()
+        )
 
     def _latest_snapshot(self, narrative_id: int) -> NarrativeSnapshot | None:
-        return self.db.query(NarrativeSnapshot).filter(NarrativeSnapshot.narrative_id == narrative_id).order_by(NarrativeSnapshot.snapshot_time.desc(), NarrativeSnapshot.id.desc()).first()
+        return (
+            self.db.query(NarrativeSnapshot)
+            .filter(NarrativeSnapshot.narrative_id == narrative_id)
+            .order_by(NarrativeSnapshot.snapshot_time.desc(), NarrativeSnapshot.id.desc())
+            .first()
+        )
 
     def _store_timeline_events(self, snapshots: list[NarrativeSnapshot]) -> None:
         for snapshot in snapshots:
@@ -739,7 +1262,14 @@ class NarrativeHeatmapService:
                 continue
             slug = str(snapshot.metadata_json.get("slug", snapshot.narrative_id))
             title = f"{slug} narrative entered {snapshot.trend_direction} state"
-            exists = self.db.query(IntelligenceTimelineEvent).filter(IntelligenceTimelineEvent.event_time == snapshot.snapshot_time, IntelligenceTimelineEvent.title == title).first()
+            exists = (
+                self.db.query(IntelligenceTimelineEvent)
+                .filter(
+                    IntelligenceTimelineEvent.event_time == snapshot.snapshot_time,
+                    IntelligenceTimelineEvent.title == title,
+                )
+                .first()
+            )
             if exists is not None:
                 continue
             self.db.add(
@@ -755,13 +1285,18 @@ class NarrativeHeatmapService:
                     provider_confidence=snapshot.provider_confidence,
                     timeline_rank=snapshot.weighted_score,
                     tags_json=["narrative", slug, snapshot.trend_direction.lower()],
-                    metadata_json={"narrative_id": snapshot.narrative_id, "snapshot_id": snapshot.id},
+                    metadata_json={
+                        "narrative_id": snapshot.narrative_id,
+                        "snapshot_id": snapshot.id,
+                    },
                     limitations_json=[NARRATIVE_LIMITATION, NARRATIVE_SAFETY],
                 )
             )
 
     def _sentiment_value(self, item: NewsArticle | NewsEvent) -> float:
-        sentiment = str(getattr(item, "sentiment_label", getattr(item, "event_sentiment", "UNKNOWN"))).upper()
+        sentiment = str(
+            getattr(item, "sentiment_label", getattr(item, "event_sentiment", "UNKNOWN"))
+        ).upper()
         if sentiment == "POSITIVE":
             return 1.0
         if sentiment == "NEGATIVE":

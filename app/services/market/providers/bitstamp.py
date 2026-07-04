@@ -22,7 +22,14 @@ class BitstampProvider(BaseMarketProvider):
         price = float(data["last"])
         if price <= 0:
             raise ProviderPayloadError("negative price")
-        return ProviderPrice("bitstamp", "BTCUSD", price, datetime.now(UTC), int((time.perf_counter() - start) * 1000), data)
+        return ProviderPrice(
+            "bitstamp",
+            "BTCUSD",
+            price,
+            datetime.now(UTC),
+            int((time.perf_counter() - start) * 1000),
+            data,
+        )
 
     def healthcheck(self) -> bool:
         try:

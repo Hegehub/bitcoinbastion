@@ -29,7 +29,9 @@ class SourceReputationService:
             db.rollback()
             return []
 
-    def list_profiles(self, db: Session, limit: int, offset: int) -> list[SourceReputationProfileOut]:
+    def list_profiles(
+        self, db: Session, limit: int, offset: int
+    ) -> list[SourceReputationProfileOut]:
         repo = NewsRepository(db)
         try:
             return [

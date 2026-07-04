@@ -34,12 +34,16 @@ def test_format_top_signals_handles_items() -> None:
 
 
 def test_format_fee_recommendation_handles_payload() -> None:
-    out = format_fee_recommendation({"data": {"suggested_fee_rate_sat_vb": 12, "rationale": "low congestion"}})
+    out = format_fee_recommendation(
+        {"data": {"suggested_fee_rate_sat_vb": 12, "rationale": "low congestion"}}
+    )
     assert "12 sat/vB" in out
 
 
 def test_format_wallet_health_handles_payload() -> None:
-    out = format_wallet_health({"data": {"health_score": 91.5, "recommendations": ["Consolidate UTXOs"]}})
+    out = format_wallet_health(
+        {"data": {"health_score": 91.5, "recommendations": ["Consolidate UTXOs"]}}
+    )
     assert "91.5" in out
     assert "Consolidate UTXOs" in out
 

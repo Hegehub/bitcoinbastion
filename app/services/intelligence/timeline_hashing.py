@@ -3,7 +3,9 @@ import json
 
 
 def _stable(data: dict[str, object]) -> str:
-    return hashlib.sha256(json.dumps(data, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    return hashlib.sha256(
+        json.dumps(data, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
 
 
 def build_event_hash(data: dict[str, object]) -> str:

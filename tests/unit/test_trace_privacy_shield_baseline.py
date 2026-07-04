@@ -9,6 +9,8 @@ def test_dust_threshold_default() -> None:
 
 
 def test_privacy_shield_unknown_without_utxo() -> None:
-    r = PrivacyShieldService().build_privacy_shield("1BoatSLRHtKNngkdXEeobR76b53LETtpyT", None, None)
+    r = PrivacyShieldService().build_privacy_shield(
+        "1BoatSLRHtKNngkdXEeobR76b53LETtpyT", None, None
+    )
     assert r.privacy_band.value == "UNKNOWN"
     assert "PRIVACY_NOT_ILLICIT_RISK" in r.privacy_reason_codes

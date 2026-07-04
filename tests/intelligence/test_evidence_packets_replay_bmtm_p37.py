@@ -9,7 +9,11 @@ import app.db.models  # noqa: F401
 from app.api.dependencies import db_session
 from app.db.base import Base
 from app.db.models.candle_attribution import CandleAttribution
-from app.db.models.intelligence_signals import IntelligenceOperatorReview, IntelligenceSignalCandidate, IntelligenceSignalDeliveryLog
+from app.db.models.intelligence_signals import (
+    IntelligenceOperatorReview,
+    IntelligenceSignalCandidate,
+    IntelligenceSignalDeliveryLog,
+)
 from app.db.models.news_article import NewsArticle
 from app.db.models.news_event import NewsEvent
 from app.db.models.news_price_impact import NewsPriceImpact
@@ -26,14 +30,23 @@ from app.services.intelligence.evidence_replay_service import EvidenceReplayServ
 
 
 def _session() -> Session:
-    engine = create_engine("sqlite+pysqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool)
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     Base.metadata.create_all(engine)
     return Session(engine)
 
 
 def _seed_chain(db: Session) -> dict[str, object]:
     now = datetime(2026, 6, 3, 12, 0, 0)
-    source = NewsSource(name="Bastion Test Source", slug="bastion-test", base_url="https://example.test", provider_confidence=0.82)
+    source = NewsSource(
+        name="Bastion Test Source",
+        slug="bastion-test",
+        base_url="https://example.test",
+        provider_confidence=0.82,
+    )
     db.add(source)
     db.flush()
     article = NewsArticle(
@@ -136,9 +149,23 @@ def _seed_chain(db: Session) -> dict[str, object]:
             publish_override=True,
         )
     )
-    db.add(IntelligenceSignalDeliveryLog(signal_candidate_id=signal.id, channel="web", delivery_status="success", target="public-web", delivered_at=now + timedelta(minutes=21)))
+    db.add(
+        IntelligenceSignalDeliveryLog(
+            signal_candidate_id=signal.id,
+            channel="web",
+            delivery_status="success",
+            target="public-web",
+            delivered_at=now + timedelta(minutes=21),
+        )
+    )
     db.commit()
-    return {"article": article, "event": event, "impact": impact, "attribution": attribution, "signal": signal}
+    return {
+        "article": article,
+        "event": event,
+        "impact": impact,
+        "attribution": attribution,
+        "signal": signal,
+    }
 
 
 def test_packet_creation_relationships_limitations_confidence_and_exports() -> None:
@@ -214,7 +241,10 @@ def test_evidence_api_contracts() -> None:
         packet_response = client.get(f"/api/v1/evidence/packets/{packet.id}")
         assert packet_response.status_code == 200
         assert packet_response.json()["data"]["correlation_not_causation"] is True
-        assert client.get(f"/api/v1/evidence/packets/{packet.id}?format=markdown").json()["format"] == "markdown"
+        assert (
+            client.get(f"/api/v1/evidence/packets/{packet.id}?format=markdown").json()["format"]
+            == "markdown"
+        )
         assert client.get(f"/api/v1/evidence/packets/{packet.id}/timeline").status_code == 200
         relationships = client.get(f"/api/v1/evidence/packets/{packet.id}/relationships")
         assert relationships.status_code == 200
@@ -222,8 +252,19 @@ def test_evidence_api_contracts() -> None:
         replay = client.get(f"/api/v1/evidence/replay/signal/{rows['signal'].id}")
         assert replay.status_code == 200
         assert replay.json()["data"]["correlation_not_causation"] is True
-        assert client.get(f"/api/v1/evidence/replay/signal/{rows['signal'].id}?format=markdown").json()["format"] == "markdown"
-        assert client.get(f"/api/v1/evidence/replay/signal/{rows['signal'].id}/timeline").status_code == 200
-        assert client.get(f"/api/v1/evidence/replay/signal/{rows['signal'].id}/integrity").status_code == 200
+        assert (
+            client.get(
+                f"/api/v1/evidence/replay/signal/{rows['signal'].id}?format=markdown"
+            ).json()["format"]
+            == "markdown"
+        )
+        assert (
+            client.get(f"/api/v1/evidence/replay/signal/{rows['signal'].id}/timeline").status_code
+            == 200
+        )
+        assert (
+            client.get(f"/api/v1/evidence/replay/signal/{rows['signal'].id}/integrity").status_code
+            == 200
+        )
     finally:
         app.dependency_overrides.clear()

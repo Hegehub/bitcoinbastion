@@ -57,7 +57,11 @@ class NarrativeMemoryService:
         data = snapshots.get("data", [])
         if not isinstance(data, list):
             return []
-        return [item for item in data if isinstance(item, dict) and float(item.get("heat_score", 0.0)) > 0.0]
+        return [
+            item
+            for item in data
+            if isinstance(item, dict) and float(item.get("heat_score", 0.0)) > 0.0
+        ]
 
     def track_narrative_strength(self, narrative: str, window_hours: int = 24) -> dict[str, object]:
         snapshot = self._calculate_snapshot(narrative, window_hours=window_hours)
@@ -67,17 +71,28 @@ class NarrativeMemoryService:
         latest = (
             self.db.query(NarrativeMemorySnapshot)
             .filter(NarrativeMemorySnapshot.narrative == narrative)
-            .order_by(NarrativeMemorySnapshot.snapshot_time.desc(), NarrativeMemorySnapshot.id.desc())
+            .order_by(
+                NarrativeMemorySnapshot.snapshot_time.desc(), NarrativeMemorySnapshot.id.desc()
+            )
             .first()
         )
         if latest is None:
             return {"narrative": narrative, "decay_score": 1.0, "limitations": SAFETY_LIMITATIONS}
         age_hours = max((utcnow() - latest.snapshot_time).total_seconds() / 3600.0, 0.0)
         decay = max(0.0, min(1.0, age_hours / 72.0))
-        return {"narrative": narrative, "decay_score": round(decay, 6), "limitations": SAFETY_LIMITATIONS}
+        return {
+            "narrative": narrative,
+            "decay_score": round(decay, 6),
+            "limitations": SAFETY_LIMITATIONS,
+        }
 
-    def build_narrative_snapshot(self, window_hours: int = 24, persist: bool = True) -> dict[str, object]:
-        rows = [self._calculate_snapshot(narrative, window_hours=window_hours) for narrative in INITIAL_NARRATIVES]
+    def build_narrative_snapshot(
+        self, window_hours: int = 24, persist: bool = True
+    ) -> dict[str, object]:
+        rows = [
+            self._calculate_snapshot(narrative, window_hours=window_hours)
+            for narrative in INITIAL_NARRATIVES
+        ]
         if persist:
             self.db.add_all(rows)
             self.db.flush()
@@ -92,7 +107,9 @@ class NarrativeMemoryService:
     def history(self, limit: int = 100) -> dict[str, object]:
         rows = (
             self.db.query(NarrativeMemorySnapshot)
-            .order_by(NarrativeMemorySnapshot.snapshot_time.desc(), NarrativeMemorySnapshot.id.desc())
+            .order_by(
+                NarrativeMemorySnapshot.snapshot_time.desc(), NarrativeMemorySnapshot.id.desc()
+            )
             .limit(max(0, min(limit, 500)))
             .all()
         )
@@ -114,13 +131,40 @@ class NarrativeMemoryService:
             .all()
         }
         event_count = len(events)
-        weighted_impact = self._avg([event.market_impact_score * event.btc_relevance_score for event in events])
-        source_quality = self._avg([min(1.0, (event.source_count / 3.0 + event.provider_confidence) / 2.0) for event in events])
-        market_reaction = self._avg([min(abs(float(getattr(impact, "change_4h_pct", 0.0) or 0.0)) / 5.0, 1.0) for impact in impacts.values()])
-        newest_age_hours = min([self._age_hours(now, event.first_seen_at) for event in events], default=window_hours)
+        weighted_impact = self._avg(
+            [event.market_impact_score * event.btc_relevance_score for event in events]
+        )
+        source_quality = self._avg(
+            [
+                min(1.0, (event.source_count / 3.0 + event.provider_confidence) / 2.0)
+                for event in events
+            ]
+        )
+        market_reaction = self._avg(
+            [
+                min(abs(float(getattr(impact, "change_4h_pct", 0.0) or 0.0)) / 5.0, 1.0)
+                for impact in impacts.values()
+            ]
+        )
+        newest_age_hours = min(
+            [self._age_hours(now, event.first_seen_at) for event in events], default=window_hours
+        )
         time_decay = max(0.0, min(1.0, 1.0 - newest_age_hours / max(window_hours, 1)))
         volume = min(1.0, event_count / 10.0)
-        heat = round(max(0.0, min(1.0, volume * 0.25 + weighted_impact * 0.25 + source_quality * 0.20 + market_reaction * 0.15 + time_decay * 0.15)), 6)
+        heat = round(
+            max(
+                0.0,
+                min(
+                    1.0,
+                    volume * 0.25
+                    + weighted_impact * 0.25
+                    + source_quality * 0.20
+                    + market_reaction * 0.15
+                    + time_decay * 0.15,
+                ),
+            ),
+            6,
+        )
         return NarrativeMemorySnapshot(
             narrative=narrative,
             snapshot_time=now,

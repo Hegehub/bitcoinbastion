@@ -11,7 +11,9 @@ class ImpactWindowSnapshot(Base):
     __tablename__ = "impact_window_snapshots"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    impact_id: Mapped[int] = mapped_column(ForeignKey("news_price_impacts.id"), index=True, nullable=False)
+    impact_id: Mapped[int] = mapped_column(
+        ForeignKey("news_price_impacts.id"), index=True, nullable=False
+    )
     window_name: Mapped[str] = mapped_column(String(16), index=True)
     window_minutes: Mapped[int] = mapped_column(Integer)
     price_before: Mapped[float | None] = mapped_column(Float, nullable=True)

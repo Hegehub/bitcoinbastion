@@ -29,6 +29,8 @@ class SourceReputationProfile(Base):
     total_events_created: Mapped[int] = mapped_column(Integer, default=0)
     provider_confidence: Mapped[float] = mapped_column(Float, default=0.5)
     notes: Mapped[str] = mapped_column(String(1000), default="")
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

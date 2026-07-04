@@ -50,7 +50,11 @@ class PatternStatisticsService:
         return summary
 
     def compute_all(self) -> list[HistoricalReactionSummary]:
-        return [summary for pattern in self.memory.ensure_patterns() if (summary := self.compute(pattern.slug))]
+        return [
+            summary
+            for pattern in self.memory.ensure_patterns()
+            if (summary := self.compute(pattern.slug))
+        ]
 
     def payload(self, summary: HistoricalReactionSummary | None) -> dict[str, object] | None:
         if summary is None:
@@ -77,7 +81,11 @@ class PatternStatisticsService:
         moves_4h: list[float],
         impacts: list[NewsPriceImpact],
     ) -> None:
-        row = self.db.query(PatternStatistics).filter(PatternStatistics.pattern_id == pattern.id).first()
+        row = (
+            self.db.query(PatternStatistics)
+            .filter(PatternStatistics.pattern_id == pattern.id)
+            .first()
+        )
         if row is None:
             row = PatternStatistics(pattern_id=pattern.id)
             self.db.add(row)

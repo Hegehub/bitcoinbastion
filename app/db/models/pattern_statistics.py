@@ -11,7 +11,9 @@ class PatternStatistics(Base):
     __tablename__ = "pattern_statistics"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    pattern_id: Mapped[int] = mapped_column(ForeignKey("market_patterns.id"), unique=True, index=True, nullable=False)
+    pattern_id: Mapped[int] = mapped_column(
+        ForeignKey("market_patterns.id"), unique=True, index=True, nullable=False
+    )
     pattern_slug: Mapped[str] = mapped_column(String(96), index=True, default="")
     historical_occurrences: Mapped[int] = mapped_column(Integer, default=0)
     occurrence_count: Mapped[int] = mapped_column(Integer, default=0)

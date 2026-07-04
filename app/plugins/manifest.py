@@ -61,7 +61,9 @@ class PluginManifest(BaseModel):
     @classmethod
     def validate_plugin_id(cls, value: str) -> str:
         if not PLUGIN_ID_PATTERN.match(value):
-            raise ValueError("plugin_id must be lowercase and contain only letters, numbers, _, -, or .")
+            raise ValueError(
+                "plugin_id must be lowercase and contain only letters, numbers, _, -, or ."
+            )
         return value
 
     @field_validator("permissions", mode="before")

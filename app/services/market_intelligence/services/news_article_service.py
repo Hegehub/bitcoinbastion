@@ -9,7 +9,9 @@ class NewsArticleService:
         raise NotImplementedError
 
     def mark_duplicate(self, article_id: int, duplicate_of_id: int) -> object:
-        logger.info("duplicate marked", extra={"event": "duplicate_marked", "article_id": article_id})
+        logger.info(
+            "duplicate marked", extra={"event": "duplicate_marked", "article_id": article_id}
+        )
         raise NotImplementedError
 
     def get_recent_articles(self, limit: int = 20) -> list[object]:

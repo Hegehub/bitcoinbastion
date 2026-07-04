@@ -1,13 +1,12 @@
 """initial schema
 
 Revision ID: 20260413_0001
-Revises: 
+Revises:
 Create Date: 2026-04-13
 """
 
 from alembic import op
 import sqlalchemy as sa
-
 
 revision = "20260413_0001"
 down_revision = None
@@ -52,8 +51,12 @@ def upgrade() -> None:
         sa.Column("status", sa.String(length=30), nullable=False, server_default="active"),
         sa.Column("started_at", sa.DateTime(), nullable=False),
         sa.Column("expires_at", sa.DateTime(), nullable=True),
-        sa.Column("billing_provider", sa.String(length=40), nullable=False, server_default="manual"),
-        sa.Column("external_subscription_id", sa.String(length=120), nullable=False, server_default=""),
+        sa.Column(
+            "billing_provider", sa.String(length=40), nullable=False, server_default="manual"
+        ),
+        sa.Column(
+            "external_subscription_id", sa.String(length=120), nullable=False, server_default=""
+        ),
     )
 
     op.create_table(
@@ -82,7 +85,9 @@ def upgrade() -> None:
         sa.Column("summary", sa.Text(), nullable=False, server_default=""),
         sa.Column("language", sa.String(length=8), nullable=False, server_default="en"),
         sa.Column("content_hash", sa.String(length=64), nullable=False),
-        sa.Column("duplicate_of_id", sa.Integer(), sa.ForeignKey("news_articles.id"), nullable=True),
+        sa.Column(
+            "duplicate_of_id", sa.Integer(), sa.ForeignKey("news_articles.id"), nullable=True
+        ),
         sa.Column("published_at", sa.DateTime(), nullable=False),
         sa.Column("fetched_at", sa.DateTime(), nullable=False),
         sa.Column("processed_at", sa.DateTime(), nullable=True),
@@ -93,7 +98,9 @@ def upgrade() -> None:
         sa.Column("credibility_score", sa.Float(), nullable=False, server_default="0"),
         sa.Column("metadata_json", sa.Text(), nullable=False, server_default="{}"),
     )
-    op.create_index("ix_news_articles_content_hash", "news_articles", ["content_hash"], unique=False)
+    op.create_index(
+        "ix_news_articles_content_hash", "news_articles", ["content_hash"], unique=False
+    )
 
     op.create_table(
         "signals",

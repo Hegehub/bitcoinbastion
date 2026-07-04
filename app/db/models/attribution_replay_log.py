@@ -19,6 +19,10 @@ class AttributionReplayLog(Base):
     candidate_event_count: Mapped[int] = mapped_column(Integer, default=0)
     timeline_window_before_seconds: Mapped[int] = mapped_column(Integer, default=0)
     timeline_window_after_seconds: Mapped[int] = mapped_column(Integer, default=0)
-    ranking_snapshot_json: Mapped[list[dict[str, object]]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
-    explanation_snapshot_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    ranking_snapshot_json: Mapped[list[dict[str, object]]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
+    explanation_snapshot_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

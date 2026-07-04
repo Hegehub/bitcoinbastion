@@ -26,7 +26,11 @@ from app.services.intelligence.signal_governance_metrics import (
 
 
 def _session() -> Session:
-    engine = create_engine("sqlite+pysqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool)
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     Base.metadata.create_all(engine)
     return Session(engine)
 
@@ -56,7 +60,9 @@ def _event(db: Session) -> NewsEvent:
     return row
 
 
-def _impact(event: NewsEvent, *, confidence: float = 0.82, provider: float = 0.9) -> NewsPriceImpact:
+def _impact(
+    event: NewsEvent, *, confidence: float = 0.82, provider: float = 0.9
+) -> NewsPriceImpact:
     return NewsPriceImpact(
         event_id=event.id,
         sentiment_label="POSITIVE",
@@ -121,7 +127,17 @@ def test_candidate_generation_policy_review_delivery_and_public_safety() -> None
     db.flush()
     low = service.create_from_price_impact(low_impact)
     degraded = service.create_from_price_impact(degraded_impact)
-    missing = IntelligenceSignalCandidate(signal_type="news_market_impact", source_entity_type="manual", source_entity_id=1, title="Missing evidence", confidence_score=0.9, btc_relevance_score=0.9, market_impact_score=0.9, source_confidence=0.9, provider_confidence=0.9)
+    missing = IntelligenceSignalCandidate(
+        signal_type="news_market_impact",
+        source_entity_type="manual",
+        source_entity_id=1,
+        title="Missing evidence",
+        confidence_score=0.9,
+        btc_relevance_score=0.9,
+        market_impact_score=0.9,
+        source_confidence=0.9,
+        provider_confidence=0.9,
+    )
     db.add(missing)
     db.flush()
     PublishingPolicyService(db).apply(missing)
@@ -130,11 +146,16 @@ def test_candidate_generation_policy_review_delivery_and_public_safety() -> None
     assert "auto_publish_disabled" in candidate.policy_reason
     assert candle_candidate.signal_type == "candle_attribution"
     assert low.requires_operator_review is True and "low_impact_confidence" in low.policy_reason
-    assert degraded.requires_operator_review is True and "provider_confidence_low" in degraded.policy_reason
+    assert (
+        degraded.requires_operator_review is True
+        and "provider_confidence_low" in degraded.policy_reason
+    )
     assert degraded.status == "degraded"
     assert missing.requires_operator_review is True and "missing_evidence" in missing.policy_reason
 
-    approved = OperatorReviewService(db).review(candidate.id, "approved", decision_reason="evidence accepted", confidence_override=0.77)
+    approved = OperatorReviewService(db).review(
+        candidate.id, "approved", decision_reason="evidence accepted", confidence_override=0.77
+    )
     assert candidate.status == "approved"
     assert approved.confidence_override == 0.77
     OperatorReviewService(db).review(low.id, "rejected", decision_reason="weak evidence")
@@ -148,8 +169,17 @@ def test_candidate_generation_policy_review_delivery_and_public_safety() -> None
     duplicate = service.create_from_price_impact(impact)
     assert "duplicate_signal" in duplicate.policy_reason
 
-    ok_log = SignalDeliveryLogService(db).record(candidate.id, channel="web", delivery_status="success", target="public-web")
-    fail_log = SignalDeliveryLogService(db).record(candidate.id, channel="telegram", delivery_status="failed", target="chat", error_type="Token Error", error_message="token=secret leaked")
+    ok_log = SignalDeliveryLogService(db).record(
+        candidate.id, channel="web", delivery_status="success", target="public-web"
+    )
+    fail_log = SignalDeliveryLogService(db).record(
+        candidate.id,
+        channel="telegram",
+        delivery_status="failed",
+        target="chat",
+        error_type="Token Error",
+        error_message="token=secret leaked",
+    )
     public = SignalGovernanceService(db).public_payload(candidate)
 
     assert ok_log.delivered_at is not None
@@ -182,8 +212,19 @@ def test_operator_and_public_signal_api_contracts() -> None:
     try:
         assert client.get("/api/v1/operator/signals/pending").status_code == 200
         assert client.get(f"/api/v1/operator/signals/{candidate.id}").status_code == 200
-        assert client.post(f"/api/v1/operator/signals/{candidate.id}/approve", json={"decision_reason": "ok"}).status_code == 200
-        assert client.post(f"/api/v1/operator/signals/{candidate.id}/confidence-override", json={"confidence_override": 0.7}).status_code == 200
+        assert (
+            client.post(
+                f"/api/v1/operator/signals/{candidate.id}/approve", json={"decision_reason": "ok"}
+            ).status_code
+            == 200
+        )
+        assert (
+            client.post(
+                f"/api/v1/operator/signals/{candidate.id}/confidence-override",
+                json={"confidence_override": 0.7},
+            ).status_code
+            == 200
+        )
         assert client.get("/api/v1/signals/news-market-impact").status_code == 200
         latest = client.get("/api/v1/signals/latest")
         assert latest.status_code == 200

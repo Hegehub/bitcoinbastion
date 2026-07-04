@@ -62,7 +62,9 @@ class HistoricalEventProfileBuilder:
             profile.price_change_1h_pct = impact.change_1h_pct
             profile.price_change_4h_pct = impact.change_4h_pct
             profile.price_change_24h_pct = impact.change_24h_pct
-            profile.confidence_score = self._clamp(impact.impact_confidence_score or impact.confidence_score)
+            profile.confidence_score = self._clamp(
+                impact.impact_confidence_score or impact.confidence_score
+            )
             return profile
         pattern = infer_pattern_type(impact.sentiment_label)
         return HistoricalEventProfile(
@@ -83,14 +85,18 @@ class HistoricalEventProfileBuilder:
             provider_confidence=self._clamp(impact.provider_confidence),
         )
 
-    def build_from_candle_attribution(self, attribution: CandleAttribution) -> HistoricalEventProfile:
+    def build_from_candle_attribution(
+        self, attribution: CandleAttribution
+    ) -> HistoricalEventProfile:
         event = self.db.get(NewsEvent, attribution.event_id) if attribution.event_id else None
         if event is not None:
             profile = self.build_from_news_event(event)
             profile.confidence_score = self._clamp(attribution.confidence_score)
             profile.provider_confidence = self._clamp(attribution.provider_confidence)
             return profile
-        pattern = infer_pattern_type(attribution.summary_text, attribution.attribution_type, attribution.candidate_category)
+        pattern = infer_pattern_type(
+            attribution.summary_text, attribution.attribution_type, attribution.candidate_category
+        )
         return HistoricalEventProfile(
             event_type=attribution.attribution_type,
             pattern_type=pattern.value,
@@ -114,7 +120,11 @@ class HistoricalEventProfileBuilder:
                 profile.price_change_4h_pct or 0.0,
                 profile.price_change_24h_pct or 0.0,
             ),
-            scoring=(profile.btc_relevance_score, profile.market_impact_score, profile.confidence_score),
+            scoring=(
+                profile.btc_relevance_score,
+                profile.market_impact_score,
+                profile.confidence_score,
+            ),
             context=(
                 profile.institutional_score,
                 profile.macro_score,
@@ -126,7 +136,14 @@ class HistoricalEventProfileBuilder:
 
     def _sovereignty_score(self, event: NewsEvent) -> float:
         text = f"{event.canonical_title} {event.canonical_summary}".lower()
-        keywords = ["self-custody", "privacy", "open-source", "local node", "bitcoin core", "censorship"]
+        keywords = [
+            "self-custody",
+            "privacy",
+            "open-source",
+            "local node",
+            "bitcoin core",
+            "censorship",
+        ]
         return self._clamp(sum(1 for keyword in keywords if keyword in text) / 3.0)
 
     def _clamp(self, value: float | int | None) -> float:

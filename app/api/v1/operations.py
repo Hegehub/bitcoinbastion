@@ -6,7 +6,13 @@ from app.api.dependencies import db_session
 from app.domain.access.context import AccessContext
 from app.domain.access.plans import PlanCode
 from app.schemas.health import BackgroundJobHealthOut, HealthOut, ProviderHealthSnapshotOut
-from app.schemas.operations import OperationalHealthOut, OperationsDrillOut, OperationsMetricsSummaryOut, OperationsRunbookOut, OperationsStatusOut
+from app.schemas.operations import (
+    OperationalHealthOut,
+    OperationsDrillOut,
+    OperationsMetricsSummaryOut,
+    OperationsRunbookOut,
+    OperationsStatusOut,
+)
 from app.services.observability.operational_health_service import OperationalHealthService
 from app.services.observability.operations_control_service import OperationsControlService
 

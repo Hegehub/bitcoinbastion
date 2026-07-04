@@ -26,7 +26,9 @@ class FeeMarketModel:
         else:
             band_key = "low"
 
-        band_fee = float(mempool.priority_bands.get(band_key, mempool.priority_bands.get("medium", 2.0)))
+        band_fee = float(
+            mempool.priority_bands.get(band_key, mempool.priority_bands.get("medium", 2.0))
+        )
 
         congestion_multiplier = {
             "low": 0.9,
@@ -37,7 +39,11 @@ class FeeMarketModel:
         }.get(mempool.congestion_state, 1.1)
 
         suggested = int(max(1.0, round(band_fee * congestion_multiplier + urgency)))
-        high_fee_multiplier = 1.6 if mempool.congestion_state in {"low", "normal"} else 1.9 if mempool.congestion_state == "elevated" else 2.2
+        high_fee_multiplier = (
+            1.6
+            if mempool.congestion_state in {"low", "normal"}
+            else 1.9 if mempool.congestion_state == "elevated" else 2.2
+        )
         stress = int(max(suggested + 1, round(suggested * high_fee_multiplier)))
 
         freshness_band = str(mempool.freshness.get("freshness_band", "unknown"))
@@ -49,7 +55,9 @@ class FeeMarketModel:
         elif freshness_band == "very_stale":
             freshness_penalty = 0.22
 
-        confidence = max(0.3, min(0.95, float(mempool.confidence) - freshness_penalty - min(0.08, urgency / 100)))
+        confidence = max(
+            0.3, min(0.95, float(mempool.confidence) - freshness_penalty - min(0.08, urgency / 100))
+        )
 
         return FeeMarketEstimateOut(
             suggested_fee_rate_sat_vb=suggested,

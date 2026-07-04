@@ -19,8 +19,12 @@ class SignalRecommendationService:
         horizons = self._extract_horizons(signal)
         dominant = self._extract_dominant_horizon(horizons)
         evidence_refs = self._extract_evidence_refs(signal=signal, evidence_nodes=evidence_nodes)
-        evidence_paths = self._extract_evidence_paths(evidence_refs=evidence_refs, evidence_edges=evidence_edges)
-        raw_policy_refs = policy_refs if policy_refs is not None else self._extract_policy_refs(signal)
+        evidence_paths = self._extract_evidence_paths(
+            evidence_refs=evidence_refs, evidence_edges=evidence_edges
+        )
+        raw_policy_refs = (
+            policy_refs if policy_refs is not None else self._extract_policy_refs(signal)
+        )
         effective_policy_refs = self._normalize_refs(raw_policy_refs)
         action_confidence = self._action_confidence(signal=signal, evidence_refs=evidence_refs)
 
@@ -97,7 +101,9 @@ class SignalRecommendationService:
         return raw if isinstance(raw, dict) else {}
 
     @staticmethod
-    def _extract_evidence_refs(signal: Signal, evidence_nodes: list[EvidenceNode] | None = None) -> list[str]:
+    def _extract_evidence_refs(
+        signal: Signal, evidence_nodes: list[EvidenceNode] | None = None
+    ) -> list[str]:
         if evidence_nodes:
             ranked = sorted(evidence_nodes, key=lambda node: node.weight, reverse=True)
             refs = [node.node_key for node in ranked if node.node_key]

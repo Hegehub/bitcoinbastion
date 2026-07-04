@@ -8,7 +8,9 @@ class PrivacyRiskService:
         fragmentation_component = payload.utxo_fragmentation_score * 20.0
         cluster_component = min(15.0, payload.merged_clusters_count * 3.0)
 
-        risk_score = min(100.0, reuse_component + kyc_component + fragmentation_component + cluster_component)
+        risk_score = min(
+            100.0, reuse_component + kyc_component + fragmentation_component + cluster_component
+        )
         if risk_score >= 70:
             risk_level = "high"
             priority_action = "Stop consolidation and isolate high-risk UTXOs before next spend."
@@ -26,7 +28,9 @@ class PrivacyRiskService:
         if payload.known_kyc_exposure:
             recommendations.append("Segregate KYC and non-KYC funds into separate wallets.")
         if payload.merged_clusters_count > 0:
-            recommendations.append("Spend from one privacy cluster at a time to reduce linkage amplification.")
+            recommendations.append(
+                "Spend from one privacy cluster at a time to reduce linkage amplification."
+            )
 
         explainability: dict[str, float | str] = {
             "reuse_component": round(reuse_component, 2),

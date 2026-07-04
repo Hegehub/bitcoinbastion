@@ -7,7 +7,9 @@ class ScriptAnalyzerService:
         hint = script_hint.lower().strip()
 
         if "tr(" in hint or "taproot" in hint or hint.startswith("bc1p"):
-            profile = ScriptProfile(script_type="taproot", complexity_score=0.45, risk_level="medium")
+            profile = ScriptProfile(
+                script_type="taproot", complexity_score=0.45, risk_level="medium"
+            )
             reason = "Detected Taproot-like descriptor/address pattern."
         elif "wsh" in hint or "multi" in hint or hint.startswith("bc1q"):
             profile = ScriptProfile(script_type="p2wsh", complexity_score=0.65, risk_level="medium")

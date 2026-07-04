@@ -59,7 +59,9 @@ class PluginRegistry:
     ) -> None:
         manifest = plugin.manifest
         if manifest.plugin_id in self._plugins:
-            self._audit("plugin.validation_failed", manifest.plugin_id, {"reason": "duplicate_plugin_id"})
+            self._audit(
+                "plugin.validation_failed", manifest.plugin_id, {"reason": "duplicate_plugin_id"}
+            )
             raise PluginRegistryError(f"Plugin already registered: {manifest.plugin_id}")
         policy = sandbox_policy or PluginSandboxPolicy.default()
         enabled = bool(safe_builtin and manifest.enabled_by_default)
@@ -69,7 +71,9 @@ class PluginRegistry:
             sandbox_policy=policy,
             enabled=enabled,
         )
-        self._audit("plugin.registered", manifest.plugin_id, {"plugin_type": manifest.plugin_type.value})
+        self._audit(
+            "plugin.registered", manifest.plugin_id, {"plugin_type": manifest.plugin_type.value}
+        )
         if enabled:
             self._audit("plugin.enabled", manifest.plugin_id, {"safe_builtin": True})
 
@@ -102,7 +106,9 @@ class PluginRegistry:
             registered.enabled = False
         self._audit("plugin.disabled", plugin_id, {})
 
-    def dry_run_plugin(self, plugin_id: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    def dry_run_plugin(
+        self, plugin_id: str, payload: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         registered = self.get_plugin(plugin_id)
         if not registered.enabled:
             self._audit("plugin.execution_blocked", plugin_id, {"reason": "plugin_disabled"})

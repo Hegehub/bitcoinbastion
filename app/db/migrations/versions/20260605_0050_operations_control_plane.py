@@ -50,13 +50,21 @@ def upgrade() -> None:
         sa.Column("operational_limitations", json_type, nullable=False, server_default="[]"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_operations_slo_snapshots_slo_name", "operations_slo_snapshots", ["slo_name"])
+    op.create_index(
+        "ix_operations_slo_snapshots_slo_name", "operations_slo_snapshots", ["slo_name"]
+    )
     op.create_index("ix_operations_slo_snapshots_status", "operations_slo_snapshots", ["status"])
-    op.create_index("ix_operations_slo_snapshots_created_at", "operations_slo_snapshots", ["created_at"])
+    op.create_index(
+        "ix_operations_slo_snapshots_created_at", "operations_slo_snapshots", ["created_at"]
+    )
 
 
 def downgrade() -> None:
-    for index in ["ix_operations_slo_snapshots_created_at", "ix_operations_slo_snapshots_status", "ix_operations_slo_snapshots_slo_name"]:
+    for index in [
+        "ix_operations_slo_snapshots_created_at",
+        "ix_operations_slo_snapshots_status",
+        "ix_operations_slo_snapshots_slo_name",
+    ]:
         op.drop_index(index, table_name="operations_slo_snapshots")
     op.drop_table("operations_slo_snapshots")
     for index in [

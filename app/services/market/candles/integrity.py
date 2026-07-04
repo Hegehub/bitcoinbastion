@@ -1,4 +1,3 @@
-
 def evaluate_integrity(provider_count: int, spread_pct: float, is_partial: bool) -> tuple[str, str]:
     if provider_count == 0:
         return "missing_provider_data", "no_providers"
@@ -9,7 +8,9 @@ def evaluate_integrity(provider_count: int, spread_pct: float, is_partial: bool)
     return "valid", ""
 
 
-def calculate_integrity_score(provider_count: int, point_count: int, spread_pct: float, degraded: bool) -> float:
+def calculate_integrity_score(
+    provider_count: int, point_count: int, spread_pct: float, degraded: bool
+) -> float:
     score = 0.3 + min(0.4, provider_count * 0.15) + min(0.2, point_count * 0.01)
     score -= min(0.4, spread_pct / 20)
     if degraded:
