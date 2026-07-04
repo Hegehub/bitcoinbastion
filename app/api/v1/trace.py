@@ -6,14 +6,30 @@ from sqlalchemy.orm import Session
 from app.api.dependencies import db_session
 from app.db.repositories.bastion_trace_repository import BastionTraceRepository
 from app.schemas.base import ResponseEnvelope
-from app.schemas.bastion_trace import BastionTraceRegisterAdvisoryRequest, BastionTraceTreasuryCheckRequest, BatchTraceRequest, EvidenceAccessRequest, PaymentContextRiskRequest, TraceBand, TraceEvidence, TraceFreshness, TraceReport, TraceSourceQuality, TraceSourceStatus, TraceWatchlistCreate, TraceWatchlistEntry
+from app.schemas.bastion_trace import (
+    BastionTraceRegisterAdvisoryRequest,
+    BastionTraceTreasuryCheckRequest,
+    BatchTraceRequest,
+    EvidenceAccessRequest,
+    PaymentContextRiskRequest,
+    TraceBand,
+    TraceEvidence,
+    TraceFreshness,
+    TraceReport,
+    TraceSourceQuality,
+    TraceSourceStatus,
+    TraceWatchlistCreate,
+    TraceWatchlistEntry,
+)
 from app.services.bastion_trace.trace_service import TraceService
 
 router = APIRouter(prefix="/trace", tags=["trace"])
 
 
 @router.get("/address/{address}", response_model=ResponseEnvelope[TraceReport])
-def analyze_address(address: str, db: Session = Depends(db_session)) -> ResponseEnvelope[TraceReport]:
+def analyze_address(
+    address: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceReport]:
     service = TraceService(BastionTraceRepository(db))
     try:
         return ResponseEnvelope(data=service.analyze_address(address))
@@ -54,7 +70,9 @@ def get_report(report_id: int, db: Session = Depends(db_session)) -> ResponseEnv
 
 
 @router.get("/report/{report_id}/evidence", response_model=ResponseEnvelope[list[TraceEvidence]])
-def list_evidence(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[list[TraceEvidence]]:
+def list_evidence(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[list[TraceEvidence]]:
     repo = BastionTraceRepository(db)
     items = [
         TraceEvidence(
@@ -75,10 +93,10 @@ def list_evidence(report_id: int, db: Session = Depends(db_session)) -> Response
     return ResponseEnvelope(data=items)
 
 
-
-
 @router.get("/report/{report_id}/proof-packet", response_model=ResponseEnvelope[dict[str, object]])
-def get_proof_packet(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def get_proof_packet(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     repo = BastionTraceRepository(db)
     report = repo.get_report(report_id)
     if report is None:
@@ -134,28 +152,53 @@ def get_proof_packet(report_id: int, db: Session = Depends(db_session)) -> Respo
 @router.get("/sources", response_model=ResponseEnvelope[list[TraceSourceStatus]])
 def list_sources(db: Session = Depends(db_session)) -> ResponseEnvelope[list[TraceSourceStatus]]:
     repo = BastionTraceRepository(db)
-    return ResponseEnvelope(data=[TraceSourceStatus(id=s.id, source_name=s.source_name, source_type=s.source_type, trust_level=s.trust_level, enabled=s.enabled, limitations=json.loads(s.limitations_json)) for s in repo.list_sources()])
+    return ResponseEnvelope(
+        data=[
+            TraceSourceStatus(
+                id=s.id,
+                source_name=s.source_name,
+                source_type=s.source_type,
+                trust_level=s.trust_level,
+                enabled=s.enabled,
+                limitations=json.loads(s.limitations_json),
+            )
+            for s in repo.list_sources()
+        ]
+    )
 
 
 @router.get("/watchlist", response_model=ResponseEnvelope[list[TraceWatchlistEntry]])
-def list_watchlist(db: Session = Depends(db_session)) -> ResponseEnvelope[list[TraceWatchlistEntry]]:
+def list_watchlist(
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[list[TraceWatchlistEntry]]:
     repo = BastionTraceRepository(db)
-    return ResponseEnvelope(data=[TraceWatchlistEntry.model_validate(w, from_attributes=True) for w in repo.list_watchlist_entries()])
+    return ResponseEnvelope(
+        data=[
+            TraceWatchlistEntry.model_validate(w, from_attributes=True)
+            for w in repo.list_watchlist_entries()
+        ]
+    )
 
 
 @router.post("/watchlist", response_model=ResponseEnvelope[TraceWatchlistEntry])
-def add_watchlist(payload: TraceWatchlistCreate, db: Session = Depends(db_session)) -> ResponseEnvelope[TraceWatchlistEntry]:
+def add_watchlist(
+    payload: TraceWatchlistCreate, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceWatchlistEntry]:
     service = TraceService(BastionTraceRepository(db))
     try:
         address = service._validate_public_address(payload.address)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    entry = BastionTraceRepository(db).add_watchlist_entry(address, payload.label, payload.reason, payload.risk_hint)
+    entry = BastionTraceRepository(db).add_watchlist_entry(
+        address, payload.label, payload.reason, payload.risk_hint
+    )
     return ResponseEnvelope(data=TraceWatchlistEntry.model_validate(entry, from_attributes=True))
 
 
 @router.get("/sources/{source_name}", response_model=ResponseEnvelope[TraceSourceStatus])
-def get_source(source_name: str, db: Session = Depends(db_session)) -> ResponseEnvelope[TraceSourceStatus]:
+def get_source(
+    source_name: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceSourceStatus]:
     service = TraceService(BastionTraceRepository(db))
     src = service.source_registry.get_source(source_name)
     if src is None:
@@ -163,8 +206,12 @@ def get_source(source_name: str, db: Session = Depends(db_session)) -> ResponseE
     return ResponseEnvelope(data=src)
 
 
-@router.get("/report/{report_id}/origin-passport", response_model=ResponseEnvelope[dict[str, object]])
-def get_origin_passport(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+@router.get(
+    "/report/{report_id}/origin-passport", response_model=ResponseEnvelope[dict[str, object]]
+)
+def get_origin_passport(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     data = service.get_origin_passport(report_id)
     if data is None:
@@ -172,14 +219,22 @@ def get_origin_passport(report_id: int, db: Session = Depends(db_session)) -> Re
     return ResponseEnvelope(data=data)
 
 
-@router.get("/report/{report_id}/source-summary", response_model=ResponseEnvelope[list[dict[str, object]]])
-def get_source_summary(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[list[dict[str, object]]]:
+@router.get(
+    "/report/{report_id}/source-summary", response_model=ResponseEnvelope[list[dict[str, object]]]
+)
+def get_source_summary(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[list[dict[str, object]]]:
     service = TraceService(BastionTraceRepository(db))
     return ResponseEnvelope(data=service.get_source_summary(report_id))
 
 
-@router.get("/report/{report_id}/provider-disagreement", response_model=ResponseEnvelope[dict[str, object]])
-def get_provider_disagreement(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+@router.get(
+    "/report/{report_id}/provider-disagreement", response_model=ResponseEnvelope[dict[str, object]]
+)
+def get_provider_disagreement(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     data = service.get_provider_disagreement(report_id)
     if data is None:
@@ -187,8 +242,12 @@ def get_provider_disagreement(report_id: int, db: Session = Depends(db_session))
     return ResponseEnvelope(data=data)
 
 
-@router.get("/report/{report_id}/privacy-shield", response_model=ResponseEnvelope[dict[str, object]])
-def get_privacy_shield(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+@router.get(
+    "/report/{report_id}/privacy-shield", response_model=ResponseEnvelope[dict[str, object]]
+)
+def get_privacy_shield(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     data = service.get_privacy_shield(report_id)
     if data is None:
@@ -197,7 +256,9 @@ def get_privacy_shield(report_id: int, db: Session = Depends(db_session)) -> Res
 
 
 @router.get("/report/{report_id}/utxo-hygiene", response_model=ResponseEnvelope[dict[str, object]])
-def get_utxo_hygiene(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def get_utxo_hygiene(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     data = service.get_utxo_hygiene(report_id)
     if data is None:
@@ -206,7 +267,9 @@ def get_utxo_hygiene(report_id: int, db: Session = Depends(db_session)) -> Respo
 
 
 @router.get("/report/{report_id}/dust-radar", response_model=ResponseEnvelope[dict[str, object]])
-def get_dust_radar(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def get_dust_radar(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     data = service.get_dust_radar(report_id)
     if data is None:
@@ -214,8 +277,12 @@ def get_dust_radar(report_id: int, db: Session = Depends(db_session)) -> Respons
     return ResponseEnvelope(data=data)
 
 
-@router.get("/report/{report_id}/counterparty-lens", response_model=ResponseEnvelope[dict[str, object]])
-def get_counterparty_lens(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+@router.get(
+    "/report/{report_id}/counterparty-lens", response_model=ResponseEnvelope[dict[str, object]]
+)
+def get_counterparty_lens(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     data = service.get_counterparty_lens(report_id)
     if data is None:
@@ -224,121 +291,206 @@ def get_counterparty_lens(report_id: int, db: Session = Depends(db_session)) -> 
 
 
 @router.post("/payment-context", response_model=ResponseEnvelope[dict[str, object]])
-def payment_context(payload: PaymentContextRiskRequest, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def payment_context(
+    payload: PaymentContextRiskRequest, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     return ResponseEnvelope(data=service.evaluate_payment_context(payload))
 
 
 @router.post("/payment-intent/preview", response_model=ResponseEnvelope[dict[str, object]])
-def payment_intent_preview(payload: PaymentContextRiskRequest, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def payment_intent_preview(
+    payload: PaymentContextRiskRequest, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     return ResponseEnvelope(data=service.preview_payment_intent(payload))
 
 
 @router.post("/destination-review", response_model=ResponseEnvelope[dict[str, object]])
-def destination_review(payload: PaymentContextRiskRequest, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def destination_review(
+    payload: PaymentContextRiskRequest, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     return ResponseEnvelope(data=service.destination_review(payload))
 
 
 @router.get("/lite/{address}", response_model=ResponseEnvelope[dict[str, object]])
-def lite_address_check(address: str, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+def lite_address_check(
+    address: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     try:
         return ResponseEnvelope(data=service.build_lite_report(address))
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-@router.get('/business/profile', response_model=ResponseEnvelope[dict[str, object]])
-def business_profile(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).get_business_tier_profile())
 
-@router.post('/business/batch', response_model=ResponseEnvelope[dict[str, object]])
-def business_batch(payload: BatchTraceRequest, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+@router.get("/business/profile", response_model=ResponseEnvelope[dict[str, object]])
+def business_profile(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).get_business_tier_profile()
+    )
+
+
+@router.post("/business/batch", response_model=ResponseEnvelope[dict[str, object]])
+def business_batch(
+    payload: BatchTraceRequest, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     service = TraceService(BastionTraceRepository(db))
     try:
         return ResponseEnvelope(data=service.screen_batch(payload))
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-@router.get('/business/policy-profiles', response_model=ResponseEnvelope[list[dict[str, object]]])
-def business_policy_profiles(db: Session = Depends(db_session)) -> ResponseEnvelope[list[dict[str, object]]]:
+
+@router.get("/business/policy-profiles", response_model=ResponseEnvelope[list[dict[str, object]]])
+def business_policy_profiles(
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[list[dict[str, object]]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).list_policy_profiles())
 
-@router.get('/business/events', response_model=ResponseEnvelope[list[dict[str, object]]])
+
+@router.get("/business/events", response_model=ResponseEnvelope[list[dict[str, object]]])
 def business_events(db: Session = Depends(db_session)) -> ResponseEnvelope[list[dict[str, object]]]:
     items = BastionTraceRepository(db).list_business_events()
-    return ResponseEnvelope(data=[{"id": i.id, "event_type": i.event_type, "payload": json.loads(i.payload_json), "delivered": i.delivered, "created_at": i.created_at} for i in items])
+    return ResponseEnvelope(
+        data=[
+            {
+                "id": i.id,
+                "event_type": i.event_type,
+                "payload": json.loads(i.payload_json),
+                "delivered": i.delivered,
+                "created_at": i.created_at,
+            }
+            for i in items
+        ]
+    )
 
-@router.get('/enterprise/profile', response_model=ResponseEnvelope[dict[str, object]])
+
+@router.get("/enterprise/profile", response_model=ResponseEnvelope[dict[str, object]])
 def enterprise_profile(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).get_enterprise_tier_profile())
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).get_enterprise_tier_profile()
+    )
 
-@router.get('/enterprise/rbac/roles', response_model=ResponseEnvelope[list[str]])
+
+@router.get("/enterprise/rbac/roles", response_model=ResponseEnvelope[list[str]])
 def enterprise_roles(db: Session = Depends(db_session)) -> ResponseEnvelope[list[str]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).list_enterprise_roles())
 
-@router.get('/enterprise/rbac/permissions', response_model=ResponseEnvelope[list[str]])
+
+@router.get("/enterprise/rbac/permissions", response_model=ResponseEnvelope[list[str]])
 def enterprise_permissions(db: Session = Depends(db_session)) -> ResponseEnvelope[list[str]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).list_enterprise_permissions())
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).list_enterprise_permissions()
+    )
 
-@router.get('/enterprise/rbac/default-policy', response_model=ResponseEnvelope[dict[str, object]])
-def enterprise_default_policy(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).get_enterprise_default_policy())
 
-@router.get('/enterprise/sso', response_model=ResponseEnvelope[dict[str, object]])
+@router.get("/enterprise/rbac/default-policy", response_model=ResponseEnvelope[dict[str, object]])
+def enterprise_default_policy(
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[dict[str, object]]:
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).get_enterprise_default_policy()
+    )
+
+
+@router.get("/enterprise/sso", response_model=ResponseEnvelope[dict[str, object]])
 def enterprise_sso(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).get_sso_placeholder())
 
-@router.post('/enterprise/evidence-access/evaluate', response_model=ResponseEnvelope[dict[str, object]])
-def enterprise_evidence_access(payload: EvidenceAccessRequest, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).evaluate_evidence_access_enterprise(payload))
 
-@router.post('/enterprise/proof-packet', response_model=ResponseEnvelope[dict[str, object]])
-def enterprise_proof_packet(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).create_enterprise_proof_packet(report_id))
+@router.post(
+    "/enterprise/evidence-access/evaluate", response_model=ResponseEnvelope[dict[str, object]]
+)
+def enterprise_evidence_access(
+    payload: EvidenceAccessRequest, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).evaluate_evidence_access_enterprise(payload)
+    )
 
-@router.get('/report/{report_id}/citadel-contribution', response_model=ResponseEnvelope[dict[str, object]])
-def trace_citadel_contribution(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+
+@router.post("/enterprise/proof-packet", response_model=ResponseEnvelope[dict[str, object]])
+def enterprise_proof_packet(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).create_enterprise_proof_packet(report_id)
+    )
+
+
+@router.get(
+    "/report/{report_id}/citadel-contribution", response_model=ResponseEnvelope[dict[str, object]]
+)
+def trace_citadel_contribution(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     data = TraceService(BastionTraceRepository(db)).get_citadel_contribution(report_id)
     if data is None:
-        raise HTTPException(status_code=404, detail='Trace report not found')
+        raise HTTPException(status_code=404, detail="Trace report not found")
     return ResponseEnvelope(data=data)
 
-@router.get('/report/{report_id}/policy-facts', response_model=ResponseEnvelope[dict[str, object]])
-def trace_policy_facts(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+
+@router.get("/report/{report_id}/policy-facts", response_model=ResponseEnvelope[dict[str, object]])
+def trace_policy_facts(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     data = TraceService(BastionTraceRepository(db)).get_policy_facts(report_id)
     if data is None:
-        raise HTTPException(status_code=404, detail='Trace report not found')
+        raise HTTPException(status_code=404, detail="Trace report not found")
     return ResponseEnvelope(data=data)
 
-@router.post('/treasury/destination-check', response_model=ResponseEnvelope[dict[str, object]])
-def trace_treasury_check(payload: BastionTraceTreasuryCheckRequest, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).treasury_destination_check(payload))
 
-@router.post('/register/payment-advisory', response_model=ResponseEnvelope[dict[str, object]])
-def trace_register_advisory(payload: BastionTraceRegisterAdvisoryRequest, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).register_payment_advisory(payload))
+@router.post("/treasury/destination-check", response_model=ResponseEnvelope[dict[str, object]])
+def trace_treasury_check(
+    payload: BastionTraceTreasuryCheckRequest, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).treasury_destination_check(payload)
+    )
 
-@router.get('/report/{report_id}/evidence-refs', response_model=ResponseEnvelope[list[dict[str, object]]])
-def trace_evidence_refs(report_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[list[dict[str, object]]]:
-    return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).get_evidence_refs(report_id))
 
-@router.get('/status', response_model=ResponseEnvelope[dict[str, object]])
+@router.post("/register/payment-advisory", response_model=ResponseEnvelope[dict[str, object]])
+def trace_register_advisory(
+    payload: BastionTraceRegisterAdvisoryRequest, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).register_payment_advisory(payload)
+    )
+
+
+@router.get(
+    "/report/{report_id}/evidence-refs", response_model=ResponseEnvelope[list[dict[str, object]]]
+)
+def trace_evidence_refs(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[list[dict[str, object]]]:
+    return ResponseEnvelope(
+        data=TraceService(BastionTraceRepository(db)).get_evidence_refs(report_id)
+    )
+
+
+@router.get("/status", response_model=ResponseEnvelope[dict[str, object]])
 def trace_status(db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).get_trace_status())
 
-@router.get('/events', response_model=ResponseEnvelope[list[dict[str, object]]])
+
+@router.get("/events", response_model=ResponseEnvelope[list[dict[str, object]]])
 def trace_events(db: Session = Depends(db_session)) -> ResponseEnvelope[list[dict[str, object]]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).list_runtime_events())
 
-@router.get('/events/{event_id}', response_model=ResponseEnvelope[dict[str, object]])
-def trace_event(event_id: int, db: Session = Depends(db_session)) -> ResponseEnvelope[dict[str, object]]:
+
+@router.get("/events/{event_id}", response_model=ResponseEnvelope[dict[str, object]])
+def trace_event(
+    event_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[dict[str, object]]:
     data = TraceService(BastionTraceRepository(db)).get_runtime_event(event_id)
     if data is None:
-        raise HTTPException(status_code=404, detail='Trace event not found')
+        raise HTTPException(status_code=404, detail="Trace event not found")
     return ResponseEnvelope(data=data)
 
-@router.get('/alerts', response_model=ResponseEnvelope[list[dict[str, object]]])
+
+@router.get("/alerts", response_model=ResponseEnvelope[list[dict[str, object]]])
 def trace_alerts(db: Session = Depends(db_session)) -> ResponseEnvelope[list[dict[str, object]]]:
     return ResponseEnvelope(data=TraceService(BastionTraceRepository(db)).list_trace_alerts())

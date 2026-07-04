@@ -16,14 +16,20 @@ class CandidateEventFinder:
         self.window_before_minutes = int(settings.attribution_window_before_minutes)
         self.window_after_minutes = int(settings.attribution_window_after_minutes)
 
-    def find_candidates(self, db: Session, candle: BTCCandle, limit: int | None = None) -> list[NewsEvent]:
+    def find_candidates(
+        self, db: Session, candle: BTCCandle, limit: int | None = None
+    ) -> list[NewsEvent]:
         start = candle.open_time - timedelta(minutes=self.window_before_minutes)
         end = candle.close_time + timedelta(minutes=self.window_after_minutes)
         stmt = (
             select(NewsEvent)
             .where(NewsEvent.first_seen_at <= end)
             .where(NewsEvent.last_seen_at >= start)
-            .order_by(NewsEvent.btc_relevance_score.desc(), NewsEvent.market_impact_score.desc(), NewsEvent.id.desc())
+            .order_by(
+                NewsEvent.btc_relevance_score.desc(),
+                NewsEvent.market_impact_score.desc(),
+                NewsEvent.id.desc(),
+            )
         )
         if limit is not None:
             stmt = stmt.limit(limit)

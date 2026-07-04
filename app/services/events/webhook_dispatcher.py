@@ -168,7 +168,9 @@ class WebhookDispatcher:
         )
         return PreparedWebhookDelivery(delivery=delivery, raw_body=raw_body, headers=headers)
 
-    def dispatch_pending_events(self, *, batch_size: int = DEFAULT_BATCH_SIZE) -> WebhookDispatchResult:
+    def dispatch_pending_events(
+        self, *, batch_size: int = DEFAULT_BATCH_SIZE
+    ) -> WebhookDispatchResult:
         processed = delivered = retrying = dead = blocked = no_subscribers = 0
         events = self.outbox_repository.list_pending(limit=batch_size)
         telemetry.BASTION_WEBHOOK_OUTBOX_PENDING_TOTAL.labels(status="pending").set(len(events))
@@ -261,7 +263,9 @@ class WebhookDispatcher:
             self.outbox_repository.mark_dispatched(item.event_id)
             self._record_metric(item, "success")
             return DeliveryOutcome.SUCCESS
-        self.outbox_repository.mark_dead_letter(item.event_id, "Webhook delivery reached unknown state")
+        self.outbox_repository.mark_dead_letter(
+            item.event_id, "Webhook delivery reached unknown state"
+        )
         self._record_metric(item, "dead")
         return DeliveryOutcome.TERMINAL_FAILURE
 
@@ -285,7 +289,9 @@ class WebhookDispatcher:
             attempt_number=attempt_number,
         )
         start = perf_counter()
-        client = self.http_client or httpx.Client(timeout=self.timeout_seconds, follow_redirects=False)
+        client = self.http_client or httpx.Client(
+            timeout=self.timeout_seconds, follow_redirects=False
+        )
         close_client = self.http_client is None
         try:
             response = client.post(

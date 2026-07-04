@@ -30,7 +30,11 @@ class CanonicalNewsEventService:
 
     def cluster_recent_articles(self, db: Session, hours: int = 24) -> int:
         cutoff = datetime.utcnow() - timedelta(hours=hours)
-        rows = db.execute(select(NewsArticle.id).where(NewsArticle.created_at >= cutoff).order_by(NewsArticle.id.asc())).all()
+        rows = db.execute(
+            select(NewsArticle.id)
+            .where(NewsArticle.created_at >= cutoff)
+            .order_by(NewsArticle.id.asc())
+        ).all()
         for (aid,) in rows:
             self.cluster_article(db, aid)
         db.commit()
@@ -38,7 +42,13 @@ class CanonicalNewsEventService:
 
     def find_candidate_events(self, db: Session, article: NewsArticle) -> list[NewsEvent]:
         cutoff = article.published_at - timedelta(hours=24)
-        return list(db.execute(select(NewsEvent).where(NewsEvent.last_seen_at >= cutoff, NewsEvent.is_active.is_(True)).limit(100)).scalars())
+        return list(
+            db.execute(
+                select(NewsEvent)
+                .where(NewsEvent.last_seen_at >= cutoff, NewsEvent.is_active.is_(True))
+                .limit(100)
+            ).scalars()
+        )
 
     def create_event_from_article(self, db: Session, article: NewsArticle) -> NewsEvent:
         event = NewsEvent(
@@ -65,11 +75,26 @@ class CanonicalNewsEventService:
         db.add(event)
         db.flush()
         self._link_article(db, event.id, article.id, 1.0, True)
-        db.add(NewsEventCluster(event_id=event.id, cluster_hash=event.event_key, cluster_reason="seed_from_article", confidence_score=event.cluster_confidence, candidate_count=1, accepted_count=1))
+        db.add(
+            NewsEventCluster(
+                event_id=event.id,
+                cluster_hash=event.event_key,
+                cluster_reason="seed_from_article",
+                confidence_score=event.cluster_confidence,
+                candidate_count=1,
+                accepted_count=1,
+            )
+        )
         return event
 
-    def attach_article_to_event(self, db: Session, article: NewsArticle, event: NewsEvent, similarity: float) -> NewsEvent:
-        exists = db.execute(select(NewsEventArticle).where(NewsEventArticle.event_id == event.id, NewsEventArticle.article_id == article.id)).scalar_one_or_none()
+    def attach_article_to_event(
+        self, db: Session, article: NewsArticle, event: NewsEvent, similarity: float
+    ) -> NewsEvent:
+        exists = db.execute(
+            select(NewsEventArticle).where(
+                NewsEventArticle.event_id == event.id, NewsEventArticle.article_id == article.id
+            )
+        ).scalar_one_or_none()
         if exists is None:
             self._link_article(db, event.id, article.id, similarity, False)
             event.article_count += 1
@@ -81,24 +106,41 @@ class CanonicalNewsEventService:
         return event
 
     def calculate_event_similarity(self, article: NewsArticle, event: NewsEvent) -> float:
-        title_ratio = SequenceMatcher(None, (article.normalized_title or ""), (event.canonical_title or "").lower()).ratio()
+        title_ratio = SequenceMatcher(
+            None, (article.normalized_title or ""), (event.canonical_title or "").lower()
+        ).ratio()
         keyword = self._keyword_overlap(article.normalized_title, event.canonical_title)
         time_gap = abs((article.published_at - event.last_seen_at).total_seconds())
         time_score = 1.0 if time_gap <= 6 * 3600 else 0.5 if time_gap <= 24 * 3600 else 0.0
-        base=(0.6 * title_ratio) + (0.25 * keyword) + (0.15 * time_score)
+        base = (0.6 * title_ratio) + (0.25 * keyword) + (0.15 * time_score)
         if self._event_type(article) == event.event_type and event.event_type != "unknown":
             base += 0.35
         return round(min(1.0, base), 4)
 
     def calculate_cluster_confidence(self, db: Session, event: NewsEvent) -> float:
-        avg_similarity = db.execute(select(func.avg(NewsEventArticle.similarity_score)).where(NewsEventArticle.event_id == event.id)).scalar() or 0.0
+        avg_similarity = (
+            db.execute(
+                select(func.avg(NewsEventArticle.similarity_score)).where(
+                    NewsEventArticle.event_id == event.id
+                )
+            ).scalar()
+            or 0.0
+        )
         return float(max(0.2, min(0.99, 0.5 + (avg_similarity * 0.5))))
 
     def calculate_event_confidence(self, db: Session, event: NewsEvent) -> float:
         source_factor = min(1.0, event.source_count / 5)
         cluster_factor = event.cluster_confidence
         provider_factor = event.provider_confidence
-        return round(max(0.0, min(1.0, (0.35 * source_factor) + (0.4 * cluster_factor) + (0.25 * provider_factor))), 4)
+        return round(
+            max(
+                0.0,
+                min(
+                    1.0, (0.35 * source_factor) + (0.4 * cluster_factor) + (0.25 * provider_factor)
+                ),
+            ),
+            4,
+        )
 
     def rebuild_event(self, db: Session, event_id: int) -> NewsEvent | None:
         event = db.get(NewsEvent, event_id)
@@ -109,11 +151,19 @@ class CanonicalNewsEventService:
         self.determine_first_mover(db, event)
         return event
 
-    def merge_events(self, db: Session, primary_event_id: int, secondary_event_id: int) -> NewsEvent | None:
-        primary, secondary = db.get(NewsEvent, primary_event_id), db.get(NewsEvent, secondary_event_id)
+    def merge_events(
+        self, db: Session, primary_event_id: int, secondary_event_id: int
+    ) -> NewsEvent | None:
+        primary, secondary = db.get(NewsEvent, primary_event_id), db.get(
+            NewsEvent, secondary_event_id
+        )
         if primary is None or secondary is None:
             return None
-        links = list(db.execute(select(NewsEventArticle).where(NewsEventArticle.event_id == secondary.id)).scalars())
+        links = list(
+            db.execute(
+                select(NewsEventArticle).where(NewsEventArticle.event_id == secondary.id)
+            ).scalars()
+        )
         for link in links:
             link.event_id = primary.id
         primary.article_count += secondary.article_count
@@ -124,14 +174,31 @@ class CanonicalNewsEventService:
         return primary
 
     def determine_first_mover(self, db: Session, event: NewsEvent) -> None:
-        rows = list(db.execute(select(NewsArticle).join(NewsEventArticle, NewsEventArticle.article_id == NewsArticle.id).where(NewsEventArticle.event_id == event.id).order_by(NewsArticle.published_at.asc())).scalars())
+        rows = list(
+            db.execute(
+                select(NewsArticle)
+                .join(NewsEventArticle, NewsEventArticle.article_id == NewsArticle.id)
+                .where(NewsEventArticle.event_id == event.id)
+                .order_by(NewsArticle.published_at.asc())
+            ).scalars()
+        )
         if rows:
             first = rows[0]
             event.first_source_id = first.source_id
             event.first_source_published_at = first.published_at
 
-    def _link_article(self, db: Session, event_id: int, article_id: int, similarity: float, is_primary: bool) -> None:
-        db.add(NewsEventArticle(event_id=event_id, article_id=article_id, similarity_score=similarity, is_primary_source=is_primary, relationship_type="primary" if is_primary else "supporting"))
+    def _link_article(
+        self, db: Session, event_id: int, article_id: int, similarity: float, is_primary: bool
+    ) -> None:
+        db.add(
+            NewsEventArticle(
+                event_id=event_id,
+                article_id=article_id,
+                similarity_score=similarity,
+                is_primary_source=is_primary,
+                relationship_type="primary" if is_primary else "supporting",
+            )
+        )
 
     def _keyword_overlap(self, a: str, b: str) -> float:
         sa, sb = set((a or "").split()), set((b or "").split())
@@ -151,7 +218,11 @@ class CanonicalNewsEventService:
 
     def _event_category(self, article: NewsArticle) -> str:
         et = self._event_type(article)
-        return "institutional" if "institutional" in et else "macro" if "fed" in et else "security" if "security" in et else "unknown"
+        return (
+            "institutional"
+            if "institutional" in et
+            else "macro" if "fed" in et else "security" if "security" in et else "unknown"
+        )
 
     def _canonical_title(self, article: NewsArticle) -> str:
         et = self._event_type(article)

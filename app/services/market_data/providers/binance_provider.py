@@ -23,7 +23,16 @@ class BinanceProvider(MarketDataProvider):
         response.raise_for_status()
         data = response.json()
         latency_ms = int((time.perf_counter() - start) * 1000)
-        return NormalizedBTCPricePoint("binance", "BTCUSD", float(data["price"]), datetime.now(UTC), latency_ms, 0.8, payload_hash(response.text), {"symbol": data.get("symbol")})
+        return NormalizedBTCPricePoint(
+            "binance",
+            "BTCUSD",
+            float(data["price"]),
+            datetime.now(UTC),
+            latency_ms,
+            0.8,
+            payload_hash(response.text),
+            {"symbol": data.get("symbol")},
+        )
 
     def fetch_recent_prices(self) -> list[NormalizedBTCPricePoint]:
         return [self.fetch_ticker()]

@@ -22,7 +22,9 @@ def wallet_health(payload: WalletHealthRequest) -> ResponseEnvelope[WalletHealth
     return ResponseEnvelope(data=result)
 
 
-@router.post("/profiles/{wallet_profile_id}/health", response_model=ResponseEnvelope[WalletHealthReportOut])
+@router.post(
+    "/profiles/{wallet_profile_id}/health", response_model=ResponseEnvelope[WalletHealthReportOut]
+)
 def generate_wallet_profile_health_report(
     wallet_profile_id: int,
     payload: WalletHealthRequest,
@@ -40,7 +42,10 @@ def generate_wallet_profile_health_report(
     return ResponseEnvelope(data=service.to_report_out(report))
 
 
-@router.get("/profiles/{wallet_profile_id}/health/reports", response_model=ResponseEnvelope[PaginatedData[WalletHealthReportOut]])
+@router.get(
+    "/profiles/{wallet_profile_id}/health/reports",
+    response_model=ResponseEnvelope[PaginatedData[WalletHealthReportOut]],
+)
 def list_wallet_profile_health_reports(
     wallet_profile_id: int,
     limit: int = 20,
@@ -54,9 +59,14 @@ def list_wallet_profile_health_reports(
         raise HTTPException(status_code=404, detail="Wallet profile not found")
 
     service = WalletHealthService()
-    reports = [service.to_report_out(item) for item in repo.list_health_reports(wallet_profile_id, limit, offset)]
+    reports = [
+        service.to_report_out(item)
+        for item in repo.list_health_reports(wallet_profile_id, limit, offset)
+    ]
     total = repo.count_health_reports(wallet_profile_id)
-    return ResponseEnvelope(data=PaginatedData(items=reports, total=total, limit=limit, offset=offset))
+    return ResponseEnvelope(
+        data=PaginatedData(items=reports, total=total, limit=limit, offset=offset)
+    )
 
 
 @router.get("/profiles", response_model=ResponseEnvelope[PaginatedData[WalletProfileOut]])
@@ -72,4 +82,6 @@ def list_profiles(
         for item in repo.list_by_user(user_id=current_user.id, limit=limit, offset=offset)
     ]
     total = repo.count_by_user(current_user.id)
-    return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=total, limit=limit, offset=offset)
+    )

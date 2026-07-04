@@ -10,7 +10,9 @@ class UTXOAnalyzerService:
     def __init__(self) -> None:
         self.fee_exposure = FeeExposureService()
 
-    def analyze(self, *, utxo_values_sats: list[int], target_spend_sats: int = 1_000_000) -> UTXOAnalysisOut:
+    def analyze(
+        self, *, utxo_values_sats: list[int], target_spend_sats: int = 1_000_000
+    ) -> UTXOAnalysisOut:
         entries = [UTXOEntry(value_sats=max(0, int(v))) for v in utxo_values_sats]
         utxo_count = len(entries)
         if utxo_count == 0:
@@ -42,7 +44,9 @@ class UTXOAnalyzerService:
                     "fallback_active": True,
                     "single_source_advisory": True,
                     "advisory_not_consensus_proof": True,
-                    "operator_guidance": ["Collect provider-backed UTXO snapshot before critical decisions."],
+                    "operator_guidance": [
+                        "Collect provider-backed UTXO snapshot before critical decisions."
+                    ],
                     "limitations": ["Fallback-only UTXO analysis."],
                 },
                 explainability={
@@ -133,7 +137,9 @@ class UTXOAnalyzerService:
                 "fallback_active": False,
                 "single_source_advisory": True,
                 "advisory_not_consensus_proof": True,
-                "operator_guidance": ["Corroborate UTXO set with an independent provider for high-impact actions."],
+                "operator_guidance": [
+                    "Corroborate UTXO set with an independent provider for high-impact actions."
+                ],
                 "limitations": ["Caller-supplied UTXO set; not direct consensus attestation."],
             },
             explainability={

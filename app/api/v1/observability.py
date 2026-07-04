@@ -10,5 +10,7 @@ router = APIRouter(prefix="/observability", tags=["observability"])
 
 
 @router.get("/snapshot", response_model=ResponseEnvelope[OperationsSnapshotOut])
-def operations_snapshot(db: Session = Depends(db_session)) -> ResponseEnvelope[OperationsSnapshotOut]:
+def operations_snapshot(
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[OperationsSnapshotOut]:
     return ResponseEnvelope(data=OperationsSnapshotService().snapshot(db=db))

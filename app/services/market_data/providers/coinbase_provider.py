@@ -23,7 +23,16 @@ class CoinbaseProvider(MarketDataProvider):
         response.raise_for_status()
         data = response.json()
         latency_ms = int((time.perf_counter() - start) * 1000)
-        return NormalizedBTCPricePoint("coinbase", "BTCUSD", float(data["data"]["amount"]), datetime.now(UTC), latency_ms, 0.8, payload_hash(response.text), {"base": "BTC"})
+        return NormalizedBTCPricePoint(
+            "coinbase",
+            "BTCUSD",
+            float(data["data"]["amount"]),
+            datetime.now(UTC),
+            latency_ms,
+            0.8,
+            payload_hash(response.text),
+            {"base": "BTC"},
+        )
 
     def fetch_recent_prices(self) -> list[NormalizedBTCPricePoint]:
         return [self.fetch_ticker()]

@@ -80,4 +80,3 @@ class ProvenanceRefreshOut(BaseModel):
     updated: int
     drifted: int
     deltas: list[ProvenanceEntityDeltaOut] = Field(default_factory=list)
-

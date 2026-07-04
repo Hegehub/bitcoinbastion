@@ -30,7 +30,9 @@ class DescriptorAwarenessService:
         if has_backup_reference:
             score += 0.2
         else:
-            warnings.append("Backup metadata reference missing; artifact completeness is incomplete.")
+            warnings.append(
+                "Backup metadata reference missing; artifact completeness is incomplete."
+            )
 
         freshness_band = "unknown"
         freshness_factor = 0.0
@@ -57,7 +59,9 @@ class DescriptorAwarenessService:
             script_compatibility = "supported"
             score += 0.08
         else:
-            warnings.append("Script compatibility is unknown; descriptor assumptions are conservative.")
+            warnings.append(
+                "Script compatibility is unknown; descriptor assumptions are conservative."
+            )
 
         multisig_completeness = "n/a"
         if "multi" in (wallet_type or "").lower() or normalized_script in {"p2wsh", "p2sh"}:
@@ -66,10 +70,14 @@ class DescriptorAwarenessService:
                 multisig_completeness = "complete"
                 score += 0.06
             else:
-                warnings.append("Multisig descriptor completeness is partial; signer metadata is limited.")
+                warnings.append(
+                    "Multisig descriptor completeness is partial; signer metadata is limited."
+                )
 
         if is_watch_only and not has_descriptor:
-            warnings.append("Watch-only profile without descriptor reference lowers recoverability confidence.")
+            warnings.append(
+                "Watch-only profile without descriptor reference lowers recoverability confidence."
+            )
 
         score = round(max(0.0, min(1.0, score)), 3)
         assumption = "strong" if score >= 0.8 else "moderate" if score >= 0.5 else "weak"

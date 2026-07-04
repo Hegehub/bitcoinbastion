@@ -13,9 +13,21 @@ class ContextSensitivityService:
             return AmountSensitivity.HIGH
         return AmountSensitivity.VERY_HIGH
 
-    def context_sensitivity(self, amount: AmountSensitivity, treasury: bool, urgent: bool) -> ContextSensitivity:
+    def context_sensitivity(
+        self, amount: AmountSensitivity, treasury: bool, urgent: bool
+    ) -> ContextSensitivity:
         if amount == AmountSensitivity.UNKNOWN:
             return ContextSensitivity.UNKNOWN
-        idx = [AmountSensitivity.LOW, AmountSensitivity.MEDIUM, AmountSensitivity.HIGH, AmountSensitivity.VERY_HIGH].index(amount)
+        idx = [
+            AmountSensitivity.LOW,
+            AmountSensitivity.MEDIUM,
+            AmountSensitivity.HIGH,
+            AmountSensitivity.VERY_HIGH,
+        ].index(amount)
         idx += int(treasury) + int(urgent)
-        return [ContextSensitivity.LOW, ContextSensitivity.MEDIUM, ContextSensitivity.HIGH, ContextSensitivity.VERY_HIGH][min(idx, 3)]
+        return [
+            ContextSensitivity.LOW,
+            ContextSensitivity.MEDIUM,
+            ContextSensitivity.HIGH,
+            ContextSensitivity.VERY_HIGH,
+        ][min(idx, 3)]

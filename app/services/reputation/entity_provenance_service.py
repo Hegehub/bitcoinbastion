@@ -38,7 +38,9 @@ class EntityProvenanceService:
         if updated > 0:
             db.commit()
 
-        return ProvenanceRefreshOut(scanned=len(entities), updated=updated, drifted=drifted, deltas=deltas[:20])
+        return ProvenanceRefreshOut(
+            scanned=len(entities), updated=updated, drifted=drifted, deltas=deltas[:20]
+        )
 
     @staticmethod
     def _derived_confidence(source_refs_json: str) -> float:

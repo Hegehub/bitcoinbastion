@@ -11,7 +11,12 @@ from sqlalchemy.orm import Session
 
 from app.core.cache import get_redis_client
 from app.db.models.operations_control import OperationsEvidence
-from app.schemas.health import DependencyHealthOut, IntelligenceHealthOut, OperationsHealthOut, ProviderHealthSnapshotOut
+from app.schemas.health import (
+    DependencyHealthOut,
+    IntelligenceHealthOut,
+    OperationsHealthOut,
+    ProviderHealthSnapshotOut,
+)
 from app.schemas.operations import (
     AlertSummaryOut,
     OperationsDrillOut,
@@ -22,11 +27,36 @@ from app.schemas.operations import (
 from app.services.observability.runtime_status_service import RuntimeStatusService
 
 RUNBOOKS = [
-    OperationsRunbookOut(slug="database", title="Database Restore", path="docs/RUNBOOK_DATABASE.md", failure_modes=["database unavailable", "failed migration"]),
-    OperationsRunbookOut(slug="workers", title="Worker Restart", path="docs/RUNBOOK_WORKERS.md", failure_modes=["worker stopped", "background queue growth"]),
-    OperationsRunbookOut(slug="providers", title="Provider Outage", path="docs/RUNBOOK_PROVIDERS.md", failure_modes=["rss outage", "provider confidence collapse", "btc provider outage"]),
-    OperationsRunbookOut(slug="telegram", title="Telegram Outage", path="docs/RUNBOOK_TELEGRAM.md", failure_modes=["telegram publication failures"]),
-    OperationsRunbookOut(slug="deployment", title="Failed Deployment", path="docs/RUNBOOK_DEPLOYMENT.md", failure_modes=["failed deployment", "migration mismatch"]),
+    OperationsRunbookOut(
+        slug="database",
+        title="Database Restore",
+        path="docs/RUNBOOK_DATABASE.md",
+        failure_modes=["database unavailable", "failed migration"],
+    ),
+    OperationsRunbookOut(
+        slug="workers",
+        title="Worker Restart",
+        path="docs/RUNBOOK_WORKERS.md",
+        failure_modes=["worker stopped", "background queue growth"],
+    ),
+    OperationsRunbookOut(
+        slug="providers",
+        title="Provider Outage",
+        path="docs/RUNBOOK_PROVIDERS.md",
+        failure_modes=["rss outage", "provider confidence collapse", "btc provider outage"],
+    ),
+    OperationsRunbookOut(
+        slug="telegram",
+        title="Telegram Outage",
+        path="docs/RUNBOOK_TELEGRAM.md",
+        failure_modes=["telegram publication failures"],
+    ),
+    OperationsRunbookOut(
+        slug="deployment",
+        title="Failed Deployment",
+        path="docs/RUNBOOK_DEPLOYMENT.md",
+        failure_modes=["failed deployment", "migration mismatch"],
+    ),
 ]
 
 
@@ -42,11 +72,33 @@ class OperationsControlService:
         deps.extend(
             [
                 self._from_state("celery", runtime.job_state, runtime.last_success, None),
-                self._from_state("background workers", runtime.job_state, runtime.last_success, None),
-                self._from_state("telegram", runtime.telegram_state, runtime.telegram_health.last_publish_success, runtime.telegram_health.last_publish_failure),
-                self._from_state("rss collectors", self._provider_family_state(runtime.provider_health, "rss"), None, None),
-                self._from_state("btc market providers", self._provider_family_state(runtime.provider_health, "bitcoin"), None, None),
-                self._from_state("news providers", self._provider_family_state(runtime.provider_health, "rss"), None, None),
+                self._from_state(
+                    "background workers", runtime.job_state, runtime.last_success, None
+                ),
+                self._from_state(
+                    "telegram",
+                    runtime.telegram_state,
+                    runtime.telegram_health.last_publish_success,
+                    runtime.telegram_health.last_publish_failure,
+                ),
+                self._from_state(
+                    "rss collectors",
+                    self._provider_family_state(runtime.provider_health, "rss"),
+                    None,
+                    None,
+                ),
+                self._from_state(
+                    "btc market providers",
+                    self._provider_family_state(runtime.provider_health, "bitcoin"),
+                    None,
+                    None,
+                ),
+                self._from_state(
+                    "news providers",
+                    self._provider_family_state(runtime.provider_health, "rss"),
+                    None,
+                    None,
+                ),
             ]
         )
         return deps
@@ -75,7 +127,15 @@ class OperationsControlService:
 
     def drills(self, db: Session) -> list[OperationsDrillOut]:
         try:
-            rows = db.execute(select(OperationsEvidence).order_by(OperationsEvidence.started_at.desc()).limit(50)).scalars().all()
+            rows = (
+                db.execute(
+                    select(OperationsEvidence)
+                    .order_by(OperationsEvidence.started_at.desc())
+                    .limit(50)
+                )
+                .scalars()
+                .all()
+            )
         except SQLAlchemyError:
             rows = []
         return [
@@ -96,7 +156,9 @@ class OperationsControlService:
         runtime = self.runtime.status(db)
         degraded = runtime.system_state != "healthy"
         return OperationsMetricsSummaryOut(
-            api_availability_status="healthy" if runtime.system_state in {"healthy", "maintenance"} else "degraded",
+            api_availability_status=(
+                "healthy" if runtime.system_state in {"healthy", "maintenance"} else "degraded"
+            ),
             background_job_success_status=runtime.job_state,
             provider_availability_status=runtime.provider_state,
             signal_generation_latency_status=runtime.signal_pipeline_state,
@@ -115,7 +177,13 @@ class OperationsControlService:
         confidence = min(confidences) if confidences else 0.0
         failures = [p.last_failure_at for p in runtime.provider_health if p.last_failure_at]
         return IntelligenceHealthOut(
-            status=self.runtime._rollup([runtime.signal_pipeline_state, runtime.evidence_pipeline_state, runtime.provider_state]),
+            status=self.runtime._rollup(
+                [
+                    runtime.signal_pipeline_state,
+                    runtime.evidence_pipeline_state,
+                    runtime.provider_state,
+                ]
+            ),
             provider_confidence=confidence,
             degraded_state=bool(runtime.degraded_components),
             last_success=runtime.last_success,
@@ -128,11 +196,17 @@ class OperationsControlService:
         failed = [dep for dep in deps if dep.status not in {"healthy", "maintenance"}]
         runtime = self.runtime.status(db)
         return OperationsHealthOut(
-            status="critical" if any(dep.status == "critical" for dep in failed) else ("degraded" if failed else "healthy"),
+            status=(
+                "critical"
+                if any(dep.status == "critical" for dep in failed)
+                else ("degraded" if failed else "healthy")
+            ),
             dependencies=deps,
             degraded_state=bool(failed or runtime.degraded_components),
             last_success=runtime.last_success,
-            last_failure=max([dep.last_failure_at for dep in deps if dep.last_failure_at], default=None),
+            last_failure=max(
+                [dep.last_failure_at for dep in deps if dep.last_failure_at], default=None
+            ),
             operational_limitations=[dep.degraded_reason for dep in failed if dep.degraded_reason],
         )
 
@@ -140,7 +214,9 @@ class OperationsControlService:
         start = time.perf_counter()
         try:
             fn()
-        except Exception as exc:  # noqa: BLE001 - dependency health must expose failures, not hide them.
+        except (
+            Exception
+        ) as exc:  # noqa: BLE001 - dependency health must expose failures, not hide them.
             return DependencyHealthOut(
                 name=name,
                 status="critical",
@@ -148,9 +224,13 @@ class OperationsControlService:
                 provider_confidence=0.0,
                 degraded_reason=type(exc).__name__,
             )
-        return DependencyHealthOut(name=name, status="healthy", latency_ms=(time.perf_counter() - start) * 1000)
+        return DependencyHealthOut(
+            name=name, status="healthy", latency_ms=(time.perf_counter() - start) * 1000
+        )
 
-    def _from_state(self, name: str, state: str, last_success: datetime | None, last_failure: datetime | None) -> DependencyHealthOut:
+    def _from_state(
+        self, name: str, state: str, last_success: datetime | None, last_failure: datetime | None
+    ) -> DependencyHealthOut:
         return DependencyHealthOut(
             name=name,
             status=state,
@@ -160,6 +240,12 @@ class OperationsControlService:
             degraded_reason="" if state == "healthy" else f"{name} state is {state}",
         )
 
-    def _provider_family_state(self, providers: list[ProviderHealthSnapshotOut], family: str) -> str:
-        states = [p.health_state for p in providers if family in p.provider_type.lower() or family in p.provider_name.lower()]
+    def _provider_family_state(
+        self, providers: list[ProviderHealthSnapshotOut], family: str
+    ) -> str:
+        states = [
+            p.health_state
+            for p in providers
+            if family in p.provider_type.lower() or family in p.provider_name.lower()
+        ]
         return self.runtime._rollup(states or ["maintenance"])

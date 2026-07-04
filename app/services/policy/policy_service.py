@@ -42,9 +42,15 @@ class TreasuryPolicyService:
             next_actions=next_actions,
             evaluated_policy=payload.policy_name,
             applied_rules=[
-                PolicyRuleOut(rule_key="min_wallet_health_score", rule_value="gte:60", severity="error"),
-                PolicyRuleOut(rule_key="max_single_tx_sats", rule_value="lte:10000000", severity="error"),
-                PolicyRuleOut(rule_key="min_required_approvals", rule_value="gte:1", severity="error"),
+                PolicyRuleOut(
+                    rule_key="min_wallet_health_score", rule_value="gte:60", severity="error"
+                ),
+                PolicyRuleOut(
+                    rule_key="max_single_tx_sats", rule_value="lte:10000000", severity="error"
+                ),
+                PolicyRuleOut(
+                    rule_key="min_required_approvals", rule_value="gte:1", severity="error"
+                ),
             ],
         )
 
@@ -84,7 +90,9 @@ class TreasuryPolicyService:
             next_actions=next_actions,
             evaluated_policy=policy.name,
             applied_rules=[
-                PolicyRuleOut(rule_key=rule.rule_key, rule_value=rule.rule_value, severity=rule.severity)
+                PolicyRuleOut(
+                    rule_key=rule.rule_key, rule_value=rule.rule_value, severity=rule.severity
+                )
                 for rule in rules
             ],
         )
@@ -111,7 +119,9 @@ class TreasuryPolicyService:
         self._publish_policy_events(db, result, payload)
         return result
 
-    def _publish_policy_events(self, db: Session, result: PolicyCheckResponse, payload: PolicyCheckRequest) -> None:
+    def _publish_policy_events(
+        self, db: Session, result: PolicyCheckResponse, payload: PolicyCheckRequest
+    ) -> None:
         event_payload: dict[str, object] = {
             "policy_id": result.evaluated_policy,
             "policy_name": result.evaluated_policy,
@@ -177,7 +187,9 @@ class TreasuryPolicyService:
         blocked = len(rows) - allowed
         by_policy_map: dict[str, dict[str, int]] = {}
         for item in rows:
-            bucket = by_policy_map.setdefault(item.policy_name, {"total": 0, "allowed": 0, "blocked": 0})
+            bucket = by_policy_map.setdefault(
+                item.policy_name, {"total": 0, "allowed": 0, "blocked": 0}
+            )
             bucket["total"] += 1
             if item.allowed:
                 bucket["allowed"] += 1
@@ -232,17 +244,23 @@ class TreasuryPolicyService:
             )
 
     @staticmethod
-    def _validate_policy_change_controls(existing: object | None, payload: PolicyCatalogUpsertIn) -> None:
+    def _validate_policy_change_controls(
+        existing: object | None, payload: PolicyCatalogUpsertIn
+    ) -> None:
         if existing is None:
             return
 
-        old_min_wallet_health = int(getattr(existing, "min_wallet_health_score", payload.min_wallet_health_score))
+        old_min_wallet_health = int(
+            getattr(existing, "min_wallet_health_score", payload.min_wallet_health_score)
+        )
         old_max_single_tx = int(getattr(existing, "max_single_tx_sats", payload.max_single_tx_sats))
 
         min_health_delta = payload.min_wallet_health_score - old_min_wallet_health
         tx_limit_drop_ratio = 0.0
         if old_max_single_tx > 0:
-            tx_limit_drop_ratio = (old_max_single_tx - payload.max_single_tx_sats) / old_max_single_tx
+            tx_limit_drop_ratio = (
+                old_max_single_tx - payload.max_single_tx_sats
+            ) / old_max_single_tx
 
         high_risk_tightening = min_health_delta >= 15 or tx_limit_drop_ratio >= 0.5
         has_justification = bool((payload.change_justification or "").strip())
@@ -262,7 +280,9 @@ class TreasuryPolicyService:
                 "High-risk policy tightening requires at least 2 peer review approvals."
             )
 
-    def simulate_compare(self, db: Session, payload: PolicySimulationRequest) -> PolicySimulationOut:
+    def simulate_compare(
+        self, db: Session, payload: PolicySimulationRequest
+    ) -> PolicySimulationOut:
         baseline_input = PolicyCheckRequest(
             policy_name=payload.baseline_policy_name,
             wallet_health_score=payload.wallet_health_score,
@@ -295,18 +315,23 @@ class TreasuryPolicyService:
             db.rollback()
             baseline_rules = {}
             candidate_rules = {}
-        changed_rules = self._changed_rules(baseline_rules=baseline_rules, candidate_rules=candidate_rules)
+        changed_rules = self._changed_rules(
+            baseline_rules=baseline_rules, candidate_rules=candidate_rules
+        )
 
-        risk_level, required_approvals_suggested, governance_actions = self._simulation_risk_controls(
-            baseline_allowed=baseline.allowed,
-            candidate_allowed=candidate.allowed,
-            changed_rules=changed_rules,
+        risk_level, required_approvals_suggested, governance_actions = (
+            self._simulation_risk_controls(
+                baseline_allowed=baseline.allowed,
+                candidate_allowed=candidate.allowed,
+                changed_rules=changed_rules,
+            )
         )
 
         diff = PolicySimulationDiffOut(
             baseline_allowed=baseline.allowed,
             candidate_allowed=candidate.allowed,
-            changed=(baseline.allowed != candidate.allowed) or (baseline_violations != candidate_violations),
+            changed=(baseline.allowed != candidate.allowed)
+            or (baseline_violations != candidate_violations),
             added_violations=sorted(candidate_violations - baseline_violations),
             removed_violations=sorted(baseline_violations - candidate_violations),
             changed_rules=changed_rules,
@@ -322,7 +347,9 @@ class TreasuryPolicyService:
         return {rule.rule_key: rule.rule_value for rule in repo.list_rules(policy.id)}
 
     @staticmethod
-    def _changed_rules(*, baseline_rules: dict[str, str], candidate_rules: dict[str, str]) -> list[str]:
+    def _changed_rules(
+        *, baseline_rules: dict[str, str], candidate_rules: dict[str, str]
+    ) -> list[str]:
         keys = sorted(set(baseline_rules) | set(candidate_rules))
         changed: list[str] = []
         for key in keys:
@@ -367,7 +394,9 @@ class TreasuryPolicyService:
             ],
         )
 
-    def compare_catalog_profiles(self, db: Session, payload: PolicyCatalogCompareRequest) -> PolicyCatalogCompareOut:
+    def compare_catalog_profiles(
+        self, db: Session, payload: PolicyCatalogCompareRequest
+    ) -> PolicyCatalogCompareOut:
         repo = PolicyRepository(db)
         try:
             baseline = repo.get_or_create_policy(payload.baseline_policy_name)
@@ -383,9 +412,15 @@ class TreasuryPolicyService:
                     f"max_single_tx_sats: {baseline.max_single_tx_sats} -> {candidate.max_single_tx_sats}"
                 )
 
-            baseline_rules = {rule.rule_key: rule.rule_value for rule in repo.list_rules(baseline.id)}
-            candidate_rules = {rule.rule_key: rule.rule_value for rule in repo.list_rules(candidate.id)}
-            changed_rules = self._changed_rules(baseline_rules=baseline_rules, candidate_rules=candidate_rules)
+            baseline_rules = {
+                rule.rule_key: rule.rule_value for rule in repo.list_rules(baseline.id)
+            }
+            candidate_rules = {
+                rule.rule_key: rule.rule_value for rule in repo.list_rules(candidate.id)
+            }
+            changed_rules = self._changed_rules(
+                baseline_rules=baseline_rules, candidate_rules=candidate_rules
+            )
 
             risk_level: Literal["low", "medium", "high"] = "low"
             if len(changed_thresholds) + len(changed_rules) >= 3:

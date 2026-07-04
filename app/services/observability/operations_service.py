@@ -48,6 +48,7 @@ class OperationsSnapshotService:
         if isinstance(value, str) and value.strip().lstrip("-").isdigit():
             return int(value)
         return default
+
     @staticmethod
     def _runtime_severity(
         *,
@@ -65,12 +66,16 @@ class OperationsSnapshotService:
 
         # provider failure / stale data
         data_source = str(getattr(chain_state, "freshness", {}).get("source", "unknown"))
-        source_band = str(getattr(chain_state, "freshness", {}).get("provider_freshness_band", "unknown"))
+        source_band = str(
+            getattr(chain_state, "freshness", {}).get("provider_freshness_band", "unknown")
+        )
         if data_source in {"provider_fallback", "repository_fallback"}:
             dimensions["provider_failure"] = "critical"
             conditions.append("Provider fallback active")
             score += 3
-            guidance.append("Validate provider outage and failover path before enabling automated actions.")
+            guidance.append(
+                "Validate provider outage and failover path before enabling automated actions."
+            )
         elif provider_count_total == 0:
             dimensions["provider_failure"] = "warning"
             conditions.append("No provider observations in the last 24h")
@@ -82,7 +87,9 @@ class OperationsSnapshotService:
             dimensions["stale_data"] = "warning" if source_band == "stale" else "critical"
             conditions.append(f"Provider data freshness is {source_band}")
             score += 1 if source_band == "stale" else 2
-            guidance.append("Run fresh provider probe and block high-impact policy decisions until freshness recovers.")
+            guidance.append(
+                "Run fresh provider probe and block high-impact policy decisions until freshness recovers."
+            )
         else:
             dimensions["stale_data"] = "ok"
 
@@ -93,7 +100,9 @@ class OperationsSnapshotService:
             dimensions["chain_state_degradation"] = "critical"
             conditions.append("Chain-state finality is weak or reorg risk is high")
             score += 3
-            guidance.append("Pause non-essential broadcasts and require manual chain-state confirmation.")
+            guidance.append(
+                "Pause non-essential broadcasts and require manual chain-state confirmation."
+            )
         elif finality_band == "moderate" or reorg_risk >= 0.5:
             dimensions["chain_state_degradation"] = "warning"
             score += 1
@@ -112,7 +121,9 @@ class OperationsSnapshotService:
             dimensions["recovery_drift"] = "critical"
             conditions.append("Recovery readiness SLO is critical")
             score += 3
-            guidance.append("Run highest-priority recovery drill and clear unresolved critical findings.")
+            guidance.append(
+                "Run highest-priority recovery drill and clear unresolved critical findings."
+            )
         elif recovery_status == "degraded":
             dimensions["recovery_drift"] = "warning"
             score += 1
@@ -124,7 +135,9 @@ class OperationsSnapshotService:
             dimensions["delivery_failure"] = "critical"
             conditions.append("Delivery failures exceeded critical threshold in 24h")
             score += 2
-            guidance.append("Inspect delivery logs, destination health, and authentication constraints.")
+            guidance.append(
+                "Inspect delivery logs, destination health, and authentication constraints."
+            )
         elif failed_deliveries > 0:
             dimensions["delivery_failure"] = "warning"
             score += 1
@@ -134,7 +147,9 @@ class OperationsSnapshotService:
         # policy violation proxy from job failures
         if failed_jobs >= 10:
             dimensions["policy_violation"] = "critical"
-            conditions.append("Job failures indicate potential policy/runtime enforcement violations")
+            conditions.append(
+                "Job failures indicate potential policy/runtime enforcement violations"
+            )
             score += 2
         elif failed_jobs > 0:
             dimensions["policy_violation"] = "warning"
@@ -147,7 +162,9 @@ class OperationsSnapshotService:
             dimensions["operational_backlog"] = "critical"
             conditions.append("Failed job backlog exceeded safe threshold")
             score += 2
-            guidance.append("Prioritize replay for safe idempotent jobs and defer non-critical workloads.")
+            guidance.append(
+                "Prioritize replay for safe idempotent jobs and defer non-critical workloads."
+            )
         elif failed_jobs >= 2:
             dimensions["operational_backlog"] = "warning"
             score += 1
@@ -199,16 +216,23 @@ class OperationsSnapshotService:
         component_states: dict[str, str] = {}
         penalty = 0.0
 
-        chain_freshness = str(getattr(chain_state, "freshness", {}).get("provider_freshness_band", "unknown"))
+        chain_freshness = str(
+            getattr(chain_state, "freshness", {}).get("provider_freshness_band", "unknown")
+        )
         chain_source = str(getattr(chain_state, "freshness", {}).get("source", "unknown"))
-        if chain_source in {"provider_fallback", "repository_fallback"} or chain_freshness in {"stale", "very_stale"}:
+        if chain_source in {"provider_fallback", "repository_fallback"} or chain_freshness in {
+            "stale",
+            "very_stale",
+        }:
             component_states["chain_state"] = "degraded"
             reasons.append("stale_chain_state")
             penalty += 0.2
         else:
             component_states["chain_state"] = "nominal"
 
-        mempool_freshness = str(getattr(mempool_state, "freshness", {}).get("freshness_band", "unknown"))
+        mempool_freshness = str(
+            getattr(mempool_state, "freshness", {}).get("freshness_band", "unknown")
+        )
         if mempool_freshness in {"stale", "very_stale"}:
             component_states["mempool"] = "degraded"
             reasons.append("stale_mempool_state")
@@ -261,7 +285,12 @@ class OperationsSnapshotService:
         sent_deliveries: int,
         chain_state: object,
     ) -> OperationalEvidencePacketOut:
-        unresolved = int(getattr(recovery, "recovery_slo", {}).get("signals", {}).get("unresolved_critical_findings", 0) or 0)
+        unresolved = int(
+            getattr(recovery, "recovery_slo", {})
+            .get("signals", {})
+            .get("unresolved_critical_findings", 0)
+            or 0
+        )
         recovery_status = str(getattr(recovery, "recovery_slo", {}).get("status", "unknown"))
         drill = dict(getattr(recovery, "drill_execution", {}))
         quality = getattr(chain_state, "freshness", {})
@@ -287,10 +316,20 @@ class OperationsSnapshotService:
                 "is_fallback": bool(quality.get("is_fallback", False)),
             },
             confidence=confidence,
-            transformations=["runtime_severity_model", "degraded_mode_mapping", "recovery_slo_projection"],
+            transformations=[
+                "runtime_severity_model",
+                "degraded_mode_mapping",
+                "recovery_slo_projection",
+            ],
             policy_context={"escalation_required": runtime_severity.escalation_required},
             recommendation_rationale="Operational evidence packet summarizes runtime risk posture for operators.",
-            lineage=[{"domain": "observability", "reference": "operations_snapshot", "confidence": confidence}],
+            lineage=[
+                {
+                    "domain": "observability",
+                    "reference": "operations_snapshot",
+                    "confidence": confidence,
+                }
+            ],
         )
 
         return OperationalEvidencePacketOut(
@@ -406,15 +445,28 @@ class OperationsSnapshotService:
                 is_mock=evidence.is_mock,
             )
             stale_evidence = evidence.freshness_seconds >= 1800
-            degradation_reason = None if evidence.healthy else (evidence.error_type or "provider_unhealthy")
-            guidance = ["Continue routine provider checks."] if evidence.healthy else ["Verify provider runtime and failover path.", "Review sanitized provider errors and refresh evidence."]
+            degradation_reason = (
+                None if evidence.healthy else (evidence.error_type or "provider_unhealthy")
+            )
+            guidance = (
+                ["Continue routine provider checks."]
+                if evidence.healthy
+                else [
+                    "Verify provider runtime and failover path.",
+                    "Review sanitized provider errors and refresh evidence.",
+                ]
+            )
             set_provider_health_detail_metrics(
                 provider_type=evidence.provider_type,
                 provider_name=evidence.provider_name,
                 latency_ms=evidence.latency_ms,
                 is_fallback=evidence.is_fallback,
                 confidence=evidence.confidence,
-                last_success_age_seconds=evidence.freshness_seconds if evidence.healthy else max(evidence.freshness_seconds, 1),
+                last_success_age_seconds=(
+                    evidence.freshness_seconds
+                    if evidence.healthy
+                    else max(evidence.freshness_seconds, 1)
+                ),
             )
             if not evidence.healthy:
                 increment_provider_failure_metric(

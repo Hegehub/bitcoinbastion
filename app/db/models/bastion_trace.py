@@ -95,6 +95,7 @@ class TraceWatchlistEntry(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
+
 class TraceBatch(Base):
     __tablename__ = "trace_batches"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -152,6 +153,7 @@ class TraceBusinessPolicyProfileModel(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
+
 class TraceReviewItem(Base):
     __tablename__ = "trace_review_items"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -172,7 +174,9 @@ class TraceReviewItem(Base):
 class TraceOperatorNoteModel(Base):
     __tablename__ = "trace_operator_notes"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    review_item_id: Mapped[int | None] = mapped_column(ForeignKey("trace_review_items.id"), nullable=True)
+    review_item_id: Mapped[int | None] = mapped_column(
+        ForeignKey("trace_review_items.id"), nullable=True
+    )
     report_id: Mapped[int | None] = mapped_column(ForeignKey("trace_reports.id"), nullable=True)
     note_type: Mapped[str] = mapped_column(String(64), default="GENERAL")
     note: Mapped[str] = mapped_column(Text, default="")
@@ -185,7 +189,9 @@ class TraceBusinessProofPacketModel(Base):
     __tablename__ = "trace_business_proof_packets"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     report_id: Mapped[int] = mapped_column(ForeignKey("trace_reports.id"), index=True)
-    review_item_id: Mapped[int | None] = mapped_column(ForeignKey("trace_review_items.id"), nullable=True)
+    review_item_id: Mapped[int | None] = mapped_column(
+        ForeignKey("trace_review_items.id"), nullable=True
+    )
     policy_profile_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     payload_json: Mapped[str] = mapped_column(Text, default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

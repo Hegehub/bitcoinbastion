@@ -7,9 +7,16 @@ from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.db.models.intelligence_signals import IntelligenceSignalCandidate, IntelligenceSignalDeliveryLog
+from app.db.models.intelligence_signals import (
+    IntelligenceSignalCandidate,
+    IntelligenceSignalDeliveryLog,
+)
 from app.db.models.evidence_packet import EvidencePacket
-from app.db.models.observability_health import BackgroundJobHealth, ProviderHealthSnapshot, RecoveryEvent
+from app.db.models.observability_health import (
+    BackgroundJobHealth,
+    ProviderHealthSnapshot,
+    RecoveryEvent,
+)
 from app.db.models.telegram import TelegramDeliveryLog
 from app.schemas.health import (
     BackgroundJobHealthOut,
@@ -64,10 +71,14 @@ class RuntimeStatusService:
         telegram_state = telegram.health_state
         signal_state = self._signal_pipeline_state(db)
         evidence_state = self._evidence_pipeline_state(db)
-        system_state = self._rollup([provider_state, job_state, telegram_state, signal_state, evidence_state])
+        system_state = self._rollup(
+            [provider_state, job_state, telegram_state, signal_state, evidence_state]
+        )
         fallback_active = any(d.automatic_fallback_used for d in degraded)
         operator_attention = any(d.operator_attention_required for d in degraded)
-        last_successes = [p.last_success_at for p in providers if p.last_success_at] + [j.last_finish_at for j in jobs if j.success and j.last_finish_at]
+        last_successes = [p.last_success_at for p in providers if p.last_success_at] + [
+            j.last_finish_at for j in jobs if j.success and j.last_finish_at
+        ]
 
         return RuntimeStatusOut(
             system_state=system_state,
@@ -89,7 +100,13 @@ class RuntimeStatusService:
     def system_health(self, db: Session) -> SystemHealthOut:
         status = self.status(db)
         try:
-            recoveries = db.execute(select(RecoveryEvent).order_by(RecoveryEvent.created_at.desc()).limit(25)).scalars().all()
+            recoveries = (
+                db.execute(
+                    select(RecoveryEvent).order_by(RecoveryEvent.created_at.desc()).limit(25)
+                )
+                .scalars()
+                .all()
+            )
         except SQLAlchemyError:
             recoveries = []
         return SystemHealthOut(
@@ -116,9 +133,15 @@ class RuntimeStatusService:
 
     def provider_health(self, db: Session) -> list[ProviderHealthSnapshotOut]:
         try:
-            rows = db.execute(
-                select(ProviderHealthSnapshot).order_by(ProviderHealthSnapshot.created_at.desc()).limit(100)
-            ).scalars().all()
+            rows = (
+                db.execute(
+                    select(ProviderHealthSnapshot)
+                    .order_by(ProviderHealthSnapshot.created_at.desc())
+                    .limit(100)
+                )
+                .scalars()
+                .all()
+            )
         except SQLAlchemyError:
             rows = []
         latest: dict[tuple[str, str], ProviderHealthSnapshot] = {}
@@ -146,14 +169,37 @@ class RuntimeStatusService:
             for r in latest.values()
         ]
         return providers or [
-            ProviderHealthSnapshotOut(provider_name="rss", provider_type="RSS", health_state="maintenance", provider_confidence=0.0),
-            ProviderHealthSnapshotOut(provider_name="btc_price", provider_type="Bitcoin price providers", health_state="maintenance", provider_confidence=0.0),
-            ProviderHealthSnapshotOut(provider_name="telegram", provider_type="Telegram", health_state="maintenance", provider_confidence=0.0),
+            ProviderHealthSnapshotOut(
+                provider_name="rss",
+                provider_type="RSS",
+                health_state="maintenance",
+                provider_confidence=0.0,
+            ),
+            ProviderHealthSnapshotOut(
+                provider_name="btc_price",
+                provider_type="Bitcoin price providers",
+                health_state="maintenance",
+                provider_confidence=0.0,
+            ),
+            ProviderHealthSnapshotOut(
+                provider_name="telegram",
+                provider_type="Telegram",
+                health_state="maintenance",
+                provider_confidence=0.0,
+            ),
         ]
 
     def job_health(self, db: Session) -> list[BackgroundJobHealthOut]:
         try:
-            rows = db.execute(select(BackgroundJobHealth).order_by(BackgroundJobHealth.updated_at.desc()).limit(200)).scalars().all()
+            rows = (
+                db.execute(
+                    select(BackgroundJobHealth)
+                    .order_by(BackgroundJobHealth.updated_at.desc())
+                    .limit(200)
+                )
+                .scalars()
+                .all()
+            )
         except SQLAlchemyError:
             rows = []
         latest: dict[str, BackgroundJobHealth] = {}
@@ -163,7 +209,14 @@ class RuntimeStatusService:
         for name in PRODUCTION_JOBS:
             candidate = latest.get(name)
             if candidate is None:
-                result.append(BackgroundJobHealthOut(job_name=name, success=False, failure_reason="no heartbeat recorded", health_state="maintenance"))
+                result.append(
+                    BackgroundJobHealthOut(
+                        job_name=name,
+                        success=False,
+                        failure_reason="no heartbeat recorded",
+                        health_state="maintenance",
+                    )
+                )
                 continue
             result.append(
                 BackgroundJobHealthOut(
@@ -183,9 +236,23 @@ class RuntimeStatusService:
 
     def telegram_health(self, db: Session) -> TelegramHealthOut:
         try:
-            successes = db.execute(select(TelegramDeliveryLog.sent_at).where(TelegramDeliveryLog.status == "sent").order_by(TelegramDeliveryLog.sent_at.desc()).limit(1)).scalar_one_or_none()
-            failures = db.execute(select(TelegramDeliveryLog.sent_at).where(TelegramDeliveryLog.status != "sent").order_by(TelegramDeliveryLog.sent_at.desc()).limit(1)).scalar_one_or_none()
-            failure_count = db.execute(select(func.count()).select_from(TelegramDeliveryLog).where(TelegramDeliveryLog.status != "sent")).scalar_one()
+            successes = db.execute(
+                select(TelegramDeliveryLog.sent_at)
+                .where(TelegramDeliveryLog.status == "sent")
+                .order_by(TelegramDeliveryLog.sent_at.desc())
+                .limit(1)
+            ).scalar_one_or_none()
+            failures = db.execute(
+                select(TelegramDeliveryLog.sent_at)
+                .where(TelegramDeliveryLog.status != "sent")
+                .order_by(TelegramDeliveryLog.sent_at.desc())
+                .limit(1)
+            ).scalar_one_or_none()
+            failure_count = db.execute(
+                select(func.count())
+                .select_from(TelegramDeliveryLog)
+                .where(TelegramDeliveryLog.status != "sent")
+            ).scalar_one()
         except SQLAlchemyError:
             successes = None
             failures = None
@@ -213,54 +280,118 @@ class RuntimeStatusService:
     ) -> list[DegradedComponentOut]:
         now = datetime.now(timezone.utc).replace(tzinfo=None)
         degraded: list[DegradedComponentOut] = []
-        healthy_btc = [p for p in providers if "bitcoin" in p.provider_type.lower() and p.health_state == "healthy"]
+        healthy_btc = [
+            p
+            for p in providers
+            if "bitcoin" in p.provider_type.lower() and p.health_state == "healthy"
+        ]
         if len(healthy_btc) == 1:
-            degraded.append(DegradedComponentOut(severity="degraded", affected_component="btc_price_providers", started_at=now, recommendation="Add or restore a second BTC price provider before trusting high-confidence market signals.", automatic_fallback_used=True))
+            degraded.append(
+                DegradedComponentOut(
+                    severity="degraded",
+                    affected_component="btc_price_providers",
+                    started_at=now,
+                    recommendation="Add or restore a second BTC price provider before trusting high-confidence market signals.",
+                    automatic_fallback_used=True,
+                )
+            )
         for p in providers:
             if p.health_state in {"degraded", "critical", "offline", "maintenance"}:
-                degraded.append(DegradedComponentOut(severity=p.health_state, affected_component=f"provider:{p.provider_type}:{p.provider_name}", started_at=p.last_failure_at or now, recommendation="Inspect provider credentials, network reachability, latency and backoff; do not hide this provider from confidence calculations.", automatic_fallback_used=p.backoff_until is not None))
+                degraded.append(
+                    DegradedComponentOut(
+                        severity=p.health_state,
+                        affected_component=f"provider:{p.provider_type}:{p.provider_name}",
+                        started_at=p.last_failure_at or now,
+                        recommendation="Inspect provider credentials, network reachability, latency and backoff; do not hide this provider from confidence calculations.",
+                        automatic_fallback_used=p.backoff_until is not None,
+                    )
+                )
         for j in jobs:
             if j.health_state in {"degraded", "critical", "maintenance"}:
-                degraded.append(DegradedComponentOut(severity=j.health_state, affected_component=f"job:{j.job_name}", started_at=j.last_finish_at or j.last_start_at or now, recommendation="Inspect worker logs, retry state and next schedule; failed jobs must be replayed or acknowledged.", automatic_fallback_used=j.retry_count > 0))
+                degraded.append(
+                    DegradedComponentOut(
+                        severity=j.health_state,
+                        affected_component=f"job:{j.job_name}",
+                        started_at=j.last_finish_at or j.last_start_at or now,
+                        recommendation="Inspect worker logs, retry state and next schedule; failed jobs must be replayed or acknowledged.",
+                        automatic_fallback_used=j.retry_count > 0,
+                    )
+                )
         if telegram.health_state != "healthy":
-            degraded.append(DegradedComponentOut(severity=telegram.health_state, affected_component="telegram", started_at=telegram.last_publish_failure or now, recommendation="API and web may continue, but publication failures must be logged and operators notified.", automatic_fallback_used=True))
+            degraded.append(
+                DegradedComponentOut(
+                    severity=telegram.health_state,
+                    affected_component="telegram",
+                    started_at=telegram.last_publish_failure or now,
+                    recommendation="API and web may continue, but publication failures must be logged and operators notified.",
+                    automatic_fallback_used=True,
+                )
+            )
         return degraded
 
-    def calculate_provider_state(self, *, consecutive_failures: int, provider_confidence: float, avg_latency_ms: float | None, backoff_until: datetime | None, explicit_state: str = "healthy") -> str:
+    def calculate_provider_state(
+        self,
+        *,
+        consecutive_failures: int,
+        provider_confidence: float,
+        avg_latency_ms: float | None,
+        backoff_until: datetime | None,
+        explicit_state: str = "healthy",
+    ) -> str:
         if explicit_state in {"critical", "offline", "maintenance"}:
             return explicit_state
         if backoff_until and backoff_until > datetime.utcnow():
             return "degraded"
         if consecutive_failures >= 5 or provider_confidence <= 0.15:
             return "critical"
-        if consecutive_failures > 0 or provider_confidence < 0.5 or (avg_latency_ms is not None and avg_latency_ms > 5000):
+        if (
+            consecutive_failures > 0
+            or provider_confidence < 0.5
+            or (avg_latency_ms is not None and avg_latency_ms > 5000)
+        ):
             return "degraded"
         return "healthy"
 
     def calculate_job_state(self, row: BackgroundJobHealth) -> str:
         if not row.success:
             return "critical" if row.retry_count >= 3 else "degraded"
-        if row.next_scheduled_at and row.next_scheduled_at < datetime.utcnow() - timedelta(minutes=15):
+        if row.next_scheduled_at and row.next_scheduled_at < datetime.utcnow() - timedelta(
+            minutes=15
+        ):
             return "degraded"
         return "healthy"
 
     def _signal_pipeline_state(self, db: Session) -> str:
         try:
-            pending = db.execute(select(func.count()).select_from(IntelligenceSignalCandidate).where(IntelligenceSignalCandidate.status.in_(["pending_review", "pending"]))).scalar_one_or_none()
+            pending = db.execute(
+                select(func.count())
+                .select_from(IntelligenceSignalCandidate)
+                .where(IntelligenceSignalCandidate.status.in_(["pending_review", "pending"]))
+            ).scalar_one_or_none()
         except SQLAlchemyError:
             pending = 0
         return "degraded" if int(pending or 0) > 100 else "healthy"
 
     def _evidence_pipeline_state(self, db: Session) -> str:
         try:
-            packets = db.execute(select(func.count()).select_from(EvidencePacket)).scalar_one_or_none()
+            packets = db.execute(
+                select(func.count()).select_from(EvidencePacket)
+            ).scalar_one_or_none()
         except SQLAlchemyError:
             packets = 0
         return "healthy" if int(packets or 0) >= 0 else "degraded"
 
     def _queue_depth(self, db: Session) -> int:
         try:
-            pending = db.execute(select(func.count()).select_from(IntelligenceSignalDeliveryLog).where(IntelligenceSignalDeliveryLog.delivery_status.in_(["pending", "queued", "retry"]))).scalar_one_or_none()
+            pending = db.execute(
+                select(func.count())
+                .select_from(IntelligenceSignalDeliveryLog)
+                .where(
+                    IntelligenceSignalDeliveryLog.delivery_status.in_(
+                        ["pending", "queued", "retry"]
+                    )
+                )
+            ).scalar_one_or_none()
         except SQLAlchemyError:
             pending = 0
         return int(pending or 0)

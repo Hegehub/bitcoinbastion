@@ -9,8 +9,16 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.models.candle_attribution import CandleAttribution
-from app.db.models.evidence_packet import EvidenceArtifact, EvidenceIntegritySnapshot, EvidencePacket, EvidenceRelationship
-from app.db.models.intelligence_signals import IntelligenceOperatorReview, IntelligenceSignalCandidate
+from app.db.models.evidence_packet import (
+    EvidenceArtifact,
+    EvidenceIntegritySnapshot,
+    EvidencePacket,
+    EvidenceRelationship,
+)
+from app.db.models.intelligence_signals import (
+    IntelligenceOperatorReview,
+    IntelligenceSignalCandidate,
+)
 from app.db.models.news_article import NewsArticle
 from app.db.models.news_event import NewsEvent
 from app.db.models.news_price_impact import NewsPriceImpact
@@ -51,7 +59,11 @@ class EvidencePacketBuilder:
             article_id=self._article_id(normalized, entity),
             event_id=self._event_id(normalized, entity),
             impact_id=entity.id if normalized == "impact" else self._impact_id(normalized, entity),
-            attribution_id=entity.id if normalized == "attribution" else self._attribution_id(normalized, entity),
+            attribution_id=(
+                entity.id
+                if normalized == "attribution"
+                else self._attribution_id(normalized, entity)
+            ),
             signal_id=entity.id if normalized == "signal" else None,
             title=self._title(normalized, entity),
             summary=self._summary(normalized, entity),
@@ -79,10 +91,15 @@ class EvidencePacketBuilder:
                     entity_type=normalized,
                     entity_id=entity_id,
                     artifact_type=artifact_type,
-                    artifact_json={artifact_type: payload.get(artifact_type) or payload.get(self._payload_key(artifact_type), {})},
+                    artifact_json={
+                        artifact_type: payload.get(artifact_type)
+                        or payload.get(self._payload_key(artifact_type), {})
+                    },
                 )
             )
-        EVIDENCE_PACKETS_GENERATED_TOTAL.labels(packet_type=self._bounded_packet_type(packet.packet_type)).inc()
+        EVIDENCE_PACKETS_GENERATED_TOTAL.labels(
+            packet_type=self._bounded_packet_type(packet.packet_type)
+        ).inc()
         publish_domain_event(
             self.db,
             "evidence.packet.created",
@@ -111,7 +128,9 @@ class EvidencePacketBuilder:
         entity = self.load_entity(packet.source_entity_type, packet.source_entity_id)
         relationships = self.relationship_chain(packet.source_entity_type, packet.source_entity_id)
         artifacts = self.repo.artifacts_for_packet(packet.id) if packet.id else []
-        integrity = integrity_snapshot or self.repo.latest_integrity_snapshot(packet.source_entity_type, packet.source_entity_id)
+        integrity = integrity_snapshot or self.repo.latest_integrity_snapshot(
+            packet.source_entity_type, packet.source_entity_id
+        )
         return {
             "packet_id": packet.id,
             "packet_type": packet.packet_type,
@@ -148,11 +167,18 @@ class EvidencePacketBuilder:
             "operator_reviewed": self._operator_review_status(packet.signal_id) != "none",
         }
 
-    def create_integrity_snapshot(self, entity_type: str, entity_id: int) -> EvidenceIntegritySnapshot:
+    def create_integrity_snapshot(
+        self, entity_type: str, entity_id: int
+    ) -> EvidenceIntegritySnapshot:
         normalized = self.normalize_entity_type(entity_type)
         content_hash = self.entity_hash(normalized, entity_id)
         return self.repo.add_integrity_snapshot(
-            EvidenceIntegritySnapshot(entity_type=normalized, entity_id=entity_id, hash_algorithm="sha256", content_hash=content_hash)
+            EvidenceIntegritySnapshot(
+                entity_type=normalized,
+                entity_id=entity_id,
+                hash_algorithm="sha256",
+                content_hash=content_hash,
+            )
         )
 
     def entity_hash(self, entity_type: str, entity_id: int) -> str:
@@ -161,41 +187,145 @@ class EvidencePacketBuilder:
         if entity is None:
             raise ValueError("evidence_entity_not_found")
         payload = self.entity_public_payload(normalized, entity)
-        encoded = json.dumps(payload, sort_keys=True, default=str, separators=(",", ":")).encode("utf-8")
+        encoded = json.dumps(payload, sort_keys=True, default=str, separators=(",", ":")).encode(
+            "utf-8"
+        )
         return sha256(encoded).hexdigest()
 
     def entity_public_payload(self, entity_type: str, entity: Any) -> dict[str, Any]:
         fields = {
-            "article": ["id", "source_id", "title", "summary", "published_at", "fetched_at", "provider_confidence", "btc_relevance_score", "market_impact_score", "credibility_score", "confidence_score", "content_hash"],
-            "event": ["id", "primary_article_id", "canonical_title", "canonical_summary", "event_type", "event_category", "event_confidence", "provider_confidence", "btc_relevance_score", "market_impact_score", "source_count", "first_seen_at", "last_seen_at"],
-            "impact": ["id", "article_id", "event_id", "impact_confidence_score", "confidence_score", "provider_confidence", "source_credibility_score", "btc_relevance_score", "market_impact_score", "dominant_window", "delayed_reaction_detected", "false_signal_detected", "calculated_at"],
-            "attribution": ["id", "article_id", "event_id", "candle_id", "confidence_score", "provider_confidence", "source_confidence", "btc_relevance_score", "market_impact_score", "price_move_pct", "dominant_window", "created_at"],
-            "signal": ["id", "signal_type", "source_entity_type", "source_entity_id", "article_id", "event_id", "impact_id", "attribution_id", "title", "summary", "confidence_score", "provider_confidence", "source_confidence", "policy_decision", "policy_reason", "status", "requires_operator_review", "published_at", "created_at"],
-            "publication": ["id", "signal_type", "status", "published_at", "policy_decision", "policy_reason"],
+            "article": [
+                "id",
+                "source_id",
+                "title",
+                "summary",
+                "published_at",
+                "fetched_at",
+                "provider_confidence",
+                "btc_relevance_score",
+                "market_impact_score",
+                "credibility_score",
+                "confidence_score",
+                "content_hash",
+            ],
+            "event": [
+                "id",
+                "primary_article_id",
+                "canonical_title",
+                "canonical_summary",
+                "event_type",
+                "event_category",
+                "event_confidence",
+                "provider_confidence",
+                "btc_relevance_score",
+                "market_impact_score",
+                "source_count",
+                "first_seen_at",
+                "last_seen_at",
+            ],
+            "impact": [
+                "id",
+                "article_id",
+                "event_id",
+                "impact_confidence_score",
+                "confidence_score",
+                "provider_confidence",
+                "source_credibility_score",
+                "btc_relevance_score",
+                "market_impact_score",
+                "dominant_window",
+                "delayed_reaction_detected",
+                "false_signal_detected",
+                "calculated_at",
+            ],
+            "attribution": [
+                "id",
+                "article_id",
+                "event_id",
+                "candle_id",
+                "confidence_score",
+                "provider_confidence",
+                "source_confidence",
+                "btc_relevance_score",
+                "market_impact_score",
+                "price_move_pct",
+                "dominant_window",
+                "created_at",
+            ],
+            "signal": [
+                "id",
+                "signal_type",
+                "source_entity_type",
+                "source_entity_id",
+                "article_id",
+                "event_id",
+                "impact_id",
+                "attribution_id",
+                "title",
+                "summary",
+                "confidence_score",
+                "provider_confidence",
+                "source_confidence",
+                "policy_decision",
+                "policy_reason",
+                "status",
+                "requires_operator_review",
+                "published_at",
+                "created_at",
+            ],
+            "publication": [
+                "id",
+                "signal_type",
+                "status",
+                "published_at",
+                "policy_decision",
+                "policy_reason",
+            ],
         }[entity_type]
-        return cast(dict[str, Any], self._sanitize({field: getattr(entity, field, None) for field in fields}))
+        return cast(
+            dict[str, Any],
+            self._sanitize({field: getattr(entity, field, None) for field in fields}),
+        )
 
-    def confidence_breakdown(self, packet: EvidencePacket, entity: Any | None = None) -> dict[str, Any]:
+    def confidence_breakdown(
+        self, packet: EvidencePacket, entity: Any | None = None
+    ) -> dict[str, Any]:
         return {
             "source_contribution": packet.source_confidence,
             "provider_contribution": packet.provider_confidence,
-            "impact_contribution": getattr(entity, "impact_confidence_score", None) or getattr(entity, "market_impact_score", None),
-            "attribution_contribution": getattr(entity, "confidence_score", None) if packet.attribution_id else None,
+            "impact_contribution": getattr(entity, "impact_confidence_score", None)
+            or getattr(entity, "market_impact_score", None),
+            "attribution_contribution": (
+                getattr(entity, "confidence_score", None) if packet.attribution_id else None
+            ),
             "policy_adjustments": getattr(entity, "policy_reason", None),
             "operator_overrides": self._operator_overrides(packet.signal_id),
             "final_confidence": packet.confidence_score,
         }
 
-    def provider_health_snapshot(self, packet: EvidencePacket, entity: Any | None = None) -> dict[str, Any]:
+    def provider_health_snapshot(
+        self, packet: EvidencePacket, entity: Any | None = None
+    ) -> dict[str, Any]:
         confidence = packet.provider_confidence
-        return {"provider_confidence": confidence, "provider_degraded": confidence is not None and confidence < 0.6}
+        return {
+            "provider_confidence": confidence,
+            "provider_degraded": confidence is not None and confidence < 0.6,
+        }
 
-    def source_health_snapshot(self, packet: EvidencePacket, entity: Any | None = None) -> dict[str, Any]:
+    def source_health_snapshot(
+        self, packet: EvidencePacket, entity: Any | None = None
+    ) -> dict[str, Any]:
         confidence = packet.source_confidence
-        return {"source_confidence": confidence, "low_source_diversity": self._low_source_diversity(packet, entity)}
+        return {
+            "source_confidence": confidence,
+            "low_source_diversity": self._low_source_diversity(packet, entity),
+        }
 
     def replay_references(self, packet: EvidencePacket) -> dict[str, Any]:
-        refs = {"entity": f"{packet.source_entity_type}:{packet.source_entity_id}", "replay_endpoint": f"/api/v1/evidence/replay/{packet.source_entity_type}/{packet.source_entity_id}"}
+        refs = {
+            "entity": f"{packet.source_entity_type}:{packet.source_entity_id}",
+            "replay_endpoint": f"/api/v1/evidence/replay/{packet.source_entity_type}/{packet.source_entity_id}",
+        }
         if packet.attribution_id:
             refs["attribution_replay"] = f"candle_attribution:{packet.attribution_id}"
         return refs
@@ -225,21 +355,69 @@ class EvidencePacketBuilder:
         attribution = entities.get("attribution")
         signal = entities.get("signal")
         if article:
-            steps.append(self._timeline_step("article_fetched", article.id, getattr(article, "fetched_at", None), "Article fetched"))
+            steps.append(
+                self._timeline_step(
+                    "article_fetched",
+                    article.id,
+                    getattr(article, "fetched_at", None),
+                    "Article fetched",
+                )
+            )
         if event:
-            steps.append(self._timeline_step("event_clustered", event.id, getattr(event, "first_seen_at", None), "Event clustered"))
+            steps.append(
+                self._timeline_step(
+                    "event_clustered",
+                    event.id,
+                    getattr(event, "first_seen_at", None),
+                    "Event clustered",
+                )
+            )
         if impact:
-            steps.append(self._timeline_step("impact_calculated", impact.id, getattr(impact, "calculated_at", None), "Impact calculated"))
+            steps.append(
+                self._timeline_step(
+                    "impact_calculated",
+                    impact.id,
+                    getattr(impact, "calculated_at", None),
+                    "Impact calculated",
+                )
+            )
         if attribution:
-            steps.append(self._timeline_step("attribution_created", attribution.id, getattr(attribution, "created_at", None), "Attribution created"))
+            steps.append(
+                self._timeline_step(
+                    "attribution_created",
+                    attribution.id,
+                    getattr(attribution, "created_at", None),
+                    "Attribution created",
+                )
+            )
         if signal:
-            steps.append(self._timeline_step("signal_candidate_created", signal.id, getattr(signal, "created_at", None), "Signal candidate created"))
-            steps.append(self._timeline_step("policy_evaluated", signal.id, getattr(signal, "updated_at", None), "Policy evaluated"))
+            steps.append(
+                self._timeline_step(
+                    "signal_candidate_created",
+                    signal.id,
+                    getattr(signal, "created_at", None),
+                    "Signal candidate created",
+                )
+            )
+            steps.append(
+                self._timeline_step(
+                    "policy_evaluated",
+                    signal.id,
+                    getattr(signal, "updated_at", None),
+                    "Policy evaluated",
+                )
+            )
             review = self._latest_review(signal.id)
             if review:
-                steps.append(self._timeline_step("operator_reviewed", review.id, review.created_at, "Operator reviewed"))
+                steps.append(
+                    self._timeline_step(
+                        "operator_reviewed", review.id, review.created_at, "Operator reviewed"
+                    )
+                )
             if signal.published_at:
-                steps.append(self._timeline_step("published", signal.id, signal.published_at, "Published"))
+                steps.append(
+                    self._timeline_step("published", signal.id, signal.published_at, "Published")
+                )
         return steps
 
     def related_entities(self, entity_type: str, entity_id: int) -> dict[str, Any]:
@@ -249,11 +427,29 @@ class EvidencePacketBuilder:
         if entity is None:
             return result
         signal = entity if normalized == "signal" else self._find_signal(normalized, entity)
-        attribution = entity if normalized == "attribution" else self._find_attribution(normalized, entity, signal)
+        attribution = (
+            entity
+            if normalized == "attribution"
+            else self._find_attribution(normalized, entity, signal)
+        )
         impact = entity if normalized == "impact" else self._find_impact(normalized, entity, signal)
-        event = entity if normalized == "event" else self._find_event(normalized, entity, signal, attribution, impact)
-        article = entity if normalized == "article" else self._find_article(normalized, entity, signal, attribution, impact, event)
-        for key, value in [("article", article), ("event", event), ("impact", impact), ("attribution", attribution), ("signal", signal)]:
+        event = (
+            entity
+            if normalized == "event"
+            else self._find_event(normalized, entity, signal, attribution, impact)
+        )
+        article = (
+            entity
+            if normalized == "article"
+            else self._find_article(normalized, entity, signal, attribution, impact, event)
+        )
+        for key, value in [
+            ("article", article),
+            ("event", event),
+            ("impact", impact),
+            ("attribution", attribution),
+            ("signal", signal),
+        ]:
             if value is not None:
                 result[key] = value
         return result
@@ -296,12 +492,24 @@ class EvidencePacketBuilder:
         }
 
     def artifact_payload(self, row: EvidenceArtifact) -> dict[str, Any]:
-        return {"id": row.id, "artifact_type": row.artifact_type, "artifact_json": row.artifact_json, "created_at": row.created_at}
+        return {
+            "id": row.id,
+            "artifact_type": row.artifact_type,
+            "artifact_json": row.artifact_json,
+            "created_at": row.created_at,
+        }
 
     def integrity_payload(self, row: EvidenceIntegritySnapshot | None) -> dict[str, Any] | None:
         if row is None:
             return None
-        return {"id": row.id, "entity_type": row.entity_type, "entity_id": row.entity_id, "hash_algorithm": row.hash_algorithm, "content_hash": row.content_hash, "created_at": row.created_at}
+        return {
+            "id": row.id,
+            "entity_type": row.entity_type,
+            "entity_id": row.entity_id,
+            "hash_algorithm": row.hash_algorithm,
+            "content_hash": row.content_hash,
+            "created_at": row.created_at,
+        }
 
     def export_packet(self, packet: EvidencePacket, *, fmt: str = "json") -> dict[str, Any] | str:
         payload = self.packet_payload(packet)
@@ -359,26 +567,47 @@ class EvidencePacketBuilder:
             filters.append(IntelligenceSignalCandidate.attribution_id == entity.id)
         if not filters:
             return None
-        return self.db.execute(select(IntelligenceSignalCandidate).where(*filters).order_by(IntelligenceSignalCandidate.id.desc()).limit(1)).scalar_one_or_none()
+        return self.db.execute(
+            select(IntelligenceSignalCandidate)
+            .where(*filters)
+            .order_by(IntelligenceSignalCandidate.id.desc())
+            .limit(1)
+        ).scalar_one_or_none()
 
-    def _find_attribution(self, entity_type: str, entity: Any, signal: IntelligenceSignalCandidate | None) -> CandleAttribution | None:
+    def _find_attribution(
+        self, entity_type: str, entity: Any, signal: IntelligenceSignalCandidate | None
+    ) -> CandleAttribution | None:
         if signal and signal.attribution_id:
             return self.db.get(CandleAttribution, signal.attribution_id)
         if entity_type == "impact":
-            return self.db.execute(select(CandleAttribution).where(CandleAttribution.event_id == entity.event_id).limit(1)).scalar_one_or_none()
+            return self.db.execute(
+                select(CandleAttribution)
+                .where(CandleAttribution.event_id == entity.event_id)
+                .limit(1)
+            ).scalar_one_or_none()
         if entity_type == "event":
-            return self.db.execute(select(CandleAttribution).where(CandleAttribution.event_id == entity.id).limit(1)).scalar_one_or_none()
+            return self.db.execute(
+                select(CandleAttribution).where(CandleAttribution.event_id == entity.id).limit(1)
+            ).scalar_one_or_none()
         return None
 
-    def _find_impact(self, entity_type: str, entity: Any, signal: IntelligenceSignalCandidate | None) -> NewsPriceImpact | None:
+    def _find_impact(
+        self, entity_type: str, entity: Any, signal: IntelligenceSignalCandidate | None
+    ) -> NewsPriceImpact | None:
         if signal and signal.impact_id:
             return self.db.get(NewsPriceImpact, signal.impact_id)
         if entity_type == "attribution":
-            return self.db.execute(select(NewsPriceImpact).where(NewsPriceImpact.event_id == entity.event_id).limit(1)).scalar_one_or_none()
+            return self.db.execute(
+                select(NewsPriceImpact).where(NewsPriceImpact.event_id == entity.event_id).limit(1)
+            ).scalar_one_or_none()
         if entity_type == "event":
-            return self.db.execute(select(NewsPriceImpact).where(NewsPriceImpact.event_id == entity.id).limit(1)).scalar_one_or_none()
+            return self.db.execute(
+                select(NewsPriceImpact).where(NewsPriceImpact.event_id == entity.id).limit(1)
+            ).scalar_one_or_none()
         if entity_type == "article":
-            return self.db.execute(select(NewsPriceImpact).where(NewsPriceImpact.article_id == entity.id).limit(1)).scalar_one_or_none()
+            return self.db.execute(
+                select(NewsPriceImpact).where(NewsPriceImpact.article_id == entity.id).limit(1)
+            ).scalar_one_or_none()
         return None
 
     def _find_event(
@@ -389,11 +618,17 @@ class EvidencePacketBuilder:
         attribution: CandleAttribution | None,
         impact: NewsPriceImpact | None,
     ) -> NewsEvent | None:
-        event_id = getattr(signal, "event_id", None) or getattr(attribution, "event_id", None) or getattr(impact, "event_id", None)
+        event_id = (
+            getattr(signal, "event_id", None)
+            or getattr(attribution, "event_id", None)
+            or getattr(impact, "event_id", None)
+        )
         if event_id:
             return self.db.get(NewsEvent, event_id)
         if entity_type == "article":
-            return self.db.execute(select(NewsEvent).where(NewsEvent.primary_article_id == entity.id).limit(1)).scalar_one_or_none()
+            return self.db.execute(
+                select(NewsEvent).where(NewsEvent.primary_article_id == entity.id).limit(1)
+            ).scalar_one_or_none()
         return None
 
     def _find_article(
@@ -405,7 +640,12 @@ class EvidencePacketBuilder:
         impact: NewsPriceImpact | None,
         event: NewsEvent | None,
     ) -> NewsArticle | None:
-        article_id = getattr(signal, "article_id", None) or getattr(attribution, "article_id", None) or getattr(impact, "article_id", None) or getattr(event, "primary_article_id", None)
+        article_id = (
+            getattr(signal, "article_id", None)
+            or getattr(attribution, "article_id", None)
+            or getattr(impact, "article_id", None)
+            or getattr(event, "primary_article_id", None)
+        )
         if article_id:
             return self.db.get(NewsArticle, article_id)
         return None
@@ -416,16 +656,27 @@ class EvidencePacketBuilder:
         return self.db.execute(
             select(IntelligenceOperatorReview)
             .where(IntelligenceOperatorReview.signal_candidate_id == signal_id)
-            .order_by(IntelligenceOperatorReview.created_at.desc(), IntelligenceOperatorReview.id.desc())
+            .order_by(
+                IntelligenceOperatorReview.created_at.desc(), IntelligenceOperatorReview.id.desc()
+            )
             .limit(1)
         ).scalar_one_or_none()
 
     def _operator_overrides(self, signal_id: int | None) -> list[dict[str, Any]]:
         if not signal_id:
             return []
-        rows = self.db.execute(select(IntelligenceOperatorReview).where(IntelligenceOperatorReview.signal_candidate_id == signal_id)).scalars()
+        rows = self.db.execute(
+            select(IntelligenceOperatorReview).where(
+                IntelligenceOperatorReview.signal_candidate_id == signal_id
+            )
+        ).scalars()
         return [
-            {"review_id": row.id, "confidence_override": row.confidence_override, "publish_override": row.publish_override, "review_status": row.review_status}
+            {
+                "review_id": row.id,
+                "confidence_override": row.confidence_override,
+                "publish_override": row.publish_override,
+                "review_status": row.review_status,
+            }
             for row in rows
             if row.confidence_override is not None or row.publish_override
         ]
@@ -438,15 +689,30 @@ class EvidencePacketBuilder:
         if not signal_id:
             return "not_applicable"
         signal = self.db.get(IntelligenceSignalCandidate, signal_id)
-        return "published" if signal and signal.published_at else getattr(signal, "status", "unknown")
+        return (
+            "published" if signal and signal.published_at else getattr(signal, "status", "unknown")
+        )
 
     def _evidence_sources(self, packet: EvidencePacket) -> dict[str, Any]:
-        return {key: value for key, value in {"article_id": packet.article_id, "event_id": packet.event_id, "impact_id": packet.impact_id, "attribution_id": packet.attribution_id, "signal_id": packet.signal_id}.items() if value is not None}
+        return {
+            key: value
+            for key, value in {
+                "article_id": packet.article_id,
+                "event_id": packet.event_id,
+                "impact_id": packet.impact_id,
+                "attribution_id": packet.attribution_id,
+                "signal_id": packet.signal_id,
+            }.items()
+            if value is not None
+        }
 
     def _article_id(self, entity_type: str, entity: Any) -> int | None:
         if entity_type == "article":
             return int(entity.id)
-        return cast(int | None, getattr(entity, "article_id", None) or getattr(entity, "primary_article_id", None))
+        return cast(
+            int | None,
+            getattr(entity, "article_id", None) or getattr(entity, "primary_article_id", None),
+        )
 
     def _event_id(self, entity_type: str, entity: Any) -> int | None:
         if entity_type == "event":
@@ -460,27 +726,53 @@ class EvidencePacketBuilder:
         return cast(int | None, getattr(entity, "attribution_id", None))
 
     def _title(self, entity_type: str, entity: Any) -> str:
-        return str(getattr(entity, "title", None) or getattr(entity, "canonical_title", None) or f"{entity_type}:{entity.id}")
+        return str(
+            getattr(entity, "title", None)
+            or getattr(entity, "canonical_title", None)
+            or f"{entity_type}:{entity.id}"
+        )
 
     def _summary(self, entity_type: str, entity: Any) -> str:
-        return str(getattr(entity, "summary", None) or getattr(entity, "canonical_summary", None) or getattr(entity, "summary_text", None) or "Evidence packet generated from replayable market-intelligence inputs.")
+        return str(
+            getattr(entity, "summary", None)
+            or getattr(entity, "canonical_summary", None)
+            or getattr(entity, "summary_text", None)
+            or "Evidence packet generated from replayable market-intelligence inputs."
+        )
 
     def _confidence(self, entity_type: str, entity: Any) -> float | None:
-        return getattr(entity, "confidence_score", None) or getattr(entity, "event_confidence", None) or getattr(entity, "impact_confidence_score", None)
+        return (
+            getattr(entity, "confidence_score", None)
+            or getattr(entity, "event_confidence", None)
+            or getattr(entity, "impact_confidence_score", None)
+        )
 
     def _source_confidence(self, entity_type: str, entity: Any) -> float | None:
-        return getattr(entity, "source_confidence", None) or getattr(entity, "source_credibility_score", None) or getattr(entity, "credibility_score", None)
+        return (
+            getattr(entity, "source_confidence", None)
+            or getattr(entity, "source_credibility_score", None)
+            or getattr(entity, "credibility_score", None)
+        )
 
     def _low_source_diversity(self, packet: EvidencePacket, entity: Any | None = None) -> bool:
         source_count = getattr(entity, "source_count", None)
         return bool(source_count is not None and source_count < 2)
 
-    def _timeline_step(self, step: str, entity_id: int, timestamp: datetime | None, label: str) -> dict[str, Any]:
+    def _timeline_step(
+        self, step: str, entity_id: int, timestamp: datetime | None, label: str
+    ) -> dict[str, Any]:
         return {"step": step, "entity_id": entity_id, "label": label, "timestamp": timestamp}
 
     def _sanitize(self, value: Any) -> Any:
         if isinstance(value, dict):
-            return {key: "[redacted]" if any(part in key.lower() for part in SECRET_KEY_PARTS) else self._sanitize(item) for key, item in value.items()}
+            return {
+                key: (
+                    "[redacted]"
+                    if any(part in key.lower() for part in SECRET_KEY_PARTS)
+                    else self._sanitize(item)
+                )
+                for key, item in value.items()
+            }
         if isinstance(value, list):
             return [self._sanitize(item) for item in value]
         return value
@@ -489,4 +781,16 @@ class EvidencePacketBuilder:
         return artifact_type
 
     def _bounded_packet_type(self, value: str) -> str:
-        return value if value in {"article_evidence", "event_evidence", "impact_evidence", "attribution_evidence", "signal_evidence", "publication_evidence"} else "other"
+        return (
+            value
+            if value
+            in {
+                "article_evidence",
+                "event_evidence",
+                "impact_evidence",
+                "attribution_evidence",
+                "signal_evidence",
+                "publication_evidence",
+            }
+            else "other"
+        )

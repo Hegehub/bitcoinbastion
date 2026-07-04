@@ -8,6 +8,8 @@ router = APIRouter(prefix="/privacy", tags=["privacy"])
 
 
 @router.post("/assess", response_model=ResponseEnvelope[PrivacyAssessmentResponse])
-def assess_privacy(payload: PrivacyAssessmentRequest) -> ResponseEnvelope[PrivacyAssessmentResponse]:
+def assess_privacy(
+    payload: PrivacyAssessmentRequest,
+) -> ResponseEnvelope[PrivacyAssessmentResponse]:
     result = PrivacyRiskService().assess(payload)
     return ResponseEnvelope(data=result)

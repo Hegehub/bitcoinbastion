@@ -97,8 +97,19 @@ def test_task38_pattern_library_context_occurrences_and_confidence() -> None:
     assert db.query(PatternReactionSnapshot).count() >= 1
 
     etf = db.query(MarketPattern).filter_by(slug="ETF_INFLOW_SHOCK").one()
-    db.add(EventPatternMatch(event_id=reference.id, pattern_id=etf.id, classification_confidence=0.86, reasons_json=[]))
-    db.add(EventPatternMatch(event_id=analog.id, pattern_id=etf.id, classification_confidence=0.84, reasons_json=[]))
+    db.add(
+        EventPatternMatch(
+            event_id=reference.id,
+            pattern_id=etf.id,
+            classification_confidence=0.86,
+            reasons_json=[],
+        )
+    )
+    db.add(
+        EventPatternMatch(
+            event_id=analog.id, pattern_id=etf.id, classification_confidence=0.84, reasons_json=[]
+        )
+    )
     db.commit()
     breakdown = PatternConfidenceService(db).calculate(etf.id).as_dict()
     assert breakdown["score"] > 0.0

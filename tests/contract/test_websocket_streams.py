@@ -56,7 +56,12 @@ def test_specialized_message_envelope_contains_standard_fields() -> None:
         domain="signal",
         version=1,
         occurred_at=None,
-        payload={"signal_id": 1, "limitations": ["not financial advice"], "degraded": False, "stale": False},
+        payload={
+            "signal_id": 1,
+            "limitations": ["not financial advice"],
+            "degraded": False,
+            "stale": False,
+        },
     )
 
     assert {

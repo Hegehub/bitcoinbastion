@@ -33,20 +33,41 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_market_provider_health_provider_name", "market_provider_health", ["provider_name"], unique=True)
-    op.create_index("ix_market_provider_health_updated_at", "market_provider_health", ["updated_at"])
+    op.create_index(
+        "ix_market_provider_health_provider_name",
+        "market_provider_health",
+        ["provider_name"],
+        unique=True,
+    )
+    op.create_index(
+        "ix_market_provider_health_updated_at", "market_provider_health", ["updated_at"]
+    )
 
     op.add_column("btc_price_points", sa.Column("provider_name", sa.String(32), nullable=True))
-    op.add_column("btc_price_points", sa.Column("symbol", sa.String(16), nullable=False, server_default="BTC"))
+    op.add_column(
+        "btc_price_points", sa.Column("symbol", sa.String(16), nullable=False, server_default="BTC")
+    )
     op.add_column("btc_price_points", sa.Column("provider_latency_ms", sa.Integer(), nullable=True))
-    op.add_column("btc_price_points", sa.Column("aggregation_round_id", sa.String(64), nullable=False, server_default=""))
-    op.add_column("btc_price_points", sa.Column("is_median_selected", sa.Boolean(), nullable=False, server_default=sa.false()))
+    op.add_column(
+        "btc_price_points",
+        sa.Column("aggregation_round_id", sa.String(64), nullable=False, server_default=""),
+    )
+    op.add_column(
+        "btc_price_points",
+        sa.Column("is_median_selected", sa.Boolean(), nullable=False, server_default=sa.false()),
+    )
     op.create_index("ix_btc_price_points_provider_name", "btc_price_points", ["provider_name"])
 
 
 def downgrade() -> None:
     op.drop_index("ix_btc_price_points_provider_name", table_name="btc_price_points")
-    for col in ["is_median_selected", "aggregation_round_id", "provider_latency_ms", "symbol", "provider_name"]:
+    for col in [
+        "is_median_selected",
+        "aggregation_round_id",
+        "provider_latency_ms",
+        "symbol",
+        "provider_name",
+    ]:
         op.drop_column("btc_price_points", col)
     op.drop_index("ix_market_provider_health_updated_at", table_name="market_provider_health")
     op.drop_index("ix_market_provider_health_provider_name", table_name="market_provider_health")

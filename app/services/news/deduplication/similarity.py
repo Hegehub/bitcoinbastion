@@ -14,9 +14,13 @@ def _jaccard(a: str, b: str) -> float:
 
 def calculate_similarity(article_a: dict[str, str], article_b: dict[str, str]) -> SimilarityResult:
     reasons: list[str] = []
-    if article_a.get("canonical_url_hash") and article_a.get("canonical_url_hash") == article_b.get("canonical_url_hash"):
+    if article_a.get("canonical_url_hash") and article_a.get("canonical_url_hash") == article_b.get(
+        "canonical_url_hash"
+    ):
         reasons.append("canonical_url_hash")
-    if article_a.get("content_hash") and article_a.get("content_hash") == article_b.get("content_hash"):
+    if article_a.get("content_hash") and article_a.get("content_hash") == article_b.get(
+        "content_hash"
+    ):
         reasons.append("content_hash")
     ta = normalize_title(article_a.get("title", ""))
     tb = normalize_title(article_b.get("title", ""))

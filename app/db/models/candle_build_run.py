@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 from app.db.models.time_utils import utcnow
 
+
 class CandleBuildRun(Base):
     __tablename__ = "candle_build_runs"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

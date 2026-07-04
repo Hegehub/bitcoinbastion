@@ -33,7 +33,9 @@ def upgrade() -> None:
         "candle_context_snapshots",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("candle_id", sa.Integer(), sa.ForeignKey("btc_candles.id"), nullable=False),
-        sa.Column("volatility_level", sa.String(length=32), nullable=False, server_default="unknown"),
+        sa.Column(
+            "volatility_level", sa.String(length=32), nullable=False, server_default="unknown"
+        ),
         sa.Column("volume_level", sa.String(length=32), nullable=False, server_default="unknown"),
         sa.Column("provider_confidence", sa.Float(), nullable=False, server_default="0"),
         sa.Column("market_regime", sa.String(length=64), nullable=False, server_default="unknown"),
@@ -48,8 +50,12 @@ def upgrade() -> None:
         sa.Column("summary_json", sa.JSON(), nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_candle_context_snapshots_candle_id", "candle_context_snapshots", ["candle_id"])
-    op.create_index("ix_candle_context_snapshots_created_at", "candle_context_snapshots", ["created_at"])
+    op.create_index(
+        "ix_candle_context_snapshots_candle_id", "candle_context_snapshots", ["candle_id"]
+    )
+    op.create_index(
+        "ix_candle_context_snapshots_created_at", "candle_context_snapshots", ["created_at"]
+    )
 
 
 def downgrade() -> None:

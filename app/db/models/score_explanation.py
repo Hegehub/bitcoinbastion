@@ -14,6 +14,10 @@ class ScoreExplanation(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     score_id: Mapped[int] = mapped_column(ForeignKey("news_scores.id"), index=True)
     summary: Mapped[str] = mapped_column(String(500), default="")
-    key_factors_json: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
-    limitations_json: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
+    key_factors_json: Mapped[list[str]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
+    limitations_json: Mapped[list[str]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

@@ -504,7 +504,9 @@ def test_publish_service_skips_when_retry_cooldown_active(monkeypatch: pytest.Mo
     assert events == [{"status": "skipped", "reason": "retry_cooldown_active"}]
 
 
-def test_publish_service_suppresses_duplicate_signals_in_same_batch(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_publish_service_suppresses_duplicate_signals_in_same_batch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _configure_settings()
     events: list[dict[str, str]] = []
     monkeypatch.setattr(

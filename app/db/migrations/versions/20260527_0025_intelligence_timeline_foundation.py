@@ -4,6 +4,7 @@ Revision ID: 20260527_0025
 Revises: 20260527_0024
 Create Date: 2026-05-27
 """
+
 from alembic import op
 import sqlalchemy as sa
 
@@ -21,11 +22,20 @@ def upgrade() -> None:
         sa.Column("importance", sa.String(16), nullable=False, server_default="MEDIUM"),
         sa.Column("visibility", sa.String(16), nullable=False, server_default="INTERNAL"),
         sa.Column("source_kind", sa.String(32), nullable=False, server_default="INTERNAL"),
-        sa.Column("related_article_id", sa.Integer(), sa.ForeignKey("news_articles.id"), nullable=True),
+        sa.Column(
+            "related_article_id", sa.Integer(), sa.ForeignKey("news_articles.id"), nullable=True
+        ),
         sa.Column("related_event_id", sa.Integer(), sa.ForeignKey("news_events.id"), nullable=True),
         sa.Column("related_signal_id", sa.Integer(), sa.ForeignKey("signals.id"), nullable=True),
-        sa.Column("related_candle_id", sa.Integer(), sa.ForeignKey("btc_candles.id"), nullable=True),
-        sa.Column("related_provider_id", sa.Integer(), sa.ForeignKey("market_provider_health.id"), nullable=True),
+        sa.Column(
+            "related_candle_id", sa.Integer(), sa.ForeignKey("btc_candles.id"), nullable=True
+        ),
+        sa.Column(
+            "related_provider_id",
+            sa.Integer(),
+            sa.ForeignKey("market_provider_health.id"),
+            nullable=True,
+        ),
         sa.Column("title", sa.String(255), nullable=False, server_default=""),
         sa.Column("summary", sa.String(1000), nullable=False, server_default=""),
         sa.Column("event_time", sa.DateTime(), nullable=False),
@@ -47,7 +57,11 @@ def upgrade() -> None:
     )
     op.create_index("ix_intel_timeline_event_time", "intelligence_timeline_events", ["event_time"])
     op.create_index("ix_intel_timeline_event_type", "intelligence_timeline_events", ["event_type"])
-    op.create_index("ix_intel_timeline_event_type_time", "intelligence_timeline_events", ["event_type", "event_time"])
+    op.create_index(
+        "ix_intel_timeline_event_type_time",
+        "intelligence_timeline_events",
+        ["event_type", "event_time"],
+    )
 
 
 def downgrade() -> None:

@@ -30,5 +30,7 @@ class NarrativeSnapshot(Base):
     provider_confidence: Mapped[float] = mapped_column(Float, default=0.5)
     trend_direction: Mapped[str] = mapped_column(String(16), default="STABLE", index=True)
     confidence_score: Mapped[float] = mapped_column(Float, default=0.0)
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

@@ -3,7 +3,15 @@ from app.services.bastion_trace.trace_runtime_events import create_event, get_ev
 
 
 def test_metrics_labels_are_bounded() -> None:
-    assert set(TRACE_REQUESTS._labelnames) <= {"tier", "band", "status", "event_type", "source_type", "severity", "operation"}
+    assert set(TRACE_REQUESTS._labelnames) <= {
+        "tier",
+        "band",
+        "status",
+        "event_type",
+        "source_type",
+        "severity",
+        "operation",
+    }
 
 
 def test_runtime_event_create_and_get() -> None:

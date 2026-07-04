@@ -8,7 +8,6 @@ Create Date: 2026-04-14
 from alembic import op
 import sqlalchemy as sa
 
-
 revision = "20260414_0006"
 down_revision = "20260414_0005"
 branch_labels = None
@@ -25,7 +24,9 @@ def upgrade() -> None:
         sa.Column("horizon", sa.String(length=40), nullable=False, server_default="short"),
         sa.Column("generated_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_signal_explanations_signal_id", "signal_explanations", ["signal_id"], unique=False)
+    op.create_index(
+        "ix_signal_explanations_signal_id", "signal_explanations", ["signal_id"], unique=False
+    )
 
     op.create_table(
         "evidence_nodes",
@@ -50,8 +51,12 @@ def upgrade() -> None:
         sa.Column("weight", sa.Float(), nullable=False, server_default="0"),
     )
     op.create_index("ix_evidence_edges_signal_id", "evidence_edges", ["signal_id"], unique=False)
-    op.create_index("ix_evidence_edges_from_node_key", "evidence_edges", ["from_node_key"], unique=False)
-    op.create_index("ix_evidence_edges_to_node_key", "evidence_edges", ["to_node_key"], unique=False)
+    op.create_index(
+        "ix_evidence_edges_from_node_key", "evidence_edges", ["from_node_key"], unique=False
+    )
+    op.create_index(
+        "ix_evidence_edges_to_node_key", "evidence_edges", ["to_node_key"], unique=False
+    )
 
 
 def downgrade() -> None:

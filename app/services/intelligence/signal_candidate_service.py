@@ -34,7 +34,11 @@ class SignalCandidateService:
         self.policy = PublishingPolicyService(db)
 
     def create_from_price_impact(self, impact: NewsPriceImpact) -> IntelligenceSignalCandidate:
-        signal_type = "false_signal" if impact.false_signal_detected else "delayed_reaction" if impact.delayed_reaction_detected else "news_market_impact"
+        signal_type = (
+            "false_signal"
+            if impact.false_signal_detected
+            else "delayed_reaction" if impact.delayed_reaction_detected else "news_market_impact"
+        )
         candidate = IntelligenceSignalCandidate(
             signal_type=signal_type,
             source_entity_type="news_price_impact",
@@ -43,7 +47,8 @@ class SignalCandidateService:
             event_id=impact.event_id,
             impact_id=impact.id,
             title=f"BTC market impact: {impact.sentiment_label}",
-            summary=impact.explanation_summary or "BTC movement coincided with a news impact window.",
+            summary=impact.explanation_summary
+            or "BTC movement coincided with a news impact window.",
             confidence_score=impact.impact_confidence_score or impact.confidence_score or 0.0,
             btc_relevance_score=impact.btc_relevance_score,
             market_impact_score=impact.market_impact_score,
@@ -56,7 +61,9 @@ class SignalCandidateService:
         )
         return self._persist_and_apply(candidate)
 
-    def create_from_candle_attribution(self, attribution: CandleAttribution) -> IntelligenceSignalCandidate:
+    def create_from_candle_attribution(
+        self, attribution: CandleAttribution
+    ) -> IntelligenceSignalCandidate:
         candidate = IntelligenceSignalCandidate(
             signal_type="candle_attribution",
             source_entity_type="candle_attribution",
@@ -97,7 +104,9 @@ class SignalCandidateService:
         )
         return self._persist_and_apply(candidate)
 
-    def generate_from_high_confidence_impacts(self, limit: int = 50) -> list[IntelligenceSignalCandidate]:
+    def generate_from_high_confidence_impacts(
+        self, limit: int = 50
+    ) -> list[IntelligenceSignalCandidate]:
         impacts = (
             self.db.query(NewsPriceImpact)
             .filter(NewsPriceImpact.impact_confidence_score >= 0.65)
@@ -115,13 +124,23 @@ class SignalCandidateService:
             "news_shock_index_spike_detector": [],
         }
 
-    def _persist_and_apply(self, candidate: IntelligenceSignalCandidate) -> IntelligenceSignalCandidate:
+    def _persist_and_apply(
+        self, candidate: IntelligenceSignalCandidate
+    ) -> IntelligenceSignalCandidate:
         self.repo.add_candidate(candidate)
         self.policy.apply(candidate)
-        INTELLIGENCE_SIGNAL_CANDIDATES_TOTAL.labels(signal_type=self._bounded_type(candidate.signal_type), status=self._bounded_status(candidate.status)).inc()
+        INTELLIGENCE_SIGNAL_CANDIDATES_TOTAL.labels(
+            signal_type=self._bounded_type(candidate.signal_type),
+            status=self._bounded_status(candidate.status),
+        ).inc()
         if candidate.requires_operator_review:
-            reason = (candidate.policy_reason.split(",") or ["review_required"])[0] or "review_required"
-            INTELLIGENCE_SIGNAL_PENDING_REVIEW_TOTAL.labels(signal_type=self._bounded_type(candidate.signal_type), reason_code=self._bounded_reason(reason)).inc()
+            reason = (candidate.policy_reason.split(",") or ["review_required"])[
+                0
+            ] or "review_required"
+            INTELLIGENCE_SIGNAL_PENDING_REVIEW_TOTAL.labels(
+                signal_type=self._bounded_type(candidate.signal_type),
+                reason_code=self._bounded_reason(reason),
+            ).inc()
         self._publish_candidate_events(candidate)
         return candidate
 
@@ -178,8 +197,30 @@ class SignalCandidateService:
         return value if value in MVP_SIGNAL_TYPES else "other"
 
     def _bounded_status(self, value: str) -> str:
-        return value if value in {"draft", "pending_review", "approved", "rejected", "held", "published", "expired", "degraded"} else "other"
+        return (
+            value
+            if value
+            in {
+                "draft",
+                "pending_review",
+                "approved",
+                "rejected",
+                "held",
+                "published",
+                "expired",
+                "degraded",
+            }
+            else "other"
+        )
 
     def _bounded_reason(self, value: str) -> str:
-        allowed = {"low_btc_relevance", "low_impact_confidence", "low_source_confidence", "provider_confidence_low", "missing_evidence", "auto_publish_disabled", "review_required"}
+        allowed = {
+            "low_btc_relevance",
+            "low_impact_confidence",
+            "low_source_confidence",
+            "provider_confidence_low",
+            "missing_evidence",
+            "auto_publish_disabled",
+            "review_required",
+        }
         return value if value in allowed else "other"

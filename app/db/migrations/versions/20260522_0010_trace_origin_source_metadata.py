@@ -15,10 +15,22 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column("trace_reports", sa.Column("origin_passport_json", sa.Text(), nullable=False, server_default="{}"))
-    op.add_column("trace_reports", sa.Column("provider_disagreement_json", sa.Text(), nullable=False, server_default="{}"))
-    op.add_column("trace_reports", sa.Column("evidence_independence_json", sa.Text(), nullable=False, server_default="{}"))
-    op.add_column("trace_reports", sa.Column("source_status_summary_json", sa.Text(), nullable=False, server_default="[]"))
+    op.add_column(
+        "trace_reports",
+        sa.Column("origin_passport_json", sa.Text(), nullable=False, server_default="{}"),
+    )
+    op.add_column(
+        "trace_reports",
+        sa.Column("provider_disagreement_json", sa.Text(), nullable=False, server_default="{}"),
+    )
+    op.add_column(
+        "trace_reports",
+        sa.Column("evidence_independence_json", sa.Text(), nullable=False, server_default="{}"),
+    )
+    op.add_column(
+        "trace_reports",
+        sa.Column("source_status_summary_json", sa.Text(), nullable=False, server_default="[]"),
+    )
 
 
 def downgrade() -> None:

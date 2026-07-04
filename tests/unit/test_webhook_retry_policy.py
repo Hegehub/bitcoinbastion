@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
 
-from app.services.events.webhook_dispatcher import calculate_retry_delay_seconds, next_retry_at_for_attempt
+from app.services.events.webhook_dispatcher import (
+    calculate_retry_delay_seconds,
+    next_retry_at_for_attempt,
+)
 
 
 def test_retry_policy_uses_bounded_exponential_backoff() -> None:

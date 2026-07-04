@@ -8,7 +8,6 @@ Create Date: 2026-04-16 00:00:00.000000
 from alembic import op
 import sqlalchemy as sa
 
-
 revision = "20260416_0007"
 down_revision = "20260414_0006"
 branch_labels = None
@@ -36,13 +35,28 @@ def upgrade() -> None:
         sa.Column("recommendations_json", sa.Text(), nullable=False, server_default="[]"),
         sa.Column("explainability_json", sa.Text(), nullable=False, server_default="{}"),
         sa.Column("freshness_json", sa.Text(), nullable=False, server_default="{}"),
-        sa.Column("generated_at", sa.DateTime(), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
-        sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
-        sa.Column("updated_at", sa.DateTime(), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
+        sa.Column(
+            "generated_at",
+            sa.DateTime(),
+            nullable=False,
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+        ),
+        sa.Column(
+            "created_at", sa.DateTime(), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")
+        ),
     )
-    op.create_index("ix_citadel_assessments_owner_type", "citadel_assessments", ["owner_type"], unique=False)
-    op.create_index("ix_citadel_assessments_owner_id", "citadel_assessments", ["owner_id"], unique=False)
-    op.create_index("ix_citadel_assessments_generated_at", "citadel_assessments", ["generated_at"], unique=False)
+    op.create_index(
+        "ix_citadel_assessments_owner_type", "citadel_assessments", ["owner_type"], unique=False
+    )
+    op.create_index(
+        "ix_citadel_assessments_owner_id", "citadel_assessments", ["owner_id"], unique=False
+    )
+    op.create_index(
+        "ix_citadel_assessments_generated_at", "citadel_assessments", ["generated_at"], unique=False
+    )
 
 
 def downgrade() -> None:

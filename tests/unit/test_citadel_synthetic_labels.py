@@ -24,11 +24,17 @@ def _assert_fields(payload: dict[str, object]) -> None:
 
 def test_synthetic_labels_present_across_outputs() -> None:
     _assert_fields(SovereigntyGraphService().build(owner_id=1))
-    _assert_fields(DisasterSimulationService().simulate(owner_id=1, scenario_code="provider_outage"))
+    _assert_fields(
+        DisasterSimulationService().simulate(owner_id=1, scenario_code="provider_outage")
+    )
     _assert_fields(InheritanceVerificationService().evaluate(owner_id=1))
     _assert_fields(RepairPlanService().build(owner_id=1))
     rec = RecoveryReadinessEngine().evaluate(
-        artifacts=[RecoveryArtifactRecord(artifact_type="descriptor", label="x", is_verified=False, required_for_recovery=True)],
+        artifacts=[
+            RecoveryArtifactRecord(
+                artifact_type="descriptor", label="x", is_verified=False, required_for_recovery=True
+            )
+        ],
         has_descriptor=False,
         has_instructions=False,
         human_dependency_score=0.9,
