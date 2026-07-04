@@ -18,7 +18,7 @@ python -m pip install -e '.[dev]'
 ```python
 from bitcoin_bastion_sdk import BastionClient
 
-client = BastionClient(base_url="http://localhost:8000", api_key="optional-token")
+client = BastionClient(base_url="http://localhost:8000")
 summary = client.trace.get_public_summary(1)
 print(summary)
 ```
@@ -37,12 +37,17 @@ async with AsyncBastionClient(base_url="http://localhost:8000") as client:
 ```python
 client = BastionClient(
     base_url="https://bastion.example",
-    api_key="token",
-    headers={"X-Custom": "value"},
+    headers={
+        "X-Bastion-Session": "session",
+        "X-Bastion-Timestamp": "2026-07-03T00:00:00Z",
+        "X-Bastion-Nonce": "nonce",
+        "X-Bastion-Body-Hash": "sha256:...",
+        "X-Bastion-Signature": "signature",
+    },
 )
 ```
 
-The SDK sends `Authorization: Bearer <token>` and does not include tokens in exception messages.
+Legacy `api_key`/`Authorization: Bearer` authentication is disabled. Use Proof-of-Access challenge/session flow and `X-Bastion-*` request-signing headers for protected requests. The SDK must not log raw Access Passes, session tokens, nonces, signatures, recovery phrases, or Bitcoin seed/private-key material.
 
 ## Trace example
 
