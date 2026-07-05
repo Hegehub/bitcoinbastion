@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from datetime import datetime
+from enum import StrEnum
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from app.domain.access.plans import PlanCode
 
@@ -162,10 +163,44 @@ class AccessLimitsResponse(BaseModel):
     offline_validity_status: bool | str | None = None
 
 
+class AccessLockdownScope(StrEnum):
+    CURRENT_PASS = "current_pass"
+    CURRENT_WORKSPACE = "current_workspace"
+    ALL_LINKED_DEVICES = "all_linked_devices"
+    BUSINESS_WORKSPACE = "business_workspace"
+    ENTERPRISE_WORKSPACE = "enterprise_workspace"
+
+
+class AccessLockdownRequest(BaseModel):
+    reason: str | None = None
+    scope: AccessLockdownScope = AccessLockdownScope.CURRENT_PASS
+    confirmation_intent_signature: str | None = None
+    recovery_mode: bool = True
+
+    model_config = {"extra": "forbid"}
+
+    @model_validator(mode="after")
+    def _reject_seed_material(self) -> "AccessLockdownRequest":
+        payload = self.model_dump(mode="json")
+        for key, value in payload.items():
+            lowered_key = str(key).lower()
+            lowered_value = str(value).lower()
+            if any(part in lowered_key or part in lowered_value for part in ("bitcoin_seed", "wallet_seed", "seed_phrase", "private_key", "recovery_phrase", "raw_pass", "session_token")):
+                raise ValueError("lockdown_secret_material_forbidden")
+        return self
+
+
 class AccessLockdownResponse(BaseModel):
     status: str
-    frozen_sessions: int
-    certificate_fingerprint: str
+    lockdown_id: str
+    affected_sessions: int
+    affected_child_api_keys: int
+    affected_delegated_passes: int
+    affected_devices: int
+    affected_offline_packs: int
+    recovery_only: bool
+    audit_event_hash: str
+    created_at: Any
 
 
 class AccessChallengeCreate(BaseModel):
@@ -390,7 +425,9 @@ __all__ = [
     "AccessCertificateIssueResponse",
     "AccessMeResponse",
     "AccessLimitsResponse",
+    "AccessLockdownRequest",
     "AccessLockdownResponse",
+    "AccessLockdownScope",
     "AccessChallengeCreate",
     "AccessChallengeResponse",
     "AccessSessionCreate",

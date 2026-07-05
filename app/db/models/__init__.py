@@ -3,6 +3,7 @@ from app.db.models.access import (
     AccessCertificate,
     AccessChallenge,
     AccessDevice,
+    AccessHumanIntent,  # noqa: F401
     AccessPaymentIntent,
     AccessRequestNonce,
     AccessRevocation,

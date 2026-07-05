@@ -72,3 +72,13 @@ Recovery profiles:
 Recovery APIs are available under `/api/v1/access/recovery/*` for setup, start, factor submission, status, completion, rotation, and cancellation. Raw recovery phrases are returned only for setup/rotation display-once flows and are never stored. The database stores HMAC commitments, factor hints, factor types, recovery attempt hashes, cooldown state, and audit events only.
 
 Recovery completion checks quorum, cooldown, revocation state, and recovery policy before rebinding a device or revoking old sessions. Support-only reset, email-only recovery, password fallback, bearer-token recovery, Bitcoin wallet seed input, xprv/private-key import, and any Bitcoin transaction signing are prohibited.
+
+## Human Intent Signature
+
+Critical actions use Human Intent Signature rather than opaque challenge approval. The API creates a canonical manifest describing the exact action, origin, scopes, denied capabilities, target resource hash, risk level, expiry, and consequences. Vault/Desktop/Mobile clients sign the canonical manifest hash with the bound device key, and the signature is single-use. See `docs/ACCESS_HUMAN_INTENT_SIGNATURE.md`.
+
+Bastion will never ask for a Bitcoin seed or private key for Human Intent Signature.
+
+## Emergency Lockdown Mode
+
+Emergency Lockdown freezes active sessions, child API keys, delegated passes, and linked devices for compromised access material while preserving recovery-only access. It emits a tamper-evident `access_lockdown_started` audit event and never deletes payment or audit history. See `docs/ACCESS_LOCKDOWN_MODE.md`.

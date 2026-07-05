@@ -25,6 +25,6 @@ def client_factory(captured_requests: list[httpx.Request]) -> Callable[[Any], Ba
             captured_requests.append(request)
             return json_response(payload)
 
-        return BastionClient(base_url="http://testserver/", api_key="secret-token", transport=httpx.MockTransport(handler))
+        return BastionClient(base_url="http://testserver/", transport=httpx.MockTransport(handler))
 
     return build

@@ -1,6 +1,19 @@
+from bitcoin_bastion_sdk.access_auth import (
+    BastionAccessAuth,
+    AccessPassMaterial,
+    AccessSession,
+    import_access_pass,
+)
 from bitcoin_bastion_sdk.async_client import AsyncBastionClient
 from bitcoin_bastion_sdk.client import BastionClient
 from bitcoin_bastion_sdk.errors import (
+    BastionAccessChallengeExpired,
+    BastionAccessError,
+    BastionAccessPolicyDenied,
+    BastionAccessRevoked,
+    BastionAccessSessionExpired,
+    BastionAccessSignatureError,
+    BastionAccessUpgradeRequired,
     BastionAPIError,
     BastionAuthError,
     BastionConnectionError,
@@ -11,10 +24,21 @@ from bitcoin_bastion_sdk.errors import (
     BastionTimeoutError,
     BastionValidationError,
     BastionWebSocketError,
+    BastionLegacyAuthDisabled,
 )
 
 __all__ = [
+    "AccessPassMaterial",
+    "AccessSession",
     "AsyncBastionClient",
+    "BastionAccessAuth",
+    "BastionAccessChallengeExpired",
+    "BastionAccessError",
+    "BastionAccessPolicyDenied",
+    "BastionAccessRevoked",
+    "BastionAccessSessionExpired",
+    "BastionAccessSignatureError",
+    "BastionAccessUpgradeRequired",
     "BastionAPIError",
     "BastionAuthError",
     "BastionClient",
@@ -25,5 +49,7 @@ __all__ = [
     "BastionSDKError",
     "BastionTimeoutError",
     "BastionValidationError",
+    "BastionLegacyAuthDisabled",
     "BastionWebSocketError",
+    "import_access_pass",
 ]

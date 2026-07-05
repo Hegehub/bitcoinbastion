@@ -1,9 +1,15 @@
 from __future__ import annotations
 
-LEGACY_AUTH_DISABLED_MESSAGE = "Legacy auth is disabled. Use Proof-of-Access challenge/session flow."
+import warnings
+
+from bitcoin_bastion_sdk.errors import BastionLegacyAuthDisabled
+
+LEGACY_AUTH_DISABLED_MESSAGE = (
+    "Legacy auth is disabled. Use Proof-of-Access challenge/session flow."
+)
 
 
-class LegacyAuthDisabledError(RuntimeError):
+class LegacyAuthDisabledError(BastionLegacyAuthDisabled):
     pass
 
 
@@ -11,15 +17,28 @@ def legacy_auth_disabled() -> None:
     raise LegacyAuthDisabledError(LEGACY_AUTH_DISABLED_MESSAGE)
 
 
-def build_headers(api_key: str | None = None, headers: dict[str, str] | None = None) -> dict[str, str]:
+def build_headers(
+    api_key: str | None = None,
+    headers: dict[str, str] | None = None,
+    *,
+    allow_legacy_bearer_auth: bool = False,
+) -> dict[str, str]:
     """Build request headers without bearer-token fallback.
 
     ``api_key`` is retained for source compatibility only. Passing it now fails closed
     because protected Bitcoin Bastion APIs require Proof-of-Access headers.
     """
+    merged = dict(headers or {})
     if api_key:
-        legacy_auth_disabled()
-    return dict(headers or {})
+        if not allow_legacy_bearer_auth:
+            legacy_auth_disabled()
+        warnings.warn(
+            "Legacy bearer auth is deprecated and disabled by default; use Proof-of-Access.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        merged["Authorization"] = f"Bearer {api_key}"
+    return merged
 
 
 def build_proof_of_access_headers(

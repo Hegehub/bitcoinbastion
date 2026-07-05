@@ -21,12 +21,14 @@ from app.core.config import get_settings
 from app.db.models.access import AccessCertificate, AccessDevice, AccessPaymentIntent, ChildApiKey, DelegatedPass, SubscriptionEntitlement
 from app.db.session import get_db
 from app.domain.access.plans import PlanCode, normalize_plan_code
+from app.schemas.access_intent import HumanIntentCreateRequest, HumanIntentResponse, HumanIntentSignatureRequest, HumanIntentVerificationResult
 from app.schemas.access import (
     AccessCertificateIssueRequest,
     AccessCertificateIssueResponse,
     AccessChallengeCreate,
     AccessChallengeResponse,
     AccessLimitsResponse,
+    AccessLockdownRequest,
     AccessLockdownResponse,
     AccessMeResponse,
     AccessPaymentIntentCreate,
@@ -153,6 +155,16 @@ def get_delegated_pass_service(db: Annotated[Session, Depends(get_db)]) -> Any:
     if not server_pepper:
         raise _http_error("delegated_pass_service_unavailable", status.HTTP_503_SERVICE_UNAVAILABLE, "Access delegated pass service is not configured")
     return DelegatedPassService(db, server_pepper=server_pepper)
+
+def get_human_intent_service(db: Annotated[Session, Depends(get_db)]) -> Any:
+    from app.services.access.human_intent import HumanIntentService
+
+    return HumanIntentService(db)
+
+def get_lockdown_service(db: Annotated[Session, Depends(get_db)]) -> Any:
+    from app.services.access.lockdown_service import LockdownService
+
+    return LockdownService(db)
 
 def get_payment_intent_service(db: Annotated[Session, Depends(get_db)]) -> Any:
     from app.services.access.payment_intent_service import PaymentIntentService
@@ -369,12 +381,17 @@ def get_my_limits(context: Annotated[Any, Depends(get_access_session_context)]) 
 
 @router.post("/lockdown", response_model=AccessLockdownResponse, summary="Start Emergency Lockdown Mode for the current Access Certificate.")
 def lockdown(
+    request: AccessLockdownRequest,
     context: Annotated[Any, Depends(get_access_session_context)],
-    service: Annotated[Any, Depends(get_session_service)],
+    service: Annotated[Any, Depends(get_lockdown_service)],
 ) -> AccessLockdownResponse:
-    frozen = service.freeze_sessions_for_certificate(certificate_fingerprint=context.certificate_fingerprint, reason="user_lockdown")
-    _commit_service(service)
-    return AccessLockdownResponse(status="locked_down", frozen_sessions=frozen, certificate_fingerprint=context.certificate_fingerprint)
+    try:
+        result = service.start_lockdown(context, request)
+        _commit_service(service)
+        return AccessLockdownResponse(**asdict(result))
+    except Exception as exc:
+        code = "access_step_up_required" if "step_up" in str(exc) or "human_intent" in str(exc) else "access_lockdown_denied"
+        raise _http_error(code, status.HTTP_403_FORBIDDEN, str(exc)) from exc
 
 
 @router.post("/recovery/setup", response_model=RecoverySetupResponse, summary="Create Bastion Recovery Seed setup material; this is not a Bitcoin wallet seed.")
@@ -457,6 +474,49 @@ def cancel_recovery(request: RecoveryCancelRequest, service: Annotated[Any, Depe
     except Exception as exc:
         raise _http_error(_recovery_error_code(exc), status.HTTP_403_FORBIDDEN) from exc
 
+
+
+@router.post("/intents", response_model=HumanIntentResponse, summary="Create a Human Intent manifest for a critical Access action.")
+def create_human_intent(
+    request: HumanIntentCreateRequest,
+    context: Annotated[Any, Depends(get_access_session_context)],
+    service: Annotated[Any, Depends(get_human_intent_service)],
+) -> HumanIntentResponse:
+    try:
+        risk_level = "critical" if str(request.action) == "lockdown_disable" else "high"
+        result = service.create_intent(_human_intent_context(context, request.origin), request, risk_level=risk_level)
+        _commit_service(service)
+        return cast(HumanIntentResponse, result)
+    except Exception as exc:
+        raise _http_error("human_intent_rejected", status.HTTP_403_FORBIDDEN, str(exc)) from exc
+
+
+@router.post("/intents/{intent_id}/verify", response_model=HumanIntentVerificationResult, summary="Verify a Human Intent signature without executing the action.")
+def verify_human_intent(
+    intent_id: str,
+    request: HumanIntentSignatureRequest,
+    context: Annotated[Any, Depends(get_access_session_context)],
+    service: Annotated[Any, Depends(get_human_intent_service)],
+) -> HumanIntentVerificationResult:
+    try:
+        result = service.verify_intent_signature(
+            intent_id=intent_id,
+            signature=request.signature,
+            signature_alg=request.signature_alg,
+            device_key_fingerprint=request.device_key_fingerprint,
+        )
+        _commit_service(service)
+        return cast(HumanIntentVerificationResult, result)
+    except Exception as exc:
+        raise _http_error("human_intent_rejected", status.HTTP_403_FORBIDDEN, str(exc)) from exc
+
+
+@router.get("/intents/{intent_id}", response_model=HumanIntentResponse, summary="Read safe Human Intent manifest status without exposing signatures.")
+def get_human_intent(intent_id: str, context: Annotated[Any, Depends(get_access_session_context)], service: Annotated[Any, Depends(get_human_intent_service)]) -> HumanIntentResponse:
+    try:
+        return cast(HumanIntentResponse, service.get_intent_response(intent_id))
+    except Exception as exc:
+        raise _http_error("human_intent_not_found", status.HTTP_404_NOT_FOUND, str(exc)) from exc
 
 @router.post("/api-keys", response_model=ChildApiKeyCreateResponse, summary="Create a scoped Child API Key; raw key is shown once.")
 def create_child_api_key(
@@ -704,6 +764,23 @@ def _locked_metric_group_payload(item: Any) -> dict[str, Any]:
         return cast(dict[str, Any], item.model_dump())
     return {"group_code": item.group_code, "required_plan": item.required_plan, "reason": getattr(item, "reason", "upgrade_required")}
 
+
+
+def _human_intent_context(context: Any, origin: str) -> Any:
+    from app.services.access.human_intent import HumanIntentContext
+
+    scopes = list(getattr(context, "effective_scopes", getattr(context, "scopes", [])) or [])
+    return HumanIntentContext(
+        actor_fingerprint=getattr(context, "device_key_fingerprint", "unknown-device"),
+        certificate_fingerprint=context.certificate_fingerprint,
+        session_fingerprint=getattr(context, "session_id_hash", getattr(context, "session_hash", None)),
+        device_key_fingerprint=context.device_key_fingerprint,
+        plan_code=str(normalize_plan_code(context.plan_code).value),
+        granted_scopes=scopes,
+        origin=origin,
+        policy_decision_ref=None,
+        request_hash=None,
+    )
 
 def _parent_context_from_session(context: Any) -> Any:
     from app.services.access.key_constraints import ParentAccessContext

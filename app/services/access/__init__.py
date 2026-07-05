@@ -7,6 +7,8 @@ from typing import Any
 __all__ = [
     "ChildApiKeyService",
     "DelegatedPassService",
+    "HumanIntentService",
+    "LockdownService",
     "ParentAccessContext",
     "AccessAuditChain",
     "AccessAuditEventType",
@@ -33,6 +35,8 @@ _EXPORT_MODULES = {
     "ParentAccessContext": "app.services.access.key_constraints",
     "DelegatedPassService": "app.services.access.delegated_passes",
     "ChildApiKeyService": "app.services.access.child_api_keys",
+    "HumanIntentService": "app.services.access.human_intent",
+    "LockdownService": "app.services.access.lockdown_service",
     "AccessAuditChain": "app.services.access.audit_chain",
     "AccessAuditEventType": "app.services.access.audit_chain",
     "AccessChallengeResult": "app.services.access.challenge_service",

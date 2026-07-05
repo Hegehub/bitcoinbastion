@@ -273,6 +273,26 @@ class AccessAuditEvent(Base):
     canonical_event_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
 
+class AccessHumanIntent(Base):
+    __tablename__ = "access_human_intents"
+    __table_args__ = (
+        Index("ix_access_human_intents_cert_action", "certificate_fingerprint", "action"),
+        Index("ix_access_human_intents_status_expires", "status", "expires_at"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    intent_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    action: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    certificate_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    device_key_fingerprint: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    status: Mapped[str] = mapped_column(String(30), nullable=False, index=True, default="created")
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    canonical_manifest_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False, default=dict)
+    signature_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow, onupdate=utcnow)
+
 
 class MetricUsage(Base):
     __tablename__ = "metric_usage"

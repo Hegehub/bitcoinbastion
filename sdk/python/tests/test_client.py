@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+
 import httpx
 import pytest
 
@@ -8,19 +10,26 @@ from bitcoin_bastion_sdk.auth import LegacyAuthDisabledError
 
 
 def test_creates_sync_client_and_normalizes_base_url() -> None:
-    client = BastionClient(base_url="http://example.com/", transport=httpx.MockTransport(lambda request: httpx.Response(200, json={})))
+    client = BastionClient(
+        base_url="http://example.com/",
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, json={})),
+    )
     assert client._transport.config.base_url == "http://example.com"
     assert client._transport.config.api_prefix == "/api/v1"
     client.close()
 
 
-@pytest.mark.asyncio
-async def test_creates_async_client() -> None:
-    async def handler(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(200, json={"data": [], "error": None, "meta": {}})
+def test_creates_async_client() -> None:
+    async def run() -> None:
+        async def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(200, json={"data": [], "error": None, "meta": {}})
 
-    async with AsyncBastionClient(base_url="http://example.com", transport=httpx.MockTransport(handler)) as client:
-        assert await client.signals.latest() == []
+        async with AsyncBastionClient(
+            base_url="http://example.com", transport=httpx.MockTransport(handler)
+        ) as client:
+            assert await client.signals.latest() == []
+
+    asyncio.run(run())
 
 
 def test_legacy_bearer_api_key_auth_is_disabled(captured_requests: list[httpx.Request]) -> None:
