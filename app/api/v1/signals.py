@@ -20,11 +20,18 @@ def top_signals(
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[PaginatedData[SignalOut]]:
     repo = SignalRepository(db)
-    items = [SignalOut.from_model_with_horizons(item) for item in repo.top(limit=limit, offset=offset, horizon=horizon)]
-    return ResponseEnvelope(data=PaginatedData(items=items, total=repo.count(), limit=limit, offset=offset))
+    items = [
+        SignalOut.from_model_with_horizons(item)
+        for item in repo.top(limit=limit, offset=offset, horizon=horizon)
+    ]
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=repo.count(), limit=limit, offset=offset)
+    )
 
 
-@router.get("/{signal_id}/recommendations", response_model=ResponseEnvelope[SignalRecommendationOut])
+@router.get(
+    "/{signal_id}/recommendations", response_model=ResponseEnvelope[SignalRecommendationOut]
+)
 def signal_recommendations(
     signal_id: int,
     db: Session = Depends(db_session),

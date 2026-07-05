@@ -34,7 +34,9 @@ def test_utxo_analyzer_flags_many_small_utxos_and_high_fee_stress() -> None:
 
 
 def test_utxo_analyzer_detects_insufficient_liquidity_for_urgent_spend() -> None:
-    out = UTXOAnalyzerService().analyze(utxo_values_sats=[50_000, 60_000], target_spend_sats=1_000_000)
+    out = UTXOAnalyzerService().analyze(
+        utxo_values_sats=[50_000, 60_000], target_spend_sats=1_000_000
+    )
 
     assert out.urgent_spend_feasible is False
     assert out.liquidity_shortfall_sats > 0

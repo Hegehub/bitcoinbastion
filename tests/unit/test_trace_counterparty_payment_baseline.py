@@ -13,6 +13,17 @@ def test_amount_sensitivity_thresholds() -> None:
 
 
 def test_payment_context_address_only() -> None:
-    report = evaluate_payment_context("1BoatSLRHtKNngkdXEeobR76b53LETtpyT", "UNKNOWN", 0.1, "NONE", None, PaymentDirection.UNKNOWN, None, False, False, {})
+    report = evaluate_payment_context(
+        "1BoatSLRHtKNngkdXEeobR76b53LETtpyT",
+        "UNKNOWN",
+        0.1,
+        "NONE",
+        None,
+        PaymentDirection.UNKNOWN,
+        None,
+        False,
+        False,
+        {},
+    )
     assert report.amount_sensitivity == AmountSensitivity.UNKNOWN
     assert report.safe_to_send_advisory.value == "INSUFFICIENT_INFORMATION"

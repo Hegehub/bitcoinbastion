@@ -17,7 +17,9 @@ class _Webhooks:
     def get(self, webhook_id: str) -> dict[str, object]:
         return {"id": webhook_id, "token": "secret-token"}
 
-    def deliveries(self, webhook_id: str, *, limit: int = 50, offset: int = 0) -> list[dict[str, object]]:
+    def deliveries(
+        self, webhook_id: str, *, limit: int = 50, offset: int = 0
+    ) -> list[dict[str, object]]:
         return [{"webhook_id": webhook_id, "signature_secret": "hidden"}]
 
     def test(self, webhook_id: str) -> dict[str, object]:

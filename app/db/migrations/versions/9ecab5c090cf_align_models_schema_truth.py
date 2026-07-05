@@ -14,7 +14,9 @@ branch_labels = None
 depends_on = None
 
 
-def _create_index_if_missing(name: str, table: str, columns: list[str], *, unique: bool = False) -> None:
+def _create_index_if_missing(
+    name: str, table: str, columns: list[str], *, unique: bool = False
+) -> None:
     bind = op.get_bind()
     existing = {idx["name"] for idx in inspect(bind).get_indexes(table)}
     if name not in existing:
@@ -36,8 +38,12 @@ def upgrade() -> None:
     _create_index_if_missing("ix_entities_name", "entities", ["name"])
     _create_index_if_missing("ix_entity_addresses_address", "entity_addresses", ["address"])
     _create_index_if_missing("ix_entity_addresses_entity_id", "entity_addresses", ["entity_id"])
-    _create_index_if_missing("ix_psbt_workflows_treasury_request_id", "psbt_workflows", ["treasury_request_id"])
-    _create_index_if_missing("ix_signal_source_links_signal_id", "signal_source_links", ["signal_id"])
+    _create_index_if_missing(
+        "ix_psbt_workflows_treasury_request_id", "psbt_workflows", ["treasury_request_id"]
+    )
+    _create_index_if_missing(
+        "ix_signal_source_links_signal_id", "signal_source_links", ["signal_id"]
+    )
     _create_index_if_missing("ix_user_subscriptions_plan_id", "user_subscriptions", ["plan_id"])
     _create_index_if_missing("ix_user_subscriptions_user_id", "user_subscriptions", ["user_id"])
     _create_index_if_missing(

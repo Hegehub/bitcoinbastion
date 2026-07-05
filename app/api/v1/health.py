@@ -8,7 +8,14 @@ from redis import RedisError
 from app.api.dependencies import db_session
 from app.core.cache import get_redis_client
 from app.core.config import get_settings
-from app.schemas.health import HealthOut, ProviderHealthSnapshotOut, RuntimeStatusOut, SystemHealthOut, BackgroundJobHealthOut, DegradedComponentOut
+from app.schemas.health import (
+    HealthOut,
+    ProviderHealthSnapshotOut,
+    RuntimeStatusOut,
+    SystemHealthOut,
+    BackgroundJobHealthOut,
+    DegradedComponentOut,
+)
 from app.services.observability.runtime_status_service import RuntimeStatusService
 
 router = APIRouter(prefix="/health", tags=["health"])
@@ -47,11 +54,21 @@ def readiness(db: Session = Depends(db_session)) -> HealthOut:
 
     runtime = RuntimeStatusService().readiness(db)
     settings = get_settings()
-    status_value = "ready" if redis_status == "ok" and runtime.system_state in {"healthy", "maintenance"} else "degraded"
+    status_value = (
+        "ready"
+        if redis_status == "ok" and runtime.system_state in {"healthy", "maintenance"}
+        else "degraded"
+    )
     return HealthOut(
         status=status_value,
         app=settings.app_name,
-        details={"db": "ok", "redis": redis_status, "runtime": runtime.system_state, "scheduler": runtime.job_state, "provider_layer": runtime.provider_state},
+        details={
+            "db": "ok",
+            "redis": redis_status,
+            "runtime": runtime.system_state,
+            "scheduler": runtime.job_state,
+            "provider_layer": runtime.provider_state,
+        },
     )
 
 

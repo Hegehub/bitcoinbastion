@@ -12,12 +12,18 @@ router = APIRouter(prefix="/signals", tags=["intelligence-signals"])
 
 @router.get("/news-market-impact")
 def news_market_impact_signals(db: Session = Depends(db_session)) -> dict[str, object]:
-    return {"data": SignalGovernanceService(db).list_public(signal_type="news_market_impact"), "limitations": SIGNAL_LIMITATIONS}
+    return {
+        "data": SignalGovernanceService(db).list_public(signal_type="news_market_impact"),
+        "limitations": SIGNAL_LIMITATIONS,
+    }
 
 
 @router.get("/latest")
 def latest_signals(db: Session = Depends(db_session)) -> dict[str, object]:
-    return {"data": SignalGovernanceService(db).list_public(limit=50), "limitations": SIGNAL_LIMITATIONS}
+    return {
+        "data": SignalGovernanceService(db).list_public(limit=50),
+        "limitations": SIGNAL_LIMITATIONS,
+    }
 
 
 @router.get("/{signal_id}")
@@ -33,11 +39,16 @@ def get_signal_evidence(signal_id: int, db: Session = Depends(db_session)) -> di
     row = IntelligenceSignalRepository(db).get_candidate(signal_id)
     if row is None:
         raise HTTPException(status_code=404, detail="signal_candidate_not_found")
-    return {"data": SignalGovernanceService(db).evidence_refs(row), "limitations": SIGNAL_LIMITATIONS}
+    return {
+        "data": SignalGovernanceService(db).evidence_refs(row),
+        "limitations": SIGNAL_LIMITATIONS,
+    }
 
 
 @router.get("/{signal_id}/delivery-logs")
-def get_signal_delivery_logs(signal_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_signal_delivery_logs(
+    signal_id: int, db: Session = Depends(db_session)
+) -> dict[str, object]:
     if IntelligenceSignalRepository(db).get_candidate(signal_id) is None:
         raise HTTPException(status_code=404, detail="signal_candidate_not_found")
     service = SignalDeliveryLogService(db)

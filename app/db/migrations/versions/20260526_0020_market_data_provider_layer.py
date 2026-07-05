@@ -49,8 +49,12 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_provider_health_records_provider", "provider_health_records", ["provider"], unique=True)
-    op.create_index("ix_provider_health_records_is_degraded", "provider_health_records", ["is_degraded"])
+    op.create_index(
+        "ix_provider_health_records_provider", "provider_health_records", ["provider"], unique=True
+    )
+    op.create_index(
+        "ix_provider_health_records_is_degraded", "provider_health_records", ["is_degraded"]
+    )
 
 
 def downgrade() -> None:

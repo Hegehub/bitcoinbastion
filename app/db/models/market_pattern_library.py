@@ -16,7 +16,9 @@ class MarketPatternLibrary(Base):
     display_name: Mapped[str] = mapped_column(String(160), default="")
     description: Mapped[str] = mapped_column(String(500), default="")
     expected_sentiment: Mapped[str] = mapped_column(String(32), default="UNKNOWN")
-    expected_time_windows: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
+    expected_time_windows: Mapped[list[str]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
     default_confidence_band: Mapped[str] = mapped_column(String(32), default="Moderate")
     default_sentiment: Mapped[str] = mapped_column(String(32), default="UNKNOWN")
     expected_reaction_window: Mapped[str] = mapped_column(String(32), default="unknown")

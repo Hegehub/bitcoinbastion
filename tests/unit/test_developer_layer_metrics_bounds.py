@@ -1,5 +1,9 @@
 from app.core import telemetry
-from app.services.events.webhook_dispatcher import _event_domain_label, _event_type_family, _webhook_metric_status
+from app.services.events.webhook_dispatcher import (
+    _event_domain_label,
+    _event_type_family,
+    _webhook_metric_status,
+)
 
 
 def test_webhook_metric_labels_are_bounded() -> None:

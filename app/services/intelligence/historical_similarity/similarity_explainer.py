@@ -6,7 +6,9 @@ from app.services.intelligence.historical_similarity.similarity_scoring import S
 class SimilarityExplainer:
     def explain(self, pattern: str, score: SimilarityScore, sample_size: int) -> dict[str, object]:
         reasons = [f"pattern={pattern}", f"similarity_band={score.band}"]
-        reasons.extend(f"{key}={value:.2f}" for key, value in score.dimensions.items() if value >= 0.75)
+        reasons.extend(
+            f"{key}={value:.2f}" for key, value in score.dimensions.items() if value >= 0.75
+        )
         return {
             "summary": "Evidence-based historical similarity; not a prediction.",
             "reasons": reasons,

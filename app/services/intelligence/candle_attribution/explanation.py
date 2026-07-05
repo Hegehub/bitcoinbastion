@@ -7,7 +7,9 @@ LIMITATION_CORRELATION = "Correlation is not proof of causation."
 class CandleExplanationBuilder:
     """Build operator-safe attribution summaries and limitations."""
 
-    def build(self, candle: BTCCandle, candidate: ScoredCandidate, candidate_count: int) -> tuple[str, dict[str, object], dict[str, object]]:
+    def build(
+        self, candle: BTCCandle, candidate: ScoredCandidate, candidate_count: int
+    ) -> tuple[str, dict[str, object], dict[str, object]]:
         title = candidate.event.canonical_title
         summary = (
             f"{candidate.candidate_category} candidate event may be relevant to the "
@@ -52,5 +54,8 @@ class CandleExplanationBuilder:
         return {
             "summary": f"No candidate news events were found for the {candle.timeframe} BTC candle attribution window.",
             "candidate_count": 0,
-            "limitations": [LIMITATION_CORRELATION, "No nearby news events were available for ranking."],
+            "limitations": [
+                LIMITATION_CORRELATION,
+                "No nearby news events were available for ranking.",
+            ],
         }

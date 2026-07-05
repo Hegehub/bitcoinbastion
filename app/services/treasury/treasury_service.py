@@ -45,10 +45,18 @@ class TreasuryService:
         if policy_result is not None:
             policy_payload.update(
                 {
-                    "policy_name": getattr(policy_result, "evaluated_policy", policy_payload.get("policy_name", "unknown")),
+                    "policy_name": getattr(
+                        policy_result,
+                        "evaluated_policy",
+                        policy_payload.get("policy_name", "unknown"),
+                    ),
                     "allowed": getattr(policy_result, "allowed", policy_payload.get("allowed")),
-                    "violations": getattr(policy_result, "violations", policy_payload.get("violations", [])),
-                    "next_actions": getattr(policy_result, "next_actions", policy_payload.get("next_actions", [])),
+                    "violations": getattr(
+                        policy_result, "violations", policy_payload.get("violations", [])
+                    ),
+                    "next_actions": getattr(
+                        policy_result, "next_actions", policy_payload.get("next_actions", [])
+                    ),
                 }
             )
         publish_domain_event(
@@ -61,7 +69,11 @@ class TreasuryService:
                 "amount": request.amount_sats,
                 "asset": "BTC",
                 "policy_result": policy_payload,
-                "approval_required": approval_required if approval_required is not None else request.status in {"pending", "needs_review", "awaiting_approval"},
+                "approval_required": (
+                    approval_required
+                    if approval_required is not None
+                    else request.status in {"pending", "needs_review", "awaiting_approval"}
+                ),
                 "approver_id": actor_id,
                 "created_at": request.created_at.isoformat() if request.created_at else None,
                 "updated_at": request.updated_at.isoformat() if request.updated_at else None,
@@ -101,7 +113,9 @@ class TreasuryService:
             data_source=data_source,
         )
 
-    def create_request(self, payload: TreasuryRequestIn, requested_by: int | None = None) -> TreasuryRequest:
+    def create_request(
+        self, payload: TreasuryRequestIn, requested_by: int | None = None
+    ) -> TreasuryRequest:
         fee_model = FeeAnalyticsService().recommend(
             FeeRecommendationRequest(
                 mempool_congestion=min(1.0, max(0.0, 1.0 - payload.wallet_health_score)),
@@ -127,11 +141,15 @@ class TreasuryService:
         required_approvals = 1 if policy_result.allowed else 2
         chain_warnings: list[str] = []
         if chain_state.reorg_risk_score >= 0.55:
-            chain_warnings.append("Elevated chain reorg risk detected; increase confirmation threshold before emergency spend execution.")
+            chain_warnings.append(
+                "Elevated chain reorg risk detected; increase confirmation threshold before emergency spend execution."
+            )
             status = "needs_review"
             required_approvals = max(required_approvals, 2)
         elif chain_state.finality_band == "moderate":
-            chain_warnings.append("Moderate finality context; confirm additional blocks before irreversible spend.")
+            chain_warnings.append(
+                "Moderate finality context; confirm additional blocks before irreversible spend."
+            )
 
         request = TreasuryRequest(
             title=payload.title,
@@ -158,7 +176,10 @@ class TreasuryService:
                     },
                     "audit_packet": build_audit_packet(
                         packet_type="treasury_warning" if chain_warnings else "treasury_review",
-                        evidence_refs=[f"policy:{policy_result.evaluated_policy}", "chain_state_context"],
+                        evidence_refs=[
+                            f"policy:{policy_result.evaluated_policy}",
+                            "chain_state_context",
+                        ],
                         source_quality={
                             "source_type": chain_state.freshness.get("source_type", "runtime"),
                             "is_fallback": chain_state.freshness.get("is_fallback", False),
@@ -217,7 +238,9 @@ class TreasuryService:
             )
         return created
 
-    def approve_request(self, request_id: int, approver_user_id: int, payload: TreasuryApprovalActionIn) -> TreasuryApprovalOut:
+    def approve_request(
+        self, request_id: int, approver_user_id: int, payload: TreasuryApprovalActionIn
+    ) -> TreasuryApprovalOut:
         request = self.repo.get(request_id)
         if request is None:
             raise ValueError("Treasury request not found")
@@ -273,7 +296,11 @@ class TreasuryService:
                 "reorg_risk_score": chain_state.reorg_risk_score,
                 "confidence_score": chain_state.confidence_score,
                 "freshness": chain_state.freshness,
-                "warning": "Human review required for elevated reorg risk." if chain_state.reorg_risk_score >= 0.65 else "",
+                "warning": (
+                    "Human review required for elevated reorg risk."
+                    if chain_state.reorg_risk_score >= 0.65
+                    else ""
+                ),
             },
         }
         request.policy_snapshot_json = json.dumps(snapshot)
@@ -314,15 +341,18 @@ class TreasuryService:
             violations=policy_result.violations,
         )
 
-
-    def reject_request(self, request_id: int, actor_user_id: int, payload: TreasuryRejectActionIn) -> TreasuryRejectOut:
+    def reject_request(
+        self, request_id: int, actor_user_id: int, payload: TreasuryRejectActionIn
+    ) -> TreasuryRejectOut:
         request = self.repo.get(request_id)
         if request is None:
             raise ValueError("Treasury request not found")
 
         before_status = request.status
         request.status = "rejected"
-        request.policy_snapshot_json = json.dumps({"rejection_note": payload.note, "actor_user_id": actor_user_id})
+        request.policy_snapshot_json = json.dumps(
+            {"rejection_note": payload.note, "actor_user_id": actor_user_id}
+        )
         saved = self.repo.update(request)
 
         self.audit_service.record_action(
@@ -343,7 +373,9 @@ class TreasuryService:
 
         return TreasuryRejectOut(request_id=saved.id, status=saved.status, note=payload.note)
 
-    def list_requests(self, limit: int, offset: int, status: str | None = None) -> list[TreasuryRequest]:
+    def list_requests(
+        self, limit: int, offset: int, status: str | None = None
+    ) -> list[TreasuryRequest]:
         return self.repo.list(limit=limit, offset=offset, status=status)
 
     def list_pending_approvals(self, limit: int, offset: int) -> list[TreasuryRequest]:

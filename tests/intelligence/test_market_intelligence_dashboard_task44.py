@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from app.db.models.intelligence_signals import IntelligenceOperatorReview, IntelligenceSignalCandidate
+from app.db.models.intelligence_signals import (
+    IntelligenceOperatorReview,
+    IntelligenceSignalCandidate,
+)
 from app.db.models.news_source import NewsSource
 from app.db.models.source_reputation_profile import SourceReputationProfile
 from app.main import app
@@ -28,7 +31,10 @@ def test_task44_market_intelligence_routes_and_navigation() -> None:
             assert response.status_code == 200
             assert expected in response.text
             assert "Correlation is not proof of causation." in response.text
-            assert "Bitcoin Bastion provides evidence-based market context" in response.text or "evidence-based" in response.text
+            assert (
+                "Bitcoin Bastion provides evidence-based market context" in response.text
+                or "evidence-based" in response.text
+            )
         landing = client.get("/market")
         assert "BTC Price" in landing.text
         assert "News Shock Index" in landing.text
@@ -50,17 +56,19 @@ def test_task44_dto_contract_sources_signals_evidence_and_replay() -> None:
         dashboard = service.dashboard(timeframe="1h")
         payload = service.landing_payload(timeframe="1h")
         vm = build_market_dto(dashboard, selected_timeframe="1h", api_payload=payload)
-        assert set([
-            "market_timeline",
-            "timeline_events",
-            "candle_details",
-            "attribution_details",
-            "evidence_summary",
-            "replay_summary",
-            "source_summary",
-            "narrative_summary",
-            "shock_index_summary",
-        ]).issubset(vm)
+        assert set(
+            [
+                "market_timeline",
+                "timeline_events",
+                "candle_details",
+                "attribution_details",
+                "evidence_summary",
+                "replay_summary",
+                "source_summary",
+                "narrative_summary",
+                "shock_index_summary",
+            ]
+        ).issubset(vm)
         assert vm["source_summary"]["items"][0]["source_name"] == "Task44 Source"
         assert vm["signal_summary"]["counts"]["pending_review"] >= 1
         assert vm["evidence_summary"]["packets"]

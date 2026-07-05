@@ -40,6 +40,7 @@ def publish_event(
         metadata=metadata,
     )
 
+
 __all__ = [
     "ActorType",
     "BastionEventEnvelope",

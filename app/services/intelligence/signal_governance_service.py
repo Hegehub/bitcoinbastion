@@ -21,7 +21,11 @@ class SignalGovernanceService:
         reviews = self.repo.reviews_for(candidate.id)
         evidence_refs = self.evidence_refs(candidate)
         evidence_count = self._evidence_count(evidence_refs)
-        operator_status = reviews[0].review_status if reviews else "pending" if candidate.requires_operator_review else "policy_only"
+        operator_status = (
+            reviews[0].review_status
+            if reviews
+            else "pending" if candidate.requires_operator_review else "policy_only"
+        )
         payload = {
             "signal_id": candidate.id,
             "signal_type": candidate.signal_type,
@@ -54,7 +58,14 @@ class SignalGovernanceService:
 
     def evidence_refs(self, candidate: IntelligenceSignalCandidate) -> dict[str, object]:
         refs: dict[str, object] = {}
-        for key in ["article_id", "event_id", "candle_id", "impact_id", "attribution_id", "evidence_packet_id"]:
+        for key in [
+            "article_id",
+            "event_id",
+            "candle_id",
+            "impact_id",
+            "attribution_id",
+            "evidence_packet_id",
+        ]:
             value = getattr(candidate, key)
             if value is not None:
                 refs[key] = value
@@ -70,7 +81,9 @@ class SignalGovernanceService:
         refs["limitations"] = SIGNAL_LIMITATIONS.copy()
         return refs
 
-    def list_public(self, *, status: str | None = None, signal_type: str | None = None, limit: int = 50) -> list[dict[str, Any]]:
+    def list_public(
+        self, *, status: str | None = None, signal_type: str | None = None, limit: int = 50
+    ) -> list[dict[str, Any]]:
         rows = self.repo.list_candidates(status=status, signal_type=signal_type, limit=limit)
         return [self.public_payload(row) for row in rows]
 

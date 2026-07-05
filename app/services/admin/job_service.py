@@ -38,7 +38,12 @@ class JobTrackingService:
             duration = perf_counter() - started_at
             observe_task_duration(task_name=task_name, status="failed", duration_seconds=duration)
             increment_task_failure(task_name=task_name)
-            base_logger.error("task_finished", status="failed", duration_seconds=round(duration, 6), error=str(exc))
+            base_logger.error(
+                "task_finished",
+                status="failed",
+                duration_seconds=round(duration, 6),
+                error=str(exc),
+            )
             raise
 
     def list_recent(self, limit: int = 50) -> list[JobRun]:

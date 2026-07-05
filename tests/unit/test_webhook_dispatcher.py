@@ -25,12 +25,16 @@ def _session() -> Session:
     return Session(engine)
 
 
-def _endpoint(db: Session, *, enabled: bool = True, target_url: str = "https://example.com/hook") -> WebhookEndpoint:
+def _endpoint(
+    db: Session, *, enabled: bool = True, target_url: str = "https://example.com/hook"
+) -> WebhookEndpoint:
     endpoint = WebhookEndpoint(
         name="Ops webhook",
         target_url=target_url,
         enabled=enabled,
-        status=WebhookEndpointStatus.ACTIVE.value if enabled else WebhookEndpointStatus.DISABLED.value,
+        status=(
+            WebhookEndpointStatus.ACTIVE.value if enabled else WebhookEndpointStatus.DISABLED.value
+        ),
         secret_ref="webhook_secret_ref:test",
         signing_secret="whsec_test_secret",
     )
@@ -76,7 +80,9 @@ def test_dispatcher_sends_signed_post_to_subscribed_endpoint() -> None:
     with _session() as db:
         _endpoint(db)
         event = _event(db)
-        dispatcher = WebhookDispatcher(db, http_client=httpx.Client(transport=httpx.MockTransport(handler)))
+        dispatcher = WebhookDispatcher(
+            db, http_client=httpx.Client(transport=httpx.MockTransport(handler))
+        )
 
         result = dispatcher.dispatch_pending_events()
         row = EventOutboxRepository(db).get_by_event_id(event.event_id)
@@ -141,7 +147,9 @@ def test_dispatcher_treats_4xx_as_terminal_delivery_failure() -> None:
         event = _event(db, event_id="evt_4xx")
         dispatcher = WebhookDispatcher(
             db,
-            http_client=httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(400, text="bad"))),
+            http_client=httpx.Client(
+                transport=httpx.MockTransport(lambda request: httpx.Response(400, text="bad"))
+            ),
         )
 
         result = dispatcher.dispatch_pending_events()
@@ -161,7 +169,9 @@ def test_dispatcher_retries_5xx_without_faking_success() -> None:
         event = _event(db, event_id="evt_5xx")
         dispatcher = WebhookDispatcher(
             db,
-            http_client=httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(503, text="down"))),
+            http_client=httpx.Client(
+                transport=httpx.MockTransport(lambda request: httpx.Response(503, text="down"))
+            ),
         )
 
         result = dispatcher.dispatch_pending_events()
@@ -184,7 +194,9 @@ def test_dispatcher_retries_timeout() -> None:
     with _session() as db:
         _endpoint(db)
         event = _event(db, event_id="evt_timeout")
-        dispatcher = WebhookDispatcher(db, http_client=httpx.Client(transport=httpx.MockTransport(handler)))
+        dispatcher = WebhookDispatcher(
+            db, http_client=httpx.Client(transport=httpx.MockTransport(handler))
+        )
 
         result = dispatcher.dispatch_pending_events()
         row = EventOutboxRepository(db).get_by_event_id(event.event_id)
@@ -203,7 +215,9 @@ def test_dispatcher_stops_after_max_attempts() -> None:
         event = _event(db, event_id="evt_dead", attempts=7, max_attempts=8)
         dispatcher = WebhookDispatcher(
             db,
-            http_client=httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(500, text="down"))),
+            http_client=httpx.Client(
+                transport=httpx.MockTransport(lambda request: httpx.Response(500, text="down"))
+            ),
         )
 
         result = dispatcher.dispatch_pending_events()

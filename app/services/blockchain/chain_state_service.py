@@ -53,7 +53,9 @@ class ChainStateService:
         header_tip_gap = abs(headers - tip_height)
         header_observed_gap = abs(headers - observed_block_height)
 
-        provider_gap = abs(provider_tip_height - tip_height) if provider_tip_height is not None else 0
+        provider_gap = (
+            abs(provider_tip_height - tip_height) if provider_tip_height is not None else 0
+        )
         normalized_provider_conf = max(0.0, min(1.0, float(provider_confidence or 0.0)))
 
         depth_risk = max(0.0, 1.0 - depth_quality)
@@ -88,7 +90,9 @@ class ChainStateService:
             source_risk = 0.2
         fallback_activated = data_source in {"repository_fallback", "provider_fallback"}
         stale_provider_data = stale_band in {"stale", "very_stale"}
-        inconsistent_provider_response = provider_gap > 1 if provider_tip_height is not None else False
+        inconsistent_provider_response = (
+            provider_gap > 1 if provider_tip_height is not None else False
+        )
         provider_outage = data_source == "provider_fallback"
 
         reorg_risk = round(
@@ -221,7 +225,10 @@ class ChainStateService:
                     "inconsistent_provider_response": inconsistent_provider_response,
                     "fallback_activated": fallback_activated,
                     "degraded_runtime_state": bool(
-                        provider_outage or stale_provider_data or inconsistent_provider_response or fallback_activated
+                        provider_outage
+                        or stale_provider_data
+                        or inconsistent_provider_response
+                        or fallback_activated
                     ),
                 },
                 "contract": build_explainability_contract(

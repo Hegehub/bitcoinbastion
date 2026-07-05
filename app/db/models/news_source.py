@@ -12,15 +12,31 @@ from app.db.models.time_utils import utcnow
 class NewsSource(Base):
     __tablename__ = "news_sources"
     __table_args__ = (
-        CheckConstraint("credibility_weight >= 0 AND credibility_weight <= 1", name="ck_news_sources_credibility_weight"),
-        CheckConstraint("signal_quality_weight >= 0 AND signal_quality_weight <= 1", name="ck_news_sources_signal_quality_weight"),
-        CheckConstraint("sovereignty_weight >= 0 AND sovereignty_weight <= 1", name="ck_news_sources_sovereignty_weight"),
-        CheckConstraint("default_confidence >= 0 AND default_confidence <= 1", name="ck_news_sources_default_confidence"),
-        CheckConstraint("fetch_interval_minutes > 0", name="ck_news_sources_fetch_interval_minutes"),
+        CheckConstraint(
+            "credibility_weight >= 0 AND credibility_weight <= 1",
+            name="ck_news_sources_credibility_weight",
+        ),
+        CheckConstraint(
+            "signal_quality_weight >= 0 AND signal_quality_weight <= 1",
+            name="ck_news_sources_signal_quality_weight",
+        ),
+        CheckConstraint(
+            "sovereignty_weight >= 0 AND sovereignty_weight <= 1",
+            name="ck_news_sources_sovereignty_weight",
+        ),
+        CheckConstraint(
+            "default_confidence >= 0 AND default_confidence <= 1",
+            name="ck_news_sources_default_confidence",
+        ),
+        CheckConstraint(
+            "fetch_interval_minutes > 0", name="ck_news_sources_fetch_interval_minutes"
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    uuid: Mapped[str] = mapped_column(String(36), default=lambda: str(uuid4()), unique=True, nullable=False)
+    uuid: Mapped[str] = mapped_column(
+        String(36), default=lambda: str(uuid4()), unique=True, nullable=False
+    )
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     slug: Mapped[str | None] = mapped_column(String(120), nullable=True, unique=True, index=True)
     kind: Mapped[str] = mapped_column(String(50), nullable=False, default="rss")
@@ -29,8 +45,12 @@ class NewsSource(Base):
     homepage_url: Mapped[str] = mapped_column(String(512), nullable=False, default="")
     language: Mapped[str] = mapped_column(String(8), default="en")
     country_code: Mapped[str | None] = mapped_column(String(3), nullable=True)
-    category: Mapped[str] = mapped_column(String(80), nullable=False, default="market_media", index=True)
-    tier: Mapped[str] = mapped_column(String(80), nullable=False, default="market_media", index=True)
+    category: Mapped[str] = mapped_column(
+        String(80), nullable=False, default="market_media", index=True
+    )
+    tier: Mapped[str] = mapped_column(
+        String(80), nullable=False, default="market_media", index=True
+    )
     credibility_weight: Mapped[float] = mapped_column(Float, default=0.7)
     signal_quality_weight: Mapped[float] = mapped_column(Float, default=0.7)
     sovereignty_weight: Mapped[float] = mapped_column(Float, default=0.7)
@@ -45,8 +65,12 @@ class NewsSource(Base):
     backoff_multiplier: Mapped[float] = mapped_column(Float, default=2.0)
     max_failures_before_backoff: Mapped[int] = mapped_column(Integer, default=3)
     notes: Mapped[str] = mapped_column(String(1000), default="")
-    tags_json: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    tags_json: Mapped[list[str]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     last_fetched_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_success_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_failure_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

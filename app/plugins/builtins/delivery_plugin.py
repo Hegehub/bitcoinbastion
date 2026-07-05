@@ -23,4 +23,6 @@ class DeliveryPlugin(BasePlugin):
         }
 
     def deliver(self, payload: dict[str, Any]) -> dict[str, Any]:
-        raise PluginSandboxError("Delivery plugins cannot dispatch directly without sandbox approval")
+        raise PluginSandboxError(
+            "Delivery plugins cannot dispatch directly without sandbox approval"
+        )

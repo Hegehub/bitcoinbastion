@@ -12,7 +12,9 @@ class MarketMemoryRecord(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("news_events.id"), index=True, nullable=False)
-    pattern_id: Mapped[int] = mapped_column(ForeignKey("market_patterns.id"), index=True, nullable=False)
+    pattern_id: Mapped[int] = mapped_column(
+        ForeignKey("market_patterns.id"), index=True, nullable=False
+    )
     memory_type: Mapped[str] = mapped_column(String(64), default="historical_context", index=True)
     memory_score: Mapped[float] = mapped_column(Float, default=0.0, index=True)
     confidence_score: Mapped[float] = mapped_column(Float, default=0.0, index=True)

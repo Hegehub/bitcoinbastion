@@ -160,7 +160,9 @@ class WebhookService:
         if endpoint.status == WebhookEndpointStatus.DELETED.value:
             raise WebhookNotFoundError("Webhook endpoint not found")
         if not endpoint.enabled or endpoint.status == WebhookEndpointStatus.DISABLED.value:
-            raise WebhookServiceError("Webhook endpoint is disabled and cannot receive test deliveries")
+            raise WebhookServiceError(
+                "Webhook endpoint is disabled and cannot receive test deliveries"
+            )
         event_type = self._validate_event_type(
             payload.event_type or BastionEventType.WEBHOOK_TEST.value
         )
@@ -262,7 +264,8 @@ class WebhookService:
             raise WebhookServiceError("Webhook target_url must include a host")
         lowered_host = hostname.casefold().strip("[]")
         if not settings.webhook_allow_private_network_targets and (
-            lowered_host in {"localhost", "localhost.localdomain"} or lowered_host.endswith(".local")
+            lowered_host in {"localhost", "localhost.localdomain"}
+            or lowered_host.endswith(".local")
         ):
             raise WebhookServiceError(
                 "Webhook target_url cannot use localhost or private-network hosts"

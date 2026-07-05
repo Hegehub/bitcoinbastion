@@ -2,7 +2,9 @@ CORRELATION_LIMITATION = "Correlation is not proof of causation."
 
 
 class CandleAttributionLimitationsBuilder:
-    def build(self, provider_confidence: float, event_density: int, elevated_volatility: bool) -> list[str]:
+    def build(
+        self, provider_confidence: float, event_density: int, elevated_volatility: bool
+    ) -> list[str]:
         limitations = [CORRELATION_LIMITATION]
         if provider_confidence < 0.5:
             limitations.append("Provider confidence degraded")
