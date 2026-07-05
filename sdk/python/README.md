@@ -18,7 +18,7 @@ python -m pip install -e '.[dev]'
 ```python
 from bitcoin_bastion_sdk import BastionClient
 
-client = BastionClient(base_url="http://localhost:8000", api_key="optional-token")
+client = BastionClient(base_url="http://localhost:8000")
 summary = client.trace.get_public_summary(1)
 print(summary)
 ```
@@ -34,15 +34,30 @@ async with AsyncBastionClient(base_url="http://localhost:8000") as client:
 
 ## Auth
 
+Protected SDK calls use Bastion Proof-of-Access, not bearer tokens. Import an Access Pass only to start the challenge/session flow, sign the origin-bound challenge with a Bastion device signer, then pass a short-lived `BastionAccessAuth` session to the client so protected requests receive `X-Bastion-*` request-signing headers.
+
 ```python
+from datetime import UTC, datetime, timedelta
+
+from bitcoin_bastion_sdk import BastionAccessAuth, BastionClient
+from bitcoin_bastion_sdk.access_auth import AccessSession
+from bitcoin_bastion_sdk.signing import InMemoryDeviceSigner
+
+signer = InMemoryDeviceSigner(b"replace-with-vault-backed-bastion-device-secret")
+session = AccessSession(
+    session_token="session-token-from-/access/sessions",
+    expires_at=datetime.now(UTC) + timedelta(minutes=15),
+    scopes=["market:intelligence:read"],
+    plan_code="pro_pass",
+)
 client = BastionClient(
     base_url="https://bastion.example",
-    api_key="token",
-    headers={"X-Custom": "value"},
+    access_auth=BastionAccessAuth.from_session(session, signer=signer),
 )
+me = client.access.me()
 ```
 
-The SDK sends `Authorization: Bearer <token>` and does not include tokens in exception messages.
+Legacy `api_key`/`Authorization: Bearer` authentication is disabled by default. A temporary `allow_legacy_bearer_auth=True` compatibility flag exists only for migration and emits a deprecation warning. Use Proof-of-Access challenge/session flow and `X-Bastion-*` request-signing headers for protected requests. The SDK must not log raw Access Passes, session tokens, nonces, signatures, recovery phrases, or Bitcoin seed/private-key material. Bastion will never ask for your Bitcoin seed or private key. See `docs/SDK_PYTHON_ACCESS_AUTH.md`.
 
 ## Trace example
 

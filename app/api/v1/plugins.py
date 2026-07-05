@@ -5,8 +5,9 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
-from app.api.dependencies import get_admin_user
-from app.db.models.auth import User
+from app.api.access_dependencies import require_human_intent, require_plan
+from app.domain.access.context import AccessContext
+from app.domain.access.plans import PlanCode
 from app.plugins.errors import PluginRegistryError, PluginSandboxError
 from app.plugins.loader import register_builtin_plugins
 from app.plugins.manifest import SENSITIVE_TERMS
@@ -77,7 +78,7 @@ def get_plugin(plugin_id: str) -> ResponseEnvelope[dict[str, Any]]:
 @router.post("/{plugin_id}/enable")
 def enable_plugin(
     plugin_id: str,
-    _admin_user: User = Depends(get_admin_user),
+    _access_context: AccessContext = Depends(require_human_intent("enterprise_policy_change")),
 ) -> ResponseEnvelope[dict[str, Any]]:
     try:
         plugin_registry.enable_plugin(plugin_id)
@@ -90,7 +91,7 @@ def enable_plugin(
 @router.post("/{plugin_id}/disable")
 def disable_plugin(
     plugin_id: str,
-    _admin_user: User = Depends(get_admin_user),
+    _access_context: AccessContext = Depends(require_human_intent("enterprise_policy_change")),
 ) -> ResponseEnvelope[dict[str, Any]]:
     try:
         plugin_registry.disable_plugin(plugin_id)
@@ -104,7 +105,7 @@ def disable_plugin(
 def dry_run_plugin(
     plugin_id: str,
     request: PluginDryRunRequest,
-    _admin_user: User = Depends(get_admin_user),
+    _access_context: AccessContext = Depends(require_plan(PlanCode.BUSINESS)),
 ) -> ResponseEnvelope[dict[str, Any]]:
     if _scan_forbidden_input(request.payload):
         raise HTTPException(

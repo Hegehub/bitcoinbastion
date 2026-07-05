@@ -1,3 +1,20 @@
+from app.db.models.access import (
+    AccessAuditEvent,
+    AccessCertificate,
+    AccessChallenge,
+    AccessDevice,
+    AccessHumanIntent,  # noqa: F401
+    AccessPaymentIntent,
+    AccessRequestNonce,
+    AccessRevocation,
+    AccessSession,
+    ChildApiKey,
+    DelegatedPass,
+    MetricUsage,
+    RecoveryAttempt,
+    RecoveryQuorum,
+    SubscriptionEntitlement,
+)
 from app.db.models.event_outbox import EventOutbox, EventOutboxStatus
 from app.db.models.storage_artifact import StorageArtifact, StorageArtifactStatus
 from app.db.models.storage_outbox_event import StorageOutboxEvent, StorageOutboxEventStatus
@@ -122,6 +139,20 @@ from app.db.models.wallet import WalletHealthReport, WalletProfile
 from app.db.models.watched_entity import WatchedEntity
 
 __all__ = [
+    "AccessAuditEvent",
+    "AccessCertificate",
+    "AccessChallenge",
+    "AccessDevice",
+    "AccessPaymentIntent",
+    "AccessRequestNonce",
+    "AccessRevocation",
+    "AccessSession",
+    "ChildApiKey",
+    "DelegatedPass",
+    "MetricUsage",
+    "RecoveryAttempt",
+    "RecoveryQuorum",
+    "SubscriptionEntitlement",
     "StorageArtifact",
     "StorageArtifactStatus",
     "StorageOutboxEvent",
