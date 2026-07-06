@@ -1,31 +1,26 @@
-> Current note (2026-06-29): the old Next.js frontend has been removed; historical references below are retained only for migration context. Reflex is the only repository-native frontend.
-
 # Reflex Deployment
 
 ## 1. Purpose
 
-This guide explains how to run the Bitcoin Bastion Reflex frontend as an optional, parallel deployment surface. Reflex is not the primary frontend yet and does not replace the legacy Next.js frontend or the FastAPI/Jinja Market dashboard in this prompt.
+This guide explains how to deploy the Bitcoin Bastion Reflex frontend alongside the backend. Reflex is the only repository‑native web interface. The legacy Next.js frontend and associated compose files have been removed from the working tree.
 
-## 2. Current migration status
+## 2. Current status
 
-- Next.js status: legacy active frontend.
-- Reflex status: parallel migration target.
-- FastAPI/Jinja Market status: active until market parity and cutover decisions are completed.
-- FastAPI backend status: source of data and domain behavior.
-- Cutover status: not complete until Prompt 21/22.
+- **Reflex status:** migration‑primary and default UI layer.
+- **FastAPI/Jinja Market status:** continues to serve the Market dashboard and certain drill‑down pages until those surfaces are fully reimplemented in Reflex.
+- **FastAPI backend status:** source of data and domain behavior.
 
 ## 3. Ports
 
 | Service | Port |
 | --- | ---: |
 | FastAPI backend | `8000` |
-| Legacy Next.js frontend | `3000` |
 | Reflex frontend | `3001` |
 | Reflex backend/control | `8001` |
 
 ## 4. Environment variables
 
-Reflex deployment files set only non-secret frontend configuration:
+Reflex deployment files set only non‑secret frontend configuration:
 
 ```env
 BB_API_BASE_URL=http://api:8000
@@ -38,7 +33,7 @@ BB_REQUEST_TIMEOUT_SECONDS=5
 BB_DEFAULT_LANGUAGE=en
 ```
 
-Do not put seed phrases, private keys, wallet files, signing material, API secrets, or production credentials in compose files.
+Do not put seed phrases, private keys, wallet files, signing material, API secrets or production credentials in compose files.
 
 ## 5. Standalone Reflex container
 
@@ -56,7 +51,7 @@ docker run --rm -p 3001:3001 -p 8001:8001 \
   bitcoin-bastion-reflex-frontend:local
 ```
 
-The image uses Python 3.12 slim, `uv sync --frozen --no-dev`, the Reflex project lockfile, and the Reflex-supported `reflex run --env prod` command.
+The image uses Python 3.12 slim, `uv sync --frozen --no-dev`, the Reflex project lockfile and the Reflex‑supported `reflex run --env prod` command.
 
 ## 6. Backend + Reflex compose mode
 
@@ -67,45 +62,30 @@ docker compose -f deploy/compose/full-reflex.compose.yaml config
 docker compose -f deploy/compose/full-reflex.compose.yaml up --build
 ```
 
-This starts PostgreSQL, Redis, API, worker, beat, and `reflex-frontend`. The Reflex service points `BB_API_BASE_URL` at `http://api:8000`.
+This starts PostgreSQL, Redis, API, worker, beat and `reflex-frontend`. The Reflex service points `BB_API_BASE_URL` at `http://api:8000`.
 
-## 7. Parallel Next.js + Reflex compose mode
+## 7. Runtime profile frontend modes
 
-Use the parallel compose file during migration comparison:
+Runtime profile metadata now includes frontend mode information. Only two frontend modes are available because the legacy Next.js frontend and parallel migration mode have been removed.
 
-```bash
-docker compose -f deploy/compose/full-parallel-frontends.compose.yaml config
-docker compose -f deploy/compose/full-parallel-frontends.compose.yaml up --build
-```
+| Mode | Best for | Ports | Services | Limitations | Production suitability |
+| --- | --- | --- | --- | --- | --- |
+| `api-only` | SDK/API deployments and backend‑only tests | `8000` | FastAPI and backend dependencies | no browser frontend | Suitable for API‑only scenarios |
+| `reflex` | Primary user interface | `8000`, `3001`, `8001` | FastAPI backend plus Reflex frontend | Market dashboard and drill‑down pages remain served by FastAPI/Jinja until full parity is achieved | Suitable when used with backend production evidence |
 
-This starts backend services, the legacy Next.js frontend on `3000`, and Reflex on `3001`/`8001`. The Next.js service uses the existing `frontend/` workspace through a local bind mount because no legacy `frontend/Dockerfile` exists yet.
+Runtime metadata fields include `frontend.mode`, `frontend.primary`, `reflex_enabled`, `cutover_ready` and `rollback_available`. With the legacy frontend removed, `frontend.primary` is now `reflex`, `reflex_enabled` is `true`, `cutover_ready` should be set once parity gates pass, and `rollback_available` is `false` because restoring the old frontend requires retrieving the deleted directory from version control.
 
-## 8. Runtime profile frontend modes
+## 8. Healthcheck notes
 
-Runtime profile metadata now recognizes four frontend modes:
+The Reflex Dockerfile and compose files use a simple HTTP check against `/` on port `3001`. Compose `depends_on` ordering does not prove full production readiness; production deployments still need real health/readiness, logs, metrics, backup, recovery and operator evidence.
 
-| Mode | Meaning | Production suitability |
-| --- | --- | --- |
-| `api-only` | FastAPI backend only. | API/SDK deployments only. |
-| `nextjs` | Backend plus legacy Next.js. | Current stable frontend path. |
-| `reflex` | Backend plus Reflex. | Migration target; not primary yet. |
-| `parallel` | Backend plus Next.js and Reflex. | Recommended during migration comparison. |
+## 9. Known limitations
 
-## 9. Healthcheck notes
-
-The Reflex Dockerfile and compose files use a simple HTTP check against `/` on port `3001`. Compose `depends_on` ordering does not prove full production readiness; production deployments still need real health/readiness, logs, metrics, backup, recovery, and operator evidence.
-
-## 10. Known limitations
-
-- Reflex is not the primary frontend yet.
-- The parallel Next.js compose service is development/migration oriented because the legacy frontend does not currently provide a Dockerfile; it uses a local writable bind mount for the existing `frontend/` workspace and should not be treated as a hardened production mount.
-- Compose files use local-development defaults for PostgreSQL passwords unless operators override them.
+- Market detail and drill‑down routes remain served by FastAPI/Jinja until Reflex achieves full parity. Operators should treat these pages as advisory only.
+- Compose files use local‑development defaults for PostgreSQL passwords unless operators override them.
 - Compose is not HA and does not certify production readiness.
+- Full production readiness requires environment‑specific evidence, backup/restore evidence, monitoring validation and operator drills.
 
-## 11. Rollback path
+## 10. Rollback and legacy note
 
-Keep Next.js running or return to `docker-compose.yml` / `nextjs` mode. Reflex can be stopped independently without deleting `frontend/` or FastAPI/Jinja Market routes.
-
-## 12. Why Next.js is not deleted yet
-
-Next.js remains the rollback and comparison surface until Prompt 21/22 cutover gates pass. Reflex deployment support in this prompt proves optional runtime viability only; it does not transfer route ownership.
+The old Next.js frontend and the parallel compose file have been removed. To return to the legacy user interface, maintainers would need to restore the `frontend/` directory and associated CI/workflow files from Git history or a tagged archive. This guide does not describe how to run the legacy frontend because it is no longer present in the working tree.
