@@ -1,6 +1,6 @@
-import { authHeaders } from "./auth.js";
+import { BastionAccessAuth, authHeaders } from "./auth.js";
 import type { NormalizedConfig } from "./config.js";
-import { BastionTimeoutError, errorFromStatus } from "./errors.js";
+import { AccessAuthRequiredError, BastionTimeoutError, errorFromStatus } from "./errors.js";
 import type { ResponseEnvelope } from "./schemas/common.js";
 import { joinUrl, withQuery } from "./utils/url.js";
 
@@ -9,10 +9,15 @@ export interface HttpRequestOptions {
   body?: unknown;
   raw?: boolean;
   signal?: AbortSignal;
+  requireAuth?: boolean;
 }
 
 export class BastionHttpClient {
-  constructor(private readonly config: NormalizedConfig) {}
+  private readonly accessAuth?: BastionAccessAuth;
+
+  constructor(private readonly config: NormalizedConfig) {
+    this.accessAuth = config.accessAuth ? new BastionAccessAuth(config.accessAuth) : undefined;
+  }
 
   async get<T = unknown>(path: string, options: HttpRequestOptions = {}): Promise<T> {
     return this.request<T>("GET", path, options);
@@ -30,19 +35,31 @@ export class BastionHttpClient {
     return this.request<T>("DELETE", path, options);
   }
 
+  getAccessAuth(): BastionAccessAuth | undefined {
+    return this.accessAuth;
+  }
+
   private async request<T>(method: string, path: string, options: HttpRequestOptions): Promise<T> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.config.timeoutMs);
     const signal = options.signal ?? controller.signal;
     const url = withQuery(joinUrl(this.config.baseUrl, this.config.apiPrefix, path), options.query);
+    const signingPath = new URL(url).pathname + new URL(url).search;
     try {
+      const accessHeaders = await this.accessHeaders(method, signingPath, options.body, Boolean(options.requireAuth));
       const response = await this.config.fetchImpl(url, {
         method,
         signal,
         headers: {
           "content-type": "application/json",
           ...this.config.headers,
-          ...authHeaders(this.config.apiKey),
+          ...authHeaders(this.config.apiKey, {
+            allowLegacyBearerAuth: this.config.allowLegacyBearerAuth,
+            warn: (message) => {
+              if (typeof console !== "undefined") console.warn(message);
+            },
+          }),
+          ...accessHeaders,
         },
         body: options.body === undefined ? undefined : JSON.stringify(options.body),
       });
@@ -58,6 +75,15 @@ export class BastionHttpClient {
     } finally {
       clearTimeout(timeout);
     }
+  }
+
+  private async accessHeaders(method: string, path: string, body: unknown, requireAuth: boolean): Promise<Record<string, string>> {
+    if (!this.accessAuth) {
+      if (requireAuth) throw new AccessAuthRequiredError();
+      return {};
+    }
+    if (!requireAuth && !this.accessAuth.getSession()) return {};
+    return this.accessAuth.signRequest(method, path, body);
   }
 }
 

@@ -1,5 +1,6 @@
 import { BitcoinBastionClient } from "../src/index.js";
 
-const client = new BitcoinBastionClient({ baseUrl: "http://localhost:8000", apiKey: process.env.BASTION_API_KEY });
-const signals = await client.signals.latest({ limit: 10 });
-console.log(signals);
+const client = new BitcoinBastionClient({ baseUrl: process.env.BASTION_API_BASE_URL ?? "http://localhost:8000" });
+
+// Public/latest signals can be queried without Access Auth when the API exposes them publicly.
+console.log(await client.signals.latest());

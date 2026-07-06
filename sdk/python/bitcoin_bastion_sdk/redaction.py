@@ -19,6 +19,7 @@ SENSITIVE_KEYS = {
     "private_key",
 }
 
+# Redaction must reject wallet secrets from appearing in diagnostics.
 SECRET_PREFIXES = ("bap_", "bbk_live_", "bbd_live_", "xprv", "yprv", "zprv")
 
 

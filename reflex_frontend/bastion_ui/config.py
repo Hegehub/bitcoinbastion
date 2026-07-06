@@ -25,6 +25,9 @@ class AppConfig(BaseSettings):
     enable_sovereign_grid: bool = True
     default_language: str = "en"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+    access_dev_signer_enabled: bool = False
+    access_payment_poll_interval_ms: int = Field(default=5000, gt=0)
+    access_session_refresh_seconds: int = Field(default=300, gt=0)
 
     @field_validator("api_base_url")
     @classmethod

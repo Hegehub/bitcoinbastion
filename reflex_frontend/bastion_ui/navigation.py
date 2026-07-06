@@ -51,6 +51,13 @@ PUBLIC_NAV_ITEMS: tuple[NavItem, ...] = (
         description="Platform overview.",
     ),
     NavItem(
+        label="Access",
+        route="/access",
+        section="public",
+        status="active",
+        description="Proof-of-Access plans, checkout, import, recovery, and lockdown.",
+    ),
+    NavItem(
         label="Trace",
         route="/trace",
         section="public",
@@ -188,6 +195,22 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         status="preview",
         requires_input=True,
         safety_note=EVIDENCE_SAFETY_NOTE,
+    ),
+    CommandAction(
+        "open-access",
+        "Open Access",
+        "/access",
+        "Proof-of-Access",
+        "Open Proof-of-Access plans and import flows.",
+        "active",
+    ),
+    CommandAction(
+        "import-access-pass",
+        "Import Access Pass",
+        "/access/import",
+        "Proof-of-Access",
+        "Import a Bastion Access Pass without password or bearer auth.",
+        "active",
     ),
     CommandAction(
         "open-evidence",
