@@ -21,7 +21,7 @@ Required Trace routes are present for lite/address analysis, reports, evidence, 
 Status: **partially implemented**.
 
 - Reflex public, Trace, Console, and Command Center routes are registered.
-- Next.js remains present but is not declared parity-complete with Reflex.
+- The legacy Next.js interface has been removed; parity now focuses solely on Reflex.
 - FastAPI/Jinja `/market` remains the current Market Time Machine owner.
 
 ## Known Constraints
