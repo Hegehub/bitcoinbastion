@@ -1,11 +1,21 @@
 # Public API Security
 
-Bitcoin Bastion uses Proof-of-Access authorization for protected APIs. Legacy email/password authentication is disabled.
-
-Public status and marketing-safe endpoints may remain unauthenticated. Protected endpoints must require Proof-of-Access dependencies, request-signature verification where required, revocation checks, and an Access Policy Engine decision.
-
-Bastion never asks for a Bitcoin seed, Bitcoin private key, recovery phrase, raw Access Pass as bearer proof, password, or mandatory email address for protected API authentication.
+Bitcoin Bastion uses Proof‑of‑Access authorization for all protected APIs. Legacy email/password authentication is disabled.
 
 ## Public versus premium boundaries
 
-Public endpoints are limited to health/liveness, public landing/status, intentionally public trace-lite/address checks, public docs, and other non-sensitive read-only surfaces. Provider/internal health, operations dashboards, treasury, policy management, business trace, enterprise trace, webhook management, metrics usage, admin/operator, and developer-management endpoints require Proof-of-Access.
+Public endpoints (health, status, marketing materials, lite trace endpoints, etc.) remain unauthenticated and do not require Proof‑of‑Access. They return only liveness information, version identifiers or intentionally public data and must not expose sensitive operational or subscription data.
+
+Premium or private endpoints require a valid Proof‑of‑Access session (`X‑Bastion‑Session`) and per‑request signature headers (`X‑Bastion‑Timestamp`, `X‑Bastion‑Nonce`, `X‑Bastion‑Body‑Hash`, `X‑Bastion‑Signature`). Without a valid session and signature the server returns structured error responses such as `invalid_session`, `invalid_request_signature`, `timestamp_stale` or `nonce_reused` rather than leaking data.
+
+## Error responses and plan upgrades
+
+Access denial uses structured JSON with a stable `code` and human‑readable `message`. Lower‑tier plans receive `plan_upgrade_required`, `scope_not_allowed` or `metric_not_allowed` when requesting endpoints or metrics that are not included in their plan. The API must never return partial data that leaks subscription entitlements, certificate internals or policy decisions to unauthenticated clients.
+
+Providers and integration clients should enforce plan checks and scope enforcement on the client side as well. Premium endpoints may also return `certificate_revoked`, `session_revoked`, `certificate_not_found` or `entitlement_expired` according to the recovery, revocation and policy rules.
+
+## Safety guarantees
+
+Bastion will never ask for your Bitcoin seed, Bitcoin private key, raw Access Pass as bearer proof, password or mandatory email address. Proof‑of‑Access sessions are bound to a device key and origin and require per‑request signatures. Session tokens alone are not sufficient for protected access.
+
+Endpoints that remain public must not expose internal state, server secrets, policy decisions or entitlement details. Operators should audit new endpoints for appropriate Proof‑of‑Access requirements and classification as public or premium.
