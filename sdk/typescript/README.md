@@ -1,6 +1,6 @@
 # Bitcoin Bastion TypeScript SDK
 
-Developer-preview TypeScript SDK for the Bitcoin Bastion API.
+Developer-preview TypeScript SDK for the Bitcoin Bastion API. Legacy `apiKey`/`Authorization: Bearer` authentication is disabled; protected requests use Proof-of-Access `X-Bastion-*` headers.
 
 Bitcoin Bastion is no-custody. Never submit seed phrases, private keys, wallet files, xprv/yprv/zprv, or signing material. Trace outputs are advisory-only, not legal verification, and not Bitcoin consensus proof. Market intelligence is informational and not financial advice. Historical similarity does not guarantee future market behavior.
 
@@ -26,7 +26,13 @@ import { BitcoinBastionClient } from "bitcoin-bastion-sdk";
 
 const client = new BitcoinBastionClient({
   baseUrl: "http://localhost:8000",
-  apiKey: process.env.BASTION_API_KEY,
+  headers: {
+    "X-Bastion-Session": "session",
+    "X-Bastion-Timestamp": "2026-07-03T00:00:00Z",
+    "X-Bastion-Nonce": "nonce",
+    "X-Bastion-Body-Hash": "sha256:...",
+    "X-Bastion-Signature": "signature",
+  },
   timeoutMs: 5000,
 });
 

@@ -35,8 +35,69 @@ export class BastionSafetyError extends Error {
   }
 }
 
-export function errorFromStatus(statusCode: number, message: string, details?: unknown, requestId?: string): BastionApiError {
-  const options = { message, statusCode, details, requestId };
+export class AccessAuthRequiredError extends Error {
+  constructor(message = "Proof-of-Access session is required for this protected SDK request.") {
+    super(message);
+    this.name = "AccessAuthRequiredError";
+  }
+}
+
+export class AccessSessionExpiredError extends Error {
+  constructor(message = "Proof-of-Access session is expired.") {
+    super(message);
+    this.name = "AccessSessionExpiredError";
+  }
+}
+
+export class AccessSigningError extends Error {
+  constructor(message = "Proof-of-Access request signing failed.") {
+    super(message);
+    this.name = "AccessSigningError";
+  }
+}
+
+export class AccessChallengeError extends Error {
+  constructor(message = "Proof-of-Access challenge failed.") {
+    super(message);
+    this.name = "AccessChallengeError";
+  }
+}
+
+export class AccessLegacyAuthDisabledError extends Error {
+  constructor(message = "Legacy bearer auth is disabled. Use Proof-of-Access challenge/session flow.") {
+    super(message);
+    this.name = "AccessLegacyAuthDisabledError";
+  }
+}
+
+export class AccessSensitiveMaterialError extends Error {
+  constructor(message = "Sensitive Access material was rejected.") {
+    super(message);
+    this.name = "AccessSensitiveMaterialError";
+  }
+}
+
+function errorCode(details: unknown): string | undefined {
+  if (!details || typeof details !== "object") return undefined;
+  const payload = details as Record<string, unknown>;
+  const error = payload.error;
+  if (error && typeof error === "object" && typeof (error as Record<string, unknown>).code === "string") {
+    return (error as Record<string, string>).code;
+  }
+  return typeof payload.code === "string" ? payload.code : undefined;
+}
+
+export function errorFromStatus(
+  statusCode: number,
+  message: string,
+  details?: unknown,
+  requestId?: string,
+): BastionApiError | Error {
+  const code = errorCode(details);
+  if (code === "access_session_expired" || code === "session_expired") return new AccessSessionExpiredError();
+  if (code === "access_signature_required" || code === "access_signature_invalid" || code === "invalid_signature") return new AccessSigningError();
+  if (code === "challenge_expired") return new AccessChallengeError("Proof-of-Access challenge is expired.");
+  const options = { message, statusCode, details, requestId, code };
   if (statusCode === 400 || statusCode === 422) return new BastionValidationError(options);
   if (statusCode === 401 || statusCode === 403) return new BastionAuthenticationError(options);
   if (statusCode === 404) return new BastionNotFoundError(options);

@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 from __future__ import annotations
 
 import reflex as rx
@@ -12,8 +13,8 @@ def developers_page() -> rx.Component:
         "Developers",
         responsive_grid(
             pillar_card(
-                "API-first",
-                "FastAPI remains the integration boundary for Reflex and external clients.",
+                "Proof-of-Access API",
+                "Protected clients use X-Bastion-Session, X-Bastion-Timestamp, X-Bastion-Nonce, X-Bastion-Body-Hash, and X-Bastion-Signature headers instead of Authorization: Bearer.",
                 "implemented",
             ),
             pillar_card(
@@ -33,9 +34,9 @@ def developers_page() -> rx.Component:
                 "experimental",
             ),
             pillar_card(
-                "Python SDK",
-                "SDK surface is not claimed complete in this migration step.",
-                "planned",
+                "SDK migration",
+                "Python and TypeScript SDKs sign protected requests and redact Access Passes, sessions, signatures, and device material.",
+                "implemented",
             ),
             pillar_card(
                 "CLI", "CLI posture is documented conservatively until verified.", "planned"
@@ -54,5 +55,5 @@ def developers_page() -> rx.Component:
             link_card("Status", "/status", "Review backend health fallback and status posture."),
             link_card("Roadmap", "/roadmap", "Review migration sequencing and blockers."),
         ),
-        subtitle="Developer/API layer with conservative implementation labels.",
+        subtitle="Developer/API layer for Proof-of-Access integrations; bearer auth is deprecated.",
     )

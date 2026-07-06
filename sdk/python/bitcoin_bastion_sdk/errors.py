@@ -29,6 +29,38 @@ class BastionAuthError(BastionAPIError):
     pass
 
 
+class BastionAccessError(BastionSDKError):
+    pass
+
+
+class BastionAccessSessionExpired(BastionAccessError):
+    pass
+
+
+class BastionAccessSignatureError(BastionAccessError):
+    pass
+
+
+class BastionAccessChallengeExpired(BastionAccessError):
+    pass
+
+
+class BastionAccessPolicyDenied(BastionAccessError):
+    pass
+
+
+class BastionAccessUpgradeRequired(BastionAccessError):
+    pass
+
+
+class BastionAccessRevoked(BastionAccessError):
+    pass
+
+
+class BastionLegacyAuthDisabled(BastionAccessError):
+    pass
+
+
 class BastionNotFoundError(BastionAPIError):
     pass
 

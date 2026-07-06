@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.api.access_dependencies import require_business_role, require_human_intent, require_scope
 from app.api.dependencies import db_session
+from app.domain.access.context import AccessContext
 from app.repositories.intelligence_signal_repository import IntelligenceSignalRepository
 from app.schemas.intelligence_operator import OperatorActionRequest
 from app.schemas.intelligence_signals import SIGNAL_LIMITATIONS
@@ -12,13 +14,20 @@ router = APIRouter(prefix="/operator/signals", tags=["operator-signals"])
 
 
 @router.get("/pending")
-def list_pending_signals(db: Session = Depends(db_session)) -> dict[str, object]:
+def list_pending_signals(
+    access_context: AccessContext = Depends(require_scope("signals:advanced:read")),
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     rows = SignalGovernanceService(db).list_public(status="pending_review", limit=100)
     return {"data": rows, "limitations": SIGNAL_LIMITATIONS}
 
 
 @router.get("/{signal_id}")
-def get_operator_signal(signal_id: int, db: Session = Depends(db_session)) -> dict[str, object]:
+def get_operator_signal(
+    signal_id: int,
+    access_context: AccessContext = Depends(require_scope("signals:advanced:read")),
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     payload = SignalGovernanceService(db).get_public(signal_id)
     if payload is None:
         raise HTTPException(status_code=404, detail="signal_candidate_not_found")
@@ -27,32 +36,62 @@ def get_operator_signal(signal_id: int, db: Session = Depends(db_session)) -> di
 
 
 @router.post("/{signal_id}/approve")
-def approve_signal(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def approve_signal(
+    signal_id: int,
+    request: OperatorActionRequest,
+    access_context: AccessContext = Depends(require_human_intent("enterprise_policy_change")),
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     return _review(db, signal_id, "approved", request)
 
 
 @router.post("/{signal_id}/reject")
-def reject_signal(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def reject_signal(
+    signal_id: int,
+    request: OperatorActionRequest,
+    access_context: AccessContext = Depends(require_business_role("operator")),
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     return _review(db, signal_id, "rejected", request)
 
 
 @router.post("/{signal_id}/hold")
-def hold_signal(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def hold_signal(
+    signal_id: int,
+    request: OperatorActionRequest,
+    access_context: AccessContext = Depends(require_business_role("operator")),
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     return _review(db, signal_id, "held", request)
 
 
 @router.post("/{signal_id}/needs-more-evidence")
-def needs_more_evidence(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def needs_more_evidence(
+    signal_id: int,
+    request: OperatorActionRequest,
+    access_context: AccessContext = Depends(require_business_role("operator")),
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     return _review(db, signal_id, "needs_more_evidence", request)
 
 
 @router.post("/{signal_id}/mark-false-positive")
-def mark_false_positive(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def mark_false_positive(
+    signal_id: int,
+    request: OperatorActionRequest,
+    access_context: AccessContext = Depends(require_business_role("operator")),
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     return _review(db, signal_id, "false_positive", request, false_positive_marker=True)
 
 
 @router.post("/{signal_id}/confidence-override")
-def confidence_override(signal_id: int, request: OperatorActionRequest, db: Session = Depends(db_session)) -> dict[str, object]:
+def confidence_override(
+    signal_id: int,
+    request: OperatorActionRequest,
+    access_context: AccessContext = Depends(require_human_intent("enterprise_policy_change")),
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     return _review(db, signal_id, "held", request)
 
 
