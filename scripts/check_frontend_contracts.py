@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Reflex/Next.js/FastAPI frontend boundary contracts."""
+"""Validate Reflex/FastAPI frontend boundary contracts and confirm removal of the legacy frontend."""
 from __future__ import annotations
 
 import json
@@ -32,7 +32,7 @@ def main() -> int:
         "reflex_routes": {route: f'route="{route}"' in app_py for route in REFLEX_ROUTES},
         "safety_copy": {copy: copy in safety for copy in REQUIRED_COPY},
         "navigation": {"platform": "/platform" in command_palette, "operations": "/operations" in command_palette, "no_products": "/products" not in command_palette, "no_self_host": "/self-host" not in command_palette},
-        "frontend_nextjs_present": (ROOT / "frontend").exists(),
+        "legacy_frontend_removed": not (ROOT / "frontend").exists(),
         "market_fastapi_jinja_present": market_router_present,
     }
     blockers = []
@@ -45,6 +45,7 @@ def main() -> int:
     ARTIFACT.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=2, sort_keys=True))
     return 1 if blockers else 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
