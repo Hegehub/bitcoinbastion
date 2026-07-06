@@ -71,7 +71,11 @@ def _seed(db: Session) -> tuple[NewsEvent, NewsEvent, NewsEvent]:
     now = datetime(2026, 5, 31, 12, 0, 0)
     current = _event("Bitcoin ETF inflow shock lifts institutional demand", now)
     similar = _event("Bitcoin ETF inflow shock returns as funds buy BTC", now - timedelta(days=40))
-    different = _event("Exchange hack triggers security vulnerability concerns", now - timedelta(days=70), "NEGATIVE")
+    different = _event(
+        "Exchange hack triggers security vulnerability concerns",
+        now - timedelta(days=70),
+        "NEGATIVE",
+    )
     different.event_type = "security"
     different.event_category = "security"
     different.is_institutional_related = False
@@ -107,11 +111,19 @@ def test_similarity_scoring_and_persistence_with_limitations() -> None:
     db.commit()
 
     assert report["similar_events"][0]["event_id"] == similar.id
-    assert report["similar_events"][0]["similarity_score"] > report["similar_events"][1]["similarity_score"]
+    assert (
+        report["similar_events"][0]["similarity_score"]
+        > report["similar_events"][1]["similarity_score"]
+    )
     assert report["similar_events"][1]["event_id"] == different.id
     assert DISCLAIMER in report["limitations"]
     assert "Evidence Packet" in report["evidence"]["attachable_to"]
-    assert db.query(HistoricalSimilarityMatch).filter(HistoricalSimilarityMatch.event_id == current.id).count() == 2
+    assert (
+        db.query(HistoricalSimilarityMatch)
+        .filter(HistoricalSimilarityMatch.event_id == current.id)
+        .count()
+        == 2
+    )
 
 
 def test_empty_history_single_match_and_api_responses() -> None:

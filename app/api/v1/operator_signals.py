@@ -31,7 +31,10 @@ def get_operator_signal(
     payload = SignalGovernanceService(db).get_public(signal_id)
     if payload is None:
         raise HTTPException(status_code=404, detail="signal_candidate_not_found")
-    reviews = [OperatorReviewService(db).payload(row) for row in IntelligenceSignalRepository(db).reviews_for(signal_id)]
+    reviews = [
+        OperatorReviewService(db).payload(row)
+        for row in IntelligenceSignalRepository(db).reviews_for(signal_id)
+    ]
     return {"data": payload, "reviews": reviews, "limitations": SIGNAL_LIMITATIONS}
 
 

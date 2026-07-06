@@ -54,7 +54,10 @@ class CitadelPolicyService:
                     basis,
                 ],
                 "evidence_chain": evidence_chain,
-                "freshness": {"source": "policy_runtime_snapshot", "freshness_band": freshness_band},
+                "freshness": {
+                    "source": "policy_runtime_snapshot",
+                    "freshness_band": freshness_band,
+                },
                 "source_quality": {
                     "source_type": "runtime" if wallet_health_score is not None else "fallback",
                     "is_fallback": wallet_health_score is None,

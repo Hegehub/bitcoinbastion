@@ -14,11 +14,15 @@ def find_events_after(events: list[dict[str, Any]], at: datetime) -> list[dict[s
     return [e for e in events if _et(e) > at]
 
 
-def find_events_near(events: list[dict[str, Any]], at: datetime, seconds: int = 300) -> list[dict[str, Any]]:
+def find_events_near(
+    events: list[dict[str, Any]], at: datetime, seconds: int = 300
+) -> list[dict[str, Any]]:
     return [e for e in events if abs((_et(e) - at).total_seconds()) <= seconds]
 
 
-def find_events_within_window(events: list[dict[str, Any]], start: datetime, end: datetime) -> list[dict[str, Any]]:
+def find_events_within_window(
+    events: list[dict[str, Any]], start: datetime, end: datetime
+) -> list[dict[str, Any]]:
     return [e for e in events if start <= _et(e) <= end]
 
 

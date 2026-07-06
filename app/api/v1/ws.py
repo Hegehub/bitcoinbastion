@@ -132,7 +132,10 @@ async def ws_signals(
     heartbeat_seconds: int | None = Query(default=30),
 ) -> None:
     await _specialized_stream(
-        websocket, stream_name="signals", limit_payload=limit_payload, heartbeat_seconds=heartbeat_seconds
+        websocket,
+        stream_name="signals",
+        limit_payload=limit_payload,
+        heartbeat_seconds=heartbeat_seconds,
     )
 
 
@@ -142,7 +145,12 @@ async def ws_news(
     limit_payload: str | None = Query(default="true"),
     heartbeat_seconds: int | None = Query(default=30),
 ) -> None:
-    await _specialized_stream(websocket, stream_name="news", limit_payload=limit_payload, heartbeat_seconds=heartbeat_seconds)
+    await _specialized_stream(
+        websocket,
+        stream_name="news",
+        limit_payload=limit_payload,
+        heartbeat_seconds=heartbeat_seconds,
+    )
 
 
 @router.websocket("/ws/onchain")
@@ -152,7 +160,10 @@ async def ws_onchain(
     heartbeat_seconds: int | None = Query(default=30),
 ) -> None:
     await _specialized_stream(
-        websocket, stream_name="onchain", limit_payload=limit_payload, heartbeat_seconds=heartbeat_seconds
+        websocket,
+        stream_name="onchain",
+        limit_payload=limit_payload,
+        heartbeat_seconds=heartbeat_seconds,
     )
 
 
@@ -162,7 +173,12 @@ async def ws_market(
     limit_payload: str | None = Query(default="true"),
     heartbeat_seconds: int | None = Query(default=30),
 ) -> None:
-    await _specialized_stream(websocket, stream_name="market", limit_payload=limit_payload, heartbeat_seconds=heartbeat_seconds)
+    await _specialized_stream(
+        websocket,
+        stream_name="market",
+        limit_payload=limit_payload,
+        heartbeat_seconds=heartbeat_seconds,
+    )
 
 
 @router.websocket("/ws/trace")
@@ -171,7 +187,12 @@ async def ws_trace(
     limit_payload: str | None = Query(default="true"),
     heartbeat_seconds: int | None = Query(default=30),
 ) -> None:
-    await _specialized_stream(websocket, stream_name="trace", limit_payload=limit_payload, heartbeat_seconds=heartbeat_seconds)
+    await _specialized_stream(
+        websocket,
+        stream_name="trace",
+        limit_payload=limit_payload,
+        heartbeat_seconds=heartbeat_seconds,
+    )
 
 
 @router.websocket("/ws/treasury")
@@ -181,7 +202,10 @@ async def ws_treasury(
     heartbeat_seconds: int | None = Query(default=30),
 ) -> None:
     await _specialized_stream(
-        websocket, stream_name="treasury", limit_payload=limit_payload, heartbeat_seconds=heartbeat_seconds
+        websocket,
+        stream_name="treasury",
+        limit_payload=limit_payload,
+        heartbeat_seconds=heartbeat_seconds,
     )
 
 
@@ -192,7 +216,10 @@ async def ws_provider_health(
     heartbeat_seconds: int | None = Query(default=30),
 ) -> None:
     await _specialized_stream(
-        websocket, stream_name="provider-health", limit_payload=limit_payload, heartbeat_seconds=heartbeat_seconds
+        websocket,
+        stream_name="provider-health",
+        limit_payload=limit_payload,
+        heartbeat_seconds=heartbeat_seconds,
     )
 
 

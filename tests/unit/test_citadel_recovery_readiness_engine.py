@@ -1,4 +1,7 @@
-from app.services.citadel.recovery_artifact_service import RecoveryArtifactRecord, RecoveryArtifactService
+from app.services.citadel.recovery_artifact_service import (
+    RecoveryArtifactRecord,
+    RecoveryArtifactService,
+)
 from app.services.citadel.recovery_readiness_engine import RecoveryReadinessEngine
 
 
@@ -11,7 +14,12 @@ def test_recovery_artifact_summary_counts_required_and_missing() -> None:
             required_for_recovery=True,
             verification_age_days=10,
         ),
-        RecoveryArtifactRecord(artifact_type="backup", label="metal backup", is_verified=False, required_for_recovery=True),
+        RecoveryArtifactRecord(
+            artifact_type="backup",
+            label="metal backup",
+            is_verified=False,
+            required_for_recovery=True,
+        ),
     ]
 
     out = RecoveryArtifactService().summarize(artifacts=artifacts)
@@ -24,7 +32,12 @@ def test_recovery_artifact_summary_counts_required_and_missing() -> None:
 
 def test_recovery_readiness_engine_reports_warnings_for_missing_controls() -> None:
     artifacts = [
-        RecoveryArtifactRecord(artifact_type="descriptor", label="descriptor", is_verified=False, required_for_recovery=True),
+        RecoveryArtifactRecord(
+            artifact_type="descriptor",
+            label="descriptor",
+            is_verified=False,
+            required_for_recovery=True,
+        ),
     ]
 
     out = RecoveryReadinessEngine().evaluate(

@@ -3,7 +3,14 @@ from datetime import UTC, datetime
 _EVENTS: list[dict[str, object]] = []
 
 
-def create_event(event_type: str, severity: str, operation: str, status: str, message: str, metadata: dict[str, object] | None = None) -> dict[str, object]:
+def create_event(
+    event_type: str,
+    severity: str,
+    operation: str,
+    status: str,
+    message: str,
+    metadata: dict[str, object] | None = None,
+) -> dict[str, object]:
     event = {
         "id": len(_EVENTS) + 1,
         "event_type": event_type,

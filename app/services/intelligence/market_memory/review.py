@@ -27,7 +27,9 @@ class OperatorReviewService:
         false_similarity: bool = False,
         operator: str = "system",
     ) -> MarketMemoryOperatorReview:
-        pattern_row: MarketPattern | None = self.memory.get_pattern(pattern) if pattern is not None else None
+        pattern_row: MarketPattern | None = (
+            self.memory.get_pattern(pattern) if pattern is not None else None
+        )
         row = MarketMemoryOperatorReview(
             event_id=event_id,
             pattern_id=pattern_row.id if pattern_row else None,

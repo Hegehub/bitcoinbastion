@@ -27,8 +27,15 @@ def upgrade() -> None:
         sa.Column("article_id", sa.Integer(), sa.ForeignKey("news_articles.id"), nullable=True),
         sa.Column("event_id", sa.Integer(), sa.ForeignKey("news_events.id"), nullable=True),
         sa.Column("impact_id", sa.Integer(), sa.ForeignKey("news_price_impacts.id"), nullable=True),
-        sa.Column("attribution_id", sa.Integer(), sa.ForeignKey("candle_attributions.id"), nullable=True),
-        sa.Column("signal_id", sa.Integer(), sa.ForeignKey("intelligence_signal_candidates.id"), nullable=True),
+        sa.Column(
+            "attribution_id", sa.Integer(), sa.ForeignKey("candle_attributions.id"), nullable=True
+        ),
+        sa.Column(
+            "signal_id",
+            sa.Integer(),
+            sa.ForeignKey("intelligence_signal_candidates.id"),
+            nullable=True,
+        ),
         sa.Column("title", sa.String(length=500), nullable=False, server_default=""),
         sa.Column("summary", sa.Text(), nullable=False, server_default=""),
         sa.Column("confidence_score", sa.Float(), nullable=True),
@@ -37,7 +44,17 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    for col in ["packet_type", "source_entity_type", "source_entity_id", "article_id", "event_id", "impact_id", "attribution_id", "signal_id", "created_at"]:
+    for col in [
+        "packet_type",
+        "source_entity_type",
+        "source_entity_id",
+        "article_id",
+        "event_id",
+        "impact_id",
+        "attribution_id",
+        "signal_id",
+        "created_at",
+    ]:
         op.create_index(f"ix_evidence_packets_{col}", "evidence_packets", [col])
 
     op.create_table(
@@ -50,7 +67,14 @@ def upgrade() -> None:
         sa.Column("relationship_type", sa.String(length=80), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    for col in ["parent_entity_type", "parent_entity_id", "child_entity_type", "child_entity_id", "relationship_type", "created_at"]:
+    for col in [
+        "parent_entity_type",
+        "parent_entity_id",
+        "child_entity_type",
+        "child_entity_id",
+        "relationship_type",
+        "created_at",
+    ]:
         op.create_index(f"ix_evidence_relationships_{col}", "evidence_relationships", [col])
 
     op.create_table(
@@ -76,7 +100,9 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
     for col in ["entity_type", "entity_id", "content_hash", "created_at"]:
-        op.create_index(f"ix_evidence_integrity_snapshots_{col}", "evidence_integrity_snapshots", [col])
+        op.create_index(
+            f"ix_evidence_integrity_snapshots_{col}", "evidence_integrity_snapshots", [col]
+        )
 
     op.create_table(
         "evidence_replay_logs",
@@ -101,14 +127,33 @@ def downgrade() -> None:
         op.drop_index(f"ix_evidence_replay_logs_{col}", table_name="evidence_replay_logs")
     op.drop_table("evidence_replay_logs")
     for col in ["created_at", "content_hash", "entity_id", "entity_type"]:
-        op.drop_index(f"ix_evidence_integrity_snapshots_{col}", table_name="evidence_integrity_snapshots")
+        op.drop_index(
+            f"ix_evidence_integrity_snapshots_{col}", table_name="evidence_integrity_snapshots"
+        )
     op.drop_table("evidence_integrity_snapshots")
     for col in ["created_at", "artifact_type", "entity_id", "entity_type", "packet_id"]:
         op.drop_index(f"ix_evidence_artifacts_{col}", table_name="evidence_artifacts")
     op.drop_table("evidence_artifacts")
-    for col in ["created_at", "relationship_type", "child_entity_id", "child_entity_type", "parent_entity_id", "parent_entity_type"]:
+    for col in [
+        "created_at",
+        "relationship_type",
+        "child_entity_id",
+        "child_entity_type",
+        "parent_entity_id",
+        "parent_entity_type",
+    ]:
         op.drop_index(f"ix_evidence_relationships_{col}", table_name="evidence_relationships")
     op.drop_table("evidence_relationships")
-    for col in ["created_at", "signal_id", "attribution_id", "impact_id", "event_id", "article_id", "source_entity_id", "source_entity_type", "packet_type"]:
+    for col in [
+        "created_at",
+        "signal_id",
+        "attribution_id",
+        "impact_id",
+        "event_id",
+        "article_id",
+        "source_entity_id",
+        "source_entity_type",
+        "packet_type",
+    ]:
         op.drop_index(f"ix_evidence_packets_{col}", table_name="evidence_packets")
     op.drop_table("evidence_packets")

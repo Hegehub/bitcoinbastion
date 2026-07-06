@@ -1,7 +1,9 @@
 from app.services.mempool.mempool_analyzer_service import MempoolAnalyzerService, MempoolSnapshot
 
 
-def _snapshot(backlog_vbytes: int, median: float, high: float, age: int | None = 15) -> MempoolSnapshot:
+def _snapshot(
+    backlog_vbytes: int, median: float, high: float, age: int | None = 15
+) -> MempoolSnapshot:
     return MempoolSnapshot(
         backlog_tx_count=max(1, backlog_vbytes // 1000),
         backlog_vbytes=backlog_vbytes,

@@ -2,6 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from pydantic import BaseModel
 
+
 class BTCPricePointSchema(BaseModel):
     provider_name: str
     provider_kind: str
@@ -12,6 +13,7 @@ class BTCPricePointSchema(BaseModel):
     provider_confidence: float
     provider_latency_ms: int | None = None
     provider_status: str
+
 
 class MarketHealthSnapshot(BaseModel):
     provider_count: int

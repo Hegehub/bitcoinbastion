@@ -45,7 +45,9 @@ def test_fallback_provider_uses_secondary_when_primary_fails() -> None:
 
 
 def test_build_bitcoin_provider_returns_fallback_for_esplora_config() -> None:
-    settings = Settings(BITCOIN_ESPLORA_URL="https://example.org", BITCOIN_PROVIDER_TIMEOUT_SECONDS=2)
+    settings = Settings(
+        BITCOIN_ESPLORA_URL="https://example.org", BITCOIN_PROVIDER_TIMEOUT_SECONDS=2
+    )
 
     provider = build_bitcoin_provider(settings)
 
@@ -54,7 +56,9 @@ def test_build_bitcoin_provider_returns_fallback_for_esplora_config() -> None:
 
 def test_esplora_provider_contract_parses_recent_mempool_rows(monkeypatch) -> None:
     class FakeResponse:
-        def __init__(self, *, text: str = "", json_data: list[dict[str, object]] | None = None) -> None:
+        def __init__(
+            self, *, text: str = "", json_data: list[dict[str, object]] | None = None
+        ) -> None:
             self.text = text
             self._json_data = json_data or []
 

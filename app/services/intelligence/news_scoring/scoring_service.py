@@ -33,7 +33,9 @@ class NewsScoringService:
         with NEWS_SCORING_DURATION_SECONDS.time():
             try:
                 text = f"{article.title} {article.summary} {article.content_text}"
-                sentiment_score, sentiment_label, sentiment_hits = self.sentiment.analyze(article.title, article.summary, article.content_text)
+                sentiment_score, sentiment_label, sentiment_hits = self.sentiment.analyze(
+                    article.title, article.summary, article.content_text
+                )
                 btc, btc_hits = self._score_category(text, "bitcoin_core")
                 lightning, lightning_hits = self._score_category(text, "lightning")
                 mining, mining_hits = self._score_category(text, "mining")
@@ -46,10 +48,18 @@ class NewsScoringService:
                 btc_relevance = max(btc, lightning, mining, institutional)
                 market_impact = max(institutional, macro, regulatory, security)
                 source_cred = article.provider_confidence
-                freshness = 1.0 if (datetime.now(UTC).replace(tzinfo=None) - article.published_at).days <= 1 else 0.7
+                freshness = (
+                    1.0
+                    if (datetime.now(UTC).replace(tzinfo=None) - article.published_at).days <= 1
+                    else 0.7
+                )
                 completeness = 1.0 if article.content_text else 0.5
-                category_conf = sum(v for v in [institutional, macro, regulatory, security] if v > 0.4) / 4
-                confidence = compute_confidence(source_cred, btc_relevance, category_conf, freshness, completeness, source_cred)
+                category_conf = (
+                    sum(v for v in [institutional, macro, regulatory, security] if v > 0.4) / 4
+                )
+                confidence = compute_confidence(
+                    source_cred, btc_relevance, category_conf, freshness, completeness, source_cred
+                )
                 top = []
                 if institutional_hits:
                     top.append("Detected institutional ETF/fund-related keywords.")
@@ -57,7 +67,9 @@ class NewsScoringService:
                     top.append("Strong Bitcoin relevance detected.")
                 if security_hits:
                     top.append("Security-risk language detected.")
-                explanation = build_explanation(top or ["Limited strong category signals detected."])
+                explanation = build_explanation(
+                    top or ["Limited strong category signals detected."]
+                )
                 row = NewsScore(
                     article_id=article.id,
                     btc_relevance_score=btc_relevance,
@@ -74,16 +86,52 @@ class NewsScoringService:
                     confidence_score=confidence,
                     provider_confidence=source_cred,
                     explanation_json=explanation,
-                    factor_breakdown_json={"keywords_detected": {"btc": btc_hits, "lightning": lightning_hits, "mining": mining_hits, "institutional": institutional_hits, "macro": macro_hits, "regulatory": regulatory_hits, "security": security_hits, "sovereignty": sovereignty_hits, "urgency": urgency_hits}, "sentiment_hits": sentiment_hits},
+                    factor_breakdown_json={
+                        "keywords_detected": {
+                            "btc": btc_hits,
+                            "lightning": lightning_hits,
+                            "mining": mining_hits,
+                            "institutional": institutional_hits,
+                            "macro": macro_hits,
+                            "regulatory": regulatory_hits,
+                            "security": security_hits,
+                            "sovereignty": sovereignty_hits,
+                            "urgency": urgency_hits,
+                        },
+                        "sentiment_hits": sentiment_hits,
+                    },
                     limitations_json={"limitations": explanation["limitations"]},
                     low_confidence=confidence < 0.4,
                     high_uncertainty=sentiment_label == "UNCERTAIN",
                 )
                 db.add(row)
                 db.flush()
-                for factor, value in [("btc_relevance", btc_relevance), ("market_impact", market_impact), ("institutional", institutional), ("macro", macro), ("regulatory", regulatory), ("security", security), ("sovereignty", sovereignty), ("confidence", confidence)]:
-                    db.add(ScoringFactor(score_id=row.id, factor=factor, weight=float(value), explanation=f"{factor} contribution"))
-                db.add(ScoreExplanation(score_id=row.id, summary="High Bitcoin relevance scoring with explainable factors.", key_factors_json=top, limitations_json=explanation["limitations"]))
+                for factor, value in [
+                    ("btc_relevance", btc_relevance),
+                    ("market_impact", market_impact),
+                    ("institutional", institutional),
+                    ("macro", macro),
+                    ("regulatory", regulatory),
+                    ("security", security),
+                    ("sovereignty", sovereignty),
+                    ("confidence", confidence),
+                ]:
+                    db.add(
+                        ScoringFactor(
+                            score_id=row.id,
+                            factor=factor,
+                            weight=float(value),
+                            explanation=f"{factor} contribution",
+                        )
+                    )
+                db.add(
+                    ScoreExplanation(
+                        score_id=row.id,
+                        summary="High Bitcoin relevance scoring with explainable factors.",
+                        key_factors_json=top,
+                        limitations_json=explanation["limitations"],
+                    )
+                )
                 if market_impact >= 0.75:
                     NEWS_HIGH_IMPACT_TOTAL.inc()
                 NEWS_SENTIMENT_DISTRIBUTION.labels(label=sentiment_label).inc()

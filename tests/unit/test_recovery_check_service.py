@@ -53,7 +53,9 @@ def test_recovery_check_service_reports_ok_when_no_failures() -> None:
     assert out.hotspots == []
     assert out.drills and out.drills[0].drill_code == "routine_recovery_probe"
     assert out.drills[0].run_within_hours == 24
-    assert out.recommended_actions == ["No recovery action required. Continue routine observability checks."]
+    assert out.recommended_actions == [
+        "No recovery action required. Continue routine observability checks."
+    ]
     assert out.recovery_slo["status"] == "healthy"
 
 
@@ -92,9 +94,17 @@ def test_recovery_check_service_adds_drill_action_for_repeated_hotspots() -> Non
 
         out = RecoveryCheckService().evaluate(db=db)
 
-    assert any(item.reference == "delivery.publish" and item.failures_24h == 3 for item in out.hotspots)
-    assert any(drill.target_reference == "delivery.publish" and drill.priority == "high" for drill in out.drills)
-    assert any(drill.target_reference == "delivery.publish" and drill.run_within_hours == 4 for drill in out.drills)
+    assert any(
+        item.reference == "delivery.publish" and item.failures_24h == 3 for item in out.hotspots
+    )
+    assert any(
+        drill.target_reference == "delivery.publish" and drill.priority == "high"
+        for drill in out.drills
+    )
+    assert any(
+        drill.target_reference == "delivery.publish" and drill.run_within_hours == 4
+        for drill in out.drills
+    )
     assert any("failure-mode drills" in action for action in out.recommended_actions)
 
 

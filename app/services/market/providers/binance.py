@@ -25,7 +25,14 @@ class BinanceProvider(BaseMarketProvider):
             raise ProviderPayloadError("invalid binance payload") from exc
         if price <= 0:
             raise ProviderPayloadError("negative price")
-        return ProviderPrice("binance", "BTCUSDT", price, datetime.now(UTC), int((time.perf_counter() - start) * 1000), d)
+        return ProviderPrice(
+            "binance",
+            "BTCUSDT",
+            price,
+            datetime.now(UTC),
+            int((time.perf_counter() - start) * 1000),
+            d,
+        )
 
     def healthcheck(self) -> bool:
         try:

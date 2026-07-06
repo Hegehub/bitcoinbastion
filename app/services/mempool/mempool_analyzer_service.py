@@ -89,7 +89,9 @@ class MempoolAnalyzerService:
                 "fallback_active": False,
                 "single_source_advisory": True,
                 "advisory_not_consensus_proof": True,
-                "operator_guidance": ["Refresh mempool state from multiple providers before urgent fee decisions."],
+                "operator_guidance": [
+                    "Refresh mempool state from multiple providers before urgent fee decisions."
+                ],
                 "limitations": ["Single-source advisory mempool input; not consensus proof."],
             },
             explainability={

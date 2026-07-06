@@ -11,10 +11,15 @@ from app.services.intelligence.historical_similarity_metrics import (
 from app.db.models.news_event import NewsEvent
 from app.db.models.signal import Signal
 from app.schemas.intelligence.historical_similarity import HistoricalSimilarityResponse
-from app.services.intelligence.historical_similarity.pattern_matcher import PatternMatch, PatternMatcher
+from app.services.intelligence.historical_similarity.pattern_matcher import (
+    PatternMatch,
+    PatternMatcher,
+)
 from app.services.intelligence.historical_similarity.similarity_explainer import SimilarityExplainer
 from app.services.intelligence.historical_similarity.similarity_scoring import SimilarityScoring
-from app.services.intelligence.historical_similarity_service import HistoricalSimilarityService as LegacyHistoricalSimilarityService
+from app.services.intelligence.historical_similarity_service import (
+    HistoricalSimilarityService as LegacyHistoricalSimilarityService,
+)
 
 
 class HistoricalSimilarityService:
@@ -49,7 +54,9 @@ class HistoricalSimilarityService:
         with HISTORICAL_SIMILARITY_DURATION_SECONDS.time():
             try:
                 report = self.legacy.build_article_report(article_id, limit=limit)
-                event_id = report.reference_event.get("event_id") if report.reference_event else None
+                event_id = (
+                    report.reference_event.get("event_id") if report.reference_event else None
+                )
                 event = self.db.get(NewsEvent, event_id) if isinstance(event_id, int) else None
                 pattern_matches = self.matcher.identify(event) if event is not None else []
                 return self._from_report(report, pattern_matches)
@@ -63,11 +70,18 @@ class HistoricalSimilarityService:
         if signal is None:
             return HistoricalSimilarityResponse(
                 current_item={"signal_id": signal_id},
-                limitations=["Correlation is not proof of causation.", "Historical similarity does not guarantee future outcomes."],
+                limitations=[
+                    "Correlation is not proof of causation.",
+                    "Historical similarity does not guarantee future outcomes.",
+                ],
             )
         # Signal-to-NewsEvent matching is intentionally conservative for this foundation.
         return HistoricalSimilarityResponse(
-            current_item={"signal_id": signal.id, "title": signal.title, "signal_type": signal.signal_type},
+            current_item={
+                "signal_id": signal.id,
+                "title": signal.title,
+                "signal_type": signal.signal_type,
+            },
             limitations=[
                 "Correlation is not proof of causation.",
                 "Historical similarity does not guarantee future outcomes.",
@@ -75,10 +89,14 @@ class HistoricalSimilarityService:
             ],
         )
 
-    def _from_report(self, report: object, pattern_matches: list[PatternMatch]) -> HistoricalSimilarityResponse:
+    def _from_report(
+        self, report: object, pattern_matches: list[PatternMatch]
+    ) -> HistoricalSimilarityResponse:
         similar_events = list(getattr(report, "similar_events", []))
         evidence = getattr(report, "evidence", {})
-        reaction_stats = evidence.get("reaction_statistics", {}) if isinstance(evidence, dict) else {}
+        reaction_stats = (
+            evidence.get("reaction_statistics", {}) if isinstance(evidence, dict) else {}
+        )
         median_reaction = {
             "15m": getattr(report, "median_reaction_15m", None),
             "1h": getattr(report, "median_reaction_1h", None),
@@ -96,7 +114,9 @@ class HistoricalSimilarityService:
             top_similar_events=similar_events[:10],
             pattern_detected=detected,
             pattern_name=str(detected[0]["pattern"]) if detected else None,
-            pattern_category=str(similar_events[0].get("pattern_type", "")) if similar_events else None,
+            pattern_category=(
+                str(similar_events[0].get("pattern_type", "")) if similar_events else None
+            ),
             similarity_score=top_score,
             historical_matches=similar_events,
             historical_reaction_summary={
@@ -118,7 +138,9 @@ class HistoricalSimilarityService:
                 "24h": getattr(report, "average_reaction_24h", None),
             },
             reaction_summary=reaction_stats,
-            reaction_distribution=reaction_stats.get("dispersion", {}) if isinstance(reaction_stats, dict) else {},
+            reaction_distribution=(
+                reaction_stats.get("dispersion", {}) if isinstance(reaction_stats, dict) else {}
+            ),
             confidence=float(getattr(report, "confidence", 0.0)),
             pattern_confidence=float(getattr(report, "confidence", 0.0)),
             reaction_statistics=reaction_stats if isinstance(reaction_stats, dict) else {},

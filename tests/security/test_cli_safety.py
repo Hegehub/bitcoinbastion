@@ -2,7 +2,9 @@ from pathlib import Path
 
 
 def test_cli_does_not_expose_signing_or_broadcast_commands() -> None:
-    source = "\n".join(path.read_text(encoding="utf-8") for path in Path("cli/bastion_cli").rglob("*.py"))
+    source = "\n".join(
+        path.read_text(encoding="utf-8") for path in Path("cli/bastion_cli").rglob("*.py")
+    )
     output = source.casefold()
     assert "sign transaction" not in output
     assert "broadcast transaction" not in output

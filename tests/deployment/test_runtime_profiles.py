@@ -37,6 +37,7 @@ def test_profiles_yaml_preserves_core_runtime_constraints() -> None:
     assert "seed_phrase_handling_allowed: false" in text
     assert "private_key_handling_allowed: false" in text
 
+
 REQUIRED_FIELDS = [
     "name",
     "runtime_type",

@@ -113,7 +113,14 @@ def _seed(session: Session) -> None:
     )
     session.add(packet)
     session.flush()
-    session.add(EvidenceArtifact(packet_id=packet.id, entity_type="news_event", entity_id=event.id, artifact_type="source_snapshot"))
+    session.add(
+        EvidenceArtifact(
+            packet_id=packet.id,
+            entity_type="news_event",
+            entity_id=event.id,
+            artifact_type="source_snapshot",
+        )
+    )
     session.commit()
 
 
@@ -145,7 +152,7 @@ def test_market_time_machine_routes_render_seeded_dashboard_and_mobile_markup() 
         assert "BTC Candlestick Chart" in response.text
         assert "Bitcoin ETF inflow expands" in response.text
         assert "viewport" in response.text
-        assert "aria-label=\"BTC candlestick chart with news markers\"" in response.text
+        assert 'aria-label="BTC candlestick chart with news markers"' in response.text
 
         timeline = client.get("/intelligence/timeline?filter=all&page=1&page_size=10")
         assert timeline.status_code == 200

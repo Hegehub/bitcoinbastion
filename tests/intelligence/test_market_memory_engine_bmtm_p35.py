@@ -32,7 +32,9 @@ def _session() -> Session:
     return Session(engine)
 
 
-def _event(title: str, seen_at: datetime, category: str = "institutional", sentiment: str = "POSITIVE") -> NewsEvent:
+def _event(
+    title: str, seen_at: datetime, category: str = "institutional", sentiment: str = "POSITIVE"
+) -> NewsEvent:
     return NewsEvent(
         event_key=title.lower().replace(" ", "-"),
         canonical_title=title,
@@ -78,7 +80,9 @@ def _seed(db: Session) -> tuple[NewsEvent, NewsEvent, NewsEvent]:
     now = datetime(2026, 6, 2, 12, 0, 0)
     reference = _event("Bitcoin ETF inflow shock accelerates", now)
     similar = _event("Bitcoin ETF inflow shock repeats", now - timedelta(days=20))
-    different = _event("Exchange hack security incident", now - timedelta(days=30), "security", "NEGATIVE")
+    different = _event(
+        "Exchange hack security incident", now - timedelta(days=30), "security", "NEGATIVE"
+    )
     db.add_all([reference, similar, different])
     db.flush()
     db.add_all([_impact(reference, 2.2), _impact(similar, 2.0), _impact(different, -2.6)])
@@ -128,4 +132,7 @@ def test_similarity_ranking_statistics_replay_evidence_and_operator_override() -
     assert "Historical similarity is not prediction." in evidence.limitations
     assert db.query(MarketMemoryRecord).filter_by(event_id=reference.id).count() >= 1
     assert db.query(PatternStatistics).filter_by(pattern_slug="ETF_INFLOW_SHOCK").one()
-    assert db.query(MarketMemoryOperatorReview).filter_by(id=review.id).one().audit_json["operator"] == "system"
+    assert (
+        db.query(MarketMemoryOperatorReview).filter_by(id=review.id).one().audit_json["operator"]
+        == "system"
+    )

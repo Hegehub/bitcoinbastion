@@ -16,11 +16,32 @@ DUR = Histogram("market_intelligence_confidence_duration_seconds", "duration")
 
 
 class ImpactConfidenceEngine:
-    def calculate_impact_confidence(self, *, btc_relevance_score: float, source_credibility_score: float, provider_confidence: float, price_move_strength: float, sentiment_direction_match: float, minutes_to_reaction: int, volatility_context_weight: float, event_confirmation_weight: float, provider_count: int, stale: bool, simultaneous_events: int) -> dict[str, object]:
+    def calculate_impact_confidence(
+        self,
+        *,
+        btc_relevance_score: float,
+        source_credibility_score: float,
+        provider_confidence: float,
+        price_move_strength: float,
+        sentiment_direction_match: float,
+        minutes_to_reaction: int,
+        volatility_context_weight: float,
+        event_confirmation_weight: float,
+        provider_count: int,
+        stale: bool,
+        simultaneous_events: int,
+    ) -> dict[str, object]:
         CALCS.inc()
         fw = freshness_weight(minutes_to_reaction)
-        delayed = DelayedReactionDetector().detect(minutes_to_reaction, event_confirmation_weight > 0.6, sentiment_direction_match > 0.5)
-        false_signal = FalseSignalDetector().detect(btc_relevance_score, price_move_strength, provider_confidence, int(event_confirmation_weight * 3))
+        delayed = DelayedReactionDetector().detect(
+            minutes_to_reaction, event_confirmation_weight > 0.6, sentiment_direction_match > 0.5
+        )
+        false_signal = FalseSignalDetector().detect(
+            btc_relevance_score,
+            price_move_strength,
+            provider_confidence,
+            int(event_confirmation_weight * 3),
+        )
         vals = {
             "btc_relevance_score": (btc_relevance_score, 0.20),
             "source_credibility_score": (source_credibility_score, 0.15),
@@ -33,8 +54,16 @@ class ImpactConfidenceEngine:
         }
         contributions = build_contributions(vals)
         score = sum(float(x["contribution"]) for x in contributions)
-        score = max(0.0, min(1.0, score + delayed.confidence_adjustment - false_signal.confidence_penalty))
-        flags = uncertainty_flags(provider_confidence, provider_count, stale, volatility_context_weight < 0.9, simultaneous_events)
+        score = max(
+            0.0, min(1.0, score + delayed.confidence_adjustment - false_signal.confidence_penalty)
+        )
+        flags = uncertainty_flags(
+            provider_confidence,
+            provider_count,
+            stale,
+            volatility_context_weight < 0.9,
+            simultaneous_events,
+        )
         if false_signal.detected:
             FALSES.inc()
         if delayed.detected:
@@ -47,7 +76,8 @@ class ImpactConfidenceEngine:
             "confidence_score": score,
             "confidence_band": confidence_band(score),
             "confidence_contributions": contributions,
-            "degradation_factors": flags + (["false_signal_detected"] if false_signal.detected else []),
+            "degradation_factors": flags
+            + (["false_signal_detected"] if false_signal.detected else []),
             "uncertainty_flags": flags,
             "freshness_weight": fw,
             "provider_confidence": provider_confidence,

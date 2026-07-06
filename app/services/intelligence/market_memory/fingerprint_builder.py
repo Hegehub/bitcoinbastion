@@ -67,7 +67,12 @@ class EventFingerprintBuilder:
             return "UNKNOWN"
         if impact.actual_direction and impact.actual_direction.upper() != "UNKNOWN":
             return impact.actual_direction.upper()
-        values = [impact.change_15m_pct, impact.change_1h_pct, impact.change_4h_pct, impact.change_24h_pct]
+        values = [
+            impact.change_15m_pct,
+            impact.change_1h_pct,
+            impact.change_4h_pct,
+            impact.change_24h_pct,
+        ]
         numeric = [value for value in values if value is not None]
         if not numeric:
             return "UNKNOWN"

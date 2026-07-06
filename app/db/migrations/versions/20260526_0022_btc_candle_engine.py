@@ -27,7 +27,9 @@ def upgrade() -> None:
         sa.Column("close_price", sa.Float(), nullable=False),
         sa.Column("volume_estimate", sa.Float(), nullable=True),
         sa.Column("trade_count_estimate", sa.Integer(), nullable=True),
-        sa.Column("source_mode", sa.String(32), nullable=False, server_default="multi_provider_median"),
+        sa.Column(
+            "source_mode", sa.String(32), nullable=False, server_default="multi_provider_median"
+        ),
         sa.Column("provider_count", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("provider_confidence", sa.Float(), nullable=False, server_default="0"),
         sa.Column("price_point_count", sa.Integer(), nullable=False, server_default="0"),
@@ -42,7 +44,9 @@ def upgrade() -> None:
         sa.UniqueConstraint("timeframe", "open_time", name="uq_btc_candles_timeframe_open_time"),
     )
     op.create_index("ix_btc_candles_timeframe_open_time", "btc_candles", ["timeframe", "open_time"])
-    op.create_index("ix_btc_candles_timeframe_close_time", "btc_candles", ["timeframe", "close_time"])
+    op.create_index(
+        "ix_btc_candles_timeframe_close_time", "btc_candles", ["timeframe", "close_time"]
+    )
 
 
 def downgrade() -> None:

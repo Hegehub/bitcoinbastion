@@ -66,7 +66,9 @@ def validate_permission(permission: str | PluginPermission) -> PluginPermission:
         raise PluginPermissionError(f"Unknown plugin permission requested: {value}") from exc
 
 
-def validate_permissions(permissions: Iterable[str | PluginPermission]) -> tuple[PluginPermission, ...]:
+def validate_permissions(
+    permissions: Iterable[str | PluginPermission],
+) -> tuple[PluginPermission, ...]:
     seen: set[PluginPermission] = set()
     validated: list[PluginPermission] = []
     for permission in permissions:

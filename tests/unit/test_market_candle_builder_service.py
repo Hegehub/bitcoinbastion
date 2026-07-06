@@ -10,9 +10,29 @@ def test_build_1m_candle_and_degraded_flag() -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:")
     Base.metadata.create_all(bind=engine)
     with Session(engine) as db:
-        t = datetime(2026,5,27,10,0,10,tzinfo=UTC)
-        db.add(BTCPricePoint(provider="a", provider_name="a", pair="BTCUSD", symbol="BTC", price_usd=100, observed_at=t, raw_payload_hash="x"))
-        db.add(BTCPricePoint(provider="b", provider_name="b", pair="BTCUSD", symbol="BTC", price_usd=102, observed_at=t, raw_payload_hash="y"))
+        t = datetime(2026, 5, 27, 10, 0, 10, tzinfo=UTC)
+        db.add(
+            BTCPricePoint(
+                provider="a",
+                provider_name="a",
+                pair="BTCUSD",
+                symbol="BTC",
+                price_usd=100,
+                observed_at=t,
+                raw_payload_hash="x",
+            )
+        )
+        db.add(
+            BTCPricePoint(
+                provider="b",
+                provider_name="b",
+                pair="BTCUSD",
+                symbol="BTC",
+                price_usd=102,
+                observed_at=t,
+                raw_payload_hash="y",
+            )
+        )
         db.commit()
         c = MarketCandleBuilderService().build(db, "1m", t)
         assert c is not None

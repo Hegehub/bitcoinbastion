@@ -2,6 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from app.services.market_data.provider_models import NormalizedBTCPricePoint
 
+
 class MarketDataProvider(ABC):
     @abstractmethod
     def fetch_ticker(self) -> NormalizedBTCPricePoint: ...

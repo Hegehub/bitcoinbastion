@@ -19,7 +19,9 @@ def test_sovereignty_graph_service_multisig_reduces_signer_spof() -> None:
         has_descriptor=True,
         has_recent_health_report=True,
     )
-    signing_spofs = [edge for edge in out["single_points_of_failure"] if edge["dependency_type"] == "signing"]
+    signing_spofs = [
+        edge for edge in out["single_points_of_failure"] if edge["dependency_type"] == "signing"
+    ]
     assert not signing_spofs
     assert out["confidence"] >= 0.8
 

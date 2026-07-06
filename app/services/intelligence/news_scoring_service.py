@@ -25,7 +25,9 @@ class ProductionNewsScoringService:
         for tag, kws in tag_map.items():
             hits = [k for k in kws if k in text]
             if hits:
-                out.append({"tag": tag, "confidence": min(1.0, len(hits) / 3), "evidence_keywords": hits})
+                out.append(
+                    {"tag": tag, "confidence": min(1.0, len(hits) / 3), "evidence_keywords": hits}
+                )
         return out
 
     def score_article(self, db: Session, article: NewsArticle) -> NewsScore:
@@ -33,15 +35,35 @@ class ProductionNewsScoringService:
         for n in self.classify_narratives(article):
             c_raw = n.get("confidence")
             c_val = float(c_raw) if isinstance(c_raw, (int, float)) else 0.0
-            db.add(NewsNarrativeTag(article_id=article.id, event_id=None, tag=str(n.get("tag", "unknown")), confidence=c_val, evidence_keywords_json={"keywords": n.get("evidence_keywords", [])}))
+            db.add(
+                NewsNarrativeTag(
+                    article_id=article.id,
+                    event_id=None,
+                    tag=str(n.get("tag", "unknown")),
+                    confidence=c_val,
+                    evidence_keywords_json={"keywords": n.get("evidence_keywords", [])},
+                )
+            )
         return score
 
     def build_score_breakdown(self, score: NewsScore) -> dict[str, object]:
         return {"scores": score.factor_breakdown_json, "limitations": score.limitations_json}
 
     def classify_sentiment(self, article: NewsArticle) -> dict[str, object]:
-        sentiment_score, sentiment_label, hits = self._svc.sentiment.analyze(article.title, article.summary, article.content_text)
-        return {"sentiment_score": sentiment_score, "sentiment_label": sentiment_label, "hits": hits}
+        sentiment_score, sentiment_label, hits = self._svc.sentiment.analyze(
+            article.title, article.summary, article.content_text
+        )
+        return {
+            "sentiment_score": sentiment_score,
+            "sentiment_label": sentiment_label,
+            "hits": hits,
+        }
 
     def score_event(self, db: Session, event_id: int) -> dict[str, object]:
-        return {"event_id": event_id, "limitations": ["Correlation is not proof of causation.", "Scores are informational and evidence-based."]}
+        return {
+            "event_id": event_id,
+            "limitations": [
+                "Correlation is not proof of causation.",
+                "Scores are informational and evidence-based.",
+            ],
+        }
