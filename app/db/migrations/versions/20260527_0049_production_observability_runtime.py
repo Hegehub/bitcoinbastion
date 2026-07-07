@@ -26,12 +26,18 @@ def upgrade() -> None:
         sa.Column("degraded_count", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("critical_count", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("fallback_active", sa.Boolean(), nullable=False, server_default=sa.false()),
-        sa.Column("operator_attention_required", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column(
+            "operator_attention_required", sa.Boolean(), nullable=False, server_default=sa.false()
+        ),
         sa.Column("snapshot_json", json_type, nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_system_health_snapshots_system_state", "system_health_snapshots", ["system_state"])
-    op.create_index("ix_system_health_snapshots_created_at", "system_health_snapshots", ["created_at"])
+    op.create_index(
+        "ix_system_health_snapshots_system_state", "system_health_snapshots", ["system_state"]
+    )
+    op.create_index(
+        "ix_system_health_snapshots_created_at", "system_health_snapshots", ["created_at"]
+    )
 
     op.create_table(
         "provider_health_snapshots",
@@ -49,10 +55,18 @@ def upgrade() -> None:
         sa.Column("details_json", json_type, nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_provider_health_snapshots_provider_name", "provider_health_snapshots", ["provider_name"])
-    op.create_index("ix_provider_health_snapshots_provider_type", "provider_health_snapshots", ["provider_type"])
-    op.create_index("ix_provider_health_snapshots_health_state", "provider_health_snapshots", ["health_state"])
-    op.create_index("ix_provider_health_snapshots_created_at", "provider_health_snapshots", ["created_at"])
+    op.create_index(
+        "ix_provider_health_snapshots_provider_name", "provider_health_snapshots", ["provider_name"]
+    )
+    op.create_index(
+        "ix_provider_health_snapshots_provider_type", "provider_health_snapshots", ["provider_type"]
+    )
+    op.create_index(
+        "ix_provider_health_snapshots_health_state", "provider_health_snapshots", ["health_state"]
+    )
+    op.create_index(
+        "ix_provider_health_snapshots_created_at", "provider_health_snapshots", ["created_at"]
+    )
 
     op.create_table(
         "background_job_health",
@@ -84,9 +98,15 @@ def upgrade() -> None:
         sa.Column("details_json", json_type, nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_service_health_snapshots_service_name", "service_health_snapshots", ["service_name"])
-    op.create_index("ix_service_health_snapshots_health_state", "service_health_snapshots", ["health_state"])
-    op.create_index("ix_service_health_snapshots_created_at", "service_health_snapshots", ["created_at"])
+    op.create_index(
+        "ix_service_health_snapshots_service_name", "service_health_snapshots", ["service_name"]
+    )
+    op.create_index(
+        "ix_service_health_snapshots_health_state", "service_health_snapshots", ["health_state"]
+    )
+    op.create_index(
+        "ix_service_health_snapshots_created_at", "service_health_snapshots", ["created_at"]
+    )
 
     op.create_table(
         "runtime_state_snapshots",
@@ -94,14 +114,25 @@ def upgrade() -> None:
         sa.Column("system_state", sa.String(length=24), nullable=False, server_default="healthy"),
         sa.Column("provider_state", sa.String(length=24), nullable=False, server_default="healthy"),
         sa.Column("job_state", sa.String(length=24), nullable=False, server_default="healthy"),
-        sa.Column("signal_pipeline_state", sa.String(length=24), nullable=False, server_default="healthy"),
-        sa.Column("evidence_pipeline_state", sa.String(length=24), nullable=False, server_default="healthy"),
+        sa.Column(
+            "signal_pipeline_state", sa.String(length=24), nullable=False, server_default="healthy"
+        ),
+        sa.Column(
+            "evidence_pipeline_state",
+            sa.String(length=24),
+            nullable=False,
+            server_default="healthy",
+        ),
         sa.Column("telegram_state", sa.String(length=24), nullable=False, server_default="healthy"),
         sa.Column("state_json", json_type, nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_runtime_state_snapshots_system_state", "runtime_state_snapshots", ["system_state"])
-    op.create_index("ix_runtime_state_snapshots_created_at", "runtime_state_snapshots", ["created_at"])
+    op.create_index(
+        "ix_runtime_state_snapshots_system_state", "runtime_state_snapshots", ["system_state"]
+    )
+    op.create_index(
+        "ix_runtime_state_snapshots_created_at", "runtime_state_snapshots", ["created_at"]
+    )
 
     op.create_table(
         "degraded_component_snapshots",
@@ -110,14 +141,26 @@ def upgrade() -> None:
         sa.Column("affected_component", sa.String(length=160), nullable=False),
         sa.Column("started_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
         sa.Column("recommendation", sa.Text(), nullable=False, server_default=""),
-        sa.Column("automatic_fallback_used", sa.Boolean(), nullable=False, server_default=sa.false()),
-        sa.Column("operator_attention_required", sa.Boolean(), nullable=False, server_default=sa.true()),
+        sa.Column(
+            "automatic_fallback_used", sa.Boolean(), nullable=False, server_default=sa.false()
+        ),
+        sa.Column(
+            "operator_attention_required", sa.Boolean(), nullable=False, server_default=sa.true()
+        ),
         sa.Column("details_json", json_type, nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_degraded_component_snapshots_severity", "degraded_component_snapshots", ["severity"])
-    op.create_index("ix_degraded_component_snapshots_affected_component", "degraded_component_snapshots", ["affected_component"])
-    op.create_index("ix_degraded_component_snapshots_created_at", "degraded_component_snapshots", ["created_at"])
+    op.create_index(
+        "ix_degraded_component_snapshots_severity", "degraded_component_snapshots", ["severity"]
+    )
+    op.create_index(
+        "ix_degraded_component_snapshots_affected_component",
+        "degraded_component_snapshots",
+        ["affected_component"],
+    )
+    op.create_index(
+        "ix_degraded_component_snapshots_created_at", "degraded_component_snapshots", ["created_at"]
+    )
 
     op.create_table(
         "recovery_events",
@@ -129,7 +172,9 @@ def upgrade() -> None:
         sa.Column("duration_ms", sa.Integer(), nullable=True),
         sa.Column("automatic", sa.Boolean(), nullable=False, server_default=sa.true()),
         sa.Column("operator_confirmed", sa.Boolean(), nullable=False, server_default=sa.false()),
-        sa.Column("status", sa.String(length=40), nullable=False, server_default="failure_detected"),
+        sa.Column(
+            "status", sa.String(length=40), nullable=False, server_default="failure_detected"
+        ),
         sa.Column("details_json", json_type, nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
@@ -140,13 +185,55 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     for table, indexes in [
-        ("recovery_events", ["ix_recovery_events_created_at", "ix_recovery_events_status", "ix_recovery_events_component"]),
-        ("degraded_component_snapshots", ["ix_degraded_component_snapshots_created_at", "ix_degraded_component_snapshots_affected_component", "ix_degraded_component_snapshots_severity"]),
-        ("runtime_state_snapshots", ["ix_runtime_state_snapshots_created_at", "ix_runtime_state_snapshots_system_state"]),
-        ("service_health_snapshots", ["ix_service_health_snapshots_created_at", "ix_service_health_snapshots_health_state", "ix_service_health_snapshots_service_name"]),
-        ("background_job_health", ["ix_background_job_health_created_at", "ix_background_job_health_success", "ix_background_job_health_job_name"]),
-        ("provider_health_snapshots", ["ix_provider_health_snapshots_created_at", "ix_provider_health_snapshots_health_state", "ix_provider_health_snapshots_provider_type", "ix_provider_health_snapshots_provider_name"]),
-        ("system_health_snapshots", ["ix_system_health_snapshots_created_at", "ix_system_health_snapshots_system_state"]),
+        (
+            "recovery_events",
+            [
+                "ix_recovery_events_created_at",
+                "ix_recovery_events_status",
+                "ix_recovery_events_component",
+            ],
+        ),
+        (
+            "degraded_component_snapshots",
+            [
+                "ix_degraded_component_snapshots_created_at",
+                "ix_degraded_component_snapshots_affected_component",
+                "ix_degraded_component_snapshots_severity",
+            ],
+        ),
+        (
+            "runtime_state_snapshots",
+            ["ix_runtime_state_snapshots_created_at", "ix_runtime_state_snapshots_system_state"],
+        ),
+        (
+            "service_health_snapshots",
+            [
+                "ix_service_health_snapshots_created_at",
+                "ix_service_health_snapshots_health_state",
+                "ix_service_health_snapshots_service_name",
+            ],
+        ),
+        (
+            "background_job_health",
+            [
+                "ix_background_job_health_created_at",
+                "ix_background_job_health_success",
+                "ix_background_job_health_job_name",
+            ],
+        ),
+        (
+            "provider_health_snapshots",
+            [
+                "ix_provider_health_snapshots_created_at",
+                "ix_provider_health_snapshots_health_state",
+                "ix_provider_health_snapshots_provider_type",
+                "ix_provider_health_snapshots_provider_name",
+            ],
+        ),
+        (
+            "system_health_snapshots",
+            ["ix_system_health_snapshots_created_at", "ix_system_health_snapshots_system_state"],
+        ),
     ]:
         for index in indexes:
             op.drop_index(index, table_name=table)

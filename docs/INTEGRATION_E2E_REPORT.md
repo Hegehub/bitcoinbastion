@@ -27,7 +27,7 @@ Core routers are registered, including Trace, public, webhooks, and WebSocket st
 
 Status: **partially implemented**.
 
-Reflex has public, Trace, Console, and Command Center routes. Next.js remains retained. `/market` remains owned by FastAPI/Jinja. Reflex is not production-primary.
+Reflex has public, Trace, Console, and Command Center routes. The legacy Next.js frontend has been removed. `/market` remains owned by FastAPI/Jinja. Reflex is not production-primary.
 
 ## Trace Contract Status
 
@@ -63,7 +63,7 @@ Runtime metadata, canonical overlays, scripts, Makefile targets, and render dry-
 
 Status: **partially implemented**.
 
-Reflex frontend is integrated as an experimental parallel layer on ports 3001/8001, using FastAPI as the source of truth. It does not replace Next.js or `/market`.
+Reflex frontend is integrated on ports 3001/8001, using FastAPI as the source of truth. It is now the only repository-native frontend. It does not replace the FastAPI/Jinja `/market` dashboard.
 
 ## Docker/Compose Status
 

@@ -1,4 +1,4 @@
-> Current note (2026-06-29): the old Next.js frontend has been removed; historical references below are retained only for migration context. Reflex is the only repository-native frontend.
+Current note (2026-06-29): the old Next.js frontend has been removed; historical references below are retained only for migration context. Reflex is the only repository-native frontend.
 
 # Integration Checklist
 
@@ -28,7 +28,7 @@ Status vocabulary: **implemented**, **partially implemented**, **planned**, **bl
 
 | Area | Status | Evidence |
 | --- | --- | --- |
-| Existing Next.js frontend retained | implemented | `frontend/` remains present; this pass does not delete or replace it. |
+| Legacy Next.js frontend removed | implemented | `docs/OLD_FRONTEND_REMOVAL_REPORT.md` summarises deletion of `frontend/` and CI/compose resources. |
 | FastAPI/Jinja `/market` retained | implemented | `/market` remains owned by backend web routes; Reflex does not take it over. |
 | Reflex public/Trace/Console routes | implemented | Frontend contract checker validates Reflex routes and ports. |
 | Reflex wow layer | partially implemented | Components and route integration exist as preview/operator-visibility surfaces; backend-fed parity is not complete. |

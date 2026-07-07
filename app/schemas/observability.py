@@ -79,8 +79,6 @@ class RuntimeDegradedModeOut(BaseModel):
     explainability: dict[str, object] = Field(default_factory=dict)
 
 
-
-
 class OperationalEvidencePacketOut(BaseModel):
     packet_type: str
     runtime_state: str

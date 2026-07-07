@@ -1,4 +1,10 @@
-from app.schemas.bastion_trace import LiteConfidenceLabel, LiteRiskLabel, LiteTraceStatus, PrivacyBand, TraceBand
+from app.schemas.bastion_trace import (
+    LiteConfidenceLabel,
+    LiteRiskLabel,
+    LiteTraceStatus,
+    PrivacyBand,
+    TraceBand,
+)
 
 
 def map_risk_label(band: TraceBand) -> LiteRiskLabel:

@@ -27,7 +27,11 @@ def calculate_price_impact_for_event(self: Any, event_id: int) -> dict[str, str]
 @shared_task(name="news.recalculate_recent_impacts", bind=True, autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 2})  # type: ignore[untyped-decorator]
 def recalculate_recent_impacts(self: Any, limit: int = 100) -> dict[str, int]:
     with SessionLocal() as db:
-        rows = list(db.execute(select(NewsArticle.id).order_by(NewsArticle.id.desc()).limit(limit)).scalars())
+        rows = list(
+            db.execute(
+                select(NewsArticle.id).order_by(NewsArticle.id.desc()).limit(limit)
+            ).scalars()
+        )
         svc = NewsPriceImpactService()
         done = 0
         for aid in rows:

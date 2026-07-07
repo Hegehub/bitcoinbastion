@@ -43,9 +43,7 @@ def upgrade() -> None:
     op.create_index("ix_event_outbox_status", "event_outbox", ["status"])
     op.create_index("ix_event_outbox_event_type", "event_outbox", ["event_type"])
     op.create_index("ix_event_outbox_domain", "event_outbox", ["domain"])
-    op.create_index(
-        "ix_event_outbox_aggregate", "event_outbox", ["aggregate_type", "aggregate_id"]
-    )
+    op.create_index("ix_event_outbox_aggregate", "event_outbox", ["aggregate_type", "aggregate_id"])
     op.create_index("ix_event_outbox_next_attempt_at", "event_outbox", ["next_attempt_at"])
     op.create_index("ix_event_outbox_created_at", "event_outbox", ["created_at"])
     op.create_index(

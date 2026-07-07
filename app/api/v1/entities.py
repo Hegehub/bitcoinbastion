@@ -34,7 +34,9 @@ def list_entities(
         )
     ]
     total = repo.count_entities(query=q, entity_type=entity_type, min_confidence=min_confidence)
-    return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=total, limit=limit, offset=offset)
+    )
 
 
 @router.get("/watchlist", response_model=ResponseEnvelope[PaginatedData[WatchedEntityOut]])

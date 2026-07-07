@@ -24,7 +24,10 @@ def aggregate_btc_prices(points: list[NormalizedBTCPricePoint]) -> AggregatedBTC
         provider_count=pc,
         provider_spread_pct=round(spread, 4),
         aggregated_confidence=round(conf, 4),
-        providers_used=[{"provider": p.provider, "price": p.price_usd, "confidence": p.provider_confidence} for p in used],
+        providers_used=[
+            {"provider": p.provider, "price": p.price_usd, "confidence": p.provider_confidence}
+            for p in used
+        ],
         degraded_mode=pc < 2,
         generated_at=datetime.now(UTC),
     )

@@ -111,7 +111,6 @@ class WebhookRepository:
         self._flush_safely()
         return out
 
-
     def list_active_endpoints_for_event(self, event_type: str) -> list[WebhookEndpoint]:
         stmt = (
             select(WebhookEndpoint)
@@ -131,7 +130,6 @@ class WebhookRepository:
         self.db.add(delivery)
         self._flush_safely()
         return delivery
-
 
     def has_delivered_delivery(self, webhook_endpoint_id: int, event_outbox_id: int) -> bool:
         stmt = select(WebhookDelivery.id).where(

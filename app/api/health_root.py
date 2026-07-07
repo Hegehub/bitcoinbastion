@@ -2,7 +2,13 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import db_session
-from app.schemas.health import DependencyHealthOut, HealthOut, IntelligenceHealthOut, OperationsHealthOut, ProviderHealthSnapshotOut
+from app.schemas.health import (
+    DependencyHealthOut,
+    HealthOut,
+    IntelligenceHealthOut,
+    OperationsHealthOut,
+    ProviderHealthSnapshotOut,
+)
 from app.services.observability.operations_control_service import OperationsControlService
 from app.services.observability.runtime_status_service import RuntimeStatusService
 
@@ -12,7 +18,11 @@ router = APIRouter(prefix="/health", tags=["root-health"])
 @router.get("/live", response_model=HealthOut)
 def live(db: Session = Depends(db_session)) -> HealthOut:
     details = RuntimeStatusService().liveness(db)
-    return HealthOut(status="live" if details.get("db") == "ok" else "critical", app="Bitcoin Bastion", details=details)
+    return HealthOut(
+        status="live" if details.get("db") == "ok" else "critical",
+        app="Bitcoin Bastion",
+        details=details,
+    )
 
 
 @router.get("/ready", response_model=OperationsHealthOut)
@@ -23,7 +33,11 @@ def ready(db: Session = Depends(db_session)) -> OperationsHealthOut:
 @router.get("/startup", response_model=HealthOut)
 def startup(db: Session = Depends(db_session)) -> HealthOut:
     details = RuntimeStatusService().liveness(db)
-    startup_status = "started" if details.get("db") == "ok" and details.get("migrations") == "applied" else "degraded"
+    startup_status = (
+        "started"
+        if details.get("db") == "ok" and details.get("migrations") == "applied"
+        else "degraded"
+    )
     return HealthOut(status=startup_status, app="Bitcoin Bastion", details=details)
 
 

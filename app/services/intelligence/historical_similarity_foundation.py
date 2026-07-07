@@ -26,21 +26,76 @@ PATTERN_SEEDS: tuple[tuple[str, str, str, str], ...] = (
     ("ETF_INFLOW_SHOCK", "ETF inflow shock", "institutional", "Spot Bitcoin ETF inflow shock."),
     ("ETF_OUTFLOW_SHOCK", "ETF outflow shock", "institutional", "Spot Bitcoin ETF outflow shock."),
     ("SEC_ENFORCEMENT", "SEC enforcement", "regulatory", "SEC enforcement or litigation pressure."),
-    ("REGULATORY_APPROVAL", "Regulatory approval", "regulatory", "Constructive regulatory approval event."),
+    (
+        "REGULATORY_APPROVAL",
+        "Regulatory approval",
+        "regulatory",
+        "Constructive regulatory approval event.",
+    ),
     ("FED_LIQUIDITY_EASING", "Fed liquidity easing", "macro", "Dovish liquidity or easing regime."),
-    ("FED_LIQUIDITY_TIGHTENING", "Fed liquidity tightening", "macro", "Hawkish liquidity or tightening regime."),
+    (
+        "FED_LIQUIDITY_TIGHTENING",
+        "Fed liquidity tightening",
+        "macro",
+        "Hawkish liquidity or tightening regime.",
+    ),
     ("EXCHANGE_HACK", "Exchange hack", "security", "Exchange compromise or loss event."),
-    ("CUSTODY_FAILURE", "Custody failure", "security", "Custody, key-management, or custodian failure."),
-    ("MINER_CAPITULATION", "Miner capitulation", "mining", "Miner distress or forced selling pattern."),
-    ("MINER_ACCUMULATION", "Miner accumulation", "mining", "Miner accumulation or reduced miner selling."),
-    ("BITCOIN_CORE_RELEASE", "Bitcoin Core release", "bitcoin_core", "Bitcoin Core release or protocol maintenance event."),
-    ("LIGHTNING_ADOPTION", "Lightning adoption", "lightning", "Lightning Network adoption pattern."),
-    ("TREASURY_ADOPTION", "Treasury adoption", "treasury", "Corporate or treasury Bitcoin adoption."),
-    ("INSTITUTIONAL_ACCUMULATION", "Institutional accumulation", "institutional", "Institutional Bitcoin accumulation pattern."),
-    ("LARGE_LIQUIDATION_CASCADE", "Large liquidation cascade", "market_structure", "Large liquidation cascade or forced deleveraging."),
+    (
+        "CUSTODY_FAILURE",
+        "Custody failure",
+        "security",
+        "Custody, key-management, or custodian failure.",
+    ),
+    (
+        "MINER_CAPITULATION",
+        "Miner capitulation",
+        "mining",
+        "Miner distress or forced selling pattern.",
+    ),
+    (
+        "MINER_ACCUMULATION",
+        "Miner accumulation",
+        "mining",
+        "Miner accumulation or reduced miner selling.",
+    ),
+    (
+        "BITCOIN_CORE_RELEASE",
+        "Bitcoin Core release",
+        "bitcoin_core",
+        "Bitcoin Core release or protocol maintenance event.",
+    ),
+    (
+        "LIGHTNING_ADOPTION",
+        "Lightning adoption",
+        "lightning",
+        "Lightning Network adoption pattern.",
+    ),
+    (
+        "TREASURY_ADOPTION",
+        "Treasury adoption",
+        "treasury",
+        "Corporate or treasury Bitcoin adoption.",
+    ),
+    (
+        "INSTITUTIONAL_ACCUMULATION",
+        "Institutional accumulation",
+        "institutional",
+        "Institutional Bitcoin accumulation pattern.",
+    ),
+    (
+        "LARGE_LIQUIDATION_CASCADE",
+        "Large liquidation cascade",
+        "market_structure",
+        "Large liquidation cascade or forced deleveraging.",
+    ),
     ("MACRO_RISK_ON", "Macro risk-on", "macro", "Risk-on macro backdrop."),
     ("MACRO_RISK_OFF", "Macro risk-off", "macro", "Risk-off macro backdrop."),
-    ("SECURITY_VULNERABILITY", "Security vulnerability", "security", "Security vulnerability or exploit disclosure."),
+    (
+        "SECURITY_VULNERABILITY",
+        "Security vulnerability",
+        "security",
+        "Security vulnerability or exploit disclosure.",
+    ),
 )
 
 KEYWORDS: dict[str, tuple[str, ...]] = {
@@ -244,11 +299,21 @@ class HistoricalSimilarityService:
         self, reference: dict[str, object], candidate: dict[str, object]
     ) -> SimilarityScore:
         pattern_score = 1.0 if reference.get("pattern") == candidate.get("pattern") else 0.0
-        sentiment_score = self._sentiment_score(reference.get("sentiment"), candidate.get("sentiment"))
-        btc_score = self._numeric_score(reference.get("btc_relevance"), candidate.get("btc_relevance"))
-        impact_window_score = 1.0 if reference.get("impact_window") == candidate.get("impact_window") else 0.35
-        reaction_score = self._reaction_score(reference.get("reaction_4h"), candidate.get("reaction_4h"))
-        source_score = 1.0 if reference.get("source_category") == candidate.get("source_category") else 0.35
+        sentiment_score = self._sentiment_score(
+            reference.get("sentiment"), candidate.get("sentiment")
+        )
+        btc_score = self._numeric_score(
+            reference.get("btc_relevance"), candidate.get("btc_relevance")
+        )
+        impact_window_score = (
+            1.0 if reference.get("impact_window") == candidate.get("impact_window") else 0.35
+        )
+        reaction_score = self._reaction_score(
+            reference.get("reaction_4h"), candidate.get("reaction_4h")
+        )
+        source_score = (
+            1.0 if reference.get("source_category") == candidate.get("source_category") else 0.35
+        )
         total = (
             pattern_score * 0.30
             + sentiment_score * 0.20
@@ -298,7 +363,9 @@ class HistoricalSimilarityService:
         pattern_text = str(pattern or "unknown historical pattern")
         reaction = median_reaction.get("reaction_4h_pct")
         reaction_text = "unknown" if reaction is None else f"{reaction:+.2f}% within 4 hours"
-        confidence_text = "Medium-High" if confidence >= 0.70 else "Medium" if confidence >= 0.45 else "Low"
+        confidence_text = (
+            "Medium-High" if confidence >= 0.70 else "Medium" if confidence >= 0.45 else "Low"
+        )
         return (
             f"This event resembles prior {pattern_text} events observed in Bitcoin market history. "
             f"Median historical reaction: {reaction_text}. Confidence: {confidence_text}. "
@@ -312,7 +379,9 @@ class HistoricalSimilarityService:
             HistoricalSimilarityMatch.event_id == event.id
         ).delete()
         for candidate, score in rows:
-            time_distance = abs((event.first_seen_at - candidate.first_seen_at).total_seconds()) / 86400
+            time_distance = (
+                abs((event.first_seen_at - candidate.first_seen_at).total_seconds()) / 86400
+            )
             self.db.add(
                 HistoricalSimilarityMatch(
                     event_id=event.id,
@@ -386,7 +455,17 @@ class HistoricalSimilarityService:
         if not scores:
             return 0.0
         sample_factor = min(sample_size / 5.0, 1.0)
-        return round(max(0.0, min(1.0, (mean([score.confidence_score for score in scores]) * 0.75) + (sample_factor * 0.25))), 6)
+        return round(
+            max(
+                0.0,
+                min(
+                    1.0,
+                    (mean([score.confidence_score for score in scores]) * 0.75)
+                    + (sample_factor * 0.25),
+                ),
+            ),
+            6,
+        )
 
     def _limitations(self, sample_size: int, confidence: float) -> list[str]:
         limitations = [DISCLAIMER, "Similarity is based on observable features."]

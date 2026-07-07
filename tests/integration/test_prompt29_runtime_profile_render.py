@@ -8,7 +8,13 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_runtime_profiles_dry_run() -> None:
     for profile in ["compose", "k8s", "k3s", "kind", "minikube", "single-node"]:
         result = subprocess.run(
-            [sys.executable, "deploy/scripts/render-runtime-profile.py", "--profile", profile, "--dry-run"],
+            [
+                sys.executable,
+                "deploy/scripts/render-runtime-profile.py",
+                "--profile",
+                profile,
+                "--dry-run",
+            ],
             cwd=ROOT,
             text=True,
             capture_output=True,

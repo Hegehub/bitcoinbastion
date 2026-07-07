@@ -61,7 +61,10 @@ def reject_request(
     return ResponseEnvelope(data=result)
 
 
-@router.get("/requests/pending-approvals", response_model=ResponseEnvelope[PaginatedData[TreasuryRequestOut]])
+@router.get(
+    "/requests/pending-approvals",
+    response_model=ResponseEnvelope[PaginatedData[TreasuryRequestOut]],
+)
 def list_pending_approvals(
     limit: int = 20,
     offset: int = 0,
@@ -74,7 +77,9 @@ def list_pending_approvals(
         for item in service.list_pending_approvals(limit=limit, offset=offset)
     ]
     total = service.count_pending_approvals()
-    return ResponseEnvelope(data=PaginatedData(items=items, total=total, limit=limit, offset=offset))
+    return ResponseEnvelope(
+        data=PaginatedData(items=items, total=total, limit=limit, offset=offset)
+    )
 
 
 @router.get("/requests", response_model=ResponseEnvelope[PaginatedData[TreasuryRequestOut]])

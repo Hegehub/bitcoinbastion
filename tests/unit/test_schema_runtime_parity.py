@@ -60,7 +60,9 @@ class _InspectorStub:
         return []
 
 
-def test_collect_schema_parity_errors_surfaces_column_nullable_default_and_index_drift(monkeypatch) -> None:
+def test_collect_schema_parity_errors_surfaces_column_nullable_default_and_index_drift(
+    monkeypatch,
+) -> None:
     from scripts import check_schema_runtime_parity as parity
 
     metadata = MetaData()

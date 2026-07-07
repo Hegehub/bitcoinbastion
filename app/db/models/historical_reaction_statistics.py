@@ -11,7 +11,9 @@ class HistoricalReactionStatistics(Base):
     __tablename__ = "historical_reaction_statistics"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    pattern_id: Mapped[int] = mapped_column(ForeignKey("market_patterns.id"), unique=True, index=True, nullable=False)
+    pattern_id: Mapped[int] = mapped_column(
+        ForeignKey("market_patterns.id"), unique=True, index=True, nullable=False
+    )
     samples: Mapped[int] = mapped_column(Integer, default=0)
     median_move_15m: Mapped[float | None] = mapped_column(Float, nullable=True)
     median_move_1h: Mapped[float | None] = mapped_column(Float, nullable=True)

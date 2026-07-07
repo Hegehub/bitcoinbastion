@@ -25,7 +25,12 @@ def test_canonical_url_generation() -> None:
 
 
 def test_duplicate_precheck() -> None:
-    assert is_duplicate_candidate(existing_canonical=True, existing_content=False, existing_title=False)[0] is True
+    assert (
+        is_duplicate_candidate(
+            existing_canonical=True, existing_content=False, existing_title=False
+        )[0]
+        is True
+    )
 
 
 def test_content_cleaning() -> None:

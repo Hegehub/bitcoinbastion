@@ -8,6 +8,8 @@ router = APIRouter(prefix="/fees", tags=["fees"])
 
 
 @router.post("/recommendation", response_model=ResponseEnvelope[FeeRecommendationResponse])
-def fee_recommendation(payload: FeeRecommendationRequest) -> ResponseEnvelope[FeeRecommendationResponse]:
+def fee_recommendation(
+    payload: FeeRecommendationRequest,
+) -> ResponseEnvelope[FeeRecommendationResponse]:
     result = FeeAnalyticsService().recommend(payload)
     return ResponseEnvelope(data=result)

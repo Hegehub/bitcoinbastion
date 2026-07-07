@@ -15,21 +15,61 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column("news_events", sa.Column("event_key", sa.String(128), nullable=False, server_default=""))
-    op.add_column("news_events", sa.Column("canonical_summary", sa.Text(), nullable=False, server_default=""))
-    op.add_column("news_events", sa.Column("event_category", sa.String(64), nullable=False, server_default="unknown"))
-    op.add_column("news_events", sa.Column("cluster_confidence", sa.Float(), nullable=False, server_default="0"))
-    op.add_column("news_events", sa.Column("event_sentiment", sa.String(32), nullable=False, server_default="UNKNOWN"))
+    op.add_column(
+        "news_events", sa.Column("event_key", sa.String(128), nullable=False, server_default="")
+    )
+    op.add_column(
+        "news_events", sa.Column("canonical_summary", sa.Text(), nullable=False, server_default="")
+    )
+    op.add_column(
+        "news_events",
+        sa.Column("event_category", sa.String(64), nullable=False, server_default="unknown"),
+    )
+    op.add_column(
+        "news_events",
+        sa.Column("cluster_confidence", sa.Float(), nullable=False, server_default="0"),
+    )
+    op.add_column(
+        "news_events",
+        sa.Column("event_sentiment", sa.String(32), nullable=False, server_default="UNKNOWN"),
+    )
     op.add_column("news_events", sa.Column("first_source_id", sa.Integer(), nullable=True))
-    op.add_column("news_events", sa.Column("first_source_name", sa.String(255), nullable=False, server_default=""))
-    op.add_column("news_events", sa.Column("first_source_published_at", sa.DateTime(), nullable=True))
-    op.add_column("news_events", sa.Column("dominant_language", sa.String(16), nullable=False, server_default="en"))
-    op.add_column("news_events", sa.Column("is_high_impact", sa.Boolean(), nullable=False, server_default=sa.false()))
-    op.add_column("news_events", sa.Column("is_security_related", sa.Boolean(), nullable=False, server_default=sa.false()))
-    op.add_column("news_events", sa.Column("is_regulatory_related", sa.Boolean(), nullable=False, server_default=sa.false()))
-    op.add_column("news_events", sa.Column("is_macro_related", sa.Boolean(), nullable=False, server_default=sa.false()))
-    op.add_column("news_events", sa.Column("is_institutional_related", sa.Boolean(), nullable=False, server_default=sa.false()))
-    op.add_column("news_events", sa.Column("limitations_json", sa.JSON(), nullable=False, server_default="{}"))
+    op.add_column(
+        "news_events",
+        sa.Column("first_source_name", sa.String(255), nullable=False, server_default=""),
+    )
+    op.add_column(
+        "news_events", sa.Column("first_source_published_at", sa.DateTime(), nullable=True)
+    )
+    op.add_column(
+        "news_events",
+        sa.Column("dominant_language", sa.String(16), nullable=False, server_default="en"),
+    )
+    op.add_column(
+        "news_events",
+        sa.Column("is_high_impact", sa.Boolean(), nullable=False, server_default=sa.false()),
+    )
+    op.add_column(
+        "news_events",
+        sa.Column("is_security_related", sa.Boolean(), nullable=False, server_default=sa.false()),
+    )
+    op.add_column(
+        "news_events",
+        sa.Column("is_regulatory_related", sa.Boolean(), nullable=False, server_default=sa.false()),
+    )
+    op.add_column(
+        "news_events",
+        sa.Column("is_macro_related", sa.Boolean(), nullable=False, server_default=sa.false()),
+    )
+    op.add_column(
+        "news_events",
+        sa.Column(
+            "is_institutional_related", sa.Boolean(), nullable=False, server_default=sa.false()
+        ),
+    )
+    op.add_column(
+        "news_events", sa.Column("limitations_json", sa.JSON(), nullable=False, server_default="{}")
+    )
     op.create_index("ix_news_events_event_key", "news_events", ["event_key"])
     op.create_index("ix_news_events_event_category", "news_events", ["event_category"])
 
@@ -52,7 +92,9 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("event_id", sa.Integer(), sa.ForeignKey("news_events.id"), nullable=False),
         sa.Column("cluster_hash", sa.String(128), nullable=False),
-        sa.Column("cluster_strategy", sa.String(64), nullable=False, server_default="deterministic_v1"),
+        sa.Column(
+            "cluster_strategy", sa.String(64), nullable=False, server_default="deterministic_v1"
+        ),
         sa.Column("cluster_reason", sa.String(255), nullable=False, server_default=""),
         sa.Column("candidate_count", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("accepted_count", sa.Integer(), nullable=False, server_default="0"),
@@ -74,5 +116,21 @@ def downgrade() -> None:
     op.drop_table("news_event_articles")
     op.drop_index("ix_news_events_event_category", table_name="news_events")
     op.drop_index("ix_news_events_event_key", table_name="news_events")
-    for col in ["limitations_json","is_institutional_related","is_macro_related","is_regulatory_related","is_security_related","is_high_impact","dominant_language","first_source_published_at","first_source_name","first_source_id","event_sentiment","cluster_confidence","event_category","canonical_summary","event_key"]:
+    for col in [
+        "limitations_json",
+        "is_institutional_related",
+        "is_macro_related",
+        "is_regulatory_related",
+        "is_security_related",
+        "is_high_impact",
+        "dominant_language",
+        "first_source_published_at",
+        "first_source_name",
+        "first_source_id",
+        "event_sentiment",
+        "cluster_confidence",
+        "event_category",
+        "canonical_summary",
+        "event_key",
+    ]:
         op.drop_column("news_events", col)

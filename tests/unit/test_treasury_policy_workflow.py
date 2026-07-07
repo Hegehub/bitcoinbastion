@@ -22,7 +22,9 @@ def _policy_result(allowed: bool) -> PolicyCheckResponse:
         violations=[] if allowed else ["Wallet health is below minimum threshold (60)."],
         next_actions=["Proceed"] if allowed else ["Escalate to treasury operator review."],
         evaluated_policy="default",
-        applied_rules=[PolicyRuleOut(rule_key="min_wallet_health_score", rule_value="60", severity="error")],
+        applied_rules=[
+            PolicyRuleOut(rule_key="min_wallet_health_score", rule_value="60", severity="error")
+        ],
     )
 
 
@@ -31,7 +33,9 @@ def test_treasury_request_uses_pending_status_when_policy_allows() -> None:
     service.policy_service.evaluate_and_log = lambda db, payload: _policy_result(True)  # type: ignore[method-assign]
 
     created = service.create_request(
-        TreasuryRequestIn(title="Cold storage rebalance", amount_sats=100_000, destination_reference="vault-01"),
+        TreasuryRequestIn(
+            title="Cold storage rebalance", amount_sats=100_000, destination_reference="vault-01"
+        ),
         requested_by=7,
     )
 
@@ -69,13 +73,27 @@ def test_treasury_request_adds_chain_state_warning_when_reorg_risk_high(monkeypa
     monkeypatch.setattr(
         TreasuryService,
         "_chain_state_for_treasury",
-        staticmethod(lambda **kwargs: __import__("app.services.blockchain.chain_state_service", fromlist=["ChainStateService"]).ChainStateService().evaluate(
-            tip_height=900_000, observed_block_height=900_000, headers_height=900_003, data_source="repository_fallback"
-        )),
+        staticmethod(
+            lambda **kwargs: __import__(
+                "app.services.blockchain.chain_state_service", fromlist=["ChainStateService"]
+            )
+            .ChainStateService()
+            .evaluate(
+                tip_height=900_000,
+                observed_block_height=900_000,
+                headers_height=900_003,
+                data_source="repository_fallback",
+            )
+        ),
     )
 
     created = service.create_request(
-        TreasuryRequestIn(title="Emergency spend", amount_sats=12_000_000, destination_reference="vault-hot", wallet_health_score=45),
+        TreasuryRequestIn(
+            title="Emergency spend",
+            amount_sats=12_000_000,
+            destination_reference="vault-hot",
+            wallet_health_score=45,
+        ),
         requested_by=9,
     )
     snapshot = json.loads(created.policy_snapshot_json)

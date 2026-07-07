@@ -77,6 +77,7 @@ def test_chain_state_service_explainability_includes_risk_components() -> None:
     assert "stale_provider_risk_component" in out.explainability["risk_components"]
     assert out.explainability["scoring"]["note"].startswith("Conservative risk model")
 
+
 def test_chain_state_service_exposes_degradation_governance_flags() -> None:
     out = ChainStateService().evaluate(
         tip_height=100,

@@ -41,9 +41,9 @@ def generate_signals_for_sources(db: Session, *, limit_per_source: int = 25) -> 
     return generated
 
 
-
-
-def _should_skip_duplicate_run(*, tracker: JobTrackingService, task_name: str, cooldown_seconds: int = 45) -> bool:
+def _should_skip_duplicate_run(
+    *, tracker: JobTrackingService, task_name: str, cooldown_seconds: int = 45
+) -> bool:
     from datetime import UTC, datetime
 
     now = datetime.now(UTC)
@@ -59,6 +59,8 @@ def _should_skip_duplicate_run(*, tracker: JobTrackingService, task_name: str, c
         if delta <= cooldown_seconds:
             return True
     return False
+
+
 @celery_app.task(  # type: ignore[untyped-decorator]
     name="signals.generate",
     autoretry_for=(Exception,),

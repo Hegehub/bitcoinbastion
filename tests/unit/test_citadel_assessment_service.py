@@ -240,7 +240,10 @@ def test_citadel_assessment_includes_utxo_domain_in_explainability() -> None:
     assert explainability["utxo"]["spend_complexity_score_100"] >= 0
     assert "utxo" in explainability["guarantees"]["present_domains"]
     assert "mempool" in explainability
-    assert explainability["mempool"]["high_fee_scenario_sat_vb"] >= explainability["mempool"]["suggested_fee_rate_sat_vb"]
+    assert (
+        explainability["mempool"]["high_fee_scenario_sat_vb"]
+        >= explainability["mempool"]["suggested_fee_rate_sat_vb"]
+    )
     assert "script" in explainability
     assert "descriptor_awareness" in explainability
     assert "script" in explainability["guarantees"]["present_domains"]
@@ -273,7 +276,9 @@ def test_descriptor_completeness_penalizes_custody_and_inheritance_scores() -> N
         ),
     )
 
-    assert with_descriptor.inheritance_readiness_score > without_descriptor.inheritance_readiness_score
+    assert (
+        with_descriptor.inheritance_readiness_score > without_descriptor.inheritance_readiness_score
+    )
     assert with_descriptor.recovery_readiness_score > without_descriptor.recovery_readiness_score
     assert any(item.domain == "descriptor" for item in without_descriptor.warnings)
 
@@ -370,8 +375,28 @@ def test_citadel_evidence_chain_spans_protocol_to_recommendation() -> None:
 
 def test_citadel_protocol_confidence_degrades_under_fallback_chain_state() -> None:
     service = CitadelAssessmentService()
-    strong = service.build_assessment(owner_type="user", owner_id=150, wallet_context=service.build_wallet_context(chain_data_source="provider_probe", chain_provider_data_age_seconds=10, chain_tip_height=100, chain_observed_height=99, chain_headers_height=100))
-    weak = service.build_assessment(owner_type="user", owner_id=151, wallet_context=service.build_wallet_context(chain_data_source="provider_fallback", chain_provider_data_age_seconds=1800, chain_tip_height=100, chain_observed_height=99, chain_headers_height=102))
+    strong = service.build_assessment(
+        owner_type="user",
+        owner_id=150,
+        wallet_context=service.build_wallet_context(
+            chain_data_source="provider_probe",
+            chain_provider_data_age_seconds=10,
+            chain_tip_height=100,
+            chain_observed_height=99,
+            chain_headers_height=100,
+        ),
+    )
+    weak = service.build_assessment(
+        owner_type="user",
+        owner_id=151,
+        wallet_context=service.build_wallet_context(
+            chain_data_source="provider_fallback",
+            chain_provider_data_age_seconds=1800,
+            chain_tip_height=100,
+            chain_observed_height=99,
+            chain_headers_height=102,
+        ),
+    )
     strong_q = strong.explainability.model_dump()["protocol_input_quality"]
     weak_q = weak.explainability.model_dump()["protocol_input_quality"]
     assert weak_q["confidence"] <= strong_q["confidence"]

@@ -13,8 +13,12 @@ class CandleAttribution(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     candle_id: Mapped[int] = mapped_column(ForeignKey("btc_candles.id"), index=True, nullable=False)
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), index=True, nullable=True)
-    article_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), index=True, nullable=True)
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), index=True, nullable=True
+    )
+    article_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_articles.id"), index=True, nullable=True
+    )
     signal_id: Mapped[int | None] = mapped_column(Integer, index=True, nullable=True)
     timeframe: Mapped[str] = mapped_column(String(16), index=True, default="")
     candle_open_time: Mapped[datetime] = mapped_column(DateTime)
@@ -55,8 +59,14 @@ class CandleAttribution(Base):
     window_used: Mapped[str] = mapped_column(String(32), default="")
     dominant_window: Mapped[str] = mapped_column(String(32), default="")
     summary_text: Mapped[str] = mapped_column(Text, default="")
-    explanation_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
-    limitations_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
-    evidence_refs_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    explanation_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
+    limitations_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
+    evidence_refs_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)

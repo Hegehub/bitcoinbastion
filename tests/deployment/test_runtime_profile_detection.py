@@ -92,8 +92,22 @@ def test_json_output_shape_is_stable(monkeypatch, capsys) -> None:
         module,
         "detect_environment",
         lambda: {
-            "tools": {"docker": False, "docker_compose": False, "kubectl": False, "k3s": False, "kind": False, "minikube": False, "systemd": False},
-            "system": {"cpu_count": 4, "ram_gb": None, "ci": False, "platform": "linux", "kubectl_context": None},
+            "tools": {
+                "docker": False,
+                "docker_compose": False,
+                "kubectl": False,
+                "k3s": False,
+                "kind": False,
+                "minikube": False,
+                "systemd": False,
+            },
+            "system": {
+                "cpu_count": 4,
+                "ram_gb": None,
+                "ci": False,
+                "platform": "linux",
+                "kubectl_context": None,
+            },
             "recommendation": {"profile": "manual-review", "reason": "test", "warnings": []},
         },
     )

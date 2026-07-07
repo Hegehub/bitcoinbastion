@@ -16,7 +16,10 @@ def test_release_docs_exist() -> None:
 
 
 def test_forbidden_readiness_wording_absent() -> None:
-    text = Path("README.md").read_text().lower() + Path("docs/PRODUCTION_READINESS.md").read_text().lower()
+    text = (
+        Path("README.md").read_text().lower()
+        + Path("docs/PRODUCTION_READINESS.md").read_text().lower()
+    )
     assert "fully secure" not in text
     assert "enterprise certified" not in text
 

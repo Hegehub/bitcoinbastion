@@ -6,7 +6,10 @@ from app.schemas.bastion_trace import (
     TraceSourceQuality,
 )
 from app.services.bastion_trace.confidence import compute_confidence
-from app.services.bastion_trace.false_positive_guard import apply_false_positive_guard, score_to_band
+from app.services.bastion_trace.false_positive_guard import (
+    apply_false_positive_guard,
+    score_to_band,
+)
 from app.services.bastion_trace.trace_dna import build_trace_dna
 
 WEIGHTS = {
@@ -73,7 +76,9 @@ def score_trace(payload: TraceScoringInput) -> TraceScoringResult:
     score = max(0.0, min(100.0, score))
     freshness = _freshness(payload.evidence_freshness_days)
     disagreement = factors.get("provider_disagreement", 0.0)
-    source_quality = _source_quality(payload.independent_source_count, disagreement, payload.baseline_mode)
+    source_quality = _source_quality(
+        payload.independent_source_count, disagreement, payload.baseline_mode
+    )
     confidence, ledger = compute_confidence(
         payload.evidence_count,
         payload.independent_source_count,
@@ -102,7 +107,11 @@ def score_trace(payload: TraceScoringInput) -> TraceScoringResult:
         factors.get("privacy_leak_signal", 0),
         factors.get("origin_uncertainty", 0),
         disagreement,
-        1.0 if freshness == TraceFreshness.STALE else 0.5 if freshness == TraceFreshness.RECENT else 0.0,
+        (
+            1.0
+            if freshness == TraceFreshness.STALE
+            else 0.5 if freshness == TraceFreshness.RECENT else 0.0
+        ),
         factors.get("sovereignty_preservation", 0),
         min(1.0, payload.evidence_count / 4),
         factors.get("false_positive_risk", 0),

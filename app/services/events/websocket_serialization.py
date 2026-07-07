@@ -129,7 +129,9 @@ def serialize_event_payload(
     }
     envelope_metadata = {
         "source": str(safe_metadata.get("source", "bitcoin_bastion")),
-        "advisory_only": bool(safe_metadata.get("advisory_only", sanitized_payload.get("advisory_only", True))),
+        "advisory_only": bool(
+            safe_metadata.get("advisory_only", sanitized_payload.get("advisory_only", True))
+        ),
         "no_custody": True,
         "degraded": bool(safe_metadata.get("degraded", sanitized_payload.get("degraded", False))),
         "stale": bool(safe_metadata.get("stale", sanitized_payload.get("stale", False))),

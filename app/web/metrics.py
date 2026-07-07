@@ -9,15 +9,11 @@ MARKET_TIMELINE_REQUESTS_TOTAL = Counter(
 MARKET_MARKER_CLICKS_TOTAL = Counter(
     "market_marker_clicks_total", "Total market marker open events recorded by bounded action."
 )
-MARKET_CANDLE_OPEN_TOTAL = Counter(
-    "market_candle_open_total", "Total candle attribution views."
-)
+MARKET_CANDLE_OPEN_TOTAL = Counter("market_candle_open_total", "Total candle attribution views.")
 MARKET_EVIDENCE_OPEN_TOTAL = Counter(
     "market_evidence_open_total", "Total evidence panel or page views."
 )
-MARKET_REPLAY_OPEN_TOTAL = Counter(
-    "market_replay_open_total", "Total replay open actions."
-)
+MARKET_REPLAY_OPEN_TOTAL = Counter("market_replay_open_total", "Total replay open actions.")
 
 TIMELINE_REQUESTS_TOTAL = Counter(
     "timeline_requests_total", "Total Market Timeline API and web requests.", ["surface"]
@@ -26,7 +22,9 @@ TIMELINE_RENDER_FAILURES_TOTAL = Counter(
     "timeline_render_failures_total", "Total Market Timeline render failures.", ["surface"]
 )
 CHART_MARKER_COUNT = Gauge(
-    "chart_marker_count", "Number of chart markers emitted for the latest bounded request.", ["surface"]
+    "chart_marker_count",
+    "Number of chart markers emitted for the latest bounded request.",
+    ["surface"],
 )
 TIMELINE_FILTER_USAGE_TOTAL = Counter(
     "timeline_filter_usage_total", "Total timeline filter usage by bounded filter name.", ["filter"]
@@ -52,7 +50,9 @@ MARKET_SIGNAL_VIEWS_TOTAL = Counter(
     "market_signal_views_total", "Total Market Intelligence signal view requests.", ["surface"]
 )
 MARKET_NARRATIVE_VIEWS_TOTAL = Counter(
-    "market_narrative_views_total", "Total Market Intelligence narrative view requests.", ["surface"]
+    "market_narrative_views_total",
+    "Total Market Intelligence narrative view requests.",
+    ["surface"],
 )
 
 MARKET_UI_PAGE_VIEWS_TOTAL = Counter(
@@ -85,12 +85,25 @@ BOUNDED_FILTER_LABELS = {
     "operator_reviewed",
 }
 
+
 def bounded_filter_label(value: str) -> str:
     return value if value in BOUNDED_FILTER_LABELS else "other"
 
 
 def bounded_marker_type(value: str) -> str:
-    allowed = {"positive_news", "negative_news", "uncertain_news", "security_shock", "regulatory_event", "institutional_event", "macro_event", "bitcoin_core_event", "lightning_event", "mining_event", "lightning_or_core_event"}
+    allowed = {
+        "positive_news",
+        "negative_news",
+        "uncertain_news",
+        "security_shock",
+        "regulatory_event",
+        "institutional_event",
+        "macro_event",
+        "bitcoin_core_event",
+        "lightning_event",
+        "mining_event",
+        "lightning_or_core_event",
+    }
     return value if value in allowed else "other"
 
 

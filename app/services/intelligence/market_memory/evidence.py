@@ -44,8 +44,14 @@ class MarketMemoryEvidenceBuilder:
                 for item in payload.get("similar_events", [])
                 if isinstance(item, dict)
             ],
-            pattern_matches=list(payload.get("pattern_matches", payload.get("pattern_reasoning", []))),
-            historical_reaction_summary=dict(payload.get("historical_reaction_summary") or payload.get("historical_reaction_profile") or {}),
+            pattern_matches=list(
+                payload.get("pattern_matches", payload.get("pattern_reasoning", []))
+            ),
+            historical_reaction_summary=dict(
+                payload.get("historical_reaction_summary")
+                or payload.get("historical_reaction_profile")
+                or {}
+            ),
             limitations=self._safety(payload.get("limitations", [])),
             provider_confidence=float(payload.get("provider_confidence", 0.0) or 0.0),
             generated_at=utcnow(),

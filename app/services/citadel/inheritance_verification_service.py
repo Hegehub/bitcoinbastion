@@ -17,15 +17,29 @@ class InheritanceVerificationService:
         recovery_path_complexity: float | None = None,
         operational_readability_score: float | None = None,
     ) -> dict[str, object]:
-        recovery_score = self._clamp_unit(recovery_readiness_score if recovery_readiness_score is not None else 0.45)
+        recovery_score = self._clamp_unit(
+            recovery_readiness_score if recovery_readiness_score is not None else 0.45
+        )
         instructions_score = 1.0 if bool(has_instructions) else 0.35
-        dependency_score = 1.0 - self._clamp_unit(human_dependency_score if human_dependency_score is not None else 0.75)
+        dependency_score = 1.0 - self._clamp_unit(
+            human_dependency_score if human_dependency_score is not None else 0.75
+        )
         descriptor_score = 1.0 if bool(descriptor_available) else 0.3
-        artifact_score = self._clamp_unit(artifact_completeness_score if artifact_completeness_score is not None else 0.5)
-        freshness_score = self._clamp_unit(verification_freshness_score if verification_freshness_score is not None else 0.35)
-        emergency_score = self._clamp_unit(emergency_contact_coverage if emergency_contact_coverage is not None else 0.4)
-        complexity_score = 1.0 - self._clamp_unit(recovery_path_complexity if recovery_path_complexity is not None else 0.7)
-        readability_score = self._clamp_unit(operational_readability_score if operational_readability_score is not None else 0.45)
+        artifact_score = self._clamp_unit(
+            artifact_completeness_score if artifact_completeness_score is not None else 0.5
+        )
+        freshness_score = self._clamp_unit(
+            verification_freshness_score if verification_freshness_score is not None else 0.35
+        )
+        emergency_score = self._clamp_unit(
+            emergency_contact_coverage if emergency_contact_coverage is not None else 0.4
+        )
+        complexity_score = 1.0 - self._clamp_unit(
+            recovery_path_complexity if recovery_path_complexity is not None else 0.7
+        )
+        readability_score = self._clamp_unit(
+            operational_readability_score if operational_readability_score is not None else 0.45
+        )
 
         completeness = round(
             self._clamp_unit(
@@ -56,25 +70,43 @@ class InheritanceVerificationService:
         if emergency_score < 0.5:
             critical_gaps.append("Emergency contact/operator coverage is insufficient.")
         if complexity_score < 0.4:
-            critical_gaps.append("Recovery path complexity is too high for a stressed inheritance event.")
+            critical_gaps.append(
+                "Recovery path complexity is too high for a stressed inheritance event."
+            )
         if readability_score < 0.5:
             critical_gaps.append("Operational readability for heirs is low.")
 
-        status = "strong" if completeness >= 0.75 and not critical_gaps else "moderate" if completeness >= 0.5 else "weak"
+        status = (
+            "strong"
+            if completeness >= 0.75 and not critical_gaps
+            else "moderate" if completeness >= 0.5 else "weak"
+        )
 
         recommendations: list[str] = []
         if instructions_score < 0.8:
-            recommendations.append("Publish step-by-step inheritance runbook with tested execution checkpoints.")
+            recommendations.append(
+                "Publish step-by-step inheritance runbook with tested execution checkpoints."
+            )
         if dependency_score < 0.7:
-            recommendations.append("Add backup operator path to reduce single-human inheritance dependency.")
+            recommendations.append(
+                "Add backup operator path to reduce single-human inheritance dependency."
+            )
         if descriptor_score < 0.8:
-            recommendations.append("Provide verified descriptor package for heir-facing recovery procedures.")
+            recommendations.append(
+                "Provide verified descriptor package for heir-facing recovery procedures."
+            )
         if freshness_score < 0.7:
-            recommendations.append("Re-verify inheritance artifacts on a defined recurring cadence.")
+            recommendations.append(
+                "Re-verify inheritance artifacts on a defined recurring cadence."
+            )
         if emergency_score < 0.7:
-            recommendations.append("Document emergency contact escalation and cross-check operator reachability.")
+            recommendations.append(
+                "Document emergency contact escalation and cross-check operator reachability."
+            )
         if complexity_score < 0.7:
-            recommendations.append("Simplify recovery path to reduce required manual coordination steps.")
+            recommendations.append(
+                "Simplify recovery path to reduce required manual coordination steps."
+            )
 
         return {
             "owner_id": owner_id,
@@ -92,7 +124,9 @@ class InheritanceVerificationService:
             "confidence_penalty": 0.15,
             "operator_warning": "Synthetic/baseline Citadel output: validate with real operational evidence before critical action.",
             "evidence_refs": ["citadel:baseline_model"],
-            "limitations": ["Output includes synthetic or baseline assumptions and is not full production attestation."],
+            "limitations": [
+                "Output includes synthetic or baseline assumptions and is not full production attestation."
+            ],
             "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "signals": [

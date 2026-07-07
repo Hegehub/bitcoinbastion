@@ -22,5 +22,7 @@ class NarrativeMemorySnapshot(Base):
     heat_score: Mapped[float] = mapped_column(Float, default=0.0, index=True)
     strength_score: Mapped[float] = mapped_column(Float, default=0.0)
     decay_score: Mapped[float] = mapped_column(Float, default=0.0)
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
