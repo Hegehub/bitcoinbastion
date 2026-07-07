@@ -164,7 +164,6 @@ ClickHouse is disabled by default and is used only as a rebuildable analytics pr
 | `CLICKHOUSE_PROFILE` | `disabled` | One of `disabled`, `development`, `single_node`, `staging`, `production`, `enterprise`. |
 
 ClickHouse must not store seed phrases, Bitcoin private keys, wallet files, raw access tokens, raw Access Pass values, raw API secrets, or custody material. It is not a source of truth for access, policy, revocation, subscription, payment, or recovery decisions.
-
 ## Bastion Proof-of-Access issuer signing
 
 These variables configure future Access Certificate and Subscription Entitlement signing. They do not enable the full Proof-of-Access auth flow by themselves.
@@ -174,7 +173,6 @@ These variables configure future Access Certificate and Subscription Entitlement
 - `ACCESS_ISSUER_PRIVATE_KEY` is secret Ed25519 issuer private-key material. Production must inject it from a secret manager or Kubernetes secret and must never commit it to the repository or bake it into an image.
 - `ACCESS_CRYPTO_EPOCH` defaults to `1` and identifies the active Access crypto epoch.
 - `ACCESS_SIGNATURE_ALG` defaults to `ed25519`. Future PQ signature suites must remain disabled unless real audited implementations and tests are integrated.
-
 ## Bastion Access payment provider foundation
 
 These variables configure the payment intent foundation. They do not enable BTCPay integration or certificate issuance by themselves.
@@ -184,7 +182,7 @@ These variables configure the payment intent foundation. They do not enable BTCP
 - `ACCESS_PAYMENT_INTENT_TTL_SECONDS` defaults to `900` and controls payment intent invoice expiry windows.
 - `ACCESS_CHALLENGE_TTL_SECONDS` defaults to `300` and controls origin-bound challenge lifetime before Proof-of-Possession session creation.
 - `ACCESS_SESSION_TTL_SECONDS` defaults to `900` and controls short-lived Proof-of-Possession session lifetime; raw session tokens must never be stored.
-- `ACCESS_REQUEST_MAX_CLOCK_SKEW_SECONDS` defaults to `120` and limits timestamp skew for per-request Proof-of-Possession signatures.
+- `ACCESS_REQUEST_MAX_SKEW_SECONDS` defaults to `300` and limits timestamp skew for per-request Proof-of-Possession signatures.
 - `ACCESS_REQUEST_SIGNATURE_REQUIRED` defaults to `true`; protected Access requests must fail closed if request signatures are missing or invalid.
 
 ## Bastion Access BTCPay Server provider
@@ -201,37 +199,8 @@ These variables configure the future production BTCPay payment provider for Acce
 - `ACCESS_BTCPAY_HTTP_TIMEOUT_SECONDS` defaults to `10`.
 - `ACCESS_BTCPAY_WEBHOOK_TOLERANCE_SECONDS` defaults to `300` for future timestamp-aware webhook policy.
 
-## Bastion Access recovery and lockdown
+## Access Proof-of-Access alignment
 
-These variables configure the accountless Bastion Access Recovery Layer. They only enable the ability to set up and perform recovery; they do not permit recovery without policy enforcement or quorum.
+The canonical Access environment reference is `docs/ACCESS_ENVIRONMENT.md`. `.env.example` includes safe placeholders for `ACCESS_SERVER_PEPPER`, `ACCESS_ISSUER_KEY_ID`, `ACCESS_ISSUER_PRIVATE_KEY`, session/challenge/request-signing TTLs, BTCPay variables, recovery cooldown, lockdown step-up, and reserved PQ flags.
 
-- `ACCESS_RECOVERY_COOLDOWN_SECONDS` defaults to `86400` (24 hours) and configures the minimum seconds between recovery attempts.
-- `ACCESS_LOCKDOWN_REQUIRE_STEP_UP` defaults to `true` and requires a human-intent signature for high-impact lockdown scopes; disabling this weakens protections and should not occur in production.
-- `ACCESS_RECOVERY_MAX_ATTEMPTS_PER_HOUR` sets a limit on recovery attempts to prevent brute force.
-- `ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_PRO` defaults to `true` and enforces 2-of-3 recovery quorum for Pro passes.
-- `ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_BUSINESS` defaults to `true` and enforces 2-of-3 recovery quorum for Business passes.
-- `ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_ENTERPRISE` defaults to `true` and enforces 3-of-5 recovery quorum for Enterprise passes.
-- `ACCESS_RECOVERY_REJECT_BITCOIN_SEED_INPUTS` defaults to `true` and rejects any recovery submission that appears to be a Bitcoin wallet seed.
-
-## Crypto agility / reserved variables
-
-| Variable | Default | Description |
-|---|---|---|
-| `ACCESS_CRYPTO_EPOCH` | `1` | Identifies the active crypto epoch. Increment when rotating issuer keys or adding PQ algorithms. |
-| `ACCESS_PQ_ENABLED` | `false` | Post-quantum signature support. Reserved; must remain `false` unless audited PQ suites are implemented. |
-| `ACCESS_ML_DSA_ENABLED` | `false` | Enable the ML-DSA signature algorithm when implemented. |
-| `ACCESS_ML_KEM_ENABLED` | `false` | Enable the ML-KEM key-encapsulation mechanism when implemented. |
-| `ACCESS_SLH_DSA_ENABLED` | `false` | Enable the SLH-DSA signature algorithm when implemented. |
-
-When any PQ variables are enabled, all clients and servers must support the corresponding algorithms. At present these variables are reserved for future cryptographic agility and **must remain disabled** in production.
-
-## Miscellaneous
-
-| Variable | Example | Description |
-|---|---|---|
-| `ACCESS_SIGNATURE_ALG` | `ed25519` | Signature algorithm used by the issuer. Future suites may be added. |
-| `ACCESS_DEFAULT_PAYMENT_PROVIDER` | `manual` | Default provider for new payment intents. |
-| `ACCESS_PAYMENT_INTENT_TTL_SECONDS` | `900` | Payment intent invoice expiry. |
-| `ACCESS_REQUEST_SIGNATURE_REQUIRED` | `true` | Require per-request signatures on protected endpoints. |
-
-This document does not list unrelated environment variables (e.g. database, storage, analytics). See `docs/ENVIRONMENT_VARIABLES.md` for a complete list.
+`ACCESS_REQUEST_MAX_CLOCK_SKEW_SECONDS` is the preferred documentation name for request-signing clock skew. `ACCESS_REQUEST_MAX_SKEW_SECONDS` remains a compatibility setting in current code. Production deployments must keep `ACCESS_ALLOW_MANUAL_GRANTS=false`, must inject issuer private keys and BTCPay secrets from secret management, and must not enable reserved PQ flags until real audited implementations exist.

@@ -52,6 +52,15 @@ Bitcoin Bastion follows a strict set of design principles:
 | **Rollback discipline**      | Production deployment must have a documented rollback path.                                                  |
 | **Auditability**             | Release decisions should be explainable and supported by evidence.                                           |
 
+
+## Authentication: Bastion Proof-of-Access
+
+Bitcoin Bastion no longer uses password login for protected access. Protected access is based on payment proof, an issuer-signed access right, subscription entitlement, device possession, short-lived Proof-of-Possession sessions, request signatures, revocation checks, and Policy Engine decisions.
+
+A Bastion Access Pass is not a bearer token and must not be sent as `Authorization: Bearer`. The project is non-custodial: Bastion never asks for Bitcoin seed phrases, Bitcoin private keys, xprv material, or wallet files.
+
+Start with [`docs/ACCESS_LAYER.md`](docs/ACCESS_LAYER.md), [`docs/API_ACCESS.md`](docs/API_ACCESS.md), [`docs/ACCESS_REQUEST_SIGNING.md`](docs/ACCESS_REQUEST_SIGNING.md), [`docs/ACCESS_RECOVERY.md`](docs/ACCESS_RECOVERY.md), and [`docs/ACCESS_ENVIRONMENT.md`](docs/ACCESS_ENVIRONMENT.md).
+
 ## Current status (June 2026)
 
 As of June 2026 the project is a production candidate and operationally hardened.  The Market Time Machine subsystem and the overall platform are approximately **99 % production‑ready**【turn8file0†L19-L23】.  Core ingestion, scoring, candle attribution, historical similarity, pattern memory, governance, evidence packets, narrative heatmaps, plugin API, internal event registry/outbox/bus and webhook management are implemented【turn8file0†L11-L17】【turn8file0†L27-L37】.  Remaining work is limited to environment‑specific production evidence such as live Kubernetes rendering, load testing, provider incident drills, Telegram runtime proof, penetration testing and accessibility certification【turn8file0†L19-L23】.  Consult `docs/STATUS.md` (audit dated 2026‑05‑23) for the latest readiness audit and detailed task breakdown【turn7file0†L1-L6】.

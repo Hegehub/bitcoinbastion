@@ -57,7 +57,7 @@ client = BastionClient(
 me = client.access.me()
 ```
 
-Legacy `api_key`/`Authorization: Bearer` authentication is disabled by default. A temporary `allow_legacy_bearer_auth=True` compatibility flag exists only for migration and emits a deprecation warning. Use Proof-of-Access challenge/session flow and `X-Bastion-*` request-signing headers for protected requests. The SDK must not log raw Access Passes, session tokens, nonces, signatures, recovery phrases, or Bitcoin seed/private-key material. Bastion will never ask for your Bitcoin seed or private key. See `docs/SDK_PYTHON_ACCESS_AUTH.md`.
+Legacy `api_key`/`Authorization: Bearer` authentication is disabled by default. `allow_legacy_bearer_auth=True` is retained only as a rejected compatibility argument and still fails closed. Use Proof-of-Access challenge/session flow and `X-Bastion-*` request-signing headers for protected requests. The SDK must not log raw Access Passes, session tokens, nonces, signatures, recovery phrases, or Bitcoin seed/private-key material. Bastion will never ask for your Bitcoin seed or private key. See `docs/SDK_PYTHON_ACCESS_AUTH.md`.
 
 ## Trace example
 

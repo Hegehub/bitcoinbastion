@@ -17,12 +17,12 @@ describe("legacy bearer auth", () => {
     expect(calls[0]?.headers).not.toMatchObject({ Authorization: expect.any(String) });
   });
 
-  it("legacy bearer path requires allowLegacyBearerAuth", async () => {
+  it("legacy bearer path is disabled", async () => {
     const client = new BitcoinBastionClient({ baseUrl: "http://localhost:8000", apiKey: "legacy", fetchImpl: async () => jsonResponse({ data: { ok: true }, error: null }) });
     await expect(client.providerHealth.status()).rejects.toBeInstanceOf(LegacyAuthDisabledError);
   });
 
-  it("legacy bearer opt-in warns", async () => {
+  it("legacy bearer opt-in no longer sends Authorization", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const calls: RequestInit[] = [];
     const fetchImpl: typeof fetch = async (_input, init) => {
@@ -30,9 +30,9 @@ describe("legacy bearer auth", () => {
       return jsonResponse({ data: { ok: true }, error: null });
     };
     const client = new BitcoinBastionClient({ baseUrl: "http://localhost:8000", apiKey: "legacy", allowLegacyBearerAuth: true, fetchImpl });
-    await client.providerHealth.status();
-    expect(warn).toHaveBeenCalled();
-    expect(calls[0]?.headers).toMatchObject({ Authorization: "Bearer legacy" });
+    await expect(client.providerHealth.status()).rejects.toBeInstanceOf(LegacyAuthDisabledError);
+    expect(warn).not.toHaveBeenCalled();
+    expect(calls).toHaveLength(0);
     warn.mockRestore();
   });
 });

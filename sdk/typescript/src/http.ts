@@ -55,9 +55,6 @@ export class BastionHttpClient {
           ...this.config.headers,
           ...authHeaders(this.config.apiKey, {
             allowLegacyBearerAuth: this.config.allowLegacyBearerAuth,
-            warn: (message) => {
-              if (typeof console !== "undefined") console.warn(message);
-            },
           }),
           ...accessHeaders,
         },

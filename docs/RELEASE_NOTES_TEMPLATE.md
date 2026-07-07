@@ -47,9 +47,20 @@ make ci-release-gates
 
 curl -fsS http://localhost:8000/api/v1/health/live
 curl -fsS http://localhost:8000/api/v1/health/ready
-curl -fsS -H "Authorization: Bearer <ADMIN_TOKEN>" http://localhost:8000/api/v1/admin/status
-curl -fsS -H "Authorization: Bearer <ADMIN_TOKEN>" http://localhost:8000/api/v1/admin/jobs/recovery-check
-curl -fsS -H "Authorization: Bearer <ADMIN_TOKEN>" http://localhost:8000/api/v1/observability/snapshot
+curl -fsS \
+  -H "X-Bastion-Session: <POP_SESSION>" \
+  -H "X-Bastion-Timestamp: <ISO8601>" \
+  -H "X-Bastion-Nonce: <NONCE>" \
+  -H "X-Bastion-Body-Hash: <SHA256_EMPTY_BODY>" \
+  -H "X-Bastion-Signature: <DEVICE_SIGNATURE>" \
+  http://localhost:8000/api/v1/admin/status
+curl -fsS \
+  -H "X-Bastion-Session: <POP_SESSION>" \
+  -H "X-Bastion-Timestamp: <ISO8601>" \
+  -H "X-Bastion-Nonce: <NONCE>" \
+  -H "X-Bastion-Body-Hash: <SHA256_EMPTY_BODY>" \
+  -H "X-Bastion-Signature: <DEVICE_SIGNATURE>" \
+  http://localhost:8000/api/v1/observability/snapshot
 curl -fsS http://localhost:8000/metrics
 ```
 
@@ -67,9 +78,10 @@ curl -fsS http://localhost:8000/metrics
 
 ## Upgrade notes
 - Apply migrations to head before switching traffic: `python -m alembic upgrade head`.
-- Ensure env includes `JWT_ISSUER` and `JWT_ACCESS_TOKEN_EXPIRES_MINUTES` and uses strong non-default `JWT_SECRET_KEY` for production.
+- Ensure Access Layer env is configured: `ACCESS_SERVER_PEPPER`, `ACCESS_ISSUER_KEY_ID`, `ACCESS_ISSUER_PRIVATE_KEY`, session/challenge TTLs, and payment provider settings.
+- `JWT_*` settings are legacy-disabled and must not be used for protected API access.
 - For container deployment, use startup scripts that enforce env guards and migration-at-start behavior.
-- Validate admin token flow after deploy because JWT issuer/claim enforcement is strict (`sub`, `exp`, `iat`, `iss`).
+- Validate Proof-of-Access admin flow after deploy with `X-Bastion-*` request signing headers.
 
 ## Migration notes
 - Migration replay expectation: `upgrade head -> downgrade base -> upgrade head` remains reproducible on clean artifact.

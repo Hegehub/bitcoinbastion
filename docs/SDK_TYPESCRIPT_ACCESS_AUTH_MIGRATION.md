@@ -6,7 +6,7 @@ The previous TypeScript SDK accepted a static `apiKey` value in `sdk/typescript/
 
 ## Files changed
 
-- `sdk/typescript/src/auth.ts`: adds Proof-of-Access types, `BastionAccessAuth`, access pass import/session helpers, signing, safe state export, and opt-in legacy bearer guard.
+- `sdk/typescript/src/auth.ts`: adds Proof-of-Access types, `BastionAccessAuth`, access pass import/session helpers, signing, safe state export, and fail-closed legacy bearer guard.
 - `sdk/typescript/src/http.ts`: signs protected requests with `X-Bastion-*` headers and throws locally when protected calls lack Access auth.
 - `sdk/typescript/src/config.ts`: adds `accessAuth`, `allowLegacyBearerAuth`, and `redactSensitiveLogs` config.
 - `sdk/typescript/src/resources/access.ts`: adds challenge/session and `/access/me` resource helpers.
@@ -16,7 +16,7 @@ The previous TypeScript SDK accepted a static `apiKey` value in `sdk/typescript/
 
 ## Deprecated behavior
 
-`Authorization: Bearer` and `apiKey` are not used by default. Legacy bearer auth requires `allowLegacyBearerAuth: true`; it is temporary migration compatibility and not valid for Access Layer endpoints.
+`Authorization: Bearer` and `apiKey` are not used by default. `allowLegacyBearerAuth` is retained only as a rejected compatibility argument; it still fails closed and is not valid for Access Layer endpoints.
 
 ## New Proof-of-Access flow
 
@@ -51,7 +51,7 @@ Never send raw Access Passes on every request. Never log raw Access Passes, sess
 
 - Request signing headers, nonce uniqueness, timestamp presence, method/path digest binding, body hash stability.
 - Redaction of access pass, session token, signatures, nested objects, and authorization headers.
-- Legacy bearer disabled by default and opt-in warning behavior.
+- Legacy bearer disabled even when compatibility flags are supplied.
 - Protected resource failure without Access auth and signed headers with Access auth.
 - Safety rejection for Bitcoin seed/private-key-looking input.
 

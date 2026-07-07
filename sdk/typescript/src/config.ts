@@ -4,7 +4,7 @@ export interface BitcoinBastionClientConfig {
   baseUrl: string;
   /** @deprecated Legacy bearer/api-key auth is disabled by default; use accessAuth. */
   apiKey?: string;
-  /** @deprecated Use apiKey with allowLegacyBearerAuth only for temporary migration. */
+  /** @deprecated Legacy bearer auth is hard-disabled; this compatibility field still fails closed. */
   bearerToken?: string;
   timeoutMs?: number;
   apiPrefix?: string;

@@ -101,10 +101,9 @@ export function authHeaders(
   apiKey?: string,
   options: { allowLegacyBearerAuth?: boolean; warn?: (message: string) => void } = {},
 ): Record<string, string> {
+  void options;
   if (!apiKey) return {};
-  if (!options.allowLegacyBearerAuth) throw new LegacyAuthDisabledError();
-  options.warn?.("Legacy bearer auth is deprecated; use Bastion Proof-of-Access.");
-  return { Authorization: `Bearer ${apiKey}` };
+  throw new LegacyAuthDisabledError();
 }
 
 export function proofOfAccessHeaders(input: {

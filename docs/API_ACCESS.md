@@ -1,250 +1,81 @@
-# API Access
+# Access API Contract
 
-This document describes the public Proof‑of‑Access API endpoints exposed under `/api/v1/access/*`.  If an endpoint is not yet implemented it is marked as **planned** and does not appear in the OpenAPI specification.
+All paths below are mounted under `/api/v1`. Examples may omit the `/api` prefix only in SDK shorthand; the live FastAPI OpenAPI paths use `/api/v1/access/*`.
 
-## Payment Intents
+## Common security rules
 
-### POST /api/v1/access/payment-intents
+- Public setup endpoints do not use `Authorization: Bearer`.
+- Protected endpoints require `X-Bastion-Session` and, where required, `X-Bastion-Timestamp`, `X-Bastion-Nonce`, `X-Bastion-Body-Hash`, and `X-Bastion-Signature`.
+- A Bastion Access Pass is not a bearer token and must not be sent on every request.
+- Bastion never accepts Bitcoin seed/private-key material as authentication or recovery proof.
 
-Create a payment intent to purchase a plan.
+## Live Access endpoints
 
-**Purpose:** Start the payment workflow.  Returns a `payment_intent_id` and a provider checkout URL (or instructions for manual payment).
+| Method | Path | Purpose | Required auth |
+| --- | --- | --- | --- |
+| POST | `/api/v1/access/payment-intents` | Create an invoice/payment intent for a plan. | Public setup; provider policy applies. |
+| GET | `/api/v1/access/payment-intents/{payment_intent_id}` | Poll payment status without issuing access. | Public setup for the intent id. |
+| POST | `/api/v1/access/certificates` | Issue a certificate and show the raw Access Pass once after settlement. | Paid intent. |
+| POST | `/api/v1/access/challenges` | Create an origin-bound one-time challenge. | Certificate/pass reference. |
+| POST | `/api/v1/access/sessions` | Create a short-lived PoP session from a signed challenge. | Signed challenge. |
+| GET | `/api/v1/access/me` | Return safe current Access subject state. | `X-Bastion-Session`. |
+| GET | `/api/v1/access/me/entitlements` | Return current subscription entitlement metadata. | `X-Bastion-Session`. |
+| GET | `/api/v1/access/me/limits` | Return current API/metric limits. | `X-Bastion-Session`. |
+| POST | `/api/v1/access/lockdown` | Start Emergency Lockdown for the current certificate. | Session plus Human Intent/step-up policy. |
 
-**Body:**
+### Example: create payment intent
 
-- `plan_code` – required plan code (`lite_pass`, `basic_pass`, etc.).
-- `payment_method` – optional payment provider (`manual` or `btcpay`).
-- `amount_sats` – optional override for manual payments.
-- `metadata` – optional key/value metadata.
-- `return_url` – optional URL to redirect to after payment (BTCPay only).
+Request:
 
-**Response:**
+```http
+POST /api/v1/access/payment-intents
+Content-Type: application/json
 
-- `payment_intent_id`
-- `status` (`pending`, `expired`, `paid`)
-- `provider`
-- `payment_method`
-- `amount_sats`
-- `plan_code`
-- `checkout_url` (for BTCPay)
-- `expires_at`
-- `certificate_available` (boolean flag)
+{"plan_code":"plus_pass","payment_method":"btcpay"}
+```
 
-**Errors:**
+Response shape:
 
-- `plan_upgrade_required` – plan not available.
-- `unpaid_payment_intent` – cannot create a new intent until the previous is settled.
+```json
+{"payment_intent_id": 123, "plan_code": "plus_pass", "status": "pending", "certificate_available": false}
+```
 
-No Proof‑of‑Access headers are required for creating a payment intent.
+### Example: signed protected request
 
-### GET /api/v1/access/payment-intents/{payment_intent_id}
+```http
+GET /api/v1/access/me
+X-Bastion-Session: sess_...
+X-Bastion-Timestamp: 2026-07-07T00:00:00Z
+X-Bastion-Nonce: n_...
+X-Bastion-Body-Hash: sha256:...
+X-Bastion-Signature: sig_...
+```
 
-Retrieve the status of a payment intent.
+## Live recovery endpoints
 
-**Headers:** none (public).
+| Method | Path | Purpose | Notes |
+| --- | --- | --- | --- |
+| POST | `/api/v1/access/recovery/setup` | Create Bastion Recovery Seed setup material shown once. | Live. Not a Bitcoin wallet seed. |
+| POST | `/api/v1/access/recovery/start` | Start a policy-bounded recovery attempt. | Live. |
+| POST | `/api/v1/access/recovery/factors` | Submit one recovery factor. | Live name; maps to seed/share/device factors. |
+| GET | `/api/v1/access/recovery/status/{recovery_attempt_id}` | Read quorum/cooldown status. | Live. |
+| POST | `/api/v1/access/recovery/complete` | Complete recovery after quorum and cooldown. | Live. |
+| POST | `/api/v1/access/recovery/rotate` | Rotate recovery material after protected ceremony. | Live. |
+| POST | `/api/v1/access/recovery/cancel` | Cancel active recovery. | Live. |
+| POST | `/api/v1/access/recovery/verify-seed` | Verify seed factor. | Planned alias; use `/recovery/factors` today. |
+| POST | `/api/v1/access/recovery/verify-share` | Verify share factor. | Planned alias; use `/recovery/factors` today. |
+| GET | `/api/v1/access/recovery/status` | Current-session recovery status. | Planned alias; status currently requires attempt id. |
 
-**Response:** same fields as creation plus updated `status`.  The client polls this endpoint until `status=paid` before requesting a certificate.
+## Other live Access endpoints
 
-**Errors:**
+Human Intent: `POST /api/v1/access/intents`, `POST /api/v1/access/intents/{intent_id}/verify`, `GET /api/v1/access/intents/{intent_id}`.
 
-- `certificate_not_found` – if the intent does not exist or has expired.
+Child API keys: `POST /api/v1/access/api-keys`, `GET /api/v1/access/api-keys`, `GET /api/v1/access/api-keys/{key_id}`, `DELETE /api/v1/access/api-keys/{key_id}`, `POST /api/v1/access/api-keys/{key_id}/rotate`, `POST /api/v1/access/api-keys/{key_id}/freeze`.
 
-## Certificates
+Delegated passes: `POST /api/v1/access/delegated-passes`, `GET /api/v1/access/delegated-passes`, `GET /api/v1/access/delegated-passes/{delegated_pass_id}`, `DELETE /api/v1/access/delegated-passes/{delegated_pass_id}`, `POST /api/v1/access/delegated-passes/{delegated_pass_id}/freeze`.
 
-### POST /api/v1/access/certificates
+BTCPay webhook: `POST /api/v1/access/payments/btcpay/webhook` accepts provider webhook calls and does not issue certificates by itself.
 
-Issue an access certificate after payment is verified.
+## Stable error codes
 
-**Purpose:** Bind a device public key to a plan and produce an access certificate.
-
-**Headers:** none.
-
-**Body:**
-
-- `payment_intent_id`
-- `device_public_key` – the long‑term Ed25519 public key generated by the client.
-- `device_class` – optional string describing the device class.
-- `device_key_fingerprint` – optional fingerprint.
-- `device_attestation` – optional attestation payload.
-- `requested_origin` – optional origin.
-- `subscription_period_days` – optional subscription length (default 30).
-
-**Response:**
-
-- `raw_access_pass` – the single‑use access pass (displayed once).
-- `access_certificate` – signed certificate payload.
-- `certificate_fingerprint`
-- `plan_code`
-- `expires_at`
-- `save_warning`
-- `subscription_entitlement` – nested entitlement summary.
-- `recovery_setup_recommended` – whether to set up a recovery seed.
-
-**Errors:**
-
-- `invalid_payment_proof` – payment not settled.
-- `plan_upgrade_required` – the plan has been changed.
-- `bitcoin_seed_rejected` – if the client attempts to send a wallet seed.
-
-## Challenges
-
-### POST /api/v1/access/challenges
-
-Create an origin‑bound challenge for a certificate.
-
-**Headers:**
-
-- `X-Bastion-Session` – optional existing session token (to shorten flows for re‑challenges).
-
-**Body:**
-
-- `certificate_fingerprint`
-- `origin`
-- `requested_scopes` – list of scopes to request.
-- `device_key_fingerprint` – optional.
-
-**Response:**
-
-- `challenge_id`
-- `challenge_hash`
-- `challenge_payload`
-- `expires_at`
-- `status`
-
-**Errors:**
-
-- `certificate_not_found`
-- `certificate_revoked`
-- `entitlement_expired`
-- `scope_not_allowed`
-
-## Sessions
-
-### POST /api/v1/access/sessions
-
-Create a short‑lived Proof‑of‑Possession session.
-
-**Headers:** none.
-
-**Body:**
-
-- `certificate_fingerprint`
-- `challenge_id`
-- `origin`
-- `device_key_fingerprint`
-- `challenge_signature` – signature over the challenge payload created by the client using its private device key.
-- `client_session_public_key` – optional additional public key.
-- `requested_scopes` – optional override.
-
-**Response:**
-
-- `session_token` – short‑lived session string.
-- `session_hash_fingerprint`
-- `certificate_fingerprint`
-- `device_key_fingerprint`
-- `plan_code`
-- `scopes`
-- `expires_at`
-- `policy_mode`
-- `requires_request_signing` (always true for private APIs)
-
-**Errors:**
-
-- `invalid_challenge`
-- `challenge_expired`
-- `challenge_reused`
-- `invalid_session`
-- `session_revoked`
-- `scope_not_allowed`
-- `metric_not_allowed`
-- `plan_upgrade_required`
-
-After a session is issued, clients must sign every protected request using the procedure in `docs/ACCESS_REQUEST_SIGNING.md`.
-
-## Me
-
-### GET /api/v1/access/me
-
-Return summary information about the current certificate and session.
-
-**Headers:** `X-Bastion-Session` and signature headers (required).  A valid session and signature are required.
-
-**Response:**
-
-- `certificate_fingerprint`
-- `plan_code`
-- `entitlement_status`
-- `active_scopes`
-- `device_status`
-- `session_expires_at`
-- `access_integrity_summary`
-- `recovery_status_summary`
-
-### GET /api/v1/access/me/entitlements
-
-Return the active subscription entitlements including plan code, status, expiry, scopes, limits, crypto epoch and locked metric groups.
-
-### GET /api/v1/access/me/limits
-
-Return detailed plan limits (requests per minute/day, metric credits, max history days, etc.).
-
-## Lockdown
-
-### POST /api/v1/access/lockdown
-
-Lock down an access pass, workspace or devices.
-
-**Headers:** `X-Bastion-Session` plus signature headers.
-
-**Body:**
-
-- `reason` – optional human explanation.
-- `scope` – the lockdown scope (see `AccessLockdownScope` in schemas).
-- `confirmation_intent_signature` – optional human‑intent signature for high impact scopes.
-- `recovery_mode` – defaults to `true`.
-
-**Response:**
-
-- `status`
-- `lockdown_id`
-- numbers of affected sessions, child keys, delegated passes, devices, etc.
-- `recovery_only`
-- `audit_event_hash`
-- `created_at`
-
-## Recovery
-
-Recovery endpoints allow a user to regain access when all devices are lost.  See `docs/ACCESS_RECOVERY.md` for an overview of the recovery process.
-
-The current implementation exposes the following endpoints:
-
-- `POST /api/v1/access/recovery/setup` – configure a Bastion Recovery Seed for a pass (12 or 24 words).
-- `POST /api/v1/access/recovery/start` – initiate a recovery attempt; returns the required factors and threshold.
-- `POST /api/v1/access/recovery/factors` – submit a recovery factor (seed phrase share, vault signature, hardware key, etc.).
-- `GET /api/v1/access/recovery/status/{recovery_attempt_id}` – retrieve the status of a recovery attempt.
-- `POST /api/v1/access/recovery/complete` – complete recovery by rotating to a new device key.
-- `POST /api/v1/access/recovery/rotate` – rotate a Bastion Recovery Seed.
-- `POST /api/v1/access/recovery/cancel` – cancel a recovery attempt.
-
-Endpoints such as `verify-seed` and `verify-share` are **planned** but not yet implemented; they will be aliases for submitting recovery factors once the recovery UX is refined.
-
-**Error codes:**
-
-- `recovery_quorum_required`
-- `bitcoin_seed_rejected`
-- `legacy_auth_disabled`
-- `invalid_request_signature`
-- `nonce_reused`
-- `timestamp_stale`
-- `session_expired`
-- `session_revoked`
-
-The API always returns structured JSON error responses with a machine‑parsable `code` and `message`.  The `code` values listed above are stable and part of the contract.
-
-## Security notes
-
-- Public endpoints (health, status pages, etc.) do not require a session or signed requests.
-- Premium endpoints require a valid Proof‑of‑Access session (`X‑Bastion‑Session`) and per‑request signature headers described in `ACCESS_REQUEST_SIGNING.md`.
-- If a plan does not include a requested scope or metric group, the API responds with `plan_upgrade_required`, `scope_not_allowed` or `metric_not_allowed` instead of leaking data.
-- Invalid or expired sessions return `invalid_session` or `session_expired`.
-- Revoked certificates or sessions return `certificate_revoked` or `session_revoked`.
+The Access contract reserves these structured error codes where applicable: `unpaid_payment_intent`, `invalid_payment_proof`, `payment_not_settled`, `payment_provider_unavailable`, `certificate_not_found`, `certificate_revoked`, `entitlement_expired`, `plan_upgrade_required`, `metric_not_allowed`, `scope_not_allowed`, `invalid_challenge`, `challenge_expired`, `challenge_reused`, `invalid_session`, `session_expired`, `session_revoked`, `invalid_request_signature`, `nonce_reused`, `timestamp_stale`, `recovery_quorum_required`, `bitcoin_seed_rejected`, and `legacy_auth_disabled`.
