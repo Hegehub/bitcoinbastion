@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import db_session, get_admin_user
+from app.api.access_dependencies import require_human_intent, require_plan, require_signed_request_for_critical_action, require_scope
+from app.api.dependencies import db_session
+from app.domain.access.context import AccessContext
+from app.domain.access.plans import PlanCode
 from app.api.response_envelope import ok
-from app.db.models.auth import User
 from app.schemas.webhooks import (
     WebhookEndpointCreate,
     WebhookEndpointUpdate,
@@ -24,8 +26,8 @@ def _service(db: Session) -> WebhookService:
     return WebhookService(db)
 
 
-def _actor_id(user: User) -> str:
-    return str(getattr(user, "id", "operator"))
+def _actor_id(context: AccessContext) -> str:
+    return context.session_id_hash
 
 
 def _handle_error(exc: WebhookServiceError) -> HTTPException:
@@ -38,11 +40,11 @@ def _handle_error(exc: WebhookServiceError) -> HTTPException:
 def create_webhook_endpoint(
     payload: WebhookEndpointCreate,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    access_context: AccessContext = Depends(require_human_intent("create_api_key")),
 ) -> object:
     service = _service(db)
     try:
-        endpoint = service.create_endpoint(payload, created_by=_actor_id(current_user))
+        endpoint = service.create_endpoint(payload, created_by=_actor_id(access_context))
         db.commit()
         db.refresh(endpoint)
         return ok(service.endpoint_out(endpoint).model_dump(mode="json"))
@@ -56,7 +58,7 @@ def list_webhook_endpoints(
     limit: int = 50,
     offset: int = 0,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_scope("api:keys:manage")),
 ) -> object:
     del current_user
     service = _service(db)
@@ -68,7 +70,7 @@ def list_webhook_endpoints(
 def get_webhook_endpoint(
     webhook_id: int,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_scope("api:keys:manage")),
 ) -> object:
     del current_user
     service = _service(db)
@@ -83,7 +85,7 @@ def update_webhook_endpoint(
     webhook_id: int,
     payload: WebhookEndpointUpdate,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_signed_request_for_critical_action("increase_scope")),
 ) -> object:
     del current_user
     service = _service(db)
@@ -101,7 +103,7 @@ def update_webhook_endpoint(
 def delete_webhook_endpoint(
     webhook_id: int,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_human_intent("increase_scope")),
 ) -> Response:
     del current_user
     service = _service(db)
@@ -119,7 +121,7 @@ def create_webhook_subscription(
     webhook_id: int,
     payload: WebhookSubscriptionCreate,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_plan(PlanCode.PRO)),
 ) -> object:
     del current_user
     service = _service(db)
@@ -137,7 +139,7 @@ def create_webhook_subscription(
 def list_webhook_subscriptions(
     webhook_id: int,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_scope("api:keys:manage")),
 ) -> object:
     del current_user
     service = _service(db)
@@ -158,7 +160,7 @@ def delete_webhook_subscription(
     webhook_id: int,
     subscription_id: int,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_human_intent("increase_scope")),
 ) -> Response:
     del current_user
     service = _service(db)
@@ -176,7 +178,7 @@ def create_webhook_test_delivery(
     webhook_id: int,
     payload: WebhookTestRequest,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_signed_request_for_critical_action("increase_scope")),
 ) -> object:
     del current_user
     service = _service(db)
@@ -195,7 +197,7 @@ def list_webhook_deliveries(
     limit: int = 50,
     offset: int = 0,
     db: Session = Depends(db_session),
-    current_user: User = Depends(get_admin_user),
+    current_user: AccessContext = Depends(require_scope("api:keys:manage")),
 ) -> object:
     del current_user
     service = _service(db)

@@ -1,5 +1,6 @@
 import { normalizeConfig, type BitcoinBastionClientConfig } from "./config.js";
 import { BastionHttpClient } from "./http.js";
+import { AccessResource } from "./resources/access.js";
 import { EvidenceResource } from "./resources/evidence.js";
 import { MarketResource } from "./resources/market.js";
 import { NewsResource } from "./resources/news.js";
@@ -15,6 +16,7 @@ import { WebSocketResource } from "./resources/websocket.js";
 
 export class BitcoinBastionClient {
   readonly raw: BastionHttpClient;
+  readonly access: AccessResource;
   readonly signals: SignalsResource;
   readonly news: NewsResource;
   readonly onchain: OnchainResource;
@@ -31,6 +33,7 @@ export class BitcoinBastionClient {
   constructor(config: BitcoinBastionClientConfig) {
     const normalized = normalizeConfig(config);
     this.raw = new BastionHttpClient(normalized);
+    this.access = new AccessResource(this.raw);
     this.signals = new SignalsResource(this.raw);
     this.news = new NewsResource(this.raw);
     this.onchain = new OnchainResource(this.raw);

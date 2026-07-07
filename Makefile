@@ -1,4 +1,4 @@
-.PHONY: install install-dev test test-contract test-integration test-unit plugin-test lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence k8s-render-staging k8s-render-production k8s-apply-staging k8s-apply-production k8s-status k8s-rollback-notes k8s-run-migration k8s-run-postgres-migration-smoke k8s-run-postgres-schema-parity k8s-run-release-evidence k8s-collect-evidence-artifacts k8s-render-gitops k8s-render-security k8s-render-observability k8s-render-autoscaling k8s-render-evidence k8s-render-rollout k8s-render-backup k8s-render-drills k8s-run-evidence-archive k8s-run-provider-failure-drill k8s-run-recovery-slo-drill k8s-backup-now k8s-restore-notes k8s-gitops-bootstrap-notes sbom vulnerability-scan provenance security-artifacts-notes k8s-render-runtime-security k8s-lockdown-notes k8s-burn-in-notes k8s-production-cutover-notes k8s-restore-validate-notes k8s-run-provider-outage-drill k8s-run-delivery-outage-drill k8s-operations-check k8s-operational-signoff-template k8s-render-observability-pack k8s-run-observability-validation k8s-alert-fatigue-notes k8s-incident-automation-notes runtime-render-kind runtime-render-minikube deploy-kind deploy-minikube runtime-profiles runtime-detect runtime-render-compose runtime-render-k8s runtime-render-k3s runtime-render-single-node deploy-compose deploy-k8s deploy-k3s deploy-single-node systemd-notes
+.PHONY: install install-dev test test-contract test-integration test-unit plugin-test access-release-gate lint format up down up-prod run dev worker bot migrate alembic-repro alembic-roundtrip model-migration-coverage schema-runtime-parity db-schema-parity docs-truthfulness migration-smoke ci-smoke ci-release-gates compose-smoke postgres-migration-smoke postgres-schema-parity release-evidence k8s-render-staging k8s-render-production k8s-apply-staging k8s-apply-production k8s-status k8s-rollback-notes k8s-run-migration k8s-run-postgres-migration-smoke k8s-run-postgres-schema-parity k8s-run-release-evidence k8s-collect-evidence-artifacts k8s-render-gitops k8s-render-security k8s-render-observability k8s-render-autoscaling k8s-render-evidence k8s-render-rollout k8s-render-backup k8s-render-drills k8s-run-evidence-archive k8s-run-provider-failure-drill k8s-run-recovery-slo-drill k8s-backup-now k8s-restore-notes k8s-gitops-bootstrap-notes sbom vulnerability-scan provenance security-artifacts-notes k8s-render-runtime-security k8s-lockdown-notes k8s-burn-in-notes k8s-production-cutover-notes k8s-restore-validate-notes k8s-run-provider-outage-drill k8s-run-delivery-outage-drill k8s-operations-check k8s-operational-signoff-template k8s-render-observability-pack k8s-run-observability-validation k8s-alert-fatigue-notes k8s-incident-automation-notes runtime-render-kind runtime-render-minikube deploy-kind deploy-minikube runtime-profiles runtime-detect runtime-render-compose runtime-render-k8s runtime-render-k3s runtime-render-single-node deploy-compose deploy-k8s deploy-k3s deploy-single-node systemd-notes
 
 install:
 	python -m pip install -e .
@@ -20,6 +20,14 @@ test-integration: install-dev
 
 plugin-test: install-dev
 	python -m pytest -q tests/unit/test_plugin_manifest.py tests/unit/test_plugin_permissions.py tests/unit/test_plugin_registry.py tests/unit/test_plugin_sandbox.py tests/unit/test_plugin_loader.py tests/contract/test_plugin_api_safety.py
+
+access-release-gate: install-dev
+	python -m pytest -q tests/security/test_access_layer_release_gate.py
+	python -m pytest -q tests/security/test_no_password_auth.py tests/security/test_no_bearer_access_pass.py tests/security/test_no_bitcoin_seed_auth.py tests/security/test_access_policy_required.py tests/security/test_access_replay_protection.py tests/security/test_access_revocation.py tests/security/test_access_sensitive_logging.py tests/security/test_access_recovery_abuse.py
+	python -m pytest -q tests/contract/test_access_openapi_contract.py
+	python -m pytest -q tests/integration/test_access_full_flow.py
+	python -m pytest -q sdk/python/tests
+	cd sdk/typescript && npm test
 
 lint:
 	python -m ruff check app cli tests
@@ -85,7 +93,7 @@ ci-smoke: install-dev
 	python scripts/check_docs_truthfulness.py
 	python -m pytest -q tests/contract
 
-ci-release-gates: install-dev
+ci-release-gates: install-dev access-release-gate
 	rm -f bitcoin_bastion.db
 	python -m alembic upgrade head
 	python -m alembic downgrade base

@@ -3,7 +3,7 @@ import { assertNoSensitiveMaterial } from "../safety.js";
 
 export class PolicyResource {
   constructor(private readonly http: BastionHttpClient) {}
-  evaluate(payload: unknown): Promise<unknown> { assertNoSensitiveMaterial(payload); return this.http.post("/policy/check", payload); }
+  evaluate(payload: unknown): Promise<unknown> { assertNoSensitiveMaterial(payload); return this.http.post("/policy/check", payload, { requireAuth: true }); }
   profiles(): Promise<unknown> { return this.http.get("/policy/catalog"); }
   getProfile(profileId: string): Promise<unknown> { return this.http.get(`/policy/catalog/${profileId}`); }
 }

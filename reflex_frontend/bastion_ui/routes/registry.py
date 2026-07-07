@@ -3,6 +3,13 @@ from __future__ import annotations
 PUBLIC_ROUTES: tuple[str, ...] = (
     "/",
     "/platform",
+    "/access",
+    "/access/checkout",
+    "/access/success",
+    "/access/import",
+    "/access/me",
+    "/access/recovery",
+    "/access/lockdown",
     "/developers",
     "/operations",
     "/manifesto",

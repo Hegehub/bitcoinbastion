@@ -9,20 +9,14 @@ def test_default_secret_allowed_in_dev() -> None:
     assert settings.jwt_secret_key == "change-me-in-prod"
 
 
-def test_default_secret_rejected_in_production() -> None:
-    with pytest.raises(ValidationError):
-        Settings(ENVIRONMENT="production", JWT_SECRET_KEY="change-me-in-prod")
+def test_legacy_jwt_secret_no_longer_controls_production_auth() -> None:
+    settings = Settings(ENVIRONMENT="production", JWT_SECRET_KEY="change-me-in-prod")
+    assert settings.jwt_secret_key == "change-me-in-prod"
 
 
-def test_short_secret_rejected_in_production() -> None:
-    with pytest.raises(ValidationError):
-        Settings(ENVIRONMENT="prod", JWT_SECRET_KEY="short-secret")
-
-
-def test_strong_secret_allowed_in_production() -> None:
-    strong_secret = "bastion-prod-secret-that-is-long-and-random-2026"
-    settings = Settings(ENVIRONMENT="prod", JWT_SECRET_KEY=strong_secret)
-    assert settings.jwt_secret_key == strong_secret
+def test_access_server_pepper_setting_is_available() -> None:
+    settings = Settings(ACCESS_SERVER_PEPPER="secret-pepper")
+    assert settings.access_server_pepper == "secret-pepper"
 
 
 def test_env_file_path_is_stable() -> None:
@@ -31,22 +25,10 @@ def test_env_file_path_is_stable() -> None:
     assert settings.api_prefix.startswith("/")
 
 
-def test_non_hs256_rejected_in_production() -> None:
-    with pytest.raises(ValidationError):
-        Settings(
-            ENVIRONMENT="prod",
-            JWT_SECRET_KEY="bastion-prod-secret-that-is-long-and-random-2026",
-            JWT_ALGORITHM="HS512",
-        )
-
-
-def test_blank_issuer_rejected_in_production() -> None:
-    with pytest.raises(ValidationError):
-        Settings(
-            ENVIRONMENT="prod",
-            JWT_SECRET_KEY="bastion-prod-secret-that-is-long-and-random-2026",
-            JWT_ISSUER="",
-        )
+def test_legacy_jwt_algorithm_and_issuer_are_transitional_only() -> None:
+    settings = Settings(ENVIRONMENT="prod", JWT_ALGORITHM="HS512", JWT_ISSUER="")
+    assert settings.jwt_algorithm == "HS512"
+    assert settings.jwt_issuer == ""
 
 
 def test_cors_allow_origins_parses_comma_separated_values() -> None:

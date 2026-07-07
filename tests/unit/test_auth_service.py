@@ -1,38 +1,25 @@
-from app.core.exceptions import UnauthorizedError
-from app.db.models.auth import User
-from app.schemas.auth import LoginRequest, RegisterRequest
+import pytest
+
+from app.core.exceptions import AppError
+from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse
 from app.services.auth.auth_service import AuthService
 
 
-class FakeUserRepo:
-    def __init__(self) -> None:
-        self.users: dict[str, User] = {}
+def test_register_is_disabled_and_does_not_create_account() -> None:
+    service = AuthService(repo=None)
 
-    def create(self, user: User) -> User:
-        user.id = len(self.users) + 1
-        self.users[user.username] = user
-        return user
+    with pytest.raises(AppError) as exc_info:
+        service.register(RegisterRequest())
 
-    def by_username(self, username: str) -> User | None:
-        return self.users.get(username)
+    assert exc_info.value.code == "legacy_auth_disabled"
+    assert exc_info.value.status_code == 410
 
 
-def test_register_and_login() -> None:
-    repo = FakeUserRepo()
-    service = AuthService(repo)  # type: ignore[arg-type]
+def test_login_is_disabled_and_does_not_issue_token() -> None:
+    service = AuthService(repo=None)
 
-    service.register(RegisterRequest(email="u@example.com", username="satoshi", password="password123"))
-    token = service.login(LoginRequest(username="satoshi", password="password123"))
-    assert token.access_token
+    with pytest.raises(AppError) as exc_info:
+        service.login(LoginRequest())
 
-
-def test_login_with_invalid_password_raises() -> None:
-    repo = FakeUserRepo()
-    service = AuthService(repo)  # type: ignore[arg-type]
-    service.register(RegisterRequest(email="u@example.com", username="satoshi", password="password123"))
-
-    try:
-        service.login(LoginRequest(username="satoshi", password="bad-pass"))
-        assert False, "Expected UnauthorizedError"
-    except UnauthorizedError:
-        assert True
+    assert exc_info.value.code == "legacy_auth_disabled"
+    assert "access_token" not in TokenResponse.model_fields

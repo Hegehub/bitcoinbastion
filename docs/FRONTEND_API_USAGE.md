@@ -8,3 +8,7 @@ No transaction signing and no seed/private key handling in frontend.
 
 
 Type strategy: `frontend/types/api.ts` and `frontend/services/apiClient.ts` provide manual synchronized baseline contracts. Automated `generate:api-types` is pending.
+
+## Access frontend API usage
+
+The frontend Access flow is checkout/import/session based, not login/register based. The UI should create Access payment intents, wait for payment settlement, issue/show the Bastion Access Pass once, import the pass into a challenge flow, create a short-lived PoP session, and then call protected APIs with `X-Bastion-*` headers. Frontends must not store raw Access Passes, recovery phrases, Bitcoin seeds, private keys, or raw signatures in localStorage or analytics.

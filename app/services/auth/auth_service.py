@@ -1,26 +1,36 @@
-from app.core.exceptions import UnauthorizedError
-from app.core.security import create_access_token, hash_password, verify_password
-from app.db.models.auth import User
-from app.db.repositories.user_repository import UserRepository
-from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse
+from typing import NoReturn
+
+from app.core.exceptions import AppError
+from app.schemas.auth import LoginRequest, RegisterRequest
+
+LEGACY_AUTH_REPLACEMENT = "/api/v1/access/payment-intents"
+LEGACY_AUTH_DISABLED_MESSAGE = (
+    "Legacy email/password authentication is disabled. Use Bastion Proof-of-Access."
+)
+
+
+class LegacyAuthDisabledError(AppError):
+    def __init__(self) -> None:
+        super().__init__(
+            message=LEGACY_AUTH_DISABLED_MESSAGE,
+            status_code=410,
+            code="legacy_auth_disabled",
+        )
 
 
 class AuthService:
-    def __init__(self, repo: UserRepository) -> None:
+    """Disabled legacy auth facade retained only for import stability."""
+
+    def __init__(self, repo: object | None = None) -> None:
         self.repo = repo
 
-    def register(self, payload: RegisterRequest) -> User:
-        user = User(
-            email=payload.email,
-            username=payload.username,
-            hashed_password=hash_password(payload.password),
-        )
-        return self.repo.create(user)
+    def _raise_disabled(self) -> NoReturn:
+        raise LegacyAuthDisabledError()
 
-    def login(self, payload: LoginRequest) -> TokenResponse:
-        user = self.repo.by_username(payload.username)
-        if user is None or not verify_password(payload.password, user.hashed_password):
-            raise UnauthorizedError("Invalid username or password")
+    def register(self, payload: RegisterRequest) -> NoReturn:
+        """Legacy password registration is disabled and never creates accounts."""
+        self._raise_disabled()
 
-        token = create_access_token(subject=str(user.id))
-        return TokenResponse(access_token=token)
+    def login(self, payload: LoginRequest) -> NoReturn:
+        """Legacy password login is disabled and never returns bearer tokens."""
+        self._raise_disabled()

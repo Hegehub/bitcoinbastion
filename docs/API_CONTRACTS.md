@@ -18,10 +18,10 @@
 - `GET /api/v1/health`
 - `GET /api/v1/health/live`
 - `GET /api/v1/health/ready`
-- `POST /api/v1/auth/register`
-- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/register` (deprecated; returns `legacy_auth_disabled`)
+- `POST /api/v1/auth/login` (deprecated; returns `legacy_auth_disabled`)
 
-These endpoints intentionally return direct schema payloads (not `ResponseEnvelope`).
+These endpoints intentionally return direct disabled-auth error payloads (not `ResponseEnvelope`).
 
 ## Implemented route inventory
 
@@ -33,8 +33,8 @@ These endpoints intentionally return direct schema payloads (not `ResponseEnvelo
 - `GET /metrics`
 
 ### Auth and users
-- `POST /api/v1/auth/register`
-- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/register` (deprecated; returns `legacy_auth_disabled`)
+- `POST /api/v1/auth/login` (deprecated; returns `legacy_auth_disabled`)
 - `GET /api/v1/users`
 - `GET /api/v1/users/me`
 
