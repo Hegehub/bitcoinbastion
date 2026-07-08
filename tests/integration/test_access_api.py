@@ -15,6 +15,7 @@ from app.db.base import Base
 from app.db.models.access import AccessCertificate, AccessPaymentIntent, SubscriptionEntitlement
 from app.domain.access.plans import PlanCode
 from app.domain.access.scopes import MARKET_INTELLIGENCE_READ, METRICS_BASIC_READ
+from app.services.access.lockdown_service import AccessLockdownResult
 from app.main import app
 
 
@@ -181,6 +182,26 @@ class _SessionService:
         self.frozen = True
         return 1
 
+class _LockdownService:
+    def __init__(self, session_service: _SessionService) -> None:
+        self.db = _CommitOnly()
+        self.session_service = session_service
+
+    def start_lockdown(self, _context: Any, request: Any) -> Any:
+        self.session_service.frozen = True
+        return AccessLockdownResult(
+            status="locked_down",
+            lockdown_id="lock-test",
+            affected_sessions=1,
+            affected_child_api_keys=0,
+            affected_delegated_passes=0,
+            affected_devices=0,
+            affected_offline_packs=0,
+            recovery_only=request.recovery_mode,
+            audit_event_hash="sha256:audit-lockdown",
+            created_at=datetime.now(UTC),
+        )
+
 
 @dataclass
 class _Context:
@@ -317,10 +338,10 @@ def test_entitlements_and_limits_endpoints() -> None:
 def test_lockdown_freezes_session() -> None:
     service = _SessionService()
     app.dependency_overrides[access_api.get_access_session_context] = lambda: _Context()
-    app.dependency_overrides[access_api.get_session_service] = lambda: service
+    app.dependency_overrides[access_api.get_lockdown_service] = lambda: _LockdownService(service)
     response = _client().post("/api/v1/access/lockdown", headers={"X-Bastion-Session": "session"})
     assert response.status_code == 200
-    assert response.json()["frozen_sessions"] == 1
+    assert response.json()["affected_sessions"] == 1
     assert service.frozen is True
 
 

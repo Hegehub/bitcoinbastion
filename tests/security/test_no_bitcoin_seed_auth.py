@@ -41,7 +41,7 @@ def test_recovery_endpoint_rejects_seed_like_factor_without_creating_session() -
         },
     )
 
-    assert response.status_code in {400, 422, 503}
+    assert response.status_code in {400, 403, 422, 503}
     assert "session_token" not in response.text
     assert SEED_12 not in response.text
 

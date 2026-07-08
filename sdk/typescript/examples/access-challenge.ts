@@ -4,7 +4,7 @@ const baseUrl = process.env.BASTION_API_BASE_URL ?? "http://localhost:8000";
 const accessPass = process.env.BASTION_ACCESS_PASS;
 
 if (!accessPass) {
-  throw new Error("Set BASTION_ACCESS_PASS. Bastion will never ask for your Bitcoin seed or private key; reject wallet-secret input.");
+  throw new Error("Set BASTION_ACCESS_PASS. Bastion will never ask for your Bitcoin wallet-secret material; reject wallet-secret input.");
 }
 
 const client = new BitcoinBastionClient({ baseUrl });

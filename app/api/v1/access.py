@@ -13,7 +13,7 @@ from datetime import UTC, datetime, timedelta
 from dataclasses import asdict
 from typing import Annotated, Any, cast
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
+from fastapi import APIRouter, Body, Depends, Header, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -381,7 +381,7 @@ def get_my_limits(context: Annotated[Any, Depends(get_access_session_context)]) 
 
 @router.post("/lockdown", response_model=AccessLockdownResponse, summary="Start Emergency Lockdown Mode for the current Access Certificate.")
 def lockdown(
-    request: AccessLockdownRequest,
+    request: Annotated[AccessLockdownRequest, Body(default_factory=AccessLockdownRequest)],
     context: Annotated[Any, Depends(get_access_session_context)],
     service: Annotated[Any, Depends(get_lockdown_service)],
 ) -> AccessLockdownResponse:

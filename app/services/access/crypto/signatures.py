@@ -314,5 +314,10 @@ def _base64url_encode(value: bytes) -> str:
 def _base64url_decode(value: str) -> bytes:
     if not isinstance(value, str) or not value:
         raise ValueError("Invalid signature encoding")
+    if "=" in value:
+        raise ValueError("Invalid signature encoding")
     padded = value.encode("ascii") + b"=" * (-len(value) % 4)
-    return base64.urlsafe_b64decode(padded)
+    decoded = base64.urlsafe_b64decode(padded)
+    if _base64url_encode(decoded) != value:
+        raise ValueError("Invalid signature encoding")
+    return decoded

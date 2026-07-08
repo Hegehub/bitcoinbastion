@@ -7,6 +7,7 @@ from sqlalchemy.pool import StaticPool
 from app.api.dependencies import db_session
 from app.db.models import bastion_trace
 from app.main import app
+from tests.helpers.access import ACCESS_HEADERS, proof_of_access_overrides
 
 
 @pytest.fixture(autouse=True)
@@ -62,7 +63,10 @@ def _create_report() -> int:
 
 def test_trace_proof_packet_endpoint_is_truthful_unsigned_summary() -> None:
     report_id = _create_report()
-    response = client.get(f"/api/v1/trace/report/{report_id}/proof-packet")
+    with proof_of_access_overrides():
+        response = client.get(
+            f"/api/v1/trace/report/{report_id}/proof-packet", headers=ACCESS_HEADERS
+        )
     assert response.status_code == 200
     body = response.json()
     assert body["success"] is True
@@ -91,7 +95,8 @@ def test_trace_proof_packet_endpoint_is_truthful_unsigned_summary() -> None:
 
 
 def test_trace_proof_packet_missing_report_returns_404() -> None:
-    response = client.get("/api/v1/trace/report/999999999/proof-packet")
+    with proof_of_access_overrides():
+        response = client.get("/api/v1/trace/report/999999999/proof-packet", headers=ACCESS_HEADERS)
     assert response.status_code == 404
 
 
