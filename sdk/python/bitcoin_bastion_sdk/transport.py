@@ -4,6 +4,7 @@ from typing import Any
 
 import httpx
 
+from bitcoin_bastion_sdk.access_auth import BastionAccessAuth
 from bitcoin_bastion_sdk.auth import build_headers
 from bitcoin_bastion_sdk.config import BastionSDKConfig
 from bitcoin_bastion_sdk.errors import (
@@ -14,6 +15,13 @@ from bitcoin_bastion_sdk.errors import (
     BastionRateLimitError,
     BastionTimeoutError,
     BastionValidationError,
+    BastionAccessChallengeExpired,
+    BastionAccessError,
+    BastionAccessPolicyDenied,
+    BastionAccessRevoked,
+    BastionAccessSessionExpired,
+    BastionAccessSignatureError,
+    BastionAccessUpgradeRequired,
 )
 
 JsonDict = dict[str, Any]
@@ -54,12 +62,25 @@ def _raise_for_status(response: httpx.Response) -> None:
         return
     payload = _safe_payload(response)
     message = _message_from_payload(payload, f"Bitcoin Bastion API error ({response.status_code})")
+    code = _error_code(payload)
     kwargs = {
         "status_code": response.status_code,
-        "error_code": _error_code(payload),
+        "error_code": code,
         "request_id": response.headers.get("x-request-id"),
         "payload": payload,
     }
+    if code in {"access_session_expired", "session_expired"}:
+        raise BastionAccessSessionExpired(message)
+    if code in {"access_signature_invalid", "invalid_signature", "access_signature_required"}:
+        raise BastionAccessSignatureError(message)
+    if code in {"challenge_expired", "access_challenge_expired"}:
+        raise BastionAccessChallengeExpired(message)
+    if code in {"policy_denied", "access_policy_denied"}:
+        raise BastionAccessPolicyDenied(message)
+    if code in {"upgrade_required", "access_upgrade_required"}:
+        raise BastionAccessUpgradeRequired(message)
+    if code in {"revoked", "access_session_revoked", "pass_revoked"}:
+        raise BastionAccessRevoked(message)
     if response.status_code in {400, 422}:
         raise BastionValidationError(message, **kwargs)
     if response.status_code in {401, 403}:
@@ -79,7 +100,9 @@ def unwrap_response(response: httpx.Response, *, raw: bool = False) -> Any:
     if raw:
         return payload
     if isinstance(payload, dict) and "error" in payload and payload.get("error") is not None:
-        raise BastionAPIError(_message_from_payload(payload, "Bitcoin Bastion API error"), payload=payload)
+        raise BastionAPIError(
+            _message_from_payload(payload, "Bitcoin Bastion API error"), payload=payload
+        )
     if isinstance(payload, dict) and "data" in payload and "error" in payload:
         return payload.get("data")
     return payload
@@ -95,9 +118,14 @@ class BastionTransport:
         timeout: float = 5.0,
         headers: dict[str, str] | None = None,
         transport: httpx.BaseTransport | None = None,
+        access_auth: BastionAccessAuth | None = None,
+        allow_legacy_bearer_auth: bool = False,
     ) -> None:
         self.config = BastionSDKConfig(base_url=base_url, api_prefix=api_prefix, timeout=timeout)
-        self.headers = build_headers(api_key, headers)
+        self.access_auth = access_auth
+        self.headers = build_headers(
+            api_key, headers, allow_legacy_bearer_auth=allow_legacy_bearer_auth
+        )
         self.client = httpx.Client(
             base_url=f"{self.config.base_url}{self.config.api_prefix}",
             timeout=timeout,
@@ -113,14 +141,29 @@ class BastionTransport:
         params: dict[str, Any] | None = None,
         json: JsonDict | None = None,
         raw: bool = False,
+        require_auth: bool = False,
     ) -> Any:
         try:
-            response = self.client.request(method, path, params=params, json=json)
+            request_headers = self._signed_headers(
+                method, path, json_body=json, require_auth=require_auth
+            )
+            response = self.client.request(
+                method, path, params=params, json=json, headers=request_headers
+            )
         except httpx.TimeoutException as exc:
             raise BastionTimeoutError("Bitcoin Bastion request timed out") from exc
         except httpx.HTTPError as exc:
             raise BastionConnectionError("Bitcoin Bastion connection error") from exc
         return unwrap_response(response, raw=raw)
+
+    def _signed_headers(
+        self, method: str, path: str, *, json_body: JsonDict | None, require_auth: bool
+    ) -> dict[str, str] | None:
+        if self.access_auth is None:
+            if require_auth:
+                raise BastionAccessError("Protected SDK request requires BastionAccessAuth")
+            return None
+        return self.access_auth.sign_headers(method, path, json_body=json_body)
 
     def close(self) -> None:
         self.client.close()
@@ -136,9 +179,14 @@ class AsyncBastionTransport:
         timeout: float = 5.0,
         headers: dict[str, str] | None = None,
         transport: httpx.AsyncBaseTransport | None = None,
+        access_auth: BastionAccessAuth | None = None,
+        allow_legacy_bearer_auth: bool = False,
     ) -> None:
         self.config = BastionSDKConfig(base_url=base_url, api_prefix=api_prefix, timeout=timeout)
-        self.headers = build_headers(api_key, headers)
+        self.access_auth = access_auth
+        self.headers = build_headers(
+            api_key, headers, allow_legacy_bearer_auth=allow_legacy_bearer_auth
+        )
         self.client = httpx.AsyncClient(
             base_url=f"{self.config.base_url}{self.config.api_prefix}",
             timeout=timeout,
@@ -154,14 +202,29 @@ class AsyncBastionTransport:
         params: dict[str, Any] | None = None,
         json: JsonDict | None = None,
         raw: bool = False,
+        require_auth: bool = False,
     ) -> Any:
         try:
-            response = await self.client.request(method, path, params=params, json=json)
+            request_headers = self._signed_headers(
+                method, path, json_body=json, require_auth=require_auth
+            )
+            response = await self.client.request(
+                method, path, params=params, json=json, headers=request_headers
+            )
         except httpx.TimeoutException as exc:
             raise BastionTimeoutError("Bitcoin Bastion request timed out") from exc
         except httpx.HTTPError as exc:
             raise BastionConnectionError("Bitcoin Bastion connection error") from exc
         return unwrap_response(response, raw=raw)
+
+    def _signed_headers(
+        self, method: str, path: str, *, json_body: JsonDict | None, require_auth: bool
+    ) -> dict[str, str] | None:
+        if self.access_auth is None:
+            if require_auth:
+                raise BastionAccessError("Protected SDK request requires BastionAccessAuth")
+            return None
+        return self.access_auth.sign_headers(method, path, json_body=json_body)
 
     async def close(self) -> None:
         await self.client.aclose()

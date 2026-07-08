@@ -15,13 +15,16 @@ def _url(*, allow_prodlike: bool) -> str:
         raise SystemExit("Refusing prod-like DB URL")
     return u
 
+
 def _clone_db_url(base: str, suffix: str) -> str:
     p = urlparse(base)
     db = (p.path or "/postgres").lstrip("/") + suffix
-    return urlunparse((p.scheme,p.netloc,f"/{db}",p.params,p.query,p.fragment))
+    return urlunparse((p.scheme, p.netloc, f"/{db}", p.params, p.query, p.fragment))
 
-def _run(cmd: list[str], env: dict[str,str]) -> None:
+
+def _run(cmd: list[str], env: dict[str, str]) -> None:
     subprocess.run(cmd, check=True, env=env)
+
 
 def _run_capture(cmd: list[str], env: dict[str, str]) -> dict[str, object]:
     proc = subprocess.run(cmd, text=True, capture_output=True, env=env)
@@ -33,6 +36,7 @@ def _run_capture(cmd: list[str], env: dict[str, str]) -> dict[str, object]:
         "stderr": proc.stderr[-2000:],
     }
 
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -40,15 +44,19 @@ def main() -> int:
             "from POSTGRES_TEST_DATABASE_URL."
         )
     )
-    parser.add_argument("--output-json", default="", help="Optional path to write JSON evidence output.")
+    parser.add_argument(
+        "--output-json", default="", help="Optional path to write JSON evidence output."
+    )
     args = parser.parse_args()
 
     allow_prodlike = os.environ.get("ALLOW_PRODLIKE_POSTGRES", "").lower() in {"1", "true", "yes"}
     base = _url(allow_prodlike=allow_prodlike)
     test_url = _clone_db_url(base, "_migration_smoke")
-    env = os.environ.copy(); env["DATABASE_URL"] = test_url
+    env = os.environ.copy()
+    env["DATABASE_URL"] = test_url
     # create/drop isolated db through base connection
     import sqlalchemy as sa
+
     admin = sa.create_engine(base, isolation_level="AUTOCOMMIT", future=True)
     dbname = urlparse(test_url).path.lstrip("/")
     with admin.connect() as c:
@@ -82,6 +90,7 @@ def main() -> int:
     print(f"Postgres migration smoke: {'PASS' if output['ok'] else 'FAIL'} (scratch_db={dbname})")
     print(json.dumps(output, indent=2))
     return 0 if output["ok"] else 1
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

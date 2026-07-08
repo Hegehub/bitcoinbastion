@@ -4,18 +4,15 @@ from typing import Any
 
 from fastapi.testclient import TestClient
 
-from app.api.dependencies import get_admin_user
 from app.main import app
+from tests.helpers.access import ACCESS_HEADERS, SIGNED_ACCESS_HEADERS, proof_of_access_overrides
 
 
 @contextmanager
-def admin_client() -> Iterator[TestClient]:
-    app.dependency_overrides[get_admin_user] = lambda: object()
-    try:
+def access_client() -> Iterator[TestClient]:
+    with proof_of_access_overrides():
         with TestClient(app) as client:
             yield client
-    finally:
-        app.dependency_overrides.pop(get_admin_user, None)
 
 
 def response_data(response_json: dict[str, Any]) -> dict[str, Any]:
@@ -61,11 +58,14 @@ def test_disable_requires_admin() -> None:
 
 
 def test_dry_run_does_not_perform_risky_action() -> None:
-    with admin_client() as client:
-        client.post("/api/v1/plugins/builtin.dashboard.status/enable")
+    with access_client() as client:
+        client.post(
+            "/api/v1/plugins/builtin.dashboard.status/enable", headers=SIGNED_ACCESS_HEADERS
+        )
         response = client.post(
             "/api/v1/plugins/builtin.dashboard.status/dry-run",
             json={"payload": {"message": "bounded smoke"}},
+            headers=ACCESS_HEADERS,
         )
 
     assert response.status_code == 200
@@ -75,10 +75,11 @@ def test_dry_run_does_not_perform_risky_action() -> None:
 
 
 def test_dry_run_forbidden_input_rejected() -> None:
-    with admin_client() as client:
+    with access_client() as client:
         response = client.post(
             "/api/v1/plugins/builtin.dashboard.status/dry-run",
             json={"payload": {"bad": "private key should never be submitted"}},
+            headers=ACCESS_HEADERS,
         )
 
     assert response.status_code == 400

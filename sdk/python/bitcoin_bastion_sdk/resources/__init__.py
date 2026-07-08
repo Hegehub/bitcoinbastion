@@ -1,3 +1,4 @@
+from bitcoin_bastion_sdk.resources.access import AccessResource, AsyncAccessResource
 from bitcoin_bastion_sdk.resources.evidence import EvidenceResource
 from bitcoin_bastion_sdk.resources.health import HealthResource
 from bitcoin_bastion_sdk.resources.market import MarketResource
@@ -12,6 +13,8 @@ from bitcoin_bastion_sdk.resources.wallet import WalletResource
 from bitcoin_bastion_sdk.resources.webhooks import WebhooksResource
 
 __all__ = [
+    "AccessResource",
+    "AsyncAccessResource",
     "EvidenceResource",
     "HealthResource",
     "MarketResource",

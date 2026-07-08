@@ -16,8 +16,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from app.db.base import Base
-import app.db.models  # noqa: F401  # ensure models are registered
+from app.db.base import Base  # noqa: E402
+import app.db.models  # noqa: E402,F401  # ensure models are registered
 
 CREATE_TABLE_RE = re.compile(r"op\.create_table\(\s*['\"]([^'\"]+)['\"]")
 CREATE_ALL_RE = re.compile(r"\bcreate_all\s*\(")
@@ -52,7 +52,10 @@ def main() -> int:
             runtime_create_all_calls.append(str(source_file))
 
     if runtime_create_all_calls:
-        print("Runtime create_all() usage is forbidden outside tests/migrations:", ", ".join(runtime_create_all_calls))
+        print(
+            "Runtime create_all() usage is forbidden outside tests/migrations:",
+            ", ".join(runtime_create_all_calls),
+        )
 
     has_errors = bool(missing_in_migrations or missing_in_models or runtime_create_all_calls)
     return 1 if has_errors else 0

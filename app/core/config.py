@@ -362,6 +362,56 @@ class Settings(BaseSettings):
 
     rate_limit_per_minute: int = Field(default=120, alias="RATE_LIMIT_PER_MINUTE")
 
+    access_server_pepper: str = Field(default="", alias="ACCESS_SERVER_PEPPER")
+    access_allow_manual_grants: bool = Field(default=False, alias="ACCESS_ALLOW_MANUAL_GRANTS")
+    access_default_payment_provider: str = Field(default="manual", alias="ACCESS_DEFAULT_PAYMENT_PROVIDER")
+    access_payment_intent_ttl_seconds: int = Field(
+        default=900, ge=60, alias="ACCESS_PAYMENT_INTENT_TTL_SECONDS"
+    )
+    access_challenge_ttl_seconds: int = Field(default=300, ge=30, alias="ACCESS_CHALLENGE_TTL_SECONDS")
+    access_session_ttl_seconds: int = Field(default=900, ge=60, alias="ACCESS_SESSION_TTL_SECONDS")
+    access_request_max_skew_seconds: int = Field(default=300, ge=1, alias="ACCESS_REQUEST_MAX_SKEW_SECONDS")
+    access_request_signature_required: bool = Field(default=True, alias="ACCESS_REQUEST_SIGNATURE_REQUIRED")
+    access_btcpay_enabled: bool = Field(default=False, alias="ACCESS_BTCPAY_ENABLED")
+    access_btcpay_base_url: str = Field(default="", alias="ACCESS_BTCPAY_BASE_URL")
+    access_btcpay_api_key: str = Field(default="", alias="ACCESS_BTCPAY_API_KEY")
+    access_btcpay_store_id: str = Field(default="", alias="ACCESS_BTCPAY_STORE_ID")
+    access_btcpay_webhook_secret: str = Field(default="", alias="ACCESS_BTCPAY_WEBHOOK_SECRET")
+    access_btcpay_default_currency: str = Field(default="BTC", alias="ACCESS_BTCPAY_DEFAULT_CURRENCY")
+    access_btcpay_checkout_expiry_minutes: int = Field(
+        default=30, ge=1, alias="ACCESS_BTCPAY_CHECKOUT_EXPIRY_MINUTES"
+    )
+    access_btcpay_http_timeout_seconds: int = Field(
+        default=10, ge=1, alias="ACCESS_BTCPAY_HTTP_TIMEOUT_SECONDS"
+    )
+    access_btcpay_webhook_tolerance_seconds: int = Field(
+        default=300, ge=1, alias="ACCESS_BTCPAY_WEBHOOK_TOLERANCE_SECONDS"
+    )
+    access_recovery_enabled: bool = Field(default=True, alias="ACCESS_RECOVERY_ENABLED")
+    access_recovery_cooldown_seconds: int = Field(default=900, ge=60, alias="ACCESS_RECOVERY_COOLDOWN_SECONDS")
+    access_recovery_max_attempts_per_hour: int = Field(default=5, ge=1, alias="ACCESS_RECOVERY_MAX_ATTEMPTS_PER_HOUR")
+    access_recovery_require_quorum_for_pro: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_PRO")
+    access_recovery_require_quorum_for_business: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_BUSINESS")
+    access_recovery_require_quorum_for_enterprise: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_ENTERPRISE")
+    access_recovery_reject_bitcoin_seed_inputs: bool = Field(default=True, alias="ACCESS_RECOVERY_REJECT_BITCOIN_SEED_INPUTS")
+
+    @model_validator(mode="after")
+    def _validate_btcpay_access_config(self) -> "Settings":
+        if self.access_btcpay_enabled and self.environment.strip().lower() in PRODUCTION_ENVIRONMENTS:
+            missing = [
+                name
+                for name, value in {
+                    "ACCESS_BTCPAY_BASE_URL": self.access_btcpay_base_url,
+                    "ACCESS_BTCPAY_API_KEY": self.access_btcpay_api_key,
+                    "ACCESS_BTCPAY_STORE_ID": self.access_btcpay_store_id,
+                    "ACCESS_BTCPAY_WEBHOOK_SECRET": self.access_btcpay_webhook_secret,
+                }.items()
+                if not value
+            ]
+            if missing:
+                raise ValueError("BTCPay Access provider enabled in production with missing required configuration")
+        return self
+
     news_fetch_interval_seconds: int = Field(default=300, alias="NEWS_FETCH_INTERVAL_SECONDS")
     news_ingestion_enabled: bool = Field(default=True, alias="NEWS_INGESTION_ENABLED")
     news_fetch_timeout_seconds: int = Field(default=10, alias="NEWS_FETCH_TIMEOUT_SECONDS")
@@ -500,28 +550,10 @@ class Settings(BaseSettings):
         if self.environment.lower() not in PRODUCTION_ENVIRONMENTS:
             return self
 
-        weak_secret_values = {
-            "",
-            "change-me-in-prod",
-            "changeme",
-            "default",
-            "secret",
-            "insecure",
-        }
-        secret = self.jwt_secret_key.strip()
-        if secret.lower() in weak_secret_values or len(secret) < 32:
-            raise ValueError(
-                "JWT_SECRET_KEY must be non-default and at least 32 characters in production."
-            )
-
-        if self.jwt_algorithm != "HS256":
-            raise ValueError(
-                "JWT_ALGORITHM must remain HS256 unless explicit cryptographic review is completed."
-            )
-
-        if not self.jwt_issuer.strip():
-            raise ValueError("JWT_ISSUER must be set in production.")
-
+        # Legacy JWT authentication is disabled. Production auth hardening now
+        # belongs to the Proof-of-Access settings and service-level startup checks;
+        # JWT_* values are retained only for transitional non-auth import/config
+        # compatibility and must not block production deploys as primary auth.
         return self
 
     @model_validator(mode="after")

@@ -1,22 +1,17 @@
 from fastapi.testclient import TestClient
 
-from app.api.dependencies import get_admin_user
 from app.db.base import Base
 from app.db.models.signal import Signal
 from app.db.repositories.signal_repository import SignalRepository
 from app.db.session import SessionLocal, engine
 from app.main import app
-
-
-class FakeAdminUser:
-    is_admin = True
+from tests.helpers.access import ACCESS_HEADERS, proof_of_access_overrides
 
 
 def test_policy_execution_summary_contract_shape() -> None:
-    app.dependency_overrides[get_admin_user] = lambda: FakeAdminUser()
     client = TestClient(app)
-    try:
-        response = client.get("/api/v1/policy/executions/summary")
+    with proof_of_access_overrides():
+        response = client.get("/api/v1/policy/executions/summary", headers=ACCESS_HEADERS)
         assert response.status_code == 200
         payload = response.json()["data"]
 
@@ -29,28 +24,24 @@ def test_policy_execution_summary_contract_shape() -> None:
 
         for item in payload["by_policy"]:
             assert {"policy_name", "total", "allowed", "blocked"} <= set(item.keys())
-    finally:
-        app.dependency_overrides.clear()
 
 
 def test_policy_execution_summary_contract_rejects_invalid_limit() -> None:
-    app.dependency_overrides[get_admin_user] = lambda: FakeAdminUser()
     client = TestClient(app)
-    try:
-        response = client.get("/api/v1/policy/executions/summary", params={"limit": 0})
+    with proof_of_access_overrides():
+        response = client.get(
+            "/api/v1/policy/executions/summary", headers=ACCESS_HEADERS, params={"limit": 0}
+        )
         assert response.status_code == 422
-    finally:
-        app.dependency_overrides.clear()
 
 
 def test_policy_execution_summary_contract_rejects_limit_above_max() -> None:
-    app.dependency_overrides[get_admin_user] = lambda: FakeAdminUser()
     client = TestClient(app)
-    try:
-        response = client.get("/api/v1/policy/executions/summary", params={"limit": 1001})
+    with proof_of_access_overrides():
+        response = client.get(
+            "/api/v1/policy/executions/summary", headers=ACCESS_HEADERS, params={"limit": 1001}
+        )
         assert response.status_code == 422
-    finally:
-        app.dependency_overrides.clear()
 
 
 def test_policy_execution_summary_contract_requires_admin_auth() -> None:

@@ -6,6 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from app.api.access_dependencies import require_metric_entitlement, require_plan
+from app.domain.access.context import AccessContext
+from app.domain.access.plans import PlanCode
 from app.db.models.time_utils import utcnow
 from app.core.telemetry import BOUNDED_LABELS, OBSERVABILITY_METRIC_NAMES
 from app.db.repositories.provider_source_health_timeseries_repository import (
@@ -98,6 +101,7 @@ def provider_health_history(
     domain: str | None = Query(None, min_length=1, max_length=64),
     status: str | None = Query(None, min_length=1, max_length=32),
     is_degraded: bool | None = None,
+    _: AccessContext = Depends(require_plan(PlanCode.BUSINESS)),
     db: Session = Depends(get_db),
 ) -> HealthHistoryOut:
     upper = to_ts or utcnow()
@@ -130,6 +134,7 @@ def source_health_history(
     domain: str | None = Query(None, min_length=1, max_length=64),
     status: str | None = Query(None, min_length=1, max_length=32),
     is_degraded: bool | None = None,
+    _: AccessContext = Depends(require_plan(PlanCode.BUSINESS)),
     db: Session = Depends(get_db),
 ) -> HealthHistoryOut:
     upper = to_ts or utcnow()
@@ -156,6 +161,7 @@ def source_health_history(
 )
 def latest_provider_health(
     provider_key: str = Query(..., min_length=1, max_length=120),
+    _: AccessContext = Depends(require_plan(PlanCode.BUSINESS)),
     db: Session = Depends(get_db),
 ) -> HealthSnapshotOut:
     snapshot = ProviderSourceHealthTimeSeriesRepository(db).latest_provider_snapshot(provider_key)
@@ -171,6 +177,7 @@ def latest_provider_health(
 )
 def latest_source_health(
     source_key: str = Query(..., min_length=1, max_length=120),
+    _: AccessContext = Depends(require_plan(PlanCode.BUSINESS)),
     db: Session = Depends(get_db),
 ) -> HealthSnapshotOut:
     snapshot = ProviderSourceHealthTimeSeriesRepository(db).latest_source_snapshot(source_key)
@@ -186,6 +193,7 @@ def latest_source_health(
 )
 def metric_usage_summary(
     window_hours: int = Query(24, ge=1, le=168),
+    _: AccessContext = Depends(require_metric_entitlement("access.usage")),
     db: Session = Depends(get_db),
 ) -> MetricUsageSummaryOut:
     upper = utcnow()

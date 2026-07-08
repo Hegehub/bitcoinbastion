@@ -32,8 +32,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from app.db.base import Base
-import app.db.models  # noqa: F401
+from app.db.base import Base  # noqa: E402
+import app.db.models  # noqa: E402,F401
 
 
 def _upgrade_schema(database_url: str) -> None:
@@ -68,7 +68,9 @@ def _model_index_signature(table: Table) -> set[tuple[str | None, tuple[str, ...
     return signatures
 
 
-def _db_index_signature(inspector: Inspector, table_name: str) -> set[tuple[str | None, tuple[str, ...], bool]]:
+def _db_index_signature(
+    inspector: Inspector, table_name: str
+) -> set[tuple[str | None, tuple[str, ...], bool]]:
     signatures: set[tuple[str | None, tuple[str, ...], bool]] = set()
     try:
         for idx in inspector.get_indexes(table_name):
@@ -95,7 +97,9 @@ def _model_unique_signature(table: Table) -> set[tuple[str | None, tuple[str, ..
     return signatures
 
 
-def _db_unique_signature(inspector: Inspector, table_name: str) -> set[tuple[str | None, tuple[str, ...]]]:
+def _db_unique_signature(
+    inspector: Inspector, table_name: str
+) -> set[tuple[str | None, tuple[str, ...]]]:
     signatures: set[tuple[str | None, tuple[str, ...]]] = set()
     try:
         for constraint in inspector.get_unique_constraints(table_name):
@@ -116,7 +120,9 @@ def _model_fk_signature(table: Table) -> set[tuple[tuple[str, ...], str, tuple[s
     return signatures
 
 
-def _db_fk_signature(inspector: Inspector, table_name: str) -> set[tuple[tuple[str, ...], str, tuple[str, ...]]]:
+def _db_fk_signature(
+    inspector: Inspector, table_name: str
+) -> set[tuple[tuple[str, ...], str, tuple[str, ...]]]:
     signatures: set[tuple[tuple[str, ...], str, tuple[str, ...]]] = set()
     try:
         for fk in inspector.get_foreign_keys(table_name):
@@ -169,7 +175,9 @@ def collect_schema_parity_errors(inspector: Inspector) -> list[str]:
         missing_cols = sorted(model_column_names - db_column_names)
         extra_cols = sorted(db_column_names - model_column_names)
         if missing_cols or extra_cols:
-            column_mismatches.append(f"{table_name}: missing={missing_cols or []}, extra={extra_cols or []}")
+            column_mismatches.append(
+                f"{table_name}: missing={missing_cols or []}, extra={extra_cols or []}"
+            )
 
         db_columns_by_name = {col["name"]: col for col in db_columns_raw}
         for model_col in model_columns:
@@ -185,7 +193,9 @@ def collect_schema_parity_errors(inspector: Inspector) -> list[str]:
 
             db_type = db_col.get("type")
             if not _types_have_same_affinity(model_col.type, db_type):
-                type_mismatches.append(f"{table_name}.{model_col.name}: model_type={model_col.type} db_type={db_type}")
+                type_mismatches.append(
+                    f"{table_name}.{model_col.name}: model_type={model_col.type} db_type={db_type}"
+                )
 
             if model_col.server_default is not None:
                 model_default = _model_server_default(model_col)
@@ -245,7 +255,12 @@ def main() -> int:
         db_tables = {name for name in inspector.get_table_names() if name != "alembic_version"}
         errors = collect_schema_parity_errors(inspector)
 
-        print("Runtime schema parity:", f"model_tables={len(model_tables)}", f"db_tables={len(db_tables)}", f"errors={len(errors)}")
+        print(
+            "Runtime schema parity:",
+            f"model_tables={len(model_tables)}",
+            f"db_tables={len(db_tables)}",
+            f"errors={len(errors)}",
+        )
         if errors:
             for err in errors:
                 print("-", err)

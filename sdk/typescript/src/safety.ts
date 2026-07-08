@@ -4,6 +4,8 @@ const SENSITIVE_PATTERNS = [
   "seed phrase",
   "mnemonic",
   "private key",
+  "bitcoin seed",
+  "wallet seed",
   "xprv",
   "yprv",
   "zprv",
@@ -12,6 +14,8 @@ const SENSITIVE_PATTERNS = [
   "12 words",
   "24 words",
   "signing material",
+  "bitcoin_seed",
+  "private_key",
 ];
 
 export const SAFETY_MESSAGE =

@@ -5,14 +5,15 @@ import json
 import os
 import sys
 from urllib.parse import urlparse
-from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import create_engine, inspect
 
 REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, REPO_ROOT)
-from scripts.check_schema_runtime_parity import collect_schema_parity_errors
+from scripts.check_schema_runtime_parity import collect_schema_parity_errors  # noqa: E402
 
 BLOCKED_HOST_TOKENS = ("prod", "primary", "writer", "amazonaws.com")
 BLOCKED_DB_TOKENS = ("prod", "production", "main")
+
 
 def _require_url(*, allow_prodlike: bool) -> str:
     url = os.environ.get("POSTGRES_TEST_DATABASE_URL", "").strip()
@@ -25,11 +26,15 @@ def _require_url(*, allow_prodlike: bool) -> str:
     db = (parsed.path or "").lstrip("/").lower()
     risky = any(t in host for t in BLOCKED_HOST_TOKENS) or any(t in db for t in BLOCKED_DB_TOKENS)
     if risky and not allow_prodlike:
-        raise SystemExit("Refusing prod-like Postgres target. Set ALLOW_PRODLIKE_POSTGRES=1 to override.")
+        raise SystemExit(
+            "Refusing prod-like Postgres target. Set ALLOW_PRODLIKE_POSTGRES=1 to override."
+        )
     return url
+
 
 def _bool_env(name: str) -> bool:
     return os.environ.get(name, "").strip().lower() in {"1", "true", "yes"}
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(
@@ -69,6 +74,7 @@ def main() -> int:
     )
     print(json.dumps(result, indent=2))
     return 0 if not errors else 1
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
