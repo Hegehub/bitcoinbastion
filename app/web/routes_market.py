@@ -10,7 +10,12 @@ from sqlalchemy.orm import Session
 
 from app.api.dependencies import db_session
 from app.schemas.market_time_machine_web import MarketTimelineDTO
-from app.web.market_time_machine_service import FILTERS, SAFETY_LIMITATIONS, TIMEFRAMES, MarketTimeMachineWebService
+from app.web.market_time_machine_service import (
+    FILTERS,
+    SAFETY_LIMITATIONS,
+    TIMEFRAMES,
+    MarketTimeMachineWebService,
+)
 from app.web.metrics import (
     CHART_MARKER_COUNT,
     EVIDENCE_PANEL_REQUESTS_TOTAL,
@@ -44,7 +49,12 @@ router = APIRouter(tags=["market-intelligence-web"])
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
 MARKET_SECTIONS = {"timeline", "time-machine", "signals", "evidence", "narratives", "sources"}
-LEGACY_SECTION_ALIASES = {"candles": "time-machine", "events": "timeline", "news": "timeline", "shock-index": "timeline"}
+LEGACY_SECTION_ALIASES = {
+    "candles": "time-machine",
+    "events": "timeline",
+    "news": "timeline",
+    "shock-index": "timeline",
+}
 
 
 def _safe_context(request: Request, **extra: object) -> dict[str, object]:
@@ -53,13 +63,22 @@ def _safe_context(request: Request, **extra: object) -> dict[str, object]:
         "safety_limitations": SAFETY_LIMITATIONS,
         "timeframes": TIMEFRAMES,
         "timeline_filters": FILTERS,
-        "market_sections": ["Timeline", "Market Time Machine", "Narratives", "Signals", "Evidence", "Sources"],
+        "market_sections": [
+            "Timeline",
+            "Market Time Machine",
+            "Narratives",
+            "Signals",
+            "Evidence",
+            "Sources",
+        ],
     }
     base.update(extra)
     return base
 
 
-def _service_payload(service: MarketTimeMachineWebService, *, timeframe: str, sort: str = "name") -> tuple[MarketTimelineDTO, dict[str, object]]:
+def _service_payload(
+    service: MarketTimeMachineWebService, *, timeframe: str, sort: str = "name"
+) -> tuple[MarketTimelineDTO, dict[str, object]]:
     dto = service.dashboard(timeframe=timeframe)
     payload = service.landing_payload(timeframe=timeframe)
     payload["source_summary"] = service.source_summary(sort=sort)
@@ -81,7 +100,9 @@ def _dashboard_context(
     return _safe_context(
         request,
         dto=dto,
-        market_vm=build_market_dto(dto, selected_timeframe=selected_timeframe, selected_date=date, api_payload=payload),
+        market_vm=build_market_dto(
+            dto, selected_timeframe=selected_timeframe, selected_date=date, api_payload=payload
+        ),
         selected_timeframe=selected_timeframe,
     )
 
@@ -100,7 +121,12 @@ def market_dashboard(
         context = _dashboard_context(request, db, timeframe, date)
     except OperationalError:
         TIMELINE_RENDER_FAILURES_TOTAL.labels(surface="market").inc()
-        context = _safe_context(request, dto=None, market_vm=None, selected_timeframe=timeframe if timeframe in TIMEFRAMES else "1h")
+        context = _safe_context(
+            request,
+            dto=None,
+            market_vm=None,
+            selected_timeframe=timeframe if timeframe in TIMEFRAMES else "1h",
+        )
     return templates.TemplateResponse(request, "market/dashboard.html", context)
 
 
@@ -119,7 +145,13 @@ def market_time_machine(
         context["frame"] = page_frame("time-machine")
     except OperationalError:
         TIMELINE_RENDER_FAILURES_TOTAL.labels(surface="time_machine").inc()
-        context = _safe_context(request, dto=None, market_vm=None, frame=page_frame("time-machine"), selected_timeframe=timeframe if timeframe in TIMEFRAMES else "1h")
+        context = _safe_context(
+            request,
+            dto=None,
+            market_vm=None,
+            frame=page_frame("time-machine"),
+            selected_timeframe=timeframe if timeframe in TIMEFRAMES else "1h",
+        )
     return templates.TemplateResponse(request, "market/time_machine.html", context)
 
 
@@ -144,7 +176,13 @@ def market_section(
         context["selected_sort"] = sort
     except OperationalError:
         TIMELINE_RENDER_FAILURES_TOTAL.labels(surface=section).inc()
-        context = _safe_context(request, dto=None, market_vm=None, frame=page_frame(section), selected_timeframe=timeframe if timeframe in TIMEFRAMES else "1h")
+        context = _safe_context(
+            request,
+            dto=None,
+            market_vm=None,
+            frame=page_frame(section),
+            selected_timeframe=timeframe if timeframe in TIMEFRAMES else "1h",
+        )
     return templates.TemplateResponse(request, "market/section.html", context)
 
 
@@ -163,15 +201,23 @@ def market_timeline(
     for item in filter.split(","):
         TIMELINE_FILTER_USAGE_TOTAL.labels(filter=bounded_filter_label(item.strip().lower())).inc()
     try:
-        dto = MarketTimeMachineWebService(db).timeline(filter_name=filter, page=page, page_size=page_size, sort=sort, window=window)
+        dto = MarketTimeMachineWebService(db).timeline(
+            filter_name=filter, page=page, page_size=page_size, sort=sort, window=window
+        )
     except OperationalError:
         TIMELINE_RENDER_FAILURES_TOTAL.labels(surface="timeline").inc()
         dto = None
-    return templates.TemplateResponse(request, "market_timeline.html", _safe_context(request, dto=dto, selected_filter=filter, selected_window=window, sort=sort))
+    return templates.TemplateResponse(
+        request,
+        "market_timeline.html",
+        _safe_context(request, dto=dto, selected_filter=filter, selected_window=window, sort=sort),
+    )
 
 
 @router.get("/evidence/{packet_id}", response_class=HTMLResponse)
-def evidence_viewer(request: Request, packet_id: int, db: Session = Depends(db_session)) -> HTMLResponse:
+def evidence_viewer(
+    request: Request, packet_id: int, db: Session = Depends(db_session)
+) -> HTMLResponse:
     MARKET_EVIDENCE_OPEN_TOTAL.inc()
     MARKET_EVIDENCE_VIEWS_TOTAL.labels(surface="html").inc()
     MARKET_UI_EVIDENCE_VIEWS_TOTAL.labels(surface="html").inc()
@@ -183,21 +229,31 @@ def evidence_viewer(request: Request, packet_id: int, db: Session = Depends(db_s
     except OperationalError:
         dto = None
         replay = None
-    return templates.TemplateResponse(request, "evidence_viewer.html", _safe_context(request, packet_id=packet_id, dto=dto, replay=replay))
+    return templates.TemplateResponse(
+        request,
+        "evidence_viewer.html",
+        _safe_context(request, packet_id=packet_id, dto=dto, replay=replay),
+    )
 
 
 @router.get("/candles/{candle_id}", response_class=HTMLResponse)
-def candle_attribution_view(request: Request, candle_id: int, db: Session = Depends(db_session)) -> HTMLResponse:
+def candle_attribution_view(
+    request: Request, candle_id: int, db: Session = Depends(db_session)
+) -> HTMLResponse:
     MARKET_CANDLE_OPEN_TOTAL.inc()
     try:
         dto = MarketTimeMachineWebService(db).candle_attribution(candle_id)
     except OperationalError:
         dto = None
-    return templates.TemplateResponse(request, "candle_attribution.html", _safe_context(request, candle_id=candle_id, dto=dto))
+    return templates.TemplateResponse(
+        request, "candle_attribution.html", _safe_context(request, candle_id=candle_id, dto=dto)
+    )
 
 
 @router.get("/web/market-time-machine")
-def web_market_time_machine_dto(timeframe: str = "1h", db: Session = Depends(db_session)) -> dict[str, object]:
+def web_market_time_machine_dto(
+    timeframe: str = "1h", db: Session = Depends(db_session)
+) -> dict[str, object]:
     MARKET_DASHBOARD_REQUESTS_TOTAL.labels(surface="dto").inc()
     MARKET_TIMELINE_REQUESTS_TOTAL.labels(surface="dto").inc()
     TIMELINE_REQUESTS_TOTAL.labels(surface="dto").inc()
@@ -209,19 +265,42 @@ def web_market_time_machine_dto(timeframe: str = "1h", db: Session = Depends(db_
         vm = build_market_dto(dto, selected_timeframe=selected_timeframe, api_payload=payload)
         return {**dto.model_dump(), **vm}
     except OperationalError:
-        return {"market_timeline": {}, "timeline_events": [], "chart_data": {"candles": [], "markers": []}, "marker_data": [], "timeline_items": [], "chart_markers": [], "candles": [], "limitations": SAFETY_LIMITATIONS + ["Data temporarily unavailable."]}
+        return {
+            "market_timeline": {},
+            "timeline_events": [],
+            "chart_data": {"candles": [], "markers": []},
+            "marker_data": [],
+            "timeline_items": [],
+            "chart_markers": [],
+            "candles": [],
+            "limitations": SAFETY_LIMITATIONS + ["Data temporarily unavailable."],
+        }
 
 
 @router.get("/web/timeline")
-def web_timeline_dto(filter: str = "all", page: int = 1, page_size: int = 50, sort: str = "desc", window: str = "24h", db: Session = Depends(db_session)) -> dict[str, object]:
+def web_timeline_dto(
+    filter: str = "all",
+    page: int = 1,
+    page_size: int = 50,
+    sort: str = "desc",
+    window: str = "24h",
+    db: Session = Depends(db_session),
+) -> dict[str, object]:
     MARKET_TIMELINE_REQUESTS_TOTAL.labels(surface="dto").inc()
     TIMELINE_REQUESTS_TOTAL.labels(surface="dto").inc()
     for item in filter.split(","):
         TIMELINE_FILTER_USAGE_TOTAL.labels(filter=bounded_filter_label(item.strip().lower())).inc()
     try:
-        return MarketTimeMachineWebService(db).timeline(filter_name=filter, page=page, page_size=page_size, sort=sort, window=window).model_dump()
+        return (
+            MarketTimeMachineWebService(db)
+            .timeline(filter_name=filter, page=page, page_size=page_size, sort=sort, window=window)
+            .model_dump()
+        )
     except OperationalError:
-        return {"timeline_items": [], "limitations": SAFETY_LIMITATIONS + ["Data temporarily unavailable."]}
+        return {
+            "timeline_items": [],
+            "limitations": SAFETY_LIMITATIONS + ["Data temporarily unavailable."],
+        }
 
 
 @router.get("/web/candle/{candle_id}")
@@ -230,7 +309,10 @@ def web_candle_dto(candle_id: int, db: Session = Depends(db_session)) -> dict[st
     try:
         return MarketTimeMachineWebService(db).candle_attribution(candle_id).model_dump()
     except OperationalError:
-        return {"id": candle_id, "limitations": SAFETY_LIMITATIONS + ["Data temporarily unavailable."]}
+        return {
+            "id": candle_id,
+            "limitations": SAFETY_LIMITATIONS + ["Data temporarily unavailable."],
+        }
 
 
 @router.get("/web/evidence/{packet_id}")
@@ -242,7 +324,10 @@ def web_evidence_dto(packet_id: int, db: Session = Depends(db_session)) -> dict[
     try:
         return MarketTimeMachineWebService(db).evidence_panel(packet_id).model_dump()
     except OperationalError:
-        return {"packet_id": packet_id, "limitations": SAFETY_LIMITATIONS + ["Evidence unavailable."]}
+        return {
+            "packet_id": packet_id,
+            "limitations": SAFETY_LIMITATIONS + ["Evidence unavailable."],
+        }
 
 
 @router.post("/web/market-time-machine/marker-click")

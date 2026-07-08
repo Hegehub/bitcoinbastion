@@ -60,15 +60,13 @@ Each profile entry in the comparison matrix identifies best hardware, complexity
 
 ## Frontend runtime modes
 
-The runtime profile metadata now includes frontend mode information for the Reflex migration. These modes do not change route ownership by themselves and do not make Reflex primary before Prompt 21/22.
+The runtime profile metadata now includes frontend mode information. Only two frontend modes are available because the legacy Next.js frontend and parallel migration mode have been removed.
 
-| Mode | Best for | Ports | Services | Limitations | Rollback path | Production suitability |
-| --- | --- | --- | --- | --- | --- | --- |
-| `api-only` | SDK/API deployments and backend-only tests | `8000` | FastAPI and backend dependencies | No browser frontend | Enable `nextjs` or `parallel` | Possible with backend production evidence |
-| `nextjs` | Current legacy/stable frontend | `8000`, `3000` | Backend plus legacy Next.js | Reflex not active | Existing default mode | Current stable frontend path |
-| `reflex` | Exercising the migration target | `8000`, `3001`, `8001` | Backend plus Reflex | Not primary; parity/cutover gates still pending | Switch back to `nextjs` | Migration target only |
-| `parallel` | Migration comparison and rollback-safe validation | `8000`, `3000`, `3001`, `8001` | Backend, Next.js, Reflex | Higher local resource use; not final cutover | Stop Reflex and keep Next.js | Recommended migration mode, not final production cutover |
+| Mode | Best for | Ports | Services | Limitations | Production suitability |
+| --- | --- | --- | --- | --- | --- |
+| `api-only` | SDK/API deployments and backend only tests | `8000` | FastAPI and backend dependencies | No browser frontend | Suitable for API‑only scenarios |
+| `reflex` | Default and primary user interface | `8000`, `3001`, `8001` | FastAPI backend plus Reflex frontend | Market detail and drill‑down pages remain served by FastAPI/Jinja until Reflex achieves full parity; full production readiness still requires route/API parity, deployment evidence and operator validation | Suitable once evidence gates and parity checks pass |
 
-Runtime metadata fields include `frontend.mode`, `frontend.primary`, `nextjs_enabled`, `reflex_enabled`, `cutover_ready`, and `rollback_available`. The current migration default keeps `primary: nextjs`, `cutover_ready: false`, and `rollback_available: true`.
+Runtime metadata fields include `frontend.mode`, `frontend.primary`, `reflex_enabled`, `cutover_ready` and `rollback_available`. With the legacy frontend removed, `frontend.primary` is now `reflex`, `reflex_enabled` is `true`, and `rollback_available` is `false` because restoring the deleted frontend requires retrieving it from version control.
 
 No frontend mode may request seed phrases, private keys, wallet files, keystore files, signing material, or custody services.

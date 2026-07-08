@@ -8,7 +8,12 @@ from sqlalchemy.orm import Session
 
 from app.db.models.event_outbox import EventOutbox, EventOutboxStatus
 from app.db.repositories.event_outbox_repository import EventOutboxRepository
-from app.events.metadata import _SECRET_VALUE_TERMS, build_event_metadata, normalize_optional_string, normalize_source
+from app.events.metadata import (
+    _SECRET_VALUE_TERMS,
+    build_event_metadata,
+    normalize_optional_string,
+    normalize_source,
+)
 from app.events.registry import EVENT_REGISTRY
 from app.events.safety import EventPayloadSafetyError, assert_event_payload_safe
 from app.events.serializer import EventSerializationError, event_payload_hash, normalize_event_value
@@ -63,9 +68,7 @@ class EventBusService:
         normalized_source = self._validate_safe_string(normalize_source(source), "source")
         normalized_aggregate_id = normalize_optional_string(aggregate_id)
         normalized_actor_id = normalize_optional_string(actor_id)
-        normalized_idempotency_key = self._validate_safe_string(
-            idempotency_key, "idempotency_key"
-        )
+        normalized_idempotency_key = self._validate_safe_string(idempotency_key, "idempotency_key")
         event_version = 1
 
         if normalized_idempotency_key:

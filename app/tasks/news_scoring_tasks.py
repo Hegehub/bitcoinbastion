@@ -12,7 +12,9 @@ from app.services.intelligence.news_scoring.scoring_service import NewsScoringSe
 @shared_task(name="news.score_unprocessed", bind=True)  # type: ignore[untyped-decorator]
 def score_unprocessed_task(self: Any, limit: int = 100) -> dict[str, int]:
     with SessionLocal() as db:
-        rows = list(db.execute(select(NewsArticle).order_by(NewsArticle.id.desc()).limit(limit)).scalars())
+        rows = list(
+            db.execute(select(NewsArticle).order_by(NewsArticle.id.desc()).limit(limit)).scalars()
+        )
         svc = NewsScoringService()
         for row in rows:
             svc.score_article(db, row)

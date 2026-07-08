@@ -35,12 +35,39 @@ class SovereigntyGraphService:
         signer_count = self._signer_count(wallet_type)
 
         nodes = [
-            DependencyNode(node_id=wallet_key, node_type="wallet", label="Primary wallet", criticality="high"),
-            DependencyNode(node_id=f"policy:{owner_id}", node_type="policy", label="Policy controls", criticality="high"),
-            DependencyNode(node_id=f"coordinator:{owner_id}", node_type="coordinator", label="Signing coordinator", criticality="medium"),
-            DependencyNode(node_id=f"provider:{owner_id}", node_type="provider", label="Blockchain provider", criticality="medium"),
-            DependencyNode(node_id=f"backup:{owner_id}", node_type="backup", label="Recovery backup", criticality="high"),
-            DependencyNode(node_id=f"inheritance:{owner_id}", node_type="inheritance", label="Inheritance handoff", criticality="high"),
+            DependencyNode(
+                node_id=wallet_key, node_type="wallet", label="Primary wallet", criticality="high"
+            ),
+            DependencyNode(
+                node_id=f"policy:{owner_id}",
+                node_type="policy",
+                label="Policy controls",
+                criticality="high",
+            ),
+            DependencyNode(
+                node_id=f"coordinator:{owner_id}",
+                node_type="coordinator",
+                label="Signing coordinator",
+                criticality="medium",
+            ),
+            DependencyNode(
+                node_id=f"provider:{owner_id}",
+                node_type="provider",
+                label="Blockchain provider",
+                criticality="medium",
+            ),
+            DependencyNode(
+                node_id=f"backup:{owner_id}",
+                node_type="backup",
+                label="Recovery backup",
+                criticality="high",
+            ),
+            DependencyNode(
+                node_id=f"inheritance:{owner_id}",
+                node_type="inheritance",
+                label="Inheritance handoff",
+                criticality="high",
+            ),
         ]
 
         if has_descriptor:
@@ -72,30 +99,80 @@ class SovereigntyGraphService:
             )
 
         edges: list[DependencyEdge] = [
-            DependencyEdge(source=wallet_key, target=f"policy:{owner_id}", dependency_type="policy_assumption", single_point_of_failure=False),
-            DependencyEdge(source=wallet_key, target=f"coordinator:{owner_id}", dependency_type="orchestration", single_point_of_failure=False),
-            DependencyEdge(source=wallet_key, target=f"provider:{owner_id}", dependency_type="provider_dependency", single_point_of_failure=False),
-            DependencyEdge(source=wallet_key, target=f"backup:{owner_id}", dependency_type="recovery", single_point_of_failure=False),
-            DependencyEdge(source=f"inheritance:{owner_id}", target=f"backup:{owner_id}", dependency_type="artifact_dependency", single_point_of_failure=False),
-            DependencyEdge(source=f"inheritance:{owner_id}", target=f"policy:{owner_id}", dependency_type="inheritance_policy_dependency", single_point_of_failure=False),
+            DependencyEdge(
+                source=wallet_key,
+                target=f"policy:{owner_id}",
+                dependency_type="policy_assumption",
+                single_point_of_failure=False,
+            ),
+            DependencyEdge(
+                source=wallet_key,
+                target=f"coordinator:{owner_id}",
+                dependency_type="orchestration",
+                single_point_of_failure=False,
+            ),
+            DependencyEdge(
+                source=wallet_key,
+                target=f"provider:{owner_id}",
+                dependency_type="provider_dependency",
+                single_point_of_failure=False,
+            ),
+            DependencyEdge(
+                source=wallet_key,
+                target=f"backup:{owner_id}",
+                dependency_type="recovery",
+                single_point_of_failure=False,
+            ),
+            DependencyEdge(
+                source=f"inheritance:{owner_id}",
+                target=f"backup:{owner_id}",
+                dependency_type="artifact_dependency",
+                single_point_of_failure=False,
+            ),
+            DependencyEdge(
+                source=f"inheritance:{owner_id}",
+                target=f"policy:{owner_id}",
+                dependency_type="inheritance_policy_dependency",
+                single_point_of_failure=False,
+            ),
         ]
 
         if has_descriptor:
             edges.append(
-                DependencyEdge(source=wallet_key, target=f"descriptor:{owner_id}", dependency_type="descriptor_dependency", single_point_of_failure=False)
+                DependencyEdge(
+                    source=wallet_key,
+                    target=f"descriptor:{owner_id}",
+                    dependency_type="descriptor_dependency",
+                    single_point_of_failure=False,
+                )
             )
             edges.append(
-                DependencyEdge(source=f"inheritance:{owner_id}", target=f"descriptor:{owner_id}", dependency_type="inheritance_descriptor_dependency", single_point_of_failure=False)
+                DependencyEdge(
+                    source=f"inheritance:{owner_id}",
+                    target=f"descriptor:{owner_id}",
+                    dependency_type="inheritance_descriptor_dependency",
+                    single_point_of_failure=False,
+                )
             )
 
         for signer_idx in range(1, signer_count + 1):
             signer_key = f"signer:{owner_id}:{signer_idx}"
             device_key = f"device:{owner_id}:{signer_idx}"
             edges.append(
-                DependencyEdge(source=wallet_key, target=signer_key, dependency_type="signing", single_point_of_failure=False)
+                DependencyEdge(
+                    source=wallet_key,
+                    target=signer_key,
+                    dependency_type="signing",
+                    single_point_of_failure=False,
+                )
             )
             edges.append(
-                DependencyEdge(source=signer_key, target=device_key, dependency_type="device_dependency", single_point_of_failure=False)
+                DependencyEdge(
+                    source=signer_key,
+                    target=device_key,
+                    dependency_type="device_dependency",
+                    single_point_of_failure=False,
+                )
             )
 
         inbound_count: dict[str, int] = {}
@@ -170,7 +247,11 @@ class SovereigntyGraphService:
             "edges": [edge.model_dump() for edge in edges],
             "single_points_of_failure": spof_edges,
             "findings": findings,
-            "freshness": {"source": "citadel_graph", "owner_id": owner_id, "graph_version": "citadel_graph_v2"},
+            "freshness": {
+                "source": "citadel_graph",
+                "owner_id": owner_id,
+                "graph_version": "citadel_graph_v2",
+            },
             "confidence": confidence,
             "synthetic_component": True,
             "synthetic_reason": "Deterministic baseline model with partial synthetic assumptions.",
@@ -178,7 +259,9 @@ class SovereigntyGraphService:
             "confidence_penalty": 0.15,
             "operator_warning": "Synthetic/baseline Citadel output: validate with real operational evidence before critical action.",
             "evidence_refs": ["citadel:baseline_model"],
-            "limitations": ["Output includes synthetic or baseline assumptions and is not full production attestation."],
+            "limitations": [
+                "Output includes synthetic or baseline assumptions and is not full production attestation."
+            ],
             "source_quality": {"source_type": "synthetic", "is_fallback": True},
             "explainability": {
                 "rule": "SPOF derived from structural inbound dependency analysis with deterministic topology rules",
@@ -194,8 +277,12 @@ class SovereigntyGraphService:
                 "edge_counts": {
                     "total": len(edges),
                     "spof": spof_count,
-                    "provider_dependencies": len([e for e in edges if e.dependency_type == "provider_dependency"]),
-                    "inheritance_dependencies": len([e for e in edges if e.dependency_type.startswith("inheritance_")]),
+                    "provider_dependencies": len(
+                        [e for e in edges if e.dependency_type == "provider_dependency"]
+                    ),
+                    "inheritance_dependencies": len(
+                        [e for e in edges if e.dependency_type.startswith("inheritance_")]
+                    ),
                 },
                 "confidence_components": {
                     "base": 0.64,

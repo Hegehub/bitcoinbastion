@@ -3,7 +3,12 @@ from typing import Literal
 
 from app.db.repositories.delivery_repository import DeliveryRepository
 from app.db.repositories.job_run_repository import JobRunRepository
-from app.schemas.admin import RecoveryCheckOut, RecoveryDrillOut, RecoveryHotspotOut, RecoveryIssueOut
+from app.schemas.admin import (
+    RecoveryCheckOut,
+    RecoveryDrillOut,
+    RecoveryHotspotOut,
+    RecoveryIssueOut,
+)
 
 
 class RecoveryCheckService:
@@ -58,15 +63,21 @@ class RecoveryCheckService:
 
         recommended_actions: list[str] = []
         if failed_jobs > 0:
-            recommended_actions.append("Inspect failed jobs and retry safe task types via /api/v1/admin/jobs/retry.")
+            recommended_actions.append(
+                "Inspect failed jobs and retry safe task types via /api/v1/admin/jobs/retry."
+            )
         if failed_deliveries > 0:
-            recommended_actions.append("Review failed deliveries and rerun delivery.publish after destination checks.")
+            recommended_actions.append(
+                "Review failed deliveries and rerun delivery.publish after destination checks."
+            )
         if any(item.failures_24h >= 3 for item in hotspots):
             recommended_actions.append(
                 "Prioritize repeated failure hotspots (>=3 in 24h) and run focused failure-mode drills."
             )
         if not recommended_actions:
-            recommended_actions.append("No recovery action required. Continue routine observability checks.")
+            recommended_actions.append(
+                "No recovery action required. Continue routine observability checks."
+            )
 
         severity = self._severity(failed_jobs=failed_jobs, failed_deliveries=failed_deliveries)
         job_runs_24h = max(1, job_repo.started_count_last_24h())
@@ -81,9 +92,11 @@ class RecoveryCheckService:
         status = (
             "critical"
             if severity == "critical" or critical_findings >= 2
-            else "degraded"
-            if degraded_recovery_confidence or stale_verification or overdue_recovery_validation
-            else "healthy"
+            else (
+                "degraded"
+                if degraded_recovery_confidence or stale_verification or overdue_recovery_validation
+                else "healthy"
+            )
         )
 
         return RecoveryCheckOut(
@@ -154,8 +167,14 @@ class RecoveryCheckService:
 
         drills: list[RecoveryDrillOut] = []
         for hotspot in hotspots[:3]:
-            priority: Literal["low", "medium", "high"] = "high" if hotspot.failures_24h >= 3 else "medium"
-            drill_code = "job_replay_drill" if hotspot.issue_type == "job_failure" else "delivery_failover_drill"
+            priority: Literal["low", "medium", "high"] = (
+                "high" if hotspot.failures_24h >= 3 else "medium"
+            )
+            drill_code = (
+                "job_replay_drill"
+                if hotspot.issue_type == "job_failure"
+                else "delivery_failover_drill"
+            )
             run_within_hours = 4 if priority == "high" else 12
             drills.append(
                 RecoveryDrillOut(

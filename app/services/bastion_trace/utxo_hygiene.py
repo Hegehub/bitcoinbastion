@@ -22,8 +22,20 @@ class UTXOHygieneService:
         large = len([v for v in utxos if v >= 1_000_000])
         dust = len([v for v in utxos if v <= 546])
         score = min(100.0, (small / utxo_count) * 50 + (dust / utxo_count) * 50)
-        band = PrivacyBand.LOW if score < 25 else PrivacyBand.MEDIUM if score < 50 else PrivacyBand.HIGH if score < 75 else PrivacyBand.CRITICAL
-        cons = PrivacyRiskLevel.HIGH if utxo_count >= 20 else PrivacyRiskLevel.MEDIUM if utxo_count >= 8 else PrivacyRiskLevel.LOW
+        band = (
+            PrivacyBand.LOW
+            if score < 25
+            else (
+                PrivacyBand.MEDIUM
+                if score < 50
+                else PrivacyBand.HIGH if score < 75 else PrivacyBand.CRITICAL
+            )
+        )
+        cons = (
+            PrivacyRiskLevel.HIGH
+            if utxo_count >= 20
+            else PrivacyRiskLevel.MEDIUM if utxo_count >= 8 else PrivacyRiskLevel.LOW
+        )
         return UTXOHygieneReport(
             hygiene_score=score,
             hygiene_band=band,

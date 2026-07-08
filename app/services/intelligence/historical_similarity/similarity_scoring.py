@@ -28,20 +28,30 @@ class SimilarityScoring:
         "institutional_flag": 0.07,
     }
 
-    def score_profiles(self, reference: HistoricalEventProfile, candidate: HistoricalEventProfile) -> SimilarityScore:
+    def score_profiles(
+        self, reference: HistoricalEventProfile, candidate: HistoricalEventProfile
+    ) -> SimilarityScore:
         dimensions = {
             "event_type": self._exact(reference.event_type, candidate.event_type),
             "sentiment": self._exact(reference.sentiment_label, candidate.sentiment_label),
-            "btc_relevance": self._numeric(reference.btc_relevance_score, candidate.btc_relevance_score),
-            "impact_score": self._numeric(reference.market_impact_score, candidate.market_impact_score),
-            "source_tier": self._source_tier(reference.provider_confidence, candidate.provider_confidence),
+            "btc_relevance": self._numeric(
+                reference.btc_relevance_score, candidate.btc_relevance_score
+            ),
+            "impact_score": self._numeric(
+                reference.market_impact_score, candidate.market_impact_score
+            ),
+            "source_tier": self._source_tier(
+                reference.provider_confidence, candidate.provider_confidence
+            ),
             "narrative_tags": self._narrative(reference, candidate),
             "market_regime": 0.5,
             "volatility_state": self._volatility(reference, candidate),
             "time_window": self._time_window(reference, candidate),
             "security_flag": self._flag(reference.security_score, candidate.security_score),
             "regulatory_flag": self._flag(reference.regulatory_score, candidate.regulatory_score),
-            "institutional_flag": self._flag(reference.institutional_score, candidate.institutional_score),
+            "institutional_flag": self._flag(
+                reference.institutional_score, candidate.institutional_score
+            ),
         }
         score = round(sum(dimensions[key] * weight for key, weight in self.weights.items()), 6)
         return SimilarityScore(score=score, band=self.band(score), dimensions=dimensions)
@@ -68,17 +78,23 @@ class SimilarityScoring:
     def _source_tier(self, left: float | None, right: float | None) -> float:
         return self._numeric(self._bucket(left), self._bucket(right))
 
-    def _narrative(self, reference: HistoricalEventProfile, candidate: HistoricalEventProfile) -> float:
+    def _narrative(
+        self, reference: HistoricalEventProfile, candidate: HistoricalEventProfile
+    ) -> float:
         if reference.pattern_type == candidate.pattern_type and reference.pattern_type != "UNKNOWN":
             return 1.0
         if reference.primary_narrative == candidate.primary_narrative:
             return 0.75
         return 0.25
 
-    def _volatility(self, reference: HistoricalEventProfile, candidate: HistoricalEventProfile) -> float:
+    def _volatility(
+        self, reference: HistoricalEventProfile, candidate: HistoricalEventProfile
+    ) -> float:
         return self._numeric(self._max_abs_move(reference), self._max_abs_move(candidate))
 
-    def _time_window(self, reference: HistoricalEventProfile, candidate: HistoricalEventProfile) -> float:
+    def _time_window(
+        self, reference: HistoricalEventProfile, candidate: HistoricalEventProfile
+    ) -> float:
         left = self._dominant_window(reference)
         right = self._dominant_window(candidate)
         if left is None or right is None:

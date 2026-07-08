@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 from app.core.telemetry import OBSERVABILITY_METRIC_NAMES, bounded_label
 from app.db.base import Base
 from app.schemas.operations import OperationalProviderStatusOut
-from app.services.observability.disaster_recovery_service import DisasterRecoveryService, REPLAY_TYPES
+from app.services.observability.disaster_recovery_service import (
+    DisasterRecoveryService,
+    REPLAY_TYPES,
+)
 from app.services.observability.operational_health_service import OperationalHealthService
 
 
@@ -17,14 +20,22 @@ def test_operational_health_dto_and_readiness_contract() -> None:
         assert health.operator_visible is True
         assert health.readiness_status in {"ready", "degraded"}
         readiness = OperationalHealthService().readiness(db)
-        assert {"news_provider", "price_provider", "timeline_engine", "database", "scheduler"}.issubset(readiness.details)
+        assert {
+            "news_provider",
+            "price_provider",
+            "timeline_engine",
+            "database",
+            "scheduler",
+        }.issubset(readiness.details)
 
 
 def test_provider_degradation_and_recovery_status_rollup() -> None:
     service = OperationalHealthService()
     providers = [
         OperationalProviderStatusOut(provider_name="rss", provider_type="news", status="offline"),
-        OperationalProviderStatusOut(provider_name="rss2", provider_type="news", status="recovering"),
+        OperationalProviderStatusOut(
+            provider_name="rss2", provider_type="news", status="recovering"
+        ),
     ]
     assert service._engine_status(providers, "news") == "offline"
     providers[0].status = "healthy"
@@ -35,7 +46,9 @@ def test_backup_validation_records_required_fields() -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
     Base.metadata.create_all(engine)
     with Session(engine) as db:
-        out = DisasterRecoveryService().verify_backup(db, backup_id="backup-001", objects_checked=5, integrity_verified=True)
+        out = DisasterRecoveryService().verify_backup(
+            db, backup_id="backup-001", objects_checked=5, integrity_verified=True
+        )
         assert out.backup_id == "backup-001"
         assert out.success is True
         assert out.objects_checked == 5
@@ -47,10 +60,22 @@ def test_restore_validation_requires_full_replay_set() -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
     Base.metadata.create_all(engine)
     with Session(engine) as db:
-        failed = DisasterRecoveryService().verify_restore(db, recovery_id="restore-001", replay_types=["news_event"], integrity_verified=True, deterministic_rebuild_verified=True)
+        failed = DisasterRecoveryService().verify_restore(
+            db,
+            recovery_id="restore-001",
+            replay_types=["news_event"],
+            integrity_verified=True,
+            deterministic_rebuild_verified=True,
+        )
         assert failed.success is False
         assert failed.limitations
-        passed = DisasterRecoveryService().verify_restore(db, recovery_id="restore-002", replay_types=REPLAY_TYPES, integrity_verified=True, deterministic_rebuild_verified=True)
+        passed = DisasterRecoveryService().verify_restore(
+            db,
+            recovery_id="restore-002",
+            replay_types=REPLAY_TYPES,
+            integrity_verified=True,
+            deterministic_rebuild_verified=True,
+        )
         assert passed.success is True
         assert passed.deterministic_rebuild_verified is True
 

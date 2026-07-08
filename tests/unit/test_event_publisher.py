@@ -79,7 +79,9 @@ def test_trace_and_provider_examples_publish() -> None:
         )
 
         assert db.query(EventOutbox).filter_by(event_id=trace.event_id).one().domain == "trace"
-        assert db.query(EventOutbox).filter_by(event_id=provider.event_id).one().domain == "provider"
+        assert (
+            db.query(EventOutbox).filter_by(event_id=provider.event_id).one().domain == "provider"
+        )
 
 
 def test_idempotency_key_prevents_duplicate_rows() -> None:
@@ -120,7 +122,9 @@ def test_logs_do_not_include_raw_payload(caplog: pytest.LogCaptureFixture) -> No
     assert "sensitive_business_value" not in log_text
 
 
-def test_public_publish_event_function_is_importable_and_uses_session(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_public_publish_event_function_is_importable_and_uses_session(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
     Base.metadata.create_all(bind=engine, tables=[EventOutbox.__table__])
     testing_session = sessionmaker(bind=engine, autoflush=False, autocommit=False, class_=Session)

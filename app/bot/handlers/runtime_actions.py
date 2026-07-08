@@ -19,9 +19,13 @@ def _auth_headers() -> dict[str, str]:
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(0.2), reraise=True)
-async def _request_with_retry(method: str, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+async def _request_with_retry(
+    method: str, path: str, payload: dict[str, Any] | None = None
+) -> dict[str, Any]:
     async with httpx.AsyncClient(timeout=5.0) as client:
-        response = await client.request(method, f"{_api_base_url()}{path}", json=payload, headers=_auth_headers())
+        response = await client.request(
+            method, f"{_api_base_url()}{path}", json=payload, headers=_auth_headers()
+        )
         response.raise_for_status()
         return cast(dict[str, Any], response.json())
 
@@ -41,7 +45,9 @@ def _first_line(text: str, *, max_len: int = 180) -> str:
 
 def _failure_message(action: str, *, auth_required: bool = False) -> str:
     if auth_required:
-        return f"Failed to {action} (check BOT_API_BASE_URL, BOT_API_BEARER_TOKEN, and permissions)."
+        return (
+            f"Failed to {action} (check BOT_API_BASE_URL, BOT_API_BEARER_TOKEN, and permissions)."
+        )
     return f"Failed to {action} (check BOT_API_BASE_URL/API availability)."
 
 

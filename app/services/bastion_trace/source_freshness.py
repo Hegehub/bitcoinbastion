@@ -3,7 +3,9 @@ from datetime import UTC, datetime
 from app.schemas.bastion_trace import TraceSourceFreshness
 
 
-def evaluate_source_freshness(last_refreshed_at: datetime | None, now: datetime | None = None) -> TraceSourceFreshness:
+def evaluate_source_freshness(
+    last_refreshed_at: datetime | None, now: datetime | None = None
+) -> TraceSourceFreshness:
     if last_refreshed_at is None:
         return TraceSourceFreshness.UNKNOWN
     point = now or datetime.now(UTC)

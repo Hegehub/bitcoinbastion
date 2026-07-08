@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 
+
 @dataclass(slots=True)
 class NormalizedBTCPricePoint:
     provider: str
@@ -12,6 +13,7 @@ class NormalizedBTCPricePoint:
     provider_confidence: float
     raw_payload_hash: str
     metadata_json: dict[str, object] = field(default_factory=dict)
+
 
 @dataclass(slots=True)
 class AggregatedBTCPrice:

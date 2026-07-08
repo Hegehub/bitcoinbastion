@@ -25,7 +25,11 @@ class EvidenceRepository:
         return self.db.get(EvidencePacket, packet_id)
 
     def list_packets(self, *, limit: int = 50) -> list[EvidencePacket]:
-        return list(self.db.execute(select(EvidencePacket).order_by(EvidencePacket.created_at.desc()).limit(limit)).scalars())
+        return list(
+            self.db.execute(
+                select(EvidencePacket).order_by(EvidencePacket.created_at.desc()).limit(limit)
+            ).scalars()
+        )
 
     def add_artifact(self, row: EvidenceArtifact) -> EvidenceArtifact:
         self.db.add(row)
@@ -57,13 +61,21 @@ class EvidenceRepository:
         self.db.flush()
         return row
 
-    def relationships_for_entity(self, entity_type: str, entity_id: int) -> list[EvidenceRelationship]:
+    def relationships_for_entity(
+        self, entity_type: str, entity_id: int
+    ) -> list[EvidenceRelationship]:
         return list(
             self.db.execute(
                 select(EvidenceRelationship)
                 .where(
-                    ((EvidenceRelationship.parent_entity_type == entity_type) & (EvidenceRelationship.parent_entity_id == entity_id))
-                    | ((EvidenceRelationship.child_entity_type == entity_type) & (EvidenceRelationship.child_entity_id == entity_id))
+                    (
+                        (EvidenceRelationship.parent_entity_type == entity_type)
+                        & (EvidenceRelationship.parent_entity_id == entity_id)
+                    )
+                    | (
+                        (EvidenceRelationship.child_entity_type == entity_type)
+                        & (EvidenceRelationship.child_entity_id == entity_id)
+                    )
                 )
                 .order_by(EvidenceRelationship.created_at.asc(), EvidenceRelationship.id.asc())
             ).scalars()
@@ -74,11 +86,18 @@ class EvidenceRepository:
         self.db.flush()
         return row
 
-    def latest_integrity_snapshot(self, entity_type: str, entity_id: int) -> EvidenceIntegritySnapshot | None:
+    def latest_integrity_snapshot(
+        self, entity_type: str, entity_id: int
+    ) -> EvidenceIntegritySnapshot | None:
         return self.db.execute(
             select(EvidenceIntegritySnapshot)
-            .where(EvidenceIntegritySnapshot.entity_type == entity_type, EvidenceIntegritySnapshot.entity_id == entity_id)
-            .order_by(EvidenceIntegritySnapshot.created_at.desc(), EvidenceIntegritySnapshot.id.desc())
+            .where(
+                EvidenceIntegritySnapshot.entity_type == entity_type,
+                EvidenceIntegritySnapshot.entity_id == entity_id,
+            )
+            .order_by(
+                EvidenceIntegritySnapshot.created_at.desc(), EvidenceIntegritySnapshot.id.desc()
+            )
             .limit(1)
         ).scalar_one_or_none()
 

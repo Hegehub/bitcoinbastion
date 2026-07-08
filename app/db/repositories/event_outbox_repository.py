@@ -117,17 +117,13 @@ class EventOutboxRepository:
         stmt = (
             select(EventOutbox)
             .where(EventOutbox.status == EventOutboxStatus.PENDING.value)
-            .where(
-                (EventOutbox.next_attempt_at.is_(None)) | (EventOutbox.next_attempt_at <= now)
-            )
+            .where((EventOutbox.next_attempt_at.is_(None)) | (EventOutbox.next_attempt_at <= now))
             .order_by(EventOutbox.priority.asc(), EventOutbox.created_at.asc())
             .limit(limit)
         )
         return list(self.db.execute(stmt).scalars())
 
-    def list_by_status(
-        self, status: str, limit: int = 100, offset: int = 0
-    ) -> list[EventOutbox]:
+    def list_by_status(self, status: str, limit: int = 100, offset: int = 0) -> list[EventOutbox]:
         stmt = (
             select(EventOutbox)
             .where(EventOutbox.status == status)
@@ -159,7 +155,9 @@ class EventOutboxRepository:
     def mark_dispatched(self, event_id: str) -> EventOutbox:
         item = self._require_event(event_id)
         if item.status not in {EventOutboxStatus.LOCKED.value, EventOutboxStatus.PENDING.value}:
-            raise EventOutboxRepositoryError("event cannot be marked dispatched from current status")
+            raise EventOutboxRepositoryError(
+                "event cannot be marked dispatched from current status"
+            )
         item.status = EventOutboxStatus.DISPATCHED.value
         item.dispatched_at = utcnow()
         item.locked_by = None
@@ -172,7 +170,9 @@ class EventOutboxRepository:
     ) -> EventOutbox:
         item = self._require_event(event_id)
         if item.status not in {EventOutboxStatus.LOCKED.value, EventOutboxStatus.PENDING.value}:
-            raise EventOutboxRepositoryError("event cannot be scheduled for retry from current status")
+            raise EventOutboxRepositoryError(
+                "event cannot be scheduled for retry from current status"
+            )
         item.status = EventOutboxStatus.PENDING.value
         item.attempts += 1
         item.last_error = sanitize_error(error)

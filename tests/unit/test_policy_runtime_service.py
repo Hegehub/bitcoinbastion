@@ -3,7 +3,12 @@ from sqlalchemy.orm import Session
 
 from app.db.base import Base
 from app.db.models.treasury import PolicyRule, TreasuryPolicy
-from app.schemas.policy import PolicyCatalogCompareRequest, PolicyCatalogUpsertIn, PolicyCheckRequest, PolicySimulationRequest
+from app.schemas.policy import (
+    PolicyCatalogCompareRequest,
+    PolicyCatalogUpsertIn,
+    PolicyCheckRequest,
+    PolicySimulationRequest,
+)
 from app.services.policy.policy_service import TreasuryPolicyService
 
 
@@ -78,13 +83,25 @@ def test_policy_rules_override_thresholds() -> None:
 
         db.add_all(
             [
-                PolicyRule(policy_id=policy.id, rule_key="min_wallet_health_score", rule_value="gte:95", severity="error"),
-                PolicyRule(policy_id=policy.id, rule_key="max_single_tx_sats", rule_value="lte:400", severity="error"),
+                PolicyRule(
+                    policy_id=policy.id,
+                    rule_key="min_wallet_health_score",
+                    rule_value="gte:95",
+                    severity="error",
+                ),
+                PolicyRule(
+                    policy_id=policy.id,
+                    rule_key="max_single_tx_sats",
+                    rule_value="lte:400",
+                    severity="error",
+                ),
             ]
         )
         db.commit()
 
-        payload = PolicyCheckRequest(policy_name="strict", wallet_health_score=94, transaction_amount_sats=450)
+        payload = PolicyCheckRequest(
+            policy_name="strict", wallet_health_score=94, transaction_amount_sats=450
+        )
         result = TreasuryPolicyService().evaluate(db=db, payload=payload)
 
     assert result.allowed is False
@@ -107,7 +124,9 @@ def test_policy_catalog_upsert_rewrites_threshold_rules() -> None:
             ),
         )
 
-        payload = PolicyCheckRequest(policy_name="ops_strict", wallet_health_score=87, transaction_amount_sats=800_000)
+        payload = PolicyCheckRequest(
+            policy_name="ops_strict", wallet_health_score=87, transaction_amount_sats=800_000
+        )
         result = TreasuryPolicyService().evaluate(db=db, payload=payload)
 
     assert catalog_item.name == "ops_strict"

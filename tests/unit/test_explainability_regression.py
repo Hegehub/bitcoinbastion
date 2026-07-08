@@ -88,7 +88,9 @@ def test_fallback_markers_and_confidence_propagate_to_signal_audit_packet() -> N
 
 
 def test_policy_and_treasury_audit_packets_are_serializable_and_complete() -> None:
-    policy = CitadelPolicyService().evaluate(owner_id=40, wallet_health_score=None, has_recent_health_report=False)
+    policy = CitadelPolicyService().evaluate(
+        owner_id=40, wallet_health_score=None, has_recent_health_report=False
+    )
     policy_packet = policy["explainability"]["audit_packet"]
     assert policy_packet["packet_type"] in {"policy_violation", "policy_review"}
     assert isinstance(json.dumps(policy_packet), str)

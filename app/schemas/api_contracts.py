@@ -8,7 +8,7 @@ class ApiError(BaseModel):
 
 
 class ApiEnvelopeMeta(BaseModel):
-    version: str = 'v1'
+    version: str = "v1"
 
 
 class ApiEnvelope(BaseModel):

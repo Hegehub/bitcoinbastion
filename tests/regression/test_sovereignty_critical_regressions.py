@@ -32,18 +32,26 @@ class _FakeAdmin:
 def test_regression_citadel_assessment_exposes_explainability_and_quality() -> None:
     out = CitadelAssessmentService().build_assessment(owner_type="user", owner_id=101)
     assert out.overall_score >= 0
-    explainability = out.explainability.model_dump() if hasattr(out.explainability, "model_dump") else out.explainability
+    explainability = (
+        out.explainability.model_dump()
+        if hasattr(out.explainability, "model_dump")
+        else out.explainability
+    )
     assert explainability["guarantees"]["coverage_score"] > 0
     assert "input_quality" in explainability
 
 
 def test_regression_sovereignty_graph_and_disaster_simulation_are_deterministic() -> None:
-    graph = SovereigntyGraphService().build(owner_id=102, wallet_type="multisig-2of3", has_descriptor=True)
+    graph = SovereigntyGraphService().build(
+        owner_id=102, wallet_type="multisig-2of3", has_descriptor=True
+    )
     assert graph["nodes"] and graph["edges"]
     assert isinstance(graph["single_points_of_failure"], list)
 
     first = DisasterSimulationService().simulate(owner_id=102, scenario_code="weak_finality_stress")
-    second = DisasterSimulationService().simulate(owner_id=102, scenario_code="weak_finality_stress")
+    second = DisasterSimulationService().simulate(
+        owner_id=102, scenario_code="weak_finality_stress"
+    )
     assert first["survivability_score"] == second["survivability_score"]
     assert first["critical_failure_points"] == second["critical_failure_points"]
 
@@ -71,7 +79,9 @@ def test_regression_recovery_readiness_flags_stale_or_missing_artifacts() -> Non
 
 
 def test_regression_chain_state_finality_and_confidence_degrade_under_stress() -> None:
-    healthy = ChainStateService().evaluate(tip_height=900_010, observed_block_height=900_004, data_source="provider_probe")
+    healthy = ChainStateService().evaluate(
+        tip_height=900_010, observed_block_height=900_004, data_source="provider_probe"
+    )
     stressed = ChainStateService().evaluate(
         tip_height=900_010,
         observed_block_height=900_009,
@@ -110,7 +120,9 @@ def test_regression_policy_checks_block_high_risk_transactions() -> None:
     with Session(engine) as db:
         out = TreasuryPolicyService().evaluate_and_log(
             db=db,
-            payload=PolicyCheckRequest(policy_name="default", wallet_health_score=45, transaction_amount_sats=25_000_000),
+            payload=PolicyCheckRequest(
+                policy_name="default", wallet_health_score=45, transaction_amount_sats=25_000_000
+            ),
         )
         assert out.allowed is False
         assert out.violations
@@ -120,7 +132,9 @@ def test_regression_delivery_failure_accounting_and_admin_recovery_check() -> No
     engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
     Base.metadata.create_all(bind=engine)
     with Session(engine) as db:
-        db.add(JobRun(task_name="delivery.publish", status="failed", error_message="forced failure"))
+        db.add(
+            JobRun(task_name="delivery.publish", status="failed", error_message="forced failure")
+        )
         db.add(
             DeliveryLog(
                 signal_id=None,
@@ -189,7 +203,6 @@ def test_regression_delivery_publish_failure_path_increments_failed_count() -> N
         def send_message(self, destination: str, message: str):
             raise RuntimeError("forced send failure")
 
-    
     class _Settings:
         telegram_default_chat_id = "ops-room"
         telegram_bot_token = "token"
@@ -197,10 +210,13 @@ def test_regression_delivery_publish_failure_path_increments_failed_count() -> N
         delivery_retry_cooldown_seconds = 0
 
     import app.services.delivery.publish_service as publish_module
+
     original = publish_module.get_settings
     publish_module.get_settings = lambda: _Settings()
     try:
-        service = SignalPublishService(signals=_SignalRepo(), deliveries=_DeliveryRepo(), telegram_client=_Client())
+        service = SignalPublishService(
+            signals=_SignalRepo(), deliveries=_DeliveryRepo(), telegram_client=_Client()
+        )
         out: PublishResult = service.publish_pending_with_stats(limit=1)
     finally:
         publish_module.get_settings = original

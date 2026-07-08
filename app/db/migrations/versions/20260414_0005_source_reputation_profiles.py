@@ -8,7 +8,6 @@ Create Date: 2026-04-14
 from alembic import op
 import sqlalchemy as sa
 
-
 revision = "20260414_0005"
 down_revision = "20260414_0004"
 branch_labels = None
@@ -35,5 +34,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_index("ix_source_reputation_profiles_source_id", table_name="source_reputation_profiles")
+    op.drop_index(
+        "ix_source_reputation_profiles_source_id", table_name="source_reputation_profiles"
+    )
     op.drop_table("source_reputation_profiles")

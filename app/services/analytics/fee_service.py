@@ -14,7 +14,9 @@ class FeeAnalyticsService:
             snapshot_age_seconds=int(20 + payload.mempool_congestion * 90),
         )
         mempool_state = MempoolAnalyzerService().analyze(snapshot)
-        market = FeeMarketModel().estimate(mempool=mempool_state, target_blocks=payload.target_blocks)
+        market = FeeMarketModel().estimate(
+            mempool=mempool_state, target_blocks=payload.target_blocks
+        )
 
         rationale = (
             f"Derived from mempool congestion={payload.mempool_congestion:.2f}, "

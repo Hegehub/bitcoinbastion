@@ -50,4 +50,6 @@ class SignalExplainabilityService:
             )
         except OperationalError as exc:
             db.rollback()
-            raise HTTPException(status_code=503, detail="Explainability storage is unavailable") from exc
+            raise HTTPException(
+                status_code=503, detail="Explainability storage is unavailable"
+            ) from exc

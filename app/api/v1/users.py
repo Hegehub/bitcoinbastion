@@ -23,7 +23,12 @@ def list_users(
     users = repo.list_users(limit=limit, offset=offset)
     total = repo.count()
     return ResponseEnvelope(
-        data=PaginatedData(items=[UserOut.model_validate(user) for user in users], total=total, limit=limit, offset=offset)
+        data=PaginatedData(
+            items=[UserOut.model_validate(user) for user in users],
+            total=total,
+            limit=limit,
+            offset=offset,
+        )
     )
 
 

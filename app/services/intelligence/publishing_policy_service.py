@@ -4,7 +4,10 @@ from dataclasses import dataclass
 
 from sqlalchemy.orm import Session
 
-from app.db.models.intelligence_signals import IntelligencePublishingPolicy, IntelligenceSignalCandidate
+from app.db.models.intelligence_signals import (
+    IntelligencePublishingPolicy,
+    IntelligenceSignalCandidate,
+)
 from app.repositories.intelligence_signal_repository import IntelligenceSignalRepository
 from app.services.intelligence.signal_governance_metrics import INTELLIGENCE_POLICY_BLOCKS_TOTAL
 
@@ -36,17 +39,31 @@ class PublishingPolicyService:
             reasons.append("low_source_confidence")
         if (candidate.provider_confidence or 0.0) < policy.min_provider_confidence:
             reasons.append("provider_confidence_low")
-        if candidate.evidence_packet_id is None and not any([candidate.article_id, candidate.event_id, candidate.impact_id, candidate.attribution_id, candidate.candle_id]):
+        if candidate.evidence_packet_id is None and not any(
+            [
+                candidate.article_id,
+                candidate.event_id,
+                candidate.impact_id,
+                candidate.attribution_id,
+                candidate.candle_id,
+            ]
+        ):
             reasons.append("missing_evidence")
         if self.repo.duplicate_count(candidate) > 0:
             reasons.append("duplicate_signal")
         if candidate.signal_type in {"security_shock"} and policy.require_review_for_security_shock:
             reasons.append("security_review_required")
-        if candidate.signal_type in {"regulatory_risk"} and policy.require_review_for_regulatory_shock:
+        if (
+            candidate.signal_type in {"regulatory_risk"}
+            and policy.require_review_for_regulatory_shock
+        ):
             reasons.append("regulatory_review_required")
         if candidate.signal_type == "false_signal" and policy.require_review_for_false_signal:
             reasons.append("false_signal_review_required")
-        if "provider_degraded" in candidate.policy_reason and policy.require_review_for_provider_degraded:
+        if (
+            "provider_degraded" in candidate.policy_reason
+            and policy.require_review_for_provider_degraded
+        ):
             reasons.append("provider_degraded")
         if reasons:
             for reason in reasons:
@@ -58,7 +75,12 @@ class PublishingPolicyService:
         status = "pending_review" if requires_review else "approved"
         if "provider_degraded" in reasons:
             status = "degraded"
-        return PublishingDecision(decision=decision, reason_codes=reasons, requires_operator_review=requires_review, status=status)
+        return PublishingDecision(
+            decision=decision,
+            reason_codes=reasons,
+            requires_operator_review=requires_review,
+            status=status,
+        )
 
     def apply(self, candidate: IntelligenceSignalCandidate) -> IntelligenceSignalCandidate:
         decision = self.evaluate(candidate)

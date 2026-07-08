@@ -27,10 +27,14 @@ class WalletRepository:
         return list(self.db.execute(stmt).scalars())
 
     def count_by_user(self, user_id: int) -> int:
-        stmt = select(func.count()).select_from(WalletProfile).where(WalletProfile.user_id == user_id)
+        stmt = (
+            select(func.count()).select_from(WalletProfile).where(WalletProfile.user_id == user_id)
+        )
         return int(self.db.execute(stmt).scalar_one())
 
-    def create_health_report(self, wallet_profile_id: int, health: WalletHealthResponse) -> WalletHealthReport:
+    def create_health_report(
+        self, wallet_profile_id: int, health: WalletHealthResponse
+    ) -> WalletHealthReport:
         report = WalletHealthReport(
             wallet_profile_id=wallet_profile_id,
             health_score=health.health_score,
@@ -91,7 +95,9 @@ class WalletRepository:
             )
         return report
 
-    def list_health_reports(self, wallet_profile_id: int, limit: int, offset: int) -> list[WalletHealthReport]:
+    def list_health_reports(
+        self, wallet_profile_id: int, limit: int, offset: int
+    ) -> list[WalletHealthReport]:
         stmt = (
             select(WalletHealthReport)
             .where(WalletHealthReport.wallet_profile_id == wallet_profile_id)

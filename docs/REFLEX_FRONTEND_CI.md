@@ -52,8 +52,7 @@ uv run reflex export
 
 ## 5. What each job does not prove
 
-- CI does not make Reflex the primary frontend.
-- CI does not delete or replace Next.js.
+- CI does not make Reflex the primary frontend by itself; it is one prerequisite in the broader migration.
 - CI does not replace the FastAPI/Jinja Market dashboard.
 - CI does not prove production readiness, traffic cutover, load tolerance, WAF/CDN posture, or real provider availability.
 - Docker build does not prove runtime readiness without deploy-time health and observability evidence.
@@ -77,7 +76,7 @@ BB_DEFAULT_LANGUAGE=en
 
 - `reflex export` can emit non-fatal Reflex/Node/sitemap/theme warnings; failures must not be hidden.
 - The local execution environment used for Prompt 20 did not provide Docker, so Docker build was added to CI but could not be run locally.
-- Legacy Next.js remains covered by `.github/workflows/frontend-ci.yml`; it is documented but not required to pass inside the Reflex-specific workflow.
+- The separate Next.js CI workflow has been removed along with the old frontend; only Reflex CI checks remain.
 
 ## 8. Skipped checks policy
 

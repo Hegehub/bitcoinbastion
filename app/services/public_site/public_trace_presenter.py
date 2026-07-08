@@ -2,7 +2,6 @@ from app.db.models.bastion_trace import TraceReport
 from app.schemas.public_site import PublicTraceSummary
 from app.services.public_site.public_safety import public_warnings
 
-
 _DEF = {
     "UNKNOWN": "Insufficient information",
     "LOW": "No strong risk signal found",

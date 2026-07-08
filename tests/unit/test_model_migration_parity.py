@@ -6,12 +6,9 @@ from pathlib import Path
 from app.db.base import Base
 import app.db.models  # noqa: F401
 
-
 CREATE_TABLE_RE = re.compile(r"op\.create_table\(\s*['\"]([^'\"]+)['\"]")
-REVISION_RE = re.compile(r'^revision\s*=\s*[\'\"]([^\'\"]+)[\'\"]', re.MULTILINE)
-DOWN_REVISION_RE = re.compile(
-    r'^down_revision\s*=\s*(?:[\'\"]([^\'\"]+)[\'\"]|None)', re.MULTILINE
-)
+REVISION_RE = re.compile(r"^revision\s*=\s*[\'\"]([^\'\"]+)[\'\"]", re.MULTILINE)
+DOWN_REVISION_RE = re.compile(r"^down_revision\s*=\s*(?:[\'\"]([^\'\"]+)[\'\"]|None)", re.MULTILINE)
 
 
 def _migration_files() -> list[Path]:
@@ -47,4 +44,6 @@ def test_migration_chain_has_single_head_and_valid_parent_links() -> None:
             down_revisions.add(down_revision)
 
     assert len(revisions - down_revisions) == 1, "Migration graph must have exactly one head"
-    assert down_revisions - revisions == set(), "All down_revision values must reference existing revisions"
+    assert (
+        down_revisions - revisions == set()
+    ), "All down_revision values must reference existing revisions"

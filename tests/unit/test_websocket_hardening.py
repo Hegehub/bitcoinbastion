@@ -1,6 +1,10 @@
 import pytest
 
-from app.services.events.websocket_filters import MAX_TOPICS_PER_CONNECTION, WebSocketTopicError, parse_topics
+from app.services.events.websocket_filters import (
+    MAX_TOPICS_PER_CONNECTION,
+    WebSocketTopicError,
+    parse_topics,
+)
 from app.services.events.websocket_serialization import serialize_event_payload
 
 

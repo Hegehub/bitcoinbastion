@@ -32,7 +32,7 @@ def upgrade() -> None:
         sa.Column("last_modified", sa.String(255), nullable=True),
         sa.Column("last_content_hash", sa.String(64), nullable=True),
         sa.Column("last_checked_at", sa.DateTime(), nullable=True),
-     ]
+    ]
     for col in cols:
         op.add_column("news_sources", col)
 
@@ -61,13 +61,58 @@ def upgrade() -> None:
         sa.Column("metadata_json", sa.JSON(), nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_table("source_health_snapshots", sa.Column("id", sa.Integer(), primary_key=True), sa.Column("source_id", sa.Integer(), sa.ForeignKey("news_sources.id"), nullable=False), sa.Column("snapshot_window", sa.String(16), nullable=False), sa.Column("success_rate", sa.Float(), nullable=False), sa.Column("failure_rate", sa.Float(), nullable=False), sa.Column("avg_latency_ms", sa.Float(), nullable=True), sa.Column("median_latency_ms", sa.Float(), nullable=True), sa.Column("p95_latency_ms", sa.Float(), nullable=True), sa.Column("provider_confidence", sa.Float(), nullable=False), sa.Column("consecutive_failures", sa.Integer(), nullable=False), sa.Column("consecutive_successes", sa.Integer(), nullable=False), sa.Column("last_success_at", sa.DateTime(), nullable=True), sa.Column("last_failure_at", sa.DateTime(), nullable=True), sa.Column("degraded_state", sa.Boolean(), nullable=False, server_default=sa.false()), sa.Column("health_band", sa.String(16), nullable=False), sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()))
-    op.create_table("provider_confidence_events", sa.Column("id", sa.Integer(), primary_key=True), sa.Column("source_id", sa.Integer(), sa.ForeignKey("news_sources.id"), nullable=False), sa.Column("event_type", sa.String(32), nullable=False), sa.Column("old_confidence", sa.Float(), nullable=False), sa.Column("new_confidence", sa.Float(), nullable=False), sa.Column("delta", sa.Float(), nullable=False), sa.Column("reason_code", sa.String(64), nullable=False), sa.Column("explanation_json", sa.JSON(), nullable=False, server_default="{}"), sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()))
+    op.create_table(
+        "source_health_snapshots",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("source_id", sa.Integer(), sa.ForeignKey("news_sources.id"), nullable=False),
+        sa.Column("snapshot_window", sa.String(16), nullable=False),
+        sa.Column("success_rate", sa.Float(), nullable=False),
+        sa.Column("failure_rate", sa.Float(), nullable=False),
+        sa.Column("avg_latency_ms", sa.Float(), nullable=True),
+        sa.Column("median_latency_ms", sa.Float(), nullable=True),
+        sa.Column("p95_latency_ms", sa.Float(), nullable=True),
+        sa.Column("provider_confidence", sa.Float(), nullable=False),
+        sa.Column("consecutive_failures", sa.Integer(), nullable=False),
+        sa.Column("consecutive_successes", sa.Integer(), nullable=False),
+        sa.Column("last_success_at", sa.DateTime(), nullable=True),
+        sa.Column("last_failure_at", sa.DateTime(), nullable=True),
+        sa.Column("degraded_state", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("health_band", sa.String(16), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
+    )
+    op.create_table(
+        "provider_confidence_events",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("source_id", sa.Integer(), sa.ForeignKey("news_sources.id"), nullable=False),
+        sa.Column("event_type", sa.String(32), nullable=False),
+        sa.Column("old_confidence", sa.Float(), nullable=False),
+        sa.Column("new_confidence", sa.Float(), nullable=False),
+        sa.Column("delta", sa.Float(), nullable=False),
+        sa.Column("reason_code", sa.String(64), nullable=False),
+        sa.Column("explanation_json", sa.JSON(), nullable=False, server_default="{}"),
+        sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
+    )
 
 
 def downgrade() -> None:
     op.drop_table("provider_confidence_events")
     op.drop_table("source_health_snapshots")
     op.execute("DROP TABLE IF EXISTS source_health_records")
-    for c in ["last_checked_at", "last_content_hash", "last_modified", "etag", "last_error", "health_band", "is_degraded", "backoff_until", "provider_confidence", "avg_latency_ms", "consecutive_successes", "consecutive_failures", "success_count", "failure_count", "last_status_code"]:
+    for c in [
+        "last_checked_at",
+        "last_content_hash",
+        "last_modified",
+        "etag",
+        "last_error",
+        "health_band",
+        "is_degraded",
+        "backoff_until",
+        "provider_confidence",
+        "avg_latency_ms",
+        "consecutive_successes",
+        "consecutive_failures",
+        "success_count",
+        "failure_count",
+        "last_status_code",
+    ]:
         op.drop_column("news_sources", c)

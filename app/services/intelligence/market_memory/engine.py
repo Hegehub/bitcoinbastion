@@ -7,7 +7,9 @@ from sqlalchemy.orm import Session
 
 from app.db.models.historical_event_similarity import HistoricalEventSimilarity
 from app.db.models.market_memory_record import MarketMemoryRecord as MarketMemoryRecordModel
-from app.services.intelligence.historical_similarity_engine import HistoricalSimilarityEngine as LegacyHistoricalSimilarityEngine
+from app.services.intelligence.historical_similarity_engine import (
+    HistoricalSimilarityEngine as LegacyHistoricalSimilarityEngine,
+)
 from app.services.intelligence.market_memory.fingerprint_builder import EventFingerprintBuilder
 from app.services.intelligence.market_memory.pattern_matcher import PatternMatcher
 from app.services.intelligence.market_memory.safety import MARKET_MEMORY_SAFETY_LIMITATIONS
@@ -32,9 +34,15 @@ class HistoricalSimilarityEngine:
         payload = self.legacy.find_similar_events(event_id, limit=limit)
         pattern_matches = self.patterns.match_event(event_id)
         for match in pattern_matches[:1]:
-            self._persist_memory(event_id, match.pattern_id, match.confidence_score, match.confidence_score)
+            self._persist_memory(
+                event_id, match.pattern_id, match.confidence_score, match.confidence_score
+            )
         primary_pattern = pattern_matches[0].pattern_slug if pattern_matches else None
-        reaction_summary = self.statistics.payload(self.statistics.compute(primary_pattern)) if primary_pattern else None
+        reaction_summary = (
+            self.statistics.payload(self.statistics.compute(primary_pattern))
+            if primary_pattern
+            else None
+        )
         payload["event_fingerprint"] = asdict(fingerprint) if fingerprint else None
         payload["pattern_matches"] = [asdict(match) for match in pattern_matches]
         payload["historical_reaction_summary"] = reaction_summary
@@ -47,7 +55,10 @@ class HistoricalSimilarityEngine:
         rows = (
             self.db.query(HistoricalEventSimilarity)
             .filter(HistoricalEventSimilarity.event_id == event_id)
-            .order_by(HistoricalEventSimilarity.similarity_score.desc(), HistoricalEventSimilarity.id.asc())
+            .order_by(
+                HistoricalEventSimilarity.similarity_score.desc(),
+                HistoricalEventSimilarity.id.asc(),
+            )
             .limit(limit)
             .all()
         )
@@ -55,7 +66,9 @@ class HistoricalSimilarityEngine:
         for row in rows:
             explanation = row.explanation_json if isinstance(row.explanation_json, dict) else {}
             raw_reasons = explanation.get("reasons", [])
-            reason_codes = [str(item) for item in raw_reasons] if isinstance(raw_reasons, list) else []
+            reason_codes = (
+                [str(item) for item in raw_reasons] if isinstance(raw_reasons, list) else []
+            )
             results.append(
                 SimilarityResult(
                     event_id=row.event_id,
@@ -79,13 +92,19 @@ class HistoricalSimilarityEngine:
             ],
             "pattern_assignment": payload.get("pattern_matches", []),
             "reason_codes": [
-                item.get("explanation", {}).get("reasons", []) for item in candidates if isinstance(item, dict)
+                item.get("explanation", {}).get("reasons", [])
+                for item in candidates
+                if isinstance(item, dict)
             ],
-            "final_ranking": [item.get("event_id") for item in candidates if isinstance(item, dict)],
+            "final_ranking": [
+                item.get("event_id") for item in candidates if isinstance(item, dict)
+            ],
             "limitations": MARKET_MEMORY_SAFETY_LIMITATIONS.copy(),
         }
 
-    def _persist_memory(self, event_id: int, pattern_id: int, memory_score: float, confidence: float) -> None:
+    def _persist_memory(
+        self, event_id: int, pattern_id: int, memory_score: float, confidence: float
+    ) -> None:
         self.db.add(
             MarketMemoryRecordModel(
                 event_id=event_id,

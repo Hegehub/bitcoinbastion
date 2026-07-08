@@ -4,6 +4,7 @@ Revision ID: 20260527_0024
 Revises: 20260526_0023
 Create Date: 2026-05-27
 """
+
 from alembic import op
 import sqlalchemy as sa
 
@@ -11,6 +12,7 @@ revision = "20260527_0024"
 down_revision = "20260526_0023"
 branch_labels = None
 depends_on = None
+
 
 def upgrade() -> None:
     op.create_table(
@@ -28,8 +30,12 @@ def upgrade() -> None:
         sa.Column("provider_health_snapshot", sa.JSON(), nullable=False, server_default="{}"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.func.now()),
     )
-    op.create_index("ix_candle_provider_snapshots_candle_id", "candle_provider_snapshots", ["candle_id"])
-    op.create_index("ix_candle_provider_snapshots_provider_name", "candle_provider_snapshots", ["provider_name"])
+    op.create_index(
+        "ix_candle_provider_snapshots_candle_id", "candle_provider_snapshots", ["candle_id"]
+    )
+    op.create_index(
+        "ix_candle_provider_snapshots_provider_name", "candle_provider_snapshots", ["provider_name"]
+    )
 
     op.create_table(
         "candle_build_runs",
@@ -48,9 +54,12 @@ def upgrade() -> None:
     )
     op.create_index("ix_candle_build_runs_timeframe", "candle_build_runs", ["timeframe"])
 
+
 def downgrade() -> None:
     op.drop_index("ix_candle_build_runs_timeframe", table_name="candle_build_runs")
     op.drop_table("candle_build_runs")
-    op.drop_index("ix_candle_provider_snapshots_provider_name", table_name="candle_provider_snapshots")
+    op.drop_index(
+        "ix_candle_provider_snapshots_provider_name", table_name="candle_provider_snapshots"
+    )
     op.drop_index("ix_candle_provider_snapshots_candle_id", table_name="candle_provider_snapshots")
     op.drop_table("candle_provider_snapshots")

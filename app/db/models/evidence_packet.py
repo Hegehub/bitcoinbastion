@@ -15,11 +15,21 @@ class EvidencePacket(Base):
     packet_type: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     source_entity_type: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     source_entity_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
-    article_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True, index=True)
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), nullable=True, index=True)
-    impact_id: Mapped[int | None] = mapped_column(ForeignKey("news_price_impacts.id"), nullable=True, index=True)
-    attribution_id: Mapped[int | None] = mapped_column(ForeignKey("candle_attributions.id"), nullable=True, index=True)
-    signal_id: Mapped[int | None] = mapped_column(ForeignKey("intelligence_signal_candidates.id"), nullable=True, index=True)
+    article_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_articles.id"), nullable=True, index=True
+    )
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), nullable=True, index=True
+    )
+    impact_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_price_impacts.id"), nullable=True, index=True
+    )
+    attribution_id: Mapped[int | None] = mapped_column(
+        ForeignKey("candle_attributions.id"), nullable=True, index=True
+    )
+    signal_id: Mapped[int | None] = mapped_column(
+        ForeignKey("intelligence_signal_candidates.id"), nullable=True, index=True
+    )
     title: Mapped[str] = mapped_column(String(500), default="")
     summary: Mapped[str] = mapped_column(Text, default="")
     confidence_score: Mapped[float | None] = mapped_column(Float, nullable=True)
@@ -45,11 +55,15 @@ class EvidenceArtifact(Base):
     __tablename__ = "evidence_artifacts"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    packet_id: Mapped[int | None] = mapped_column(ForeignKey("evidence_packets.id"), nullable=True, index=True)
+    packet_id: Mapped[int | None] = mapped_column(
+        ForeignKey("evidence_packets.id"), nullable=True, index=True
+    )
     entity_type: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     entity_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
     artifact_type: Mapped[str] = mapped_column(String(80), index=True, nullable=False)
-    artifact_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    artifact_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)
 
 
@@ -77,4 +91,6 @@ class EvidenceReplayLog(Base):
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     success: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     error_code: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )

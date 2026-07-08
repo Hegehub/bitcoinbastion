@@ -23,11 +23,21 @@ class IntelligenceTimelineEvent(Base):
     visibility: Mapped[str] = mapped_column(String(16), default="INTERNAL")
     source_kind: Mapped[str] = mapped_column(String(32), default="INTERNAL")
 
-    related_article_id: Mapped[int | None] = mapped_column(ForeignKey("news_articles.id"), nullable=True, index=True)
-    related_event_id: Mapped[int | None] = mapped_column(ForeignKey("news_events.id"), nullable=True, index=True)
-    related_signal_id: Mapped[int | None] = mapped_column(ForeignKey("signals.id"), nullable=True, index=True)
-    related_candle_id: Mapped[int | None] = mapped_column(ForeignKey("btc_candles.id"), nullable=True, index=True)
-    related_provider_id: Mapped[int | None] = mapped_column(ForeignKey("market_provider_health.id"), nullable=True, index=True)
+    related_article_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_articles.id"), nullable=True, index=True
+    )
+    related_event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("news_events.id"), nullable=True, index=True
+    )
+    related_signal_id: Mapped[int | None] = mapped_column(
+        ForeignKey("signals.id"), nullable=True, index=True
+    )
+    related_candle_id: Mapped[int | None] = mapped_column(
+        ForeignKey("btc_candles.id"), nullable=True, index=True
+    )
+    related_provider_id: Mapped[int | None] = mapped_column(
+        ForeignKey("market_provider_health.id"), nullable=True, index=True
+    )
 
     title: Mapped[str] = mapped_column(String(255), default="")
     summary: Mapped[str] = mapped_column(String(1000), default="")
@@ -44,10 +54,18 @@ class IntelligenceTimelineEvent(Base):
 
     timeline_rank: Mapped[float | None] = mapped_column(Float, nullable=True)
 
-    tags_json: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
-    metadata_json: Mapped[dict[str, object]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=dict)
-    evidence_refs_json: Mapped[list[dict[str, object]]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
-    limitations_json: Mapped[list[str]] = mapped_column(JSONB().with_variant(JSON(), "sqlite"), default=list)
+    tags_json: Mapped[list[str]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
+    metadata_json: Mapped[dict[str, object]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=dict
+    )
+    evidence_refs_json: Mapped[list[dict[str, object]]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
+    limitations_json: Mapped[list[str]] = mapped_column(
+        JSONB().with_variant(JSON(), "sqlite"), default=list
+    )
 
     is_replayed: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)

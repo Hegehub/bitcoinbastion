@@ -19,7 +19,9 @@ def test_global_config_reads_env_vars(monkeypatch) -> None:  # type: ignore[no-u
 
 def test_global_flags_override_env_vars(monkeypatch) -> None:  # type: ignore[no-untyped-def]
     monkeypatch.setenv("BB_API_BASE_URL", "http://env.example")
-    config = CLIConfig.from_env(api_base_url="http://flag.example", token="flag-token", timeout=2, output="table")
+    config = CLIConfig.from_env(
+        api_base_url="http://flag.example", token="flag-token", timeout=2, output="table"
+    )
 
     assert config.api_base_url == "http://flag.example"
     assert config.token == "flag-token"

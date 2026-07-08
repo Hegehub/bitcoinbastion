@@ -527,6 +527,7 @@ class LiteTraceRequest(BaseModel):
 class LiteTraceResponse(BaseModel):
     report: LiteTraceReport
 
+
 class BusinessContextType(str, Enum):
     RETAIL = "RETAIL"
     MERCHANT = "MERCHANT"
@@ -743,6 +744,7 @@ class ApiKeyScopePlaceholder(BaseModel):
     scope: str = "trace:business:*"
     enabled: bool = False
     limitation: str = "api_key_scope_placeholder_only"
+
 
 class EnterpriseCapability(str, Enum):
     ENTERPRISE_RBAC_PLACEHOLDER = "ENTERPRISE_RBAC_PLACEHOLDER"

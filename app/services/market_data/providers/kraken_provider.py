@@ -25,7 +25,16 @@ class KrakenProvider(MarketDataProvider):
         latency_ms = int((time.perf_counter() - start) * 1000)
         key = next(iter(data["result"].keys()))
         price = float(data["result"][key]["c"][0])
-        return NormalizedBTCPricePoint("kraken", "BTCUSD", price, datetime.now(UTC), latency_ms, 0.8, payload_hash(response.text), {"pair": key})
+        return NormalizedBTCPricePoint(
+            "kraken",
+            "BTCUSD",
+            price,
+            datetime.now(UTC),
+            latency_ms,
+            0.8,
+            payload_hash(response.text),
+            {"pair": key},
+        )
 
     def fetch_recent_prices(self) -> list[NormalizedBTCPricePoint]:
         return [self.fetch_ticker()]

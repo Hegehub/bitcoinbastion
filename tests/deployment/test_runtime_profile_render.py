@@ -74,7 +74,9 @@ def test_apply_without_yes_fails(capsys) -> None:
 def test_missing_overlay_fails_in_validate_mode(monkeypatch, tmp_path, capsys) -> None:
     lib = load_module(LIB, "runtime_profile_render_missing_overlay_lib")
     monkeypatch.setattr(lib, "ROOT", tmp_path)
-    plan = lib.CommandPlan("k3s", "staging", [], [], overlay_path="deploy/kubernetes/overlays/k3s", mode="validate")
+    plan = lib.CommandPlan(
+        "k3s", "staging", [], [], overlay_path="deploy/kubernetes/overlays/k3s", mode="validate"
+    )
     assert lib.validate_plan(plan) == 2
     assert "Required overlay missing" in capsys.readouterr().err
 

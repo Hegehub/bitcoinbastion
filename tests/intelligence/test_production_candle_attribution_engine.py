@@ -38,7 +38,9 @@ def _candle(open_time: datetime, close: float = 102000.0) -> BTCCandle:
     )
 
 
-def _event(seen_at: datetime, title: str, sentiment: str = "POSITIVE", impact: float = 0.9) -> NewsEvent:
+def _event(
+    seen_at: datetime, title: str, sentiment: str = "POSITIVE", impact: float = 0.9
+) -> NewsEvent:
     return NewsEvent(
         event_key=title.lower().replace(" ", "-"),
         canonical_title=title,
@@ -102,7 +104,9 @@ def test_direction_mismatch_reduces_but_does_not_zero_confidence() -> None:
     db = _session()
     open_time = datetime(2026, 5, 28, 12, 0, 0)
     candle = _candle(open_time, close=98000.0)
-    event = _event(open_time - timedelta(minutes=5), "Positive Bitcoin ETF launch", sentiment="POSITIVE")
+    event = _event(
+        open_time - timedelta(minutes=5), "Positive Bitcoin ETF launch", sentiment="POSITIVE"
+    )
     db.add_all([candle, event])
     db.commit()
 
@@ -110,7 +114,10 @@ def test_direction_mismatch_reduces_but_does_not_zero_confidence() -> None:
 
     assert row.sentiment_direction_match == "mismatch"
     assert row.confidence_score > 0.0
-    assert "News sentiment and candle direction were conflicting." in row.limitations_json["limitations"]
+    assert (
+        "News sentiment and candle direction were conflicting."
+        in row.limitations_json["limitations"]
+    )
 
 
 def test_provider_disagreement_and_operator_review_hooks() -> None:
@@ -125,9 +132,14 @@ def test_provider_disagreement_and_operator_review_hooks() -> None:
 
     engine = CandleAttributionEngine(db)
     row = engine.attribute_candle(candle.id)[0]
-    reviewed = engine.review_attribution(row.id, "downgraded", "operator found competing macro event")
+    reviewed = engine.review_attribution(
+        row.id, "downgraded", "operator found competing macro event"
+    )
 
-    assert "Provider disagreement reduced attribution certainty." in row.limitations_json["limitations"]
+    assert (
+        "Provider disagreement reduced attribution certainty."
+        in row.limitations_json["limitations"]
+    )
     assert reviewed is not None
     assert reviewed.is_operator_reviewed is True
     assert reviewed.operator_review_status == "downgraded"

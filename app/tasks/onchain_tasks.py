@@ -9,9 +9,9 @@ from app.services.ingestion.onchain_ingestion import OnchainIngestionService
 from app.tasks.celery_app import celery_app
 
 
-
-
-def _should_skip_duplicate_run(*, tracker: JobTrackingService, task_name: str, cooldown_seconds: int = 45) -> bool:
+def _should_skip_duplicate_run(
+    *, tracker: JobTrackingService, task_name: str, cooldown_seconds: int = 45
+) -> bool:
     from datetime import UTC, datetime
 
     now = datetime.now(UTC)
@@ -27,6 +27,8 @@ def _should_skip_duplicate_run(*, tracker: JobTrackingService, task_name: str, c
         if delta <= cooldown_seconds:
             return True
     return False
+
+
 @celery_app.task(  # type: ignore[untyped-decorator]
     name="onchain.fetch",
     autoretry_for=(Exception,),
