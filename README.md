@@ -639,3 +639,5 @@ The old Next.js frontend directory has been removed from this branch at maintain
 Bitcoin Bastion uses Proof-of-Access authorization for protected APIs. Legacy email/password authentication is disabled. Use the `/api/v1/access/*` payment, certificate, challenge, session, and signed-request flow instead of `/api/v1/auth/login` or bearer tokens.
 
 Bastion will never ask for your Bitcoin seed or Bitcoin private key.
+
+- [JMT x402 Agent Tools](https://jmt-x402-proxy.jmthomasofficial.workers.dev) — 25 paid x402 endpoints on Base mainnet: web search, AI analysis, crypto/stock data, SEC filings, company intel, news, sentiment, macro dashboard. $0.001-$0.15/call USDC. Local LLM-powered.
