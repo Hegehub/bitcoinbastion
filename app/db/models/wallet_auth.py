@@ -65,7 +65,7 @@ class WalletPrincipal(Base):
 
 
 class WalletProof(Base):
-    __tablename__ = "wallet_proofs"
+    __tablename__ = "bitcoin_wallet_proofs"
     __table_args__ = (Index("ix_wallet_proofs_principal_type", "principal_hash", "proof_type"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

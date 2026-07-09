@@ -78,10 +78,10 @@ class LNURLAuthAttempt(Base):
 
 
 class LNURLPrincipal(Base):
-    __tablename__ = "lnurl_principals"
+    __tablename__ = "lightning_principals"
     __table_args__ = (
-        UniqueConstraint("auth_domain", "lnurl_key_hash", name="uq_lnurl_principals_domain_key"),
-        UniqueConstraint("principal_hash", name="uq_lnurl_principals_principal_hash"),
+        UniqueConstraint("auth_domain", "lnurl_key_hash", name="uq_lightning_principals_domain_key"),
+        UniqueConstraint("principal_hash", name="uq_lightning_principals_principal_hash"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -310,8 +310,8 @@ class LNURLReceiptPacket(Base):
 
 
 class PayRegisterLNURLBinding(Base):
-    __tablename__ = "payregister_lnurl_bindings"
-    __table_args__ = (UniqueConstraint("binding_hash", name="uq_payregister_lnurl_bindings_binding_hash"),)
+    __tablename__ = "payregister_lnurl_terminals"
+    __table_args__ = (UniqueConstraint("binding_hash", name="uq_payregister_lnurl_terminals_terminal_hash"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     binding_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
