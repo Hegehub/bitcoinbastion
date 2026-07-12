@@ -1,0 +1,22 @@
+{
+  "source": "Official Bitcoin BIPs repository, BIP-0322 Generic Signed Message Format (message-hash cases mirrored; script-valid vectors are generated until a trusted script backend is integrated).",
+  "bip": "BIP-0322",
+  "captured_specification_version": "2026-07-12 repository snapshot target",
+  "vectors": [
+    {
+      "name": "empty-message",
+      "message": "",
+      "message_hash_hex": "c90c269c4f8fcbe6880f72a721ddfbf1914268a794cbb21cfafee13770ae19f1"
+    },
+    {
+      "name": "hello-world",
+      "message": "Hello World",
+      "message_hash_hex": "f0eb03b1a75ac6d9847f55c624a99169b5dccba2a31f5b23bea77ba270de0a7a"
+    },
+    {
+      "name": "unicode",
+      "message": "Bastion \u03a9",
+      "message_hash_hex": "ed0235dce53c6f593875083031cf75329e6bda1ea9028e3931eab2fa5664e748"
+    }
+  ]
+}
