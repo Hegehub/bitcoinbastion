@@ -18,6 +18,7 @@ from app.db.models.access import (
 from app.db.models.wallet_auth import (
     MultiWalletQuorum,
     RecoveryCapsule,
+    WalletAuthChallenge,
     WalletDevice,
     WalletPrincipal,
     WalletPrivacyCommitment,

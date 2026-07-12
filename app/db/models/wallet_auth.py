@@ -254,3 +254,43 @@ class WalletPrivacyCommitment(Base):
     expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
     metadata_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
+
+
+class WalletAuthChallenge(Base):
+    __tablename__ = "wallet_auth_challenges"
+    __table_args__ = (
+        UniqueConstraint("challenge_id", name="uq_wallet_auth_challenges_challenge_id"),
+        UniqueConstraint("challenge_hash", name="uq_wallet_auth_challenges_challenge_hash"),
+        Index("ix_wallet_auth_challenges_status_expiry", "status", "expires_at"),
+        Index("ix_wallet_auth_challenges_context", "purpose", "network", "origin_hash"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    challenge_id: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    challenge_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    nonce_hash: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    intent_hash: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    purpose: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    action: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    network: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    proof_type: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    origin: Mapped[str] = mapped_column(String(255), nullable=False)
+    origin_hash: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    domain: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    device_key_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    policy_hash: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    requested_scopes_json: Mapped[JsonList] = mapped_column(_JSON, nullable=False, default=list)
+    risk_level: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    principal_hint_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    failure_reason_code: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, index=True, default="pending")
+    schema_epoch: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    policy_epoch: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    crypto_epoch: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    intent_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False, default=dict)
+    signable_message_hash: Mapped[str] = mapped_column(String(128), nullable=False)
+    metadata_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)

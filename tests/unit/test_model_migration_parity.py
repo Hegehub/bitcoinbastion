@@ -12,35 +12,6 @@ CREATE_TABLE_RE = re.compile(r"op\.create_table\(\s*['\"]([^'\"]+)['\"]")
 REVISION_RE = re.compile(r"^revision\s*=\s*['\"]([^'\"]+)['\"]", re.MULTILINE)
 DOWN_REVISION_RE = re.compile(r"^down_revision\s*=\s*(?:['\"]([^'\"]+)['\"]|None)", re.MULTILINE)
 
-MODEL_ONLY_TABLES_PENDING_MIGRATION = {
-    # Prompt 5/72 intentionally adds model definitions before Prompt 6/72
-    # creates the corresponding Alembic revision. These tables remain excluded
-    # from strict model/migration parity until the migration prompt lands.
-    "wallet_principals",
-    "wallet_proofs",
-    "wallet_devices",
-    "wallet_sessions",
-    "wallet_session_nonces",
-    "wallet_step_up_proofs",
-    "recovery_capsules",
-    "multi_wallet_quorums",
-    "wallet_privacy_commitments",
-    "lnurl_auth_challenges",
-    "lnurl_auth_attempts",
-    "lnurl_principals",
-    "lnurl_pay_requests",
-    "lnurl_invoices",
-    "lnurl_payment_proofs",
-    "lnurl_verify_checks",
-    "lnurl_withdraw_requests",
-    "lnurl_withdraw_attempts",
-    "lnurl_success_actions",
-    "lnurl_payer_data",
-    "lightning_addresses",
-    "lnurl_receipt_packets",
-    "payregister_lnurl_bindings",
-}
-
 
 def _migration_files() -> list[Path]:
     return sorted(Path("app/db/migrations/versions").glob("*.py"))
