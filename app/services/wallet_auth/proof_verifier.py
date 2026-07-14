@@ -248,11 +248,12 @@ class WalletProofVerifierRegistry:
 
 def build_default_placeholder_registry() -> WalletProofVerifierRegistry:
     from app.services.wallet_auth.verifiers.bip322 import BIP322Verifier
+    from app.services.wallet_auth.verifiers.legacy_message import LegacyBitcoinMessageVerifier
 
     registry = WalletProofVerifierRegistry()
     for verifier in (
         BIP322Verifier(),
-        LegacyMessageVerifierStub(),
+        LegacyBitcoinMessageVerifier(),
         HardwareWalletVerifierStub(),
         AirGappedVerifierStub(),
         MultisigQuorumVerifierStub(),

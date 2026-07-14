@@ -27,6 +27,15 @@ from app.domain.wallet_auth.errors import (
     WalletSecretInputForbiddenError,
     WalletSessionInvalidError,
 )
+from app.domain.wallet_auth.hardware import (
+    HardwareWalletAssuranceLevel,
+    HardwareWalletBindingType,
+    HardwareWalletEvidenceStatus,
+    HardwareWalletEvidenceType,
+    HardwareWalletIntentDisplayState,
+    HardwareWalletInteractionMode,
+    hardware_assurance_at_least,
+)
 from app.domain.wallet_auth.networks import DEFAULT_PRODUCTION_NETWORK, WalletNetwork, is_production_network, is_test_network
 from app.domain.wallet_auth.principals import WalletPrincipalActorType, WalletPrincipalStatus
 from app.domain.wallet_auth.proofs import (
@@ -73,6 +82,13 @@ __all__ = [
     "ENTERPRISE_RECOVERY_FACTORS",
     "FORBIDDEN_WALLET_SECRET_TERMS",
     "LITE_BASIC_RECOVERY_FACTORS",
+    "hardware_assurance_at_least",
+    "HardwareWalletInteractionMode",
+    "HardwareWalletIntentDisplayState",
+    "HardwareWalletEvidenceType",
+    "HardwareWalletEvidenceStatus",
+    "HardwareWalletBindingType",
+    "HardwareWalletAssuranceLevel",
     "NON_ROOT_OF_TRUST_DEVICE_CLASSES",
     "PLUS_PRO_RECOVERY_FACTORS",
     "REQUIRED_SIGNATURE_WARNING",

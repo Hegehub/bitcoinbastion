@@ -22,6 +22,12 @@ from app.services.wallet_auth.verifiers.bip322_backend import (
     ScriptVerificationResult,
 )
 from app.services.wallet_auth.verifiers.bip322_codec import BIP322Variant, bip322_message_hash
+from app.services.wallet_auth.verifiers.legacy_message import (
+    LEGACY_SIGNATURE_ALLOWED_ACTIONS,
+    LEGACY_SIGNATURE_FORBIDDEN_ACTIONS,
+    LegacyBitcoinMessageVerifier,
+    LegacyBitcoinMessageVerifierConfig,
+)
 
 __all__ = [
     "WalletCompatibilityContext",
@@ -45,4 +51,8 @@ __all__ = [
     "ScriptVerificationResult",
     "BIP322Variant",
     "bip322_message_hash",
+    "LegacyBitcoinMessageVerifier",
+    "LegacyBitcoinMessageVerifierConfig",
+    "LEGACY_SIGNATURE_ALLOWED_ACTIONS",
+    "LEGACY_SIGNATURE_FORBIDDEN_ACTIONS",
 ]

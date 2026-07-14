@@ -246,8 +246,9 @@ def test_placeholder_adapters_never_return_success_and_document_future_prompts()
             WalletProofVerificationReason.UNSUPPORTED_NETWORK,
             WalletProofVerificationReason.PREFIX_REQUIRED,
             WalletProofVerificationReason.SCRIPT_BACKEND_UNAVAILABLE,
+            WalletProofVerificationReason.LEGACY_SIGNATURE_DISABLED,
         }
-        assert any("Prompt" in limitation for limitation in result.limitations) or result.reason_code in {WalletProofVerificationReason.UNSUPPORTED_NETWORK, WalletProofVerificationReason.PREFIX_REQUIRED, WalletProofVerificationReason.SCRIPT_BACKEND_UNAVAILABLE}
+        assert any("Prompt" in limitation for limitation in result.limitations) or result.reason_code in {WalletProofVerificationReason.UNSUPPORTED_NETWORK, WalletProofVerificationReason.PREFIX_REQUIRED, WalletProofVerificationReason.SCRIPT_BACKEND_UNAVAILABLE, WalletProofVerificationReason.LEGACY_SIGNATURE_DISABLED}
 
 
 def test_hardware_and_sovereign_are_not_granted_by_claims_or_single_verifier():
