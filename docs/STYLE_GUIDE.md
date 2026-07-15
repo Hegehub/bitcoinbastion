@@ -4,7 +4,10 @@ This style guide defines conventions for organizing code, documentation and inte
 
 ## Repository layout
 
-The repository contains multiple subsystems.  To make the structure more intuitive, adhere to the following conventions:
+The repository contains multiple subsystems. The canonical root ownership and
+retired parallel paths are defined in
+[`REPOSITORY_LAYOUT.md`](REPOSITORY_LAYOUT.md). Adhere to the following
+conventions:
 
 ### Backend
 
@@ -12,7 +15,7 @@ The backend codebase lives primarily in the `app/` directory and supports FastAP
 
 - `app/` – Python packages implementing services, models, tasks and API routes.  The **services** directory houses domain‐specific services such as bastion trace, citadel, market data, mempool, treasury and intelligence.  Each subpackage should expose a clear public API and publish domain events through the event bus.
 - `app/db/` – SQLAlchemy models, Alembic migrations and seeds.  New migrations should follow the naming pattern `YYYYMMDD_HHmm_description.py` and include upgrade and downgrade logic.  Migrations must be idempotent and accompanied by migration smoke tests.
-- `deploy/` – runtime-profile tooling, Compose definitions, and Kubernetes manifests. `helm/bitcoin-bastion` currently contains a values contract only and is not an executable deployment method because it has no templates. Deployment changes must keep `docs/DEPLOYMENT_METHODS.md` and the evidence requirements in `docs/PRODUCTION_READINESS.md` synchronized.
+- `deploy/` – runtime-profile tooling, Compose definitions, canonical Kubernetes/GitOps assets, and the values-only `deploy/helm/bitcoin-bastion` placeholder. The Helm placeholder is not an executable deployment method because it has no templates. Deployment changes must keep `docs/DEPLOYMENT_METHODS.md` and the evidence requirements in `docs/PRODUCTION_READINESS.md` synchronized.
 - `tests/` – Pytest suites for unit and integration tests.  New features must include tests and use the existing fixtures.
 
 ### Frontend
@@ -20,7 +23,7 @@ The backend codebase lives primarily in the `app/` directory and supports FastAP
 There are currently two frontend runtime surfaces:
 
 - `app/web/` – FastAPI + Jinja templates for delegated Market dashboards and detail pages. Do not remove these routes without an explicit ownership and parity decision.
-- `reflex_frontend/` – the primary Python-first frontend. New user-facing functionality should normally be added here. Refer to `docs/REFLEX_FRONTEND.md`, `docs/FRONTEND_REFLEX_API_PARITY.md`, and `reflex_frontend/docs/DESIGN_SYSTEM.md`.
+- `frontend/` – the primary Python-first frontend. New user-facing functionality should normally be added here. Refer to `docs/REFLEX_FRONTEND.md`, `docs/FRONTEND_REFLEX_API_PARITY.md`, and `frontend/docs/DESIGN_SYSTEM.md`.
 
 The old frontend has been removed; do **not** reintroduce it. Do not remove `app/web/` Market routes without a separate ownership plan.
 
@@ -71,7 +74,7 @@ When database migrations add new tables or columns or seed data, include a corre
 To reduce confusion between backend services and frontend user interfaces, create subfolders within `docs/`:
 
 - `docs/backend/` – houses docs for backend subsystems (e.g., Historical Similarity Engine, Market Signal Governance, Evidence Packets).  These should focus on APIs, data models and internal logic.
-- `docs/frontend/` – historical UI planning docs; current frontend implementation lives in `reflex_frontend/`.  Each file should correspond to a page or group of pages and include routes, backend dependencies, safety copy and state handling.
+- `docs/frontend/` – historical UI planning docs; current frontend implementation lives in `frontend/`.  Each file should correspond to a page or group of pages and include routes, backend dependencies, safety copy and state handling.
 
 Existing docs can be moved into these subfolders over time.  When moving files, ensure all links in other docs and the README are updated accordingly.
 

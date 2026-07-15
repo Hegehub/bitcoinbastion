@@ -65,7 +65,7 @@ frontend:
     reflex: deploy/compose/full-reflex.compose.yaml
   ports:
     fastapi: 8000
-    reflex_frontend: 3001
+    frontend: 3001
     reflex_backend_control: 8001
   safety_notes:
     - Reflex is the preferred primary frontend after Prompt 21/22.

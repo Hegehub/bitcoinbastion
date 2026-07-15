@@ -71,7 +71,7 @@ def test_release_gate_sdks_fail_closed_for_legacy_bearer_even_with_flags() -> No
 
 
 def test_release_gate_frontend_has_access_flow_without_password_form() -> None:
-    access_ui = _read("reflex_frontend/bastion_ui/routes/access.py")
+    access_ui = _read("frontend/bastion_ui/routes/access.py")
 
     assert "This is not a password." in access_ui
     assert "Bastion will never ask for your Bitcoin" in access_ui

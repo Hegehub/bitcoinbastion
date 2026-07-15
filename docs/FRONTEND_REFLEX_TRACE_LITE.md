@@ -2,7 +2,7 @@
 
 ## 1. Routes implemented
 
-Prompt 7 implements the first public Trace Lite entrypoints in the parallel Reflex frontend:
+Prompt 7 implements the first public Trace Lite entrypoints in the Reflex frontend:
 
 - `/check`
 - `/trace`

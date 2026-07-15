@@ -51,7 +51,7 @@ bastion = "cli.bastion_cli.main:app"
 
 [tool.pytest.ini_options]
 pythonpath = [".", "sdk/python"]
-norecursedirs = ["reflex_frontend"]
+norecursedirs = ["frontend"]
 
 [tool.black]
 line-length = 100

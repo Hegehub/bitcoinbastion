@@ -4,7 +4,12 @@
     "BB_API_BASE_URL": true,
     "BB_REQUEST_TIMEOUT_SECONDS": true
   },
-  "frontend_nextjs_present": true,
+  "legacy_nextjs_absent": {
+    "frontend/next.config.js": true,
+    "frontend/next.config.mjs": true,
+    "frontend/next.config.ts": true,
+    "frontend/package.json": true
+  },
   "market_fastapi_jinja_present": true,
   "navigation": {
     "no_products": true,
@@ -13,12 +18,12 @@
     "platform": true
   },
   "reflex_core_files": {
-    "reflex_frontend/.env.example": true,
-    "reflex_frontend/Dockerfile": true,
-    "reflex_frontend/README.md": true,
-    "reflex_frontend/bastion_ui/app.py": true,
-    "reflex_frontend/pyproject.toml": true,
-    "reflex_frontend/rxconfig.py": true
+    "frontend/.env.example": true,
+    "frontend/Dockerfile": true,
+    "frontend/README.md": true,
+    "frontend/bastion_ui/app.py": true,
+    "frontend/pyproject.toml": true,
+    "frontend/rxconfig.py": true
   },
   "reflex_ports": {
     "backend_8001": true,

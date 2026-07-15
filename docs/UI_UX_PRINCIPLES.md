@@ -36,4 +36,4 @@ Platform dashboard/Citadel/Operations UI are informational baselines, not contro
 
 Detailed implementation guidance lives in [REFLEX_FRONTEND.md](REFLEX_FRONTEND.md),
 [TRACE_REPORT_UI.md](TRACE_REPORT_UI.md), and
-`reflex_frontend/docs/SAFETY_COPY.md`.
+`frontend/docs/SAFETY_COPY.md`.

@@ -86,4 +86,5 @@ K3s and single-node overlays are available under `overlays/k3s` and `overlays/si
 | minikube | `deploy/kubernetes/overlays/minikube` | local operator test |
 | single-node | `deploy/kubernetes/overlays/single-node` | constrained production-like deployment |
 
-`deploy/kubernetes/` is canonical. If any legacy `k8s/` compatibility path exists in downstream automation, treat it as a legacy compatibility path and not as the canonical source.
+`deploy/kubernetes/` is canonical. The former root-level parallel baseline has
+been removed; downstream automation must reference this directory directly.

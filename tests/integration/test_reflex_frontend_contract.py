@@ -4,8 +4,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_reflex_core_config_and_routes() -> None:
-    rxconfig = (ROOT / "reflex_frontend/rxconfig.py").read_text(encoding="utf-8")
-    app = (ROOT / "reflex_frontend/bastion_ui/app.py").read_text(encoding="utf-8")
+    rxconfig = (ROOT / "frontend/rxconfig.py").read_text(encoding="utf-8")
+    app = (ROOT / "frontend/bastion_ui/app.py").read_text(encoding="utf-8")
     assert "frontend_port=3001" in rxconfig.replace(" ", "")
     assert "backend_port=8001" in rxconfig.replace(" ", "")
     for route in [
@@ -27,7 +27,7 @@ def test_reflex_core_config_and_routes() -> None:
 
 
 def test_reflex_navigation_uses_current_public_paths() -> None:
-    nav = (ROOT / "reflex_frontend/bastion_ui/components/layout/command_palette.py").read_text(
+    nav = (ROOT / "frontend/bastion_ui/components/layout/command_palette.py").read_text(
         encoding="utf-8"
     )
     assert "/platform" in nav

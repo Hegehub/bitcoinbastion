@@ -76,7 +76,7 @@ Every Market route renders a degraded/stale banner by default. The Market client
 
 ## 9. Manual verification steps
 
-1. Start the Reflex app in the `reflex_frontend` environment.
+1. Start the Reflex app in the `frontend` environment.
 2. Visit `/market`, `/market/time-machine`, `/market/timeline`, `/market/signals`, `/market/evidence`, `/market/narratives`, and `/market/sources`.
 3. Confirm each route renders safety copy, degraded/unavailable state, section navigation, and limitations.
 4. Confirm FastAPI/Jinja `/market` and `/market/time-machine` remain intact outside Reflex cutover.
@@ -85,9 +85,9 @@ Every Market route renders a degraded/stale banner by default. The Market client
 
 | Command | Result |
 |---|---|
-| `python -m pytest -q tests/security/test_developer_layer_forbidden_wording.py reflex_frontend/bastion_ui/tests/test_market_safety.py reflex_frontend/bastion_ui/tests/test_market_no_trading_claims.py` | Passed: 7 passed. |
-| `cd reflex_frontend && uv run ruff check .` | Passed. |
-| `cd reflex_frontend && uv run mypy bastion_ui` | Passed: no issues in 215 source files. |
-| `cd reflex_frontend && uv run pytest` | Passed: 75 passed. |
-| `cd reflex_frontend && uv run reflex export` | Passed with warnings for default sitemap plugin config, deprecated `App(theme=...)`, and Node.js below the recommended version. |
+| `python -m pytest -q tests/security/test_developer_layer_forbidden_wording.py frontend/bastion_ui/tests/test_market_safety.py frontend/bastion_ui/tests/test_market_no_trading_claims.py` | Passed: 7 passed. |
+| `cd frontend && uv run ruff check .` | Passed. |
+| `cd frontend && uv run mypy bastion_ui` | Passed: no issues in 215 source files. |
+| `cd frontend && uv run pytest` | Passed: 75 passed. |
+| `cd frontend && uv run reflex export` | Passed with warnings for default sitemap plugin config, deprecated `App(theme=...)`, and Node.js below the recommended version. |
 | `python -m pytest -q` | Failed with known baseline blockers: async pytest plugin gaps for MCP/SDK tests and a pre-existing Reflex contract expectation; 14 failed, 868 passed, 2 skipped, 99 warnings. |

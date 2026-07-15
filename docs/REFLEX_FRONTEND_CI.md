@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-The Reflex frontend CI workflow verifies that `reflex_frontend/` remains linted, typed, tested, exportable, Docker-buildable in CI, and protected by safety/route-parity checks before any primary frontend cutover.
+The Reflex frontend CI workflow verifies that `frontend/` remains linted, typed, tested, exportable, Docker-buildable in CI, and protected by safety/route-parity checks before any primary frontend cutover.
 
 CI passing does not by itself mean Reflex is production-primary. The primary frontend switch is controlled by Prompt 21/22 cutover gates.
 
@@ -13,7 +13,7 @@ The workflow `.github/workflows/reflex-frontend.yml` defines these jobs:
 1. `reflex-quality` — installs with `uv`, runs Ruff and mypy.
 2. `reflex-tests` — runs the full Reflex pytest suite.
 3. `reflex-export` — runs `uv run reflex export` with non-secret `BB_` defaults.
-4. `reflex-docker-build` — builds `reflex_frontend/Dockerfile` with Docker on GitHub-hosted Linux runners.
+4. `reflex-docker-build` — builds `frontend/Dockerfile` with Docker on GitHub-hosted Linux runners.
 5. `frontend-safety-checks` — runs forbidden wording, no-sensitive-input, Trace safety, Market safety, Console safety, and public forbidden-wording tests.
 6. `route-parity-checks` — runs public route, navigation, command-palette, Market route, Console route, and advanced Console route tests.
 
@@ -33,7 +33,7 @@ make reflex-docker-build
 Direct Reflex commands:
 
 ```bash
-cd reflex_frontend
+cd frontend
 uv sync
 uv run ruff check .
 uv run mypy bastion_ui
@@ -89,7 +89,7 @@ A check may be skipped locally only when the required tool is unavailable, such 
 - Run `uv run mypy bastion_ui` for type failures.
 - Run `uv run pytest -vv` for test diagnostics.
 - Run `uv run reflex export` locally before investigating CI-only export failures.
-- Run `docker build -f reflex_frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:test reflex_frontend` on a Docker-enabled machine for image issues.
+- Run `docker build -f frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:test frontend` on a Docker-enabled machine for image issues.
 
 ## 10. Cutover relevance
 

@@ -105,7 +105,7 @@ Run Reflex separately when a browser UI is needed:
 
 ```bash
 make reflex-sync
-cd reflex_frontend
+cd frontend
 uv run reflex run --frontend-port 3001 --backend-port 8001
 ```
 
@@ -200,8 +200,8 @@ docker compose -f deploy/compose/reflex-frontend.compose.yaml up -d --build
 ## Kubernetes preflight shared by all overlays
 
 [`deploy/kubernetes`](../deploy/kubernetes/README.md) is the only canonical
-Kubernetes tree. The top-level `k8s/` tree is a legacy/parallel baseline and must
-not be used as a second source of truth.
+Kubernetes tree. The former top-level parallel baseline has been removed; new
+manifests, overlays, and GitOps assets belong under `deploy/kubernetes/`.
 
 Before applying any canonical overlay:
 
@@ -450,8 +450,7 @@ These repository surfaces must not be counted as additional deployment methods:
 | `.github/workflows/gitops-promotion.yml` | Pull-request validation gate | It lints, tests, renders overlays, and checks for a digest string; it does not apply to a cluster. |
 | `.github/workflows/container-security.yml` | Build/security evidence | It builds/scans a local image but does not publish a deployable image. |
 | `.github/workflows/deploy.yml` | Non-operational Reflex Cloud template | It references the absent `my-app-folder`, generic example secrets, and an unpinned third-party action tag. It is not a verified deployment path. |
-| `helm/bitcoin-bastion/` | Values-only placeholder, not an installable chart | It has `Chart.yaml` and `values.yaml` but no templates, so `helm install` cannot create the application workloads. |
-| top-level `k8s/` | Legacy/parallel baseline | Canonical Kubernetes ownership is `deploy/kubernetes`; using both creates drift. |
+| `deploy/helm/bitcoin-bastion/` | Values-only placeholder, not an installable chart | It has `Chart.yaml` and `values.yaml` but no templates, so `helm install` cannot create the application workloads. |
 | `deploy/runtime-profiles/*.yaml` | Profile metadata | Metadata describes posture and commands; it does not deploy services. |
 | Render/dry-run output | Validation artifact | Rendering proves neither successful apply nor runtime health. |
 | Reflex image or frontend-only Compose | Frontend component | It requires a reachable FastAPI backend and its dependencies. |

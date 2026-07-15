@@ -157,7 +157,7 @@ As of 2026-07-07, the focused Access gate passes locally. Known repository-wide 
 
 ## 2026-07-07 cleanup search snapshot
 
-Repository-wide search after Prompt 32 cleanup found remaining legacy-auth terms only in safe buckets above. Counts from `rg -l` over `app`, `sdk`, `docs`, `tests`, `reflex_frontend`, and `.env.example` were:
+Repository-wide search after Prompt 32 cleanup found remaining legacy-auth terms only in safe buckets above. Counts from `rg -l` over `app`, `sdk`, `docs`, `tests`, `frontend`, and `.env.example` were:
 
 | Term | Files with remaining references | Classification |
 | --- | ---: | --- |

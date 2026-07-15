@@ -8,7 +8,7 @@ No transaction signing and no seed/private key handling in frontend.
 
 
 Type and transport strategy: Reflex clients under
-`reflex_frontend/bastion_ui/services/` use Python DTOs and shared envelope/error
+`frontend/bastion_ui/services/` use Python DTOs and shared envelope/error
 handling. Automated client generation from OpenAPI remains pending.
 
 ## Access frontend API usage

@@ -14,7 +14,15 @@ SDK_ARTIFACT = ROOT / "artifacts" / "sdk_smoke.json"
 
 def run(cmd: list[str]) -> dict[str, object]:
     proc = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, timeout=120)
-    return {"command": " ".join(cmd), "returncode": proc.returncode, "stdout": proc.stdout[-4000:], "stderr": proc.stderr[-4000:]}
+    display_cmd = list(cmd)
+    if display_cmd and Path(display_cmd[0]).resolve() == Path(sys.executable).resolve():
+        display_cmd[0] = "python"
+    return {
+        "command": " ".join(display_cmd),
+        "returncode": proc.returncode,
+        "stdout": proc.stdout[-4000:],
+        "stderr": proc.stderr[-4000:],
+    }
 
 
 def file_status(paths: list[str]) -> dict[str, str]:

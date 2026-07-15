@@ -79,7 +79,7 @@ Contract lock note: `/api/v1` frontend-facing DTOs are baseline-locked for criti
 
 ## Frontend alignment note
 
-The Reflex Trace clients under `reflex_frontend/bastion_ui/services/` consume
+The Reflex Trace clients under `frontend/bastion_ui/services/` consume
 backend endpoints for Lite checks, public summaries, full reports, evidence,
 privacy/origin/provider/counterparty/policy facets, status, runtime events, and
 proof packets. Proof packets are unsigned unless signing is explicitly

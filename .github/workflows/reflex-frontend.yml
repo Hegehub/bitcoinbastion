@@ -3,7 +3,7 @@ name: Reflex Frontend CI
 on:
   pull_request:
     paths:
-      - "reflex_frontend/**"
+      - "frontend/**"
       - ".github/workflows/reflex-frontend.yml"
       - "docs/REFLEX_FRONTEND_CI.md"
       - "docs/FRONTEND_REFLEX_MIGRATION_STATUS.md"
@@ -12,7 +12,7 @@ on:
     branches:
       - main
     paths:
-      - "reflex_frontend/**"
+      - "frontend/**"
       - ".github/workflows/reflex-frontend.yml"
       - "docs/REFLEX_FRONTEND_CI.md"
       - "docs/FRONTEND_REFLEX_MIGRATION_STATUS.md"
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: reflex_frontend
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: reflex_frontend
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: reflex_frontend
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -91,14 +91,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Reflex Docker image
-        run: docker build -f reflex_frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:test reflex_frontend
+        run: docker build -f frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:test frontend
 
   frontend-safety-checks:
     name: Reflex safety wording checks
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: reflex_frontend
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: reflex_frontend
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6

@@ -1,10 +1,10 @@
 from pathlib import Path
 
 
-def test_new_docs_exist() -> None:
+def test_canonical_repository_docs_exist() -> None:
     for p in (
         "docs/TECHNICAL_DEBT.md",
-        "docs/PRE_RELEASE_GAPS.md",
+        "docs/REPOSITORY_LAYOUT.md",
         "docs/ENVIRONMENT_VARIABLES.md",
         ".env.example",
     ):
