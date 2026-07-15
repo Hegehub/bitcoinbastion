@@ -74,4 +74,4 @@ Plugins cannot access seed phrases, private keys, wallet files, xprv/yprv/zprv m
 
 ## Developer-layer hardening audit
 
-See `docs/DEVELOPER_LAYER_HARDENING_AUDIT.md` for the current hardening baseline. Production exposure still requires authentication, rate limits, TLS, monitoring, and deployment evidence. Webhooks are signed and replay-resistant when receivers verify timestamp, delivery id, event type, signature, and raw body. WebSocket streams are live convenience streams and are not durable delivery.
+The former hardening audit is retained at `docs/archive/audits/2026/DEVELOPER_LAYER_HARDENING_AUDIT.md` as historical evidence. Current release state is defined by `docs/STATUS.md`. Production exposure still requires Proof-of-Access/policy enforcement, rate limits, TLS, monitoring, and deployment evidence. Webhooks are signed and replay-resistant when receivers verify timestamp, delivery id, event type, signature, and raw body. WebSocket streams are live convenience streams and are not durable delivery.

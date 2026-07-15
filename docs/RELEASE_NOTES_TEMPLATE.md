@@ -97,7 +97,8 @@ curl -fsS http://localhost:8000/metrics
 
 ## RC decision field (required)
 - Decision class: `PRODUCTION RELEASE CANDIDATE` / `RC-ready pending environment evidence` / `PRE-RC / PRODUCTION-ORIENTED BETA` / `NOT READY`
-- Final audit reference: `docs/FINAL_PRODUCTION_GAP_AUDIT.md`
+- Current status reference: `docs/STATUS.md`
+- Revision/environment evidence reference: `<artifact or archived audit path>`
 
 ## Evidence attachment field (required for RC promotion)
 - [ ] `artifacts/release_evidence.json` attached

@@ -20,9 +20,23 @@ For each BTC candle the engine searches for `news_events` inside the candle inte
 - `ATTRIBUTION_MAX_CONFIDENCE`
 - `ATTRIBUTION_ENABLE_REPLAY`
 
+Timeframe-specific windows can also be supplied through
+`ATTRIBUTION_WINDOW_CONFIG_JSON`. The current documented defaults are:
+
+- `15m`: 45 minutes before and 15 minutes after;
+- `1h`: 4 hours before and 1 hour after;
+- `4h`: 12 hours before and 4 hours after;
+- `1d`: 48 hours before and 12 hours after.
+
 ## Scoring
 
 Candidate confidence combines event confidence, BTC relevance, market impact score, source confidence, provider confidence, time-distance weight, and sentiment/candle direction match. The score is clamped to `0.0` through the configured maximum confidence, defaulting to `0.92`.
+
+Ranking weights can be overridden with `ATTRIBUTION_RANKING_WEIGHTS_JSON`.
+The ranked factors include BTC relevance, market impact, source credibility,
+news-impact confidence, historical-pattern support, provider confidence,
+freshness, direction/sentiment match, and volatility. Multiple candidates may
+be retained; the engine does not force a single cause.
 
 ## Replay support
 
@@ -77,3 +91,11 @@ Confidence bands are `LOW`, `MEDIUM`, and `HIGH`; there is no critical/certain b
 - `Correlation is not proof of causation.`
 
 Additional limitations are emitted for provider degradation, low source confidence, weak historical support, insufficient evidence, and contradictory direction evidence.
+
+## Operator review
+
+Attributions are not automatically published as certainty. Review paths support
+approval, rejection, false-attribution marking, confidence downgrade, and
+operator notes. Candidate selection, score contributions, provider health,
+window configuration, direction logic, confidence adjustments, and limitations
+remain available as replayable evidence.

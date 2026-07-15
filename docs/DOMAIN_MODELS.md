@@ -1,228 +1,215 @@
 # Domain Models
 
-Model list aligned to `app/db/models`.
+This is the canonical inventory of domain models exported by `app.db.models`.
+The executable source of truth for membership in this inventory is
+`app/db/models/__init__.py::__all__`; the referenced model modules and database
+migrations remain the source of truth for fields, constraints, and persistence
+semantics.
 
-## Auth
-- `User`
-- `SubscriptionPlan`
-- `UserSubscription`
+An exported model is part of the current Python package surface. Export does
+not by itself mean that the feature is production-calibrated, externally
+integrated, or enabled in every runtime profile. Current readiness and known
+limitations are tracked in `docs/STATUS.md` and `docs/PRODUCTION_READINESS.md`.
 
-## News and reputation
+## Access control and entitlements
+
+Source: `app/db/models/access.py`.
+
+- `AccessAuditEvent`
+- `AccessCertificate`
+- `AccessChallenge`
+- `AccessDevice`
+- `AccessPaymentIntent`
+- `AccessRequestNonce`
+- `AccessRevocation`
+- `AccessSession`
+- `ChildApiKey`
+- `DelegatedPass`
+- `MetricUsage`
+- `RecoveryAttempt`
+- `RecoveryQuorum`
+- `SubscriptionEntitlement`
+
+## Wallet authentication and recovery
+
+Source: `app/db/models/wallet_auth.py`.
+
+- `MultiWalletQuorum`
+- `RecoveryCapsule`
+- `WalletDevice`
+- `WalletPrincipal`
+- `WalletPrivacyCommitment`
+- `WalletProof`
+- `WalletSession`
+- `WalletSessionNonce`
+- `WalletStepUpProof`
+
+## LNURL and Lightning identity
+
+Source: `app/db/models/lnurl.py`.
+
+- `LNURLAuthAttempt`
+- `LNURLAuthChallenge`
+- `LNURLInvoice`
+- `LNURLPayRequest`
+- `LNURLPayerData`
+- `LNURLPaymentProof`
+- `LNURLPrincipal`
+- `LNURLReceiptPacket`
+- `LNURLSuccessAction`
+- `LNURLVerifyCheck`
+- `LNURLWithdrawAttempt`
+- `LNURLWithdrawRequest`
+- `LightningAddress`
+- `PayRegisterLNURLBinding`
+
+## Storage and transactional outboxes
+
+Sources: `app/db/models/storage_artifact.py`,
+`app/db/models/storage_outbox_event.py`, and
+`app/db/models/event_outbox.py`.
+
+- `StorageArtifact`
+- `StorageArtifactStatus`
+- `StorageOutboxEvent`
+- `StorageOutboxEventStatus`
+- `EventOutbox`
+- `EventOutboxStatus`
+
+## Webhook management
+
+Source: `app/db/models/webhooks.py`.
+
+- `WebhookEndpoint`
+- `WebhookEndpointStatus`
+- `WebhookEventSubscription`
+- `WebhookDelivery`
+- `WebhookDeliveryStatus`
+
+These exports cover endpoint configuration, subscriptions, and delivery
+history. They do not by themselves prove that signed outbound delivery is
+configured in a deployed environment.
+
+## Market data and provider reliability
+
+Sources: the corresponding modules under `app/db/models/`, including
+`btc_candle.py`, `candle_build_run.py`, `candle_provider_snapshot.py`,
+`btc_price_point.py`, `market_provider_health.py`, `mempool_fee_snapshot.py`,
+`provider_health_record.py`, `provider_confidence_event.py`,
+`source_health_record.py`, `source_health_snapshot.py`, and
+`provider_source_health_timeseries.py`.
+
 - `BTCCandle`
-- `IntelligenceTimelineEvent`
-- `CandleProviderSnapshot`
 - `CandleBuildRun`
+- `CandleProviderSnapshot`
 - `BTCPricePoint`
-- `ProviderHealthRecord`
 - `MarketProviderHealth`
-- `NewsEventArticle`
-- `NewsEventCluster`
+- `MempoolFeeSnapshot`
+- `ProviderHealthRecord`
+- `ProviderConfidenceEvent`
+- `SourceHealthRecord`
+- `SourceHealthSnapshot`
+- `SourceConfidenceTimeSeriesEvent`
+- `ProviderConfidenceTimeSeriesEvent`
+- `SourceHealthTimeSeriesSnapshot`
+- `ProviderHealthTimeSeriesSnapshot`
+
+## Candle attribution and impact
+
+Sources: the attribution, context, replay, and impact modules under
+`app/db/models/`.
+
+- `CandleAttribution`
+- `CandleAttributionCandidate`
+- `AttributionContextSnapshot`
+- `CandleContextSnapshot`
+- `AttributionReplayLog`
+- `ImpactWindowSnapshot`
+- `ImpactConfidenceBreakdown`
+
+## Historical similarity and pattern memory
+
+Sources: the historical similarity, pattern, reaction, market-memory, and
+fingerprint modules under `app/db/models/`.
+
+- `HistoricalEventProfile`
+- `HistoricalSimilarityResult`
+- `HistoricalSimilarityRecord`
+- `MarketPatternLibrary`
+- `PatternReactionProfile`
+- `PatternOccurrence`
+- `PatternReactionSnapshot`
+- `HistoricalEventSimilarity`
+- `EventPatternMatch`
+- `MarketPattern`
+- `MarketMemoryRecord`
+- `EventFingerprintRecord`
+- `PatternStatistics`
+- `MarketMemoryOperatorReview`
+- `HistoricalPattern`
+- `HistoricalSimilarityMatch`
+- `HistoricalReactionProfile`
+- `HistoricalReactionStatistics`
+- `PatternEmbeddingPlaceholder`
+
+## Narrative memory
+
+Sources: the narrative modules under `app/db/models/`.
+
+- `MarketNarrative`
+- `NarrativeKeyword`
+- `NarrativeSnapshot`
+- `NarrativeObservation`
+- `NarrativeMemorySnapshot`
+- `NewsNarrativeTag`
+
+## News intelligence and scoring
+
+Sources: the news, reputation, scoring, and price-impact modules under
+`app/db/models/`.
+
 - `NewsSource`
 - `NewsArticle`
+- `NewsArticleCluster`
 - `SourceReputationProfile`
-- `SourceHealthRecord`
+- `NewsEvent`
+- `NewsEventArticle`
+- `NewsEventCluster`
 - `NewsFetchLog`
 - `NewsRawPayload`
-- `NewsArticleCluster`
-- `SourceHealthSnapshot`
-- `ProviderConfidenceEvent`
-- `NewsEvent`
+- `NewsScore`
+- `NewsArticleScore`
+- `NewsPriceImpact`
+- `ScoringFactor`
+- `ScoreExplanation`
 
-## Entities
-- `Entity`
-- `EntityAddress`
-- `WatchedEntity`
+## Signals, explainability, and evidence packets
 
-## On-chain
-- `OnchainEvent`
+Sources: `app/db/models/signal.py`, `app/db/models/signal_link.py`,
+`app/db/models/explainability.py`, `app/db/models/evidence_packet.py`,
+`app/db/models/intelligence_timeline.py`, and
+`app/db/models/intelligence_signals.py`.
 
-## Signals and explainability
 - `Signal`
 - `SignalSourceLink`
 - `SignalExplanation`
 - `EvidenceNode`
 - `EvidenceEdge`
-
-## Citadel
-- `CitadelAssessment`
-
-## Wallet
-- `WalletProfile`
-- `WalletHealthReport`
-
-## Treasury and policy runtime
-- `TreasuryRequest`
-- `PsbtWorkflow`
-- `TreasuryPolicy`
-- `PolicyRule`
-- `PolicyExecutionLog`
-
-## Delivery and operations
-- `DeliveryLog`
-- `TelegramDeliveryLog`
-- `AuditLog`
-- `JobRun`
-- `EventOutbox`
-- `EventOutboxStatus`
-
-
-## Bastion Trace
-- `TraceReport`
-- `TraceEvidence`
-- `TraceSource`
-- `TraceSourceSnapshot`
-- `TraceWatchlistEntry`
-
-## Labeling notes
-- Some service-level outputs using these models are **BASELINE**.
-- Citadel-dependent projections include **SYNTHETIC** elements in selected endpoints.
-
-
-## RC lock note
-- Domain model readiness is constrained by global quality gates; see `docs/FINAL_PRODUCTION_GAP_AUDIT.md`.
-
-
-Bastion Trace status: INITIAL BASELINE / NOT PRODUCTION-COMPLETE
-Advisory only; baseline scoring placeholder; no trusted external risk sources; no legal verdict; no consensus proof; no seed/private key intake; no Stratum/mining introduced.
-
-
-Business Tier is a capability profile, not billing enforcement. Business policy actions are operational recommendations, not legal verdicts. Business policy actions do not execute payments. Batch screening accepts only public Bitcoin addresses. Sensitive wallet material is rejected and not stored. Review Desk is for operator review, not automated enforcement. Proof packets are evidence bundles, not legal certificates. API-key scopes are placeholders unless auth infrastructure exists. Bastion Trace: BUSINESS TIER BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
-
-Enterprise Tier is a capability profile, not billing enforcement. RBAC/SSO are placeholders unless connected to production auth/IdP. Legal Hold is operational metadata and not legal advice. Immutable Audit Log is append-only at application level unless WORM is configured. SIEM hooks are placeholders unless delivery infrastructure is configured. Retention auto-delete is disabled by default. Legal hold overrides retention. Enterprise proof packets are evidence bundles, not legal certificates. Bastion Trace: ENTERPRISE TIER GOVERNANCE BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
-
-Bastion Trace is a module inside Bitcoin Bastion, not the whole platform. Citadel consumes Trace as a separate advisory contribution. Policy Bridge does not execute payments. Treasury Bridge does not sign or broadcast transactions. Register Bridge is advisory and does not auto-reject payments. Cross-domain evidence refs preserve auditability. Trace production calibration is still pending. Bastion Trace: PLATFORM INTEGRATION BASELINE IMPLEMENTED / NOT PRODUCTION-CALIBRATED
-Bastion Trace metrics use bounded labels only. Bitcoin addresses are never used as Prometheus labels. Trace status is operational and not a production calibration claim. Telegram commands are advisory and never request seed/private keys. Trace alerts are placeholders unless delivery infrastructure exists. Production alert delivery requires environment configuration. trace_production_calibrated remains false until real calibration evidence exists.
-
-
-## Bastion Trace domain reference
-See `docs/BASTION_TRACE_DOMAIN_MODEL.md` for Bastion Trace persistence and service-level artifact mapping.
-
-- `NewsScore`: deterministic article/event scoring snapshot with factor breakdown and limitations.
-- `NewsScore`
-- `NewsArticleScore`
-
-- `NewsNarrativeTag`
-- `NewsPriceImpact`
-
-- `ScoringFactor`
-- `ScoreExplanation`
-
-- `CandleAttribution`
-- `AttributionReplayLog`
-- `ImpactWindowSnapshot`
-- `ImpactConfidenceBreakdown`
-
-## Production Candle Attribution Models
-
-- `CandleAttributionCandidate`: pre-ranking candidate evidence for candle attribution, including raw score, normalized score, ranking features, and rejection reason.
-- `AttributionContextSnapshot`: replayable market/news context around a candle attribution run, including provider health, market regime, active news counts, and timeline snapshot data.
-- `CandleAttributionCandidate`
-- `AttributionContextSnapshot`
-- `CandleContextSnapshot`
-
-## Historical Similarity Models
-
-- `HistoricalEventProfile`: normalized historical market-memory profile with pattern, narrative, sentiment, impact windows, confidence, and provider-confidence features.
-- `HistoricalSimilarityResult`: persisted component-level similarity comparison with explanation JSON and limitations.
-- `HistoricalEventProfile`
-- `HistoricalSimilarityResult`
-
-## Production Historical Similarity Models
-
-- `HistoricalSimilarityRecord`: report-level historical analog evidence with component matches, reaction windows, confidence, and explanation JSON.
-- `MarketPatternLibrary`: seeded deterministic market pattern taxonomy for ETF, regulatory, macro, security, miner, treasury, Lightning, and volatility narratives.
-- `HistoricalSimilarityRecord`
-- `MarketPatternLibrary`
-
-## BMTM-30 Market Memory Models
-
-- `MarketPattern`
-- `EventPatternMatch`
-- `HistoricalEventSimilarity`
-- `PatternReactionProfile`
-
-These models store the active production market-pattern catalog, ranked event pattern-classification evidence, replayable historical event similarities, and calibrated pattern reaction profiles.
-
-## Historical Similarity Foundation Models
-
-- `HistoricalPattern`
-- `HistoricalSimilarityMatch`
-- `HistoricalReactionProfile`
-
-These models store the foundation pattern catalog, replayable event-to-event similarity component scores, and event-level BTC reaction profiles for evidence-based historical comparison.
-
-## Narrative Heatmap Models
-
-- `MarketNarrative`
-- `NarrativeKeyword`
-- `NarrativeSnapshot`
-
-These models store the active Bitcoin narrative catalog, weighted deterministic keyword rules, and replayable narrative heatmap snapshots with confidence, provider state, evidence, and limitations.
-
-## BMTM-033 Narrative Observation Model
-
-- `NarrativeObservation`
-
-This model stores article/event-level narrative classification observations with narrative type, observation score, confidence, source confidence, and observed time for replayable narrative intelligence.
-
-### Task 34 Narrative Heatmap Fields
-
-- `NarrativeObservation` includes `narrative_id`, `observation_time`, `strength_score`, and `relevance_score` for replayable classifier evidence.
-- `NarrativeSnapshot` includes `velocity_score`, `dominance_score`, and `supporting_events_count` for leaderboard and heatmap rendering.
-
-## BMTM-P35 Market Memory Engine Models
-
-- `MarketMemoryRecord`
-- `EventFingerprintRecord`
-- `PatternStatistics`
-- `MarketMemoryOperatorReview`
-
-## BMTM-P36 Signal Governance Models
-
-- `IntelligenceSignalCandidate`
-- `IntelligenceOperatorReview`
-- `IntelligencePublishingPolicy`
-- `IntelligenceSignalDeliveryLog`
-
-These models store governed candidate signals, operator review audit records, publication thresholds/defaults, and channel delivery outcomes.
-
-## BMTM-P37 Evidence Packet and Replay Models
 - `EvidencePacket`
 - `EvidenceRelationship`
 - `EvidenceArtifact`
 - `EvidenceIntegritySnapshot`
 - `EvidenceReplayLog`
+- `IntelligenceTimelineEvent`
+- `IntelligenceSignalCandidate`
+- `IntelligenceOperatorReview`
+- `IntelligencePublishingPolicy`
+- `IntelligenceSignalDeliveryLog`
 
-These models persist replayable evidence bundles, lineage chains, artifact payloads, deterministic integrity snapshots, and replay logs for article, event, impact, attribution, signal, and publication evidence.
+## Runtime health and recovery evidence
 
-
-## Historical Similarity and Pattern Memory Models
-
-- `market_patterns`: production pattern catalog with `pattern_code`, human name, category, default sentiment, default impact window, risk profile, confidence rules, active flag, and timestamps.
-- `pattern_occurrences`: event/article/impact/attribution occurrence memory for a pattern.
-- `historical_similarity_results`: source and candidate event comparisons with similarity, reaction similarity, confidence, and explanation JSON.
-- `pattern_statistics`: occurrence counts, average/median moves across 15m/1h/4h/24h, success rate, and update timestamp.
-- `pattern_reaction_snapshots`: immutable reaction snapshots per occurrence and reaction window.
-- `market_narratives`: narrative memory fields for first seen, last seen, event count, average confidence, and related patterns.
-
-
-### Model exports
-
-- `PatternOccurrence`
-- `PatternReactionSnapshot`
-- `HistoricalReactionStatistics`
-- `PatternEmbeddingPlaceholder`
-- `NarrativeMemorySnapshot`
-
-## Production observability models
-
-- `SystemHealthSnapshot` stores rolled-up system health, degraded/critical counts, fallback state and operator-attention state.
-- `ProviderHealthSnapshot` stores provider name/type, success/failure timestamps, failure counts, latency, confidence, backoff and health state.
-- `BackgroundJobHealth` stores background job starts, finishes, durations, retry state, next schedule and worker name.
-- `ServiceHealthSnapshot` stores service-level health snapshots for initialized runtime dependencies.
-- `RuntimeStateSnapshot` stores system, provider, job, signal, evidence and Telegram runtime states.
-- `DegradedComponentSnapshot` stores degraded component severity, recommendation, fallback usage and operator-attention flag.
-- `RecoveryEvent` stores failure detection, fallback activation, restoration and operator-confirmation lifecycle details.
+Sources: `app/db/models/observability_health.py` and
+`app/db/models/operations_control.py`.
 
 - `SystemHealthSnapshot`
 - `ProviderHealthSnapshot`
@@ -231,33 +218,80 @@ These models persist replayable evidence bundles, lineage chains, artifact paylo
 - `RuntimeStateSnapshot`
 - `DegradedComponentSnapshot`
 - `RecoveryEvent`
-
-## Operations control-plane models
-
-- `OperationsEvidence` stores recovery drill evidence, operator notes, success status, and artifact references.
-- `OperationsSLOSnapshot` stores SLO status for API availability, jobs, providers, signal latency, evidence latency, and replay latency.
-
 - `OperationsEvidence`
 - `OperationsSLOSnapshot`
-
-## Disaster recovery validation models
-
-- `BackupValidationRecord` stores backup ID, timestamps, success, checked objects, integrity verification and limitations.
-- `RecoveryValidationRecord` stores restore/replay validation status, deterministic rebuild verification, integrity verification, replay types and limitations.
-
 - `BackupValidationRecord`
 - `RecoveryValidationRecord`
 
-## Webhook management models
+## Operational records and delivery
 
-- `WebhookEndpoint` stores operator-managed endpoint configuration, target URL, enabled/status flags, secret reference placeholder, metadata, and delivery health counters.
-- `WebhookEventSubscription` stores endpoint-to-event-type subscriptions with duplicate prevention per endpoint and event type.
-- `WebhookDelivery` stores test/future delivery records, status, target URL snapshot, sanitized request/response previews, attempts, and timestamps.
+Sources: `app/db/models/audit.py`, `app/db/models/job_run.py`,
+`app/db/models/metric_usage_event.py`, `app/db/models/delivery.py`, and
+`app/db/models/telegram.py`.
 
-- `WebhookEndpoint`
-- `WebhookEndpointStatus`
-- `WebhookEventSubscription`
-- `WebhookDelivery`
-- `WebhookDeliveryStatus`
+- `AuditLog`
+- `JobRun`
+- `MetricUsageEvent`
+- `DeliveryLog`
+- `TelegramDeliveryLog`
 
-Webhook models are management and delivery-history foundations only. Real signed outbound delivery is pending future dispatcher work.
+## Users and subscriptions
+
+Source: `app/db/models/auth.py`.
+
+- `User`
+- `SubscriptionPlan`
+- `UserSubscription`
+
+## Entities and on-chain observations
+
+Sources: `app/db/models/entity.py`, `app/db/models/watched_entity.py`, and
+`app/db/models/onchain.py`.
+
+- `Entity`
+- `EntityAddress`
+- `WatchedEntity`
+- `OnchainEvent`
+
+## Wallet profile and health
+
+Source: `app/db/models/wallet.py`.
+
+- `WalletProfile`
+- `WalletHealthReport`
+
+## Treasury and policy runtime
+
+Source: `app/db/models/treasury.py`.
+
+- `TreasuryRequest`
+- `PsbtWorkflow`
+- `TreasuryPolicy`
+- `PolicyRule`
+- `PolicyExecutionLog`
+
+Treasury models support advisory and policy workflows; they do not sign or
+broadcast transactions.
+
+## Bastion Trace
+
+Source: `app/db/models/bastion_trace.py`. Persistence and service-level
+artifact mapping are described in `docs/BASTION_TRACE_DOMAIN_MODEL.md`.
+
+- `TraceReport`
+- `TraceEvidence`
+- `TraceSource`
+- `TraceSourceSnapshot`
+- `TraceWatchlistEntry`
+
+Bastion Trace remains advisory and is not a legal verdict or consensus proof.
+Its current calibration status is documented in `docs/STATUS.md`.
+
+## Citadel
+
+Source: `app/db/models/citadel_assessment.py`.
+
+- `CitadelAssessment`
+
+Citadel projections may include synthetic elements where explicitly identified
+by the relevant API response and status documentation.

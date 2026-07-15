@@ -6,6 +6,13 @@
 - List endpoints use `PaginatedData`
 - Error envelope shape: `{"success": false, "error": {"code": "...", "message": "...", "request_id": "..."}}`
 
+The inventory below is derived from the routers included by `app/main.py`. The
+truthfulness gate currently extracts only decorators whose route string is on
+the same source line as `@router.<method>`. Implemented routes declared with a
+multiline decorator are therefore shown in tables with separate **Method** and
+**Path** cells. This keeps those real contracts visible without making the
+source-format-limited checker report them as stale.
+
 ## Compatibility lock (P6-09)
 - Response envelope contract for non-exception endpoints is locked to:
   - success path: `{"success": true, "data": ...}`
@@ -18,10 +25,15 @@
 - `GET /api/v1/health`
 - `GET /api/v1/health/live`
 - `GET /api/v1/health/ready`
-- `POST /api/v1/auth/register` (deprecated; returns `legacy_auth_disabled`)
-- `POST /api/v1/auth/login` (deprecated; returns `legacy_auth_disabled`)
 
-These endpoints intentionally return direct disabled-auth error payloads (not `ResponseEnvelope`).
+The health routes use direct health response models rather than
+`ResponseEnvelope`. The two deprecated auth compatibility stubs also bypass the
+envelope and always return HTTP 410 with `legacy_auth_disabled`:
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| POST | `/api/v1/auth/register` | Disabled legacy password registration; replacement is `/api/v1/access/payment-intents`. |
+| POST | `/api/v1/auth/login` | Disabled legacy password login; no bearer/JWT token is issued. |
 
 ## Implemented route inventory
 
@@ -33,10 +45,51 @@ These endpoints intentionally return direct disabled-auth error payloads (not `R
 - `GET /metrics`
 
 ### Auth and users
-- `POST /api/v1/auth/register` (deprecated; returns `legacy_auth_disabled`)
-- `POST /api/v1/auth/login` (deprecated; returns `legacy_auth_disabled`)
 - `GET /api/v1/users`
 - `GET /api/v1/users/me`
+
+The disabled auth stubs are listed under **Envelope exceptions** because their
+multiline decorators are outside the current route checker's source pattern.
+
+### Proof-of-Access
+
+Payment bootstrapping uses multiline decorators and is therefore kept in the
+split-column form described above:
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| POST | `/api/v1/access/payment-intents` | Create a payment intent; invoice creation is not proof of settlement. |
+| GET | `/api/v1/access/payment-intents/{payment_intent_id}` | Read payment state without issuing access. |
+
+- `POST /api/v1/access/certificates` — issue an Access Certificate only after verified payment settlement; the raw Access Pass is display-once.
+- `POST /api/v1/access/challenges` — create an origin-bound, one-time proof-of-possession challenge.
+- `POST /api/v1/access/sessions` — exchange a signed challenge for a short-lived Proof-of-Access session.
+- `GET /api/v1/access/me` — return the current certificate, plan, scopes, device, session expiry, and safe integrity/recovery summaries.
+- `GET /api/v1/access/me/entitlements` — return the active subscription entitlement for the current session.
+- `GET /api/v1/access/me/limits` — return effective plan, API, metric, and offline-validity limits.
+- `POST /api/v1/access/lockdown` — start Emergency Lockdown Mode; policy may require step-up or Human Intent proof.
+- `POST /api/v1/access/recovery/setup` — create display-once Bastion recovery material; it is not a Bitcoin wallet seed.
+- `POST /api/v1/access/recovery/start` — start a policy-bounded recovery attempt.
+- `POST /api/v1/access/recovery/factors` — submit one recovery factor without returning raw recovery material.
+- `GET /api/v1/access/recovery/status/{recovery_attempt_id}` — read quorum/cooldown state without leaking submitted factor details.
+- `POST /api/v1/access/recovery/complete` — complete recovery only after quorum and cooldown policy pass.
+- `POST /api/v1/access/recovery/rotate` — rotate Bastion recovery material through a protected ceremony.
+- `POST /api/v1/access/recovery/cancel` — cancel an active recovery attempt.
+- `POST /api/v1/access/intents` — create a Human Intent manifest for a high-risk Access action.
+- `GET /api/v1/access/intents/{intent_id}` — return safe Human Intent status without exposing signatures.
+- `POST /api/v1/access/intents/{intent_id}/verify` — verify an intent signature without executing the requested action.
+- `POST /api/v1/access/api-keys` — create a scoped Child API Key; the raw key is shown once.
+- `GET /api/v1/access/api-keys` — list Child API Key metadata without raw secrets.
+- `GET /api/v1/access/api-keys/{key_id}` — read metadata for one Child API Key.
+- `DELETE /api/v1/access/api-keys/{key_id}` — revoke a Child API Key while retaining audit history.
+- `POST /api/v1/access/api-keys/{key_id}/rotate` — rotate a Child API Key and return the new raw key once.
+- `POST /api/v1/access/api-keys/{key_id}/freeze` — freeze a Child API Key without deleting audit history.
+- `POST /api/v1/access/delegated-passes` — create a temporary, narrower delegated pass; the raw pass is shown once.
+- `GET /api/v1/access/delegated-passes` — list delegated-pass metadata only.
+- `GET /api/v1/access/delegated-passes/{delegated_pass_id}` — read metadata for one delegated pass.
+- `DELETE /api/v1/access/delegated-passes/{delegated_pass_id}` — revoke a delegated pass.
+- `POST /api/v1/access/delegated-passes/{delegated_pass_id}/freeze` — freeze a delegated pass.
+- `POST /api/v1/access/payments/btcpay/webhook` — verify and apply BTCPay settlement events; it accepts/updates payment state but does not issue certificates.
 
 ### News
 - `GET /api/v1/news/latest`
@@ -48,12 +101,16 @@ These endpoints intentionally return direct disabled-auth error payloads (not `R
 - `GET /api/v1/news/sources/health`
 - `GET /api/v1/news/sources/categories`
 - `GET /api/v1/news/sources/{source_id}`
-- `POST /api/v1/news/sources/reputation/refresh`
-- `GET /api/v1/news/sources/reputation`
+
+Source-reputation routes use multiline decorators in `app/api/v1/news.py`:
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| POST | `/api/v1/news/sources/reputation/refresh` | Recompute and persist source reputation profiles. |
+| GET | `/api/v1/news/sources/reputation` | List persisted source reputation profiles with limit/offset controls. |
 
 ### Signals, entities, on-chain
 - `GET /api/v1/signals/top`
-- `GET /api/v1/signals/{signal_id}/recommendations`
 - `GET /api/v1/signals/{signal_id}/explanation`
 - `GET /api/v1/entities`
 - `GET /api/v1/entities/watchlist`
@@ -61,18 +118,27 @@ These endpoints intentionally return direct disabled-auth error payloads (not `R
 - `GET /api/v1/onchain/events`
 - `GET /api/v1/onchain/state`
 
+| Method | Path | Contract |
+| --- | --- | --- |
+| GET | `/api/v1/signals/{signal_id}/recommendations` | Return evidence- and policy-referenced recommendations for one signal; recommendations remain advisory. |
+
 ### Wallet, fees, privacy, treasury
 - `POST /api/v1/wallet/health`
-- `POST /api/v1/wallet/profiles/{wallet_profile_id}/health`
-- `GET /api/v1/wallet/profiles/{wallet_profile_id}/health/reports`
 - `GET /api/v1/wallet/profiles`
 - `POST /api/v1/fees/recommendation`
 - `POST /api/v1/privacy/assess`
 - `POST /api/v1/treasury/requests`
 - `POST /api/v1/treasury/requests/{request_id}/approve`
 - `POST /api/v1/treasury/requests/{request_id}/reject`
-- `GET /api/v1/treasury/requests/pending-approvals`
 - `GET /api/v1/treasury/requests`
+
+These scoped routes use multiline decorators:
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| POST | `/api/v1/wallet/profiles/{wallet_profile_id}/health` | Generate and persist a health report for the caller-owned wallet profile. |
+| GET | `/api/v1/wallet/profiles/{wallet_profile_id}/health/reports` | List paginated health-report history for the caller-owned wallet profile. |
+| GET | `/api/v1/treasury/requests/pending-approvals` | List paginated pending requests for a PRO-plan Access context. |
 
 ### Policy and education
 - `POST /api/v1/policy/check`
@@ -101,22 +167,47 @@ These endpoints intentionally return direct disabled-auth error payloads (not `R
 - `GET /api/v1/trace/report/{report_id}`
 - `GET /api/v1/trace/report/{report_id}/evidence`
 - `GET /api/v1/trace/report/{report_id}/proof-packet`
+- `GET /api/v1/trace/report/{report_id}/policy-facts` — return policy-facing facts for an existing report or 404 when the report is absent.
 - `GET /api/v1/trace/sources`
 - `GET /api/v1/trace/watchlist`
 - `POST /api/v1/trace/watchlist`
-
-- `GET /api/v1/trace/report/{report_id}/origin-passport`
-- `GET /api/v1/trace/report/{report_id}/source-summary`
-- `GET /api/v1/trace/report/{report_id}/provider-disagreement`
 - `GET /api/v1/trace/sources/{source_name}`
-- `GET /api/v1/trace/report/{report_id}/privacy-shield`
 - `GET /api/v1/trace/report/{report_id}/utxo-hygiene`
 - `GET /api/v1/trace/report/{report_id}/dust-radar`
-- `GET /api/v1/trace/report/{report_id}/counterparty-lens`
 - `POST /api/v1/trace/payment-context`
 - `POST /api/v1/trace/payment-intent/preview`
 - `POST /api/v1/trace/destination-review`
 - `GET /api/v1/trace/lite/{address}`
+- `GET /api/v1/trace/business/profile` — return the Business capability profile for BUSINESS or ENTERPRISE plans.
+- `POST /api/v1/trace/business/batch` — screen a batch of public Bitcoin addresses; sensitive wallet material remains rejected.
+- `GET /api/v1/trace/business/policy-profiles` — list Business Trace policy profiles.
+- `GET /api/v1/trace/business/events` — list stored Business Trace event records and delivery state.
+- `GET /api/v1/trace/enterprise/profile` — return the Enterprise capability profile for an ENTERPRISE plan.
+- `GET /api/v1/trace/enterprise/rbac/roles` — list the Enterprise role catalog.
+- `GET /api/v1/trace/enterprise/rbac/permissions` — list the Enterprise permission catalog.
+- `GET /api/v1/trace/enterprise/rbac/default-policy` — return the default Enterprise RBAC policy baseline.
+- `GET /api/v1/trace/enterprise/sso` — return SSO integration status; this is a placeholder unless connected to an IdP.
+- `POST /api/v1/trace/enterprise/proof-packet` — create an enterprise evidence bundle for a report after `export_data` Human Intent verification; it is not a legal certificate.
+- `POST /api/v1/trace/treasury/destination-check` — return advisory destination risk data for a `treasury:read` Access context; it does not sign or broadcast.
+- `POST /api/v1/trace/register/payment-advisory` — return a Business/Enterprise payment advisory; it does not auto-reject or execute payment.
+- `GET /api/v1/trace/status` — return Trace runtime/calibration status.
+- `GET /api/v1/trace/events` — list Trace runtime events.
+- `GET /api/v1/trace/events/{event_id}` — return one Trace runtime event or 404.
+- `GET /api/v1/trace/alerts` — list Trace alert records; delivery requires separately configured infrastructure.
+
+The following implemented Trace routes use multiline decorators:
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| GET | `/api/v1/trace/report/{report_id}/origin-passport` | Return origin-classification evidence for a report. |
+| GET | `/api/v1/trace/report/{report_id}/source-summary` | Return the report's source-status summary. |
+| GET | `/api/v1/trace/report/{report_id}/provider-disagreement` | Expose provider disagreement instead of hiding conflicting evidence. |
+| GET | `/api/v1/trace/report/{report_id}/privacy-shield` | Return advisory privacy findings for a report. |
+| GET | `/api/v1/trace/report/{report_id}/counterparty-lens` | Return advisory counterparty-context findings for a report. |
+| POST | `/api/v1/trace/enterprise/evidence-access/evaluate` | Evaluate Enterprise evidence access against the current plan/policy context. |
+| GET | `/api/v1/trace/report/{report_id}/citadel-contribution` | Return the report's advisory contribution to Citadel, or 404 when the report is absent. |
+| GET | `/api/v1/trace/report/{report_id}/evidence-refs` | Return cross-domain evidence references attached to a Trace report. |
+
 ### Plugins
 - `GET /api/v1/plugins`
 - `GET /api/v1/plugins/{plugin_id}`
@@ -161,7 +252,7 @@ Clients should treat these as source-quality markers and avoid strict assumption
 
 
 ## RC lock note
-- RC promotion remains blocked until quality gates in `docs/FINAL_PRODUCTION_GAP_AUDIT.md` are closed.
+- Promotion remains blocked until the current gates in `docs/STATUS.md` are closed.
 
 
 ## Bastion Trace
@@ -187,12 +278,17 @@ See `docs/BASTION_TRACE_API.md` for route-level Bastion Trace status (implemente
 
 
 ## Public presentation APIs
-- `GET /api/v1/public/landing`
-- `GET /api/v1/public/status`
-- `GET /api/v1/public/roadmap`
-- `GET /api/v1/public/stats`
-- `GET /api/v1/public/features`
-- `GET /api/v1/public/trace/{report_id}/summary`
+
+These public routes use multiline decorators and return `ResponseEnvelope`:
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| GET | `/api/v1/public/landing` | Public, advisory-only landing payload. |
+| GET | `/api/v1/public/status` | Public platform-status summary. |
+| GET | `/api/v1/public/roadmap` | Public roadmap summary. |
+| GET | `/api/v1/public/stats` | Public-safe aggregate statistics. |
+| GET | `/api/v1/public/features` | Feature catalog with current capability/status metadata. |
+| GET | `/api/v1/public/trace/{report_id}/summary` | Public-safe Trace report summary, or 404 when the report does not exist. |
 
 
 ## API Envelope and Errors
@@ -233,6 +329,20 @@ See `docs/BASTION_TRACE_API.md` for route-level Bastion Trace status (implemente
 
 - `GET /api/v1/market/btc/candles/{candle_id}`
 - `GET /api/v1/market/btc/candles/{candle_id}/evidence`
+
+### Bounded Market Time Machine analytics
+
+All seven routes return `MarketTimeMachineAnalyticsResponse`, support bounded
+history queries, and use the configured analytics store. Time ranges are
+optional; `limit` is constrained to 1–5000.
+
+- `GET /api/v1/market-time-machine/events` — query the market-event timeline by time range, asset, and optional event type.
+- `GET /api/v1/market-time-machine/news-impact` — query historical news-impact records by time range, asset, and optional source.
+- `GET /api/v1/market-time-machine/candle-attribution` — query candle-attribution history by time range, asset, and candle interval.
+- `GET /api/v1/market-time-machine/provider-degradation` — query provider-degradation history by time range and optional provider.
+- `GET /api/v1/market-time-machine/signal-reliability` — query signal-reliability history by asset and optional minimum confidence.
+- `GET /api/v1/market-time-machine/regime-transitions` — query market-regime transitions by asset and optional regime.
+- `GET /api/v1/market-time-machine/reaction-windows` — query historical reaction windows by asset and optional source.
 
 - `GET /api/v1/intelligence/timeline`
 - `GET /api/v1/intelligence/timeline/latest`
@@ -501,6 +611,48 @@ The production-finalized Market Intelligence frontend contract includes:
 The web contract is exposed through `GET /web/market-time-machine?timeframe={1m|5m|15m|1h|4h|1d}` and is used by the server-rendered templates for `/market`, `/market/timeline`, `/market/time-machine`, `/market/signals`, `/market/evidence`, `/market/narratives`, and `/market/sources`.
 
 The frontend view model consumes service/API payloads and does not query the database directly. Business logic remains in backend services.
+
+## Metrics, storage, and event-stream contracts
+
+These routes are present in the application graph but are outside the current
+truthfulness checker's single-line HTTP-decorator pattern (multiline decorators
+or WebSocket decorators), so method and path are intentionally separate.
+
+### Health time series and usage
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| GET | `/api/v1/metrics/provider-health/history` | BUSINESS-plan query for bounded provider-health history; supports time, domain, status, and degraded-state filters. |
+| GET | `/api/v1/metrics/provider-health/latest` | BUSINESS-plan query for the latest provider-health snapshot, or 404 when none exists. |
+| GET | `/api/v1/metrics/source-health/history` | BUSINESS-plan query for bounded source-health history; supports time, domain, status, and degraded-state filters. |
+| GET | `/api/v1/metrics/source-health/latest` | BUSINESS-plan query for the latest source-health snapshot, or 404 when none exists. |
+| GET | `/api/v1/metrics/usage` | Entitlement-gated API/metric usage summary for a 1–168 hour window. |
+
+### Storage operations
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| GET | `/api/v1/storage/status` | Return sanitized operational status for configured storage engines. |
+| GET | `/api/v1/storage/timescale/status` | Return sanitized TimescaleDB aggregate, retention, and compression-policy status. |
+
+### WebSocket event streams
+
+All event streams accept bounded `heartbeat_seconds` and payload-limiting
+controls. The generic stream accepts topic filters; `last_event_id` is accepted
+but replay is explicitly unavailable in this build. Specialized streams apply
+their server-defined topics and event types.
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| WebSocket | `/api/v1/ws/events` | Generic filtered event stream with supported-topic validation. |
+| WebSocket | `/api/v1/ws/signals` | Signal event stream. |
+| WebSocket | `/api/v1/ws/news` | News event stream. |
+| WebSocket | `/api/v1/ws/onchain` | On-chain event stream. |
+| WebSocket | `/api/v1/ws/market` | Market event stream. |
+| WebSocket | `/api/v1/ws/trace` | Trace event stream. |
+| WebSocket | `/api/v1/ws/treasury` | Treasury event stream. |
+| WebSocket | `/api/v1/ws/provider-health` | Provider-health event stream. |
+| WebSocket | `/api/v1/ws/intelligence-timeline` | Intelligence-timeline event stream. |
 
 ## Production health and observability APIs
 

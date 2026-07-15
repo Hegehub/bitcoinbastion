@@ -67,7 +67,7 @@ These extend (not replace) the core RC blocker artifacts.
 - Add burn-in, cutover, sign-off, backup verification, outage drill, and retention-policy evidence references from `deploy/kubernetes/operations/`.
 - Attach observability validation job output plus active alert routing config and dashboard import evidence.
 - Include GitOps promotion evidence: digest PR link, approval template, drift-check output, and evidence-gate checklist.
-- Final RC certification references: `docs/KUBERNETES_RC_CERTIFICATION.md`, `docs/FINAL_KUBERNETES_READINESS_MATRIX.md`, `deploy/kubernetes/RC_EVIDENCE_CHECKLIST.md`.
+- Current certification references: `docs/KUBERNETES_RC_CERTIFICATION.md`, `docs/STATUS.md`, `docs/PRODUCTION_READINESS.md`, and `deploy/kubernetes/RC_EVIDENCE_CHECKLIST.md`. The former final Kubernetes matrix is archived at `docs/archive/audits/2026/FINAL_KUBERNETES_READINESS_MATRIX.md`.
 
 ## Deployment handoff requirements
 

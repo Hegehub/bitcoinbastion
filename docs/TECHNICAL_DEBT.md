@@ -9,7 +9,7 @@ Technical debt remains and is documented.
   - Real staging/prod deployment evidence missing.
 - **Intentional placeholders**
   - Enterprise governance and observability stack placeholders.
-  - K8s/Helm baseline templates requiring environment adaptation.
+  - Kubernetes baselines require environment adaptation; the values-only Helm placeholder has no templates and is not deployable.
 - **Non-blocking polish**
   - Frontend lint-in-build currently warns about missing ESLint package in build phase.
   - Accessibility certification and full E2E coverage pending.

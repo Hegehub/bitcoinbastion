@@ -78,4 +78,9 @@ This document lists Bastion Trace routes implemented in `app/api/v1/trace.py`.
 Contract lock note: `/api/v1` frontend-facing DTOs are baseline-locked for critical routes; breaking changes require migration note and synchronized frontend type update.
 
 ## Frontend alignment note
-The Next.js Trace client calls real backend endpoints for Lite checks, public summaries, full reports, evidence, privacy/origin/provider/counterparty/policy facets, status, runtime events, and proof packets. Proof packets are unsigned unless signing is explicitly implemented and configured.
+
+The Reflex Trace clients under `reflex_frontend/bastion_ui/services/` consume
+backend endpoints for Lite checks, public summaries, full reports, evidence,
+privacy/origin/provider/counterparty/policy facets, status, runtime events, and
+proof packets. Proof packets are unsigned unless signing is explicitly
+implemented and configured.
