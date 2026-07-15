@@ -1,4 +1,4 @@
-"""LNURL payerData and comment policy primitives."""
+"""LNURL payerData and comment domain primitives."""
 
 from __future__ import annotations
 
@@ -13,12 +13,27 @@ class LNURLPayerDataField(StrEnum):
     AUTH = "auth"
 
 
-DEFAULT_ALLOWED_PAYERDATA_FIELDS = [LNURLPayerDataField.AUTH.value]
-PRIVACY_SENSITIVE_PAYERDATA_FIELDS = [
-    LNURLPayerDataField.EMAIL.value,
-    LNURLPayerDataField.NAME.value,
-    LNURLPayerDataField.IDENTIFIER.value,
-]
+class LNURLPayerDataRequirement(StrEnum):
+    PROHIBITED = "prohibited"
+    OPTIONAL = "optional"
+    REQUESTED = "requested"
+    MANDATORY_BY_EXPLICIT_BUSINESS_POLICY = "mandatory_by_explicit_business_policy"
+
+
+DEFAULT_ALLOWED_PAYER_DATA_FIELDS = frozenset({LNURLPayerDataField.AUTH})
+DEFAULT_OPTIONAL_PAYER_DATA_FIELDS = frozenset({LNURLPayerDataField.PUBKEY, LNURLPayerDataField.IDENTIFIER})
+DEFAULT_PROHIBITED_PAYER_DATA_FIELDS = frozenset({LNURLPayerDataField.NAME, LNURLPayerDataField.EMAIL})
+DEFAULT_ALLOWED_PAYERDATA_FIELDS = tuple(field.value for field in DEFAULT_ALLOWED_PAYER_DATA_FIELDS)
+PRIVACY_SENSITIVE_PAYERDATA_FIELDS = tuple(field.value for field in DEFAULT_PROHIBITED_PAYER_DATA_FIELDS | {LNURLPayerDataField.IDENTIFIER})
+
+
+class LNURLPayerDataStatus(StrEnum):
+    ABSENT = "absent"
+    RECEIVED = "received"
+    VALIDATED = "validated"
+    REJECTED = "rejected"
+    EXPIRED = "expired"
+    REDACTED = "redacted"
 
 
 class LNURLCommentPolicy(StrEnum):

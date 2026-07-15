@@ -1,10 +1,5 @@
-"""LNURL successAction domain enums."""
+"""Backward-compatible imports for LNURL successAction domain primitives."""
 
-from __future__ import annotations
+from app.domain.lnurl.success_actions import BastionSuccessActionPurpose, LNURLSuccessActionDescriptor, LNURLSuccessActionType
 
-from enum import StrEnum
-
-
-class LNURLSuccessActionType(StrEnum):
-    MESSAGE = "message"
-    URL = "url"
+__all__ = ["BastionSuccessActionPurpose", "LNURLSuccessActionDescriptor", "LNURLSuccessActionType"]

@@ -14,8 +14,10 @@ class LNURLTag(StrEnum):
 class LNURLAdapterType(StrEnum):
     LNURL_AUTH = "lnurl_auth"
     LNURL_PAY = "lnurl_pay"
-    LIGHTNING_ADDRESS = "lightning_address"
     LNURL_WITHDRAW = "lnurl_withdraw"
     LNURL_VERIFY = "lnurl_verify"
-    LNURL_PAYERDATA_AUTH = "lnurl_payerdata_auth"
-    LNURL_SUCCESS_ACTION = "lnurl_success_action"
+    LIGHTNING_ADDRESS = "lightning_address"
+    PAYER_DATA = "payer_data"
+    SUCCESS_ACTION = "success_action"
+    LNURL_PAYERDATA_AUTH = "payer_data"
+    LNURL_SUCCESS_ACTION = "success_action"

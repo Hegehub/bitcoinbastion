@@ -1,27 +1,29 @@
-"""LNURL-pay domain enums."""
+"""Backward-compatible imports for LNURL-pay domain primitives."""
 
-from __future__ import annotations
+from app.domain.lnurl.payments import (
+    LNURL_COMMENT_ALLOWED_DEFAULT,
+    LNURL_COMMENT_ALLOWED_MAX,
+    LNURL_METADATA_MIME_TYPES,
+    LNURLCommentPurpose,
+    LNURLMetadataType,
+    LNURLPaymentPurpose,
+    LNURLPaymentStatus,
+    LNURLPaymentVerificationMethod,
+    can_transition_payment,
+    is_terminal_payment_status,
+    requires_settlement_verification,
+)
 
-from enum import StrEnum
-
-
-class LNURLPaymentStatus(StrEnum):
-    CREATED = "created"
-    METADATA_ISSUED = "metadata_issued"
-    INVOICE_REQUESTED = "invoice_requested"
-    INVOICE_ISSUED = "invoice_issued"
-    PENDING = "pending"
-    SETTLED = "settled"
-    EXPIRED = "expired"
-    FAILED = "failed"
-    VERIFIED = "verified"
-    ENTITLEMENT_ISSUED = "entitlement_issued"
-
-
-class LNURLPaymentPurpose(StrEnum):
-    SUBSCRIPTION = "subscription"
-    PAYREGISTER_INVOICE = "payregister_invoice"
-    BUSINESS_INVOICE = "business_invoice"
-    ENTERPRISE_INVOICE = "enterprise_invoice"
-    DONATION = "donation"
-    TEST_PAYMENT = "test_payment"
+__all__ = [
+    "LNURL_COMMENT_ALLOWED_DEFAULT",
+    "LNURL_COMMENT_ALLOWED_MAX",
+    "LNURL_METADATA_MIME_TYPES",
+    "LNURLCommentPurpose",
+    "LNURLMetadataType",
+    "LNURLPaymentPurpose",
+    "LNURLPaymentStatus",
+    "LNURLPaymentVerificationMethod",
+    "can_transition_payment",
+    "is_terminal_payment_status",
+    "requires_settlement_verification",
+]

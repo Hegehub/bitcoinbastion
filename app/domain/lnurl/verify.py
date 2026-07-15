@@ -1,15 +1,5 @@
-"""LNURL verification domain enums."""
+"""Backward-compatible imports for LNURL verification domain primitives."""
 
-from __future__ import annotations
+from app.domain.lnurl.verification import LNURLSettlementEvidence, LNURLVerifyStatus
 
-from enum import StrEnum
-
-
-class LNURLVerifyStatus(StrEnum):
-    NOT_AVAILABLE = "not_available"
-    PENDING = "pending"
-    SETTLED_TRUE = "settled_true"
-    SETTLED_FALSE = "settled_false"
-    PREIMAGE_VERIFIED = "preimage_verified"
-    FAILED = "failed"
-    EXPIRED = "expired"
+__all__ = ["LNURLSettlementEvidence", "LNURLVerifyStatus"]

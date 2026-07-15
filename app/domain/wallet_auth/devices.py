@@ -18,6 +18,19 @@ class WalletDeviceClass(StrEnum):
     UNKNOWN = "unknown"
 
 
+class WalletDeviceBindingMethod(StrEnum):
+    WALLET_PROOF_REGISTRATION = "wallet_proof_registration"
+    WALLET_PROOF_NEW_DEVICE = "wallet_proof_new_device"
+    LNURL_AUTH_REGISTRATION = "lnurl_auth_registration"
+    LNURL_AUTH_NEW_DEVICE = "lnurl_auth_new_device"
+    HARDWARE_WALLET_STEP_UP = "hardware_wallet_step_up"
+    AIR_GAPPED_APPROVAL = "air_gapped_approval"
+    MULTISIG_QUORUM_APPROVAL = "multisig_quorum_approval"
+    RECOVERY_CAPSULE_RESTORE = "recovery_capsule_restore"
+    ACCESS_CERTIFICATE_BRIDGE = "access_certificate_bridge"
+    TRUSTED_DEVICE_KEY_ROTATION = "trusted_device_key_rotation"
+
+
 class WalletDeviceStatus(StrEnum):
     ACTIVE = "active"
     SUSPENDED = "suspended"
