@@ -1,6 +1,6 @@
 # Storage Deployment
 
-This document explains how to expose the initial Bitcoin Bastion Storage Foundation in local, self-hosted, Kubernetes, Helm, staging, and production-style deployments.
+This document explains how to expose the initial Bitcoin Bastion Storage Foundation in local, self-hosted, Kubernetes, staging, and production-style deployments. The Helm material is a values contract only, not a working deployment path.
 
 The initial deployment foundation covers:
 
@@ -94,9 +94,11 @@ Use ExternalSecret, SealedSecret, SOPS, Vault, cloud secret manager, or equivale
 
 Use it only for local, self-hosted, or single-node testing after replacing placeholder secrets and choosing a persistent storage class.
 
-## Helm values
+## Helm values placeholder
 
-The placeholder Helm chart exposes:
+`helm/bitcoin-bastion` contains `Chart.yaml` and the following values contract,
+but no `templates/` tree. It cannot currently render or install Bitcoin Bastion
+and must not be listed as a supported deployment method.
 
 ```yaml
 objectStorage:
@@ -116,7 +118,9 @@ objectStorage:
   secretKeySecretKey: OBJECT_STORAGE_SECRET_KEY
 ```
 
-External object storage is preferred by default. Bundled MinIO is not forced by the chart.
+External object storage is preferred by default. Bundled MinIO is not defined
+by this placeholder. Implementing and validating chart templates would be a
+separate deployment change.
 
 ## Storage health check
 

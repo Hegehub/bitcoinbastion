@@ -1,5 +1,7 @@
 # Reflex Accessibility Baseline
 
+Status: **ACTIVE BASELINE / MANUAL AND AUTOMATED PRODUCTION AUDIT PENDING**.
+
 ## Accessibility goals
 
 The Reflex frontend should be usable by keyboard and screen-reader users while preserving Bitcoin Bastion safety warnings, degraded-state visibility, and no-custody boundaries.
@@ -34,6 +36,9 @@ Manual verification should cover 320, 375, 414, 768, 1024, 1280, 1440, and wide 
 ## Known limitations
 
 Automated WCAG verification has not been completed. Manual audit is still recommended before production cutover.
+
+Existing skip-to-content links, form labels, and alert roles are baseline
+implementation evidence only; they are not an accessibility certification.
 
 ## Manual verification checklist
 

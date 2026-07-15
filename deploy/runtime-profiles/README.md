@@ -2,13 +2,11 @@
 
 This directory stores machine-readable runtime profile metadata and operator guidance for Bitcoin Bastion deployment postures.
 
-Runtime profiles describe how Bitcoin Bastion may be operated across Docker Compose, standard Kubernetes, K3s, Kind, Minikube, constrained single-node deployments, and bare-metal/systemd fallback deployments. The files in this directory are metadata and guidance; they are not secret stores and they are not full overlay implementations.
+Runtime profiles describe how Bitcoin Bastion may be operated across Docker Compose, standard Kubernetes, K3s, Kind, Minikube, constrained single-node deployments, and bare-metal/systemd fallback deployments. The files in this directory are metadata and guidance; they are not secret stores and they do not replace the runtime artifacts referenced by each profile. The canonical operator guide is `docs/DEPLOYMENT_METHODS.md`.
 
 ## Relationship to Kubernetes manifests
 
-`deploy/kubernetes` is the canonical Kubernetes manifest path. Runtime profile metadata references that path for the standard Kubernetes profile and for planned Kubernetes-family profiles. This directory does not replace `deploy/kubernetes` and does not create a new canonical `k8s/` path.
-
-Overlays for K3s, Kind, Minikube, and single-node Kubernetes are planned or added in separate profile-specific tasks. Until then, the corresponding profile files document posture, limitations, and future extension points only.
+`deploy/kubernetes` is the canonical Kubernetes manifest path. Runtime profile metadata references that path for the standard Kubernetes profile and the K3s, Kind, Minikube, and single-node overlays that now exist under `deploy/kubernetes/overlays/`. This directory does not replace `deploy/kubernetes` and does not create a new canonical `k8s/` path.
 
 ## Safety rule
 
