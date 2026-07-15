@@ -7,6 +7,7 @@ verify signatures, issue invoices, settle payments, persist data, or authorize a
 from __future__ import annotations
 
 from datetime import datetime
+import re
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
@@ -28,6 +29,8 @@ from app.domain.wallet_auth import FORBIDDEN_WALLET_SECRET_TERMS, WalletPrincipa
 
 FORBIDDEN_SUCCESS_ACTION_QUERY_TERMS = frozenset({"session_token", "access_pass", "recovery", "seed", "private_key"})
 MAX_LNURL_COMMENT_LENGTH = 1_000
+_COMPRESSED_SECP256K1_RE = re.compile(r"^(02|03)[0-9a-fA-F]{64}$")
+_DER_SIGNATURE_RE = re.compile(r"^[0-9a-fA-F]{4,160}$")
 
 
 def _contains_forbidden_secret_terms(value: Any) -> bool:
@@ -123,17 +126,34 @@ class LNURLAuthCallbackRequest(LNURLSchemaBase):
     @field_validator("k1")
     @classmethod
     def validate_k1(cls, k1: str) -> str:
-        return _validate_k1_hex(k1)
+        return _validate_k1_hex(k1.lower())
+
+    @field_validator("key")
+    @classmethod
+    def validate_key(cls, key: str) -> str:
+        if _COMPRESSED_SECP256K1_RE.fullmatch(key) is None:
+            raise ValueError("LNURL-auth key must be a compressed secp256k1 public key in hex.")
+        return key.lower()
+
+    @field_validator("sig")
+    @classmethod
+    def validate_sig(cls, sig: str) -> str:
+        if _DER_SIGNATURE_RE.fullmatch(sig) is None:
+            raise ValueError("LNURL-auth signature must be bounded DER hex.")
+        return sig.lower()
 
 
 class LNURLAuthCallbackResponse(LNURLSchemaBase):
     status: str
     reason: str | None = None
-    principal_hash: str | None = Field(default=None, description="Privacy-preserving Lightning Principal hash.")
-    lnurl_key_hash: str | None = Field(default=None, description="HMAC/hash of LNURL key; no raw linking key.")
-    session_required: bool = True
-    device_binding_required: bool = True
-    audit_event_hash: str | None = None
+
+    @classmethod
+    def ok(cls) -> "LNURLAuthCallbackResponse":
+        return cls(status="OK")
+
+    @classmethod
+    def error(cls) -> "LNURLAuthCallbackResponse":
+        return cls(status="ERROR", reason="Authentication request could not be verified.")
 
 
 class LightningPrincipalResponse(LNURLSchemaBase):
