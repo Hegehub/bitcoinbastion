@@ -55,3 +55,13 @@ fingerprints rather than public `user_id` values. Raw signatures, raw addresses,
 canonical intent payloads, seed phrases, private keys, mnemonics, xprv material,
 Access Passes, and session tokens must not be logged. Users should migrate to
 BIP-322 or LNURL-auth where supported.
+
+## Lightning Principal Security
+
+A Lightning Principal is a privacy-preserving cryptographic actor created only after an LNURL-auth callback proof has already been verified. It is not a legal identity, email account, username, password account, subscription entitlement, bearer token, Access Certificate, or proof of on-chain Bitcoin treasury ownership.
+
+LNURL-auth linking keys are domain-specific. Bastion derives `lnurl_key_hash` with HMAC-SHA256 over the normalized auth domain and compressed linking public key, then derives `principal_hash` with a separate HMAC namespace for `lightning_wallet_principal`. Raw LNURL linking public keys are used only transiently at the verification boundary and must not become public user IDs.
+
+Lightning Principals still require Device Binding, Proof-of-Possession session issuance, Subscription Entitlement checks where applicable, Revocation Registry checks, Audit Chain events, and Policy Engine authorization before protected API access. LNURL-auth success is not subscription payment, and an issued LNURL-pay invoice is not proof of settlement.
+
+Domain migration is explicit. A principal created under `auth.bitcoin-bastion.com` must not silently authenticate as a principal for another domain. Bitcoin and Lightning principals are not automatically merged through payerData, payment correlation, Lightning Address use, IP address, or shared device context; linking requires explicit policy-approved proof and audit.
