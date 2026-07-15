@@ -8,7 +8,7 @@ def read(path: str) -> str:
 
 
 def test_trace_client_routes_exist_in_backend() -> None:
-    trace_client = read("reflex_frontend/bastion_ui/services/trace_client.py")
+    trace_client = read("frontend/bastion_ui/services/trace_client.py")
     sdk_trace = read("sdk/python/bitcoin_bastion_sdk/resources/trace.py")
     backend_trace = read("app/api/v1/trace.py")
     backend_public = read("app/api/v1/public.py")
@@ -31,7 +31,7 @@ def test_trace_client_routes_exist_in_backend() -> None:
 
 
 def test_trace_public_safety_contract_is_present() -> None:
-    safety = read("reflex_frontend/bastion_ui/security/safety_copy.py")
+    safety = read("frontend/bastion_ui/security/safety_copy.py")
     for phrase in [
         "Advisory-only",
         "Not legal verification",

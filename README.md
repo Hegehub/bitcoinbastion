@@ -591,7 +591,7 @@ Bitcoin Bastion now includes a safe Plugin API foundation for manifest-first, de
 
 ## Reflex-only frontend status (2026-06-29)
 
-The old Next.js frontend directory has been removed. `reflex_frontend/` is now
+The old Next.js frontend directory has been removed. `frontend/` is now
 the only repository-native frontend. FastAPI remains the backend source of
 truth, and FastAPI/Jinja still owns delegated Market detail/dashboard routes.
 The removal decision is preserved as historical evidence in

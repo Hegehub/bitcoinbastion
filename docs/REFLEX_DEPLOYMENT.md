@@ -40,7 +40,7 @@ Do not put seed phrases, private keys, wallet files, signing material, API secre
 Build the standalone image:
 
 ```bash
-docker build -t bitcoin-bastion-reflex-frontend:local ./reflex_frontend
+docker build -t bitcoin-bastion-reflex-frontend:local ./frontend
 ```
 
 Run it against a backend reachable from the host:

@@ -96,7 +96,7 @@ Use it only for local, self-hosted, or single-node testing after replacing place
 
 ## Helm values placeholder
 
-`helm/bitcoin-bastion` contains `Chart.yaml` and the following values contract,
+`deploy/helm/bitcoin-bastion` contains `Chart.yaml` and the following values contract,
 but no `templates/` tree. It cannot currently render or install Bitcoin Bastion
 and must not be listed as a supported deployment method.
 

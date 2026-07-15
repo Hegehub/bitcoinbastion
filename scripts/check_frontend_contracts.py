@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Reflex/FastAPI frontend boundary contracts and confirm removal of the legacy frontend."""
+"""Validate Reflex/FastAPI boundaries and the absence of the legacy Next.js app."""
 from __future__ import annotations
 
 import json
@@ -10,6 +10,12 @@ ARTIFACT = ROOT / "artifacts" / "frontend_contract_validation.json"
 REFLEX_ROUTES = ["/check", "/trace", "/trace/[report_id]", "/trace/[report_id]/proof-packet", "/console", "/console/trace", "/console/evidence", "/console/market-intelligence", "/console/time-machine", "/console/sovereign-grid", "/console/policy", "/console/audit", "/console/command-center"]
 REQUIRED_COPY = ["Advisory-only", "Not legal verification", "Not Bitcoin consensus proof", "No custody", "Public Bitcoin addresses only", "Never enter seed phrases, private keys, wallet files or signing material"]
 FORBIDDEN_LINKS = ["/products", "/self-host"]
+LEGACY_NEXTJS_MARKERS = [
+    "frontend/package.json",
+    "frontend/next.config.js",
+    "frontend/next.config.mjs",
+    "frontend/next.config.ts",
+]
 
 
 def read(path: str) -> str:
@@ -18,25 +24,35 @@ def read(path: str) -> str:
 
 
 def main() -> int:
-    app_py = read("reflex_frontend/bastion_ui/app.py")
-    rxconfig = read("reflex_frontend/rxconfig.py")
-    env_example = read("reflex_frontend/.env.example")
-    safety = read("reflex_frontend/bastion_ui/security/safety_copy.py") + read("reflex_frontend/bastion_ui/components/ui/safety_banner.py")
-    command_palette = read("reflex_frontend/bastion_ui/components/layout/command_palette.py")
+    app_py = read("frontend/bastion_ui/app.py")
+    rxconfig = read("frontend/rxconfig.py")
+    env_example = read("frontend/.env.example")
+    safety = read("frontend/bastion_ui/security/safety_copy.py") + read("frontend/bastion_ui/components/ui/safety_banner.py")
+    command_palette = read("frontend/bastion_ui/components/layout/command_palette.py")
     market_router_present = (ROOT / "app/web/routes.py").exists() or (ROOT / "app/web/market_routes.py").exists()
     result = {
         "status": "implemented",
-        "reflex_core_files": {p: (ROOT / p).exists() for p in ["reflex_frontend/rxconfig.py", "reflex_frontend/pyproject.toml", "reflex_frontend/README.md", "reflex_frontend/.env.example", "reflex_frontend/Dockerfile", "reflex_frontend/bastion_ui/app.py"]},
+        "reflex_core_files": {p: (ROOT / p).exists() for p in ["frontend/rxconfig.py", "frontend/pyproject.toml", "frontend/README.md", "frontend/.env.example", "frontend/Dockerfile", "frontend/bastion_ui/app.py"]},
         "reflex_ports": {"frontend_3001": "frontend_port=3001" in rxconfig.replace(" ", ""), "backend_8001": "backend_port=8001" in rxconfig.replace(" ", "")},
         "env": {"BB_API_BASE_URL": "BB_API_BASE_URL" in env_example, "BB_REQUEST_TIMEOUT_SECONDS": "BB_REQUEST_TIMEOUT_SECONDS" in env_example},
         "reflex_routes": {route: f'route="{route}"' in app_py for route in REFLEX_ROUTES},
         "safety_copy": {copy: copy in safety for copy in REQUIRED_COPY},
         "navigation": {"platform": "/platform" in command_palette, "operations": "/operations" in command_palette, "no_products": "/products" not in command_palette, "no_self_host": "/self-host" not in command_palette},
-        "legacy_frontend_removed": not (ROOT / "frontend").exists(),
+        "legacy_nextjs_absent": {
+            path: not (ROOT / path).exists() for path in LEGACY_NEXTJS_MARKERS
+        },
         "market_fastapi_jinja_present": market_router_present,
     }
     blockers = []
-    for section in ("reflex_core_files", "reflex_ports", "env", "reflex_routes", "safety_copy", "navigation"):
+    for section in (
+        "reflex_core_files",
+        "reflex_ports",
+        "env",
+        "reflex_routes",
+        "safety_copy",
+        "navigation",
+        "legacy_nextjs_absent",
+    ):
         blockers += [f"{section}:{k}" for k, v in result[section].items() if not v]
     result["blockers"] = blockers
     if blockers:

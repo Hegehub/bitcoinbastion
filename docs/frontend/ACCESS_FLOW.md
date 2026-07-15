@@ -1,6 +1,8 @@
 # Frontend Proof-of-Access Flow
 
-The active repository frontend is the Reflex UI under `reflex_frontend/`. No Next.js `frontend/` application is active in this checkout; the Reflex routes below are the production migration target.
+The active repository frontend is the Reflex UI under `frontend/`. The legacy
+Next.js implementation that previously occupied this path is not active; the
+Reflex routes below are the production migration target.
 
 ## Routes
 

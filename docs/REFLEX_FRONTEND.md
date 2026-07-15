@@ -1,6 +1,6 @@
 # Reflex Frontend
 
-The Reflex frontend is the primary Python-first UI layer under `reflex_frontend/` and is the sole repository-native frontend. It replaces the legacy Next.js UI surface that was previously used during migration.
+The Reflex frontend is the primary Python-first UI layer under `frontend/` and is the sole repository-native frontend. It replaces the legacy Next.js UI surface that was previously used during migration.
 
 ## Ownership and boundaries
 
@@ -23,4 +23,4 @@ Reflex must never request seed phrases, private keys, wallet files, keystores, e
 
 Shared wording and surface boundaries are canonical in
 [UI_UX_PRINCIPLES.md](UI_UX_PRINCIPLES.md). Accessibility requirements live in
-`../reflex_frontend/docs/ACCESSIBILITY.md`.
+`../frontend/docs/ACCESSIBILITY.md`.

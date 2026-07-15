@@ -48,8 +48,8 @@ Bastion Trace is a backend baseline. It is advisory-only, no-custody, not legal 
 ## Frontend contract lock
 
 The Reflex Trace frontend calls the implemented endpoints above through
-`reflex_frontend/bastion_ui/services/api_client.py` and
-`reflex_frontend/bastion_ui/services/trace_client.py`.
+`frontend/bastion_ui/services/api_client.py` and
+`frontend/bastion_ui/services/trace_client.py`.
 `ResponseEnvelope.data` unwrapping is preserved by the shared API client. Proof
 packets are displayed as unsigned application-level evidence summaries unless
 real signing is implemented, configured, and evidenced.

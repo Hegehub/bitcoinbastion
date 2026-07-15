@@ -67,11 +67,10 @@ activated**.
 
 ### Frontend
 
-`reflex_frontend/` is the sole repository-native frontend. FastAPI/Jinja still
-owns delegated Market routes. Static route registries and contracts exist, but
-the current route-parity script does not fully understand dynamic Reflex route
-registration and can report false blockers. Browser, accessibility, and live
-deployment evidence remain incomplete.
+`frontend/` is the sole repository-native frontend. FastAPI/Jinja still owns
+delegated Market routes. Static route registries and route/API parity checks
+pass for both direct registrations and `PUBLIC_ROUTE_SPECS`. Browser,
+accessibility, and live deployment evidence remain incomplete.
 
 ### Deployment and operations
 

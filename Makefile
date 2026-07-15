@@ -397,7 +397,7 @@ ts-sdk-check: ts-sdk-typecheck ts-sdk-test
 .PHONY: reflex-docker-build reflex-docker-run compose-reflex compose-reflex-down compose-full-reflex compose-full-reflex-down runtime-render-reflex
 
 reflex-docker-build:
-	docker build -f reflex_frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:local reflex_frontend
+	docker build -f frontend/Dockerfile -t bitcoin-bastion-reflex-frontend:local frontend
 
 reflex-docker-run:
 	docker run --rm -p 3001:3001 -p 8001:8001 -e BB_API_BASE_URL=$${BB_API_BASE_URL:-http://host.docker.internal:8000} bitcoin-bastion-reflex-frontend:local
@@ -421,25 +421,25 @@ runtime-render-reflex:
 .PHONY: reflex-sync reflex-lint reflex-typecheck reflex-test reflex-export reflex-ci frontend-safety-check frontend-route-parity
 
 reflex-sync:
-	cd reflex_frontend && uv sync
+	cd frontend && uv sync
 
 reflex-lint:
-	cd reflex_frontend && uv run ruff check .
+	cd frontend && uv run ruff check .
 
 reflex-typecheck:
-	cd reflex_frontend && uv run mypy bastion_ui
+	cd frontend && uv run mypy bastion_ui
 
 reflex-test:
-	cd reflex_frontend && uv run pytest
+	cd frontend && uv run pytest
 
 reflex-export:
-	cd reflex_frontend && uv run reflex export
+	cd frontend && uv run reflex export
 
 frontend-safety-check:
-	cd reflex_frontend && uv run pytest bastion_ui/tests/test_forbidden_wording.py bastion_ui/tests/test_no_sensitive_input.py bastion_ui/tests/test_trace_safety.py bastion_ui/tests/test_market_no_trading_claims.py bastion_ui/tests/test_console_safety.py bastion_ui/tests/test_public_forbidden_wording.py
+	cd frontend && uv run pytest bastion_ui/tests/test_forbidden_wording.py bastion_ui/tests/test_no_sensitive_input.py bastion_ui/tests/test_trace_safety.py bastion_ui/tests/test_market_no_trading_claims.py bastion_ui/tests/test_console_safety.py bastion_ui/tests/test_public_forbidden_wording.py
 
 frontend-route-parity:
-	cd reflex_frontend && uv run pytest bastion_ui/tests/test_routes.py bastion_ui/tests/test_navigation.py bastion_ui/tests/test_command_palette.py bastion_ui/tests/test_market_routes.py bastion_ui/tests/test_console_routes.py bastion_ui/tests/test_console_advanced_routes.py
+	cd frontend && uv run pytest bastion_ui/tests/test_routes.py bastion_ui/tests/test_navigation.py bastion_ui/tests/test_command_palette.py bastion_ui/tests/test_market_routes.py bastion_ui/tests/test_console_routes.py bastion_ui/tests/test_console_advanced_routes.py
 
 reflex-ci: reflex-sync reflex-lint reflex-typecheck reflex-test reflex-export frontend-safety-check frontend-route-parity
 

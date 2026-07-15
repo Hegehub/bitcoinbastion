@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: prometheus-placeholder
-data:
-  note: "Baseline placeholder. Requires production scrape config and retention tuning."

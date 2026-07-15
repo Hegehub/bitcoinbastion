@@ -51,7 +51,7 @@ def test_frontend_and_docs_include_bitcoin_seed_safety_copy() -> None:
         path.read_text(encoding="utf-8", errors="ignore")
         for path in [
             Path("docs/ACCESS_RECOVERY.md"),
-            Path("reflex_frontend/bastion_ui/routes/access.py"),
+            Path("frontend/bastion_ui/routes/access.py"),
         ]
         if path.exists()
     )

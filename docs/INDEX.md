@@ -10,6 +10,7 @@ current implementation or readiness guidance.
 ## Start here
 
 - [Current repository status](STATUS.md)
+- [Repository layout](REPOSITORY_LAYOUT.md)
 - [Production readiness contract](PRODUCTION_READINESS.md)
 - [Roadmap](ROADMAP.md)
 - [Architecture](ARCHITECTURE.md)
@@ -61,8 +62,8 @@ current implementation or readiness guidance.
 - [Reflex testing](FRONTEND_REFLEX_TESTING.md)
 - [Route/API parity contract](FRONTEND_REFLEX_API_PARITY.md)
 - [UI/UX and safety principles](UI_UX_PRINCIPLES.md)
-- [Accessibility baseline](../reflex_frontend/docs/ACCESSIBILITY.md)
-- [Design system](../reflex_frontend/docs/DESIGN_SYSTEM.md)
+- [Accessibility baseline](../frontend/docs/ACCESSIBILITY.md)
+- [Design system](../frontend/docs/DESIGN_SYSTEM.md)
 
 ## Storage, operations, and deployment
 

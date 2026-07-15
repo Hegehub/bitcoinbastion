@@ -5,7 +5,7 @@ Status: partial implementation for Prompt 11/22. FastAPI/Jinja remains canonical
 
 ## 1. Purpose
 
-Prompt 11/22 adds a parallel Reflex operator overview at `/console/market-intelligence`. The page summarizes Market Intelligence status, latest signal availability, provider health, evidence availability, freshness, degraded states, and the intentionally deferred Time Machine migration.
+Prompt 11/22 adds a Reflex operator overview at `/console/market-intelligence`. The page summarizes Market Intelligence status, latest signal availability, provider health, evidence availability, freshness, degraded states, and the intentionally deferred Time Machine migration.
 
 This prompt does not replace `/market`, `/market/time-machine`, `/market/timeline`, `/market/signals`, `/market/evidence`, `/market/narratives`, `/market/sources`, `/console/time-machine`, or any FastAPI/Jinja dashboard route.
 
@@ -84,10 +84,10 @@ Recorded for this prompt:
 
 | Command | Result |
 |---|---|
-| `cd reflex_frontend && uv sync` | Passed: dependencies resolved/audited. |
-| `python -m pytest -q reflex_frontend/bastion_ui/tests/test_market_intelligence_route.py reflex_frontend/bastion_ui/tests/test_market_safety_copy.py reflex_frontend/bastion_ui/tests/test_market_client.py reflex_frontend/bastion_ui/tests/test_market_no_trading_claims.py` | Passed: 9 passed. |
+| `cd frontend && uv sync` | Passed: dependencies resolved/audited. |
+| `python -m pytest -q frontend/bastion_ui/tests/test_market_intelligence_route.py frontend/bastion_ui/tests/test_market_safety_copy.py frontend/bastion_ui/tests/test_market_client.py frontend/bastion_ui/tests/test_market_no_trading_claims.py` | Passed: 9 passed. |
 | `python -m pytest -q` | Failed with known repository baseline blockers: async pytest plugin gaps for MCP/SDK tests and a pre-existing Reflex contract expectation; 14 failed, 868 passed, 2 skipped, 99 warnings. |
-| `cd reflex_frontend && uv run ruff check .` | Passed. |
-| `cd reflex_frontend && uv run mypy bastion_ui` | Passed: no issues in 186 source files. |
-| `cd reflex_frontend && uv run pytest` | Passed: 64 passed. |
-| `cd reflex_frontend && uv run reflex export` | Passed with warnings for default sitemap plugin, deprecated `App(theme=...)`, and Node.js version below Reflex recommendation. |
+| `cd frontend && uv run ruff check .` | Passed. |
+| `cd frontend && uv run mypy bastion_ui` | Passed: no issues in 186 source files. |
+| `cd frontend && uv run pytest` | Passed: 64 passed. |
+| `cd frontend && uv run reflex export` | Passed with warnings for default sitemap plugin, deprecated `App(theme=...)`, and Node.js version below Reflex recommendation. |
