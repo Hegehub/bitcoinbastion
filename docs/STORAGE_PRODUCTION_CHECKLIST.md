@@ -130,7 +130,7 @@ This checklist is used before enabling the initial Bitcoin Bastion Storage Layer
 ## 13. Release Gate Checklist
 
 - [ ] Storage deployment configuration is reviewed for the target environment.
-- [ ] Kubernetes/Helm/compose values do not contain real secrets committed to source control.
+- [ ] Kubernetes/Compose configuration and the non-deployable Helm values placeholder do not contain real secrets committed to source control.
 - [ ] Storage docs and runbooks are linked from deployment/release notes where appropriate.
 - [ ] Storage tests pass in CI or local release validation.
 - [ ] Evidence files are generated or skipped/not_configured records are documented truthfully.

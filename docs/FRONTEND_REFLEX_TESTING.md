@@ -2,7 +2,10 @@
 
 ## 1. Test suite purpose
 
-Prompt 18/22 adds a route, navigation, API-client, Trace-safety, no-custody, Market, Console, and forbidden-wording test baseline for the parallel Reflex frontend. The tests are migration gates: Reflex must remain a non-primary frontend until these tests pass or failures are documented as blockers.
+The suite covers routes, navigation, API clients, Trace safety, no-custody
+invariants, Market delegation, Console surfaces, and forbidden wording. These
+tests are repository-level frontend gates; they do not replace browser,
+accessibility, or live-backend validation.
 
 ## 2. Route tests
 
@@ -63,7 +66,11 @@ python -m pytest -q
 - The tests use mocked API transports and do not require a live FastAPI backend.
 - The route registry is a Reflex migration contract and does not change production routing.
 - Reflex export can warn about local Node.js versions or generated sitemap files without changing the no-custody test contract.
+- There is no complete Playwright-style end-to-end browser suite.
+- Automated WCAG certification and manual keyboard/screen-reader review remain pending.
 
-## 13. Current blockers
+## 13. Release use
 
-Repository-root pytest still includes pre-existing async/test-environment gaps outside the Reflex frontend. Those failures must be resolved before using the root suite as a production cutover gate.
+Frontend-focused results must be evaluated together with the repository-root
+CI, route/API parity, docs truthfulness, deployment evidence, and the manual
+accessibility checklist in `reflex_frontend/docs/ACCESSIBILITY.md`.

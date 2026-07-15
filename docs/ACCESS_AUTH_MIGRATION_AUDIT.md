@@ -188,7 +188,7 @@ Required migration:
 | Item | Files | Finding | Classification |
 |---|---|---|---|
 | Login forms | `reflex_frontend/` scan | No active `login` form/password input found outside docs/tests/safe logging. | No removal required now; add regression gate. |
-| Register route assumptions | `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md`, `docs/FRONTEND_ROUTES.md`, route tests/docs | Historical or route inventory references `/register`. | Replace with Access Pass import / payment access flow or mark deprecated. |
+| Register route assumptions | archived `docs/archive/audits/2026/FRONTEND_REFLEX_MIGRATION_BASELINE.md`, archived `docs/archive/audits/2026/FRONTEND_ROUTES.md`, route tests/docs | Historical route inventories reference `/register`. | Replace with Access Pass import / payment access flow or mark deprecated. |
 | Token storage | `reflex_frontend/` scan | No `localStorage`/`sessionStorage` token storage found in current results. | Keep as public/no-auth; add no-token-storage test. |
 | Bearer/API key logging examples | `reflex_frontend/tests/test_safe_logging.py`, `reflex_frontend/bastion_ui/security/safe_logging.py` | Redacts `Authorization: Bearer` and API keys. | Keep redaction; extend to `X-Bastion-*`. |
 | Protected dashboard/console assumptions | `reflex_frontend/bastion_ui/app.py`, console route tests, docs | Console/dashboard routes are route-registered but not wired to legacy login in scan. | Replace with challenge/session-protected route guards when Access UI exists. |
@@ -228,7 +228,7 @@ Migration target: Telegram user binding should create or reference a child-pass/
 | `docs/OPERATIONS_RUNBOOK.md` | Uses `Authorization: Bearer <ADMIN_TOKEN>` curl examples and JWT secret startup notes. | Must update. |
 | `docs/SECURITY.md`, `docs/DEPLOYMENT_SECURITY.md`, `docs/SECRETS_MANAGEMENT.md` | JWT/API key/password/security-secret guidance. | Must update. |
 | `docs/SDK_INTEGRATION_STATUS.md`, `docs/DEVELOPER_API.md`, `docs/CLI.md`, `docs/MCP_CONNECTOR.md` | SDK/API-key/auth assumptions. | Must update. |
-| `docs/FRONTEND_*`, `docs/FRONTEND_ROUTES.md`, `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md` | `/register`, dashboard/protected-route assumptions. | Must update or mark historical. |
+| active `docs/FRONTEND_*` plus archived `docs/archive/audits/2026/FRONTEND_ROUTES.md` and `FRONTEND_REFLEX_MIGRATION_BASELINE.md` | `/register`, dashboard/protected-route assumptions. | Must update or mark historical. |
 | Storage/event docs | Warnings about raw tokens/bearer Access Pass/API keys/passwords. | Keep and extend; do not delete safety warnings. |
 | Historical audit/readiness docs | e.g. final audits noting JWT + Argon2 baseline. | Can keep as historical if clearly dated; add superseding note. |
 | Deployment manifests/docs | `deploy/`, `k8s/`, `helm/` secret templates and docs. | Must update JWT secrets to Access variables. |

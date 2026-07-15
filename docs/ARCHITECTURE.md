@@ -38,11 +38,11 @@ Core runtime components:
 - Thin routes and thin Telegram handlers.
 - Explainability-first for scores and recommendations.
 - Retry-safe and idempotency-aware background tasks.
-- Security baseline through JWT auth, RBAC-oriented dependencies, and audit logs.
+- Security baseline through Proof-of-Access, policy-oriented dependencies, request/session signatures, revocation, and audit logs.
 
 ## Schema governance notes
 - Alembic is the source of schema evolution truth; `create_all()` is not a deployment path.
-- Current schema truth audit confirms complete table coverage for all SQLAlchemy model tables (27/27 mapped through migrations).
+- Schema readiness is decided by the model/migration and runtime parity gates, not by a fixed table-count claim in this architecture document. Current results live in `docs/STATUS.md`.
 - SQLite-specific migration behavior (batch mode, default/constraint representation) can produce autogenerate drift signals that require explicit review before accepting migration deltas.
 - Runtime drift checks now validate tables, columns, nullability, type affinity, indexes, unique constraints, foreign keys, and explicit server defaults via `python scripts/check_schema_runtime_parity.py`.
 - Advanced drift checks intentionally degrade gracefully when a dialect does not expose a reflection surface (e.g., unsupported index/constraint APIs) to avoid false positives in CI.

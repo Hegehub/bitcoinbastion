@@ -582,7 +582,7 @@ Prompt 9 adds storage backup/restore evidence helpers under `app/storage/evidenc
 
 ## Storage Deployment Foundation
 
-Prompt 11 connects the initial storage foundation to deployment surfaces. Local compose can run PostgreSQL, Redis, MinIO, API, and worker; Kubernetes exposes S3-compatible object storage settings and placeholder secrets; Helm values expose an external-object-storage-first `objectStorage` section. See `docs/STORAGE_DEPLOYMENT.md` for local, single-node, Kubernetes, Helm, health-check, degraded-mode, and security guidance.
+Prompt 11 connects the initial storage foundation to deployment surfaces. Local compose can run PostgreSQL, Redis, MinIO, API, and worker; Kubernetes exposes S3-compatible object storage settings and placeholder secrets. Helm values expose an external-object-storage-first `objectStorage` configuration contract, but the repository has no Helm templates and therefore no Helm deployment method. See `docs/STORAGE_DEPLOYMENT.md` for local, single-node, Kubernetes, health-check, degraded-mode, and security guidance.
 
 ## Operational Runbooks and Production Checklist
 
