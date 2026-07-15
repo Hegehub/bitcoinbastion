@@ -1,0 +1,175 @@
+schema_version: 1
+review_metadata:
+  reviewed_by: bastion-security
+  last_reviewed_at: "2026-07-13T00:00:00+00:00"
+defaults:
+  unknown_wallet:
+    wallet_slug: unknown-wallet
+    display_name: Unknown Wallet
+    vendor: Unknown
+    wallet_type: [unknown]
+    custody_model: unknown
+    status: unknown
+    security:
+      maximum_risk_level: low
+      maximum_verification_strength: compatibility
+      eligible_for_routine_login: true
+      eligible_for_new_device_binding: false
+      eligible_for_step_up: false
+      eligible_for_recovery_factor: false
+      eligible_for_business_quorum: false
+      eligible_for_sovereign_quorum: false
+      requires_access_certificate: false
+      requires_additional_bip322_proof: true
+      requires_hardware_confirmation: false
+      requires_manual_review: false
+wallets:
+  - registry_id: bastion-generic-unknown-v1
+    wallet_slug: generic-unknown-wallet
+    display_name: Generic Unknown Wallet
+    vendor: Unknown
+    wallet_type: [unknown]
+    custody_model: unknown
+    platforms: [unknown]
+    versions:
+      minimum_supported: null
+      maximum_supported: null
+    bitcoin_capabilities:
+      bip322:
+        state: unknown
+        simple: unknown
+        full: unknown
+        supported_script_types: []
+        supported_networks: []
+        structured_message_display: unknown
+        runtime_verification_required: true
+      legacy_message_signature:
+        state: unknown
+        supported_script_types: []
+        max_allowed_risk: low
+      psbt_support:
+        state: unknown
+        metadata_only: true
+    lightning_capabilities:
+      lightning_address:
+        state: unknown
+    lnurl_capabilities:
+      auth:
+        state: unknown
+        register: unknown
+        login: unknown
+        link: unknown
+        auth: unknown
+        domain_display: unknown
+      pay:
+        state: unknown
+        comment_allowed: unknown
+        payer_data: unknown
+        payer_data_auth: unknown
+        success_action_message: unknown
+        success_action_url: unknown
+        verify_url: unknown
+      withdraw:
+        state: unknown
+      verify:
+        state: unknown
+    security:
+      maximum_risk_level: low
+      maximum_verification_strength: compatibility
+      eligible_for_routine_login: true
+      eligible_for_new_device_binding: false
+      eligible_for_step_up: false
+      eligible_for_recovery_factor: false
+      eligible_for_business_quorum: false
+      eligible_for_sovereign_quorum: false
+      requires_access_certificate: false
+      requires_additional_bip322_proof: true
+      requires_hardware_confirmation: false
+      requires_manual_review: true
+    status: unknown
+    evidence: []
+    known_quirks: []
+    source_references: []
+  - registry_id: bastion-legacy-compat-v1
+    wallet_slug: generic-legacy-message-wallet
+    display_name: Generic Legacy Message Wallet
+    vendor: Unknown
+    wallet_type: [desktop, mobile]
+    custody_model: unknown
+    platforms: [unknown]
+    versions:
+      minimum_supported: null
+      maximum_supported: null
+    bitcoin_capabilities:
+      bip322:
+        state: unsupported
+        simple: unsupported
+        full: unsupported
+        supported_script_types: []
+        supported_networks: []
+        structured_message_display: unknown
+        runtime_verification_required: true
+      legacy_message_signature:
+        state: partial
+        supported_script_types: [p2pkh]
+        max_allowed_risk: low
+      psbt_support:
+        state: unknown
+        metadata_only: true
+    lightning_capabilities:
+      lightning_address:
+        state: unsupported
+    lnurl_capabilities:
+      auth:
+        state: unsupported
+        register: unsupported
+        login: unsupported
+        link: unsupported
+        auth: unsupported
+        domain_display: unknown
+      pay:
+        state: unsupported
+        comment_allowed: unsupported
+        payer_data: unsupported
+        payer_data_auth: unsupported
+        success_action_message: unsupported
+        success_action_url: unsupported
+        verify_url: unsupported
+      withdraw:
+        state: unsupported
+      verify:
+        state: unsupported
+    security:
+      maximum_risk_level: low
+      maximum_verification_strength: compatibility
+      eligible_for_routine_login: true
+      eligible_for_new_device_binding: false
+      eligible_for_step_up: false
+      eligible_for_recovery_factor: false
+      eligible_for_business_quorum: false
+      eligible_for_sovereign_quorum: false
+      requires_access_certificate: false
+      requires_additional_bip322_proof: true
+      requires_hardware_confirmation: false
+      requires_manual_review: true
+    status: experimental
+    evidence:
+      - evidence_type: manual_review
+        source: prompt-12-legacy-compatibility
+        tested_version: null
+        tested_at: "2026-07-13T00:00:00+00:00"
+        test_network: bitcoin-mainnet
+        reviewer: bastion-security
+        notes: Compatibility placeholder; real cryptographic verification required at runtime.
+        confidence: low
+    known_quirks:
+      - quirk_id: legacy-low-risk-only
+        severity: high
+        capability: legacy_message_signature
+        affected_versions: null
+        description: Legacy message signatures are compatibility-only and low-risk only.
+        mitigation: require_bip322_or_hardware_step_up
+        security_effect: lowers maximum risk to low
+        resolved_in_version: null
+        active: true
+    source_references: [prompt-12]

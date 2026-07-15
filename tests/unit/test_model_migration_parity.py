@@ -1,18 +1,29 @@
 from __future__ import annotations
 
+import importlib.util
 import re
 from pathlib import Path
+from types import ModuleType
 
 from app.db.base import Base
 import app.db.models  # noqa: F401
 
 CREATE_TABLE_RE = re.compile(r"op\.create_table\(\s*['\"]([^'\"]+)['\"]")
-REVISION_RE = re.compile(r"^revision\s*=\s*[\'\"]([^\'\"]+)[\'\"]", re.MULTILINE)
-DOWN_REVISION_RE = re.compile(r"^down_revision\s*=\s*(?:[\'\"]([^\'\"]+)[\'\"]|None)", re.MULTILINE)
+REVISION_RE = re.compile(r"^revision\s*=\s*['\"]([^'\"]+)['\"]", re.MULTILINE)
+DOWN_REVISION_RE = re.compile(r"^down_revision\s*=\s*(?:['\"]([^'\"]+)['\"]|None)", re.MULTILINE)
 
 
 def _migration_files() -> list[Path]:
     return sorted(Path("app/db/migrations/versions").glob("*.py"))
+
+
+def _load_migration_module(path: Path) -> ModuleType:
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def test_models_and_migrations_have_identical_table_coverage() -> None:
@@ -20,7 +31,10 @@ def test_models_and_migrations_have_identical_table_coverage() -> None:
 
     migration_tables: set[str] = set()
     for revision in _migration_files():
-        migration_tables.update(CREATE_TABLE_RE.findall(revision.read_text()))
+        contents = revision.read_text()
+        migration_tables.update(CREATE_TABLE_RE.findall(contents))
+        module = _load_migration_module(revision)
+        migration_tables.update(getattr(module, "WALLET_LNURL_TABLE_NAMES", ()))
 
     assert model_tables == migration_tables
 
