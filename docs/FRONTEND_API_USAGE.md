@@ -7,7 +7,9 @@ Frontend uses presentation-safe APIs:
 No transaction signing and no seed/private key handling in frontend.
 
 
-Type strategy: `frontend/types/api.ts` and `frontend/services/apiClient.ts` provide manual synchronized baseline contracts. Automated `generate:api-types` is pending.
+Type and transport strategy: Reflex clients under
+`frontend/bastion_ui/services/` use Python DTOs and shared envelope/error
+handling. Automated client generation from OpenAPI remains pending.
 
 ## Access frontend API usage
 

@@ -1,7 +1,7 @@
 services:
   reflex-frontend:
     build:
-      context: ../../reflex_frontend
+      context: ../../frontend
       dockerfile: Dockerfile
     image: bitcoin-bastion-reflex-frontend:local
     environment:

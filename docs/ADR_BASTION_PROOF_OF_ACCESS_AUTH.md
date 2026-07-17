@@ -590,7 +590,7 @@ tests/integration/test_access_full_flow.py
 sdk/python/bitcoin_bastion_sdk/auth.py
 sdk/typescript/src/auth.ts
 frontend access routes
-reflex_frontend access routes if Reflex frontend remains active
+frontend access routes if Reflex frontend remains active
 ```
 
 The future structure should keep domain logic separate from transport logic:

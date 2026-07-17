@@ -24,7 +24,7 @@ Audit totals from repository scans:
 |---|---:|---|
 | Legacy auth files found | 42 | Files matching active legacy auth classes/dependencies/hash/JWT/bearer patterns. |
 | Bearer/JWT/token usage files found | 131 | Includes runtime, SDK, tests, docs, safety redaction, deployment examples, and storage warnings. |
-| Frontend auth assumption files found | 13 | `frontend/` is absent; `reflex_frontend/` has route/dashboard assumptions and safe-logging token examples. |
+| Frontend auth assumption files found | 13 | `frontend/` contains the Reflex route/dashboard assumptions and safe-logging token examples. |
 | SDK auth assumption files found | 17 | Python and TypeScript SDK source, tests, examples, and docs. |
 | Tests impacted | 50 | Includes direct auth tests plus protected endpoint/SDK/bot/redaction/OpenAPI-style contract coverage. |
 
@@ -66,8 +66,8 @@ Audit totals from repository scans:
 |---|---|---|
 | Python SDK | `sdk/python/bitcoin_bastion_sdk/auth.py`, `transport.py`, `client.py`, `async_client.py`, tests, README | Optional `api_key` is sent as `Authorization: Bearer`. |
 | TypeScript SDK | `sdk/typescript/src/auth.ts`, `http.ts`, `config.ts`, examples, tests, README | Optional `apiKey` is sent as `Authorization: Bearer`. |
-| Reflex frontend | `reflex_frontend/` | No active password form found; route/dashboard docs/tests include `/register`, console route assumptions, and safe-logging examples for bearer/API keys. |
-| `frontend/` | absent | No Next.js `frontend/` directory exists in current checkout. Docs still mention historical frontend routes. |
+| Reflex frontend | `frontend/` | No active password form found; route/dashboard docs/tests include `/register`, console route assumptions, and safe-logging examples for bearer/API keys. |
+| Legacy Next.js frontend | absent | The canonical `frontend/` directory contains Reflex; no Next.js application is active. Historical route references remain archived. |
 | Bot | `app/bot/handlers/runtime_actions.py`, `app/bot/runner.py`, tests | Runtime actions can use bearer token from config/env to call admin APIs. |
 | CLI | `cli/bastion_cli/config.py`, `main.py`, docs/tests | API URL/config and some token/auth assumptions in CLI docs/tests need review. |
 | MCP | `mcp/bastion_mcp/client.py`, `config.py`, README/tests | API client/auth configuration needs migration to Proof-of-Access headers or delegated pass. |
@@ -126,7 +126,7 @@ Migration risk: medium/high. Tests will either block removal or mask retained be
 
 ### Documentation / deployment references
 
-Docs and manifests mention JWT, bearer tokens, API keys, secrets, auth headers, token redaction, and operations curl examples. Important files include `README.md`, `.env.example`, `docs/API_CONTRACTS.md`, `docs/OPERATIONS_RUNBOOK.md`, `docs/SECURITY.md`, `docs/ENVIRONMENT_VARIABLES.md`, `docs/SDK_INTEGRATION_STATUS.md`, `docs/DEVELOPER_API.md`, `docs/CLI.md`, `docs/MCP_CONNECTOR.md`, `docs/FRONTEND_API_CLIENT_CONTRACT.md`, `docs/STORAGE_LAYER_ARCHITECTURE.md`, `docs/STORAGE_OUTBOX.md`, and deployment secret templates under `deploy/`, `k8s/`, and `helm/`.
+Docs and manifests mention JWT, bearer tokens, API keys, secrets, auth headers, token redaction, and operations curl examples. Important files include `README.md`, `.env.example`, `docs/API_CONTRACTS.md`, `docs/OPERATIONS_RUNBOOK.md`, `docs/SECURITY.md`, `docs/ENVIRONMENT_VARIABLES.md`, `docs/SDK_INTEGRATION_STATUS.md`, `docs/DEVELOPER_API.md`, `docs/CLI.md`, `docs/MCP_CONNECTOR.md`, `docs/FRONTEND_API_CLIENT_CONTRACT.md`, `docs/STORAGE_LAYER_ARCHITECTURE.md`, `docs/STORAGE_OUTBOX.md`, and deployment secret templates under `deploy/kubernetes/` and the values contract under `deploy/helm/`.
 
 Migration risk: medium. OpenAPI/docs may advertise disabled auth if not updated.
 
@@ -183,16 +183,17 @@ Required migration:
 
 ## 8. Frontend Auth Audit
 
-`frontend/` is absent in the current repository checkout. `reflex_frontend/` exists.
+`frontend/` is the active Reflex application. The legacy Next.js implementation
+that previously used this path is absent.
 
 | Item | Files | Finding | Classification |
 |---|---|---|---|
-| Login forms | `reflex_frontend/` scan | No active `login` form/password input found outside docs/tests/safe logging. | No removal required now; add regression gate. |
-| Register route assumptions | `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md`, `docs/FRONTEND_ROUTES.md`, route tests/docs | Historical or route inventory references `/register`. | Replace with Access Pass import / payment access flow or mark deprecated. |
-| Token storage | `reflex_frontend/` scan | No `localStorage`/`sessionStorage` token storage found in current results. | Keep as public/no-auth; add no-token-storage test. |
-| Bearer/API key logging examples | `reflex_frontend/tests/test_safe_logging.py`, `reflex_frontend/bastion_ui/security/safe_logging.py` | Redacts `Authorization: Bearer` and API keys. | Keep redaction; extend to `X-Bastion-*`. |
-| Protected dashboard/console assumptions | `reflex_frontend/bastion_ui/app.py`, console route tests, docs | Console/dashboard routes are route-registered but not wired to legacy login in scan. | Replace with challenge/session-protected route guards when Access UI exists. |
-| API client assumptions | `reflex_frontend/bastion_ui/tests/test_api_client.py`, state modules | API call tests exist; no bearer injection found in targeted scan. | Requires review when Access headers are introduced. |
+| Login forms | `frontend/` scan | No active `login` form/password input found outside docs/tests/safe logging. | No removal required now; add regression gate. |
+| Register route assumptions | archived `docs/archive/audits/2026/FRONTEND_REFLEX_MIGRATION_BASELINE.md`, archived `docs/archive/audits/2026/FRONTEND_ROUTES.md`, route tests/docs | Historical route inventories reference `/register`. | Replace with Access Pass import / payment access flow or mark deprecated. |
+| Token storage | `frontend/` scan | No `localStorage`/`sessionStorage` token storage found in current results. | Keep as public/no-auth; add no-token-storage test. |
+| Bearer/API key logging examples | `frontend/tests/test_safe_logging.py`, `frontend/bastion_ui/security/safe_logging.py` | Redacts `Authorization: Bearer` and API keys. | Keep redaction; extend to `X-Bastion-*`. |
+| Protected dashboard/console assumptions | `frontend/bastion_ui/app.py`, console route tests, docs | Console/dashboard routes are route-registered but not wired to legacy login in scan. | Replace with challenge/session-protected route guards when Access UI exists. |
+| API client assumptions | `frontend/bastion_ui/tests/test_api_client.py`, state modules | API call tests exist; no bearer injection found in targeted scan. | Requires review when Access headers are introduced. |
 
 ## 9. Bot / Telegram Auth Audit
 
@@ -214,7 +215,7 @@ Migration target: Telegram user binding should create or reference a child-pass/
 | Mock/current user | Integration/contract tests using admin/current user fixtures or legacy tokens. | Access context fixtures with entitlement/capability/policy decisions. |
 | Protected endpoints | `tests/integration/test_admin_recovery_api.py`, `test_admin_job_runs.py`, `test_entities_api.py`, `test_treasury_admin_guards.py`, contract plugin/webhook/runtime tests. | Verify Policy Engine scopes for each protected endpoint. |
 | SDK auth tests | `sdk/python/tests/*`, `sdk/typescript/tests/client.test.ts`. | Verify `X-Bastion-*` signer headers, canonicalization, redaction, replay prevention. |
-| Frontend auth tests | `reflex_frontend/tests/test_safe_logging.py`, route tests. | Add no-login/no-password/no-token-storage tests and Access import/challenge route tests. |
+| Frontend auth tests | `frontend/tests/test_safe_logging.py`, route tests. | Add no-login/no-password/no-token-storage tests and Access import/challenge route tests. |
 | OpenAPI/contract tests | `tests/test_api_contracts.py` if present, `tests/test_openapi_contract.py` if present, `docs/API_CONTRACTS.md`. | Assert no password login/register endpoints after disable stage and Access endpoints documented. |
 | Security tests | `tests/security/test_metric_usage_no_sensitive_material.py`, storage/event redaction tests. | Extend sensitive material denylist to raw Access Pass, session, nonce/signature/private key fields; add `test_no_password_auth.py` and `test_no_bearer_access_pass.py`. |
 
@@ -228,10 +229,10 @@ Migration target: Telegram user binding should create or reference a child-pass/
 | `docs/OPERATIONS_RUNBOOK.md` | Uses `Authorization: Bearer <ADMIN_TOKEN>` curl examples and JWT secret startup notes. | Must update. |
 | `docs/SECURITY.md`, `docs/DEPLOYMENT_SECURITY.md`, `docs/SECRETS_MANAGEMENT.md` | JWT/API key/password/security-secret guidance. | Must update. |
 | `docs/SDK_INTEGRATION_STATUS.md`, `docs/DEVELOPER_API.md`, `docs/CLI.md`, `docs/MCP_CONNECTOR.md` | SDK/API-key/auth assumptions. | Must update. |
-| `docs/FRONTEND_*`, `docs/FRONTEND_ROUTES.md`, `docs/FRONTEND_REFLEX_MIGRATION_BASELINE.md` | `/register`, dashboard/protected-route assumptions. | Must update or mark historical. |
+| active `docs/FRONTEND_*` plus archived `docs/archive/audits/2026/FRONTEND_ROUTES.md` and `FRONTEND_REFLEX_MIGRATION_BASELINE.md` | `/register`, dashboard/protected-route assumptions. | Must update or mark historical. |
 | Storage/event docs | Warnings about raw tokens/bearer Access Pass/API keys/passwords. | Keep and extend; do not delete safety warnings. |
 | Historical audit/readiness docs | e.g. final audits noting JWT + Argon2 baseline. | Can keep as historical if clearly dated; add superseding note. |
-| Deployment manifests/docs | `deploy/`, `k8s/`, `helm/` secret templates and docs. | Must update JWT secrets to Access variables. |
+| Deployment manifests/docs | `deploy/kubernetes/` secret templates plus `deploy/helm/` values and deployment docs. | Must update JWT secrets to Access variables. |
 
 ## 12. Environment Variables Audit
 
@@ -267,7 +268,7 @@ Migration target: Telegram user binding should create or reference a child-pass/
 |---|---|---:|---:|---|---|
 | Hidden bearer fallback | `app/api/dependencies.py`, SDKs, bot, CLI/MCP clients | Critical | High | Central removal gate; fail if `Authorization: Bearer` accepted on protected endpoints. | `tests/security/test_no_bearer_access_pass.py`. |
 | Password auth accidentally retained | `app/api/v1/auth.py`, `app/services/auth/auth_service.py`, `app/core/security.py`, schemas | Critical | High | Freeze endpoints, remove schemas/service after Access cutover. | No `password` login/register OpenAPI paths. |
-| Frontend still showing login/register form | `reflex_frontend/`, historical docs | High | Medium | Add route/UI scan and explicit Access import/challenge UX. | Frontend no password-input regression. |
+| Frontend still showing login/register form | `frontend/`, historical docs | High | Medium | Add route/UI scan and explicit Access import/challenge UX. | Frontend no password-input regression. |
 | SDK still sending `Authorization: Bearer` | Python/TypeScript SDK auth/http files | Critical | High | Replace auth helpers with request signer APIs. | SDK tests assert only `X-Bastion-*` auth headers. |
 | Protected endpoint missing Policy Engine | all protected API routers | Critical | High | Endpoint-by-endpoint migration checklist with deny-by-default dependency. | Per-router policy decision tests. |
 | Old `User` model still treated as auth identity | models, repositories, user_id fields | Critical | High | Introduce Access subject/session/entitlement IDs; migrate ownership references. | DB/model tests deny User-as-auth dependency. |

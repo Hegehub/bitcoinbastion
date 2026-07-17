@@ -1,10 +1,12 @@
-> Current note (2026-06-29): the old Next.js frontend has been removed; historical references below are retained only for migration context. Reflex is the only repository-native frontend.
-
 # Frontend API Client Contract
 
 ## 1. Purpose
 
-This document defines the Prompt 5/22 Reflex API client contract. The Reflex frontend calls the FastAPI backend as the source of truth. Reflex may normalize transport errors, unwrap response envelopes, validate obviously unsafe frontend inputs, and redact logs, but it must not duplicate backend domain logic or fabricate Trace, Evidence, Market, Console, or Policy data.
+This document defines the active Reflex API client contract. The Reflex frontend
+calls the FastAPI backend as the source of truth. Reflex may normalize transport
+errors, unwrap response envelopes, validate obviously unsafe frontend inputs,
+and redact logs, but it must not duplicate backend domain logic or fabricate
+Trace, Evidence, Market, Console, or Policy data.
 
 ## 2. Config variables
 
@@ -12,11 +14,11 @@ This document defines the Prompt 5/22 Reflex API client contract. The Reflex fro
 |---|---:|---|---|
 | `BB_API_BASE_URL` | `http://localhost:8000` | implemented | Trailing slash is stripped by `AppConfig`. |
 | `BB_REQUEST_TIMEOUT_SECONDS` | `5` | implemented | Must be positive. |
-| `BB_PUBLIC_SITE_MODE` | `true` | implemented | Enables public-site mode flags for later pages. |
-| `BB_ENABLE_TRACE` | `true` | implemented | Feature flag only; no Trace pages migrated here. |
-| `BB_ENABLE_MARKET` | `true` | implemented | Feature flag only; Market dashboard remains unchanged. |
+| `BB_PUBLIC_SITE_MODE` | `true` | implemented | Enables public-site presentation behavior. |
+| `BB_ENABLE_TRACE` | `true` | implemented | Controls Trace route availability. |
+| `BB_ENABLE_MARKET` | `true` | implemented | Controls Market navigation/delegation; backend Jinja still owns selected Market routes. |
 | `BB_ENABLE_TIME_MACHINE` | `true` | implemented | Feature flag only. |
-| `BB_ENABLE_CONSOLE` | `true` | implemented | Feature flag only. |
+| `BB_ENABLE_CONSOLE` | `true` | implemented | Controls Console route availability. |
 | `BB_ENABLE_SOVEREIGN_GRID` | `true` | implemented | Feature flag only. |
 | `BB_DEFAULT_LANGUAGE` | `en` | implemented | Reserved for later i18n work. |
 | `BB_LOG_LEVEL` | `INFO` | implemented | Must not be used to print secrets. |
@@ -126,10 +128,14 @@ Do not log request JSON bodies by default. Do not log authorization headers, bea
 
 Tests use `httpx.MockTransport` and recording clients. They do not require a live backend. The suite verifies URL joining, ResponseEnvelope unwrapping, raw JSON passthrough, 204 handling, HTTP error mapping, timeout/connection normalization, path construction, and redaction rules.
 
-## 15. Remaining blockers
+## 15. Current limitations
 
-- No pages are migrated in Prompt 5.
-- Next.js remains intact and active as the legacy-supported rollback surface.
-- FastAPI/Jinja Market dashboard remains unchanged.
-- Evidence and Market DTO response shapes need verification before route migration.
-- Console audit/policy backend contracts remain missing or unstable.
+- Reflex is the sole repository-native frontend; restoration of the former
+  Next.js implementation requires Git history and is not a supported runtime
+  profile.
+- FastAPI/Jinja continues to own delegated Market dashboard/detail routes.
+- Evidence and Market DTO response shapes require contract verification when
+  route ownership changes.
+- Console audit/policy backend contracts must remain explicit about unavailable
+  or unstable operations.
+- Mock-transport coverage does not replace live-backend or browser validation.

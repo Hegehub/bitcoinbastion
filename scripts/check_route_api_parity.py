@@ -39,18 +39,35 @@ def has_router(main: str, name: str) -> bool:
     return f"{name}_router" in main or f"{name}.router" in main
 
 
+def has_reflex_route(app_source: str, route_registry_source: str, route: str) -> bool:
+    """Return whether a route is registered directly or through PUBLIC_ROUTE_SPECS."""
+
+    return (
+        f'route="{route}"' in app_source
+        or f'PublicRouteSpec("{route}"' in route_registry_source
+    )
+
+
 def main() -> int:
     main_py = read("app/main.py")
     trace_py = read("app/api/v1/trace.py")
     public_py = read("app/api/v1/public.py")
-    reflex_app = read("reflex_frontend/bastion_ui/app.py")
+    reflex_app = read("frontend/bastion_ui/app.py")
+    reflex_route_registry = read("frontend/bastion_ui/routes/__init__.py")
     result = {
         "status": "implemented",
         "backend_routers": {name: "implemented" if has_router(main_py, name) else "blocked" for name in REQUIRED_ROUTERS},
         "trace_routes": {route: "implemented" if route in trace_py else "blocked" for route in REQUIRED_TRACE},
         "optional_trace_routes": {route: "implemented" if route in trace_py else "planned" for route in OPTIONAL_TRACE},
         "public_routes": {route: "implemented" if route in public_py else "blocked" for route in REQUIRED_PUBLIC},
-        "reflex_routes": {route: "implemented" if f'route="{route}"' in reflex_app else "blocked" for route in REQUIRED_REFLEX},
+        "reflex_routes": {
+            route: (
+                "implemented"
+                if has_reflex_route(reflex_app, reflex_route_registry, route)
+                else "blocked"
+            )
+            for route in REQUIRED_REFLEX
+        },
     }
     blockers = []
     for section in ("backend_routers", "trace_routes", "public_routes", "reflex_routes"):

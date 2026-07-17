@@ -1,6 +1,6 @@
 # Reflex Frontend
 
-The Reflex frontend is the primary Python-first UI layer under `reflex_frontend/` and is the sole repository-native frontend. It replaces the legacy Next.js UI surface that was previously used during migration.
+The Reflex frontend is the primary Python-first UI layer under `frontend/` and is the sole repository-native frontend. It replaces the legacy Next.js UI surface that was previously used during migration.
 
 ## Ownership and boundaries
 
@@ -12,6 +12,15 @@ The Reflex frontend is the primary Python-first UI layer under `reflex_frontend/
 
 Reflex currently includes public pages (landing, platform, developers, operations, manifesto, evidence, status, roadmap, security, docs), Trace check/report and proof packet pages, and a set of operator console views (console dashboard, trace, evidence, market intelligence, time machine, sovereign grid, policy, audit, API explorer and command palette). Additional modules continue to be developed.
 
+Business, Enterprise, Review Desk, Citadel, Platform, Operations, and runtime
+event surfaces are read-first informational interfaces. They do not execute
+payments, sign or broadcast Bitcoin transactions, change infrastructure
+directly, or substitute for production RBAC/SSO/SIEM controls.
+
 ## Safety requirements
 
 Reflex must never request seed phrases, private keys, wallet files, keystores, extended private keys or signing material. Trace accepts public Bitcoin addresses only and must never present output as legal verification or Bitcoin consensus proof.
+
+Shared wording and surface boundaries are canonical in
+[UI_UX_PRINCIPLES.md](UI_UX_PRINCIPLES.md). Accessibility requirements live in
+`../frontend/docs/ACCESSIBILITY.md`.

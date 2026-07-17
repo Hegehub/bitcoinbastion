@@ -1,93 +1,88 @@
-# Roadmap (reality-aligned, 2026-04-30)
+# Roadmap
 
-This roadmap reflects **current implemented state** and remaining gaps to production-grade finalization.
-It intentionally separates what is already delivered vs what is still partial.
+Lifecycle: **ACTIVE**
 
-## Current readiness snapshot
-- Bastion core: **~92%**
-- Citadel: **~84%**
-- Bitcoin protocol maturity: **~82%**
-- Explainability E2E: **~86%**
-- Operations hardening: **~88%**
-- Overall finalization: **~89%**
+Last reviewed: **2026-07-15**
 
----
+This roadmap orders future work by dependency and release risk. Current status
+lives in [STATUS.md](STATUS.md). Work items should move to GitHub Issues when
+they receive an owner and acceptance criteria.
 
-## Phase 1 — Truth & integrity (Mostly completed)
-### Delivered
-- Model/migration table parity check in repo tooling.
-- Docs truthfulness checks (routes/models/core docs heading) wired into smoke flow.
-- Status/readiness docs normalized to audit-style language.
+## P0 — Restore trust in `main`
 
-### Remaining
-- Add deeper schema parity checks (constraints/defaults/indexes), not only table-level coverage.
-- Enforce stricter doc release gates for roadmap/status drift.
+### CI and branch protection
 
----
+- Fix JavaScript dependency setup in `release-candidate-gates`.
+- Resolve the current unit-test NameError, Ruff findings, and MyPy findings.
+- Update Proof-of-Access integration fixtures and expectations.
+- Require quality, test, release, schema, and docs gates before merge.
 
-## Phase 2 — Runtime reliability (Partially completed)
-### Delivered
-- Signal deduplication with source identity paths.
-- Delivery retry/cooldown guards and failure logging.
-- Recovery SLO/drill metadata surfaced through admin/observability.
+Exit evidence: a clean required-check run on the selected `main` revision.
 
-### Remaining
-- Close remediation loop automation (detect → auto-action → verification).
-- Add stronger circuit-breaker behavior for persistent delivery/provider failures.
+### Migration and schema truth
 
----
+- Replace model-import-driven revisions 0065–0066 with explicit, reproducible
+  Alembic operations or approve a documented validator contract that provides
+  equivalent historical safety.
+- Resolve column, nullability, index, unique-constraint, and foreign-key parity.
+- Prove bootstrap, upgrade, downgrade where supported, and replay on the target
+  database dialect.
 
-## Phase 3 — Protocol depth (Partially completed)
-### Delivered
-- UTXO/mempool/script/descriptor analysis integrated into key service outputs.
-- Chain-state/finality/reorg context exposed and consumed at baseline level.
+Exit evidence: all migration and runtime parity gates pass from a clean store.
 
-### Remaining (critical)
-- Production calibration for finality/reorg and fee-market stress behavior.
-- Provider realism hardening (less fallback/default behavior in critical paths).
-- Better live-data backtesting windows for protocol scoring confidence.
+## P1 — Close product and contract ambiguity
 
----
+### Wallet-first and LNURL
 
-## Phase 4 — Citadel realism (Partially completed)
-### Delivered
-- Weighted multi-domain scoring with explainability and coverage guarantees.
-- Topology/simulation/recovery/inheritance flows are implemented and connected.
-- Runtime wallet context now participates in assessment shaping.
+Choose and document one of two states:
 
-### Remaining (critical)
-- Remove remaining synthetic assumptions in recovery/inheritance/context fallbacks.
-- Strengthen data provenance guarantees for every score component.
-- Add deterministic calibration validation suite (golden scenarios + drift thresholds).
+1. **Foundation-only:** keep routes disabled and label the capability accurately;
+   or
+2. **Activated:** complete router, dependency, policy, recovery/revocation,
+   audit/event, SDK, frontend, and deployment wiring with negative tests.
 
----
+### Documentation truth
 
-## Phase 5 — Explainability closure (Advanced, not final)
-### Delivered
-- Cross-domain explainability payloads are present for high-impact outputs.
-- Score inputs/weights and domain sections are exposed in assessment output.
+- Keep the now-synchronized API/model references covered by the truthfulness gate.
+- Prefer generated OpenAPI/model inventories where they can preserve explanatory context.
+- Keep one current `STATUS`, one readiness contract, one deployment-method guide, and one roadmap.
+- Preserve lifecycle metadata and archive conditions for temporary migration reports.
 
-### Remaining
-- Full path-level traceability for all high-impact decisions (input → transform → policy impact → output).
-- Add explainability regression gates in CI for contract stability and completeness.
+### Frontend ownership
 
----
+- Update route-parity tooling to inspect dynamic Reflex registries.
+- Run the complete Reflex lint/type/test/export workflow.
+- Record final ownership for Reflex and delegated FastAPI/Jinja Market routes.
+- Complete browser and accessibility validation.
 
-## Phase 6 — Production lock-in (In progress)
-### Delivered
-- Release-time production readiness checklist format.
-- Final production audit document with explicit pass/partial assessments.
+## P2 — Produce operational evidence
 
-### Remaining (release blockers)
-1. Finalize protocol calibration and prove stability on live-like traffic windows.
-2. Close remaining synthetic fallback branches in Citadel critical scoring paths.
-3. Complete recovery remediation automation and verification loop.
-4. Run final release audit with objective gates and sign-off evidence.
+- Deploy a revision-bound staging environment.
+- Execute backup/restore and deterministic replay drills.
+- Exercise provider, worker, queue, database, and notification failures.
+- Run load/capacity tests and define measurable service objectives.
+- Validate alert routing, rollback, incident records, and evidence retention.
+- Complete security and accessibility reviews.
 
----
+Exit evidence: an environment-specific evidence pack reviewed by an operator.
 
-## Immediate next execution queue
-1. **Protocol calibration pack**: finality/reorg + mempool stress backtesting + threshold tuning.
-2. **Citadel realism pack**: eliminate residual synthetic recovery/inheritance assumptions.
-3. **Ops closure pack**: auto-remediation workflows with post-action validation.
-4. **Release gate pack**: objective production audit checklist runbook with artifacts.
+## P3 — Maintainability
+
+- Split the largest service and route modules along existing domain boundaries.
+- Review placeholder, compatibility, unused-import/dependency, and orphan-test
+  candidates before removal.
+- Reduce documentation orphaning through the canonical
+  [documentation index](INDEX.md).
+
+## Post-release research
+
+These items are not release commitments:
+
+- advanced policy automation;
+- richer enterprise governance integrations;
+- graph-intelligence extensions;
+- deeper SIEM and identity-provider integrations;
+- optional semantic similarity infrastructure.
+
+Research must remain isolated from Bitcoin custody, signing, consensus, and
+automatic-trading boundaries.

@@ -70,7 +70,7 @@ def test_minio_kubernetes_manifest_is_example_only_not_base_resource() -> None:
 
 
 def test_helm_values_contain_external_object_storage_section() -> None:
-    text = _read("helm/bitcoin-bastion/values.yaml")
+    text = _read("deploy/helm/bitcoin-bastion/values.yaml")
 
     assert "objectStorage:" in text
     assert "enabled: false" in text

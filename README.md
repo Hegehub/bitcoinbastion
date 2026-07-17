@@ -2,9 +2,9 @@
 
 > **Bitcoin-first sovereign backend for evidence-driven market intelligence, operational resilience, and production-grade self-hosted deployment.**
 
-[Website](https://bitcoin-bastion.com) • [Status Documentation](docs/STATUS.md) • [License](LICENSE)
+[Website](https://bitcoin-bastion.com) • [Documentation](docs/INDEX.md) • [Current Status](docs/STATUS.md) • [License](LICENSE)
 
-![Status](https://img.shields.io/badge/status-Production%20Candidate%20--%2099%25%20readiness-blue)
+![Status](https://img.shields.io/badge/status-development%20baseline%20--%20gates%20failing-red)
 ![Bitcoin First](https://img.shields.io/badge/bitcoin-first-f7931a)
 ![No Custody](https://img.shields.io/badge/no--custody-enforced-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
@@ -27,14 +27,11 @@ The platform aims to make Bitcoin infrastructure more transparent, auditable, re
 
 ## Core documentation
 
-The repository includes extensive documentation covering every major subsystem:
-
-- **Historical Similarity Engine** – pattern matching, reaction profiles, similarity scoring and limitations (`docs/HISTORICAL_SIMILARITY_ENGINE.md`);
-- **Market Signal Governance** – candidate lifecycle, publishing gates, operator review and delivery logs (`docs/MARKET_SIGNAL_GOVERNANCE.md`);
-- **Evidence Packets & Replay** – replayable evidence bundles, lineage, integrity snapshots, timeline replay and exports (`docs/EVIDENCE_PACKETS.md`, `docs/EVIDENCE_REPLAY.md`);
-- **Market Time Machine UI** – `/market` interface for BTC candles, news markers, evidence packets, historical similarity, replay timeline, shock index, narratives and provider health (`docs/MARKET_TIME_MACHINE_UI.md`);
-- **Market Intelligence Dashboard** – web console for BTC price context, shock index, Market Time Machine, narratives, signals, evidence/replay and source quality;
-- Additional production docs: `docs/STATUS.md`, `docs/PRODUCTION_READINESS.md`, `docs/OPERATIONS_RUNBOOK.md`, `docs/DEPLOYMENT_EVIDENCE_PACK.md`, `docs/FINAL_PRODUCTION_AUDIT.md`, `docs/SOVEREIGNTY_CERTIFICATION.md`, `docs/RELEASE_CANDIDATE_REPORT.md`, and others in the `docs/` directory.
+Start with the [documentation index](docs/INDEX.md). It identifies the current
+canonical documents for architecture, API contracts, Access and wallet
+security, Market intelligence, Trace, frontend, storage, operations, deployment,
+and release governance. Revision-bound audits and superseded migration reports
+are retained under `docs/archive/` and are not current guidance.
 
 ## Design philosophy
 
@@ -61,9 +58,17 @@ A Bastion Access Pass is not a bearer token and must not be sent as `Authorizati
 
 Start with [`docs/ACCESS_LAYER.md`](docs/ACCESS_LAYER.md), [`docs/API_ACCESS.md`](docs/API_ACCESS.md), [`docs/ACCESS_REQUEST_SIGNING.md`](docs/ACCESS_REQUEST_SIGNING.md), [`docs/ACCESS_RECOVERY.md`](docs/ACCESS_RECOVERY.md), and [`docs/ACCESS_ENVIRONMENT.md`](docs/ACCESS_ENVIRONMENT.md).
 
-## Current status (June 2026)
+## Current status (15 July 2026)
 
-As of June 2026 the project is a production candidate and operationally hardened.  The Market Time Machine subsystem and the overall platform are approximately **99 % production‑ready**【turn8file0†L19-L23】.  Core ingestion, scoring, candle attribution, historical similarity, pattern memory, governance, evidence packets, narrative heatmaps, plugin API, internal event registry/outbox/bus and webhook management are implemented【turn8file0†L11-L17】【turn8file0†L27-L37】.  Remaining work is limited to environment‑specific production evidence such as live Kubernetes rendering, load testing, provider incident drills, Telegram runtime proof, penetration testing and accessibility certification【turn8file0†L19-L23】.  Consult `docs/STATUS.md` (audit dated 2026‑05‑23) for the latest readiness audit and detailed task breakdown【turn7file0†L1-L6】.
+The repository is a substantial development baseline with implemented
+subsystems, but it is **not currently release-candidate or production-ready**.
+Focused Proof-of-Access and Wallet/LNURL tests pass, while the merged `main`
+revision still has failing CI, integration, code-quality, and schema-parity
+gates. The documentation-truthfulness remediation passes in the current working
+tree but is not part of a new immutable revision yet. Wallet/LNURL is foundation-only until its
+runtime/API wiring is completed. See [STATUS.md](docs/STATUS.md) for the verified
+snapshot and [PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) for the
+evidence required to promote a specific revision and environment.
 
 ## Main components
 
@@ -75,8 +80,8 @@ The platform consists of multiple layers:
 - **Background runtime** – Celery workers and beat, Redis broker/cache and scheduled jobs for health collection, recovery checks and evidence tasks.
 - **Evidence layer** – release evidence, migration smoke evidence, schema parity evidence, provider evidence, observability snapshot and deployment evidence pack.
 - **Kubernetes runtime layer** – manifests for API/worker/beat deployments, migration/evidence jobs, CronJobs for provider health and recovery drills, NetworkPolicy, ServiceMonitor, GitOps templates and production runbooks.
-- **Market Time Machine** – web dashboard `/market` providing timeline navigation, BTC candles, deterministically scored news markers, candle context, attribution confidence, historical similarity previews, narrative heatmap and shock index【turn1file0†L152-L162】【turn1file0†L160-L163】.
-- **Event & plugin layer** – internal event taxonomy, outbox, bus and webhook management for safe notifications【turn8file0†L27-L37】【turn8file0†L49-L63】; plugin API foundation for deterministic extension points with restrictive sandbox defaults and audit records.
+- **Market Time Machine** – web dashboard `/market` providing timeline navigation, BTC candles, deterministically scored news markers, candle context, attribution confidence, historical similarity previews, narrative heatmap and shock index.
+- **Event & plugin layer** – internal event taxonomy, outbox, bus and webhook management for safe notifications; plugin API foundation for deterministic extension points with restrictive sandbox defaults and audit records.
 
 ## Services directory
 
@@ -84,39 +89,39 @@ The `app/services` package contains the core domain services that implement the 
 
 ### Bastion Trace
 
-`bastion_trace` evaluates the risk associated with a Bitcoin transaction or UTXO.  `TraceService` coordinates a series of heuristics—including dust‑radar, false‑positive guards, UTXO hygiene checks, privacy shield lookups and payment‑context risk evaluations—to compute a **trace band** (low, medium, high).  It assembles a `TraceReport`, stores it, and publishes a `trace.report.created` event to the event bus for asynchronous consumers【turn48file0†L68-L97】.  A companion `LiteTraceReportService` maps trace bands to human‑readable labels and suggested operator actions【turn49file0†L9-L38】.
+`bastion_trace` evaluates the risk associated with a Bitcoin transaction or UTXO.  `TraceService` coordinates a series of heuristics—including dust‑radar, false‑positive guards, UTXO hygiene checks, privacy shield lookups and payment‑context risk evaluations—to compute a **trace band** (low, medium, high).  It assembles a `TraceReport`, stores it, and publishes a `trace.report.created` event to the event bus for asynchronous consumers.  A companion `LiteTraceReportService` maps trace bands to human‑readable labels and suggested operator actions.
 
 ### Citadel
 
-`citadel` assesses the resilience of a wallet or treasury across multiple dimensions.  `CitadelAssessmentService` gathers signals from UTXO hygiene and mempool risk, script analysis, policy evaluation, inheritance plan verification and sovereignty‑graph modelling to produce weighted scores and an overall resilience grade【turn50file0†L8-L24】【turn50file0†L66-L74】.  `RepairPlanService` uses these scores to generate prioritized remediation steps for operators【turn51file0†L69-L80】.  Additional services in this package compute sovereignty graphs, verify inheritance paths and generate insights; collectively they help operators detect weaknesses and plan corrective actions.
+`citadel` assesses the resilience of a wallet or treasury across multiple dimensions.  `CitadelAssessmentService` gathers signals from UTXO hygiene and mempool risk, script analysis, policy evaluation, inheritance plan verification and sovereignty‑graph modelling to produce weighted scores and an overall resilience grade.  `RepairPlanService` uses these scores to generate prioritized remediation steps for operators.  Additional services in this package compute sovereignty graphs, verify inheritance paths and generate insights; collectively they help operators detect weaknesses and plan corrective actions.
 
 ### Market data and providers
 
-`market_data` collects BTC prices and market data from multiple exchanges.  `MarketDataService` periodically polls provider implementations (Binance, Kraken, Bitstamp, Coinbase, etc.), normalizes their quotes, records them in the time‑series repository, and computes a median price and provider spread【turn52file0†L18-L48】.  `aggregation.py` calculates confidence metrics by evaluating provider variance and median spread【turn54file0†L11-L31】, while `provider_health.py` tracks the success/failure history of each provider and emits degraded or recovered events when their reliability changes【turn55file0†L12-L34】.  A registry wires in new providers and exposes them to the rest of the system.
+`market_data` collects BTC prices and market data from multiple exchanges.  `MarketDataService` periodically polls provider implementations (Binance, Kraken, Bitstamp, Coinbase, etc.), normalizes their quotes, records them in the time‑series repository, and computes a median price and provider spread.  `aggregation.py` calculates confidence metrics by evaluating provider variance and median spread, while `provider_health.py` tracks the success/failure history of each provider and emits degraded or recovered events when their reliability changes.  A registry wires in new providers and exposes them to the rest of the system.
 
 ### Mempool and fee analytics
 
-`mempool` models network congestion to inform fee recommendations.  `MempoolAnalyzerService` ingests mempool snapshots and block templates, computes backlog ratios and derives priority fee bands with associated confidence levels【turn61file0†L23-L77】.  `FeeMarketModel` transforms these bands into recommended sat/vbyte fee rates for different confirmation targets【turn62file0†L17-L45】.  `FeeAnalyticsService` in `analytics` wraps these insights, merges them with market data and surfaces user‑friendly fee recommendations and mempool status【turn65file0†L11-L33】.
+`mempool` models network congestion to inform fee recommendations.  `MempoolAnalyzerService` ingests mempool snapshots and block templates, computes backlog ratios and derives priority fee bands with associated confidence levels.  `FeeMarketModel` transforms these bands into recommended sat/vbyte fee rates for different confirmation targets.  `FeeAnalyticsService` in `analytics` wraps these insights, merges them with market data and surfaces user‑friendly fee recommendations and mempool status.
 
 ### Treasury
 
-`treasury` orchestrates treasury actions such as withdrawal requests, chain‑state verification and policy checks.  `TreasuryService` evaluates each request against policy rules, checks chain state for RBF/CPFP possibilities, ensures operator approval and logs the action.  It publishes domain events (e.g., `treasury.request.evaluated`) and interacts with Citadel to factor resilience scores into risk evaluation【turn60file0†L24-L67】【turn60file0†L106-L133】.
+`treasury` orchestrates treasury actions such as withdrawal requests, chain‑state verification and policy checks.  `TreasuryService` evaluates each request against policy rules, checks chain state for RBF/CPFP possibilities, ensures operator approval and logs the action.  It publishes domain events (e.g., `treasury.request.evaluated`) and interacts with Citadel to factor resilience scores into risk evaluation.
 
 ### Event bus and domain events
 
-`events` implements the internal eventing infrastructure.  `DomainEventPublisher` is a convenience wrapper for emitting typed domain events【turn57file0†L17-L35】.  `EventBusService` persists events in an outbox, ensures idempotency, groups them by topic and dispatches them to configured webhooks and WebSocket subscribers【turn58file0†L61-L136】.  This bus underpins asynchronous coordination across the platform: trace reports, citadel assessments, evidence packets, provider‑health changes and treasury actions all publish events that consumers can subscribe to.
+`events` implements the internal eventing infrastructure.  `DomainEventPublisher` is a convenience wrapper for emitting typed domain events.  `EventBusService` persists events in an outbox, ensures idempotency, groups them by topic and dispatches them to configured webhooks and WebSocket subscribers.  This bus underpins asynchronous coordination across the platform: trace reports, citadel assessments, evidence packets, provider‑health changes and treasury actions all publish events that consumers can subscribe to.
 
 ### Observability and operations
 
-`observability` provides operational insight.  `OperationsSnapshotService` aggregates provider health, chain state, mempool congestion, background job statuses and error counts to compute a runtime severity level and determine whether the system should enter degraded mode【turn59file0†L52-L166】.  These snapshots feed dashboards and drive automated recovery or escalation.
+`observability` provides operational insight.  `OperationsSnapshotService` aggregates provider health, chain state, mempool congestion, background job statuses and error counts to compute a runtime severity level and determine whether the system should enter degraded mode.  These snapshots feed dashboards and drive automated recovery or escalation.
 
 ### Intelligence and evidence
 
-`intelligence` assembles multi‑source evidence.  `EvidencePacketBuilder` links news articles, market events, attribution diagnostics and narrative context into replayable evidence packets; it stores them and publishes an `evidence.packet.created` event【turn66file0†L39-L70】【turn66file0†L110-L152】.  Evidence packets are used by the market signal governance layer to justify signal publication and by the Market Time Machine UI for replay.
+`intelligence` assembles multi‑source evidence.  `EvidencePacketBuilder` links news articles, market events, attribution diagnostics and narrative context into replayable evidence packets; it stores them and publishes an `evidence.packet.created` event.  Evidence packets are used by the market signal governance layer to justify signal publication and by the Market Time Machine UI for replay.
 
 ### Additional services
 
-Other packages include `education` for static educational snippets【turn64file0†L6-L19】, `analytics` for higher‑level analytics (such as fee recommendations【turn65file0†L11-L33】), `ingestion` for scheduled jobs and `public_site` for the Market Time Machine and admin dashboards.  Each service publishes domain events and collaborates through the event bus, enabling decoupled yet coordinated functionality.
+Other packages include `education` for static educational snippets, `analytics` for higher‑level analytics (such as fee recommendations), `ingestion` for scheduled jobs and `public_site` for the Market Time Machine and admin dashboards.  Each service publishes domain events and collaborates through the event bus, enabling decoupled yet coordinated functionality.
 
 These services together form the heart of Bitcoin Bastion.  By composing specialized services and linking them through a shared event bus, the platform maintains clear boundaries between domains while enabling cross‑service workflows such as risk analysis feeding into treasury policy or mempool congestion informing fee recommendations and citadel resilience scores.
 
@@ -125,10 +130,10 @@ These services together form the heart of Bitcoin Bastion.  By composing specia
 At a high level the platform ingests market data and news from multiple providers, transforms them into canonical events, attributes price movements, and surfaces evidence‑rich intelligence:
 
 - **Ingestion & normalization:** Price points, candles, news articles and mempool data are collected from multiple providers, deduplicated and normalized. Deterministic event clustering produces canonical news events and BTC candles.
-- **Impact & attribution:** The candle attribution engine computes impact windows around BTC candles and ranks news events by confidence; impact diagnostics and delayed‑reaction detection highlight potential causes【turn8file0†L11-L17】. Historical similarity compares current events and candles against seeded market patterns, generating reaction profiles and analog evidence【turn8file0†L15-L17】.
-- **Narratives & shock index:** The narrative heatmap engine classifies news into evolving narratives and generates heat/impact/dominance metrics; the shock index service quantifies combined market/narrative shock to highlight unusual market stress【turn8file0†L11-L17】.
-- **Evidence & governance:** Evidence packets record end‑to‑end state — migrations, schema parity, runtime health, provider quality, recovered evidence and deployment artifacts. The Market Signal Governance layer evaluates candidate signals against publishing policy and requires operator review before publication【turn21file0†L20-L33】.
-- **Event bus & plugin platform:** An internal event taxonomy, outbox and bus persist and dispatch domain events. Webhook and WebSocket services deliver signed notifications; the plugin API allows safe extensions with restrictive permissions【turn19file0†L5-L17】【turn19file0†L35-L43】.
+- **Impact & attribution:** The candle attribution engine computes impact windows around BTC candles and ranks news events by confidence; impact diagnostics and delayed‑reaction detection highlight potential causes. Historical similarity compares current events and candles against seeded market patterns, generating reaction profiles and analog evidence.
+- **Narratives & shock index:** The narrative heatmap engine classifies news into evolving narratives and generates heat/impact/dominance metrics; the shock index service quantifies combined market/narrative shock to highlight unusual market stress.
+- **Evidence & governance:** Evidence packets record end‑to‑end state — migrations, schema parity, runtime health, provider quality, recovered evidence and deployment artifacts. The Market Signal Governance layer evaluates candidate signals against publishing policy and requires operator review before publication.
+- **Event bus & plugin platform:** An internal event taxonomy, outbox and bus persist and dispatch domain events. Webhook and WebSocket services deliver signed notifications; the plugin API allows safe extensions with restrictive permissions.
 - **User interfaces:** The web console provides dashboards for price context, shock index, similarity and narrative panels; the Market Time Machine UI shows timeline navigation, candle context, evidence replay and narrative heatmaps.
 
 This layered architecture ensures that market intelligence remains evidence‑based, explainable and safe for self‑hosted environments.
@@ -157,39 +162,45 @@ curl http://localhost:8000/api/v1/health/live
 
 ### Deployment options
 
-In addition to local development, the repository supports multiple deployment modes to accommodate different operator capacities:
+Use [Deployment Methods](docs/DEPLOYMENT_METHODS.md) as the canonical decision
+and command guide. It covers the repository-backed Compose, Kubernetes, K3s,
+Kind, Minikube, constrained single-node, and bare-metal/systemd paths, including
+their prerequisites, limitations, verification, and evidence requirements.
+Profile metadata lives under `deploy/runtime-profiles`; the canonical Kubernetes
+manifests live under `deploy/kubernetes`.
 
-- **Self‑hosted single‑node deployments:** For small‑scale or low‑power homelab setups you can run the entire stack on a single VPS or bare metal host using the standard compose stack.  Running `docker compose up db redis minio minio-init app worker` starts PostgreSQL, Redis, MinIO, the API and worker, and a `minio-init` service that creates the `bitcoin-bastion-artifacts` bucket【turn103file0†L3-L13】.  When using this mode you are responsible for persistent volume backups, restore drills, retention policies and monitoring the `/api/v1/storage/status` endpoint【turn104file0†L3-L10】.  The default `minioadmin` credentials provided in `.env.example` are unsafe for production; production deployments should use an external S3‑compatible provider【turn103file0†L15-L28】.
-
-- **Kubernetes deployments:** For production or high‑capacity environments deploy using the manifests under `deploy/kubernetes`.  The canonical base kustomization defines API, worker and beat deployments and CronJobs for health checks and recovery drills and exposes non‑secret object storage settings (`OBJECT_STORAGE_ENABLED`, `OBJECT_STORAGE_PROVIDER`, `OBJECT_STORAGE_ENDPOINT`, `OBJECT_STORAGE_BUCKET`, etc.) via a ConfigMap【turn105file0†L3-L23】.  Secrets such as `OBJECT_STORAGE_ACCESS_KEY` and `OBJECT_STORAGE_SECRET_KEY` must be provided via SealedSecret, SOPS, Vault or another secret manager【turn105file0†L24-L29】.  Use the evidence jobs defined in `docs/DEPLOYMENT_EVIDENCE_PACK.md` to run migrations, schema parity tests and release evidence (`make k8s-run-migration`, `make k8s-run-postgres-migration-smoke`, `make k8s-run-postgres-schema-parity`, `make k8s-run-release-evidence`, `make k8s-collect-evidence-artifacts`)【turn106file0†L1-L14】 and to collect sovereign runtime evidence, backup drills and promotion artifacts【turn106file0†L16-L29】.
-
-
-- **VPS and container platforms:** The FastAPI backend can also run behind Nginx or Caddy on a single VPS with TLS termination, or on container platforms such as Fly.io, Render or Railway【turn107file0†L12-L21】.  When deploying this way follow the same environment‑variable conventions as the Kubernetes deployment (database, Redis, object storage) and ensure secrets are managed via your platform’s secret manager.  Use the storage health check (`/api/v1/storage/status`) and the migration smoke tests to validate your environment before exposing it to production traffic【turn104file0†L3-L10】.
+Rendering or applying repository manifests is not proof of a successful or
+production-ready deployment. Promotion requires revision- and
+environment-specific evidence described in
+[PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md).
 
 ## License
 
-This project is licensed under the **MIT License**【turn2file0†L3-L13】.  See the [`LICENSE`](LICENSE) file for full details.  All contributions must preserve the no‑custody posture and must not weaken lint/tests/CI gates or hide degraded states.
+This project is licensed under the **MIT License**.  See the [`LICENSE`](LICENSE) file for full details.  All contributions must preserve the no‑custody posture and must not weaken lint/tests/CI gates or hide degraded states.
 
 ## Contributing
 
-Before submitting changes, review the contribution rules (section 26 in the original README).  Contributions must preserve no‑custody rules, avoid secrets, keep documentation synchronized with code, and require evidence for production claims【turn0file1†L926-L933】.  See `docs/STATUS.md` and related documentation for the current readiness requirements.
+Before submitting changes, review the contribution rules (section 26 in the original README).  Contributions must preserve no‑custody rules, avoid secrets, keep documentation synchronized with code, and require evidence for production claims.  See `docs/STATUS.md` and related documentation for the current readiness requirements.
 
 ## Known limitations
 
-While Bitcoin Bastion provides extensive evidence‑driven insight, it does not make trading decisions or price predictions.  Historical similarity, candle attribution and narratives are informational only and should not be treated as guarantees【turn1file0†L160-L167】.  External providers can be unavailable, and production readiness requires environment‑specific validation, backup/restore testing and operator sign‑off【turn0file1†L803-L817】.
+While Bitcoin Bastion provides extensive evidence‑driven insight, it does not make trading decisions or price predictions.  Historical similarity, candle attribution and narratives are informational only and should not be treated as guarantees.  External providers can be unavailable, and production readiness requires environment‑specific validation, backup/restore testing and operator sign‑off.
 
 ## Ongoing work and future modules
 
 The repository continues to evolve beyond the baseline described above.  Key areas of development include:
 
-- **Database expansion:** Alembic migrations have recently added a rich source registry and health tables for news providers, including attributes like homepage URL, country code, default confidence, failure backoff configuration and tags, plus a `source_health_records` table for latency and health metrics【turn85file0†L19-L31】.  Additional migrations created the `market_pattern_library` and `historical_similarity_records` tables to seed deterministic market patterns and persist historical similarity results【turn86file0†L41-L76】.  A subsequent migration expanded the narrative heatmap engine with a detailed taxonomy, keyword weights and observation tables【turn87file0†L17-L48】.
+- **Database expansion:** Alembic migrations have recently added a rich source registry and health tables for news providers, including attributes like homepage URL, country code, default confidence, failure backoff configuration and tags, plus a `source_health_records` table for latency and health metrics.  Additional migrations created the `market_pattern_library` and `historical_similarity_records` tables to seed deterministic market patterns and persist historical similarity results.  A subsequent migration expanded the narrative heatmap engine with a detailed taxonomy, keyword weights and observation tables.
 
-- **Intelligence engines:** The Intelligence layer now includes a pattern library, pattern classification service and market memory service for deterministic pattern matching and reaction profiling【turn78file0†L134-L144】【turn78file0†L149-L152】.  The narrative heatmap engine has been expanded with a taxonomy of narratives and keywords that feed classification and dominance metrics【turn87file0†L17-L48】.
+- **Intelligence engines:** The Intelligence layer now includes a pattern library, pattern classification service and market memory service for deterministic pattern matching and reaction profiling.  The narrative heatmap engine has been expanded with a taxonomy of narratives and keywords that feed classification and dominance metrics.
 
 - **News scoring and sentiment:** A local sentiment engine and market-news scoring service are being integrated for more granular event scoring and classification.
 
 
-These ongoing modules are not yet fully production-ready and therefore not all documented in the main README.  Contributors should refer to the associated docs and migration files when working on these features, and avoid making major changes to the legacy frontend until cutover gates are met.
+These ongoing modules are not yet production-ready and therefore are not all
+documented in the main README. Contributors should use the canonical docs,
+current route ownership, tests, and migration files instead of archived frontend
+migration assumptions.
 
 ---
 
@@ -515,11 +526,11 @@ Deterministic deduplication prevents duplicate-news spam and preserves replayabl
 
 ### Candle Attribution Engine
 
-Bitcoin Bastion includes a replay-safe Candle Attribution Engine foundation for Market Time Machine. It ranks nearby news events for a BTC candle using BTC relevance, market-impact score, provider/source confidence, time distance, and sentiment/candle direction matching while preserving the limitation that correlation is not proof of causation.
-
-### Candle Attribution Engine
-
-Bitcoin Bastion includes a production Candle Attribution Engine that ranks nearby news/events as possible BTC candle contributors with configurable windows, weighted scoring, confidence bands, replay evidence, and operator review hooks. It always treats attribution as correlation-based context, not causation or trading advice.
+Bitcoin Bastion includes a replay-safe Candle Attribution Engine for Market Time
+Machine. It ranks nearby news/events as possible BTC candle contributors using
+configurable windows, weighted relevance/impact/provider/freshness/direction
+factors, confidence bands, replay evidence, and operator review hooks. It always
+treats attribution as correlation-based context, not causation or trading advice.
 
 ### Historical Similarity Engine
 
@@ -559,11 +570,13 @@ The production control plane exposes root health probes (`/health/live`, `/healt
 Disaster recovery validation is exposed through operational health DTOs and records backup verification, restore verification, deterministic replay validation and integrity verification. The system must not report readiness as healthy when required providers, timeline generation, database or scheduler checks are degraded.
 
 
-## Final production candidate certification
+## Release status
 
-Bitcoin Bastion and Bastion Market Time Machine are classified as a conservative Production Candidate after the final repository-wide audit. The final reports are `docs/FINAL_PRODUCTION_AUDIT.md`, `docs/SOVEREIGNTY_CERTIFICATION.md`, and `docs/RELEASE_CANDIDATE_REPORT.md`. Public market-intelligence output must continue to display: Correlation is not proof of causation. Evidence-based informational analysis. Not financial advice.
-
-This repository does not claim perfect security, guaranteed outcomes, or bug-free behavior. Environment-specific production validation remains required for Kubernetes rendering, load testing, Telegram runtime evidence, WAF/CDN/TLS/rate limiting, penetration testing, and accessibility certification.
+Current decision: **HOLD**. Historical production-candidate reports are retained
+under `docs/archive/audits/2026/`; they describe earlier revisions and do not
+override current failing gates. Public market-intelligence output must continue
+to state that correlation is not proof of causation, analysis is informational,
+and outputs are not financial advice.
 
 ## Developer and operator tools
 
@@ -576,63 +589,13 @@ This repository does not claim perfect security, guaranteed outcomes, or bug-fre
 
 Bitcoin Bastion now includes a safe Plugin API foundation for manifest-first, deny-by-default in-process extensions. See [`docs/PLUGIN_API.md`](docs/PLUGIN_API.md), [`docs/PLUGIN_PERMISSIONS.md`](docs/PLUGIN_PERMISSIONS.md), and [`docs/PLUGIN_SECURITY_MODEL.md`](docs/PLUGIN_SECURITY_MODEL.md). Plugins are not a custody interface, signing interface, transaction broadcaster, or marketplace runtime.
 
-## Runtime profiles
-
-Bitcoin Bastion supports multiple deployment profiles. Kubernetes is supported but not mandatory. Docker Compose, standard Kubernetes, K3s, Kind, Minikube, single-node, and bare-metal/systemd postures are documented in `docs/RUNTIME_PROFILES.md`; `deploy/kubernetes` remains the canonical Kubernetes manifest path.
-
-### Runtime profile deployment summary
-
-Bitcoin Bastion supports multiple runtime profiles while preserving its Bitcoin-first, no-custody, self-hosted capable, operator-controlled, evidence-driven, no-cloud-lock-in posture.
-
-- Docker Compose remains supported for local development, operator testing, and small self-hosted deployments.
-- Standard Kubernetes is recommended for production clusters when operators can provide ingress, storage, secrets, monitoring, backup/restore, rollback, and incident evidence.
-- K3s is recommended for sovereign VPS, home-server, mini-PC, and other small Kubernetes deployments after operator hardening and evidence collection.
-- Kind and Minikube are local Kubernetes validation/testing profiles only and must not be described as production runtimes.
-- Single-node is a constrained production-like/sovereign profile with limited HA, resource, and evidence-job tradeoffs.
-- Bare-metal/systemd is an advanced fallback for operators who accept manual process supervision, logs, backups, hardening, and health checks.
-
-Primary commands:
-
-```bash
-make runtime-profiles
-make runtime-detect
-make runtime-render-compose
-make runtime-render-k8s
-make runtime-render-k3s
-make runtime-render-kind
-make runtime-render-minikube
-make runtime-render-single-node
-make systemd-notes
-```
-
-Deployment commands call the runtime deployment helper and require real local tooling for the selected runtime:
-
-```bash
-make deploy-compose
-make deploy-k8s
-make deploy-k3s
-make deploy-kind       # local validation/testing only
-make deploy-minikube   # local testing only
-make deploy-single-node
-```
-
-No runtime profile is automatically production-ready. Production readiness requires environment-specific evidence artifacts, including deployment evidence, migration smoke evidence, schema parity evidence, provider health evidence, observability validation, backup/restore validation, rollback validation, security review, load testing, and incident/drill evidence.
-
-## Frontend primary switch status
-
-
-## Final Reflex migration audit
-
-
-## Frontend cutover status
-
-
-## Old frontend removal sweep (2026-06-29)
-
-
 ## Reflex-only frontend status (2026-06-29)
 
-The old Next.js frontend directory has been removed from this branch at maintainer request. `reflex_frontend/` is now the only repository-native frontend. FastAPI remains the backend source of truth, and FastAPI/Jinja still owns delegated Market detail/dashboard routes where documented. Rollback to the old frontend now requires restoring `frontend/` from Git history or a tagged archive. See `docs/OLD_FRONTEND_REMOVAL_REPORT.md`.
+The old Next.js frontend directory has been removed. `frontend/` is now
+the only repository-native frontend. FastAPI remains the backend source of
+truth, and FastAPI/Jinja still owns delegated Market detail/dashboard routes.
+The removal decision is preserved as historical evidence in
+[`docs/archive/audits/2026/OLD_FRONTEND_REMOVAL_REPORT.md`](docs/archive/audits/2026/OLD_FRONTEND_REMOVAL_REPORT.md).
 
 ## Authentication
 

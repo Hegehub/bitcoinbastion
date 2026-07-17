@@ -21,7 +21,15 @@ TARGETS = [
 
 def run(cmd: list[str]) -> dict[str, object]:
     proc = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, timeout=60)
-    return {"command": " ".join(cmd), "returncode": proc.returncode, "stdout": proc.stdout[-2000:], "stderr": proc.stderr[-2000:]}
+    display_cmd = list(cmd)
+    if display_cmd and Path(display_cmd[0]).resolve() == Path(sys.executable).resolve():
+        display_cmd[0] = "python"
+    return {
+        "command": " ".join(display_cmd),
+        "returncode": proc.returncode,
+        "stdout": proc.stdout[-2000:],
+        "stderr": proc.stderr[-2000:],
+    }
 
 
 def main() -> int:
