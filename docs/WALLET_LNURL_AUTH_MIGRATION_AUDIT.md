@@ -34,13 +34,13 @@ Classification legend: **compatible** = can remain and be extended safely; **req
 | Bot | `app/bot/handlers/access.py`, `commands.py`, `runner.py` | requires extension | Bot has access flow/commands; future bot wallet/LNURL QR flows must use scoped delegated/child pass and policy. |
 | Python SDK | `sdk/python/bitcoin_bastion_sdk/access_auth.py`, `auth.py`, `resources/access.py`, `signing.py`, tests | requires extension | Supports PoA headers and rejects legacy bearer-by-default; needs wallet/LNURL helpers. |
 | TypeScript SDK | `sdk/typescript/src/auth.ts`, `http.ts`, `resources/access.ts`, examples/tests | requires extension | Legacy bearer config is fail-closed compatibility; needs wallet/LNURL helpers and stricter docs/examples. |
-| Historical frontend | removed `frontend/` tree; see archived removal/migration reports | archived | Next.js is not present in the current checkout and is not an active wallet/LNURL surface. |
-| Reflex frontend | `frontend/bastion_ui/*`, docs/tests | requires extension | Sole repository-native UI; Console/Trace/Market and safety checks exist, but wallet-auth/LNURL pages and copy are not wired. |
+| Frontend | `frontend/README.md`, `frontend/telegram/README.md` | manual review | Current Next.js tree appears mostly documentation/legacy baseline in this checkout. No wallet/LNURL pages. |
+| Reflex frontend | `reflex_frontend/bastion_ui/*`, docs/tests | requires extension | Console/Trace/market UI and safety checks exist; needs wallet-auth/LNURL pages and copy. |
 | CLI | `app/cli/*` if present; no top-level `cli/` found in this checkout | manual review | Future wallet/LNURL CLI may belong under `app/cli`. |
 | Tests | `tests/security/*`, `tests/contract/*`, `tests/integration/*`, SDK tests | requires extension | Strong release gates for no bearer/password/seed; add wallet/LNURL replay, settlement, withdraw, privacy gates. |
 | Docs | `docs/ADR_BASTION_PROOF_OF_ACCESS_AUTH.md`, `ACCESS_LAYER_RELEASE_GATE.md`, `ACCESS_AUTH_MIGRATION_AUDIT.md`, SDK/frontend docs | compatible + requires extension | Existing PoA docs explicitly anticipate wallet-bound access and LNURL-pay as future work. |
 | Environment | `.env.example`, `app/core/config.py`, `docs/ACCESS_ENVIRONMENT.md`, deploy templates | requires extension + legacy auth risk | Add wallet/LNURL env vars; remove or isolate legacy JWT and bearer config. |
-| Deploy/Helm/CI | `deploy/kubernetes/base/*`, `deploy/helm/bitcoin-bastion/values.yaml`, `.github/workflows/*` | requires extension | Kubernetes secrets include JWT/bot bearer; Helm is values-only with no templates; CI has access gates and needs LNURL release gates. |
+| Deploy/Helm/CI | `deploy/kubernetes/base/*`, `.github/workflows/*`; no `helm/` found | requires extension | Kubernetes secrets include JWT/bot bearer; CI has access gates, needs LNURL release gates. |
 
 ## 3. Legacy Auth Residue Audit
 
@@ -278,7 +278,7 @@ Rules: no raw Bitcoin seed/private key columns; no raw k1 if avoidable; no raw s
 
 ## 24. Environment / Deployment Impact
 
-Current config: `.env.example`, `app/core/config.py`, `docs/ACCESS_ENVIRONMENT.md`, Kubernetes base templates, and a values-only `deploy/helm/bitcoin-bastion` placeholder with no deployable templates.
+Current config: `.env.example`, `app/core/config.py`, `docs/ACCESS_ENVIRONMENT.md`, Kubernetes base templates. No `helm/` directory found in this checkout.
 
 Future variables: `WALLET_AUTH_ENABLED`, `WALLET_AUTH_REQUIRE_BIP322`, `WALLET_AUTH_ALLOW_LEGACY_SIGNATURES=false`, challenge/session TTLs, dedicated address warning, sovereign mode, wallet server pepper, `LNURL_ENABLED`, `LNURL_AUTH_ENABLED`, `LNURL_PAY_ENABLED`, `LNURL_WITHDRAW_ENABLED`, `LNURL_VERIFY_ENABLED`, callback base URLs, domain, min/max sendable msat, `LNURL_K1_TTL_SECONDS`, `LNURL_REQUIRE_SETTLEMENT_VERIFY=true`, `LNURL_ALLOW_PAYERDATA_EMAIL=false`, `LNURL_ALLOW_LEGACY_HTTP_ONION=false` or documented policy.
 

@@ -65,3 +65,11 @@ LNURL-auth linking keys are domain-specific. Bastion derives `lnurl_key_hash` wi
 Lightning Principals still require Device Binding, Proof-of-Possession session issuance, Subscription Entitlement checks where applicable, Revocation Registry checks, Audit Chain events, and Policy Engine authorization before protected API access. LNURL-auth success is not subscription payment, and an issued LNURL-pay invoice is not proof of settlement.
 
 Domain migration is explicit. A principal created under `auth.bitcoin-bastion.com` must not silently authenticate as a principal for another domain. Bitcoin and Lightning principals are not automatically merged through payerData, payment correlation, Lightning Address use, IP address, or shared device context; linking requires explicit policy-approved proof and audit.
+
+## LNURL-auth Audit Events
+
+LNURL-auth challenge, callback, Lightning Principal, device-binding, session, and step-up transitions publish privacy-preserving security events into the existing Bastion Access Audit Chain. Each event records the transition type, outcome, safe principal/session/device/challenge hashes, policy and crypto epochs when available, and a stable reason code for denials or failures.
+
+Audit records must never contain raw `k1`, DER signatures, raw LNURL linking keys, raw session tokens, Access Passes, private keys, wallet seeds, mnemonics, recovery material, payment preimages, or unrestricted payer data. The LNURL audit adapter rejects those fields before persistence and accepts only explicit hashes or fingerprints such as `challenge_hash`, `k1_hash`, `lnurl_key_hash`, `principal_hash`, `session_hash`, and `device_key_fingerprint`.
+
+LNURL-auth audit events are canonicalized and hash-linked with `previous_event_hash` and `event_hash` through the shared tamper-evident audit chain. Duplicate retries reuse deterministic idempotency keys for the same semantic success transition; replay attempts are separate security events such as `lnurl_auth_replay_rejected` rather than duplicate successes. Security-critical transitions fail closed if audit persistence fails.

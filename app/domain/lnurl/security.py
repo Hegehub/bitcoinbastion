@@ -46,6 +46,16 @@ LNURL_CRITICAL_ACTIONS = frozenset(
         BastionLNURLIntentAction.PAYREGISTER_OWNER_ACTION,
         BastionLNURLIntentAction.PAYREGISTER_ADMIN_ENABLE,
         BastionLNURLIntentAction.ENTERPRISE_POLICY_CHANGE,
+        BastionLNURLIntentAction.EXPORT_DATA,
+        BastionLNURLIntentAction.CREATE_DELEGATED_PASS,
+        BastionLNURLIntentAction.TREASURY_POLICY_CHANGE,
+        BastionLNURLIntentAction.RECOVERY_CHANGE,
+        BastionLNURLIntentAction.DEVICE_REVOKE,
+        BastionLNURLIntentAction.BUSINESS_ROLE_ASSIGNMENT,
+        BastionLNURLIntentAction.PAYREGISTER_DEVICE_ENROLL,
+        BastionLNURLIntentAction.OFFLINE_PACK_ISSUE,
+        BastionLNURLIntentAction.REFUND_APPROVE,
+        BastionLNURLIntentAction.PAYOUT_APPROVE,
     }
 )
 

@@ -28,6 +28,16 @@ class BastionLNURLIntentAction(StrEnum):
     PAYREGISTER_OWNER_ACTION = "payregister_owner_action"
     PAYREGISTER_ADMIN_ENABLE = "payregister_admin_enable"
     ENTERPRISE_POLICY_CHANGE = "enterprise_policy_change"
+    EXPORT_DATA = "export_data"
+    CREATE_DELEGATED_PASS = "create_delegated_pass"
+    TREASURY_POLICY_CHANGE = "treasury_policy_change"
+    RECOVERY_CHANGE = "recovery_change"
+    DEVICE_REVOKE = "device_revoke"
+    BUSINESS_ROLE_ASSIGNMENT = "business_role_assignment"
+    PAYREGISTER_DEVICE_ENROLL = "payregister_device_enroll"
+    OFFLINE_PACK_ISSUE = "offline_pack_issue"
+    REFUND_APPROVE = "refund_approve"
+    PAYOUT_APPROVE = "payout_approve"
 
 
 DEFAULT_LNURL_ACTION_INTENT_MAP = {

@@ -1,0 +1,9 @@
+# Wallet Auth API Notes
+
+## LNURL-auth Audit Events
+
+The public LNURL-auth API router is implemented separately, but service-layer LNURL-auth transitions already have a wallet-compatible audit contract. Challenge creation, callback verification, Lightning Principal resolution, device binding, session creation, and step-up decisions emit events through the existing Bastion Access Audit Chain rather than a separate LNURL audit ledger.
+
+Operator-facing audit responses should expose only hashes, fingerprints, event type, outcome, policy reference, timestamps, and reason codes. They must not expose raw `k1`, raw LNURL linking keys, wallet signatures, raw session tokens, Access Passes, private keys, seeds, mnemonics, recovery material, or payment preimages.
+
+Callback and replay failures use generic public protocol responses, while the audit event stores safe internal reason codes such as `signature_invalid`, `k1_reused`, `domain_mismatch`, or `policy_denied`.

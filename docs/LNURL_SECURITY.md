@@ -13,3 +13,11 @@ Failure recording increments known challenge failure counts. Critical one-attemp
 The SQL database remains the authoritative production store; Redis may only accelerate lookups and must not make a used `k1` valid after cache loss. Logs, metrics, and audit events include registry id, `k1` fingerprint, purpose, action, status, domain hash, policy hash, timestamps, and reason codes only. Raw `k1`, raw signatures, wallet keys, callback URLs, session tokens, preimages, and recovery material must never be logged.
 
 This prompt does not implement the complete LNURL-auth callback verifier, payment settlement, withdrawals, Wallet Principal creation, Device Binding, or PoP Session issuance.
+
+## LNURL-pay Subscription Requests
+
+The LNURL-pay subscription request service creates only the initial wallet-facing `payRequest` for subscription checkout. A created request is not a BOLT-11 invoice, not a settlement proof, and not a Subscription Entitlement. Later services must issue invoices, verify settlement, bind Payment Proofs, and apply entitlement policy before any access is activated.
+
+All LNURL-pay amounts are represented as integer millisatoshis. The callback URL is derived from a configured trusted public base URL and an opaque request reference; it must not expose principal hashes, plan names, database IDs, raw idempotency keys, wallet identifiers, or secrets.
+
+Metadata is deterministic raw LNURL metadata JSON and must include `text/plain`. `payerData` and `commentAllowed` are only declarations in this phase: comments and payerData values are untrusted and cannot authorize access, select plans, change amounts, assign roles, complete recovery, or bypass Policy Engine decisions.

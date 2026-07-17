@@ -1,4 +1,12 @@
 """Trusted LNURL encoding, URL safety, SSRF, redaction, and challenge services."""
+from app.services.lnurl.audit import (
+    AuditEventReference,
+    AuditOutcome,
+    AuditSeverity,
+    InMemoryLNURLAuditChain,
+    LNURLAuditService,
+    LNURLAuthAuditEventType,
+)
 from app.services.lnurl.auth_callback_verifier import (
     InMemoryLNURLAuthAttemptRepository,
     LNURLAuthCallbackConfig,
@@ -10,6 +18,30 @@ from app.services.lnurl.auth_callback_verifier import (
     VerifiedLNURLAuthProof,
     public_callback_error_response,
 )
+from app.services.lnurl.auth_step_up import (
+    ActiveDeviceContext,
+    ActivePoPSessionContext,
+    LNURLAuthStepUpChallengeResponse,
+    LNURLAuthStepUpCompleteRequest,
+    LNURLAuthStepUpConfig,
+    LNURLAuthStepUpRepository,
+    LNURLAuthStepUpRequest,
+    LNURLAuthStepUpResult,
+    LNURLAuthStepUpService,
+    LNURLStepUpAuthorization,
+    LNURLStepUpCriticalAction,
+    LNURLStepUpStatus,
+)
+from app.services.lnurl.auth_session_bridge import (
+    DeviceBindingBridgeResult,
+    LNURLAuthSessionBridge,
+    LNURLAuthSessionBridgeConfig,
+    LNURLAuthSessionBridgeRequest,
+    LNURLAuthSessionBridgeResult,
+    LNURLAuthSessionBridgeStatus,
+    StepUpAuthorization,
+    VerifiedLNURLAuthSessionInput,
+)
 from app.services.lnurl.auth_challenge_service import (
     LNURL_AUTH_SIGNATURE_WARNING,
     InMemoryLNURLAuthChallengeRepository,
@@ -20,6 +52,13 @@ from app.services.lnurl.auth_challenge_service import (
     safe_auth_challenge_log_fields,
 )
 from app.services.lnurl.encoding import decode_lnurl, encode_lnurl
+from app.services.lnurl.pay_metadata import (
+    ALLOWED_LNURL_PAY_METADATA_TYPES,
+    LNURLMetadataImage,
+    LNURLPayMetadataBuilder,
+    LNURLPayMetadataEntry,
+    LNURLPayMetadataResult as CanonicalLNURLPayMetadataResult,
+)
 from app.services.lnurl.principal_service import (
     AuthDomainClass,
     AuthDomainPolicy,
@@ -44,12 +83,77 @@ from app.services.lnurl.k1_registry import (
     generate_k1,
     validate_k1_format,
 )
+from app.services.lnurl.pay import (
+    InMemoryLNURLPayCallbackRepository,
+    InMemoryLNURLPaySubscriptionRequestRepository,
+    LightningInvoiceResult,
+    LNURLPayCallbackCommand,
+    LNURLPayCallbackConfig,
+    LNURLPayCallbackService,
+    LNURLPayCallbackURLBuilder,
+    LNURLPayCallbackURLConfig,
+    LNURLPayInvoiceResult,
+    LNURLPayInvoiceStatus,
+    LNURLPayRequestResult,
+    LNURLPayRequestStatus,
+    LNURLPaySubscriptionRequestConfig,
+    LNURLPaySubscriptionRequestService,
+    MinimalLNURLPayMetadataProvider,
+    StaticSubscriptionPricingResolver,
+)
 from app.services.lnurl.models import DecodedLNURL, LNURLURLPurpose, ResolvedLNURLTarget, ValidatedLNURLURL
 from app.services.lnurl.redaction import fingerprint_lnurl_url, fingerprint_lnurl_value, redact_lnurl_url, redact_lnurl_value
 from app.services.lnurl.replay_protection import LNURLK1ReplayProtection
 from app.services.lnurl.url_safety import LNURLURLPolicy, resolve_and_validate_lnurl_target, validate_lnurl_redirect, validate_lnurl_url
 
 __all__ = [
+    "ALLOWED_LNURL_PAY_METADATA_TYPES",
+    "CanonicalLNURLPayMetadataResult",
+    "LNURLMetadataImage",
+    "LNURLPayMetadataBuilder",
+    "LNURLPayMetadataEntry",
+    "InMemoryLNURLPayCallbackRepository",
+    "LightningInvoiceResult",
+    "LNURLPayCallbackCommand",
+    "LNURLPayCallbackConfig",
+    "LNURLPayCallbackService",
+    "LNURLPayInvoiceResult",
+    "LNURLPayInvoiceStatus",
+    "InMemoryLNURLPaySubscriptionRequestRepository",
+    "LNURLPayCallbackURLBuilder",
+    "LNURLPayCallbackURLConfig",
+    "LNURLPayRequestResult",
+    "LNURLPayRequestStatus",
+    "LNURLPaySubscriptionRequestConfig",
+    "LNURLPaySubscriptionRequestService",
+    "MinimalLNURLPayMetadataProvider",
+    "StaticSubscriptionPricingResolver",
+    "AuditEventReference",
+    "AuditOutcome",
+    "AuditSeverity",
+    "InMemoryLNURLAuditChain",
+    "LNURLAuditService",
+    "LNURLAuthAuditEventType",
+    "LNURLStepUpStatus",
+    "LNURLStepUpCriticalAction",
+    "LNURLStepUpAuthorization",
+    "LNURLAuthStepUpService",
+    "LNURLAuthStepUpResult",
+    "LNURLAuthStepUpRequest",
+    "LNURLAuthStepUpRepository",
+    "LNURLAuthStepUpConfig",
+    "LNURLAuthStepUpCompleteRequest",
+    "LNURLAuthStepUpChallengeResponse",
+    "ActivePoPSessionContext",
+    "ActiveDeviceContext",
+    "VerifiedLNURLAuthSessionInput",
+    "StepUpAuthorization",
+    "LNURLAuthSessionBridgeStatus",
+    "LNURLAuthSessionBridgeResult",
+    "LNURLAuthSessionBridgeRequest",
+    "LNURLAuthSessionBridgeConfig",
+    "LNURLAuthSessionBridge",
+    "DeviceBindingBridgeResult",
     "ConsumedK1Context",
     "DecodedLNURL",
     "InMemoryK1Repository",
