@@ -56,6 +56,7 @@ SUPPORTED_SIGNING_CONTEXTS = frozenset(
         "revocation_epoch",
         "audit_checkpoint",
         "offline_validity_pack",
+        "lnurl_payment_proof",
     }
 )
 
@@ -234,6 +235,14 @@ def sign_subscription_entitlement(payload: dict[str, Any], private_key: str, key
 def verify_subscription_entitlement_signature(payload: dict[str, Any], public_key: str, signature: str) -> SignatureVerificationResult:
     return Ed25519SignatureSuite().verify(payload, "subscription_entitlement", public_key, signature)
 
+
+
+def sign_lnurl_payment_proof(payload: dict[str, Any], private_key: str, key_id: str, crypto_epoch: int = 1) -> IssuerSignature:
+    return Ed25519SignatureSuite().sign(payload, "lnurl_payment_proof", key_id, private_key, crypto_epoch)
+
+
+def verify_lnurl_payment_proof_signature(payload: dict[str, Any], public_key: str, signature: str) -> SignatureVerificationResult:
+    return Ed25519SignatureSuite().verify(payload, "lnurl_payment_proof", public_key, signature)
 
 def verify_device_challenge_signature(challenge_payload: dict[str, Any], device_public_key: str, signature: str) -> SignatureVerificationResult:
     return Ed25519SignatureSuite().verify(challenge_payload, "access_challenge", device_public_key, signature)
