@@ -21,10 +21,23 @@ from enum import StrEnum
 from typing import Any, Callable, Protocol
 
 from app.services.access.audit_chain import AccessAuditChain
+from app.services.lnurl.comment_allowed import (
+    LNURLCommentConfig,
+    LNURLCommentContext,
+    LNURLCommentError,
+    LNURLCommentForbiddenCharactersError,
+    LNURLCommentInvalidEncodingError,
+    LNURLCommentNotAllowedError,
+    LNURLCommentService,
+    LNURLCommentTooLongError,
+    ValidatedLNURLComment,
+)
 from app.services.access.crypto.hashing import canonical_json, hash_canonical_json_prefixed, hmac_sha256_prefixed, sha256_prefixed
 from app.services.lnurl.pay.errors import LNURLPayInvalidAmountError, LNURLPayMetadataError, LNURLPayRequestError
 from app.services.lnurl.pay.subscription_request_service import LNURLPayRequestRecord, LNURLPayRequestStatus
 from app.services.lnurl.pay_metadata import metadata_result_from_json
+from app.services.lnurl.payer_data import LNURLPayerDataError, parse_payerdata
+from app.services.lnurl.payer_data_auth import LNURLPayerDataAuthService, PayerDataAuthError, VerifiedPayerAuth
 
 MAX_LNURL_PAY_CALLBACK_AMOUNT_MSAT = 21_000_000 * 100_000_000 * 1_000
 MAX_PAYER_DATA_BYTES = 4_096
@@ -121,7 +134,13 @@ class LNURLPayInvoiceRecord:
     verify_url: str | None = None
     verify_url_hash: str | None = None
     comment_hash: str | None = None
+    comment_character_count: int = 0
+    comment_classification: str | None = None
+    comment_storage_mode: str | None = None
     payer_data_hash: str | None = None
+    payer_auth_proof_hash: str | None = None
+    lightning_principal_hash: str | None = None
+    product_pseudonym: str | None = None
     audit_event_hash: str | None = None
 
 
@@ -269,6 +288,11 @@ class LNURLPayCallbackConfig:
     invoice_idempotency_pepper: str = "dev-lnurl-pay-invoice-idempotency-pepper-change-me"
     invoice_reference_pepper: str = "dev-lnurl-pay-invoice-reference-pepper-change-me"
     max_payer_data_bytes: int = MAX_PAYER_DATA_BYTES
+    comment_global_max_chars: int = 280
+    comment_global_max_bytes: int = 2048
+    comment_storage_enabled: bool = False
+    comment_retention_days: int = 7
+    payerdata_auth_enabled: bool = True
 
 
 class LNURLPayCallbackService:
@@ -280,12 +304,22 @@ class LNURLPayCallbackService:
         audit_chain: AccessAuditChain | None = None,
         config: LNURLPayCallbackConfig | None = None,
         clock: Callable[[], datetime] | None = None,
+        payer_auth_service: LNURLPayerDataAuthService | None = None,
     ) -> None:
         self.repository = repository or InMemoryLNURLPayCallbackRepository()
         self.invoice_provider = invoice_provider or UnconfiguredLightningInvoiceProvider()
         self.audit_chain = audit_chain
         self.config = config or LNURLPayCallbackConfig()
+        self.comment_service = LNURLCommentService(
+            LNURLCommentConfig(
+                global_max_chars=self.config.comment_global_max_chars,
+                global_max_bytes=self.config.comment_global_max_bytes,
+                storage_enabled=self.config.comment_storage_enabled,
+                retention_days=self.config.comment_retention_days,
+            )
+        )
         self.clock = clock or (lambda: datetime.now(UTC))
+        self.payer_auth_service = payer_auth_service
 
     async def create_invoice(self, command: LNURLPayCallbackCommand) -> LNURLPayInvoiceResult:
         lock = getattr(self.repository, "_lock", None)
@@ -304,15 +338,21 @@ class LNURLPayCallbackService:
         if request.revoked_at is not None or request.status == LNURLPayRequestStatus.REVOKED:
             raise LNURLPayRequestRevoked("LNURL-pay request is revoked")
         self._validate_amount_against_request(request, amount_msat)
-        comment_hash = self._validate_comment(request, command.comment)
-        payer_data_hash = self._validate_payer_data(request, command.payer_data)
+        validated_comment = self._validate_comment(request, command.comment)
+        comment_hash = validated_comment.comment_hash
         metadata_hash = self._verify_metadata(request)
+        payer_data_hash, verified_payer_auth = await self._validate_payer_data(request, command.payer_data, amount_msat=amount_msat, metadata_hash=metadata_hash)
+        if verified_payer_auth is not None:
+            request = replace(request, principal_hash=verified_payer_auth.principal_hash)
         idempotency_key = self._invoice_idempotency_key(
             request=request,
             amount_msat=amount_msat,
             metadata_hash=metadata_hash,
             comment_hash=comment_hash,
             payer_data_hash=payer_data_hash,
+            payer_auth_proof_hash=verified_payer_auth.proof_hash if verified_payer_auth else None,
+            lightning_principal_hash=verified_payer_auth.principal_hash if verified_payer_auth else None,
+            product_pseudonym=verified_payer_auth.product_pseudonym if verified_payer_auth else None,
         )
         idempotency_key_hash = sha256_prefixed(idempotency_key)
         existing = self.repository.get_invoice_by_request_id(request.request_id)
@@ -351,7 +391,13 @@ class LNURLPayCallbackService:
             verify_url=provider_result.verify_url,
             verify_url_hash=sha256_prefixed(provider_result.verify_url) if provider_result.verify_url else None,
             comment_hash=comment_hash,
+            comment_character_count=validated_comment.character_count,
+            comment_classification=validated_comment.classification.value if validated_comment.present else None,
+            comment_storage_mode=validated_comment.storage_mode.value if validated_comment.present else None,
             payer_data_hash=payer_data_hash,
+            payer_auth_proof_hash=verified_payer_auth.proof_hash if verified_payer_auth else None,
+            lightning_principal_hash=verified_payer_auth.principal_hash if verified_payer_auth else None,
+            product_pseudonym=verified_payer_auth.product_pseudonym if verified_payer_auth else None,
         )
         updated_request = replace(request, status=LNURLPayRequestStatus.INVOICE_ISSUED)
         persisted = self.repository.create_invoice(invoice_record, updated_request)
@@ -390,26 +436,48 @@ class LNURLPayCallbackService:
         if request.min_amount_msat == request.max_amount_msat and amount_msat != request.min_amount_msat:
             raise LNURLPayInvalidAmountError("LNURL-pay fixed-price amount mismatch")
 
-    def _validate_comment(self, request: LNURLPayRequestRecord, comment: str | None) -> str | None:
-        if comment is None or comment == "":
-            return None
-        if request.comment_allowed is None or request.comment_allowed <= 0:
-            raise LNURLPayCommentNotAllowed("LNURL-pay comments are not allowed for this request")
-        if not isinstance(comment, str):
-            raise LNURLPayCommentNotAllowed("LNURL-pay comment is invalid")
-        normalized = " ".join(comment.replace("\r", " ").replace("\n", " ").split())
-        if len(normalized) > request.comment_allowed:
-            raise LNURLPayCommentTooLong("LNURL-pay comment exceeds allowed length")
-        if any(ord(ch) < 32 or ord(ch) == 127 for ch in normalized):
-            raise LNURLPayCommentNotAllowed("LNURL-pay comment contains control characters")
-        lowered = normalized.lower()
-        if any(part in lowered for part in _FORBIDDEN_CALLBACK_KEY_PARTS) or any(claim in lowered for claim in ("grants access", "entitlement active", "payment settled")):
-            raise LNURLPayCommentNotAllowed("LNURL-pay comment contains unsafe material")
-        return sha256_prefixed(normalized)
+    def _validate_comment(self, request: LNURLPayRequestRecord, comment: str | None) -> ValidatedLNURLComment:
+        allowed = request.comment_allowed or 0
+        try:
+            validated = self.comment_service.validate_comment(
+                comment,
+                allowed,
+                context=LNURLCommentContext(
+                    flow_type="payregister" if request.product_code.startswith("payregister") else "subscription_checkout",
+                    product_max_chars=self.config.comment_global_max_chars,
+                    merchant_max_chars=self.config.comment_global_max_chars,
+                    terminal_max_chars=self.config.comment_global_max_chars,
+                    request_max_chars=allowed,
+                ),
+            )
+        except LNURLCommentTooLongError as exc:
+            self._audit_comment_rejected(request, "comment_too_long")
+            raise LNURLPayCommentTooLong("LNURL-pay comment exceeds allowed length") from exc
+        except LNURLCommentNotAllowedError as exc:
+            self._audit_comment_rejected(request, "comment_not_allowed")
+            raise LNURLPayCommentNotAllowed("LNURL-pay comments are not allowed for this request") from exc
+        except (LNURLCommentInvalidEncodingError, LNURLCommentForbiddenCharactersError) as exc:
+            self._audit_comment_rejected(request, exc.reason_code)
+            raise LNURLPayCommentNotAllowed("LNURL-pay comment is invalid") from exc
+        except LNURLCommentError as exc:
+            self._audit_comment_rejected(request, exc.reason_code)
+            raise LNURLPayCommentNotAllowed("LNURL-pay comment is invalid") from exc
+        if validated.present and "dangerous_semantic_request" in validated.suspicious_text_flags:
+            self._audit_comment_rejected(request, "comment_semantic_authorization_attempt")
+            raise LNURLPayCommentNotAllowed("LNURL-pay comment cannot request authorization changes")
+        if validated.present:
+            self._audit_comment_received(request, validated)
+        return validated
 
-    def _validate_payer_data(self, request: LNURLPayRequestRecord, payer_data: dict[str, Any] | None) -> str | None:
+    async def _validate_payer_data(self, request: LNURLPayRequestRecord, payer_data: dict[str, Any] | None, *, amount_msat: int, metadata_hash: str) -> tuple[str | None, VerifiedPayerAuth | None]:
+        auth_policy = (request.payer_data_policy or {}).get("auth") if request.payer_data_policy else None
+        auth_required = bool(isinstance(auth_policy, dict) and auth_policy.get("mandatory"))
+        auth_challenge_k1 = auth_policy.get("k1") if isinstance(auth_policy, dict) else None
         if not payer_data:
-            return None
+            if auth_required:
+                self._audit_payerdata(request, "lnurl_payerdata_auth_missing", "payerdata_missing")
+                raise LNURLPayerDataInvalid("Payer authentication failed.")
+            return None, None
         if not isinstance(payer_data, dict):
             raise LNURLPayerDataInvalid("LNURL-pay payerData must be an object")
         if request.payer_data_policy is None:
@@ -421,7 +489,59 @@ class LNURLPayCallbackService:
         if len(serialized.encode("utf-8")) > self.config.max_payer_data_bytes:
             raise LNURLPayerDataInvalid("LNURL-pay payerData is too large")
         self._reject_secret_material(payer_data)
-        return hash_canonical_json_prefixed(payer_data)
+        if auth_challenge_k1:
+            if self.payer_auth_service is None:
+                raise LNURLPayerDataInvalid("Payer authentication failed.")
+            try:
+                parsed = parse_payerdata(payer_data, max_bytes=self.config.max_payer_data_bytes, require_auth=auth_required)
+                if parsed.auth is None:
+                    if auth_required:
+                        raise LNURLPayerDataInvalid("Payer authentication failed.")
+                    return parsed.payload_hash, None
+                if not hmac.compare_digest(parsed.auth.k1, str(auth_challenge_k1).lower()):
+                    raise LNURLPayerDataInvalid("Payer authentication failed.")
+                callback_fingerprint = hash_canonical_json_prefixed({
+                    "payment_request_id": request.request_id,
+                    "amount_msat": amount_msat,
+                    "metadata_hash": metadata_hash,
+                    "payerdata_auth_proof_hash": parsed.auth.proof_hash,
+                })
+                verified = await self.payer_auth_service.verify_payerdata_auth(
+                    payment_request=request,
+                    parsed_auth=parsed.auth,
+                    expected_domain=self._request_auth_domain(request),
+                    expected_policy_hash=request.policy_hash,
+                    callback_fingerprint=callback_fingerprint,
+                )
+                self._audit_payerdata(request, "lnurl_payment_bound_to_principal", "verified", principal_hash=verified.principal_hash, proof_hash=verified.proof_hash)
+                return parsed.payload_hash, verified
+            except (LNURLPayerDataError, PayerDataAuthError, LNURLPayerDataInvalid) as exc:
+                reason = getattr(exc, "reason_code", "payerdata_auth_invalid")
+                self._audit_payerdata(request, "lnurl_payerdata_auth_failed", reason)
+                raise LNURLPayerDataInvalid("Payer authentication failed.") from exc
+        return hash_canonical_json_prefixed(payer_data), None
+
+
+    def _request_auth_domain(self, request: LNURLPayRequestRecord) -> str:
+        # The domain was bound when the payerData.auth challenge was created.
+        # Existing tests and dev fixtures use the canonical Bastion auth domain.
+        return "auth.bitcoin-bastion.com"
+
+    def _audit_payerdata(self, request: LNURLPayRequestRecord, event_type: str, reason_code: str, *, principal_hash: str | None = None, proof_hash: str | None = None) -> None:
+        if self.audit_chain is None:
+            return
+        self.audit_chain.record_event(
+            event_type=event_type,
+            actor_hash=principal_hash or request.principal_hash,
+            object_hash=request.request_reference_hash,
+            metadata={
+                "payment_request_hash": request.request_reference_hash,
+                "principal_hash": principal_hash,
+                "proof_hash": proof_hash,
+                "policy_hash": request.policy_hash,
+                "reason_code": reason_code,
+            },
+        )
 
     def _verify_metadata(self, request: LNURLPayRequestRecord) -> str:
         recalculated = metadata_result_from_json(request.metadata).metadata_hash
@@ -437,6 +557,9 @@ class LNURLPayCallbackService:
         metadata_hash: str,
         comment_hash: str | None,
         payer_data_hash: str | None,
+        payer_auth_proof_hash: str | None = None,
+        lightning_principal_hash: str | None = None,
+        product_pseudonym: str | None = None,
     ) -> str:
         payload = canonical_json(
             {
@@ -447,6 +570,9 @@ class LNURLPayCallbackService:
                 "payment_epoch": request.crypto_epoch,
                 "comment_hash": comment_hash,
                 "payer_data_hash": payer_data_hash,
+                "payer_auth_proof_hash": payer_auth_proof_hash,
+                "lightning_principal_hash": lightning_principal_hash,
+                "product_pseudonym": product_pseudonym,
             }
         )
         return hmac_sha256_prefixed(self.config.invoice_idempotency_pepper, payload)
@@ -522,9 +648,42 @@ class LNURLPayCallbackService:
                 "principal_hash": invoice.principal_hash,
                 "expires_at": invoice.expires_at,
                 "invoice_status": invoice.status,
+                "comment_present": invoice.comment_hash is not None,
+                "comment_hash": invoice.comment_hash,
+                "comment_character_count": invoice.comment_character_count,
+                "comment_classification": invoice.comment_classification,
+                "comment_storage_mode": invoice.comment_storage_mode,
             },
         )
         return str(event.event_hash)
+
+    def _audit_comment_received(self, request: LNURLPayRequestRecord, validated: ValidatedLNURLComment) -> None:
+        if self.audit_chain is None:
+            return
+        metadata = self.comment_service.build_comment_audit_metadata(validated)
+        self.audit_chain.record_event(
+            event_type="lnurl_comment_received",
+            actor_hash=request.principal_hash,
+            object_hash=request.request_reference_hash,
+            metadata={"payment_request_hash": request.request_reference_hash, **metadata},
+        )
+        if validated.storage_mode.value == "hash_only":
+            self.audit_chain.record_event(
+                event_type="lnurl_comment_stored_hash_only",
+                actor_hash=request.principal_hash,
+                object_hash=request.request_reference_hash,
+                metadata={"payment_request_hash": request.request_reference_hash, **metadata},
+            )
+
+    def _audit_comment_rejected(self, request: LNURLPayRequestRecord, reason_code: str) -> None:
+        if self.audit_chain is None:
+            return
+        self.audit_chain.record_event(
+            event_type="lnurl_comment_rejected",
+            actor_hash=request.principal_hash,
+            object_hash=request.request_reference_hash,
+            metadata={"payment_request_hash": request.request_reference_hash, "reason_code": reason_code},
+        )
 
     def _result_from_invoice(self, invoice: LNURLPayInvoiceRecord) -> LNURLPayInvoiceResult:
         return LNURLPayInvoiceResult(

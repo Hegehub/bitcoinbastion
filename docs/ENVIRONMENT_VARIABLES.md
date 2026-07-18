@@ -204,3 +204,69 @@ These variables configure the future production BTCPay payment provider for Acce
 The canonical Access environment reference is `docs/ACCESS_ENVIRONMENT.md`. `.env.example` includes safe placeholders for `ACCESS_SERVER_PEPPER`, `ACCESS_ISSUER_KEY_ID`, `ACCESS_ISSUER_PRIVATE_KEY`, session/challenge/request-signing TTLs, BTCPay variables, recovery cooldown, lockdown step-up, and reserved PQ flags.
 
 `ACCESS_REQUEST_MAX_CLOCK_SKEW_SECONDS` is the preferred documentation name for request-signing clock skew. `ACCESS_REQUEST_MAX_SKEW_SECONDS` remains a compatibility setting in current code. Production deployments must keep `ACCESS_ALLOW_MANUAL_GRANTS=false`, must inject issuer private keys and BTCPay secrets from secret management, and must not enable reserved PQ flags until real audited implementations exist.
+
+## LNURL entitlement binding
+
+These variables configure the LNURL Payment Proof to Subscription Entitlement binding service. They do not make invoice creation sufficient for access and do not bypass Payment Proof, principal binding, issuer signing, or Policy Engine checks.
+
+- `LNURL_ENTITLEMENT_BINDING_ENABLED` enables the service when LNURL settlement verification and payment proof issuance are available.
+- `LNURL_ENTITLEMENT_ACTIVATION_TTL_SECONDS` controls the short lifetime of post-payment activation references.
+- `LNURL_ENTITLEMENT_MAX_ACTIVATION_ATTEMPTS` reserves a bounded attempt budget for activation flows.
+- `LNURL_ENTITLEMENT_REQUIRE_PRINCIPAL` keeps production binding principal-first unless pending reservations are explicitly enabled.
+- `LNURL_ENTITLEMENT_ALLOW_PENDING_RESERVATIONS` permits anonymous paid reservations that still require fresh Wallet Proof or LNURL-auth before activation.
+- `LNURL_ENTITLEMENT_OVERPAYMENT_POLICY` must be explicit; overpayment must not silently grant broader scopes.
+- `LNURL_ENTITLEMENT_QUOTE_MAX_AGE_SECONDS` limits dynamic quote staleness where product pricing uses signed/versioned quotes.
+- `LNURL_ENTITLEMENT_RETRY_MAX_ATTEMPTS` bounds retry attempts for retryable binding failures.
+
+Never configure raw activation references, payment preimages, wallet private keys, seeds, raw invoices, or session tokens in environment variables.
+
+## LNURL successAction activation
+
+| Variable | Default/example | Purpose |
+| --- | --- | --- |
+| `LNURL_SUCCESS_ACTION_ENABLED` | `true` | Enables emission of safe LNURL `successAction` presentation metadata. |
+| `LNURL_SUCCESS_ACTION_DEFAULT_TYPE` | `url` | Default standard action type (`message` or `url`). |
+| `LNURL_SUCCESS_ACTION_BASE_URL` | `https://bastion.example.com` | Bastion-controlled origin used to build activation and receipt URLs. |
+| `LNURL_SUCCESS_ACTION_ALLOWED_HOSTS` | `bastion.example.com` | Explicit callback/successAction host allowlist; wildcards are not supported. |
+| `LNURL_ACTIVATION_TTL_SECONDS` | `3600` | Default short-lived activation-reference TTL. |
+| `LNURL_ACTIVATION_MAX_TTL_SECONDS` | `86400` | Maximum accepted activation TTL. |
+| `LNURL_ACTIVATION_SERVER_PEPPER` | `change-me-lnurl-activation-pepper` | HMAC pepper for activation-reference lookup hashes; production deployments must provide a secret value. |
+| `LNURL_SUCCESS_ACTION_ONION_MODE_ENABLED` | `false` | Allows validated onion handling only when explicitly enabled. |
+| `LNURL_PUBLIC_RECEIPTS_ENABLED` | `true` | Enables safe public receipt status links without access privileges. |
+| `LNURL_VAULT_SETUP_LINKS_ENABLED` | `false` | Enables vault setup links; setup still requires wallet/device proof. |
+
+## LNURL-pay comments
+
+| Variable | Default/example | Purpose |
+| --- | --- | --- |
+| `LNURL_COMMENT_ALLOWED_DEFAULT` | `0` | Disables LNURL-pay comments unless a product/merchant/request policy explicitly permits them. |
+| `LNURL_COMMENT_GLOBAL_MAX_CHARS` | `280` | Hard character-count ceiling for `commentAllowed`; booleans/floats/negative values are invalid. |
+| `LNURL_COMMENT_GLOBAL_MAX_BYTES` | `2048` | Server-safety byte ceiling for decoded UTF-8 comment input. |
+| `LNURL_COMMENT_STORAGE_ENABLED` | `false` | Raw comment storage is disabled by default; the normal persistence mode is hash-only. |
+| `LNURL_COMMENT_RETENTION_DAYS` | `7` | Short retention window for comment metadata or explicitly encrypted merchant storage. |
+| `LNURL_COMMENT_ALLOW_CONTROL_CHARACTERS` | `false` | Rejects NUL, CRLF, and other control characters by default. |
+
+LNURL comments are untrusted external metadata. They must not authenticate a principal, authorize access, influence settlement, change entitlements, approve refunds/withdrawals, or become AI/system instructions.
+
+## LNURL payerData.auth
+
+- `LNURL_PAYERDATA_AUTH_ENABLED=true` enables the payerData.auth feature for LNURL-pay contexts that request it.
+- `LNURL_PAYERDATA_AUTH_DEFAULT_MODE=required` is the recommended unauthenticated checkout policy; deployments may choose `optional` or `disabled` per product policy.
+- `LNURL_PAYERDATA_MAX_BYTES=4096` bounds encoded payerdata callbacks.
+- `LNURL_PAYERDATA_AUTH_TTL_SECONDS=300` keeps k1 challenges short-lived.
+- `LNURL_PAYERDATA_STORE_RAW=false` preserves the default hash/fingerprint-only privacy posture.
+- `LNURL_PAYERDATA_ALLOW_EMAIL=false`, `LNURL_PAYERDATA_ALLOW_NAME=false`, `LNURL_PAYERDATA_ALLOW_IDENTIFIER=false`, and `LNURL_PAYERDATA_ALLOW_PUBKEY=false` keep personal payer fields disabled by default.
+
+## LNURL Lightning Address
+
+- `LNURL_LIGHTNING_ADDRESS_ENABLED=true` enables the internal Lightning Address resolver; public `/.well-known/lnurlp` routes are added separately.
+- `LNURL_PRIMARY_DOMAIN=bitcoin-bastion.com` is the first-party product Lightning Address domain.
+- `LNURL_PAYREGISTER_DOMAIN=payregister.bitcoin-bastion.com` is the separately classified PayRegister Lightning Address domain.
+- `LNURL_ALLOWED_CUSTOM_DOMAINS=` must contain only verified merchant domains; unverified domains fail closed.
+- `LNURL_ALLOW_ONION_ADDRESSES=false` keeps onion routing disabled unless privacy mode is explicitly configured.
+- `LNURL_LIGHTNING_ADDRESS_DEFAULT_MIN_MSAT=1000` and `LNURL_LIGHTNING_ADDRESS_DEFAULT_MAX_MSAT=10000000` bound default descriptor amounts; product pricing remains delegated to the LNURL-pay request service.
+
+- `LNURL_PUBLIC_BASE_URL=https://bitcoin-bastion.com` is the trusted public origin for LNURL discovery documentation and future route generation; do not derive it from untrusted request headers.
+- `LNURL_CALLBACK_BASE_URL=https://bitcoin-bastion.com` is the trusted HTTPS (or explicitly enabled onion) origin used to build LNURL-pay callback URLs returned from `/.well-known/lnurlp/{name}`.
+- `LNURL_ALLOWED_PUBLIC_HOSTS=bitcoin-bastion.com,payregister.bitcoin-bastion.com` allowlists public discovery hosts and blocks Host/X-Forwarded-Host callback substitution.
+- `LNURL_LIGHTNING_ADDRESS_RATE_LIMIT_PER_MINUTE=120` bounds low-cost public Lightning Address discovery requests while returning LNURL-compatible error JSON when exceeded.
