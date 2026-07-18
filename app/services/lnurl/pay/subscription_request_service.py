@@ -28,6 +28,8 @@ from app.domain.access.plans import PlanCode, normalize_plan_code
 from app.domain.lnurl.tags import LNURLTag
 from app.services.access.audit_chain import AccessAuditChain
 from app.services.access.crypto.hashing import canonical_json, hash_canonical_json_prefixed, hmac_sha256_prefixed, sha256_prefixed
+from app.services.lnurl.comment_allowed import LNURLCommentConfig, LNURLCommentContext, LNURLCommentService
+from app.services.lnurl.payer_data_auth import LNURLPayerDataAuthService, PayerAuthConfig
 from app.services.lnurl.pay.callback_urls import LNURLPayCallbackURLBuilder, LNURLPayCallbackURLConfig
 from app.services.lnurl.pay.errors import (
     LNURLPayAnonymousCheckoutDeniedError,
@@ -152,7 +154,13 @@ class LNURLPaySubscriptionRequestConfig:
     request_ttl_seconds: int = 600
     allow_anonymous_checkout: bool = True
     max_comment_length: int = 0
+    comment_global_max_chars: int = 280
+    comment_storage_enabled: bool = False
     payerdata_auth_enabled: bool = False
+    payerdata_auth_default_mode: str = "required"
+    payerdata_auth_ttl_seconds: int = 300
+    payerdata_max_bytes: int = 4096
+    payerdata_store_raw: bool = False
     personal_payerdata_enabled: bool = False
     variable_amount_enabled: bool = False
     request_reference_pepper: str = "dev-lnurl-pay-reference-pepper-change-me"
@@ -270,17 +278,33 @@ class LNURLPaySubscriptionRequestService:
         principal_status_checker: LNURLPayPrincipalStatusChecker | None = None,
         config: LNURLPaySubscriptionRequestConfig | None = None,
         clock: Callable[[], datetime] | None = None,
+        payer_auth_service: LNURLPayerDataAuthService | None = None,
     ) -> None:
         self.config = config or LNURLPaySubscriptionRequestConfig()
         self.clock = clock or (lambda: datetime.now(UTC))
         self.repository = repository or InMemoryLNURLPaySubscriptionRequestRepository()
         self.pricing_resolver = pricing_resolver or StaticSubscriptionPricingResolver(variable_amount_enabled=self.config.variable_amount_enabled, clock=self.clock)
         self.metadata_provider = metadata_provider or MinimalLNURLPayMetadataProvider()
+        self.comment_service = LNURLCommentService(LNURLCommentConfig(default_allowed_chars=self.config.max_comment_length, global_max_chars=self.config.comment_global_max_chars, storage_enabled=self.config.comment_storage_enabled))
         self.callback_builder = callback_builder or LNURLPayCallbackURLBuilder(LNURLPayCallbackURLConfig(public_base_url=self.config.public_base_url))
         self.policy_hook = policy_hook or AllowLNURLPayPolicy()
         self.audit_chain = audit_chain
         self.revocation_checker = revocation_checker
         self.principal_status_checker = principal_status_checker
+        self.payer_auth_service = payer_auth_service or (
+            LNURLPayerDataAuthService(
+                config=PayerAuthConfig(
+                    enabled=self.config.payerdata_auth_enabled,
+                    default_mode=self.config.payerdata_auth_default_mode,
+                    ttl_seconds=self.config.payerdata_auth_ttl_seconds,
+                    max_bytes=self.config.payerdata_max_bytes,
+                    store_raw=self.config.payerdata_store_raw,
+                ),
+                clock=self.clock,
+            )
+            if self.config.payerdata_auth_enabled
+            else None
+        )
 
     def create_subscription_request(
         self,
@@ -386,8 +410,23 @@ class LNURLPaySubscriptionRequestService:
         callback = self.callback_builder.build_callback_url(opaque_reference)
         callback_hash = self.callback_builder.callback_hash(callback)
         request_reference_hash = hmac_sha256_prefixed(self.config.request_reference_pepper, opaque_reference)
+        provisional_request_id = sha256_prefixed(f"lnurl-pay-request:{request_reference_hash}")
+        if payer_data and "auth" in payer_data and "k1" not in payer_data["auth"]:
+            if self.payer_auth_service is None:
+                raise LNURLPayPolicyDeniedError("payerData.auth is disabled")
+            import asyncio
+            challenge = asyncio.run(self.payer_auth_service.create_payer_auth_challenge(
+                payment_request_id=provisional_request_id,
+                auth_domain=self.payer_auth_service.config.canonical_domain,
+                product_context=product_code,
+                plan_code=plan.value,
+                callback_hash=callback_hash,
+                existing_principal_hash=principal_hash,
+                policy_hash=decision.policy_hash or quote.policy_hash,
+            ))
+            payer_data = self.payer_auth_service.build_payer_data_declaration(challenge, mandatory=payer_data["auth"].get("mandatory", False))
         record = LNURLPayRequestRecord(
-            request_id=sha256_prefixed(f"lnurl-pay-request:{request_reference_hash}"),
+            request_id=provisional_request_id,
             request_reference_hash=request_reference_hash,
             product_code=product_code,
             plan_code=plan.value,
@@ -445,13 +484,24 @@ class LNURLPaySubscriptionRequestService:
         return {"auth": {"mandatory": mode == LNURLPayerDataMode.AUTH_MANDATORY}}
 
     def _resolve_comment_allowed(self, comment_allowed: int | None) -> int | None:
-        if comment_allowed is None:
-            return self.config.max_comment_length if self.config.max_comment_length > 0 else None
-        if not isinstance(comment_allowed, int) or isinstance(comment_allowed, bool) or comment_allowed < 0:
-            raise LNURLPayInvalidRangeError("commentAllowed must be a non-negative integer")
-        if comment_allowed > self.config.max_comment_length:
-            raise LNURLPayInvalidRangeError("commentAllowed exceeds configured maximum")
-        return comment_allowed if comment_allowed > 0 else None
+        try:
+            request_limit = self.config.max_comment_length if comment_allowed is None else comment_allowed
+            if comment_allowed is not None and comment_allowed > self.config.max_comment_length:
+                raise LNURLPayInvalidRangeError("commentAllowed exceeds configured maximum")
+            if comment_allowed is None and request_limit <= 0:
+                return None
+            effective = self.comment_service.resolve_comment_limit(
+                LNURLCommentContext(
+                    flow_type="subscription_checkout",
+                    product_max_chars=self.config.max_comment_length,
+                    merchant_max_chars=self.config.comment_global_max_chars,
+                    terminal_max_chars=self.config.comment_global_max_chars,
+                    request_max_chars=request_limit,
+                )
+            )
+        except Exception as exc:
+            raise LNURLPayInvalidRangeError("commentAllowed must be a bounded non-negative integer") from exc
+        return effective if effective > 0 else None
 
     def _resolve_success_action_mode(self, success_action_mode: str | None) -> str:
         return LNURLPaySuccessActionMode(success_action_mode or LNURLPaySuccessActionMode.NONE.value).value

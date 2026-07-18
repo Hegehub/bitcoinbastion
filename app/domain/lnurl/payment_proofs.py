@@ -90,6 +90,9 @@ class LNURLPaymentProof:
     payer_data_hash: str | None = None
     preimage_commitment: str | None = None
     receipt_reference_hash: str | None = None
+    comment_present: bool = False
+    comment_hash: str | None = None
+    comment_classification: str | None = None
     audit_event_hash: str | None = None
     status: str = LNURLPaymentProofStatus.ISSUED.value
     revoked_at: datetime | None = None
@@ -121,6 +124,9 @@ class LNURLPaymentProof:
             "payer_data_hash": self.payer_data_hash,
             "preimage_commitment": self.preimage_commitment,
             "receipt_reference_hash": self.receipt_reference_hash,
+            "comment_present": True if self.comment_hash else None,
+            "comment_hash": self.comment_hash,
+            "comment_classification": self.comment_classification,
             "issuer_key_id": self.issuer_key_id,
             "crypto_epoch": self.crypto_epoch,
             "schema_epoch": self.schema_epoch,

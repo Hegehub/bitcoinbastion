@@ -385,3 +385,92 @@ class PaymentProofIntegrityError(LNURLPaymentProofError):
 
 class PaymentProofRevokedError(LNURLPaymentProofError):
     code = "payment_proof_revoked"
+
+
+class LNURLEntitlementBindingError(LNURLError):
+    code = "lnurl_entitlement_binding_error"
+    default_message = "LNURL entitlement binding failed safely."
+
+    @property
+    def reason_code(self) -> str:
+        return self.code
+
+
+class LNURLPaymentNotSettledError(LNURLEntitlementBindingError):
+    code = "lnurl_payment_not_settled"
+
+
+class LNURLPaymentProofMissingError(LNURLEntitlementBindingError):
+    code = "lnurl_payment_proof_missing"
+
+
+class LNURLPaymentProofInvalidError(LNURLEntitlementBindingError):
+    code = "lnurl_payment_proof_invalid"
+
+
+class LNURLPaymentProofRevokedBindingError(LNURLEntitlementBindingError):
+    code = "lnurl_payment_proof_revoked"
+
+
+class LNURLPaymentAlreadyConsumedError(LNURLEntitlementBindingError):
+    code = "lnurl_payment_already_consumed"
+
+
+class LNURLBindingPrincipalRequiredError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_principal_required"
+
+
+class LNURLBindingPrincipalMismatchError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_principal_mismatch"
+
+
+class LNURLBindingActivationExpiredError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_activation_expired"
+
+
+class LNURLBindingActivationInvalidError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_activation_invalid"
+
+
+class LNURLBindingProductUnknownError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_product_unknown"
+
+
+class LNURLBindingProductDisabledError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_product_disabled"
+
+
+class LNURLBindingAmountInvalidError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_amount_invalid"
+
+
+class LNURLBindingQuoteExpiredError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_quote_expired"
+
+
+class LNURLBindingPolicyDeniedError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_policy_denied"
+
+
+class LNURLBindingStepUpRequiredError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_step_up_required"
+
+
+class LNURLBindingDuplicateError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_duplicate"
+
+
+class LNURLBindingConflictError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_conflict"
+
+
+class LNUrLEntitlementIssueFailedError(LNURLEntitlementBindingError):
+    code = "lnurl_entitlement_issue_failed"
+
+
+class LNUrLEntitlementSignatureFailedError(LNURLEntitlementBindingError):
+    code = "lnurl_entitlement_signature_failed"
+
+
+class LNURLBindingManualReviewRequiredError(LNURLEntitlementBindingError):
+    code = "lnurl_binding_manual_review_required"

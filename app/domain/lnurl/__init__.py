@@ -6,6 +6,18 @@ Lightning-node, or callback work.
 """
 
 from app.domain.lnurl.addresses import LightningAddressDescriptor, LightningAddressPurpose, LightningAddressStatus
+
+from app.domain.lnurl.lightning_address import (
+    LightningAddressDomainClass as LightningAddressDomainClassV2,
+    LightningAddressDomainStatus,
+    LightningAddressRecord,
+    LightningAddressStatus as LightningAddressStatusV2,
+    LightningAddressTargetType,
+    LightningAddressVisibility,
+    build_lightning_address,
+    normalize_lightning_address,
+    resolve_product_code,
+)
 from app.domain.lnurl.auth import (
     DEFAULT_LNURL_ACTION_INTENT_MAP,
     LNURL_AUTH_ALLOWED_ACTIONS,
@@ -114,7 +126,13 @@ from app.domain.lnurl.security import (
     is_high_risk_lnurl_action,
     lnurl_action_risk_level,
 )
-from app.domain.lnurl.success_actions import BastionSuccessActionPurpose, LNURLSuccessActionDescriptor, LNURLSuccessActionType
+from app.domain.lnurl.success_actions import (
+    BastionSuccessActionPurpose,
+    LNURLActivationPurpose,
+    LNURLActivationStatus,
+    LNURLSuccessActionDescriptor,
+    LNURLSuccessActionType,
+)
 from app.domain.lnurl.tags import LNURLAdapterType, LNURLTag
 from app.domain.lnurl.verification import LNURLSettlementEvidence, LNURLVerifyStatus
 from app.domain.lnurl.withdraw import (
@@ -208,6 +226,8 @@ __all__ = [
     "LNURLSecurityLevel",
     "LNURLSettlementEvidence",
     "LNURLSuccessActionDescriptor",
+    "LNURLActivationStatus",
+    "LNURLActivationPurpose",
     "LNURLSuccessActionRejectedError",
     "LNURLSuccessActionType",
     "LNURLSuccessActionUnsafeError",
@@ -225,6 +245,15 @@ __all__ = [
     "LightningAddressNotIdentityError",
     "LightningAddressPurpose",
     "LightningAddressStatus",
+    "LightningAddressStatusV2",
+    "LightningAddressTargetType",
+    "LightningAddressDomainStatus",
+    "LightningAddressVisibility",
+    "LightningAddressDomainClassV2",
+    "LightningAddressRecord",
+    "normalize_lightning_address",
+    "build_lightning_address",
+    "resolve_product_code",
     "LightningPrincipalIdentity",
     "LightningPrincipalRevokedError",
     "LightningPrincipalStatus",

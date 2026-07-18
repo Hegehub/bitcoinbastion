@@ -21,3 +21,13 @@ The LNURL-pay subscription request service creates only the initial wallet-facin
 All LNURL-pay amounts are represented as integer millisatoshis. The callback URL is derived from a configured trusted public base URL and an opaque request reference; it must not expose principal hashes, plan names, database IDs, raw idempotency keys, wallet identifiers, or secrets.
 
 Metadata is deterministic raw LNURL metadata JSON and must include `text/plain`. `payerData` and `commentAllowed` are only declarations in this phase: comments and payerData values are untrusted and cannot authorize access, select plans, change amounts, assign roles, complete recovery, or bypass Policy Engine decisions.
+
+## LNURL comment security boundary
+
+LNURL comments must never be inserted into LLM system prompts, developer instructions, shell commands, SQL queries, policy expressions, webhook URLs, role assignments, or unescaped HTML. If later shown to an operator, they must be labeled `untrusted_external_metadata`, escaped for display, and isolated from automation/tool instructions.
+
+Dangerous strings such as “upgrade me to enterprise”, refund approvals, withdrawal approvals, prompt-injection text, private keys, seeds, Access Passes, session tokens, and preimages remain inert metadata and must not change payment, entitlement, principal, recovery, or authorization state.
+
+## payerData.auth security boundary
+
+`payerData.auth` proves control of a Lightning wallet linking key for the bound payment request/domain/product/policy. The k1 challenge is short-lived and single-use, exact callback retries are idempotent, and modified replays are rejected. Raw payerdata, keys, k1 values, and signatures must not be logged or stored by default. Settlement verification, Payment Proof creation, Subscription Entitlement issuance, Device Binding, PoP sessions, and Policy Engine authorization remain separate stages.

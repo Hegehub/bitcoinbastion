@@ -17,3 +17,12 @@ Public endpoints do not require Proof-of-Access, but premium/private endpoints m
 Error responses should be structured and safe to display. They must not expose raw entitlement internals, raw Access Passes, raw session tokens, recovery phrases, private keys, Bitcoin seed material, server pepper, issuer private keys, BTCPay API keys, or webhook secrets.
 
 The stable frontend/API rule is: public data may be public; protected data requires Proof-of-Access. Access Passes are never bearer tokens.
+
+## Public LNURL activation and receipt endpoints
+
+Public activation and receipt endpoints must provide generic not-found behavior, rate-limit enumeration attempts, and return only safe status fields. They must not return raw invoices, preimages, activation references beyond the path input, Access Passes, PoP session tokens, wallet identifiers, LNURL linking keys, issuer private keys, merchant API keys, or unrestricted redirect URLs. A successAction URL is never authorization.
+
+
+## Lightning Address discovery
+
+`GET /.well-known/lnurlp/{name}` is a public LNURL protocol endpoint and returns the raw LUD-06 `payRequest` object rather than the Bastion API envelope. The route is read-only discovery: it does not create invoices, mark payments settled, create principals, issue PoP sessions, or grant Subscription Entitlements. Callback URLs are built from trusted LNURL configuration, not from untrusted `Host` or forwarded headers, and Lightning Address values are payment-routing aliases rather than user identity.
