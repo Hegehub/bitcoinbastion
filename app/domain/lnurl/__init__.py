@@ -68,6 +68,14 @@ from app.domain.lnurl.errors import (
     UnsupportedLNURLActionError,
     UnsupportedLNURLTagError,
 )
+from app.domain.lnurl.payment_proofs import (
+    LNURLIssuerSignature,
+    LNURLPaymentContext,
+    LNURLPaymentProof,
+    LNURLPaymentProofStatus,
+    LNURLPrincipalBindingMethod,
+    LNURLSettlementMethod,
+)
 from app.domain.lnurl.payer_data import (
     DEFAULT_ALLOWED_PAYER_DATA_FIELDS,
     DEFAULT_ALLOWED_PAYERDATA_FIELDS,
@@ -184,6 +192,12 @@ __all__ = [
     "LNURLPayerDataRejectedError",
     "LNURLPayerDataRequirement",
     "LNURLPayerDataStatus",
+    "LNURLIssuerSignature",
+    "LNURLPaymentContext",
+    "LNURLPaymentProof",
+    "LNURLPaymentProofStatus",
+    "LNURLPrincipalBindingMethod",
+    "LNURLSettlementMethod",
     "LNURLPaymentNotSettledError",
     "LNURLPaymentPurpose",
     "LNURLPaymentStatus",
