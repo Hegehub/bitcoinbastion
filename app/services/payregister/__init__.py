@@ -1,0 +1,1 @@
+"""PayRegister service package."""

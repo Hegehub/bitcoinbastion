@@ -105,9 +105,7 @@ class ProjectBolt11Decoder:
                 for t in getattr(decoded, "tags", [])
             }
             payment_hash = str(getattr(decoded, "payment_hash", None) or tags.get("p"))
-            amount_msat = getattr(decoded, "amount_msat", None)
-            if amount_msat is None and getattr(decoded, "amount_msat", None) is not None:
-                amount_msat = int(decoded.amount_msat)
+            amount_msat: Any = getattr(decoded, "amount_msat", None)
             return DecodedBolt11Invoice(
                 bolt11=invoice,
                 payment_hash=payment_hash,

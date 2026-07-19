@@ -57,6 +57,7 @@ SUPPORTED_SIGNING_CONTEXTS = frozenset(
         "audit_checkpoint",
         "offline_validity_pack",
         "lnurl_payment_proof",
+        "lnurl_receipt_packet",
     }
 )
 

@@ -16,6 +16,7 @@ from app.api.well_known.lnurlp import router as lnurlp_router
 from app.api.v1.admin import router as admin_router
 from app.api.v1.citadel import router as citadel_router
 from app.api.v1.auth import router as auth_router
+from app.api.v1.business_lightning import router as business_lightning_router
 from app.api.v1.education import router as education_router
 from app.api.v1.evidence import router as evidence_router
 from app.api.v1.entities import router as entities_router
@@ -26,6 +27,8 @@ from app.api.v1.market_intelligence import router as market_intelligence_router
 from app.api.v1.market_data import router as market_data_router
 from app.api.v1.market import router as market_router
 from app.api.v1.lnurl_activation import router as lnurl_activation_router
+from app.api.v1.lnurl import router as lnurl_router
+from app.api.v1.payregister_lnurl import router as payregister_lnurl_router
 from app.api.v1.market_time_machine import router as market_time_machine_router
 from app.api.v1.metrics_status import router as metrics_status_router
 from app.api.v1.intelligence_timeline import router as intelligence_timeline_router
@@ -73,14 +76,17 @@ apply_openapi_defaults(app)
 
 app.include_router(health_root_router)
 app.include_router(lnurlp_router)
+app.include_router(lnurl_router, prefix="/v1")
 app.include_router(health_router, prefix=settings.api_prefix)
 app.include_router(auth_router, prefix=settings.api_prefix)
 app.include_router(access_router, prefix=settings.api_prefix)
+app.include_router(business_lightning_router, prefix=settings.api_prefix)
 app.include_router(news_router, prefix=settings.api_prefix)
 app.include_router(market_intelligence_router, prefix=settings.api_prefix)
 app.include_router(market_data_router, prefix=settings.api_prefix)
 app.include_router(market_router, prefix=settings.api_prefix)
 app.include_router(lnurl_activation_router, prefix=settings.api_prefix)
+app.include_router(payregister_lnurl_router, prefix=settings.api_prefix)
 app.include_router(market_time_machine_router, prefix=settings.api_prefix)
 app.include_router(metrics_status_router, prefix=settings.api_prefix)
 app.include_router(intelligence_timeline_router, prefix=settings.api_prefix)

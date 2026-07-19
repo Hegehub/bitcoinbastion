@@ -270,3 +270,52 @@ LNURL comments are untrusted external metadata. They must not authenticate a pri
 - `LNURL_CALLBACK_BASE_URL=https://bitcoin-bastion.com` is the trusted HTTPS (or explicitly enabled onion) origin used to build LNURL-pay callback URLs returned from `/.well-known/lnurlp/{name}`.
 - `LNURL_ALLOWED_PUBLIC_HOSTS=bitcoin-bastion.com,payregister.bitcoin-bastion.com` allowlists public discovery hosts and blocks Host/X-Forwarded-Host callback substitution.
 - `LNURL_LIGHTNING_ADDRESS_RATE_LIMIT_PER_MINUTE=120` bounds low-cost public Lightning Address discovery requests while returning LNURL-compatible error JSON when exceeded.
+
+
+## LNURL product Lightning Addresses
+
+- `LNURL_PRODUCT_ADDRESSES_ENABLED=true` enables the versioned product-address registry for first-party subscription products.
+- `LNURL_PRODUCT_ADDRESS_DOMAIN=bitcoin-bastion.com` defines the canonical product Lightning Address domain.
+- `LNURL_PRODUCT_CONFIG_PATH=config/lnurl_product_addresses.yaml` points at the versioned product catalog; prices and product hashes must come from this trusted server-side catalog or an equivalent signed pricing service.
+- `LNURL_PRODUCT_CALLBACK_BASE_URL=https://bitcoin-bastion.com` and `LNURL_PRODUCT_ACTIVATION_BASE_URL=https://bitcoin-bastion.com` are trusted HTTPS origins; do not derive them from user-supplied `Host` headers.
+- `LNURL_ENTERPRISE_PUBLIC_PAYMENT_ENABLED=false` keeps Enterprise contract-only unless a dedicated policy and commercial agreement enables a fixed public product.
+- `LNURL_PRODUCT_RESPONSE_CACHE_SECONDS=120` bounds any public product discovery cache window to reduce stale-price risk.
+
+### PayRegister LNURL Static QR/NFC
+
+- `PAYREGISTER_LNURL_STATIC_ENABLED` enables the static PayRegister LNURL endpoint services.
+- `PAYREGISTER_LNURL_PUBLIC_BASE_URL` is the trusted public HTTPS base URL encoded into QR and NFC payloads.
+- `PAYREGISTER_LNURL_CALLBACK_BASE_URL` is the trusted HTTPS base URL used for server-generated LNURL-pay callbacks.
+- `PAYREGISTER_LNURL_CONTEXT_TTL_SECONDS` bounds checkout-context lifetime before callback invoice creation.
+- `PAYREGISTER_LNURL_COMMENT_ALLOWED_DEFAULT` defaults merchant comments to disabled unless explicitly configured.
+- `PAYREGISTER_LNURL_PAYERDATA_AUTH_MODE` defaults payer authentication to optional for PayRegister payments.
+- `PAYREGISTER_LNURL_ALLOW_ONION` remains disabled unless an explicit Onion deployment policy is configured.
+
+### Merchant Lightning Address
+
+- `MERCHANT_LN_ADDRESS_ENABLED=true` enables merchant Lightning Address services.
+- `MERCHANT_LN_CUSTOM_DOMAINS_ENABLED=false` keeps custom merchant domains disabled unless infrastructure and policy are ready.
+- `MERCHANT_LN_DOMAIN_VERIFY_TTL_SECONDS=900` bounds DNS/HTTP verification token lifetime.
+- `MERCHANT_LN_HTTP_VERIFY_MAX_REDIRECTS=2` and `MERCHANT_LN_HTTP_VERIFY_MAX_RESPONSE_BYTES=4096` constrain HTTP verification SSRF and amplification risk.
+- `MERCHANT_LN_ALLOW_OPERATOR_APPROVAL=false` disables operator-approved custom-domain verification by default.
+- `MERCHANT_LN_ALLOW_ONION=false` keeps Onion merchant domains disabled unless explicitly configured.
+
+### LNURL Receipt Packet
+
+- `LNURL_RECEIPT_SIGNING_ENABLED=true` enables issuer signatures for LNURL Receipt Packets when an approved issuer key provider is configured.
+- `LNURL_RECEIPT_SCHEMA_EPOCH=1` pins the packet schema epoch used for canonical hashing and verification.
+- `LNURL_RECEIPT_PUBLIC_EXPORT_ENABLED=false` keeps public redacted exports disabled unless product policy explicitly enables them.
+- `LNURL_RECEIPT_STORE_SANITIZED_COMMENTS=false` keeps raw/sanitized comments out of receipt storage by default; receipts normally retain `comment_hash` only.
+- `LNURL_RECEIPT_INCLUDE_PREIMAGE_HASH=true` permits a preimage hash commitment while never exporting raw preimages by default.
+- `LNURL_RECEIPT_RETENTION_DAYS=365` documents the default receipt retention policy window for deployments that persist packets.
+- `LNURL_RECEIPT_MAX_COMMENT_LENGTH=256` bounds any policy-approved display of sanitized comments.
+
+### LNURL-withdraw Request Service
+
+- `LNURL_WITHDRAW_ENABLED=false` keeps withdraw request creation disabled until policy, callback verification, and payout execution are configured.
+- `LNURL_WITHDRAW_CALLBACK_BASE_URL=https://bitcoin-bastion.com` is the trusted origin used for server-generated withdraw callback references; never derive it from client input.
+- `LNURL_WITHDRAW_DEFAULT_TTL_SECONDS=300` and `LNURL_WITHDRAW_MAX_TTL_SECONDS=900` bound short-lived k1 request validity.
+- `LNURL_WITHDRAW_GLOBAL_MAX_MSAT=10000000` caps policy-approved withdraw request amounts before purpose-specific checks.
+- `LNURL_WITHDRAW_REQUIRE_POLICY=true` requires a structured Policy Engine allow decision for valuable withdraw requests.
+- `LNURL_WITHDRAW_ALLOW_TEST_FAUCET=false` prevents test/signet faucet issuance unless explicitly enabled for non-mainnet deployments.
+- `LNURL_WITHDRAW_ONION_ENABLED=false` keeps Onion callback support disabled unless a deployment-specific Onion policy is configured.

@@ -90,11 +90,7 @@ def _trusted_service() -> LightningAddressService:
                 allow_onion_addresses=cfg.allow_onion_addresses,
             ),
         )
-        for alias in ("lite", "basic", "plus", "pro", "business", "enterprise"):
-            try:
-                service.create_product_address(local_part=alias)
-            except Exception:
-                pass
+        service.install_product_addresses()
         _DEFAULT_SERVICE = service
     return _DEFAULT_SERVICE
 
@@ -140,6 +136,13 @@ def _handle_discovery(*, name: str, request: Request, service: LightningAddressS
         _validate_host(request, cfg)
         canonical_name = normalize_local_part(name)
         domain = _domain_for_request(request, cfg)
+        if domain == cfg.payregister_domain:
+            payregister_payload = _try_payregister_static_endpoint(canonical_name)
+            if payregister_payload is not None:
+                return _lnurl_json(payregister_payload, status_code=200)
+        merchant_payload = _try_merchant_lightning_address(domain, canonical_name)
+        if merchant_payload is not None:
+            return _lnurl_json(merchant_payload, status_code=200)
         resolution = service.resolve_address(f"{canonical_name}@{domain}")
         payload = _payload_from_resolution(resolution, cfg)
         return _lnurl_json(payload, status_code=200)
@@ -157,6 +160,31 @@ def _handle_discovery(*, name: str, request: Request, service: LightningAddressS
     except Exception:
         return _lnurl_json(LNURLErrorResponse(reason=GENERIC_UNAVAILABLE).model_dump(), status_code=200)
 
+
+
+def _try_payregister_static_endpoint(canonical_name: str) -> dict[str, Any] | None:
+    try:
+        from app.services.payregister.lnurl.errors import PayRegisterLNURLError
+        from app.services.payregister.lnurl.static_endpoint import get_default_payregister_lnurl_service
+
+        result = get_default_payregister_lnurl_service().resolve_lnurl_pay_request(canonical_name)
+        return result.to_lnurl_response()
+    except PayRegisterLNURLError:
+        return None
+
+
+def _try_merchant_lightning_address(domain: str, canonical_name: str) -> dict[str, Any] | None:
+    try:
+        from app.api.v1.business_lightning import _address_service
+        from app.services.lnurl.merchant_address_resolver import MerchantAddressResolver, MerchantAddressResolverConfig
+
+        resolver = MerchantAddressResolver(
+            address_service=_address_service,
+            config=MerchantAddressResolverConfig(callback_base_url=f"https://{domain}", allowed_hosts=frozenset({domain})),
+        )
+        return resolver.resolve_host_local_part(host=domain, local_part=canonical_name).to_lnurl_response()
+    except Exception:
+        return None
 
 def _payload_from_resolution(resolution: Any, cfg: LNURLPRouteConfig) -> dict[str, Any]:
     callback = _trusted_callback_url(cfg, resolution.callback_reference)
@@ -209,6 +237,10 @@ def _domain_for_request(request: Request, cfg: LNURLPRouteConfig) -> str:
         return cfg.payregister_domain
     if host == cfg.primary_domain:
         return cfg.primary_domain
+    if _known_merchant_host(host):
+        from app.domain.lnurl.merchant_addresses import normalize_merchant_domain
+
+        return normalize_merchant_domain(host)
     return cfg.primary_domain
 
 
@@ -217,11 +249,23 @@ def _validate_host(request: Request, cfg: LNURLPRouteConfig) -> None:
     forwarded = (request.headers.get("x-forwarded-host") or "").split(",", 1)[0].split(":", 1)[0].lower()
     proto = (request.headers.get("x-forwarded-proto") or "").split(",", 1)[0].lower()
     for candidate in (host, forwarded):
-        if candidate and candidate not in cfg.allowed_public_hosts:
+        if candidate and candidate not in cfg.allowed_public_hosts and not _known_merchant_host(candidate):
             raise RuntimeError("invalid_host")
     if proto and proto not in {"https", "http"}:
         raise RuntimeError("invalid_host")
 
+
+
+def _known_merchant_host(host: str) -> bool:
+    try:
+        from app.api.v1.business_lightning import _domain_service
+        from app.domain.lnurl.merchant_addresses import normalize_merchant_domain
+
+        normalized = normalize_merchant_domain(host)
+        domain = _domain_service.repository.get_by_domain(normalized, _domain_service.pepper)
+        return domain is not None and domain.status.value == "active"
+    except Exception:
+        return False
 
 def _rate_limit(request: Request, cfg: LNURLPRouteConfig) -> None:
     import time

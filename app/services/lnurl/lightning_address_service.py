@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Any, Protocol
+from typing import Any, Protocol, cast
 
 from app.domain.access.plans import PlanCode
 from app.domain.lnurl.lightning_address import (
@@ -25,8 +25,14 @@ from app.services.access.crypto.hashing import hash_canonical_json_prefixed, hma
 from app.services.lnurl.comment_allowed import LNURLCommentConfig, LNURLCommentContext, LNURLCommentService
 from app.services.lnurl.lightning_address_domain_policy import LightningAddressDomainDecision, LightningAddressDomainPolicy, LightningAddressDomainPolicyConfig
 from app.services.lnurl.lightning_address_repository import InMemoryLightningAddressRepository, LightningAddressRepository
+from app.services.lnurl.pay.pricing import StaticSubscriptionPricingResolver
 from app.services.lnurl.pay.subscription_request_service import LNURLPayRequestResult, LNURLPaySubscriptionRequestConfig, LNURLPaySubscriptionRequestService
 from app.services.lnurl.pay_metadata import LNURLPayMetadataBuilder
+from app.services.lnurl.product_addresses import (
+    ProductAddressMetadataProvider,
+    ProductAddressUnavailableError,
+    ProductLightningAddressRegistry,
+)
 
 
 class LightningAddressServiceError(ValueError):
@@ -78,6 +84,8 @@ class LightningAddressServiceConfig:
     address_pepper: str = "dev-lnurl-lightning-address-pepper-change-me"
     callback_reference_pepper: str = "dev-lnurl-lightning-callback-pepper-change-me"
     max_comment_chars: int = 256
+    product_addresses_enabled: bool = True
+    product_config_path: str = "config/lnurl_product_addresses.yaml"
     schema_epoch: int = 1
     policy_epoch: int = 1
 
@@ -154,6 +162,11 @@ class LightningAddressService:
         self.config = config or LightningAddressServiceConfig()
         self.clock = clock or (lambda: datetime.now(UTC))
         self.repository = repository or InMemoryLightningAddressRepository()
+        self.product_registry = (
+            ProductLightningAddressRegistry.load_default(self.config.product_config_path)
+            if self.config.product_addresses_enabled
+            else None
+        )
         self.domain_policy = domain_policy or LightningAddressDomainPolicy(
             LightningAddressDomainPolicyConfig(
                 primary_domain=self.config.primary_domain,
@@ -163,11 +176,27 @@ class LightningAddressService:
                 allow_onion_addresses=self.config.allow_onion_addresses,
             )
         )
+        pricing_resolver = (
+            StaticSubscriptionPricingResolver(
+                prices_msat=cast(Mapping[PlanCode | str, int], self.product_registry.pricing_map()),
+                disabled_plans=cast(set[PlanCode | str], self.product_registry.disabled_plans()),
+                billing_period="monthly",
+                pricing_version=f"product-catalog-{self.product_registry.product_catalog_epoch}",
+                quote_ttl_seconds=max(180, min(600, self.config.cache_ttl_seconds + 180)),
+                clock=self.clock,
+            )
+            if self.product_registry is not None
+            else None
+        )
+        metadata_provider = ProductAddressMetadataProvider(self.product_registry) if self.product_registry is not None else None
         self.pay_request_service = pay_request_service or LNURLPaySubscriptionRequestService(
             config=LNURLPaySubscriptionRequestConfig(
                 public_base_url=f"https://{self.config.primary_domain}",
                 request_ttl_seconds=min(120, self.config.cache_ttl_seconds),
+                payerdata_auth_enabled=True,
             ),
+            pricing_resolver=pricing_resolver,
+            metadata_provider=metadata_provider,
             clock=self.clock,
         )
         self.metadata_builder = metadata_builder or LNURLPayMetadataBuilder()
@@ -178,20 +207,42 @@ class LightningAddressService:
         self._cache: dict[str, tuple[datetime, LightningAddressResolution]] = {}
 
     def create_product_address(self, *, local_part: str, domain: str | None = None, comment_allowed: int = 0, visibility: LightningAddressVisibility = LightningAddressVisibility.PUBLIC) -> LightningAddressRecord:
-        product_code = resolve_product_code(local_part)
+        product = self.product_registry.resolve_product_lightning_address(local_part) if self.product_registry else None
+        product_code = product.plan_code.value if product else resolve_product_code(local_part)
+        effective_comment = product.comment_allowed if product is not None else comment_allowed
+        payer_data_policy_id = (
+            "payerdata_auth_optional_v1"
+            if product is not None and product.payer_data_policy.get("auth") == "optional"
+            else "payerdata_disabled_v1"
+        )
+        if product is not None and product.payer_data_policy.get("auth") == "required":
+            payer_data_policy_id = "payerdata_auth_required_v1"
         return self._create_address(
             local_part=local_part,
-            domain=domain or self.config.primary_domain,
+            domain=domain or (product.domain if product is not None else self.config.primary_domain),
             target_type=LightningAddressTargetType.SUBSCRIPTION_PRODUCT,
-            target_reference_hash=sha256_prefixed(product_code),
+            target_reference_hash=sha256_prefixed(product.product_configuration_hash if product is not None else product_code),
             product_code=product_code,
             metadata_template_id="subscription_product_v1",
             callback_policy_id="lnurl_pay_subscription_callback_v1",
-            payer_data_policy_id="payerdata_disabled_v1",
+            payer_data_policy_id=payer_data_policy_id,
             success_action_policy_id="subscription_activation_v1",
-            comment_allowed=comment_allowed,
+            comment_allowed=effective_comment,
             visibility=visibility,
+            min_sendable_msat=product.amount_msat if product is not None else None,
+            max_sendable_msat=product.amount_msat if product is not None else None,
+            description=product.product_configuration_hash if product is not None else None,
         )
+
+    def install_product_addresses(self) -> tuple[LightningAddressRecord, ...]:
+        if self.product_registry is None:
+            return ()
+        records = []
+        for product in self.product_registry.active_products():
+            records.append(self.create_product_address(local_part=product.canonical_name, domain=product.domain))
+            for alias in product.aliases:
+                records.append(self.create_product_address(local_part=alias.alias, domain=product.domain))
+        return tuple(records)
 
     def create_merchant_address(self, *, local_part: str, domain: str, merchant_reference_hash: str, display_label: str, min_sendable_msat: int | None = None, max_sendable_msat: int | None = None, comment_allowed: int = 0) -> LightningAddressRecord:
         return self._create_address(local_part=local_part, domain=domain, target_type=LightningAddressTargetType.MERCHANT, target_reference_hash=merchant_reference_hash, metadata_template_id="merchant_v1", callback_policy_id="merchant_callback_v1", payer_data_policy_id="payerdata_minimal_v1", success_action_policy_id="merchant_receipt_v1", comment_allowed=comment_allowed, display_label=display_label, min_sendable_msat=min_sendable_msat, max_sendable_msat=max_sendable_msat)
@@ -315,11 +366,69 @@ class LightningAddressService:
     def _build_subscription_pay_request(self, record: LightningAddressRecord) -> LNURLPayRequestResult:
         if not record.product_code:
             raise LightningAddressTargetInactiveError("target_inactive")
+        product = self.product_registry.get_any_product(record.local_part) if self.product_registry is not None else None
+        if self.product_registry is not None and product is None:
+            raise LightningAddressTargetInactiveError("target_inactive")
+        if product is not None and not product.enabled:
+            raise ProductAddressUnavailableError("Lightning Address product is unavailable")
         plan = PlanCode(record.product_code)
-        return self.pay_request_service.create_subscription_request(plan_code=plan, principal_hash=None, actor_type=None, product_code=record.product_code, comment_allowed=record.comment_allowed, payer_data_mode="auth_optional" if record.payer_data_policy_id != "payerdata_disabled_v1" else None, request_context={"lightning_address_hash": sha256_prefixed(record.normalized_address)})
+        result = self.pay_request_service.create_subscription_request(
+            plan_code=plan,
+            principal_hash=None,
+            actor_type=None,
+            product_code=product.canonical_name if product is not None else record.product_code,
+            requested_amount_msat=product.amount_msat if product is not None else None,
+            comment_allowed=record.comment_allowed,
+            payer_data_mode=None,
+            success_action_mode="url",
+            request_context={
+                "lightning_address_hash": sha256_prefixed(record.normalized_address),
+                "source": "product_lightning_address",
+                "product_configuration_hash": product.product_configuration_hash if product is not None else None,
+            },
+        )
+        if product is not None:
+            self._audit(
+                "lnurl_product_payment_intent_created",
+                address_hash=sha256_prefixed(record.normalized_address),
+                reason_code="created",
+                product=product.canonical_name,
+                plan_code=product.plan_code.value,
+                product_configuration_hash=product.product_configuration_hash,
+            )
+        return result
 
     def _resolution_from_pay_request(self, record: LightningAddressRecord, pay_request: LNURLPayRequestResult, domain_decision: LightningAddressDomainDecision, policy_hash: str, now: datetime) -> LightningAddressResolution:
-        return LightningAddressResolution(record.normalized_address, record.target_type.value, record.local_part, domain_decision.domain_class.value, pay_request.min_sendable_msat, pay_request.max_sendable_msat, pay_request.metadata, pay_request.metadata_hash or hash_canonical_json_prefixed(pay_request.metadata), pay_request.payment_context_hash or self._callback_reference(record), pay_request.comment_allowed, pay_request.payer_data, record.success_action_policy_id, record.version, policy_hash, now, record.expires_at)
+        product = self.product_registry.get_any_product(record.local_part) if self.product_registry is not None else None
+        payer_data = product.payer_data_declaration() if product is not None else pay_request.payer_data
+        metadata = product.metadata_result() if product is not None else None
+        if product is not None:
+            self._audit(
+                "lnurl_product_address_resolved",
+                address_hash=sha256_prefixed(record.normalized_address),
+                reason_code="resolved",
+                product=product.canonical_name,
+                plan_code=product.plan_code.value,
+                product_configuration_hash=product.product_configuration_hash,
+            )
+        return LightningAddressResolution(
+            record.normalized_address,
+            record.target_type.value,
+            product.canonical_name if product is not None else record.local_part,
+            domain_decision.domain_class.value,
+            pay_request.min_sendable_msat,
+            pay_request.max_sendable_msat,
+            metadata.metadata if metadata is not None else pay_request.metadata,
+            metadata.metadata_hash if metadata is not None else pay_request.metadata_hash or hash_canonical_json_prefixed(pay_request.metadata),
+            pay_request.payment_context_hash or self._callback_reference(record),
+            pay_request.comment_allowed,
+            payer_data,
+            record.success_action_policy_id,
+            record.version,
+            product.product_configuration_hash if product is not None else policy_hash,
+            now,
+            record.expires_at,
+        )
 
     def _build_non_subscription_resolution(self, record: LightningAddressRecord, domain_decision: LightningAddressDomainDecision, policy_hash: str, now: datetime) -> LightningAddressResolution:
         if record.target_type in {LightningAddressTargetType.PAYREGISTER_STORE, LightningAddressTargetType.PAYREGISTER_TERMINAL, LightningAddressTargetType.MERCHANT}:
