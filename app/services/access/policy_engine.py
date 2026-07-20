@@ -51,12 +51,12 @@ BUSINESS_OBJECT_TYPES = frozenset({"business_workspace", "payregister_device", "
 SUPPORTED_OBJECT_TYPES = BUSINESS_OBJECT_TYPES | frozenset({"trace_report", "treasury_request", "audit_event", "metric_query"})
 BUSINESS_ROLE_SCOPES = {
     "owner": {"*business"},
-    "admin": {"payregister:devices:read", "payregister:operator:read", "payregister:shifts:read", "payregister:invoices:read"},
-    "operator": {"payregister:operator:read", "payregister:shifts:read"},
-    "cashier": {"payregister:invoices:read", "payregister:shifts:read"},
+    "admin": {"payregister:devices:read", "payregister:operator:read", "payregister:shifts:read", "payregister:invoices:read", "refunds:subscription:create", "refunds:subscription:approve", "refunds:payregister:create", "refunds:payregister:approve", "payouts:cashback:create", "payouts:partner:approve", "payouts:bounty:approve", "lnurl:withdraw:approve", "lnurl:withdraw:create", "lnurl:withdraw:read", "lnurl:withdraw:cancel"},
+    "operator": {"payregister:operator:read", "payregister:shifts:read", "refunds:payregister:create", "refunds:payregister:approve", "lnurl:withdraw:create", "lnurl:withdraw:read"},
+    "cashier": {"payregister:invoices:read", "payregister:shifts:read", "refunds:payregister:create", "lnurl:withdraw:read"},
     "analyst": {"payregister:metrics:read", "business:audit:read"},
     "viewer": {"payregister:metrics:read"},
-    "device": {"payregister:devices:read"},
+    "device": {"payregister:devices:read", "lnurl:withdraw:read"},
     "bot": {"payregister:metrics:read"},
 }
 

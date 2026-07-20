@@ -1,0 +1,125 @@
+version: 1
+domain: bitcoin-bastion.com
+product_catalog_epoch: 1
+products:
+  lite:
+    enabled: true
+    canonical_name: lite
+    aliases: []
+    plan_code: lite_pass
+    billing_period: monthly
+    amount_msat: 10000000
+    currency: BTC
+    metadata:
+      short_description: Bitcoin Bastion Lite Pass
+      long_description: Entry-level access to Bitcoin Bastion public and basic metrics.
+    payer_data:
+      auth: optional
+      identifier: disabled
+      name: disabled
+      email: disabled
+    comment_allowed: 0
+    success_action:
+      type: url
+      description: Open Bitcoin Bastion to activate Lite Pass
+  basic:
+    enabled: true
+    canonical_name: basic
+    aliases: []
+    plan_code: basic_pass
+    billing_period: monthly
+    amount_msat: 50000000
+    currency: BTC
+    metadata:
+      short_description: Bitcoin Bastion Basic Pass
+      long_description: Basic Bitcoin network, market and limited API access.
+    payer_data:
+      auth: optional
+      identifier: disabled
+      name: disabled
+      email: disabled
+    comment_allowed: 0
+    success_action:
+      type: url
+      description: Open Bitcoin Bastion to activate Basic Pass
+  plus:
+    enabled: true
+    canonical_name: plus
+    aliases: []
+    plan_code: plus_pass
+    billing_period: monthly
+    amount_msat: 150000000
+    currency: BTC
+    metadata:
+      short_description: Bitcoin Bastion Plus Pass
+      long_description: Advanced market intelligence, expanded history and additional API access.
+    payer_data:
+      auth: optional
+      identifier: disabled
+      name: disabled
+      email: disabled
+    comment_allowed: 0
+    success_action:
+      type: url
+      description: Open Bitcoin Bastion to activate Plus Pass
+  pro:
+    enabled: true
+    canonical_name: pro
+    aliases: []
+    plan_code: pro_pass
+    billing_period: monthly
+    amount_msat: 500000000
+    currency: BTC
+    metadata:
+      short_description: Bitcoin Bastion Pro Pass
+      long_description: Advanced signals, historical similarity, automation and professional API access.
+    payer_data:
+      auth: optional
+      identifier: disabled
+      name: disabled
+      email: disabled
+    comment_allowed: 0
+    success_action:
+      type: url
+      description: Open Bitcoin Bastion to activate Pro Pass
+  business:
+    enabled: true
+    canonical_name: business
+    aliases: []
+    plan_code: business_pass
+    billing_period: monthly
+    amount_msat: 2000000000
+    currency: BTC
+    metadata:
+      short_description: Bitcoin Bastion Business Pass
+      long_description: Business roles, PayRegister integration, delegated access and increased API limits.
+    payer_data:
+      auth: optional
+      identifier: optional
+      name: disabled
+      email: disabled
+    comment_allowed: 0
+    success_action:
+      type: url
+      description: Open Bitcoin Bastion Business onboarding
+  enterprise:
+    enabled: false
+    status: contract_only
+    canonical_name: enterprise
+    aliases: []
+    plan_code: enterprise_pass
+    billing_period: custom
+    amount_msat: null
+    currency: BTC
+    metadata:
+      short_description: Bitcoin Bastion Enterprise
+      long_description: Enterprise access requires an explicitly configured commercial agreement.
+    payer_data:
+      auth: optional
+      identifier: disabled
+      name: disabled
+      email: disabled
+    comment_allowed: 0
+    success_action:
+      type: url
+      description: Contact Bitcoin Bastion Enterprise onboarding

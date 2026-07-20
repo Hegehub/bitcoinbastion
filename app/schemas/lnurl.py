@@ -11,7 +11,7 @@ import re
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, StrictInt, field_validator, model_validator
 
 from app.domain.lnurl import (
     DEFAULT_ALLOWED_PAYERDATA_FIELDS,
@@ -176,7 +176,7 @@ class LNURLPaySubscriptionCreate(LNURLSchemaBase):
     principal_hash: str | None = Field(default=None, description="Optional principal binding; not email identity.")
     payerdata_auth_requested: bool = Field(default=False, description="Request payerData.auth instead of mandatory personal identity.")
     success_action_requested: bool = Field(default=True)
-    comment_allowed: int | None = Field(default=None, ge=0, le=MAX_LNURL_COMMENT_LENGTH, description="Comment length allowance; comment is untrusted and cannot authorize access.")
+    comment_allowed: StrictInt | None = Field(default=None, ge=0, le=MAX_LNURL_COMMENT_LENGTH, description="Comment length allowance; untrusted metadata only, never authorization or identity.")
     metadata: dict[str, Any] | None = Field(default=None, description=f"{LNURL_INVOICE_NOT_SETTLED_WARNING} payerData.email is not mandatory.")
 
     @field_validator("metadata")
@@ -191,7 +191,7 @@ class LNURLPayRequestResponse(LNURLSchemaBase):
     min_sendable: int = Field(gt=0, description="Minimum sendable amount in msat.")
     max_sendable: int = Field(gt=0, description="Maximum sendable amount in msat.")
     metadata: str = Field(description="JSON-encoded LNURL-pay metadata string; must include text/plain metadata later.")
-    comment_allowed: int | None = Field(default=None, ge=0, le=MAX_LNURL_COMMENT_LENGTH, description="Untrusted comment length allowance; not authorization.")
+    comment_allowed: StrictInt | None = Field(default=None, ge=0, le=MAX_LNURL_COMMENT_LENGTH, description="Untrusted comment length allowance; not authorization.")
     payer_data: dict[str, Any] | None = Field(default=None, description=f"{LNURL_PAYERDATA_PRIVACY_WARNING} Defaults allow only {DEFAULT_ALLOWED_PAYERDATA_FIELDS}.")
     allows_nostr: bool | None = None
     nostr_pubkey: str | None = None
@@ -206,7 +206,7 @@ class LNURLPayRequestResponse(LNURLSchemaBase):
 class LNURLPayCallbackRequest(LNURLSchemaBase):
     payment_id: str
     amount: int = Field(gt=0, description="Amount in msat requested by wallet.")
-    comment: str | None = Field(default=None, max_length=MAX_LNURL_COMMENT_LENGTH, description="Untrusted user metadata; cannot authorize access.")
+    comment: str | None = Field(default=None, max_length=MAX_LNURL_COMMENT_LENGTH, description="Untrusted user metadata; cannot authorize access, identity, settlement, refund, or entitlement.")
     payerdata: dict[str, Any] | None = Field(default=None, description="payerData.auth may be present; email/name are not required.")
     nostr: str | None = None
 
@@ -214,6 +214,20 @@ class LNURLPayCallbackRequest(LNURLSchemaBase):
     @classmethod
     def validate_payerdata(cls, payerdata: dict[str, Any] | None) -> dict[str, Any] | None:
         return _validate_safe_metadata(payerdata)
+
+
+
+
+class LNURLValidatedCommentMetadata(LNURLSchemaBase):
+    present: bool
+    normalized_comment: str | None = Field(default=None, exclude=True, description="Internal normalized comment; not public API output by default.")
+    comment_hash: str | None = Field(default=None, description="Hash-only commitment; raw comments are not exposed.")
+    character_count: int = Field(ge=0)
+    allowed_character_count: int = Field(ge=0)
+    storage_mode: str = Field(description="none, hash_only, or encrypted.")
+    classification: str = Field(description="Deterministic untrusted metadata classification.")
+    input_trust: str = Field(default="untrusted_external_metadata")
+    suspicious_text_flags: list[str] = Field(default_factory=list)
 
 
 class LNURLSuccessAction(LNURLSchemaBase):
@@ -384,3 +398,73 @@ class LNURLSecurityStatusResponse(LNURLSchemaBase):
     policy_required: bool
     policy_decision: str | None = None
     audit_required: bool = True
+
+class LNURLPayerAuthDeclaration(LNURLSchemaBase):
+    mandatory: bool = Field(description="Whether payerData.auth is required for this payment request.")
+    k1: str = Field(description="64-character payerData.auth challenge; not a login credential.")
+
+    @field_validator("k1")
+    @classmethod
+    def validate_payer_auth_k1(cls, k1: str) -> str:
+        return _validate_k1_hex(k1.lower())
+
+
+class LNURLPayerAuthPayload(LNURLSchemaBase):
+    key: str = Field(description="Compressed secp256k1 LNURL linking key. It is hashed before persistence.")
+    k1: str = Field(description="Single-use payerData.auth challenge.")
+    sig: str = Field(description="DER-encoded ECDSA signature over k1.")
+
+    @field_validator("key")
+    @classmethod
+    def validate_payer_auth_key(cls, key: str) -> str:
+        if _COMPRESSED_SECP256K1_RE.fullmatch(key) is None:
+            raise ValueError("payerData.auth key must be compressed secp256k1 hex.")
+        return key.lower()
+
+    @field_validator("k1")
+    @classmethod
+    def validate_payer_auth_payload_k1(cls, k1: str) -> str:
+        return _validate_k1_hex(k1.lower())
+
+    @field_validator("sig")
+    @classmethod
+    def validate_payer_auth_sig(cls, sig: str) -> str:
+        if _DER_SIGNATURE_RE.fullmatch(sig) is None:
+            raise ValueError("payerData.auth signature must be bounded DER hex.")
+        return sig.lower()
+
+
+class LNURLPayerDataPayload(LNURLSchemaBase):
+    auth: LNURLPayerAuthPayload | None = Field(default=None, description="Only auth is supported by default; email/name/identifier are not accepted.")
+
+
+class LNURLPaymentPrincipalBinding(LNURLSchemaBase):
+    payment_request_id: str
+    principal_hash: str
+    principal_type: str = Field(default="lightning_wallet_principal")
+    product_pseudonym: str
+    auth_method: str = Field(default="lnurl_payerdata_auth")
+    verification_strength: str = Field(default="standard")
+    settled: bool = Field(default=False, description="payerData.auth is not settlement; this remains false until verifier confirms payment.")
+
+class LNURLPayDiscoveryResponse(LNURLSchemaBase):
+    callback: str = Field(description="Trusted absolute LNURL-pay callback URL. Discovery does not create an invoice or prove payment.")
+    max_sendable: StrictInt = Field(alias="maxSendable", ge=1, description="Maximum sendable amount in millisatoshis.")
+    min_sendable: StrictInt = Field(alias="minSendable", ge=1, description="Minimum sendable amount in millisatoshis.")
+    metadata: str = Field(description="JSON-serialized LNURL-pay metadata array containing text/plain and text/identifier entries.")
+    tag: str = Field(default="payRequest", description="LNURL-pay discovery tag; this endpoint does not authenticate or authorize users.")
+    comment_allowed: StrictInt | None = Field(default=None, alias="commentAllowed", ge=0, description="Optional LUD-12 comment character allowance in untrusted metadata.")
+    payer_data: dict[str, Any] | None = Field(default=None, alias="payerData", description="Optional LUD-18 payerData policy; not identity or settlement.")
+
+    @model_validator(mode="after")
+    def validate_amounts_and_tag(self) -> "LNURLPayDiscoveryResponse":
+        if self.tag != "payRequest":
+            raise ValueError("LNURL-pay discovery tag must be payRequest.")
+        if self.max_sendable < self.min_sendable:
+            raise ValueError("maxSendable must be greater than or equal to minSendable.")
+        return self
+
+
+class LNURLErrorResponse(LNURLSchemaBase):
+    status: str = Field(default="ERROR", description="LNURL protocol error status.")
+    reason: str = Field(description="Generic wallet-safe error reason.")

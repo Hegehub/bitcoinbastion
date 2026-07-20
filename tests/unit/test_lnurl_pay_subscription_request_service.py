@@ -233,7 +233,9 @@ def test_payer_data_privacy_defaults_and_auth_mode() -> None:
         create(make_service(), payer_data_mode="auth_mandatory")
     enabled = make_service(config=LNURLPaySubscriptionRequestConfig(public_base_url="https://pay.example.com", payerdata_auth_enabled=True))
     auth = create(enabled, payer_data_mode="auth_mandatory")
-    assert auth.payer_data == {"auth": {"mandatory": True}}
+    assert auth.payer_data is not None
+    assert auth.payer_data["auth"]["mandatory"] is True
+    assert len(auth.payer_data["auth"]["k1"]) == 64
 
 
 def test_comment_allowed_is_bounded_and_untrusted() -> None:
