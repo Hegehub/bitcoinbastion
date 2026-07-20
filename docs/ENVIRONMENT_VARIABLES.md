@@ -319,3 +319,11 @@ LNURL comments are untrusted external metadata. They must not authenticate a pri
 - `LNURL_WITHDRAW_REQUIRE_POLICY=true` requires a structured Policy Engine allow decision for valuable withdraw requests.
 - `LNURL_WITHDRAW_ALLOW_TEST_FAUCET=false` prevents test/signet faucet issuance unless explicitly enabled for non-mainnet deployments.
 - `LNURL_WITHDRAW_ONION_ENABLED=false` keeps Onion callback support disabled unless a deployment-specific Onion policy is configured.
+
+### LNURL withdraw risk and reconciliation
+
+- `LNURL_WITHDRAW_MAINNET_ENABLED=false` keeps Bitcoin mainnet payouts disabled unless explicitly enabled with finite limits.
+- `LNURL_WITHDRAW_MAX_SINGLE_MSAT`, daily limit variables, and request-count variables define conservative hard ceilings for risk evaluation.
+- `LNURL_WITHDRAW_REQUIRE_ORIGINAL_PAYMENT=true` requires authoritative original payment evidence for refund purposes.
+- `LNURL_WITHDRAW_ALLOW_OVER_REFUNDS=false` prevents cumulative refunds above the configured refund percentage.
+- `LNURL_WITHDRAW_RECONCILIATION_ENABLED=true` requires ambiguous provider outcomes to be reconciled rather than blindly retried.

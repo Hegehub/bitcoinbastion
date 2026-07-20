@@ -1,0 +1,50 @@
+lnurl_withdraw:
+  enabled: false
+  mainnet_enabled: false
+  reconciliation_enabled: true
+
+  global:
+    max_single_msat: 5000000
+    max_daily_msat: 50000000
+    max_requests_per_hour: 20
+    cooldown_seconds: 300
+    high_risk_cooldown_seconds: 900
+
+  defaults:
+    require_original_payment: true
+    max_refund_percent: 100
+    allow_partial_refunds: true
+    allow_over_refunds: false
+    step_up_above_msat: 1000000
+    manual_review_above_msat: 5000000
+
+  purposes:
+    subscription_refund:
+      original_payment_required: true
+      max_refund_percent: 100
+      step_up_above_msat: 1000000
+
+    payregister_refund:
+      original_payment_required: true
+      max_refund_percent: 100
+      cashier_max_msat: 250000
+      owner_step_up_above_msat: 250000
+
+    cashback:
+      max_single_msat: 100000
+      max_daily_principal_msat: 500000
+
+    bug_bounty:
+      manual_review_required: true
+
+    administrative_adjustment:
+      enabled: false
+
+    testnet_faucet:
+      allowed_networks:
+        - bitcoin-testnet
+        - bitcoin-signet
+
+    signet_faucet:
+      allowed_networks:
+        - bitcoin-signet

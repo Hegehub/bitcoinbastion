@@ -12,7 +12,7 @@ import threading
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any, Protocol
+from typing import Any, Protocol, TYPE_CHECKING
 from urllib.parse import urlparse
 
 from app.services.access.crypto.hashing import hash_canonical_json_prefixed, hmac_sha256_prefixed, safe_hash_for_log, sha256_prefixed
@@ -25,6 +25,9 @@ from app.services.lnurl.repositories.withdraw_requests import (
     transition_withdraw_request,
 )
 from app.services.lnurl.withdraw_request_service import LNURLWithdrawRequestService
+
+if TYPE_CHECKING:
+    from app.services.lnurl.withdraw_policy import LNURLWithdrawPolicyService
 
 _WITHDRAW_ID_RE = re.compile(r"^wdr_[A-Za-z0-9_-]{12,80}$")
 _K1_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -140,11 +143,13 @@ class LNURLWithdrawCallbackVerifier:
         decoder: Bolt11InvoiceDecoder | None = None,
         invoice_store: SensitiveInvoiceStore | None = None,
         config: LNURLWithdrawCallbackVerifierConfig | None = None,
+        policy_service: "LNURLWithdrawPolicyService | None" = None,
     ) -> None:
         self.request_service = request_service
         self.decoder = decoder or ProjectBolt11Decoder()
         self.config = config or LNURLWithdrawCallbackVerifierConfig(server_pepper=request_service.config.server_pepper)
         self.invoice_store = invoice_store or (UnavailableSensitiveInvoiceStore() if self.config.require_protected_invoice_store else InMemorySensitiveInvoiceStore(key_id=self.config.invoice_key_id))
+        self.policy_service = policy_service
         self._lock = threading.RLock()
 
     async def verify_callback(self, *, withdraw_id: str, k1: str, pr: str) -> LNURLWithdrawCallbackVerificationResult:
@@ -173,6 +178,7 @@ class LNURLWithdrawCallbackVerifier:
             self._validate_invoice(decoded, record)
             self._reject_duplicate_invoice(record, invoice_hash, payment_hash_commitment)
             self._consume_k1(record, k1)
+            self._evaluate_invoice_policy(record, decoded, invoice_hash, payment_hash_commitment)
             protected = self.invoice_store.store(invoice=pr, invoice_hash=invoice_hash, request_hash=record.withdraw_request_reference_hash)
             now = datetime.now(UTC)
             updated = transition_withdraw_request(record, LNURLWithdrawRequestStatus.INVOICE_RECEIVED, now=now)
@@ -292,6 +298,29 @@ class LNURLWithdrawCallbackVerifier:
             return LNURLWithdrawCallbackVerificationResult(True, record.opaque_request_id, record.status.value, record.invoice_hash, record.payment_hash_hash, record.invoice_amount_msat, record.invoice_network, record.invoice_expires_at, LNURLWithdrawCallbackReason.DUPLICATE_ACCEPTED.value, True, event_hash)
         self._audit("lnurl_withdraw_callback_rejected", self._audit_payload(record, reason_code="invoice_substitution", invoice_hash=invoice_hash))
         raise LNURLWithdrawCallbackError(LNURLWithdrawCallbackReason.INVOICE_DUPLICATE, public_reason=_INVOICE_ERROR)
+
+    def _evaluate_invoice_policy(self, record: LNURLWithdrawRequestRecord, decoded: DecodedBolt11Invoice, invoice_hash: str, payment_hash_commitment: str) -> None:
+        if self.policy_service is None:
+            return
+        from app.services.lnurl.withdraw_policy import LNURLPayoutActorType, LNURLPayoutPolicyContext, LNURLPayoutPolicyDecision, LNURLPayoutPolicyStage
+
+        decision = self.policy_service.evaluate_invoice_acceptance(
+            LNURLPayoutPolicyContext(
+                stage=LNURLPayoutPolicyStage.INVOICE_ACCEPTANCE,
+                purpose=record.purpose,
+                actor_type=LNURLPayoutActorType.LIGHTNING_WALLET_PRINCIPAL,
+                amount_msat=decoded.amount_msat or 0,
+                network=_normalize_network(decoded.network),
+                withdraw_request=record,
+                invoice_hash=invoice_hash,
+                payment_hash_hash=payment_hash_commitment,
+                policy_approval_id=record.policy_decision_reference,
+                payout_request_id=record.opaque_request_id,
+            )
+        )
+        if not decision.allowed:
+            self._audit("lnurl_withdraw_invoice_policy_denied", self._audit_payload(record, reason_code=decision.reason_code, invoice_hash=invoice_hash, amount_msat=decoded.amount_msat))
+            raise LNURLWithdrawCallbackError(LNURLWithdrawCallbackReason.POLICY_HANDOFF_FAILED if decision.decision != LNURLPayoutPolicyDecision.DENY.value else decision.reason_code)
 
     def _callback_host(self) -> str:
         parsed = urlparse(self.request_service.config.callback_base_url)

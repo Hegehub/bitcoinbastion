@@ -56,6 +56,21 @@ ENTERPRISE_AUDIT_EXPORT = "enterprise:audit:export"
 ENTERPRISE_PRIVATE_DEPLOYMENT = "enterprise:private_deployment"
 TRANSPARENCY_CHECKPOINT_READ = "transparency:checkpoint:read"
 
+REFUNDS_SUBSCRIPTION_CREATE = "refunds:subscription:create"
+REFUNDS_SUBSCRIPTION_APPROVE = "refunds:subscription:approve"
+REFUNDS_PAYREGISTER_CREATE = "refunds:payregister:create"
+REFUNDS_PAYREGISTER_APPROVE = "refunds:payregister:approve"
+PAYOUTS_CASHBACK_CREATE = "payouts:cashback:create"
+PAYOUTS_PARTNER_CREATE = "payouts:partner:create"
+PAYOUTS_PARTNER_APPROVE = "payouts:partner:approve"
+PAYOUTS_BOUNTY_CREATE = "payouts:bounty:create"
+PAYOUTS_BOUNTY_APPROVE = "payouts:bounty:approve"
+PAYOUTS_EXECUTE = "payouts:execute"
+LNURL_WITHDRAW_READ = "lnurl:withdraw:read"
+LNURL_WITHDRAW_CREATE = "lnurl:withdraw:create"
+LNURL_WITHDRAW_APPROVE = "lnurl:withdraw:approve"
+LNURL_WITHDRAW_CANCEL = "lnurl:withdraw:cancel"
+
 ACCESS_SCOPES: frozenset[str] = frozenset(
     {
         METRICS_BASIC_READ,
@@ -111,6 +126,20 @@ ACCESS_SCOPES: frozenset[str] = frozenset(
         ENTERPRISE_AUDIT_EXPORT,
         ENTERPRISE_PRIVATE_DEPLOYMENT,
         TRANSPARENCY_CHECKPOINT_READ,
+        LNURL_WITHDRAW_CANCEL,
+        LNURL_WITHDRAW_APPROVE,
+        LNURL_WITHDRAW_CREATE,
+        LNURL_WITHDRAW_READ,
+        PAYOUTS_EXECUTE,
+        PAYOUTS_BOUNTY_APPROVE,
+        PAYOUTS_BOUNTY_CREATE,
+        PAYOUTS_PARTNER_APPROVE,
+        PAYOUTS_PARTNER_CREATE,
+        PAYOUTS_CASHBACK_CREATE,
+        REFUNDS_PAYREGISTER_APPROVE,
+        REFUNDS_PAYREGISTER_CREATE,
+        REFUNDS_SUBSCRIPTION_APPROVE,
+        REFUNDS_SUBSCRIPTION_CREATE,
     }
 )
 
