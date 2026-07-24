@@ -31,3 +31,15 @@ The callback invoice service validates a persisted LNURL-pay request, the wallet
 Invoice creation is idempotent for the same request, amount, metadata hash, comment hash, payerData hash, principal binding, and crypto epoch. A retry returns the same normalized invoice; a conflicting retry fails safely. The service persists invoice-issued state and audit evidence, but it does not mark settlement, create Payment Proof, issue Subscription Entitlement, issue Access Certificates, create PoP sessions, or activate API access.
 
 Audit events for `lnurl_invoice_issued` include request and invoice reference hashes, amount, metadata hash, provider name, product/plan, optional principal hash, expiry, and invoice status. They do not include raw payerData, full comments, payment preimages, provider secrets, private keys, seeds, session tokens, or Access Pass material.
+
+## commentAllowed and callback comments
+
+Bastion treats LNURL-pay `commentAllowed` as an optional character-count capability advertised by server policy. Comments are disabled by default (`0`/omitted), and the effective limit is bounded by global, product, merchant/store, terminal, and payment-request policy. Missing policy values do not increase permissions.
+
+The callback `comment` parameter is URL-decoded exactly once, normalized with Unicode NFC, checked against both character and byte ceilings, and rejected for NUL/CRLF/control characters or double-decoding patterns. Accepted comments are stored as hash-only metadata by default and never alter immutable LNURL metadata or invoice description hashes.
+
+A comment is untrusted metadata. It cannot authenticate a principal, settle an invoice, create a Payment Proof, grant a Subscription Entitlement, change plan/scopes/quotas, approve refunds or withdrawals, complete recovery, or satisfy Policy Engine access requirements.
+
+## payerData.auth binding
+
+Bastion can advertise LNURL-pay `payerData.auth` with a 32-byte single-use `k1` challenge. The callback accepts only `auth.key`, `auth.k1`, and `auth.sig`; name, email, identifier, and pubkey personal fields are disabled by default. A verified payerData.auth proof binds the unpaid payment request to a Lightning Principal pseudonym only. It does not prove settlement, create a session, issue an entitlement, or authorize access.

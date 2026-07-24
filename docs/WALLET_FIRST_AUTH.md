@@ -23,3 +23,12 @@ Device Binding, PoP Session, Subscription Entitlement, Revocation Registry, Audi
 ## Linking
 
 Bitcoin and Lightning principals may be linked only through explicit policy-approved flows with fresh proof and audit. Bastion must not infer identity linkage from payment correlation, payerData, Lightning Address routing metadata, shared IP address, or shared device context.
+
+## LNURL successAction boundary
+
+LNURL `successAction` is post-payment presentation metadata. It does not authenticate a wallet principal, does not create a PoP session, and does not authorize protected API access. Opening an activation or receipt URL only displays server-side state; subscription access still requires verified settlement, a Bastion Payment Proof, wallet or Lightning principal binding, signed Subscription Entitlement, revocation checks, and Policy Engine approval.
+
+
+## Wallet-bound Subscription Entitlements
+
+Wallet-bound Subscription Entitlements define plan, scopes, metric groups, quotas, validity, assurance, and issuer signature metadata for Bitcoin and Lightning principals. They are not bearer credentials: protected API access still requires an active principal, active device, PoP session, matching entitlement binding, revocation checks, and Policy Engine allow decision. See `docs/WALLET_BOUND_SUBSCRIPTION_ENTITLEMENTS.md`.

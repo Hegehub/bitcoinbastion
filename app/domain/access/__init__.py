@@ -20,16 +20,36 @@ from app.domain.access.errors import (
     PlanEntitlementError,
 )
 from app.domain.access.plans import PlanCode, is_business_or_higher, is_enterprise, normalize_plan_code, plan_rank
+from app.domain.access.wallet_entitlements import (
+    EffectiveEntitlement,
+    EntitlementAssurance,
+    EntitlementLimits,
+    EntitlementPaymentMethod,
+    EntitlementRestriction,
+    EntitlementSubjectType,
+    IssuerSignatureMetadata,
+    WalletEntitlementStatus,
+    WalletSubscriptionEntitlement,
+)
 
 __all__ = [
     "AccessDecision",
     "AccessDomainError",
+    "EffectiveEntitlement",
+    "EntitlementAssurance",
+    "EntitlementLimits",
+    "EntitlementPaymentMethod",
+    "EntitlementRestriction",
+    "EntitlementSubjectType",
     "ForbiddenScopeError",
     "InvalidPlanCodeError",
     "InvalidScopeError",
+    "IssuerSignatureMetadata",
     "MetricGroupNotAllowedError",
     "PlanCode",
     "PlanEntitlementError",
+    "WalletEntitlementStatus",
+    "WalletSubscriptionEntitlement",
     "PlanLimits",
     "PolicyDecision",
     "get_plan_limits",
