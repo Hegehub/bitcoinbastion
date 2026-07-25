@@ -1,0 +1,90 @@
+# Deterministic Wallet/LNURL policy hook defaults. API routes must not bypass
+# the central AccessPolicyEngine; these entries are declarative hints consumed by
+# service-layer hooks and tests.
+policy_epoch: 1
+policy_hash: sha256:lnurl-policy-v1
+lnurl_auth:
+  registration:
+    action: lnurl_auth_register
+    minimum_assurance: standard
+    required_methods: [lnurl_auth]
+  login:
+    action: lnurl_auth_login
+    minimum_assurance: standard
+    required_methods: [lnurl_auth]
+  linking:
+    action: lnurl_auth_link
+    minimum_assurance: high_assurance
+    required_methods: [lnurl_auth, session_pop]
+  step_up:
+    action: lnurl_auth_step_up
+    minimum_assurance: high_assurance
+    required_methods: [lnurl_auth, device_pop, session_pop]
+lnurl_pay:
+  entitlement_issuance:
+    action: lnurl_pay_issue_entitlement
+    requires_settlement_verified: true
+    requires_payment_proof: true
+    duplicate_entitlement: deny
+lightning_address:
+  public_product_resolution:
+    action: lightning_address_resolve
+    degraded_mode: public_products_only
+  private_or_payregister_resolution:
+    action: lightning_address_resolve
+    requires_active_address: true
+    requires_terminal_not_revoked: true
+lnurl_withdraw:
+  request_creation:
+    action: lnurl_withdraw_create
+    requires_pop_session: true
+    requires_step_up_for_high_value: true
+  invoice_acceptance:
+    action: lnurl_withdraw_accept_invoice
+    requires_invoice_valid: true
+  payment_execution:
+    action: lnurl_withdraw_pay
+    requires_policy_approval: true
+    duplicate_payment: deny
+payregister:
+  refund_roles: [owner, admin]
+payer_data:
+  allowed_default_fields: [auth]
+  personal_fields_default: forbidden
+success_action:
+  allowed_types: [message, url]
+  url_requires_approved_host: true
+legacy_wallet_compatibility:
+  critical_actions: deny
+step_up:
+  freshness_seconds:
+    human_intent: 300
+    lnurl_auth: 300
+    bip322: 300
+    quorum: 300
+    hardware_wallet: 300
+  actions:
+    read_basic_metrics:
+      risk: routine
+      requirements: [pop_session]
+    create_api_key:
+      risk: high
+      requirements: [pop_session, human_intent]
+      one_of: [lnurl_auth, bip322]
+      max_proof_age_seconds: 300
+    treasury_policy_change:
+      risk: critical
+      requirements: [pop_session, human_intent, bip322, high_assurance]
+      max_proof_age_seconds: 300
+    business_owner_change:
+      risk: critical
+      requirements: [pop_session, human_intent, multi_wallet_quorum]
+      quorum:
+        threshold: 2
+        participants: 3
+    high-value_lnurl_withdraw:
+      risk: critical
+      requirements: [pop_session, human_intent, dual_method]
+    sovereign_recovery_complete:
+      risk: sovereign
+      requirements: [human_intent, multi_wallet_quorum, hardware_wallet]
