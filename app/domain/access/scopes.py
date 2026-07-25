@@ -42,6 +42,8 @@ ALERTS_MANAGE = "alerts:manage"
 BUSINESS_WORKSPACE = "business:workspace"
 BUSINESS_AUDIT_READ = "business:audit:read"
 BUSINESS_ROLES_MANAGE = "business:roles:manage"
+PAYREGISTER_PAYMENT_CREATE = "payregister:payment:create"
+PAYREGISTER_REFUND_REQUEST = "payregister:refund:request"
 PAYREGISTER_METRICS_READ = "payregister:metrics:read"
 PAYREGISTER_OPERATOR_READ = "payregister:operator:read"
 PAYREGISTER_DEVICES_READ = "payregister:devices:read"
@@ -113,6 +115,8 @@ ACCESS_SCOPES: frozenset[str] = frozenset(
         BUSINESS_WORKSPACE,
         BUSINESS_AUDIT_READ,
         BUSINESS_ROLES_MANAGE,
+        PAYREGISTER_PAYMENT_CREATE,
+        PAYREGISTER_REFUND_REQUEST,
         PAYREGISTER_METRICS_READ,
         PAYREGISTER_OPERATOR_READ,
         PAYREGISTER_DEVICES_READ,
