@@ -17,3 +17,10 @@ Operational alert thresholds for Bitcoin Bastion runtime.
 ## Actions
 - Warning: investigate in business hours, track trend in recovery check.
 - Critical: immediate operator escalation and rollout freeze until root cause identified.
+# Wallet/LNURL security alerts
+
+Initial Wallet/LNURL replay, proof rejection, policy denial, settlement verification,
+and withdraw denial thresholds are defined in
+`deploy/kubernetes/observability/prometheus-rules-wallet-lnurl.yaml`. They require
+production baseline tuning. Alert labels and annotations are fixed, low-cardinality,
+and contain no principal, wallet, k1, invoice, payment, session, or merchant IDs.

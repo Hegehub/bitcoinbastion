@@ -1,0 +1,17 @@
+{
+  "title": "Bastion Wallet + LNURL Security",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["wallet-auth", "lnurl", "security"],
+  "refresh": "30s",
+  "panels": [
+    {"type": "timeseries", "title": "Wallet proof outcomes", "targets": [{"expr": "sum by (proof_type, result) (rate(wallet_auth_proofs_total[5m]))"}]},
+    {"type": "timeseries", "title": "LNURL-auth callback outcomes", "targets": [{"expr": "sum by (action, result) (rate(lnurl_auth_callbacks_total[5m]))"}]},
+    {"type": "timeseries", "title": "k1 replay and expiry", "targets": [{"expr": "sum by (event, result) (rate(lnurl_auth_k1_events_total{event=~\"replay_detected|expired\"}[5m]))"}]},
+    {"type": "timeseries", "title": "Policy decisions", "targets": [{"expr": "sum by (decision, reason_code) (rate(bastion_access_policy_decisions_total[5m]))"}]},
+    {"type": "timeseries", "title": "Payment to entitlement", "targets": [{"expr": "sum by (payment_state, result) (rate(lnurl_payment_entitlements_total[5m]))"}]},
+    {"type": "timeseries", "title": "Withdraw stages", "targets": [{"expr": "sum by (stage, result) (rate(lnurl_withdraw_requests_total[5m]))"}]},
+    {"type": "timeseries", "title": "Integrity posture", "targets": [{"expr": "sum by (actor_type, band) (bastion_access_integrity_band_population)"}]}
+  ]
+}
+

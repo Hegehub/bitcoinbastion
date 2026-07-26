@@ -327,3 +327,25 @@ LNURL comments are untrusted external metadata. They must not authenticate a pri
 - `LNURL_WITHDRAW_REQUIRE_ORIGINAL_PAYMENT=true` requires authoritative original payment evidence for refund purposes.
 - `LNURL_WITHDRAW_ALLOW_OVER_REFUNDS=false` prevents cumulative refunds above the configured refund percentage.
 - `LNURL_WITHDRAW_RECONCILIATION_ENABLED=true` requires ambiguous provider outcomes to be reconciled rather than blindly retried.
+# Wallet/LNURL revocation
+
+`ACCESS_REVOCATION_PEPPER` is the secret HMAC pepper for private revocation lookup
+identifiers. `ACCESS_REVOCATION_FAIL_CLOSED` defaults to true for critical access.
+`ACCESS_REVOCATION_CACHE_TTL_SECONDS` and
+`ACCESS_REVOCATION_PROPAGATION_BATCH_SIZE` bound cache and propagation work;
+`ACCESS_REVOCATION_PROPAGATION_ENABLED` enables descendant materialization.
+`LNURL_K1_REPLAY_LOCKOUT_ENABLED` and `LNURL_K1_REPLAY_RISK_INCREMENT` control
+replay response. `OFFLINE_PACK_MAX_REVOCATION_AGE_SECONDS` bounds disconnected
+residual access; it does not provide instantaneous offline revocation.
+
+Recovery Capsule settings use `RECOVERY_CAPSULE_ENABLED`, bounded capsule TTL and
+attempt/day limits, profile-specific minimum cooldowns, and mandatory success-time
+session revocation/child freeze flags. Business/Enterprise quorum and Sovereign
+transparency requirements default on. No support bypass or cooldown-disable setting
+exists. See `WALLET_AUTH_RECOVERY.md`.
+
+Recovery LNURL-auth settings use `WALLET_AUTH_RECOVERY_LNURL_ENABLED`, a maximum
+300-second k1 TTL, bounded challenge attempts, and a stable auth domain.
+`WALLET_AUTH_RECOVERY_REQUIRE_ADDITIONAL_FACTOR` defaults to true and
+`WALLET_AUTH_RECOVERY_LNURL_ALLOW_COMPATIBILITY_PROOF` defaults to false. Domain
+changes are security-sensitive migrations; LNURL-auth never completes recovery alone.

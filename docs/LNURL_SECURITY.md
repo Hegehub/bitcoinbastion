@@ -4,6 +4,12 @@
 
 Bastion `k1` challenges are generated as 32 cryptographically random bytes and exposed only as 64-character lowercase hexadecimal strings. Registry lookup stores an HMAC-SHA256 lookup hash derived from the server pepper; non-secret SHA-256 fingerprints are used for audit correlation.
 
+Administrative k1/key/challenge revocation is resolved through the Access
+Revocation Registry while atomic single-use consumption remains in the K1 Registry.
+Pay requests, payment proofs, Lightning Addresses and withdraw requests are also
+independently revocable; revocation preserves factual settlement history. See
+[`WALLET_LNURL_REVOCATION.md`](WALLET_LNURL_REVOCATION.md).
+
 Each `k1` has an explicit purpose, LNURL action where applicable, internal Bastion action, expected domain, short TTL, and optional binding hashes for principal, device, session, payment, withdraw, or recovery attempts. Critical step-up, withdrawal, recovery, business, and sovereign approvals require a policy hash produced from an external canonical intent.
 
 Consumption is single-use. The registry performs a guarded active-to-consumed transition, so concurrent callbacks produce exactly one successful consumer and all replays are rejected. A valid `k1` does not prove wallet signature validity, entitlement, authorization, withdrawal permission, recovery approval, or protected API access.
