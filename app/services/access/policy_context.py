@@ -94,6 +94,20 @@ class AccessPolicyContext:
     policy_hash: str = "sha256:access-policy-v1"
     source_channel: PolicySourceChannel | str = PolicySourceChannel.API
     revocation_epoch: int | None = None
+    revocation_resolution: dict[str, Any] = field(default_factory=dict)
+    inherited_revocation: bool = False
+    propagation_status: str | None = None
+    target_scope: str | None = None
+    suspension_expiry: datetime | None = None
+    offline_epoch_status: str | None = None
+    payment_proof_status: str | None = None
+    withdraw_revocation_status: str | None = None
+    access_integrity_score: int | None = None
+    access_integrity_band: str | None = None
+    integrity_evidence_fresh_until: datetime | None = None
+    integrity_critical_flags: frozenset[str] = field(default_factory=frozenset)
+    integrity_recommendations: tuple[str, ...] = ()
+    integrity_score_version: str | None = None
     idempotency_key_hash: str | None = None
     previous_state: str | None = None
     requested_state: str | None = None

@@ -86,6 +86,33 @@ class AccessRevocationTargetType(StrEnum):
     ISSUER_KEY = "issuer_key"
     RECOVERY_QUORUM = "recovery_quorum"
     WORKSPACE_ROLE = "workspace_role"
+    ACCESS_CERTIFICATE = "access_certificate"
+    SUBSCRIPTION_ENTITLEMENT = "subscription_entitlement"
+    METRIC_ENTITLEMENT = "metric_entitlement"
+    ACCESS_DEVICE = "access_device"
+    ACCESS_SESSION = "access_session"
+    OFFLINE_VALIDITY_PACK = "offline_validity_pack"
+    WALLET_PRINCIPAL = "wallet_principal"
+    BITCOIN_WALLET_PRINCIPAL = "bitcoin_wallet_principal"
+    LIGHTNING_WALLET_PRINCIPAL = "lightning_wallet_principal"
+    WALLET_PROOF = "wallet_proof"
+    WALLET_DEVICE = "wallet_device"
+    WALLET_SESSION = "wallet_session"
+    WALLET_STEP_UP_PROOF = "wallet_step_up_proof"
+    WALLET_RECOVERY_CAPSULE = "wallet_recovery_capsule"
+    MULTI_WALLET_QUORUM = "multi_wallet_quorum"
+    LNURL_AUTH_KEY = "lnurl_auth_key"
+    LNURL_AUTH_CHALLENGE = "lnurl_auth_challenge"
+    LNURL_K1 = "lnurl_k1"
+    LNURL_PAY_REQUEST = "lnurl_pay_request"
+    LNURL_PAYMENT_PROOF = "lnurl_payment_proof"
+    LNURL_WITHDRAW_REQUEST = "lnurl_withdraw_request"
+    LIGHTNING_ADDRESS = "lightning_address"
+    BUSINESS_WORKSPACE = "business_workspace"
+    BUSINESS_ROLE_BINDING = "business_role_binding"
+    PAYREGISTER_DEVICE = "payregister_device"
+    PAYREGISTER_TERMINAL = "payregister_terminal"
+    PAYREGISTER_CASHIER_SHIFT = "payregister_cashier_shift"
 
 
 class RecoveryAttemptStatus(StrEnum):
@@ -263,11 +290,23 @@ class AccessRevocation(Base):
 
 class AccessAuditEvent(Base):
     __tablename__ = "access_audit_events"
+    __table_args__ = (
+        UniqueConstraint("chain_id", "sequence_number", name="uq_access_audit_chain_sequence"),
+        UniqueConstraint("chain_id", "idempotency_key_hash", name="uq_access_audit_chain_idempotency"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     event_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
     previous_event_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
     event_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    event_version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    chain_id: Mapped[str] = mapped_column(String(80), nullable=False, default="access-security", index=True)
+    sequence_number: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    idempotency_key_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    event_category: Mapped[str] = mapped_column(String(40), nullable=False, default="security", index=True)
+    event_status: Mapped[str] = mapped_column(String(30), nullable=False, default="success", index=True)
+    severity: Mapped[str] = mapped_column(String(20), nullable=False, default="info", index=True)
+    retention_class: Mapped[str] = mapped_column(String(30), nullable=False, default="security", index=True)
     actor_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
     object_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
     canonical_event_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False, default=dict)

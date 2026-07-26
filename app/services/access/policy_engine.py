@@ -101,6 +101,9 @@ class AccessPolicyEngine:
         revocation_decision = self._check_revocation(context, plan)
         if revocation_decision is not None:
             return revocation_decision
+        integrity_decision = self._check_access_integrity(context, plan)
+        if integrity_decision is not None:
+            return integrity_decision
         offline_decision = self._check_offline(context, plan)
         if offline_decision is not None:
             return offline_decision
@@ -430,6 +433,25 @@ class AccessPolicyEngine:
         return None
 
     def _check_revocation(self, context: AccessPolicyContext, plan: PlanCode) -> AccessPolicyDecision | None:
+        resolution = context.revocation_resolution
+        if resolution.get("revoked"):
+            return self._deny(POLICY_DECISION_REVOKED, reasons.PRINCIPAL_REVOKED,
+                "Access has been revoked.", current_plan=plan,
+                metadata={"inherited_revocation": bool(resolution.get("inherited_from_parent")),
+                          "propagation_status": resolution.get("propagation_status"),
+                          "target_scope": resolution.get("scope")})
+        if context.propagation_status in {"pending_propagation", "partially_propagated"} and context.is_critical_action:
+            return self._deny(POLICY_DECISION_REVOKED, reasons.PRINCIPAL_REVOKED,
+                "Revocation state is still propagating.", current_plan=plan)
+        if context.offline_epoch_status == "stale":
+            return self._deny(POLICY_DECISION_ONLINE_CHECK_REQUIRED, reasons.ONLINE_CHECK_REQUIRED,
+                "Online revocation check is required.", current_plan=plan)
+        if context.withdraw_revocation_status == "revoked":
+            return self._deny(POLICY_DECISION_REVOKED, reasons.WITHDRAW_REQUEST_REVOKED,
+                "Withdraw request is unavailable.", current_plan=plan)
+        if context.payment_proof_status in {"revoked", "invalidated", "dispute_review"}:
+            return self._deny(POLICY_DECISION_REVOKED, reasons.PAYMENT_VERIFICATION_FAILED,
+                "Payment proof is unavailable.", current_plan=plan)
         revoked_targets = context.revocation_state.get("revoked_targets") if isinstance(context.revocation_state, dict) else None
         if revoked_targets:
             raw_target_type = revoked_targets[0].get("target_type") if isinstance(revoked_targets[0], dict) else None
@@ -442,6 +464,24 @@ class AccessPolicyEngine:
             return self._deny(POLICY_DECISION_REVOKED, reason_code, "Access material is revoked.", current_plan=plan, metadata={"revoked_targets": revoked_targets})
         if context.revocation_state.get("allowed") is False:
             return self._deny(POLICY_DECISION_REVOKED, reasons.SESSION_REVOKED, "Access material is revoked.", current_plan=plan)
+        return None
+
+    def _check_access_integrity(self, context: AccessPolicyContext, plan: PlanCode) -> AccessPolicyDecision | None:
+        """Consume server-calculated posture only as a restrictive risk signal."""
+        if context.integrity_score_version is None:
+            return None
+        if context.integrity_score_version != "2.0" or context.access_integrity_score is None:
+            return self._deny(POLICY_DECISION_DENY, reasons.VERIFICATION_TOO_WEAK,
+                "Access posture evidence is unavailable.", current_plan=plan)
+        if context.access_integrity_band == "critical" or context.access_integrity_score < 30:
+            return self._deny(POLICY_DECISION_LOCKDOWN_ACTIVE, reasons.LOCKDOWN_ACTIVE,
+                "Access posture requires recovery review.", current_plan=plan)
+        if context.access_integrity_band == "restricted" or context.access_integrity_score < 55:
+            return self._deny(POLICY_DECISION_DENY, reasons.VERIFICATION_TOO_WEAK,
+                "Access posture permits only restricted access.", current_plan=plan)
+        if context.access_integrity_band == "guarded" and (context.is_critical_action or context.request_risk_level in {"high", "critical"}):
+            return self._deny(POLICY_DECISION_STEP_UP_REQUIRED, reasons.STEP_UP_REQUIRED,
+                "Additional verification is required.", current_plan=plan, step_up_required=True)
         return None
 
     def _check_offline(self, context: AccessPolicyContext, plan: PlanCode) -> AccessPolicyDecision | None:

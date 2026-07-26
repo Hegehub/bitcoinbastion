@@ -9,11 +9,15 @@ keys.
 from __future__ import annotations
 
 from collections.abc import Mapping
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
+from hmac import compare_digest
+import re
 from typing import Any
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db.models.access import AccessAuditEvent
@@ -39,7 +43,46 @@ _FORBIDDEN_AUDIT_KEY_PARTS = (
     "bearer",
     "secret",
     "api_key_raw",
+    "raw_k1",
+    "linking_key",
+    "wallet_address",
+    "raw_signature",
+    "der_signature",
+    "bolt11",
+    "invoice",
+    "preimage",
+    "payerdata",
+    "payer_data",
+    "email",
+    "comment",
+    "xprv",
+    "tprv",
+    "wif",
+    "server_pepper",
+    "issuer_private",
 )
+_SAFE_AUDIT_KEY_SUFFIXES = ("_hash", "_fingerprint", "_commitment")
+_SAFE_AUDIT_EXACT_KEYS = {"comment_allowed", "payer_data_present", "payer_data_auth_verified"}
+
+CANONICAL_CHAIN_ID = "access-security"
+AUDIT_EVENT_VERSION = 1
+AUDIT_APPEND_MAX_RETRIES = 3
+
+
+class AuditSeverity(StrEnum):
+    INFO = "info"
+    NOTICE = "notice"
+    WARNING = "warning"
+    HIGH = "high"
+    CRITICAL = "critical"
+
+
+class AuditRetentionClass(StrEnum):
+    TRANSIENT = "transient"
+    OPERATIONAL = "operational"
+    SECURITY = "security"
+    COMPLIANCE = "compliance"
+    LEGAL_HOLD = "legal_hold"
 
 
 class AccessAuditEventType(StrEnum):
@@ -148,6 +191,16 @@ class AccessAuditEventType(StrEnum):
     LNURL_AUTH_RISK_ESCALATED = "lnurl_auth_risk_escalated"
     LNURL_AUTH_LOCKDOWN_TRIGGERED = "lnurl_auth_lockdown_triggered"
     LNURL_AUTH_COMPATIBILITY_DOWNGRADE_DETECTED = "lnurl_auth_compatibility_downgrade_detected"
+    LNURL_RECOVERY_FACTOR_REQUESTED = "lnurl_recovery_factor_requested"
+    LNURL_RECOVERY_CHALLENGE_CREATED = "lnurl_recovery_challenge_created"
+    LNURL_RECOVERY_CALLBACK_RECEIVED = "lnurl_recovery_callback_received"
+    LNURL_RECOVERY_FACTOR_VERIFIED = "lnurl_recovery_factor_verified"
+    LNURL_RECOVERY_FACTOR_REJECTED = "lnurl_recovery_factor_rejected"
+    LNURL_RECOVERY_K1_EXPIRED = "lnurl_recovery_k1_expired"
+    LNURL_RECOVERY_K1_REUSED = "lnurl_recovery_k1_reused"
+    LNURL_RECOVERY_PRINCIPAL_MISMATCH = "lnurl_recovery_principal_mismatch"
+    LNURL_RECOVERY_FACTOR_REVOKED = "lnurl_recovery_factor_revoked"
+    LNURL_RECOVERY_ADDITIONAL_FACTOR_REQUIRED = "lnurl_recovery_additional_factor_required"
     LNURL_PAY_REQUEST_CREATED = "lnurl_pay_request_created"
     LNURL_PAY_REQUEST_DENIED = "lnurl_pay_request_denied"
     LNURL_PAY_REQUEST_FAILED = "lnurl_pay_request_failed"
@@ -156,6 +209,92 @@ class AccessAuditEventType(StrEnum):
 
 
 ACCESS_AUDIT_EVENT_TYPES: frozenset[str] = frozenset(event.value for event in AccessAuditEventType)
+
+# Domain adapters validate semantics, while this canonical writer owns linking,
+# persistence and verification. These stable values intentionally live here so
+# projections (LNURL, wallet, PayRegister and SIEM) cannot form competing ledgers.
+WALLET_LNURL_AUDIT_EVENT_TYPES: frozenset[str] = frozenset(
+    """wallet_challenge_created wallet_challenge_expired wallet_challenge_reused
+    wallet_proof_verification_started wallet_proof_verification_success wallet_proof_verification_failed
+    wallet_proof_network_mismatch wallet_proof_origin_mismatch wallet_proof_too_weak
+    wallet_legacy_signature_used wallet_legacy_signature_rejected wallet_principal_created
+    wallet_principal_verified wallet_principal_suspended wallet_principal_reactivated wallet_principal_revoked
+    wallet_principal_recovery_locked wallet_registration_success wallet_registration_failed wallet_login_success
+    wallet_login_failed wallet_device_binding_started wallet_device_bound wallet_device_binding_failed
+    wallet_device_suspended wallet_device_revoked wallet_new_device_step_up_required wallet_session_created
+    wallet_session_creation_failed wallet_session_expired wallet_session_frozen wallet_session_revoked
+    wallet_session_replay_rejected wallet_request_signature_failed wallet_request_signature_verified
+    wallet_step_up_required wallet_step_up_started wallet_step_up_success wallet_step_up_failed
+    wallet_step_up_expired wallet_step_up_replayed lnurl_auth_qr_issued lnurl_auth_callback_success
+    lnurl_auth_k1_unexpected lnurl_auth_domain_mismatch lnurl_auth_action_mismatch lnurl_auth_principal_created
+    lnurl_auth_principal_linked lnurl_auth_principal_link_failed lnurl_auth_session_created
+    lnurl_auth_step_up_required lnurl_auth_step_up_success lnurl_auth_step_up_failed
+    lnurl_pay_request_created lnurl_pay_request_failed lnurl_pay_metadata_built lnurl_pay_callback_received
+    lnurl_invoice_issued lnurl_invoice_issue_failed lnurl_payment_pending lnurl_payment_settled
+    lnurl_payment_expired lnurl_payment_failed lnurl_payment_duplicate_callback lnurl_payment_proof_created
+    lnurl_payment_proof_failed lnurl_entitlement_issuance_started lnurl_entitlement_issued
+    lnurl_entitlement_issue_failed lnurl_success_action_created lnurl_success_action_opened
+    lnurl_comment_received lnurl_payerdata_received lnurl_payerdata_auth_verified lnurl_payerdata_auth_failed
+    lnurl_verify_started lnurl_verify_success lnurl_verify_unsettled lnurl_verify_failed
+    lnurl_verify_response_invalid lnurl_verify_preimage_mismatch lnurl_verify_payment_request_mismatch
+    lightning_address_resolution_requested lightning_address_resolved lightning_address_not_found
+    lightning_address_disabled lightning_address_policy_denied lightning_address_domain_mismatch
+    lightning_address_payment_request_created lnurl_withdraw_request_started lnurl_withdraw_policy_denied
+    lnurl_withdraw_request_created lnurl_withdraw_qr_issued lnurl_withdraw_callback_received
+    lnurl_withdraw_k1_unexpected lnurl_withdraw_k1_expired lnurl_withdraw_k1_reused
+    lnurl_withdraw_invoice_invalid lnurl_withdraw_invoice_received lnurl_withdraw_payment_started
+    lnurl_withdraw_paid lnurl_withdraw_failed lnurl_withdraw_expired lnurl_withdraw_revoked
+    lnurl_withdraw_limit_exceeded lnurl_withdraw_step_up_required subscription_payment_bound_to_principal
+    subscription_entitlement_issuance_started subscription_entitlement_issued subscription_entitlement_renewed
+    subscription_entitlement_upgraded subscription_entitlement_downgraded subscription_entitlement_expired
+    subscription_entitlement_frozen metric_entitlement_denied quota_exceeded entitlement_signature_failed
+    policy_evaluation_started policy_quota_exceeded policy_metric_not_allowed policy_recovery_required
+    policy_online_check_required policy_error revocation_repeated_idempotently revocation_check_failed
+    wallet_session_revoked lnurl_k1_revoked lnurl_payment_request_revoked lnurl_withdraw_request_revoked
+    subscription_entitlement_revoked access_certificate_revoked offline_validity_pack_revoked
+    emergency_lockdown_started emergency_lockdown_completed emergency_lockdown_failed
+    emergency_lockdown_release_requested emergency_lockdown_released emergency_lockdown_release_denied
+    recovery_capsule_created recovery_quorum_progressed recovery_cooldown_completed recovery_abuse_detected
+    recovery_seed_input_rejected recovery_private_key_input_rejected support_only_recovery_rejected
+    access_certificate_issue_started access_certificate_issued access_certificate_issue_failed
+    access_certificate_bound_to_wallet_principal access_certificate_bound_to_lightning_principal
+    offline_validity_pack_issued offline_validity_pack_expired issuer_key_rotated crypto_epoch_advanced
+    pq_signature_requested pq_signature_unsupported pq_signature_verified pq_signature_failed
+    payregister_lnurl_payment_created payregister_lnurl_invoice_issued payregister_lnurl_payment_settled
+    payregister_receipt_packet_created payregister_cashier_context_bound payregister_shift_pass_verified
+    payregister_refund_requested payregister_refund_policy_denied payregister_refund_approved
+    payregister_refund_paid payregister_terminal_revoked payregister_owner_step_up_required
+    payregister_owner_step_up_success payregister_owner_step_up_failed""".split()
+)
+WALLET_LNURL_AUDIT_EVENT_TYPES |= frozenset(
+    """access_integrity_calculated access_integrity_band_changed access_integrity_critical_signal
+    access_integrity_step_up_recommended access_integrity_read_only_recommended
+    access_integrity_lockdown_recommended access_integrity_cache_invalidated
+    access_integrity_policy_hint_consumed""".split()
+)
+WALLET_LNURL_AUDIT_EVENT_TYPES |= frozenset(
+    """recovery_capsule_creation_denied recovery_factor_rejected recovery_factor_replay_rejected
+    recovery_duplicate_factor_rejected recovery_cooldown_extended recovery_ready_for_completion
+    recovery_completion_requested recovery_completion_allowed recovery_completion_denied recovery_expired
+    recovery_locked recovery_revoked recovery_sessions_revoked recovery_devices_frozen recovery_roles_frozen
+    recovery_transparency_checkpoint_required""".split()
+)
+ACCESS_AUDIT_EVENT_TYPES = ACCESS_AUDIT_EVENT_TYPES | WALLET_LNURL_AUDIT_EVENT_TYPES
+
+
+@dataclass(frozen=True, slots=True)
+class AuditChainVerificationResult:
+    valid: bool
+    chain_id: str
+    checked_events: int
+    first_sequence: int | None
+    last_sequence: int | None
+    expected_head_hash: str | None
+    actual_head_hash: str | None
+    first_invalid_event_id: int | None
+    failure_reason: str | None
+    verification_started_at: datetime
+    verification_completed_at: datetime
 
 
 def sanitize_audit_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
@@ -178,13 +317,29 @@ def build_canonical_event(
     workspace_id_hash: str | None = None,
     metadata: dict[str, Any] | None = None,
     occurred_at: datetime | None = None,
+    chain_id: str = CANONICAL_CHAIN_ID,
+    sequence_number: int = 1,
+    event_version: int = AUDIT_EVENT_VERSION,
+    event_category: str = "security",
+    event_status: str = "success",
+    severity: AuditSeverity | str = AuditSeverity.INFO,
+    retention_class: AuditRetentionClass | str = AuditRetentionClass.SECURITY,
+    idempotency_key_hash: str | None = None,
 ) -> dict[str, Any]:
     """Build deterministic, sanitized audit event material."""
 
     normalized_type = _validate_event_type(event_type)
     occurred = _isoformat_utc(occurred_at or datetime.now(UTC))
     return {
+        "event_version": event_version,
+        "chain_id": chain_id,
+        "sequence_number": sequence_number,
         "event_type": normalized_type,
+        "event_category": event_category,
+        "event_status": event_status,
+        "severity": str(severity),
+        "retention_class": str(retention_class),
+        "idempotency_key_hash": idempotency_key_hash,
         "actor_hash": actor_hash,
         "object_hash": object_hash,
         "pass_lookup_hash": pass_lookup_hash,
@@ -201,7 +356,9 @@ def compute_event_hash(previous_event_hash: str | None, canonical_event: dict[st
     """Compute SHA-256 over previous hash plus canonical event JSON."""
 
     previous = previous_event_hash or AUDIT_GENESIS
-    return sha256_hex(previous + canonical_json(canonical_event))
+    chain_id = str(canonical_event.get("chain_id", CANONICAL_CHAIN_ID))
+    sequence = int(canonical_event.get("sequence_number", 1))
+    return sha256_hex(previous + chain_id + str(sequence) + canonical_json(canonical_event))
 
 
 class AccessAuditChain:
@@ -220,42 +377,149 @@ class AccessAuditChain:
         device_key_fingerprint: str | None = None,
         workspace_id_hash: str | None = None,
         metadata: dict[str, Any] | None = None,
+        chain_id: str = CANONICAL_CHAIN_ID,
+        event_category: str = "security",
+        event_status: str = "success",
+        severity: AuditSeverity | str = AuditSeverity.INFO,
+        retention_class: AuditRetentionClass | str = AuditRetentionClass.SECURITY,
+        idempotency_key_hash: str | None = None,
+        occurred_at: datetime | None = None,
     ) -> AccessAuditEvent:
-        try:
-            previous_hash = self.get_latest_event_hash()
-            canonical_event = build_canonical_event(
-                event_type=event_type,
-                actor_hash=actor_hash,
-                object_hash=object_hash,
-                pass_lookup_hash=pass_lookup_hash,
-                certificate_fingerprint=certificate_fingerprint,
-                session_hash=session_hash,
-                device_key_fingerprint=device_key_fingerprint,
-                workspace_id_hash=workspace_id_hash,
-                metadata=metadata,
-            )
-            event_hash = compute_event_hash(previous_hash, canonical_event)
-            event = AccessAuditEvent(
-                event_hash=event_hash,
-                previous_event_hash=previous_hash,
-                event_type=canonical_event["event_type"],
-                actor_hash=actor_hash,
-                object_hash=object_hash,
-                canonical_event_json=canonical_event,
-                created_at=datetime.now(UTC),
-            )
-            self.db.add(event)
-            self.db.flush()
-            return event
-        except ValueError:
-            raise
-        except Exception as exc:
-            raise AccessAuditError("access_audit_record_failed") from exc
+        if idempotency_key_hash:
+            existing = self.db.execute(
+                select(AccessAuditEvent).where(
+                    AccessAuditEvent.chain_id == chain_id,
+                    AccessAuditEvent.idempotency_key_hash == idempotency_key_hash,
+                )
+            ).scalar_one_or_none()
+            if existing is not None:
+                return existing
+        for attempt in range(AUDIT_APPEND_MAX_RETRIES):
+            try:
+                with self.db.begin_nested():
+                    latest = self.db.execute(
+                        select(AccessAuditEvent)
+                        .where(AccessAuditEvent.chain_id == chain_id)
+                        .order_by(AccessAuditEvent.sequence_number.desc())
+                        .limit(1)
+                        .with_for_update()
+                    ).scalar_one_or_none()
+                    previous_hash = latest.event_hash if latest else None
+                    sequence_number = (latest.sequence_number if latest else 0) + 1
+                    canonical_event = build_canonical_event(
+                        event_type=event_type,
+                        actor_hash=actor_hash,
+                        object_hash=object_hash,
+                        pass_lookup_hash=pass_lookup_hash,
+                        certificate_fingerprint=certificate_fingerprint,
+                        session_hash=session_hash,
+                        device_key_fingerprint=device_key_fingerprint,
+                        workspace_id_hash=workspace_id_hash,
+                        metadata=metadata,
+                        occurred_at=occurred_at,
+                        chain_id=chain_id,
+                        sequence_number=sequence_number,
+                        event_category=event_category,
+                        event_status=event_status,
+                        severity=severity,
+                        retention_class=retention_class,
+                        idempotency_key_hash=idempotency_key_hash,
+                    )
+                    event = AccessAuditEvent(
+                        event_hash=compute_event_hash(previous_hash, canonical_event),
+                        previous_event_hash=previous_hash,
+                        event_type=canonical_event["event_type"],
+                        event_version=AUDIT_EVENT_VERSION,
+                        chain_id=chain_id,
+                        sequence_number=sequence_number,
+                        idempotency_key_hash=idempotency_key_hash,
+                        event_category=event_category,
+                        event_status=event_status,
+                        severity=str(severity),
+                        retention_class=str(retention_class),
+                        actor_hash=actor_hash,
+                        object_hash=object_hash,
+                        canonical_event_json=canonical_event,
+                        created_at=datetime.now(UTC),
+                    )
+                    self.db.add(event)
+                    self.db.flush()
+                return event
+            except IntegrityError as exc:
+                if idempotency_key_hash:
+                    existing = self.db.execute(
+                        select(AccessAuditEvent).where(
+                            AccessAuditEvent.chain_id == chain_id,
+                            AccessAuditEvent.idempotency_key_hash == idempotency_key_hash,
+                        )
+                    ).scalar_one_or_none()
+                    if existing is not None:
+                        return existing
+                if attempt + 1 == AUDIT_APPEND_MAX_RETRIES:
+                    raise AccessAuditError("access_audit_append_conflict") from exc
+            except ValueError:
+                raise
+            except Exception as exc:
+                raise AccessAuditError("access_audit_record_failed") from exc
+        raise AccessAuditError("access_audit_append_conflict")
 
     def get_latest_event_hash(self) -> str | None:
         return self.db.execute(
             select(AccessAuditEvent.event_hash).order_by(AccessAuditEvent.id.desc()).limit(1)
         ).scalar_one_or_none()
+
+    def verify_chain_detailed(
+        self,
+        chain_id: str = CANONICAL_CHAIN_ID,
+        start_sequence: int | None = None,
+        end_sequence: int | None = None,
+    ) -> AuditChainVerificationResult:
+        started = datetime.now(UTC)
+        statement = select(AccessAuditEvent).where(AccessAuditEvent.chain_id == chain_id)
+        if start_sequence is not None:
+            statement = statement.where(AccessAuditEvent.sequence_number >= start_sequence)
+        if end_sequence is not None:
+            statement = statement.where(AccessAuditEvent.sequence_number <= end_sequence)
+        rows = list(self.db.execute(statement.order_by(AccessAuditEvent.sequence_number)).scalars())
+        previous = None
+        expected_sequence = start_sequence or 1
+        if start_sequence and start_sequence > 1:
+            predecessor = self.db.execute(
+                select(AccessAuditEvent).where(
+                    AccessAuditEvent.chain_id == chain_id,
+                    AccessAuditEvent.sequence_number == start_sequence - 1,
+                )
+            ).scalar_one_or_none()
+            previous = predecessor.event_hash if predecessor else None
+        failure = None
+        invalid_id = None
+        for row in rows:
+            expected_hash = compute_event_hash(previous, dict(row.canonical_event_json))
+            if row.sequence_number != expected_sequence:
+                failure = "missing_or_duplicate_sequence"
+            elif row.previous_event_hash != previous:
+                failure = "broken_previous_hash"
+            elif not compare_digest(row.event_hash, expected_hash):
+                failure = "event_hash_mismatch"
+            if failure:
+                invalid_id = row.id
+                break
+            previous = row.event_hash
+            expected_sequence += 1
+        actual_head = rows[-1].event_hash if rows else previous
+        return AuditChainVerificationResult(
+            not failure,
+            chain_id,
+            len(rows),
+            rows[0].sequence_number if rows else None,
+            rows[-1].sequence_number if rows else None,
+            previous,
+            actual_head,
+            invalid_id,
+            failure,
+            started,
+            datetime.now(UTC),
+        )
 
     def verify_chain(self, limit: int | None = None) -> dict[str, Any]:
         statement = select(AccessAuditEvent).order_by(AccessAuditEvent.id.asc())
@@ -299,7 +563,11 @@ class AccessAuditChain:
         return self.record_event(event_type=AccessAuditEventType.SESSION_CREATED.value, **kwargs)
 
     def record_policy_decision(self, *, allowed: bool, **kwargs: Any) -> AccessAuditEvent:
-        event_type = AccessAuditEventType.POLICY_ALLOWED.value if allowed else AccessAuditEventType.POLICY_DENIED.value
+        event_type = (
+            AccessAuditEventType.POLICY_ALLOWED.value
+            if allowed
+            else AccessAuditEventType.POLICY_DENIED.value
+        )
         return self.record_event(event_type=event_type, **kwargs)
 
     def record_revocation_created(self, **kwargs: Any) -> AccessAuditEvent:
@@ -312,7 +580,9 @@ class AccessAuditChain:
         return self.record_event(event_type=AccessAuditEventType.RECOVERY_STARTED.value, **kwargs)
 
     def record_legacy_auth_disabled(self, **kwargs: Any) -> AccessAuditEvent:
-        return self.record_event(event_type=AccessAuditEventType.LEGACY_AUTH_DISABLED.value, **kwargs)
+        return self.record_event(
+            event_type=AccessAuditEventType.LEGACY_AUTH_DISABLED.value, **kwargs
+        )
 
 
 def _validate_event_type(event_type: str) -> str:
@@ -326,7 +596,12 @@ def _sanitize_mapping(metadata: Mapping[str, Any]) -> dict[str, Any]:
     sanitized: dict[str, Any] = {}
     for key, value in metadata.items():
         lowered = str(key).lower()
-        if any(forbidden in lowered for forbidden in _FORBIDDEN_AUDIT_KEY_PARTS):
+        safe_identifier = (
+            lowered.endswith(_SAFE_AUDIT_KEY_SUFFIXES) or lowered in _SAFE_AUDIT_EXACT_KEYS
+        )
+        if not safe_identifier and any(
+            forbidden in lowered for forbidden in _FORBIDDEN_AUDIT_KEY_PARTS
+        ):
             raise ValueError("forbidden_audit_secret_key")
         sanitized[str(key)] = _sanitize_value(value)
     return sanitized
@@ -341,7 +616,23 @@ def _sanitize_value(value: Any) -> Any:
         return [_sanitize_value(item) for item in value]
     if isinstance(value, datetime):
         return _isoformat_utc(value)
+    if isinstance(value, str) and _looks_like_forbidden_secret(value):
+        raise ValueError("forbidden_audit_secret_value")
     return value
+
+
+def _looks_like_forbidden_secret(value: str) -> bool:
+    candidate = value.strip()
+    lowered = candidate.lower()
+    if lowered.startswith(("xprv", "tprv", "bbp_live_", "lnbc", "lntb", "lnbcrt")):
+        return True
+    if re.fullmatch(r"[5KL][1-9A-HJ-NP-Za-km-z]{50,51}", candidate):
+        return True
+    # A probable mnemonic is rejected by shape, not by embedding a word list.
+    words = candidate.split()
+    return len(words) in {12, 15, 18, 21, 24} and all(
+        re.fullmatch(r"[a-z]+", word) for word in words
+    )
 
 
 def _isoformat_utc(value: datetime) -> str:

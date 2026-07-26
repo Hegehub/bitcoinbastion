@@ -107,6 +107,7 @@ class LNURLPolicyHookConfig:
     allow_public_lightning_address_degraded: bool = False
     public_lightning_address_plan: PlanCode = PlanCode.LITE
     default_plan: PlanCode = PlanCode.LITE
+    environment: str = "unknown"
 
 
 @dataclass(frozen=True, slots=True)
@@ -185,7 +186,11 @@ class LNURLPolicyHooks:
     ) -> None:
         self.policy_engine_factory = policy_engine_factory or AccessPolicyEngine
         self.audit_sink = audit_sink or InMemoryLNURLPolicyAuditSink()
-        self.metrics_sink = metrics_sink or InMemoryLNURLPolicyMetricsSink()
+        if metrics_sink is None:
+            from app.services.lnurl.metrics import PrometheusLNURLPolicyMetricsSink
+            self.metrics_sink: LNURLPolicyMetricsSink = PrometheusLNURLPolicyMetricsSink()
+        else:
+            self.metrics_sink = metrics_sink
         self.revocation_checker = revocation_checker
         self.config = config or LNURLPolicyHookConfig()
 
@@ -398,7 +403,7 @@ class LNURLPolicyHooks:
             "reason_category": _reason_category(decision.reason_code),
             "actor_type": _value(request.actor_type),
             "verification_strength": str(request.verification_strength or request.authentication_assurance),
-            "environment": "test",
+            "environment": self.config.environment if self.config.environment in {"production", "staging", "development", "test"} else "unknown",
         }
         self.metrics_sink.record("bastion_lnurl_policy_decisions_total", labels)
         if not decision.allowed:
