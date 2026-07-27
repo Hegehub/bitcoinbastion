@@ -323,6 +323,36 @@ class WalletLNURLRecoveryFactorResponse(WalletSchemaBase):
     warning: str = Field(description="LNURL-auth proof satisfies one Recovery Capsule factor. It does not complete recovery by itself.")
 
 
+class WalletQuorumApprovalView(WalletSchemaBase):
+    approval_hash: str = Field(description="Commitment to a verified approval; never a raw proof.")
+    participant_type: str
+    proof_method: str
+    slot_id: str
+    role: str | None = None
+    verification_strength: str
+    expires_at: datetime
+
+
+class WalletQuorumStatusResponse(WalletSchemaBase):
+    quorum_hash: str = Field(description="Opaque HMAC-derived quorum reference.")
+    quorum_type: str
+    action: str
+    status: str
+    decision: str
+    threshold: int = Field(ge=1)
+    approval_count: int = Field(ge=0)
+    distinct_principals: int = Field(ge=0)
+    distinct_methods: int = Field(ge=0)
+    filled_slots: list[str]
+    missing_roles: list[str]
+    missing_methods: list[str]
+    cooldown_until: datetime | None = None
+    policy_hash: str
+    warning: str = Field(
+        default="A quorum coordinates distributed authority. It does not bypass the Policy Engine, scopes, entitlements, revocation, or active PoP Session requirements."
+    )
+
+
 class WalletLockdownRequest(WalletSchemaBase):
     principal_hash: str
     reason: str

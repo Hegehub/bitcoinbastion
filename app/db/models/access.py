@@ -12,7 +12,7 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, JSON, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -40,7 +40,6 @@ class AccessCertificateStatus(StrEnum):
     REVOKED = "revoked"
     FROZEN = "frozen"
     REPLACED = "replaced"
-
 
 class SubscriptionEntitlementStatus(StrEnum):
     ACTIVE = "active"
@@ -163,11 +162,126 @@ class AccessCertificate(Base):
     scopes_json: Mapped[JsonList] = mapped_column(_JSON, nullable=False, default=list)
     public_keys_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
     issuer_signature_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False, default=dict)
+    issuer_envelope_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
+    issuer_envelope_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    signature_requirement_policy: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    crypto_assurance: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    requires_reissue: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     issued_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
     replaced_by_certificate_fingerprint: Mapped[str | None] = mapped_column(String(128), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow, onupdate=utcnow)
+
+
+class AccessCertificatePrincipalBinding(Base):
+    __tablename__ = "access_certificate_principal_bindings"
+    __table_args__ = (
+        UniqueConstraint("certificate_id", name="uq_access_certificate_principal_binding_cert"),
+        UniqueConstraint(
+            "principal_binding_hash", name="uq_access_certificate_principal_binding_hash"
+        ),
+        Index("ix_access_certificate_binding_principal_status", "principal_hash", "status"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    certificate_id: Mapped[int] = mapped_column(
+        ForeignKey("access_certificates.id"), nullable=False, unique=True, index=True
+    )
+    certificate_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    principal_hash: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    principal_type: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    principal_binding_hash: Mapped[str] = mapped_column(
+        String(128), nullable=False, unique=True, index=True
+    )
+    proof_method: Mapped[str] = mapped_column(String(60), nullable=False)
+    verification_strength: Mapped[str] = mapped_column(String(40), nullable=False)
+    device_key_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    entitlement_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    assurance_profile: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    policy_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    principal_revocation_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    crypto_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, index=True, default="active")
+    metadata_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utcnow, onupdate=utcnow
+    )
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class OfflineValidityPack(Base):
+    __tablename__ = "offline_validity_packs"
+    __table_args__ = (
+        UniqueConstraint("pack_id_hash", name="uq_offline_validity_pack_id_hash"),
+        UniqueConstraint("pack_fingerprint", name="uq_offline_validity_pack_fingerprint"),
+        Index("ix_offline_pack_principal_status", "principal_hash", "status"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    pack_id_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    pack_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    principal_hash: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    principal_type: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    device_key_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    access_certificate_fingerprint: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    entitlement_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    profile: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    policy_snapshot_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False)
+    signed_pack_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False)
+    revocation_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    policy_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    crypto_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    entitlement_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    issued_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    not_before: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+    reconcile_before: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, index=True, default="active")
+    issuer_key_id: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    signature_suite: Mapped[str] = mapped_column(String(40), nullable=False)
+    issuer_envelope_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
+    issuer_envelope_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    signature_requirement_policy: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    crypto_assurance: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    requires_reissue: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow, onupdate=utcnow)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class OfflinePackReconciliation(Base):
+    __tablename__ = "offline_pack_reconciliations"
+    __table_args__ = (UniqueConstraint("pack_id", "event_chain_root", name="uq_offline_reconcile_pack_root"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    pack_id: Mapped[int] = mapped_column(ForeignKey("offline_validity_packs.id"), nullable=False, index=True)
+    event_chain_root: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    event_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    reconciliation_status: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    reconciled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    result_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False)
+    audit_event_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+
+
+class OfflinePackLocalEvent(Base):
+    """Durable device-local queue representation; deployments may store it in Local Vault."""
+
+    __tablename__ = "offline_pack_local_events"
+    __table_args__ = (
+        UniqueConstraint("pack_id", "sequence_number", name="uq_offline_local_event_sequence"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    pack_id: Mapped[int] = mapped_column(ForeignKey("offline_validity_packs.id"), nullable=False, index=True)
+    sequence_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    previous_event_hash: Mapped[str] = mapped_column(String(128), nullable=False)
+    event_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    event_type: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    safe_details_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    reconciled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, index=True)
 
 
 class SubscriptionEntitlement(Base):
@@ -183,6 +297,11 @@ class SubscriptionEntitlement(Base):
     scopes_json: Mapped[JsonList | None] = mapped_column(_JSON, nullable=True)
     issuer_key_id: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
     issuer_signature_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False, default=dict)
+    issuer_envelope_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
+    issuer_envelope_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    signature_requirement_policy: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    crypto_assurance: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    requires_reissue: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     crypto_epoch: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     valid_from: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     valid_until: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)

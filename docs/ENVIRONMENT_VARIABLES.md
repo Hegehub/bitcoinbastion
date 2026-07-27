@@ -349,3 +349,28 @@ Recovery LNURL-auth settings use `WALLET_AUTH_RECOVERY_LNURL_ENABLED`, a maximum
 `WALLET_AUTH_RECOVERY_REQUIRE_ADDITIONAL_FACTOR` defaults to true and
 `WALLET_AUTH_RECOVERY_LNURL_ALLOW_COMPATIBILITY_PROOF` defaults to false. Domain
 changes are security-sensitive migrations; LNURL-auth never completes recovery alone.
+
+Wallet quorum coordination uses `WALLET_QUORUM_ENABLED`, a bounded default TTL,
+and a finite participant ceiling. `WALLET_QUORUM_FAIL_CLOSED`,
+`WALLET_QUORUM_REQUIRE_HUMAN_INTENT`, and `WALLET_QUORUM_REQUIRE_POP_SESSION`
+default to true. These settings do not bypass action-specific policy, entitlement,
+scope, revocation, role, hardware, or recovery requirements.
+
+Principal-bound Access Certificates use `ACCESS_PRINCIPAL_CERTIFICATES_ENABLED`,
+bounded default/maximum TTLs, export disabled by default, and the restrictive
+`ACCESS_CERTIFICATE_LEGACY_MIGRATION_MODE=restricted`. Export requires fresh step-up
+and Human Intent, while offline eligibility requires high assurance. These settings
+cannot make a certificate or `.bbp` export bearer access.
+
+Offline Validity Packs are disabled by default with `OFFLINE_PACKS_ENABLED=false`.
+`OFFLINE_PACK_DEFAULT_TTL_SECONDS`, Pro/Business maximum TTLs, pending-event limits,
+mandatory Business certificate and Pro step-up flags, clock rollback tolerance, and
+reconciliation grace bound disconnected operation. No setting enables offline admin,
+treasury, recovery, transaction signing, or LNURL-withdraw execution.
+
+Crypto agility uses operational epoch 1, Ed25519, and
+`classical_required_pq_optional`. `ACCESS_PQ_ENABLED=false` is truthful capability
+metadata, not a feature toggle for a hidden provider. Enabling it cannot fabricate
+ML-DSA/SLH-DSA support; policies requiring unavailable PQ algorithms fail closed.
+Issuer private-key provider values are references only, and no private key material
+belongs in configuration documentation or database metadata.

@@ -90,6 +90,18 @@ class AccessPolicyEngine:
         actor_decision = self._check_actor_and_auth(context)
         if actor_decision is not None:
             return actor_decision
+        if context.issuer_envelope_verified is False:
+            return self._deny(
+                POLICY_DECISION_DENY,
+                "issuer_envelope_invalid",
+                "Bastion issuer envelope verification failed.",
+            )
+        if context.signature_requirement_policy in {"hybrid_required", "pq_required"} and context.granted_crypto_assurance not in {"hybrid_transition", "post_quantum"}:
+            return self._deny(
+                POLICY_DECISION_DENY,
+                "required_hybrid_signature_unavailable",
+                "Required issuer signature capabilities are unavailable.",
+            )
         if context.legacy_auth_context:
             return self._deny(POLICY_DECISION_DENY, reasons.LEGACY_AUTH_NOT_ALLOWED, "Legacy auth context is not allowed.")
         plan = self._normalize_plan(context)
@@ -151,6 +163,7 @@ class AccessPolicyEngine:
             safe_user_message="Access policy allowed the request.",
             offline_allowed=not context.offline_mode,
         )
+        return WalletLNURLStepUpPolicy().evaluate_step_up_requirement(step_context)
 
     def evaluate_step_up_requirement(self, context: AccessPolicyContext) -> Any:
         from app.services.wallet_auth.step_up_policy import StepUpPolicyContext, WalletLNURLStepUpPolicy

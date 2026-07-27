@@ -12,7 +12,6 @@ from __future__ import annotations
 import base64
 from collections.abc import Mapping
 from dataclasses import dataclass
-from enum import StrEnum
 from typing import Any, Protocol
 
 from cryptography.exceptions import InvalidSignature as CryptographyInvalidSignature
@@ -25,21 +24,18 @@ from app.services.access.crypto.exceptions import (
     UnsupportedSignatureSuite,
     UnsafeKeyMaterialError,
 )
+from app.services.access.crypto.algorithms import PQ_SIGNATURE_ALGORITHMS, SignatureAlgorithm
 from app.services.access.crypto.hashing import canonical_json, sha256_prefixed
-from app.services.access.crypto.key_loading import validate_issuer_key_config, validate_key_material_is_not_placeholder
-
-
-class SignatureAlgorithm(StrEnum):
-    ED25519 = "ed25519"
-    ML_DSA_65 = "ml_dsa_65"
-    ML_DSA_87 = "ml_dsa_87"
-    SLH_DSA = "slh_dsa"
+from app.services.access.crypto.key_loading import (
+    validate_issuer_key_config,
+    validate_key_material_is_not_placeholder,
+)
 
 
 PQ_SIGNATURE_SUITES_KNOWN = [
-    "ml_dsa_65",  # Future Access Certificate / Subscription Entitlement signature support.
-    "ml_dsa_87",  # Future higher-security Access signature support.
-    "slh_dsa",  # Future backup/root/long-term trust signature support.
+    "ml_dsa_65",
+    "ml_dsa_87",
+    "slh_dsa",
 ]
 PQ_KEM_SUITES_KNOWN = [
     "ml_kem_768",  # Future KEM/session-envelope support, not a signature suite.
@@ -59,6 +55,7 @@ SUPPORTED_SIGNING_CONTEXTS = frozenset(
         "lnurl_payment_proof",
         "lnurl_receipt_packet",
         "recovery_factor_receipt",
+        "issuer_envelope",
     }
 )
 
@@ -124,7 +121,9 @@ def build_signing_message(context: str, payload: dict[str, Any] | str | bytes) -
         canonical_payload = payload
     else:
         raise TypeError("payload must be a dict, str, or bytes")
-    return f"BastionProofOfAccess:v1:{context}\n{canonical_payload}".encode("utf-8", errors="surrogateescape")
+    return f"BastionProofOfAccess:v1:{context}\n{canonical_payload}".encode(
+        "utf-8", errors="surrogateescape"
+    )
 
 
 class Ed25519SignatureSuite:
@@ -174,7 +173,9 @@ class Ed25519SignatureSuite:
         except InvalidPublicKey as exc:
             return SignatureVerificationResult(valid=False, alg=self.alg, reason=str(exc))
         except (CryptographyInvalidSignature, ValueError, TypeError):
-            return SignatureVerificationResult(valid=False, alg=self.alg, reason="Invalid signature")
+            return SignatureVerificationResult(
+                valid=False, alg=self.alg, reason="Invalid signature"
+            )
 
     def public_key_fingerprint(self, public_key: str | bytes) -> str:
         verify_key = _load_ed25519_public_key(public_key)
@@ -201,8 +202,12 @@ class _UnsupportedSignatureSuite:
 
 class SignatureSuiteRegistry:
     def __init__(self) -> None:
-        self._supported: dict[str, SignatureSuite] = {SignatureAlgorithm.ED25519.value: Ed25519SignatureSuite()}
-        self._unsupported = set(PQ_SIGNATURE_SUITES_KNOWN)
+        self._supported: dict[str, SignatureSuite] = {
+            SignatureAlgorithm.ED25519.value: Ed25519SignatureSuite()
+        }
+        self._unsupported = set(PQ_SIGNATURE_SUITES_KNOWN) | {
+            algorithm.value for algorithm in PQ_SIGNATURE_ALGORITHMS
+        }
 
     def get(self, alg: str) -> SignatureSuite:
         normalized = alg.strip().lower()
@@ -222,32 +227,72 @@ class SignatureSuiteRegistry:
         return sorted(self._unsupported)
 
 
-def sign_access_certificate(payload: dict[str, Any], private_key: str, key_id: str, crypto_epoch: int = 1) -> IssuerSignature:
-    return Ed25519SignatureSuite().sign(payload, "access_certificate", key_id, private_key, crypto_epoch)
+def sign_access_certificate(
+    payload: dict[str, Any], private_key: str, key_id: str, crypto_epoch: int = 1
+) -> IssuerSignature:
+    return Ed25519SignatureSuite().sign(
+        payload, "access_certificate", key_id, private_key, crypto_epoch
+    )
 
 
-def verify_access_certificate_signature(payload: dict[str, Any], public_key: str, signature: str) -> SignatureVerificationResult:
+def verify_access_certificate_signature(
+    payload: dict[str, Any], public_key: str, signature: str
+) -> SignatureVerificationResult:
     return Ed25519SignatureSuite().verify(payload, "access_certificate", public_key, signature)
 
 
-def sign_subscription_entitlement(payload: dict[str, Any], private_key: str, key_id: str, crypto_epoch: int = 1) -> IssuerSignature:
-    return Ed25519SignatureSuite().sign(payload, "subscription_entitlement", key_id, private_key, crypto_epoch)
+def sign_subscription_entitlement(
+    payload: dict[str, Any], private_key: str, key_id: str, crypto_epoch: int = 1
+) -> IssuerSignature:
+    return Ed25519SignatureSuite().sign(
+        payload, "subscription_entitlement", key_id, private_key, crypto_epoch
+    )
 
 
-def verify_subscription_entitlement_signature(payload: dict[str, Any], public_key: str, signature: str) -> SignatureVerificationResult:
-    return Ed25519SignatureSuite().verify(payload, "subscription_entitlement", public_key, signature)
+def verify_subscription_entitlement_signature(
+    payload: dict[str, Any], public_key: str, signature: str
+) -> SignatureVerificationResult:
+    return Ed25519SignatureSuite().verify(
+        payload, "subscription_entitlement", public_key, signature
+    )
 
 
+def sign_offline_validity_pack(
+    payload: dict[str, Any], private_key: str, key_id: str, crypto_epoch: int = 1
+) -> IssuerSignature:
+    """Sign a canonical, domain-separated Offline Validity Pack payload."""
+    return Ed25519SignatureSuite().sign(
+        payload, "offline_validity_pack", key_id, private_key, crypto_epoch
+    )
 
-def sign_lnurl_payment_proof(payload: dict[str, Any], private_key: str, key_id: str, crypto_epoch: int = 1) -> IssuerSignature:
-    return Ed25519SignatureSuite().sign(payload, "lnurl_payment_proof", key_id, private_key, crypto_epoch)
+
+def verify_offline_validity_pack_signature(
+    payload: dict[str, Any], public_key: str, signature: str
+) -> SignatureVerificationResult:
+    """Verify a classical Offline Validity Pack issuer signature."""
+    return Ed25519SignatureSuite().verify(payload, "offline_validity_pack", public_key, signature)
 
 
-def verify_lnurl_payment_proof_signature(payload: dict[str, Any], public_key: str, signature: str) -> SignatureVerificationResult:
+def sign_lnurl_payment_proof(
+    payload: dict[str, Any], private_key: str, key_id: str, crypto_epoch: int = 1
+) -> IssuerSignature:
+    return Ed25519SignatureSuite().sign(
+        payload, "lnurl_payment_proof", key_id, private_key, crypto_epoch
+    )
+
+
+def verify_lnurl_payment_proof_signature(
+    payload: dict[str, Any], public_key: str, signature: str
+) -> SignatureVerificationResult:
     return Ed25519SignatureSuite().verify(payload, "lnurl_payment_proof", public_key, signature)
 
-def verify_device_challenge_signature(challenge_payload: dict[str, Any], device_public_key: str, signature: str) -> SignatureVerificationResult:
-    return Ed25519SignatureSuite().verify(challenge_payload, "access_challenge", device_public_key, signature)
+
+def verify_device_challenge_signature(
+    challenge_payload: dict[str, Any], device_public_key: str, signature: str
+) -> SignatureVerificationResult:
+    return Ed25519SignatureSuite().verify(
+        challenge_payload, "access_challenge", device_public_key, signature
+    )
 
 
 def _key_material_to_str(key_material: str | bytes) -> str:

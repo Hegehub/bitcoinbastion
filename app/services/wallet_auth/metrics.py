@@ -93,6 +93,21 @@ WALLET_STEP_UP_REQUIRED = metric_counter(
     "Policy-required Wallet step-up.",
     ["action_group", "actor_type", "risk_level", "policy_reason"],
 )
+QUORUM_CREATED = metric_counter(
+    "bastion_quorum_created_total",
+    "Wallet/LNURL quorum creation outcomes.",
+    ["quorum_type", "action_group", "result", "reason_code"],
+)
+QUORUM_APPROVALS = metric_counter(
+    "bastion_quorum_approvals_total",
+    "Wallet/LNURL quorum approval outcomes.",
+    ["quorum_type", "action_group", "result", "reason_code"],
+)
+QUORUM_DECISIONS = metric_counter(
+    "bastion_quorum_decisions_total",
+    "Wallet/LNURL final quorum decisions.",
+    ["quorum_type", "action_group", "result", "reason_code"],
+)
 
 _ACTIONS = {"register", "login", "link", "auth", "step_up", "unknown"}
 _NETWORKS = {"mainnet", "testnet", "signet", "regtest", "unknown"}
@@ -209,4 +224,64 @@ class WalletMetrics:
                 "status": _label(status, {"active", "suspended", "revoked", "unknown"}),
             },
             count,
+        )
+
+
+class WalletQuorumMetrics:
+    """Low-cardinality sink for the quorum coordinator."""
+
+    _METRICS = {
+        "bastion_quorum_created_total": QUORUM_CREATED,
+        "bastion_quorum_approvals_total": QUORUM_APPROVALS,
+        "bastion_quorum_decisions_total": QUORUM_DECISIONS,
+    }
+    _TYPES = {
+        "single_principal",
+        "multi_wallet",
+        "multi_method",
+        "role_based",
+        "recovery",
+        "business",
+        "enterprise",
+        "sovereign",
+        "payregister",
+        "withdraw",
+        "issuer_rotation",
+        "pq_migration",
+        "unknown",
+    }
+    _RESULTS = {
+        "pending",
+        "partially_satisfied",
+        "satisfied",
+        "allow",
+        "deny",
+        "expired",
+        "revoked",
+        "unknown",
+    }
+    _REASONS = {
+        "created",
+        "quorum_pending",
+        "quorum_satisfied",
+        "quorum_authorized",
+        "insufficient_distinct_principals",
+        "insufficient_distinct_methods",
+        "required_role_missing",
+        "required_quorum_evidence_missing",
+        "unknown",
+    }
+
+    def record(self, name: str, labels: dict[str, str]) -> None:
+        metric = self._METRICS.get(name)
+        if metric is None:
+            return
+        safe_inc(
+            metric,
+            {
+                "quorum_type": _label(labels.get("quorum_type"), self._TYPES),
+                "action_group": normalize_label(labels.get("action_group"), ActionGroupLabel),
+                "result": _label(labels.get("result"), self._RESULTS),
+                "reason_code": _label(labels.get("reason_code"), self._REASONS),
+            },
         )

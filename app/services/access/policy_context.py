@@ -119,6 +119,13 @@ class AccessPolicyContext:
     quorum_evidence: dict[str, Any] | None = None
     access_certificate_fingerprint: str | None = None
     offline_validity_pack_fingerprint: str | None = None
+    issuer_envelope_verified: bool | None = None
+    signature_requirement_policy: str | None = None
+    granted_crypto_assurance: str | None = None
+    issuer_key_status: str | None = None
+    requires_reissue: bool = False
+    algorithm_deprecated: bool = False
+    client_crypto_capabilities: frozenset[str] = field(default_factory=frozenset)
     lnurl_operation: str | None = None
     lnurl_action: str | None = None
     lnurl_auth_action: str | None = None

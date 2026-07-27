@@ -15,7 +15,9 @@ class MetricDefinition(BaseModel):
     name: str = Field(description="Stable metric name.")
     group_code: str = Field(description="Metric group code containing this metric.")
     description: str = Field(default="", description="Human-readable metric description.")
-    cost: int | None = Field(default=None, ge=0, description="Base metric credit cost when included.")
+    cost: int | None = Field(
+        default=None, ge=0, description="Base metric credit cost when included."
+    )
 
 
 class MetricGroup(BaseModel):
@@ -23,7 +25,9 @@ class MetricGroup(BaseModel):
     name: str = Field(description="Human-facing group name.")
     metrics: list[MetricDefinition] = Field(description="Metrics in this group.")
     scopes: list[str] = Field(description="Scopes associated with this metric group.")
-    locked: bool = Field(default=False, description="Whether this group is locked for the current plan.")
+    locked: bool = Field(
+        default=False, description="Whether this group is locked for the current plan."
+    )
 
 
 class PlanLimits(BaseModel):
@@ -103,7 +107,10 @@ class SubscriptionEntitlementResponse(BaseModel):
 
 class AccessPaymentIntentCreate(BaseModel):
     plan_code: PlanCode
-    payment_method: str = Field(default="manual", description="Payment provider method such as manual, btcpay, or bitcoin_lightning.")
+    payment_method: str = Field(
+        default="manual",
+        description="Payment provider method such as manual, btcpay, or bitcoin_lightning.",
+    )
     amount_sats: int | None = Field(default=None, gt=0)
     metadata: dict[str, Any] | None = None
     return_url: str | None = None
@@ -136,7 +143,9 @@ class AccessCertificateIssueRequest(BaseModel):
 
 
 class AccessCertificateIssueResponse(BaseModel):
-    raw_access_pass: str | None = Field(default=None, description="Returned once at issuance only; never use as bearer auth.")
+    raw_access_pass: str | None = Field(
+        default=None, description="Returned once at issuance only; never use as bearer auth."
+    )
     access_certificate: dict[str, Any]
     certificate_fingerprint: str
     plan_code: PlanCode
@@ -185,7 +194,18 @@ class AccessLockdownRequest(BaseModel):
         for key, value in payload.items():
             lowered_key = str(key).lower()
             lowered_value = str(value).lower()
-            if any(part in lowered_key or part in lowered_value for part in ("bitcoin_seed", "wallet_seed", "seed_phrase", "private_key", "recovery_phrase", "raw_pass", "session_token")):
+            if any(
+                part in lowered_key or part in lowered_value
+                for part in (
+                    "bitcoin_seed",
+                    "wallet_seed",
+                    "seed_phrase",
+                    "private_key",
+                    "recovery_phrase",
+                    "raw_pass",
+                    "session_token",
+                )
+            ):
                 raise ValueError("lockdown_secret_material_forbidden")
         return self
 
@@ -238,6 +258,7 @@ class AccessSessionResponse(BaseModel):
     expires_at: Any
     policy_mode: str
     requires_request_signing: bool
+
 
 class ChildApiKeyCreate(BaseModel):
     name: str
@@ -313,8 +334,11 @@ class DelegatedPassPublic(BaseModel):
     can_create_child_keys: bool = False
     can_delegate: bool = False
 
+
 class RecoverySafetyWarning(BaseModel):
-    message: str = Field(description="Bastion recovery safety warning; never a Bitcoin wallet seed.")
+    message: str = Field(
+        description="Bastion recovery safety warning; never a Bitcoin wallet seed."
+    )
 
 
 class RecoverySetupRequest(BaseModel):
@@ -417,6 +441,83 @@ class RecoveryCancelRequest(BaseModel):
     model_config = {"extra": "forbid"}
 
 
+class PrincipalAccessCertificateIssueRequest(BaseModel):
+    principal_type: str
+    principal_reference: str
+    device_binding_reference: str
+    entitlement_id: int
+    session_reference: str
+    proof_method: str
+    verification_strength: str
+    last_principal_verification_at: datetime
+    requested_scopes: list[str] = Field(default_factory=list)
+    requested_metric_groups: list[str] = Field(default_factory=list)
+    requested_assurance_profile: str = "standard"
+    requested_expiry: datetime
+    idempotency_key_hash: str
+    delegation_requested: bool = False
+    offline_pack_requested: bool = False
+    step_up_proof_reference: str | None = None
+    quorum_reference: str | None = None
+    intent_signature_reference: str | None = None
+
+    model_config = {"extra": "forbid"}
+
+
+class PrincipalAccessCertificateResponse(BaseModel):
+    certificate_fingerprint: str
+    principal_type: str
+    assurance_profile: str
+    effective_scopes: list[str]
+    effective_metric_groups: list[str]
+    expires_at: datetime
+    limitations: list[str]
+
+
+class PrincipalAccessCertificateInspectResponse(BaseModel):
+    certificate_fingerprint: str
+    status: str
+    expires_at: datetime
+    legacy_class: str
+    principal_type: str | None = None
+    assurance_profile: str
+    device_key_fingerprint: str | None = None
+    entitlement_fingerprint: str | None = None
+    limitations: list[str]
+
+
+class PrincipalAccessCertificateRotateRequest(BaseModel):
+    idempotency_key_hash: str
+    requested_scopes: list[str] = Field(default_factory=list)
+    requested_metric_groups: list[str] = Field(default_factory=list)
+    requested_expiry: datetime
+    step_up_proof_reference: str
+    quorum_reference: str | None = None
+    intent_signature_reference: str
+
+    model_config = {"extra": "forbid"}
+
+
+class PrincipalAccessCertificateRevokeRequest(BaseModel):
+    reason_code: str
+    intent_signature_reference: str
+
+    model_config = {"extra": "forbid"}
+
+
+class PrincipalAccessCertificateExportRequest(BaseModel):
+    intent_signature_reference: str
+
+    model_config = {"extra": "forbid"}
+
+
+class PrincipalAccessCertificateExportResponse(BaseModel):
+    type: str = "bastion_access_pass_export"
+    version: int = 2
+    export_payload: dict[str, Any]
+    warning: str = "This export is not bearer access and contains no wallet or device private key."
+
+
 __all__ = [
     "AccessPaymentIntentCreate",
     "AccessPaymentIntentResponse",
@@ -467,6 +568,13 @@ __all__ = [
     "RecoveryRotateResponse",
     "RecoveryCancelRequest",
     "SubscriptionEntitlementResponse",
+    "PrincipalAccessCertificateIssueRequest",
+    "PrincipalAccessCertificateResponse",
+    "PrincipalAccessCertificateInspectResponse",
+    "PrincipalAccessCertificateRotateRequest",
+    "PrincipalAccessCertificateRevokeRequest",
+    "PrincipalAccessCertificateExportRequest",
+    "PrincipalAccessCertificateExportResponse",
 ]
 
 

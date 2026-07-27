@@ -195,6 +195,28 @@ class RecoveryCapsuleService:
         """Return the internal commitment-only view used by factor adapters."""
         return self._view(self._locked_row(capsule_hash))
 
+    def bind_quorum(self, capsule_hash: str, quorum_hash: str) -> RecoveryCapsule:
+        """Bind one commitment-only quorum attempt after central policy approval."""
+        row = self._locked_row(capsule_hash)
+        capsule = self._view(row)
+        self._ensure_active(row, capsule)
+        if not PROFILE_REQUIREMENTS[capsule.recovery_profile].requires_quorum:
+            raise RecoveryCapsuleError("recovery_quorum_not_required")
+        if capsule.quorum_policy_id and capsule.quorum_policy_id != quorum_hash:
+            raise RecoveryCapsuleError("recovery_quorum_already_bound")
+        allowed, _ = self.policy_authorizer.authorize(
+            action="recovery_factor_accept", capsule=capsule
+        )
+        if not allowed:
+            raise RecoveryPolicyError("recovery_policy_denied")
+        metadata = dict(row.metadata_json or {})
+        metadata["quorum_policy_id"] = quorum_hash
+        row.metadata_json = safe_recovery_metadata(metadata)
+        row.updated_at = self.clock()
+        self.db.flush()
+        self._audit("recovery_quorum_bound", row, {"reason_code": "quorum_bound"})
+        return self._view(row)
+
     async def submit_factor(
         self, *, capsule_hash: str, submission: RecoveryFactorSubmission
     ) -> RecoveryCapsule:

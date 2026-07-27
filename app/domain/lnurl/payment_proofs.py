@@ -83,6 +83,7 @@ class LNURLPaymentProof:
     created_at: datetime
     proof_fingerprint: str
     issuer_signature: LNURLIssuerSignature
+    issuer_envelope: dict[str, Any] | None = None
     principal_hash: str | None = None
     principal_type: str | None = None
     binding_method: str = LNURLPrincipalBindingMethod.UNBOUND_PAYMENT.value
@@ -119,7 +120,9 @@ class LNURLPaymentProof:
             "settled": self.settled,
             "settlement_method": self.settlement_method,
             "settled_at": self.settled_at.isoformat().replace("+00:00", "Z"),
-            "verification_timestamp": self.verification_timestamp.isoformat().replace("+00:00", "Z"),
+            "verification_timestamp": self.verification_timestamp.isoformat().replace(
+                "+00:00", "Z"
+            ),
             "payment_metadata_hash": self.payment_metadata_hash,
             "payer_data_hash": self.payer_data_hash,
             "preimage_commitment": self.preimage_commitment,
@@ -151,5 +154,16 @@ class LNURLPaymentProof:
             "principal_bound": self.principal_hash is not None,
             "proof_fingerprint": self.proof_fingerprint,
             "issuer_signature": self.issuer_signature.as_dict(),
+            "issuer_crypto": {
+                "crypto_epoch": (self.issuer_envelope or {}).get("epochs", {}).get("crypto"),
+                "signature_requirement_policy": (self.issuer_envelope or {}).get(
+                    "required_signature_policy"
+                ),
+                "assurance_level": (self.issuer_envelope or {}).get("assurance_level"),
+                "pq_signature_status": (self.issuer_envelope or {})
+                .get("signatures", {})
+                .get("post_quantum", {})
+                .get("status"),
+            },
             "audit_event_hash": self.audit_event_hash,
         }
