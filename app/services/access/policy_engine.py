@@ -163,6 +163,47 @@ class AccessPolicyEngine:
             safe_user_message="Access policy allowed the request.",
             offline_allowed=not context.offline_mode,
         )
+        return WalletLNURLStepUpPolicy().evaluate_step_up_requirement(step_context)
+
+    def evaluate_step_up_requirement(self, context: AccessPolicyContext) -> Any:
+        from app.services.wallet_auth.step_up_policy import StepUpPolicyContext, WalletLNURLStepUpPolicy
+
+        step_context = StepUpPolicyContext(
+            action=str(context.requested_action or context.action or context.metadata.get("action", "read_public_status")),
+            actor_type=context.actor_type or "unknown",
+            principal_hash=context.principal_hash,
+            device_key_fingerprint=str(context.device_id) if context.device_id is not None else None,
+            session_hash=context.session_id_hash,
+            auth_method=context.auth_method or context.primary_auth_method,
+            current_verification_strength=context.authentication_assurance,
+            wallet_proof_freshness_seconds=_int_or_none(context.metadata.get("wallet_proof_freshness_seconds")),
+            lnurl_proof_freshness_seconds=_int_or_none(context.metadata.get("lnurl_proof_freshness_seconds")),
+            session_age_seconds=_int_or_none(context.metadata.get("session_age_seconds")),
+            device_trust_level=str(context.metadata.get("device_trust_level", "standard")),
+            device_risk_score=context.device_risk_score,
+            subscription_plan=context.plan_code,
+            requested_scopes=frozenset(context.requested_scopes or ({context.requested_scope} if context.requested_scope else set())),
+            effective_scopes=frozenset(context.effective_scopes),
+            requested_object=context.resource_hash or context.requested_object_id_hash or context.resource_type or context.requested_object_type,
+            requested_expiry=str(context.metadata.get("requested_expiry")) if context.metadata.get("requested_expiry") else None,
+            requested_amount_msat=context.amount_msat,
+            business_role=context.business_role,
+            payregister_role=str(context.payregister_context.get("role")) if context.payregister_context.get("role") else None,
+            recovery_state=context.recovery_state,
+            lockdown_state=str(context.revocation_state.get("lockdown_state")) if isinstance(context.revocation_state, dict) and context.revocation_state.get("lockdown_state") else None,
+            sovereign_mode=bool(context.metadata.get("sovereign_mode")),
+            existing_quorum_state=context.metadata.get("quorum_state"),
+            revocation_state=context.revocation_state,
+            policy_epoch=context.policy_epoch,
+            policy_hash=context.policy_hash,
+            intent_hash=str(context.metadata.get("intent_hash")) if context.metadata.get("intent_hash") else None,
+            provided_proofs=tuple(context.metadata.get("step_up_proofs", ())),
+            human_intent_verified=context.human_intent_verified,
+            access_certificate_present=bool(context.access_certificate_fingerprint or context.certificate_fingerprint),
+            quota_state=context.quota_state,
+            metric_group=context.requested_metric_group,
+        )
+        return WalletLNURLStepUpPolicy().evaluate_step_up_requirement(step_context)
 
     def evaluate_step_up_requirement(self, context: AccessPolicyContext) -> Any:
         from app.services.wallet_auth.step_up_policy import StepUpPolicyContext, WalletLNURLStepUpPolicy
