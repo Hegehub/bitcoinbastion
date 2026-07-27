@@ -172,3 +172,14 @@ Repository-wide search after Prompt 32 cleanup found remaining legacy-auth terms
 | `Authorization` | 31 | docs/tests rejecting bearer semantics or non-auth safety references |
 
 Any future increase in these counts must be reviewed before release; any active protected API path using these terms for authentication must fail this gate.
+# Wallet/LNURL revocation gate
+
+Release requires authoritative parent and direct revocation checks, fail-closed
+critical resolution, atomic k1 consumption, privacy-safe audit payloads, and bounded
+offline validity. Reversal must never reactivate old sessions. Verification steps
+are in [`runbooks/wallet_lnurl_revocation.md`](runbooks/wallet_lnurl_revocation.md).
+
+The release gate also requires canonical audit sequence uniqueness, semantic
+idempotency, chain verification/tamper tests, and pre-persistence secret rejection.
+Critical audited operations must fail closed if the canonical event cannot be
+durably recorded.

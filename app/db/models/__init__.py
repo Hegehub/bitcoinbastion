@@ -1,6 +1,10 @@
 from app.db.models.access import (
     AccessAuditEvent,
     AccessCertificate,
+    AccessCertificatePrincipalBinding,  # noqa: F401
+    OfflinePackReconciliation,  # noqa: F401
+    OfflinePackLocalEvent,  # noqa: F401
+    OfflineValidityPack,  # noqa: F401
     AccessChallenge,
     AccessDevice,
     AccessHumanIntent,  # noqa: F401
@@ -18,7 +22,7 @@ from app.db.models.access import (
 from app.db.models.wallet_auth import (
     MultiWalletQuorum,
     RecoveryCapsule,
-    WalletAuthChallenge,
+    WalletAuthChallenge,  # noqa: F401
     WalletDevice,
     WalletPrincipal,
     WalletPrivacyCommitment,

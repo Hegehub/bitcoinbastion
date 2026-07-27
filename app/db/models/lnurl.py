@@ -163,6 +163,11 @@ class LNURLPaymentProof(Base):
     verify_method: Mapped[str] = mapped_column(String(80), nullable=False)
     audit_event_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
     issuer_signature_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    issuer_envelope_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
+    issuer_envelope_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    signature_requirement_policy: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    crypto_assurance: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    requires_reissue: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
     metadata_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
 
