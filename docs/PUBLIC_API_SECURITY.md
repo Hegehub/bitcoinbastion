@@ -26,3 +26,8 @@ Public activation and receipt endpoints must provide generic not-found behavior,
 ## Lightning Address discovery
 
 `GET /.well-known/lnurlp/{name}` is a public LNURL protocol endpoint and returns the raw LUD-06 `payRequest` object rather than the Bastion API envelope. The route is read-only discovery: it does not create invoices, mark payments settled, create principals, issue PoP sessions, or grant Subscription Entitlements. Callback URLs are built from trusted LNURL configuration, not from untrusted `Host` or forwarded headers, and Lightning Address values are payment-routing aliases rather than user identity.
+
+
+## Wallet-bound Subscription Entitlements
+
+Wallet-bound Subscription Entitlements define plan, scopes, metric groups, quotas, validity, assurance, and issuer signature metadata for Bitcoin and Lightning principals. They are not bearer credentials: protected API access still requires an active principal, active device, PoP session, matching entitlement binding, revocation checks, and Policy Engine allow decision. See `docs/WALLET_BOUND_SUBSCRIPTION_ENTITLEMENTS.md`.

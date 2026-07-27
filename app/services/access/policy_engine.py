@@ -163,6 +163,7 @@ class AccessPolicyEngine:
             safe_user_message="Access policy allowed the request.",
             offline_allowed=not context.offline_mode,
         )
+        return WalletLNURLStepUpPolicy().evaluate_step_up_requirement(step_context)
 
     def evaluate_step_up_requirement(self, context: AccessPolicyContext) -> Any:
         from app.services.wallet_auth.step_up_policy import StepUpPolicyContext, WalletLNURLStepUpPolicy

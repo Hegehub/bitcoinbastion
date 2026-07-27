@@ -533,6 +533,13 @@ __all__ = [
     "AccessChallengeResponse",
     "AccessSessionCreate",
     "AccessSessionResponse",
+    "EntitlementLimitsResponse",
+    "EntitlementAssuranceResponse",
+    "WalletSubscriptionEntitlementResponse",
+    "EffectiveEntitlementResponse",
+    "EntitlementUpgradeRequest",
+    "EntitlementDowngradeRequest",
+    "EntitlementHistoryResponse",
     "ChildApiKeyCreate",
     "ChildApiKeyCreateResponse",
     "ChildApiKeyPublic",
@@ -569,3 +576,83 @@ __all__ = [
     "PrincipalAccessCertificateExportRequest",
     "PrincipalAccessCertificateExportResponse",
 ]
+
+
+class EntitlementLimitsResponse(BaseModel):
+    requests_per_minute: int | None = None
+    requests_per_day: int | None = None
+    daily_metric_credits: int | None = None
+    monthly_metric_credits: int | None = None
+    history_days: int | None = None
+    minimum_interval_seconds: int | None = None
+    child_api_keys: int | None = None
+    delegated_passes: int | str | None = None
+    concurrent_sessions: int | None = None
+
+
+class EntitlementAssuranceResponse(BaseModel):
+    minimum_proof_strength: str
+    high_risk_step_up_required: bool
+    access_certificate_required: bool
+    hardware_wallet_required: bool
+    quorum_policy: dict[str, Any] | None = None
+    sovereign_mode: bool = False
+
+
+class WalletSubscriptionEntitlementResponse(BaseModel):
+    type: str = "bastion_wallet_subscription_entitlement"
+    version: int = 2
+    entitlement_id_hash: str
+    subject_type: str
+    principal_hash: str
+    parent_entitlement_hash: str | None = None
+    workspace_id_hash: str | None = None
+    plan_code: PlanCode
+    status: str
+    wallet_bound: bool
+    payment_method: str
+    payment_proof_hash: str | None = None
+    metric_groups: list[str]
+    scopes: list[str]
+    limits: EntitlementLimitsResponse
+    assurance: EntitlementAssuranceResponse
+    valid_from: datetime
+    valid_until: datetime
+    grace_until: datetime | None = None
+    schema_epoch: int
+    policy_epoch: int
+    crypto_epoch: int
+    issuer_key_id: str
+    issuer_signatures: list[dict[str, Any]]
+
+
+class EffectiveEntitlementResponse(BaseModel):
+    entitlement_id_hash: str
+    subject_type: str
+    principal_hash: str
+    plan_code: PlanCode
+    status: str
+    scopes: list[str]
+    metric_groups: list[str]
+    limits: EntitlementLimitsResponse
+    assurance: EntitlementAssuranceResponse
+    requires_step_up: bool
+    policy_decision: str
+    reason_codes: list[str]
+
+
+class EntitlementUpgradeRequest(BaseModel):
+    entitlement_id_hash: str
+    target_plan_code: PlanCode
+    payment_proof_hash: str | None = None
+    human_intent_signature_hash: str | None = None
+
+
+class EntitlementDowngradeRequest(BaseModel):
+    entitlement_id_hash: str
+    target_plan_code: PlanCode
+    effective_at: datetime | None = None
+
+
+class EntitlementHistoryResponse(BaseModel):
+    entitlements: list[WalletSubscriptionEntitlementResponse]
