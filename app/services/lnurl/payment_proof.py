@@ -23,6 +23,11 @@ from app.domain.lnurl.payment_proofs import (
 )
 from app.services.access.audit_chain import AccessAuditChain
 from app.services.access.crypto.hashing import canonical_json, hmac_sha256_prefixed, sha256_prefixed
+from app.services.access.crypto.issuer_envelope import (
+    BastionIssuedObjectType,
+    build_classical_issuer_envelope,
+)
+from app.services.access.crypto.migration_policy import SignatureRequirementPolicy
 from app.services.access.crypto.signatures import (
     Ed25519SignatureSuite,
     verify_lnurl_payment_proof_signature,
@@ -250,7 +255,19 @@ class LNURLPaymentProofService:
         unsigned["proof_id"] = proof_id
         proof_fingerprint = sha256_prefixed(canonical_json(unsigned))
         signature = self._sign(unsigned)
-        proof = self._proof_from_payload(unsigned, proof_fingerprint, signature)
+        envelope = build_classical_issuer_envelope(
+            unsigned,
+            object_type=BastionIssuedObjectType.LNURL_PAYMENT_PROOF_RECEIPT,
+            object_id_hash=sha256_prefixed(proof_id),
+            object_fingerprint=proof_fingerprint,
+            issuer_key_id=self.config.issuer_key_id,
+            issuer_private_key=self.config.issuer_private_key or "",
+            crypto_epoch=self.config.crypto_epoch,
+            policy_epoch=self.config.policy_epoch,
+            schema_epoch=self.config.schema_epoch,
+            requirement=SignatureRequirementPolicy.CLASSICAL_REQUIRED_PQ_OPTIONAL,
+        ).to_dict()
+        proof = self._proof_from_payload(unsigned, proof_fingerprint, signature, envelope)
         audit_hash = self._audit_created(proof)
         if audit_hash:
             proof = replace(proof, audit_event_hash=audit_hash)
@@ -292,19 +309,26 @@ class LNURLPaymentProofService:
             "test_data_cleanup",
         }
         if reason not in allowed:
-            raise LNURLPaymentProofError("invalid_revocation_reason", code="invalid_revocation_reason")
+            raise LNURLPaymentProofError(
+                "invalid_revocation_reason", code="invalid_revocation_reason"
+            )
         proof = self.repository.get_by_proof_id(proof_id)
         if proof is None:
             raise LNURLPaymentProofError("payment_proof_not_found", code="payment_proof_not_found")
         if proof.status == LNURLPaymentProofStatus.REVOKED.value:
             return proof
-        revoked = replace(proof, status=LNURLPaymentProofStatus.REVOKED.value, revoked_at=self.clock())
+        revoked = replace(
+            proof, status=LNURLPaymentProofStatus.REVOKED.value, revoked_at=self.clock()
+        )
         self.repository.update(revoked)
         self._audit("lnurl_payment_proof_revoked", revoked, reason=reason, actor_hash=actor_hash)
         return revoked
 
     def create_receipt_reference(self, proof: LNURLPaymentProof) -> str:
-        return "brcpt_" + sha256_prefixed(proof.proof_fingerprint + proof.proof_id).split(":", 1)[1][:24]
+        return (
+            "brcpt_"
+            + sha256_prefixed(proof.proof_fingerprint + proof.proof_id).split(":", 1)[1][:24]
+        )
 
     def _load_payment(self, payment_id: str) -> LNURLPaymentForVerification:
         payment = self.verification_service.repository.get_payment(payment_id)
@@ -313,15 +337,25 @@ class LNURLPaymentProofService:
         return payment
 
     def _validate_verified_settlement(
-        self, payment: LNURLPaymentForVerification, verified: LNURLVerificationResult, *, product_code: str
+        self,
+        payment: LNURLPaymentForVerification,
+        verified: LNURLVerificationResult,
+        *,
+        product_code: str,
     ) -> None:
-        if not verified.eligible_for_payment_proof or not verified.settled or verified.status != "settled":
+        if (
+            not verified.eligible_for_payment_proof
+            or not verified.settled
+            or verified.status != "settled"
+        ):
             self._audit_failed(payment, "settlement_not_verified")
             raise SettlementNotVerifiedError("settlement_not_verified")
         latest = self.verification_service.get_latest_verification(payment.payment_id)
         if latest is None:
             raise SettlementNotVerifiedError("settlement_not_verified")
-        if self.clock() - latest.verified_at > timedelta(seconds=self.config.max_verification_age_seconds):
+        if self.clock() - latest.verified_at > timedelta(
+            seconds=self.config.max_verification_age_seconds
+        ):
             raise SettlementEvidenceExpiredError("settlement_evidence_expired")
         if verified.invoice_hash != sha256_prefixed(payment.bolt11):
             raise PaymentInvoiceMismatchError("invoice_mismatch")
@@ -356,7 +390,10 @@ class LNURLPaymentProofService:
         method: LNURLSettlementMethod,
         binding: LNURLPrincipalBinding,
     ) -> None:
-        if method is LNURLSettlementMethod.TEST_SETTLEMENT and not self.config.allow_test_settlement:
+        if (
+            method is LNURLSettlementMethod.TEST_SETTLEMENT
+            and not self.config.allow_test_settlement
+        ):
             raise SettlementNotVerifiedError("test_settlement_not_allowed")
         allowed, reason = self.policy.decide(
             {
@@ -410,7 +447,9 @@ class LNURLPaymentProofService:
             "invoice_hash": verified.invoice_hash,
             "lnurl_callback_hash": getattr(payment, "callback_hash", None)
             or sha256_prefixed(payment.payment_request_id),
-            "verify_reference_hash": sha256_prefixed(latest.response_fingerprint if latest else verified.invoice_hash),
+            "verify_reference_hash": sha256_prefixed(
+                latest.response_fingerprint if latest else verified.invoice_hash
+            ),
             "principal_hash": binding.principal_hash,
             "principal_type": binding.principal_type,
             "binding_method": binding.method.value,
@@ -424,7 +463,8 @@ class LNURLPaymentProofService:
             "settlement_method": method.value,
             "settled_at": verified.verified_at.isoformat().replace("+00:00", "Z"),
             "verification_timestamp": verified.verified_at.isoformat().replace("+00:00", "Z"),
-            "payment_metadata_hash": payment.metadata_hash or sha256_prefixed(payment.payment_request_id),
+            "payment_metadata_hash": payment.metadata_hash
+            or sha256_prefixed(payment.payment_request_id),
             "payer_data_hash": getattr(payment, "payer_data_hash", None),
             "preimage_commitment": (
                 hmac_sha256_prefixed(self.config.issuer_pepper, latest.preimage_hash)
@@ -457,7 +497,11 @@ class LNURLPaymentProofService:
             raise PaymentProofSigningError("issuer_signing_failed") from exc
 
     def _proof_from_payload(
-        self, payload: dict[str, Any], proof_fingerprint: str, signature: LNURLIssuerSignature
+        self,
+        payload: dict[str, Any],
+        proof_fingerprint: str,
+        signature: LNURLIssuerSignature,
+        issuer_envelope: dict[str, Any],
     ) -> LNURLPaymentProof:
         return LNURLPaymentProof(
             type=payload["type"],
@@ -493,6 +537,7 @@ class LNURLPaymentProofService:
             created_at=datetime.fromisoformat(payload["created_at"].replace("Z", "+00:00")),
             proof_fingerprint=proof_fingerprint,
             issuer_signature=signature,
+            issuer_envelope=issuer_envelope,
         )
 
     def _audit_created(self, proof: LNURLPaymentProof) -> str | None:
@@ -503,11 +548,19 @@ class LNURLPaymentProofService:
             self.audit_chain.record_event(
                 event_type="lnurl_payment_proof_failed",
                 object_hash=sha256_prefixed(payment.payment_request_id),
-                metadata={"reason_code": reason, "payment_request_id_hash": sha256_prefixed(payment.payment_request_id)},
+                metadata={
+                    "reason_code": reason,
+                    "payment_request_id_hash": sha256_prefixed(payment.payment_request_id),
+                },
             )
 
     def _audit(
-        self, event_type: str, proof: LNURLPaymentProof, *, reason: str | None = None, actor_hash: str | None = None
+        self,
+        event_type: str,
+        proof: LNURLPaymentProof,
+        *,
+        reason: str | None = None,
+        actor_hash: str | None = None,
     ) -> str | None:
         if not self.audit_chain:
             return None

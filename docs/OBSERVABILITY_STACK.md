@@ -3,6 +3,12 @@
 Observability stack is baseline and requires tuning.
 Prometheus/Grafana/Loki/Alerting are placeholders requiring production retention and alert thresholds.
 
+Wallet-first and LNURL security telemetry now uses the existing `/metrics` endpoint
+and ServiceMonitor. Controlled labels, metric groups, dashboards, alerting guidance,
+and privacy constraints are documented in
+[`WALLET_LNURL_OBSERVABILITY.md`](WALLET_LNURL_OBSERVABILITY.md). Metrics are
+operational aggregates and are never authorization or audit evidence.
+
 ## Provider and Source Health History
 
 Provider/source health history is now represented as a Storage Layer time-series concern. The operational path is:

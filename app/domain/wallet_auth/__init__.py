@@ -1,6 +1,10 @@
 """Pure wallet auth domain primitives."""
 
-from app.domain.wallet_auth.actions import CRITICAL_WALLET_ACTIONS, WalletAuthAction, is_critical_wallet_action
+from app.domain.wallet_auth.actions import (
+    CRITICAL_WALLET_ACTIONS,
+    WalletAuthAction,
+    is_critical_wallet_action,
+)
 from app.domain.wallet_auth.constants import (
     DEDICATED_AUTH_ADDRESS_WARNING,
     FORBIDDEN_WALLET_SECRET_TERMS,
@@ -36,7 +40,12 @@ from app.domain.wallet_auth.hardware import (
     HardwareWalletInteractionMode,
     hardware_assurance_at_least,
 )
-from app.domain.wallet_auth.networks import DEFAULT_PRODUCTION_NETWORK, WalletNetwork, is_production_network, is_test_network
+from app.domain.wallet_auth.networks import (
+    DEFAULT_PRODUCTION_NETWORK,
+    WalletNetwork,
+    is_production_network,
+    is_test_network,
+)
 from app.domain.wallet_auth.principals import WalletPrincipalActorType, WalletPrincipalStatus
 from app.domain.wallet_auth.proofs import (
     COMPATIBILITY_ONLY_PROOF_TYPES,
@@ -45,6 +54,18 @@ from app.domain.wallet_auth.proofs import (
     WalletVerificationStrength,
     is_strength_at_least,
     verification_strength_rank,
+)
+from app.domain.wallet_auth.quorum import (
+    QuorumDecision,
+    QuorumEvaluation,
+    QuorumFailureReason,
+    QuorumParticipantSlot,
+    QuorumParticipantType,
+    QuorumPolicy,
+    QuorumProofMethod,
+    QuorumStatus,
+    QuorumType,
+    VerifiedQuorumApproval,
 )
 from app.domain.wallet_auth.recovery import (
     BUSINESS_RECOVERY_FACTORS,
@@ -92,6 +113,15 @@ __all__ = [
     "NON_ROOT_OF_TRUST_DEVICE_CLASSES",
     "PLUS_PRO_RECOVERY_FACTORS",
     "REQUIRED_SIGNATURE_WARNING",
+    "QuorumDecision",
+    "QuorumEvaluation",
+    "QuorumFailureReason",
+    "QuorumParticipantSlot",
+    "QuorumParticipantType",
+    "QuorumPolicy",
+    "QuorumProofMethod",
+    "QuorumStatus",
+    "QuorumType",
     "RecoveryFactorType",
     "SOVEREIGN_RECOVERY_FACTORS",
     "UnsupportedWalletNetworkError",
@@ -119,6 +149,7 @@ __all__ = [
     "WalletSessionInvalidError",
     "WalletSessionStatus",
     "WalletVerificationStrength",
+    "VerifiedQuorumApproval",
     "default_risk_for_action",
     "is_compatibility_strength_allowed_for_action",
     "is_critical_wallet_action",

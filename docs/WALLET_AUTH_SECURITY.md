@@ -73,3 +73,14 @@ LNURL-auth challenge, callback, Lightning Principal, device-binding, session, an
 Audit records must never contain raw `k1`, DER signatures, raw LNURL linking keys, raw session tokens, Access Passes, private keys, wallet seeds, mnemonics, recovery material, payment preimages, or unrestricted payer data. The LNURL audit adapter rejects those fields before persistence and accepts only explicit hashes or fingerprints such as `challenge_hash`, `k1_hash`, `lnurl_key_hash`, `principal_hash`, `session_hash`, and `device_key_fingerprint`.
 
 LNURL-auth audit events are canonicalized and hash-linked with `previous_event_hash` and `event_hash` through the shared tamper-evident audit chain. Duplicate retries reuse deterministic idempotency keys for the same semantic success transition; replay attempts are separate security events such as `lnurl_auth_replay_rejected` rather than duplicate successes. Security-critical transitions fail closed if audit persistence fails.
+# Revocation extension
+
+Wallet principals, proofs, devices, sessions, step-up proofs, recovery capsules and
+quorum artifacts resolve through the authoritative Access Revocation Registry.
+Principal full-tree revocation overrides fresh proof, new devices, certificates and
+payments. Operational behavior and offline limitations are documented in
+[`WALLET_LNURL_REVOCATION.md`](WALLET_LNURL_REVOCATION.md).
+
+Wallet authentication security transitions are written through the canonical,
+tamper-evident Access Audit Chain. Raw wallet/LNURL proof material is rejected before
+persistence; see [`WALLET_LNURL_AUDIT_CHAIN.md`](WALLET_LNURL_AUDIT_CHAIN.md).

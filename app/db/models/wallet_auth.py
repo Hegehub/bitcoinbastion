@@ -11,7 +11,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, ForeignKey, Index, Integer, String, UniqueConstraint
+from sqlalchemy import Boolean, JSON, DateTime, ForeignKey, Index, Integer, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -207,6 +207,11 @@ class RecoveryCapsule(Base):
     cooldown_until: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     policy_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
     transparency_checkpoint_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    issuer_envelope_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
+    issuer_envelope_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    signature_requirement_policy: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    crypto_assurance: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    requires_reissue: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow, onupdate=utcnow)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

@@ -434,6 +434,39 @@ def require_step_up_for_critical_action(action: str) -> Any:
     return dependency
 
 
+def require_step_up_for_action(action: str) -> Any:
+    """Centralized step-up dependency; endpoints declare only the action."""
+    return require_step_up_for_critical_action(action)
+
+
+def require_fresh_lnurl_auth(action: str) -> Any:
+    async def dependency(context: AccessContext = Depends(require_access_session)) -> AccessContext:
+        return require_policy_decision(context, action=action, risk_level="high", metadata={"required_step_up_method": "fresh_lnurl_auth"})
+
+    return dependency
+
+
+def require_fresh_bip322(action: str) -> Any:
+    async def dependency(context: AccessContext = Depends(require_access_session)) -> AccessContext:
+        return require_policy_decision(context, action=action, risk_level="high", metadata={"required_step_up_method": "fresh_bip322"})
+
+    return dependency
+
+
+def require_dual_method(action: str) -> Any:
+    async def dependency(context: AccessContext = Depends(require_access_session)) -> AccessContext:
+        return require_policy_decision(context, action=action, risk_level="high", metadata={"required_step_up_method": "dual_method"})
+
+    return dependency
+
+
+def require_quorum(action: str) -> Any:
+    async def dependency(context: AccessContext = Depends(require_access_session)) -> AccessContext:
+        return require_policy_decision(context, action=action, risk_level="critical", metadata={"required_step_up_method": "multi_wallet_quorum"})
+
+    return dependency
+
+
 def _policy_error(decision: str, reason_code: str, message: str) -> AppError:
     mapping = {
         "upgrade_required": (ACCESS_UPGRADE_REQUIRED, 402),
