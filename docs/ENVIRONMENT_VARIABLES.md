@@ -374,3 +374,10 @@ metadata, not a feature toggle for a hidden provider. Enabling it cannot fabrica
 ML-DSA/SLH-DSA support; policies requiring unavailable PQ algorithms fail closed.
 Issuer private-key provider values are references only, and no private key material
 belongs in configuration documentation or database metadata.
+
+Transparency checkpoints use SHA-256 and a required classical issuer signature by
+default. `TRANSPARENCY_REQUIRE_PQ_SIGNATURE=false` reflects the absence of an
+operational PQ provider. External publication remains disabled; `internal` means a
+signed database record, not independent public publication or blockchain anchoring.
+Batch size and retention are bounded, and only allowlisted `public_safe` artifacts
+may be exported.

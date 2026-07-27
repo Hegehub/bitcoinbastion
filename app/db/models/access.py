@@ -112,6 +112,9 @@ class AccessRevocationTargetType(StrEnum):
     PAYREGISTER_DEVICE = "payregister_device"
     PAYREGISTER_TERMINAL = "payregister_terminal"
     PAYREGISTER_CASHIER_SHIFT = "payregister_cashier_shift"
+    TRANSPARENCY_CHECKPOINT = "transparency_checkpoint"
+    TRANSPARENCY_PUBLICATION = "transparency_publication"
+    TRANSPARENCY_STREAM = "transparency_stream"
 
 
 class RecoveryAttemptStatus(StrEnum):
@@ -430,6 +433,64 @@ class AccessAuditEvent(Base):
     object_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
     canonical_event_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+
+
+class TransparencyCheckpointRecord(Base):
+    """Immutable signed checkpoint fields plus separately mutable lifecycle status."""
+
+    __tablename__ = "transparency_checkpoints"
+    __table_args__ = (
+        UniqueConstraint("stream_id_hash", "sequence_number", name="uq_transparency_stream_sequence"),
+        UniqueConstraint("batch_identity_hash", name="uq_transparency_batch_identity"),
+        Index("ix_transparency_type_created", "checkpoint_type", "created_at"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    checkpoint_id: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    checkpoint_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    schema_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    crypto_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    policy_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    issuer_key_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    hash_suite: Mapped[str] = mapped_column(String(30), nullable=False)
+    signature_suite: Mapped[str] = mapped_column(String(50), nullable=False)
+    visibility: Mapped[str] = mapped_column(String(40), nullable=False)
+    stream_id_hash: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    sequence_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    batch_identity_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True)
+    source_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    batch_start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    batch_end_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    root_hash: Mapped[str] = mapped_column(String(128), nullable=False)
+    previous_checkpoint_hash: Mapped[str] = mapped_column(String(128), nullable=False)
+    checkpoint_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    metadata_commitment: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    issuer_envelope_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False)
+    post_quantum_signature_json: Mapped[JsonDict | None] = mapped_column(_JSON, nullable=True)
+    publication_status: Mapped[str] = mapped_column(String(30), nullable=False, index=True)
+    verification_status: Mapped[str] = mapped_column(String(30), nullable=False, index=True)
+    signed_payload_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    supersedes_checkpoint_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+
+
+class TransparencyCheckpointSource(Base):
+    __tablename__ = "transparency_checkpoint_sources"
+    __table_args__ = (
+        UniqueConstraint("checkpoint_id", "leaf_index", name="uq_transparency_source_index"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    checkpoint_id: Mapped[str] = mapped_column(
+        ForeignKey("transparency_checkpoints.checkpoint_id"), nullable=False, index=True
+    )
+    leaf_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    leaf_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    leaf_hash: Mapped[str] = mapped_column(String(128), nullable=False)
+    object_commitment: Mapped[str] = mapped_column(String(128), nullable=False)
+    event_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
 class AccessHumanIntent(Base):
     __tablename__ = "access_human_intents"

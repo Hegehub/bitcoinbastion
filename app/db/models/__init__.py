@@ -18,6 +18,8 @@ from app.db.models.access import (
     RecoveryAttempt,
     RecoveryQuorum,
     SubscriptionEntitlement,
+    TransparencyCheckpointRecord,
+    TransparencyCheckpointSource,
 )
 from app.db.models.wallet_auth import (
     MultiWalletQuorum,
@@ -185,6 +187,8 @@ __all__ = [
     "RecoveryAttempt",
     "RecoveryQuorum",
     "SubscriptionEntitlement",
+    "TransparencyCheckpointRecord",
+    "TransparencyCheckpointSource",
     "MultiWalletQuorum",
     "RecoveryCapsule",
     "WalletDevice",
