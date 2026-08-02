@@ -3,6 +3,8 @@ from __future__ import annotations
 import httpx
 
 from bitcoin_bastion_sdk.access_auth import BastionAccessAuth
+from bitcoin_bastion_sdk.access.session import BastionPoPSession
+from bitcoin_bastion_sdk.auth import AsyncBastionAuth
 
 from bitcoin_bastion_sdk.resources.access import AsyncAccessResource
 from bitcoin_bastion_sdk.resources.evidence import AsyncEvidenceResource
@@ -32,6 +34,7 @@ class AsyncBastionClient:
         headers: dict[str, str] | None = None,
         transport: httpx.AsyncBaseTransport | None = None,
         access_auth: BastionAccessAuth | None = None,
+        pop_session: BastionPoPSession | None = None,
         allow_legacy_bearer_auth: bool = False,
     ) -> None:
         self._transport = AsyncBastionTransport(
@@ -42,9 +45,11 @@ class AsyncBastionClient:
             headers=headers,
             transport=transport,
             access_auth=access_auth,
+            pop_session=pop_session,
             allow_legacy_bearer_auth=allow_legacy_bearer_auth,
         )
         self.access = AsyncAccessResource(self._transport)
+        self.auth = AsyncBastionAuth(self._transport)
         self.health = AsyncHealthResource(self._transport)
         self.signals = AsyncSignalsResource(self._transport)
         self.news = AsyncNewsResource(self._transport)

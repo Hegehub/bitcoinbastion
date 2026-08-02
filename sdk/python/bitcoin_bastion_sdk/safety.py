@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 
-from bitcoin_bastion_sdk.errors import BastionSafetyError
+from bitcoin_bastion_sdk.errors import BitcoinWalletSecretForbiddenError
 
 SAFETY_MESSAGE = (
     "Never submit seed phrases, private keys, wallet files, xprv/yprv/zprv, "
@@ -20,12 +20,16 @@ FORBIDDEN_INDICATORS = (
     "12 words",
     "24 words",
     "signing material",
+    "wif",
+)
+FORBIDDEN_KEYS = frozenset(
+    {"seed", "seed_phrase", "mnemonic", "wallet_seed", "bitcoin_seed", "private_key", "xprv", "wif"}
 )
 
 
 def assert_safe(value: object) -> None:
     if _contains_sensitive(value):
-        raise BastionSafetyError(SAFETY_MESSAGE)
+        raise BitcoinWalletSecretForbiddenError()
 
 
 def _contains_sensitive(value: object) -> bool:
@@ -33,7 +37,12 @@ def _contains_sensitive(value: object) -> bool:
         lowered = value.casefold()
         return any(term in lowered for term in FORBIDDEN_INDICATORS)
     if isinstance(value, Mapping):
-        return any(_contains_sensitive(str(key)) or _contains_sensitive(item) for key, item in value.items())
+        return any(
+            str(key).casefold() in FORBIDDEN_KEYS
+            or _contains_sensitive(str(key))
+            or _contains_sensitive(item)
+            for key, item in value.items()
+        )
     if isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray, str)):
         return any(_contains_sensitive(item) for item in value)
     return False

@@ -209,6 +209,7 @@ class AuditChainProtocol(Protocol):
         session_hash: str | None = None,
         device_key_fingerprint: str | None = None,
         metadata: dict[str, Any] | None = None,
+        idempotency_key_hash: str | None = None,
     ) -> Any: ...
 
 
@@ -373,6 +374,7 @@ class LNURLAuditService:
                 session_hash=_optional_nested(canonical_event, "session", "session_hash"),
                 device_key_fingerprint=_optional_nested(canonical_event, "device", "device_key_fingerprint"),
                 metadata=canonical_event,
+                idempotency_key_hash=sha256_prefixed(idempotency_key),
             )
             event_id = str(getattr(event, "id", idempotency_key))
             sequence = int(getattr(event, "id", 0) or 0)

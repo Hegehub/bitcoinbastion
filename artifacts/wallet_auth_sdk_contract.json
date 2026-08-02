@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "authorization_scheme": "PoP",
+  "headers": [
+    "Authorization",
+    "Bastion-Request-Timestamp",
+    "Bastion-Request-Nonce",
+    "Bastion-Request-Body-Hash",
+    "Bastion-Request-Signature",
+    "Bastion-Principal"
+  ],
+  "digest": "SHA256(METHOD + newline + canonical_target + newline + body_sha256_hex + newline + timestamp + newline + nonce)",
+  "proof_types": ["bip322", "legacy_message_signature", "hardware_wallet", "air_gapped", "multisig_quorum"],
+  "policy_decisions": ["allow", "deny", "upgrade_required", "step_up_required", "quota_exceeded", "metric_not_allowed", "revoked", "expired", "recovery_required", "online_check_required"],
+  "payment_states": ["created", "invoice_issued", "pending", "settled", "verified", "expired", "failed"],
+  "test_vector": {
+    "method": "POST",
+    "path": "/api/v1/wallet-auth/me",
+    "query": [["z", "two words"], ["a", "1"]],
+    "canonical_target": "/api/v1/wallet-auth/me?a=1&z=two%20words",
+    "canonical_body": "{\"plan\":\"pro_pass\",\"scopes\":[\"market:intelligence:read\"]}",
+    "body_sha256": "76800918ee939dd77abd01fc70466882d7d83eff9b6178a5268623ea21ed930e",
+    "timestamp": "2026-08-02T12:00:00Z",
+    "nonce": "00112233445566778899aabbccddeeff",
+    "digest_hex": "072fa3fe6de9283ece17a9b52f8613b7f86e04804347a01a334c52a2ce0f0527"
+  }
+}

@@ -15,6 +15,7 @@ class WalletChallengePurpose(StrEnum):
     NEW_DEVICE = "new_device"
     STEP_UP = "step_up"
     RECOVERY_START = "recovery_start"
+    LOCKDOWN_RELEASE = "lockdown_release"
     OWNERSHIP_PROOF = "ownership_proof"
     HARDWARE_WALLET_PROOF = "hardware_wallet_proof"
     ACCESS_CERTIFICATE_BRIDGE = "access_certificate_bridge"

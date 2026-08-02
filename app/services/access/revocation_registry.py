@@ -12,15 +12,103 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from enum import StrEnum
 from typing import Any
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.db.models.access import AccessCertificate, AccessRevocation, AccessSession, ChildApiKey, DelegatedPass
+from app.db.models.access import (
+    AccessCertificate,
+    AccessRevocation,
+    AccessSession,
+    ChildApiKey,
+    DelegatedPass,
+)
+from app.services.wallet_auth.privacy_commitments import compute_hmac_lookup_hash
+
+
+class RevocationTargetType(StrEnum):
+    """Stable names understood by the single Access revocation registry."""
+
+    ACCESS_CERTIFICATE = "access_certificate"
+    CERTIFICATE_PRINCIPAL_BINDING = "certificate_principal_binding"
+    CERTIFICATE_DEVICE_BINDING = "certificate_device_binding"
+    CERTIFICATE_ENTITLEMENT_BINDING = "certificate_entitlement_binding"
+    CERTIFICATE_EXPORT = "certificate_export"
+    SUBSCRIPTION_ENTITLEMENT = "subscription_entitlement"
+    METRIC_ENTITLEMENT = "metric_entitlement"
+    ACCESS_DEVICE = "access_device"
+    ACCESS_SESSION = "access_session"
+    CHILD_API_KEY = "child_api_key"
+    DELEGATED_PASS = "delegated_pass"
+    OFFLINE_VALIDITY_PACK = "offline_validity_pack"
+    ISSUER_KEY = "issuer_key"
+    RECOVERY_QUORUM = "recovery_quorum"
+    WALLET_PRINCIPAL = "wallet_principal"
+    BITCOIN_WALLET_PRINCIPAL = "bitcoin_wallet_principal"
+    LIGHTNING_WALLET_PRINCIPAL = "lightning_wallet_principal"
+    WALLET_PROOF = "wallet_proof"
+    WALLET_DEVICE = "wallet_device"
+    WALLET_SESSION = "wallet_session"
+    WALLET_STEP_UP_PROOF = "wallet_step_up_proof"
+    WALLET_RECOVERY_CAPSULE = "wallet_recovery_capsule"
+    MULTI_WALLET_QUORUM = "multi_wallet_quorum"
+    WALLET_PRIVACY_COMMITMENT = "wallet_privacy_commitment"
+    LNURL_AUTH_KEY = "lnurl_auth_key"
+    LNURL_AUTH_CHALLENGE = "lnurl_auth_challenge"
+    LNURL_K1 = "lnurl_k1"
+    LNURL_AUTH_ATTEMPT = "lnurl_auth_attempt"
+    LNURL_PAY_REQUEST = "lnurl_pay_request"
+    LNURL_PAYMENT_PROOF = "lnurl_payment_proof"
+    LNURL_VERIFY_REFERENCE = "lnurl_verify_reference"
+    LNURL_WITHDRAW_REQUEST = "lnurl_withdraw_request"
+    LNURL_WITHDRAW_ATTEMPT = "lnurl_withdraw_attempt"
+    LIGHTNING_ADDRESS = "lightning_address"
+    LNURL_PAYERDATA_BINDING = "lnurl_payerdata_binding"
+    LNURL_SUCCESS_ACTION_REFERENCE = "lnurl_success_action_reference"
+    LNURL_RECOVERY_FACTOR = "lnurl_recovery_factor"
+    LNURL_RECOVERY_CHALLENGE = "lnurl_recovery_challenge"
+    RECOVERY_ATTEMPT = "recovery_attempt"
+    RECOVERY_CAPSULE = "recovery_capsule"
+    QUORUM_POLICY = "quorum_policy"
+    QUORUM_ATTEMPT = "quorum_attempt"
+    QUORUM_APPROVAL = "quorum_approval"
+    MULTI_METHOD_QUORUM = "multi_method_quorum"
+    BUSINESS_WORKSPACE = "business_workspace"
+    BUSINESS_ROLE_BINDING = "business_role_binding"
+    PAYREGISTER_DEVICE = "payregister_device"
+    PAYREGISTER_TERMINAL = "payregister_terminal"
+    PAYREGISTER_CASHIER_SHIFT = "payregister_cashier_shift"
+    PAYREGISTER_LIGHTNING_ADDRESS = "payregister_lightning_address"
+    PAYREGISTER_REFUND_REQUEST = "payregister_refund_request"
+
+
+class RevocationScope(StrEnum):
+    OBJECT_ONLY = "object_only"
+    ACTOR_AND_SESSIONS = "actor_and_sessions"
+    ACTOR_AND_DEVICES = "actor_and_devices"
+    ACTOR_AND_CHILDREN = "actor_and_children"
+    ACTOR_FULL_TREE = "actor_full_tree"
+    PRODUCT_ONLY = "product_only"
+    WORKSPACE_ONLY = "workspace_only"
+    DOMAIN_ONLY = "domain_only"
+    GLOBAL = "global"
+    EMERGENCY_LOCKDOWN = "emergency_lockdown"
+
+
+class RevocationEntryStatus(StrEnum):
+    ACTIVE = "active"
+    SUPERSEDED = "superseded"
+    EXPIRED = "expired"
+    REVERSED = "reversed"
+    PENDING_PROPAGATION = "pending_propagation"
+    PARTIALLY_PROPAGATED = "partially_propagated"
+
 
 REVOCATION_TARGET_TYPES: frozenset[str] = frozenset(
     {
+        *(item.value for item in RevocationTargetType),
         "pass",
         "certificate",
         "entitlement",
@@ -54,6 +142,50 @@ REVOCATION_REASONS: frozenset[str] = frozenset(
         "recovery_abuse",
         "admin_policy",
         "manual_security_action",
+        "suspected_key_compromise",
+        "confirmed_key_compromise",
+        "device_stolen",
+        "nonce_reuse_detected",
+        "signature_verification_failure",
+        "malicious_wallet_behavior",
+        "policy_violation",
+        "audit_integrity_failure",
+        "wallet_control_lost",
+        "wallet_proof_rotated",
+        "wallet_principal_compromised",
+        "lnurl_linking_key_compromised",
+        "lnurl_k1_reuse_detected",
+        "lnurl_auth_domain_migration",
+        "lnurl_wallet_compatibility_revoked",
+        "lightning_address_disabled",
+        "payerdata_binding_revoked",
+        "payment_reversed",
+        "payment_invalidated",
+        "entitlement_expired",
+        "entitlement_downgraded",
+        "entitlement_fraud",
+        "invoice_settlement_disputed",
+        "withdraw_request_cancelled",
+        "withdraw_k1_compromised",
+        "payout_policy_denied",
+        "refund_cancelled",
+        "payout_limit_exceeded",
+        "role_removed",
+        "operator_terminated",
+        "cashier_shift_closed",
+        "terminal_decommissioned",
+        "workspace_lockdown",
+        "business_owner_action",
+        "recovery_started",
+        "recovery_completed",
+        "recovery_failed",
+        "recovery_capsule_rotated",
+        "quorum_policy_changed",
+        "user_requested",
+        "crypto_epoch_migration",
+        "policy_epoch_migration",
+        "system_migration",
+        "emergency_lockdown",
     }
 )
 AuditEmitter = Callable[[str, dict[str, Any]], None]
@@ -80,9 +212,28 @@ class RevocationStatus:
     revocation_epoch: int | None = None
     revoked_at: datetime | None = None
     decision_hint: str | None = None
+    suspended: bool = False
+    scope: str = RevocationScope.OBJECT_ONLY
+    status: str = RevocationEntryStatus.ACTIVE
+    expires_at: datetime | None = None
 
     def __bool__(self) -> bool:
         return self.revoked
+
+
+@dataclass(frozen=True, slots=True)
+class RevocationResolution:
+    revoked: bool
+    suspended: bool
+    scope: str | None
+    reason_code: str | None
+    revocation_epoch: int | None
+    effective_at: datetime | None
+    source_target_type: str | None
+    inherited_from_parent: bool
+    propagation_status: str
+    policy_effect: str
+    safe_public_reason: str
 
 
 class RevocationRegistry:
@@ -98,14 +249,26 @@ class RevocationRegistry:
         reason: str,
         actor_hash: str | None = None,
         metadata: dict[str, Any] | None = None,
+        scope: RevocationScope | str = RevocationScope.OBJECT_ONLY,
+        expires_at: datetime | None = None,
+        propagation_status: RevocationEntryStatus | str = RevocationEntryStatus.ACTIVE,
     ) -> RevocationStatus:
         target_type = self._validate_target_type(target_type)
         reason = self._validate_reason(reason)
         self._validate_target_hash(target_hash)
+        scope = RevocationScope(scope)
+        propagation_status = RevocationEntryStatus(propagation_status)
         existing = self._get_existing(db, target_type=target_type, target_hash=target_hash)
-        if existing is not None:
+        if existing is not None and self._status_from_model(existing).revoked:
             return self._status_from_model(existing)
         epoch = self.next_revocation_epoch(db)
+        entry_metadata = dict(metadata or {})
+        if scope is not RevocationScope.OBJECT_ONLY:
+            entry_metadata["scope"] = scope.value
+        if propagation_status is not RevocationEntryStatus.ACTIVE:
+            entry_metadata["status"] = propagation_status.value
+        if expires_at is not None:
+            entry_metadata["expires_at"] = _iso(expires_at)
         revocation = AccessRevocation(
             target_type=target_type,
             target_hash=target_hash,
@@ -113,7 +276,7 @@ class RevocationRegistry:
             revocation_epoch=epoch,
             created_by_hash=actor_hash,
             signature_id=None,
-            metadata_json=self._redact_metadata(metadata or {}),
+            metadata_json=self._redact_metadata(entry_metadata),
             created_at=datetime.now(UTC),
         )
         db.add(revocation)
@@ -129,7 +292,137 @@ class RevocationRegistry:
         )
         return self._status_from_model(revocation)
 
-    def is_revoked(self, db: Session, *, target_type: str, target_hash: str) -> RevocationStatus:
+    def reverse_revocation(
+        self, db: Session, *, target_type: str, target_hash: str, actor_hash: str | None = None
+    ) -> RevocationStatus:
+        """Append a reversal marker; old sessions/artifacts are never reactivated."""
+        target_type = self._validate_target_type(target_type)
+        current = self._get_existing(db, target_type=target_type, target_hash=target_hash)
+        if current is None or not self._status_from_model(current).revoked:
+            return RevocationStatus(
+                False,
+                target_type,
+                target_hash,
+                decision_hint="not_revoked",
+                status=RevocationEntryStatus.REVERSED,
+            )
+        row = AccessRevocation(
+            target_type=target_type,
+            target_hash=target_hash,
+            reason=current.reason,
+            revocation_epoch=self.next_revocation_epoch(db),
+            created_by_hash=actor_hash,
+            signature_id=None,
+            metadata_json={
+                "status": RevocationEntryStatus.REVERSED.value,
+                "reverses_epoch": current.revocation_epoch,
+                "requires_reauthentication": True,
+            },
+            created_at=datetime.now(UTC),
+        )
+        db.add(row)
+        db.flush()
+        self._emit_audit(
+            "revocation_reversed",
+            target_type=target_type,
+            target_hash=target_hash,
+            reason=current.reason,
+            actor_hash=actor_hash,
+            revocation_epoch=row.revocation_epoch,
+            metadata=row.metadata_json,
+        )
+        return self._status_from_model(row)
+
+    def resolve_revocation_status(
+        self,
+        db: Session,
+        *,
+        target_type: str,
+        target_hash: str,
+        parent_targets: tuple[tuple[str, str], ...] = (),
+        at_time: datetime | None = None,
+        critical: bool = False,
+        authoritative_available: bool = True,
+    ) -> RevocationResolution:
+        """Resolve direct then bounded parent inheritance; never traverses an unbounded graph."""
+        if critical and not authoritative_available:
+            return RevocationResolution(
+                True,
+                False,
+                None,
+                "revocation_state_unavailable",
+                None,
+                None,
+                None,
+                False,
+                "unknown",
+                "deny",
+                "Access cannot be verified.",
+            )
+        now = at_time or datetime.now(UTC)
+        candidates = (
+            (target_type, target_hash, False),
+            *((kind, digest, True) for kind, digest in parent_targets),
+        )
+        for kind, digest, inherited in candidates:
+            status = self.is_revoked(db, target_type=kind, target_hash=digest, at_time=now)
+            if not status.revoked:
+                continue
+            if inherited and status.scope not in {
+                RevocationScope.ACTOR_AND_SESSIONS,
+                RevocationScope.ACTOR_AND_DEVICES,
+                RevocationScope.ACTOR_AND_CHILDREN,
+                RevocationScope.ACTOR_FULL_TREE,
+                RevocationScope.GLOBAL,
+                RevocationScope.EMERGENCY_LOCKDOWN,
+            }:
+                continue
+            effect = "recovery_only" if status.suspended else "deny"
+            if (
+                status.status
+                in {
+                    RevocationEntryStatus.PENDING_PROPAGATION,
+                    RevocationEntryStatus.PARTIALLY_PROPAGATED,
+                }
+                and not critical
+            ):
+                effect = "read_only"
+            return RevocationResolution(
+                True,
+                status.suspended,
+                status.scope,
+                status.reason,
+                status.revocation_epoch,
+                status.revoked_at,
+                kind,
+                inherited,
+                status.status,
+                effect,
+                "Access has been revoked.",
+            )
+        return RevocationResolution(
+            False,
+            False,
+            None,
+            None,
+            None,
+            None,
+            None,
+            False,
+            "complete",
+            "allow",
+            "Access is active.",
+        )
+
+    @staticmethod
+    def derive_private_target_hash(*, pepper: str, target_type: str, identifier: str) -> str:
+        if not pepper:
+            raise RevocationRegistryError("revocation_pepper_required")
+        return compute_hmac_lookup_hash(pepper, f"revocation:{target_type}", identifier)
+
+    def is_revoked(
+        self, db: Session, *, target_type: str, target_hash: str, at_time: datetime | None = None
+    ) -> RevocationStatus:
         target_type = self._validate_target_type(target_type)
         self._validate_target_hash(target_hash)
         existing = self._get_existing(db, target_type=target_type, target_hash=target_hash)
@@ -140,7 +433,7 @@ class RevocationRegistry:
                 target_hash=target_hash,
                 decision_hint="not_revoked",
             )
-        return self._status_from_model(existing)
+        return self._status_from_model(existing, at_time=at_time)
 
     def revoke_pass_tree(
         self,
@@ -162,9 +455,15 @@ class RevocationRegistry:
         child_api_keys_revoked = 0
         delegated_passes_revoked = 0
         warnings: list[str] = []
-        certificates = db.execute(
-            select(AccessCertificate).where(AccessCertificate.pass_lookup_hash == pass_lookup_hash)
-        ).scalars().all()
+        certificates = (
+            db.execute(
+                select(AccessCertificate).where(
+                    AccessCertificate.pass_lookup_hash == pass_lookup_hash
+                )
+            )
+            .scalars()
+            .all()
+        )
         for certificate in certificates:
             self.revoke_target(
                 db,
@@ -174,7 +473,9 @@ class RevocationRegistry:
                 actor_hash=actor_hash,
             )
             for session in db.execute(
-                select(AccessSession).where(AccessSession.certificate_fingerprint == certificate.certificate_fingerprint)
+                select(AccessSession).where(
+                    AccessSession.certificate_fingerprint == certificate.certificate_fingerprint
+                )
             ).scalars():
                 status = self.freeze_session(
                     db,
@@ -183,7 +484,9 @@ class RevocationRegistry:
                     actor_hash=actor_hash,
                 )
                 sessions_revoked += int(status.revoked)
-        for child in db.execute(select(ChildApiKey).where(ChildApiKey.parent_pass_lookup_hash == pass_lookup_hash)).scalars():
+        for child in db.execute(
+            select(ChildApiKey).where(ChildApiKey.parent_pass_lookup_hash == pass_lookup_hash)
+        ).scalars():
             status = self.revoke_child_api_key(
                 db,
                 key_hash=child.key_id_hash,
@@ -220,6 +523,62 @@ class RevocationRegistry:
         )
         return summary
 
+    def revoke_actor_tree(
+        self,
+        db: Session,
+        *,
+        actor_type: str,
+        actor_hash: str,
+        reason: str,
+        descendants: Mapping[str, tuple[str, ...]] | None = None,
+        created_by_hash: str | None = None,
+    ) -> dict[str, Any]:
+        """Revoke an actor synchronously and append revocations for known descendants.
+
+        The direct parent check is authoritative even if descendant discovery is
+        incomplete. Callers pass already bounded/indexed descendant hashes; this
+        method deliberately does not crawl arbitrary object graphs.
+        """
+        parent = self.revoke_target(
+            db,
+            target_type=actor_type,
+            target_hash=actor_hash,
+            reason=reason,
+            actor_hash=created_by_hash,
+            scope=RevocationScope.ACTOR_FULL_TREE,
+        )
+        counts: dict[str, int] = {}
+        for target_type, hashes in (descendants or {}).items():
+            counts[target_type] = 0
+            for target_hash in dict.fromkeys(hashes):
+                child = self.revoke_target(
+                    db,
+                    target_type=target_type,
+                    target_hash=target_hash,
+                    reason=reason,
+                    actor_hash=created_by_hash,
+                    metadata={"inherited_from_actor_hash": actor_hash},
+                )
+                counts[target_type] += int(child.revoked)
+        self._emit_audit(
+            "wallet_principal_revoked"
+            if "wallet_principal" in actor_type
+            else "access_actor_revoked",
+            target_type=actor_type,
+            target_hash=actor_hash,
+            reason=reason,
+            actor_hash=created_by_hash,
+            revocation_epoch=parent.revocation_epoch,
+            metadata={"scope": RevocationScope.ACTOR_FULL_TREE, "descendant_counts": counts},
+        )
+        return {
+            "revoked": parent.revoked,
+            "revocation_epoch": parent.revocation_epoch,
+            "scope": RevocationScope.ACTOR_FULL_TREE.value,
+            "descendant_counts": counts,
+            "requires_reauthentication": True,
+        }
+
     def freeze_session(
         self,
         db: Session,
@@ -228,7 +587,13 @@ class RevocationRegistry:
         reason: str,
         actor_hash: str | None = None,
     ) -> RevocationStatus:
-        status = self.revoke_target(db, target_type="session", target_hash=session_hash, reason=reason, actor_hash=actor_hash)
+        status = self.revoke_target(
+            db,
+            target_type="session",
+            target_hash=session_hash,
+            reason=reason,
+            actor_hash=actor_hash,
+        )
         self._emit_named_target_event("access_session_frozen", status=status, actor_hash=actor_hash)
         return status
 
@@ -258,7 +623,13 @@ class RevocationRegistry:
         reason: str,
         actor_hash: str | None = None,
     ) -> RevocationStatus:
-        status = self.revoke_target(db, target_type="child_api_key", target_hash=key_hash, reason=reason, actor_hash=actor_hash)
+        status = self.revoke_target(
+            db,
+            target_type="child_api_key",
+            target_hash=key_hash,
+            reason=reason,
+            actor_hash=actor_hash,
+        )
         self._emit_named_target_event("child_api_key_revoked", status=status, actor_hash=actor_hash)
         return status
 
@@ -277,7 +648,9 @@ class RevocationRegistry:
             reason=reason,
             actor_hash=actor_hash,
         )
-        self._emit_named_target_event("delegated_pass_revoked", status=status, actor_hash=actor_hash)
+        self._emit_named_target_event(
+            "delegated_pass_revoked", status=status, actor_hash=actor_hash
+        )
         return status
 
     def check_access_material(
@@ -322,28 +695,50 @@ class RevocationRegistry:
         }
 
     def next_revocation_epoch(self, db: Session) -> int:
-        max_epoch = db.execute(select(func.max(AccessRevocation.revocation_epoch))).scalar_one_or_none()
+        max_epoch = db.execute(
+            select(func.max(AccessRevocation.revocation_epoch))
+        ).scalar_one_or_none()
         return int(max_epoch or 0) + 1
 
-    def _get_existing(self, db: Session, *, target_type: str, target_hash: str) -> AccessRevocation | None:
-        return db.execute(
-            select(AccessRevocation)
-            .where(
-                AccessRevocation.target_type == target_type,
-                AccessRevocation.target_hash == target_hash,
+    def _get_existing(
+        self, db: Session, *, target_type: str, target_hash: str
+    ) -> AccessRevocation | None:
+        return (
+            db.execute(
+                select(AccessRevocation)
+                .where(
+                    AccessRevocation.target_type == target_type,
+                    AccessRevocation.target_hash == target_hash,
+                )
+                .order_by(AccessRevocation.revocation_epoch.desc(), AccessRevocation.id.desc())
             )
-            .order_by(AccessRevocation.revocation_epoch.desc(), AccessRevocation.id.desc())
-        ).scalars().first()
+            .scalars()
+            .first()
+        )
 
-    def _status_from_model(self, revocation: AccessRevocation) -> RevocationStatus:
+    def _status_from_model(
+        self, revocation: AccessRevocation, *, at_time: datetime | None = None
+    ) -> RevocationStatus:
+        metadata = revocation.metadata_json or {}
+        status = str(metadata.get("status", RevocationEntryStatus.ACTIVE))
+        expires_at = _parse_datetime(metadata.get("expires_at"))
+        now = at_time or datetime.now(UTC)
+        active = status not in {
+            RevocationEntryStatus.REVERSED,
+            RevocationEntryStatus.EXPIRED,
+        } and not (expires_at and expires_at <= now)
         return RevocationStatus(
-            revoked=True,
+            revoked=active,
             target_type=revocation.target_type,
             target_hash=revocation.target_hash,
             reason=revocation.reason,
             revocation_epoch=revocation.revocation_epoch,
             revoked_at=revocation.created_at,
-            decision_hint="revoked",
+            decision_hint="revoked" if active else "not_revoked",
+            suspended=bool(expires_at and active),
+            scope=str(metadata.get("scope", RevocationScope.OBJECT_ONLY)),
+            status=status if active else (RevocationEntryStatus.EXPIRED if expires_at else status),
+            expires_at=expires_at,
         )
 
     def _validate_target_type(self, target_type: str) -> str:
@@ -369,13 +764,32 @@ class RevocationRegistry:
         redacted: dict[str, Any] = {}
         for key, value in metadata.items():
             lowered = str(key).lower()
-            if any(secret in lowered for secret in ("secret", "token", "raw_pass", "access_pass", "private_key", "seed")):
+            if any(
+                secret in lowered
+                for secret in (
+                    "secret",
+                    "token",
+                    "raw_pass",
+                    "access_pass",
+                    "private_key",
+                    "seed",
+                    "signature",
+                    "k1",
+                    "linking_key",
+                    "wallet_address",
+                    "invoice",
+                    "preimage",
+                    "payer_email",
+                )
+            ):
                 redacted[str(key)] = "[REDACTED]"
             else:
                 redacted[str(key)] = value
         return redacted
 
-    def _emit_named_target_event(self, event_type: str, *, status: RevocationStatus, actor_hash: str | None) -> None:
+    def _emit_named_target_event(
+        self, event_type: str, *, status: RevocationStatus, actor_hash: str | None
+    ) -> None:
         self._emit_audit(
             event_type,
             target_type=status.target_type,
@@ -411,3 +825,14 @@ class RevocationRegistry:
                 "metadata": self._redact_metadata(metadata or {}),
             },
         )
+
+
+def _iso(value: datetime | None) -> str | None:
+    return value.astimezone(UTC).isoformat().replace("+00:00", "Z") if value else None
+
+
+def _parse_datetime(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value:
+        return None
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=UTC)

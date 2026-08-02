@@ -468,3 +468,75 @@ class LNURLPayDiscoveryResponse(LNURLSchemaBase):
 class LNURLErrorResponse(LNURLSchemaBase):
     status: str = Field(default="ERROR", description="LNURL protocol error status.")
     reason: str = Field(description="Generic wallet-safe error reason.")
+
+
+# Bastion-side API adapters use opaque attempt references. They do not accept a
+# caller-supplied k1 or principal hash as authority.
+class LNURLApiAuthChallengeRequest(LNURLSchemaBase):
+    action: LNURLAuthAction
+    device_key_fingerprint: str | None = Field(
+        default=None, pattern=r"^sha256:[0-9a-f]{64}$"
+    )
+    origin: str
+    intended_policy_action: str | None = None
+    requested_scopes: list[str] = Field(default_factory=list)
+    risk_context: dict[str, Any] = Field(default_factory=dict)
+    client_capabilities: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("risk_context", "client_capabilities")
+    @classmethod
+    def no_secret_context(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return _validate_safe_metadata(value) or {}
+
+
+class LNURLApiAuthSessionRequest(LNURLSchemaBase):
+    auth_attempt_id: str
+    device_public_key: str
+    device_key_fingerprint: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    session_public_key: str
+    requested_scopes: list[str] = Field(default_factory=list)
+
+
+class LNURLApiAuthStepUpRequest(LNURLSchemaBase):
+    action: str
+    target_reference: str | None = None
+    requested_scopes: list[str] = Field(default_factory=list)
+    requested_expiry_seconds: int | None = Field(default=None, gt=0, le=86400)
+    cannot_access: list[str] = Field(default_factory=list)
+    risk_level: WalletRiskLevel = WalletRiskLevel.HIGH
+    device_key_fingerprint: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+
+
+class LNURLApiPaySubscriptionRequest(LNURLSchemaBase):
+    plan_code: str
+    duration_days: int = Field(default=30, gt=0, le=366)
+    comment_allowed: int = Field(default=0, ge=0, le=280)
+    payerdata_auth_requested: bool = False
+    success_action_requested: bool = True
+
+    @field_validator("plan_code")
+    @classmethod
+    def canonical_plan(cls, value: str) -> str:
+        allowed = {
+            "lite_pass", "basic_pass", "plus_pass", "pro_pass",
+            "business_pass", "enterprise_pass",
+        }
+        if value not in allowed:
+            raise ValueError("Unsupported Bastion subscription plan.")
+        return value
+
+
+class LNURLApiWithdrawRequest(LNURLSchemaBase):
+    amount_msat: StrictInt = Field(gt=0)
+    purpose: str
+    source_reference: str | None = None
+    description: str = Field(max_length=120)
+    network: str = "bitcoin-mainnet"
+    step_up_id: str | None = None
+
+    @field_validator("description")
+    @classmethod
+    def safe_description(cls, value: str) -> str:
+        if _contains_forbidden_secret_terms(value):
+            raise ValueError("Withdraw description contains forbidden wallet secret terms.")
+        return value

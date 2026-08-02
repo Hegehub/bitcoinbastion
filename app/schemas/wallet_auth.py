@@ -244,6 +244,103 @@ class WalletStepUpRequest(WalletSchemaBase):
         return _validate_requested_scopes(scopes)
 
 
+# HTTP API schemas intentionally use opaque public references rather than the
+# internal HMAC lookup fields exposed by older service-level DTOs above.
+class WalletApiChallengeRequest(WalletSchemaBase):
+    action: str
+    network: WalletNetwork
+    proof_type: WalletProofType = WalletProofType.BIP322
+    origin: str
+    device_key_fingerprint: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    requested_scopes: list[str] = Field(default_factory=list)
+    intent_context: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("requested_scopes")
+    @classmethod
+    def scopes_are_bounded(cls, value: list[str]) -> list[str]:
+        return _validate_requested_scopes(value)
+
+    @field_validator("intent_context")
+    @classmethod
+    def context_has_no_secrets(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return _validate_safe_metadata(value) or {}
+
+
+class WalletApiChallengeResponse(WalletSchemaBase):
+    challenge_id: str
+    intent_type: str = "bastion_wallet_auth_intent"
+    intent_version: int = 1
+    canonical_intent: str
+    intent_hash: str
+    expires_at: datetime
+    network: str
+    proof_type: str
+    safety_warning: str
+
+
+class WalletApiRegistrationResponse(WalletSchemaBase):
+    principal: dict[str, Any]
+    device: dict[str, Any]
+    next_action: str = "create_session"
+    authentication_grant: str | None = None
+
+
+class WalletApiLoginResponse(WalletSchemaBase):
+    authentication_grant: str
+    expires_at: datetime
+    next_action: str = "create_session"
+
+
+class WalletApiSessionRequest(WalletSchemaBase):
+    authentication_grant: str
+    device_public_key: str
+    session_public_key: str
+    requested_scopes: list[str] = Field(default_factory=list)
+
+    @field_validator("requested_scopes")
+    @classmethod
+    def session_scopes_are_bounded(cls, value: list[str]) -> list[str]:
+        return _validate_requested_scopes(value)
+
+
+class WalletApiStepUpRequest(WalletSchemaBase):
+    challenge_id: str
+    action: str
+    proof_type: WalletProofType
+    signature: str
+    wallet_identifier: str
+    intent_hash: str
+
+
+class WalletApiRecoveryStartRequest(WalletSchemaBase):
+    principal_reference: str
+    recovery_profile: str
+    requested_action: str
+    new_device_public_key: str
+
+
+class WalletApiRecoveryFactorRequest(WalletSchemaBase):
+    factor_type: str
+    proof: dict[str, Any]
+    idempotency_key: str | None = None
+
+    @field_validator("proof")
+    @classmethod
+    def recovery_proof_has_no_secrets(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return _validate_safe_metadata(value) or {}
+
+
+class WalletApiRecoveryCompleteRequest(WalletSchemaBase):
+    new_device_public_key: str
+    revoke_compromised_devices: bool = True
+    idempotency_key: str | None = None
+
+
+class WalletApiLockdownRequest(WalletSchemaBase):
+    reason_code: str
+    step_up_id: str | None = None
+    recovery_reference: str | None = None
+
 class WalletStepUpResponse(WalletSchemaBase):
     step_up_id: str
     principal_hash: str
@@ -308,6 +405,49 @@ class WalletRecoveryStatusResponse(WalletSchemaBase):
     completed_factors: list[str]
     cooldown_until: datetime | None = None
     audit_event_hash: str | None = None
+
+
+class WalletLNURLRecoveryFactorResponse(WalletSchemaBase):
+    """LNURL-auth satisfies one factor and never returns an authenticated session."""
+
+    type: str = "bastion_lnurl_recovery_factor"
+    recovery_attempt_id: str = Field(description="Opaque recovery attempt reference.")
+    lnurl: str = Field(description="Short-lived recovery-specific LNURL-auth URI.")
+    qr_payload: str = Field(description="QR payload equivalent to lnurl.")
+    expires_at: datetime
+    factor_status: str
+    remaining_factor_count: int = Field(ge=1)
+    warning: str = Field(description="LNURL-auth proof satisfies one Recovery Capsule factor. It does not complete recovery by itself.")
+
+
+class WalletQuorumApprovalView(WalletSchemaBase):
+    approval_hash: str = Field(description="Commitment to a verified approval; never a raw proof.")
+    participant_type: str
+    proof_method: str
+    slot_id: str
+    role: str | None = None
+    verification_strength: str
+    expires_at: datetime
+
+
+class WalletQuorumStatusResponse(WalletSchemaBase):
+    quorum_hash: str = Field(description="Opaque HMAC-derived quorum reference.")
+    quorum_type: str
+    action: str
+    status: str
+    decision: str
+    threshold: int = Field(ge=1)
+    approval_count: int = Field(ge=0)
+    distinct_principals: int = Field(ge=0)
+    distinct_methods: int = Field(ge=0)
+    filled_slots: list[str]
+    missing_roles: list[str]
+    missing_methods: list[str]
+    cooldown_until: datetime | None = None
+    policy_hash: str
+    warning: str = Field(
+        default="A quorum coordinates distributed authority. It does not bypass the Policy Engine, scopes, entitlements, revocation, or active PoP Session requirements."
+    )
 
 
 class WalletLockdownRequest(WalletSchemaBase):

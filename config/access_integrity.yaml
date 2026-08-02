@@ -1,0 +1,30 @@
+version: "2.0"
+weights:
+  wallet_proof: 15
+  lnurl_auth: 10
+  device: 15
+  session: 15
+  entitlement: 10
+  policy_revocation: 10
+  recovery: 10
+  privacy: 5
+  delegation_business: 5
+  high_assurance: 5
+freshness_seconds:
+  routine_wallet_fresh: 86400
+  routine_wallet_acceptable: 604800
+  critical_step_up: 300
+hard_caps:
+  principal_revoked: 10
+  device_revoked: 20
+  policy_engine_bypass: 10
+  bearer_only_protected_access: 25
+  lnurl_k1_reused: 20
+  private_material_detected: 0
+  session_replay_accepted: 15
+  invalid_entitlement_signature_accepted: 20
+  support_only_recovery: 29
+  raw_address_global_user_id: 54
+  revocation_registry_stale: 54
+  high_risk_compatibility_allowed: 29
+

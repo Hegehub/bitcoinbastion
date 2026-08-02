@@ -11,6 +11,7 @@ import app.db.models  # noqa: F401
 CREATE_TABLE_RE = re.compile(r"op\.create_table\(\s*['\"]([^'\"]+)['\"]")
 REVISION_RE = re.compile(r"^revision\s*=\s*['\"]([^'\"]+)['\"]", re.MULTILINE)
 DOWN_REVISION_RE = re.compile(r"^down_revision\s*=\s*(?:['\"]([^'\"]+)['\"]|None)", re.MULTILINE)
+MODEL_ONLY_TABLES_PENDING_MIGRATION: frozenset[str] = frozenset()
 
 
 def _migration_files() -> list[Path]:
