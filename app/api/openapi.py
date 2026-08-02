@@ -17,6 +17,20 @@ def apply_openapi_defaults(app: FastAPI) -> None:
         {"name": "public", "description": "Public presentation-safe endpoints"},
         {"name": "trace", "description": "Bastion Trace advisory endpoints"},
         {"name": "access", "description": PROOF_OF_ACCESS_HEADER_DESCRIPTION},
+        {
+            "name": "wallet-auth",
+            "description": (
+                "Wallet-first authentication. Bastion never requests a Bitcoin seed or private "
+                "key. Wallet signatures prove wallet control only; protected access requires a "
+                "Device-bound PoP Session, entitlement, revocation checks, and Policy Engine allow."
+            ),
+        },
+        {
+            "name": "LNURL Auth",
+            "description": "LNURL-auth proves control of a domain-specific Lightning linking key; it is not unrestricted Bastion access.",
+        },
+        {"name": "LNURL Pay", "description": "Invoice issuance is not settlement or entitlement issuance."},
+        {"name": "LNURL Withdraw", "description": "Policy-gated, short-lived payout capabilities."},
     ]
 
     original_openapi = app.openapi
@@ -48,6 +62,12 @@ def apply_openapi_defaults(app: FastAPI) -> None:
             "in": "header",
             "name": "X-Bastion-Intent-Signature",
             "description": "Human Intent Signature for critical actions such as policy changes, exports, delegated access, and lockdown changes.",
+        }
+        security_schemes["BastionWalletPoPSession"] = {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization: PoP sess_...; Bearer Access Passes are rejected.",
         }
 
         signing_parameters = [
@@ -125,6 +145,32 @@ def apply_openapi_defaults(app: FastAPI) -> None:
                     if isinstance(operation, dict):
                         operation.setdefault("tags", ["access"])
                         operation.setdefault("x-access-pass-is-bearer", False)
+            if path.startswith("/api/v1/wallet-auth"):
+                protected = not path.endswith(("/challenges", "/register", "/login", "/sessions", "/recovery/start"))
+                for operation in operations.values():
+                    if isinstance(operation, dict):
+                        operation.setdefault("tags", ["wallet-auth"])
+                        operation["x-wallet-signature-grants-access-alone"] = False
+                        operation["x-bitcoin-seed-or-private-key-requested"] = False
+                        if protected:
+                            operation["security"] = [
+                                {"BastionWalletPoPSession": []},
+                                {"BastionRequestSignature": []},
+                            ]
+            if path.startswith("/v1/lnurl"):
+                protocol_callback = "/callback" in path or "/verify/" in path
+                protected = path.endswith("/auth/step-up") or path.endswith("/withdraw/requests")
+                for operation in operations.values():
+                    if isinstance(operation, dict):
+                        operation["x-lnurl-protocol-response"] = protocol_callback
+                        operation["x-lnurl-auth-grants-access-alone"] = False
+                        operation["x-invoice-creation-means-settled"] = False
+                        operation["x-bitcoin-seed-or-private-key-requested"] = False
+                        if protected:
+                            operation["security"] = [
+                                {"BastionWalletPoPSession": []},
+                                {"BastionRequestSignature": []},
+                            ]
         app.openapi_schema = schema
         return schema
 

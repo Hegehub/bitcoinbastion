@@ -32,9 +32,77 @@ async with AsyncBastionClient(base_url="http://localhost:8000") as client:
     latest = await client.signals.latest()
 ```
 
-## Auth
+## Wallet-first and LNURL authentication
 
-Protected SDK calls use Bastion Proof-of-Access, not bearer tokens. Import an Access Pass only to start the challenge/session flow, sign the origin-bound challenge with a Bastion device signer, then pass a short-lived `BastionAccessAuth` session to the client so protected requests receive `X-Bastion-*` request-signing headers.
+**Never provide Bitcoin Bastion with your Bitcoin wallet seed or private key.** Use a
+dedicated Bastion authentication wallet/address for routine authentication when possible;
+do not use a cold treasury wallet for routine login.
+
+The SDK constructs structured intents and submits externally produced BIP-322 proofs. It
+does not derive wallet keys, sign Bitcoin transactions, or broadcast transactions:
+
+```python
+intent = client.auth.wallet.create_challenge(
+    action="login",
+    network="bitcoin-mainnet",
+    proof_type="bip322",
+    origin="https://bastion.example",
+)
+print(intent.signable_intent)  # sign with an external wallet
+# client.auth.wallet.login(challenge_id=intent.challenge_id, signature=external_signature, ...)
+```
+
+LNURL-auth returns a QR/deep-link for an external Lightning wallet. LNURL-auth proves
+control of a domain-specific Lightning linking key; it is not on-chain ownership proof and
+does not itself grant protected API access.
+
+```python
+flow = client.auth.lnurl.create_auth_challenge(action="login", origin="https://bastion.example")
+print(flow.lnurl)
+```
+
+### Device Key and PoP Session
+
+Wallet/LNURL v2 protected calls use a caller-controlled `DeviceSigner` and in-memory
+`BastionPoPSession`. The shared transport signs each request using
+`Authorization: PoP sess_...` and `Bastion-Request-*`; every attempt receives a fresh
+cryptographic nonce. The SDK does not persist sessions automatically. The included
+`InMemoryDeviceSigner` is for development/testing, not an OS keychain, TPM, Secure Enclave,
+or hardware-wallet integration.
+
+### LNURL-pay and verification
+
+```python
+payment = client.auth.lnurl.create_subscription_payment(plan="pro_pass")
+print(payment.lnurl)
+status = client.auth.lnurl.verify_payment(payment.payment_id)
+if status.settled and status.entitlement_active:
+    print("settlement verified and entitlement active")
+```
+
+Invoice issuance is not settlement. Lightning Address is payment routing, not identity.
+Comments are untrusted metadata, payer email/name are never auto-populated, and
+`successAction` URLs are validated but never opened automatically.
+
+### Step-up, recovery, lockdown, and certificates
+
+Use `client.auth.wallet.step_up(...)` or `client.auth.lnurl.step_up(...)` for backend-required
+Human Intent approval. Recovery methods actively reject seed, mnemonic, xprv, WIF, and
+private-key fields. `client.auth.lockdown` and `client.auth.recovery` expose the implemented
+Wallet Auth routes. Optional Access Certificates remain non-bearer policy inputs; local
+`.bbp` writing uses exclusive creation and restrictive permissions.
+
+### Self-hosted and Onion deployments
+
+HTTPS is required for normal remote deployments. Local HTTP is limited to loopback
+development; self-hosted mode must be explicit. Onion endpoints require `allow_onion=True`
+and a caller-configured Tor-capable HTTP transport—the SDK does not silently proxy traffic.
+
+## Legacy Access v1 compatibility
+
+Existing Access Certificate resources may temporarily use `BastionAccessAuth` and
+`X-Bastion-*`. Wallet/LNURL v2 uses only canonical PoP headers. No flow falls back to Bearer,
+password, or JWT authentication.
 
 ```python
 from datetime import UTC, datetime, timedelta
@@ -57,7 +125,9 @@ client = BastionClient(
 me = client.access.me()
 ```
 
-Legacy `api_key`/`Authorization: Bearer` authentication is disabled by default. `allow_legacy_bearer_auth=True` is retained only as a rejected compatibility argument and still fails closed. Use Proof-of-Access challenge/session flow and `X-Bastion-*` request-signing headers for protected requests. The SDK must not log raw Access Passes, session tokens, nonces, signatures, recovery phrases, or Bitcoin seed/private-key material. Bastion will never ask for your Bitcoin seed or private key. See `docs/SDK_PYTHON_ACCESS_AUTH.md`.
+Legacy `api_key`/`Authorization: Bearer` authentication is disabled. The compatibility
+argument is rejected and never sends credentials. Removal of Access v1 aliases is planned
+after the SDK migration window.
 
 ## Trace example
 

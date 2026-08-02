@@ -1,6 +1,11 @@
 from __future__ import annotations
 
 from bitcoin_bastion_sdk.errors import BastionLegacyAuthDisabled
+from bitcoin_bastion_sdk.access.certificates import AccessCertificateClient
+from bitcoin_bastion_sdk.access.lockdown import LockdownClient
+from bitcoin_bastion_sdk.access.recovery import RecoveryClient
+from bitcoin_bastion_sdk.lnurl.client import AsyncLNURLClient, LNURLClient
+from bitcoin_bastion_sdk.wallet_auth.client import AsyncWalletAuthClient, WalletAuthClient
 
 LEGACY_AUTH_DISABLED_MESSAGE = (
     "Legacy auth is disabled. Use Proof-of-Access challenge/session flow."
@@ -64,3 +69,22 @@ def redact_access_secret(value: str) -> str:
     if value.startswith("bap_"):
         return "bap_…redacted"
     return "<redacted>"
+
+
+class BastionAuth:
+    """High-level Wallet/LNURL authentication facade."""
+
+    def __init__(self, transport: object) -> None:
+        self.wallet = WalletAuthClient(transport)
+        self.lnurl = LNURLClient(transport)
+        self.recovery = RecoveryClient(self.wallet)
+        self.lockdown = LockdownClient(self.wallet)
+        self.access = AccessCertificateClient(transport)
+        self.session = self.wallet
+
+
+class AsyncBastionAuth:
+    def __init__(self, transport: object) -> None:
+        self.wallet = AsyncWalletAuthClient(transport)
+        self.lnurl = AsyncLNURLClient(transport)
+        self.session = self.wallet

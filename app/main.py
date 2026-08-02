@@ -49,6 +49,7 @@ from app.api.v1.trace import router as trace_router
 from app.api.v1.users import router as users_router
 from app.web.routes_market import router as market_time_machine_web_router
 from app.api.v1.wallet import router as wallet_router
+from app.api.v1.wallet_auth import router as wallet_auth_router
 from app.api.v1.webhooks import router as webhooks_router
 from app.api.v1.ws import router as ws_router
 from app.core.config import get_settings
@@ -98,6 +99,7 @@ app.include_router(operator_signals_router, prefix=settings.api_prefix)
 app.include_router(onchain_router, prefix=settings.api_prefix)
 app.include_router(entities_router, prefix=settings.api_prefix)
 app.include_router(wallet_router, prefix=settings.api_prefix)
+app.include_router(wallet_auth_router, prefix=settings.api_prefix)
 app.include_router(fees_router, prefix=settings.api_prefix)
 app.include_router(treasury_router, prefix=settings.api_prefix)
 app.include_router(admin_router, prefix=settings.api_prefix)

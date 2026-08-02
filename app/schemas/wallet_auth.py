@@ -244,6 +244,103 @@ class WalletStepUpRequest(WalletSchemaBase):
         return _validate_requested_scopes(scopes)
 
 
+# HTTP API schemas intentionally use opaque public references rather than the
+# internal HMAC lookup fields exposed by older service-level DTOs above.
+class WalletApiChallengeRequest(WalletSchemaBase):
+    action: str
+    network: WalletNetwork
+    proof_type: WalletProofType = WalletProofType.BIP322
+    origin: str
+    device_key_fingerprint: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    requested_scopes: list[str] = Field(default_factory=list)
+    intent_context: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("requested_scopes")
+    @classmethod
+    def scopes_are_bounded(cls, value: list[str]) -> list[str]:
+        return _validate_requested_scopes(value)
+
+    @field_validator("intent_context")
+    @classmethod
+    def context_has_no_secrets(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return _validate_safe_metadata(value) or {}
+
+
+class WalletApiChallengeResponse(WalletSchemaBase):
+    challenge_id: str
+    intent_type: str = "bastion_wallet_auth_intent"
+    intent_version: int = 1
+    canonical_intent: str
+    intent_hash: str
+    expires_at: datetime
+    network: str
+    proof_type: str
+    safety_warning: str
+
+
+class WalletApiRegistrationResponse(WalletSchemaBase):
+    principal: dict[str, Any]
+    device: dict[str, Any]
+    next_action: str = "create_session"
+    authentication_grant: str | None = None
+
+
+class WalletApiLoginResponse(WalletSchemaBase):
+    authentication_grant: str
+    expires_at: datetime
+    next_action: str = "create_session"
+
+
+class WalletApiSessionRequest(WalletSchemaBase):
+    authentication_grant: str
+    device_public_key: str
+    session_public_key: str
+    requested_scopes: list[str] = Field(default_factory=list)
+
+    @field_validator("requested_scopes")
+    @classmethod
+    def session_scopes_are_bounded(cls, value: list[str]) -> list[str]:
+        return _validate_requested_scopes(value)
+
+
+class WalletApiStepUpRequest(WalletSchemaBase):
+    challenge_id: str
+    action: str
+    proof_type: WalletProofType
+    signature: str
+    wallet_identifier: str
+    intent_hash: str
+
+
+class WalletApiRecoveryStartRequest(WalletSchemaBase):
+    principal_reference: str
+    recovery_profile: str
+    requested_action: str
+    new_device_public_key: str
+
+
+class WalletApiRecoveryFactorRequest(WalletSchemaBase):
+    factor_type: str
+    proof: dict[str, Any]
+    idempotency_key: str | None = None
+
+    @field_validator("proof")
+    @classmethod
+    def recovery_proof_has_no_secrets(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return _validate_safe_metadata(value) or {}
+
+
+class WalletApiRecoveryCompleteRequest(WalletSchemaBase):
+    new_device_public_key: str
+    revoke_compromised_devices: bool = True
+    idempotency_key: str | None = None
+
+
+class WalletApiLockdownRequest(WalletSchemaBase):
+    reason_code: str
+    step_up_id: str | None = None
+    recovery_reference: str | None = None
+
 class WalletStepUpResponse(WalletSchemaBase):
     step_up_id: str
     principal_hash: str

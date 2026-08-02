@@ -3,6 +3,8 @@ from __future__ import annotations
 import httpx
 
 from bitcoin_bastion_sdk.access_auth import BastionAccessAuth
+from bitcoin_bastion_sdk.access.session import BastionPoPSession
+from bitcoin_bastion_sdk.auth import BastionAuth
 
 from bitcoin_bastion_sdk.resources.access import AccessResource
 from bitcoin_bastion_sdk.resources.evidence import EvidenceResource
@@ -10,6 +12,7 @@ from bitcoin_bastion_sdk.resources.health import HealthResource
 from bitcoin_bastion_sdk.resources.market import MarketResource
 from bitcoin_bastion_sdk.resources.news import NewsResource
 from bitcoin_bastion_sdk.resources.onchain import OnchainResource
+from bitcoin_bastion_sdk.resources.payregister import PayRegisterLNURLResource
 from bitcoin_bastion_sdk.resources.policy import PolicyResource
 from bitcoin_bastion_sdk.resources.provider_health import ProviderHealthResource
 from bitcoin_bastion_sdk.resources.signals import SignalsResource
@@ -32,7 +35,10 @@ class BastionClient:
         headers: dict[str, str] | None = None,
         transport: httpx.BaseTransport | None = None,
         access_auth: BastionAccessAuth | None = None,
+        pop_session: BastionPoPSession | None = None,
         allow_legacy_bearer_auth: bool = False,
+        self_hosted_mode: bool = False,
+        allow_onion: bool = False,
     ) -> None:
         self._transport = BastionTransport(
             base_url=base_url,
@@ -42,13 +48,18 @@ class BastionClient:
             headers=headers,
             transport=transport,
             access_auth=access_auth,
+            pop_session=pop_session,
             allow_legacy_bearer_auth=allow_legacy_bearer_auth,
+            self_hosted_mode=self_hosted_mode,
+            allow_onion=allow_onion,
         )
         self.access = AccessResource(self._transport)
+        self.auth = BastionAuth(self._transport)
         self.health = HealthResource(self._transport)
         self.signals = SignalsResource(self._transport)
         self.news = NewsResource(self._transport)
         self.onchain = OnchainResource(self._transport)
+        self.payregister_lnurl = PayRegisterLNURLResource(self._transport)
         self.trace = TraceResource(self._transport)
         self.evidence = EvidenceResource(self._transport)
         self.market = MarketResource(self._transport)

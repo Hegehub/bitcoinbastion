@@ -11,6 +11,11 @@ SENSITIVE_KEYS = {
     "session_token",
     "x-bastion-session",
     "x-bastion-signature",
+    "bastion-request-signature",
+    "bastion-request-nonce",
+    "k1",
+    "preimage",
+    "wallet_signature",
     "authorization",
     "api_key",
     "token",
@@ -20,7 +25,7 @@ SENSITIVE_KEYS = {
 }
 
 # Redaction must reject wallet secrets from appearing in diagnostics.
-SECRET_PREFIXES = ("bap_", "bbk_live_", "bbd_live_", "xprv", "yprv", "zprv")
+SECRET_PREFIXES = ("bap_", "sess_", "bbk_live_", "bbd_live_", "xprv", "yprv", "zprv")
 
 
 def redact_secret(value: Any) -> str:

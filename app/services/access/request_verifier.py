@@ -100,12 +100,18 @@ class AccessRequestHeaders:
     @classmethod
     def parse(cls, headers: Mapping[str, str]) -> AccessRequestHeaders:
         normalized = {key.lower(): value for key, value in headers.items()}
-        values: dict[str, str] = {}
-        for key in (HEADER_SESSION, HEADER_TIMESTAMP, HEADER_NONCE, HEADER_BODY_HASH, HEADER_SIGNATURE):
-            value = normalized.get(key)
-            if value is None or value == "":
+        authorization = normalized.get("authorization", "")
+        canonical_session = authorization[4:].strip() if authorization.startswith("PoP ") else None
+        values = {
+            HEADER_SESSION: canonical_session or normalized.get(HEADER_SESSION, ""),
+            HEADER_TIMESTAMP: normalized.get("bastion-request-timestamp") or normalized.get(HEADER_TIMESTAMP, ""),
+            HEADER_NONCE: normalized.get("bastion-request-nonce") or normalized.get(HEADER_NONCE, ""),
+            HEADER_BODY_HASH: normalized.get("bastion-request-body-hash") or normalized.get(HEADER_BODY_HASH, ""),
+            HEADER_SIGNATURE: normalized.get("bastion-request-signature") or normalized.get(HEADER_SIGNATURE, ""),
+        }
+        for key, value in values.items():
+            if not value:
                 raise MissingAccessHeaderError(f"missing_{key.replace('-', '_')}")
-            values[key] = value
         if not values[HEADER_NONCE].strip():
             raise InvalidNonceError("invalid_nonce")
         if not _looks_like_body_hash(values[HEADER_BODY_HASH]):
