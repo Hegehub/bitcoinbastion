@@ -1,0 +1,332 @@
+{
+  "literal_count": 68,
+  "matched": [
+    "/api/v1/evidence/packets",
+    "/api/v1/health",
+    "/api/v1/health/providers",
+    "/api/v1/intelligence/narratives",
+    "/api/v1/market/health",
+    "/api/v1/market/providers/health",
+    "/api/v1/news/sources",
+    "/api/v1/operations/status",
+    "/api/v1/public/features",
+    "/api/v1/public/landing",
+    "/api/v1/public/roadmap",
+    "/api/v1/public/stats",
+    "/api/v1/public/status",
+    "/api/v1/public/trace/{param}/summary",
+    "/api/v1/signals/latest",
+    "/api/v1/signals/top",
+    "/api/v1/trace/address/{param}",
+    "/api/v1/trace/lite/{param}",
+    "/api/v1/trace/report/{param}",
+    "/api/v1/trace/report/{param}/counterparty-lens",
+    "/api/v1/trace/report/{param}/dust-radar",
+    "/api/v1/trace/report/{param}/evidence",
+    "/api/v1/trace/report/{param}/origin-passport",
+    "/api/v1/trace/report/{param}/policy-facts",
+    "/api/v1/trace/report/{param}/privacy-shield",
+    "/api/v1/trace/report/{param}/proof-packet",
+    "/api/v1/trace/report/{param}/provider-disagreement",
+    "/api/v1/trace/report/{param}/source-summary",
+    "/api/v1/trace/report/{param}/utxo-hygiene",
+    "/api/v1/wallet-auth/challenges",
+    "/api/v1/wallet-auth/devices",
+    "/api/v1/wallet-auth/entitlements",
+    "/api/v1/wallet-auth/lockdown",
+    "/api/v1/wallet-auth/login",
+    "/api/v1/wallet-auth/me",
+    "/api/v1/wallet-auth/recovery/start",
+    "/api/v1/wallet-auth/register",
+    "/api/v1/wallet-auth/sessions",
+    "/api/v1/wallet-auth/step-up",
+    "/v1/access/certificates",
+    "/v1/access/challenges",
+    "/v1/access/lockdown",
+    "/v1/access/me",
+    "/v1/access/payment-intents",
+    "/v1/access/payment-intents/{param}",
+    "/v1/access/recovery/start",
+    "/v1/access/recovery/status/{param}",
+    "/v1/access/sessions",
+    "/v1/lnurl/auth/challenges",
+    "/v1/lnurl/auth/sessions",
+    "/v1/lnurl/auth/step-up",
+    "/v1/lnurl/pay/subscriptions",
+    "/v1/lnurl/withdraw/requests"
+  ],
+  "matched_count": 53,
+  "sources": {
+    "/api/v1/audit/events": [
+      "frontend/bastion_ui/services/audit_client.py",
+      "frontend/bastion_ui/state/console_audit_state.py"
+    ],
+    "/api/v1/evidence": [
+      "frontend/bastion_ui/state/console_evidence_state.py"
+    ],
+    "/api/v1/evidence/packets": [
+      "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/services/market_client.py"
+    ],
+    "/api/v1/evidence/{param}": [
+      "frontend/bastion_ui/services/wow_client.py"
+    ],
+    "/api/v1/health": [
+      "frontend/bastion_ui/services/provider_health_client.py",
+      "frontend/bastion_ui/services/sovereign_grid_client.py",
+      "frontend/bastion_ui/services/status_client.py",
+      "frontend/bastion_ui/services/wow_client.py"
+    ],
+    "/api/v1/health/providers": [
+      "frontend/bastion_ui/services/console_client.py",
+      "frontend/bastion_ui/services/status_client.py"
+    ],
+    "/api/v1/intelligence/narratives": [
+      "frontend/bastion_ui/services/market_client.py"
+    ],
+    "/api/v1/market/health": [
+      "frontend/bastion_ui/services/market_client.py"
+    ],
+    "/api/v1/market/providers/health": [
+      "frontend/bastion_ui/services/market_client.py"
+    ],
+    "/api/v1/news/sources": [
+      "frontend/bastion_ui/services/market_client.py"
+    ],
+    "/api/v1/observability": [
+      "frontend/bastion_ui/services/audit_client.py",
+      "frontend/bastion_ui/services/sovereign_grid_client.py"
+    ],
+    "/api/v1/operations/status": [
+      "frontend/bastion_ui/services/console_client.py"
+    ],
+    "/api/v1/policy": [
+      "frontend/bastion_ui/services/policy_client.py",
+      "frontend/bastion_ui/state/console_policy_state.py"
+    ],
+    "/api/v1/policy/rules/{param}": [
+      "frontend/bastion_ui/services/api_explorer_client.py"
+    ],
+    "/api/v1/provider-health": [
+      "frontend/bastion_ui/services/provider_health_client.py",
+      "frontend/bastion_ui/state/console_provider_health_state.py"
+    ],
+    "/api/v1/public/features": [
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/services/public_client.py",
+      "frontend/bastion_ui/services/sovereign_grid_client.py"
+    ],
+    "/api/v1/public/landing": [
+      "frontend/bastion_ui/services/public_client.py"
+    ],
+    "/api/v1/public/roadmap": [
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/services/public_client.py"
+    ],
+    "/api/v1/public/stats": [
+      "frontend/bastion_ui/services/public_client.py"
+    ],
+    "/api/v1/public/status": [
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/services/public_client.py",
+      "frontend/bastion_ui/services/sovereign_grid_client.py",
+      "frontend/bastion_ui/services/status_client.py",
+      "frontend/bastion_ui/services/wow_client.py",
+      "frontend/bastion_ui/state/api_explorer_state.py"
+    ],
+    "/api/v1/public/trace/{param}/summary": [
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/services/evidence_client.py",
+      "frontend/bastion_ui/services/public_client.py",
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/services/wow_client.py"
+    ],
+    "/api/v1/signals/latest": [
+      "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/services/market_client.py"
+    ],
+    "/api/v1/signals/top": [
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/services/api_explorer_client.py"
+    ],
+    "/api/v1/trace/address/{param}": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/lite/{param}": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/recent": [
+      "frontend/bastion_ui/state/console_trace_state.py"
+    ],
+    "/api/v1/trace/report/{param}": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/counterparty-lens": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/dust-radar": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/evidence": [
+      "frontend/bastion_ui/services/evidence_client.py",
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/origin-passport": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/policy-facts": [
+      "frontend/bastion_ui/services/policy_client.py",
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/privacy-shield": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/proof-packet": [
+      "frontend/bastion_ui/services/evidence_client.py",
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/provider-disagreement": [
+      "frontend/bastion_ui/services/evidence_client.py",
+      "frontend/bastion_ui/services/provider_health_client.py",
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/source-summary": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/trace/report/{param}/utxo-hygiene": [
+      "frontend/bastion_ui/services/trace_client.py"
+    ],
+    "/api/v1/treasury/drafts": [
+      "frontend/bastion_ui/services/api_explorer_client.py"
+    ],
+    "/api/v1/wallet-auth/challenges": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/devices": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/devices/{quote(device_id,": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/entitlements": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/lockdown": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/login": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/me": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/recovery/start": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/recovery/{quote(recovery_id,": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/register": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/sessions": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/wallet-auth/step-up": [
+      "frontend/bastion_ui/services/wallet_auth_client.py",
+      "frontend/bastion_ui/wallet_auth_client.py"
+    ],
+    "/api/v1/webhooks/secrets": [
+      "frontend/bastion_ui/services/api_explorer_client.py"
+    ],
+    "/v1/access/certificates": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/challenges": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/entitlements": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/limits": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/lockdown": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/me": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/payment-intents": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/payment-intents/{param}": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/recovery/start": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/recovery/status/{param}": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/access/sessions": [
+      "frontend/bastion_ui/access_client.py"
+    ],
+    "/v1/lnurl/auth/challenges": [
+      "frontend/bastion_ui/lnurl_client.py",
+      "frontend/bastion_ui/services/lnurl_client.py"
+    ],
+    "/v1/lnurl/auth/sessions": [
+      "frontend/bastion_ui/lnurl_client.py",
+      "frontend/bastion_ui/services/lnurl_client.py"
+    ],
+    "/v1/lnurl/auth/step-up": [
+      "frontend/bastion_ui/lnurl_client.py"
+    ],
+    "/v1/lnurl/pay/subscriptions": [
+      "frontend/bastion_ui/lnurl_client.py",
+      "frontend/bastion_ui/services/lnurl_client.py"
+    ],
+    "/v1/lnurl/pay/verify/{quote(payment_id,": [
+      "frontend/bastion_ui/lnurl_client.py",
+      "frontend/bastion_ui/services/lnurl_client.py"
+    ],
+    "/v1/lnurl/withdraw/requests": [
+      "frontend/bastion_ui/lnurl_client.py",
+      "frontend/bastion_ui/services/lnurl_client.py"
+    ]
+  },
+  "stale_or_absent": [
+    "/api/v1/audit/events",
+    "/api/v1/evidence",
+    "/api/v1/evidence/{param}",
+    "/api/v1/observability",
+    "/api/v1/policy",
+    "/api/v1/policy/rules/{param}",
+    "/api/v1/provider-health",
+    "/api/v1/trace/recent",
+    "/api/v1/treasury/drafts",
+    "/api/v1/wallet-auth/devices/{quote(device_id,",
+    "/api/v1/wallet-auth/recovery/{quote(recovery_id,",
+    "/api/v1/webhooks/secrets",
+    "/v1/access/entitlements",
+    "/v1/access/limits",
+    "/v1/lnurl/pay/verify/{quote(payment_id,"
+  ],
+  "stale_or_absent_count": 15
+}
