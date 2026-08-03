@@ -1,6 +1,6 @@
 # Bitcoin Bastion TypeScript SDK
 
-Developer-preview TypeScript SDK for the Bitcoin Bastion API. Legacy `apiKey`/`Authorization: Bearer` authentication is disabled; protected requests use Proof-of-Access `X-Bastion-*` headers.
+Developer-preview TypeScript SDK for the Bitcoin Bastion API. Legacy `apiKey`/`Authorization: Bearer` authentication is disabled; protected requests use Wallet/LNURL-established, device-bound PoP sessions and canonical `Bastion-Request-*` headers.
 
 Bitcoin Bastion is no-custody. Never submit seed phrases, private keys, wallet files, xprv/yprv/zprv, or signing material. Trace outputs are advisory-only, not legal verification, and not Bitcoin consensus proof. Market intelligence is informational and not financial advice. Historical similarity does not guarantee future market behavior.
 
@@ -79,3 +79,30 @@ Supported streams include `/ws/events`, `/ws/signals`, `/ws/news`, `/ws/onchain`
 ## Endpoint mapping notes
 
 The SDK maps to current repository routes. Evidence packet export uses `/api/v1/evidence/packets/{packet_id}` with `format` query parameters. Market dashboard helpers currently use `/api/v1/market/btc/context`. Wallet health helpers read wallet profile health reports and do not implement wallet import, key handling, PSBT signing, transaction signing, or mnemonic handling.
+
+## Wallet-first + LNURL Proof-of-Access v2
+
+> **Bitcoin Bastion never requires your Bitcoin or Lightning wallet seed, mnemonic, xprv, or wallet private key.**
+
+The SDK orchestrates external-wallet proof and never owns wallet keys. `WalletProofSigner` receives the visible, expiring human intent; `LnurlWalletAdapter` opens LNURL-auth/pay/withdraw data for explicit user approval. Backend verification creates a Bitcoin or Lightning Principal. Device Binding and a short-lived PoP Session are still required for protected access: wallet proof or LNURL-auth alone is not authorization.
+
+Install `WalletLnurlAuthProvider` with an application/platform signer that does not export its private key. The central transport signs protected calls using the production `Authorization: PoP` and `Bastion-Request-*` headers, canonical body/target, UTC timestamp, and a fresh cryptographic nonce. State is memory-only by default; core auth never persists to localStorage, sessionStorage, IndexedDB, cookies, or filesystem.
+
+```ts
+const auth = new WalletLnurlAuthProvider(deviceSigner);
+const client = new BitcoinBastionClient({ baseUrl, auth, expectedLnurlAuthDomain: "auth.example.com" });
+const intent = await client.walletAuth.createChallenge({
+  action: "login", network: "bitcoin-mainnet", proofType: "bip322",
+  origin: "https://app.example.com", deviceKeyFingerprint: deviceSigner.publicKeyFingerprint,
+});
+// Display canonicalIntent and safetyWarning before the user explicitly approves.
+const proof = await externalWallet.signWalletIntent({ intent: intent.canonicalIntent, network: intent.network, action: "login" });
+const login = await client.walletAuth.login({ challengeId: intent.challengeId, proof });
+// Bind public device/session keys with createSession, then auth.setSession(backendSession).
+```
+
+LNURL wallet callbacks go directly to Bastion; the backend verifies k1, action, domain, expiry, replay, signature, revocation, settlement, entitlement, recovery, and policy. The SDK never treats invoice issuance as payment, comments/payerData as authorization or identity, Lightning Address as identity, or success-action URLs as automatic navigation. Authenticated WebSocket handshakes remain unsupported until the backend defines a secure ticket flow; secrets are never put in URLs.
+
+### Migrating from Bearer API Key Authentication
+
+Old `new BitcoinBastionClient({ baseUrl, apiKey })` usage fails closed. Temporary legacy transport requires the conspicuous `legacyBearerAuth: { enabled: true }` opt-in and does not authenticate Wallet/PoP protected endpoints. Migrate to `new BitcoinBastionClient({ baseUrl, auth: walletLnurlAuthProvider })`, establish external Wallet/LNURL proof, bind a Device Key, create a PoP Session, and handle structured policy/step-up/session-expiry errors. A transport retry must create a new signed attempt and therefore a new nonce and signature.

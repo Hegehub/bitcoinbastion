@@ -10,6 +10,14 @@ const SECRET_KEYS = [
   "session",
   "x-bastion-session",
   "x-bastion-signature",
+  "k1",
+  "recovery",
+  "preimage",
+  "mnemonic",
+  "seed",
+  "xprv",
+  "walletprivatekey",
+  "payer_auth",
 ];
 
 function redactWithPrefix(value: string, prefix: string): string {

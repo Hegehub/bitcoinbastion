@@ -52,3 +52,23 @@ spec:
           for: 10m
           labels: {severity: warning}
           annotations: {summary: "Celery backlog high (if metric exists)"}
+        - alert: BitcoinBastionLnurlReplaySpike
+          expr: increase(bastion_lnurl_recovery_k1_reused_total[10m]) > 5
+          for: 5m
+          labels: {severity: critical}
+          annotations: {summary: "LNURL single-use challenge replay spike"}
+        - alert: BitcoinBastionLnurlPolicyDenialSpike
+          expr: increase(bastion_lnurl_policy_denials_total[15m]) > 25
+          for: 10m
+          labels: {severity: warning}
+          annotations: {summary: "LNURL Policy Engine denial spike"}
+        - alert: BitcoinBastionLnurlWithdrawFailureSpike
+          expr: increase(bastion_lnurl_withdraw_payment_failed_total[15m]) > 5
+          for: 10m
+          labels: {severity: critical}
+          annotations: {summary: "LNURL withdraw payout failure spike"}
+        - alert: BitcoinBastionRecoveryAttemptSpike
+          expr: increase(bastion_recovery_capsules_created_total[15m]) > 10
+          for: 10m
+          labels: {severity: warning}
+          annotations: {summary: "Recovery Capsule attempt spike"}

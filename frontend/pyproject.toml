@@ -9,6 +9,7 @@ dependencies = [
     "pydantic",
     "pydantic-settings",
     "python-dotenv",
+    "segno>=1.6.1,<2",
 ]
 
 [dependency-groups]

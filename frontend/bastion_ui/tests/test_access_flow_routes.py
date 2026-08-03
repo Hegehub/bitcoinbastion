@@ -14,11 +14,12 @@ def test_access_routes_are_registered() -> None:
     for route in {
         "/access",
         "/access/checkout",
-        "/access/success",
-        "/access/import",
-        "/access/me",
-        "/access/recovery",
-        "/access/lockdown",
+        "/access/payment/success",
+        "/wallet-auth",
+        "/wallet-auth/devices",
+        "/wallet-auth/recovery",
+        "/wallet-auth/step-up",
+        "/lnurl/auth",
     }:
         assert f'PublicRouteSpec("{route}"' in source
 
@@ -50,20 +51,18 @@ def test_access_nav_replaces_legacy_auth_nav() -> None:
 
 
 def test_access_pages_include_required_safety_copy() -> None:
-    source = _read("routes/access.py")
+    source = _read("components/auth/access.py") + _read("routes/wallet_auth.py")
     for line in (
-        "This is not a password.",
-        "This is not your Bitcoin wallet seed.",
-        "Bastion will never ask for your Bitcoin wallet seed or private key.",
+        "Bastion will never ask for your Bitcoin seed or private key.",
+        "This signature does not authorize a Bitcoin transaction.",
+        "Use a dedicated Bastion authentication wallet or address.",
     ):
         assert line in source
-    assert "Save this Bastion Access Pass now. It will be shown only once." in source
-    assert "Development signer — not for production" in source
-    assert "Lockdown is designed for suspected compromise" in source
+    assert "Emergency Lockdown" in source
 
 
 def test_no_active_password_or_bearer_form_in_access_ui() -> None:
-    source = _read("routes/access.py").lower()
+    source = (_read("routes/access.py") + _read("routes/wallet_auth.py")).lower()
     assert "rx.input" not in source
     assert 'type="password"' not in source
     assert "authorization: bearer" not in source

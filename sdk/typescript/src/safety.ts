@@ -20,6 +20,15 @@ const SENSITIVE_PATTERNS = [
 
 export const SAFETY_MESSAGE =
   "Never submit seed phrases, private keys, wallet files, xprv/yprv/zprv, or signing material to Bitcoin Bastion.";
+export const WALLET_SECRET_REJECTION_MESSAGE = "Bitcoin Bastion does not require your Bitcoin wallet seed or private key.";
+
+const FORBIDDEN_AUTH_FIELDS = /^(seed|seedphrase|mnemonic|privatekey|walletprivatekey|xprv|bitcoinseed|lightningseed)$/i;
+export function assertNoWalletSecretFields(value: unknown): void {
+  if (value && typeof value === "object") for (const [key, item] of Object.entries(value)) {
+    if (FORBIDDEN_AUTH_FIELDS.test(key.replace(/[_-]/g, ""))) throw new BastionSafetyError(WALLET_SECRET_REJECTION_MESSAGE);
+    assertNoWalletSecretFields(item);
+  }
+}
 
 export function containsSensitiveMaterial(value: unknown): boolean {
   return SENSITIVE_PATTERNS.some((pattern) => flatten(value).toLowerCase().includes(pattern));

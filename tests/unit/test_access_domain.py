@@ -40,7 +40,9 @@ def test_normalize_plan_code_rejects_invalid_values() -> None:
 
 
 def test_scope_and_metric_constants_have_expected_counts() -> None:
-    assert len(ACCESS_SCOPES) == 53
+    # Includes the 14 policy-gated LNURL withdraw/refund scopes and the two
+    # PayRegister payment scopes added after the original access catalogue.
+    assert len(ACCESS_SCOPES) == 69
     assert len(METRIC_GROUPS) == 24
 
 

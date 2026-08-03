@@ -30,13 +30,22 @@ class AccessApiClient:
         with httpx.Client(timeout=self._timeout) as client:
             response = client.post(self._url(path), json=payload, headers=headers)
             response.raise_for_status()
-            return cast(dict[str, Any], response.json())
+            return _unwrap(response.json())
 
-    def _get(self, path: str, headers: dict[str, str] | None = None) -> dict[str, Any]:
+    def _get(
+        self, path: str, headers: dict[str, str] | None = None, *, raw_protocol: bool = False
+    ) -> dict[str, Any]:
         with httpx.Client(timeout=self._timeout) as client:
             response = client.get(self._url(path), headers=headers)
             response.raise_for_status()
-            return cast(dict[str, Any], response.json())
+            payload = cast(dict[str, Any], response.json())
+            return payload if raw_protocol else _unwrap(payload)
+
+    def _delete(self, path: str, headers: dict[str, str]) -> dict[str, Any]:
+        with httpx.Client(timeout=self._timeout) as client:
+            response = client.delete(self._url(path), headers=headers)
+            response.raise_for_status()
+            return _unwrap(response.json())
 
     def create_payment_intent(self, plan_code: str) -> dict[str, Any]:
         return self._post("/v1/access/payment-intents", {"plan_code": plan_code})
@@ -93,3 +102,9 @@ class AccessApiClient:
 
     def lockdown(self, payload: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
         return self._post("/v1/access/lockdown", payload, headers=headers)
+
+
+def _unwrap(value: Any) -> dict[str, Any]:
+    payload = cast(dict[str, Any], value)
+    data = payload.get("data")
+    return cast(dict[str, Any], data) if isinstance(data, dict) else payload

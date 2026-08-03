@@ -706,3 +706,59 @@ Root health endpoints for Kubernetes and external probes:
 - `GET /api/v1/webhooks/{webhook_id}/deliveries` lists webhook delivery records.
 
 Webhook delivery signing, dispatch workers, retries, and HMAC headers are pending future prompts.
+
+## Wallet-first and LNURL API inventory
+
+These routes are orchestration surfaces. Protected operations still require Device-bound PoP and a backend Policy Engine decision; payment request creation is not settlement.
+
+- `POST /api/v1/payregister/lnurl/endpoints`
+- `GET /api/v1/payregister/lnurl/endpoints`
+- `GET /api/v1/payregister/lnurl/endpoints/{endpoint_id}`
+- `PATCH /api/v1/payregister/lnurl/endpoints/{endpoint_id}`
+- `POST /api/v1/payregister/lnurl/endpoints/{endpoint_id}/activate`
+- `POST /api/v1/payregister/lnurl/endpoints/{endpoint_id}/suspend`
+- `POST /api/v1/payregister/lnurl/endpoints/{endpoint_id}/rotate-alias`
+- `POST /api/v1/payregister/lnurl/endpoints/{endpoint_id}/checkout`
+- `GET /api/v1/payregister/lnurl/endpoints/{endpoint_id}/qr`
+- `GET /api/v1/payregister/lnurl/endpoints/{endpoint_id}/nfc`
+- `GET /api/v1/payregister/lnurl/pay/callback/{payment_context_reference}`
+- `GET /api/v1/payregister/lnurl/pay/verify/{payment_context_reference}`
+- `GET /api/v1/payregister/receipts/{receipt_reference}`
+- `POST /api/v1/lnurl/auth/sessions`
+- `POST /api/v1/lnurl/auth/step-up`
+- `POST /api/v1/lnurl/pay/subscriptions`
+- `GET /api/v1/lnurl/pay/callback/{payment_id}`
+- `GET /api/v1/lnurl/pay/verify/{payment_id}`
+- `POST /api/v1/lnurl/withdraw/requests`
+- `GET /api/v1/lnurl/withdraw/callback/{withdraw_id}`
+- `GET /api/v1/lnurl/activations/{activation_reference}`
+- `POST /api/v1/lnurl/activations/{activation_reference}/complete`
+- `GET /api/v1/lnurl/receipts/{activation_reference}`
+- `POST /api/v1/business/lightning-addresses`
+- `GET /api/v1/business/lightning-addresses`
+- `GET /api/v1/business/lightning-addresses/{address_id}`
+- `POST /api/v1/business/lightning-addresses/{address_id}/activate`
+- `POST /api/v1/business/lightning-addresses/{address_id}/suspend`
+- `DELETE /api/v1/business/lightning-addresses/{address_id}`
+- `POST /api/v1/business/lightning-domains`
+- `GET /api/v1/business/lightning-domains`
+- `GET /api/v1/business/lightning-domains/{domain_id}`
+- `POST /api/v1/business/lightning-domains/{domain_id}/verify`
+- `POST /api/v1/business/lightning-domains/{domain_id}/recheck`
+- `DELETE /api/v1/business/lightning-domains/{domain_id}`
+- `POST /api/v1/wallet-auth/register`
+- `POST /api/v1/wallet-auth/login`
+- `POST /api/v1/wallet-auth/sessions`
+- `POST /api/v1/wallet-auth/step-up`
+- `GET /api/v1/wallet-auth/me`
+- `GET /api/v1/wallet-auth/entitlements`
+- `GET /api/v1/wallet-auth/devices`
+- `DELETE /api/v1/wallet-auth/devices/{device_id}`
+- `GET /api/v1/wallet-auth/wallets`
+- `DELETE /api/v1/wallet-auth/wallets/{proof_id}`
+- `POST /api/v1/wallet-auth/lockdown`
+- `GET /api/v1/wallet-auth/lockdown/status`
+- `POST /api/v1/wallet-auth/recovery/start`
+- `GET /api/v1/wallet-auth/recovery/{recovery_id}`
+- `POST /api/v1/wallet-auth/recovery/{recovery_id}/factor`
+- `POST /api/v1/wallet-auth/recovery/{recovery_id}/complete`

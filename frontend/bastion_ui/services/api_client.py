@@ -42,17 +42,29 @@ class BastionApiClient:
         normalized_path = path if path.startswith("/") else f"/{path}"
         return f"{self.base_url}{normalized_path}"
 
-    async def get(self, path: str, *, params: dict[str, Any] | None = None) -> Any:
-        return await self._request("GET", path, params=params)
+    async def get(
+        self,
+        path: str,
+        *,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> Any:
+        return await self._request("GET", path, params=params, headers=headers)
 
-    async def post(self, path: str, *, json: dict[str, Any] | None = None) -> Any:
-        return await self._request("POST", path, json=json)
+    async def post(
+        self,
+        path: str,
+        *,
+        json: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> Any:
+        return await self._request("POST", path, json=json, headers=headers)
 
     async def patch(self, path: str, *, json: dict[str, Any] | None = None) -> Any:
         return await self._request("PATCH", path, json=json)
 
-    async def delete(self, path: str) -> Any:
-        return await self._request("DELETE", path)
+    async def delete(self, path: str, *, headers: dict[str, str] | None = None) -> Any:
+        return await self._request("DELETE", path, headers=headers)
 
     async def _request(
         self,
@@ -61,6 +73,7 @@ class BastionApiClient:
         *,
         params: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Any:
         url = self.build_url(path)
         try:
@@ -68,7 +81,9 @@ class BastionApiClient:
                 timeout=self.config.request_timeout_seconds,
                 transport=self._transport,
             ) as client:
-                response = await client.request(method, url, params=params, json=json)
+                response = await client.request(
+                    method, url, params=params, json=json, headers=headers
+                )
             return self._handle_response(response)
         except BastionApiError:
             raise

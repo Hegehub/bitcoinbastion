@@ -13,6 +13,11 @@ import { TreasuryResource } from "./resources/treasury.js";
 import { WalletResource } from "./resources/wallet.js";
 import { WebhooksResource } from "./resources/webhooks.js";
 import { WebSocketResource } from "./resources/websocket.js";
+import { WalletAuthResource } from "./resources/walletAuth.js";
+import { LnurlAuthResource } from "./resources/lnurlAuth.js";
+import { LnurlPayResource } from "./resources/lnurlPay.js";
+import { LnurlWithdrawResource } from "./resources/lnurlWithdraw.js";
+import { LightningAddressResource } from "./resources/lightningAddress.js";
 
 export class BitcoinBastionClient {
   readonly raw: BastionHttpClient;
@@ -29,6 +34,11 @@ export class BitcoinBastionClient {
   readonly providerHealth: ProviderHealthResource;
   readonly webhooks: WebhooksResource;
   readonly websocket: WebSocketResource;
+  readonly walletAuth: WalletAuthResource;
+  readonly lnurlAuth: LnurlAuthResource;
+  readonly lnurlPay: LnurlPayResource;
+  readonly lnurlWithdraw: LnurlWithdrawResource;
+  readonly lightningAddress: LightningAddressResource;
 
   constructor(config: BitcoinBastionClientConfig) {
     const normalized = normalizeConfig(config);
@@ -46,5 +56,10 @@ export class BitcoinBastionClient {
     this.providerHealth = new ProviderHealthResource(this.raw);
     this.webhooks = new WebhooksResource(this.raw);
     this.websocket = new WebSocketResource(normalized);
+    this.walletAuth = new WalletAuthResource(this.raw);
+    this.lnurlAuth = new LnurlAuthResource(this.raw, normalized.expectedLnurlAuthDomain);
+    this.lnurlPay = new LnurlPayResource(this.raw);
+    this.lnurlWithdraw = new LnurlWithdrawResource(this.raw);
+    this.lightningAddress = new LightningAddressResource();
   }
 }

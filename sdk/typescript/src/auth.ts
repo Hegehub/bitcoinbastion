@@ -97,7 +97,8 @@ export interface AccessAuthProvider {
   clearSession(): void;
 }
 
-export function authHeaders(
+/** @deprecated Legacy compatibility helper. Proof-of-Access uses a PoP auth provider. */
+export function legacyAuthHeaders(
   apiKey?: string,
   options: { allowLegacyBearerAuth?: boolean; warn?: (message: string) => void } = {},
 ): Record<string, string> {
@@ -105,6 +106,9 @@ export function authHeaders(
   if (!apiKey) return {};
   throw new LegacyAuthDisabledError();
 }
+
+/** @deprecated Use a BastionAuthProvider; retained as a fail-closed source compatibility alias. */
+export const authHeaders = legacyAuthHeaders;
 
 export function proofOfAccessHeaders(input: {
   session: string;

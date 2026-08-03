@@ -32,3 +32,7 @@ Gate coverage includes:
 - OpenAPI checks that active password login and bearer-token issuance are not advertised as production auth.
 
 Run locally with `make access-release-gate`. Remaining non-Access contract tests that still depend on legacy `get_admin_user` overrides must be migrated before claiming full repository-wide green status.
+
+## Wallet/LNURL Auth PQ v2 validation status
+
+Wallet-first, LNURL adapter, Device-bound PoP, entitlement, policy, recovery, revocation, audit, certificate/offline and crypto-agile interfaces are implemented as a release candidate. The repository is **NOT PRODUCTION-READY**: see `docs/WALLET_LNURL_AUTH_FINAL_VALIDATION.md`. “PQ-ready” means versioned crypto-agility interfaces; it does not mean ML-DSA, SLH-DSA or ML-KEM are fully enabled.

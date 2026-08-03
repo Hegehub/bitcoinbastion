@@ -28,6 +28,13 @@ class AppConfig(BaseSettings):
     access_dev_signer_enabled: bool = False
     access_payment_poll_interval_ms: int = Field(default=5000, gt=0)
     access_session_refresh_seconds: int = Field(default=300, gt=0)
+    wallet_auth_enabled: bool = True
+    wallet_auth_require_bip322: bool = True
+    wallet_auth_allow_legacy_signatures: bool = False
+    lnurl_auth_enabled: bool = True
+    lnurl_pay_enabled: bool = True
+    lnurl_withdraw_enabled: bool = True
+    lightning_address_enabled: bool = True
 
     @field_validator("api_base_url")
     @classmethod

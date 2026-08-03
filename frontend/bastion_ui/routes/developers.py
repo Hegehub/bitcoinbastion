@@ -14,7 +14,7 @@ def developers_page() -> rx.Component:
         responsive_grid(
             pillar_card(
                 "Proof-of-Access API",
-                "Protected clients use X-Bastion-Session, X-Bastion-Timestamp, X-Bastion-Nonce, X-Bastion-Body-Hash, and X-Bastion-Signature headers instead of Authorization: Bearer.",
+                "Protected clients use Authorization: PoP plus Bastion-Request-Timestamp, Bastion-Request-Nonce, Bastion-Request-Body-Hash, Bastion-Request-Signature, and Bastion-Principal. Legacy bearer authentication is disabled.",
                 "implemented",
             ),
             pillar_card(
