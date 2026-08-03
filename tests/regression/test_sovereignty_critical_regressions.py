@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_admin_user
+from app.api.v1.admin import admin_recovery_policy
 from app.db.base import Base
 from app.db.models.delivery import DeliveryLog
 from app.db.models.job_run import JobRun
@@ -151,7 +151,7 @@ def test_regression_delivery_failure_accounting_and_admin_recovery_check() -> No
         assert out.failed_jobs_24h >= 1
         assert out.failed_deliveries_24h >= 1
 
-    app.dependency_overrides[get_admin_user] = lambda: _FakeAdmin()
+    app.dependency_overrides[admin_recovery_policy] = lambda: _FakeAdmin()
     try:
         client = TestClient(app)
         response = client.get("/api/v1/admin/jobs/recovery-check")
@@ -160,7 +160,7 @@ def test_regression_delivery_failure_accounting_and_admin_recovery_check() -> No
         assert "severity" in payload
         assert "recovery_slo" in payload
     finally:
-        app.dependency_overrides.pop(get_admin_user, None)
+        app.dependency_overrides.pop(admin_recovery_policy, None)
 
 
 def test_regression_delivery_publish_failure_path_increments_failed_count() -> None:

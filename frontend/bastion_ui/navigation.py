@@ -205,11 +205,11 @@ COMMAND_PALETTE_ACTIONS: tuple[CommandAction, ...] = (
         "active",
     ),
     CommandAction(
-        "import-access-pass",
-        "Import Access Pass",
-        "/access/import",
-        "Proof-of-Access",
-        "Import a Bastion Access Pass without password or bearer auth.",
+        "open-wallet-auth",
+        "Wallet authentication",
+        "/wallet-auth",
+        "Wallet-first access",
+        "Use Bitcoin wallet proof or LNURL-auth, then establish a Device-bound PoP Session.",
         "active",
     ),
     CommandAction(

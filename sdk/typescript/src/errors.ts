@@ -28,6 +28,18 @@ export class BastionAuthenticationError extends BastionApiError {}
 export class BastionRateLimitError extends BastionApiError {}
 export class BastionNotFoundError extends BastionApiError {}
 export class BastionServiceUnavailableError extends BastionApiError {}
+export class BastionAuthError extends BastionApiError {}
+export class BastionSessionExpiredError extends Error { constructor(message = "PoP Session is expired.") { super(message); this.name = new.target.name; } }
+export class BastionStepUpRequiredError extends BastionApiError {}
+export class BastionUpgradeRequiredError extends BastionApiError {}
+export class BastionQuotaExceededError extends BastionApiError {}
+export class BastionMetricNotAllowedError extends BastionApiError {}
+export class BastionPrincipalRevokedError extends BastionApiError {}
+export class BastionRecoveryRequiredError extends BastionApiError {}
+export class BastionLnurlError extends BastionApiError {}
+export class BastionLnurlDomainMismatchError extends BastionLnurlError {}
+export class BastionPaymentNotSettledError extends BastionLnurlError {}
+export class BastionWithdrawPolicyError extends BastionLnurlError {}
 export class BastionSafetyError extends Error {
   constructor(message: string) {
     super(message);
@@ -94,6 +106,14 @@ export function errorFromStatus(
   requestId?: string,
 ): BastionApiError | Error {
   const code = errorCode(details);
+  const policy = { message, statusCode, details, requestId, code };
+  if (code === "step_up_required") return new BastionStepUpRequiredError(policy);
+  if (code === "upgrade_required") return new BastionUpgradeRequiredError(policy);
+  if (code === "quota_exceeded") return new BastionQuotaExceededError(policy);
+  if (code === "metric_not_allowed") return new BastionMetricNotAllowedError(policy);
+  if (code === "principal_revoked" || code === "revoked") return new BastionPrincipalRevokedError(policy);
+  if (code === "recovery_required") return new BastionRecoveryRequiredError(policy);
+  if (code === "lnurl_domain_mismatch") return new BastionLnurlDomainMismatchError(policy);
   if (code === "access_session_expired" || code === "session_expired") return new AccessSessionExpiredError();
   if (code === "access_signature_required" || code === "access_signature_invalid" || code === "invalid_signature") return new AccessSigningError();
   if (code === "challenge_expired") return new AccessChallengeError("Proof-of-Access challenge is expired.");

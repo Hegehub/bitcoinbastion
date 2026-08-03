@@ -20,14 +20,22 @@ from app.tasks.celery_app import celery_app
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
+# Named policy dependencies keep the protected route contract explicit and
+# make integration tests override the real Policy boundary rather than the
+# disabled legacy admin-user dependency.
+admin_status_policy = require_plan(PlanCode.ENTERPRISE)
+admin_jobs_policy = require_enterprise_policy("admin:jobs:read")
+admin_audit_policy = require_enterprise_policy("admin:audit:read")
+admin_recovery_policy = require_enterprise_policy("admin:recovery:read")
+
 
 @router.get("/status", response_model=ResponseEnvelope[dict[str, str]])
-def admin_status(_: AccessContext = Depends(require_plan(PlanCode.ENTERPRISE))) -> ResponseEnvelope[dict[str, str]]:
+def admin_status(_: AccessContext = Depends(admin_status_policy)) -> ResponseEnvelope[dict[str, str]]:
     return ResponseEnvelope(data={"status": "ok", "module": "admin"})
 
 
 @router.get("/jobs", response_model=ResponseEnvelope[list[str]])
-def admin_jobs(_: AccessContext = Depends(require_enterprise_policy("admin:jobs:read"))) -> ResponseEnvelope[list[str]]:
+def admin_jobs(_: AccessContext = Depends(admin_jobs_policy)) -> ResponseEnvelope[list[str]]:
     names = sorted(name for name in celery_app.tasks.keys() if not name.startswith("celery."))
     return ResponseEnvelope(data=names)
 
@@ -35,7 +43,7 @@ def admin_jobs(_: AccessContext = Depends(require_enterprise_policy("admin:jobs:
 @router.get("/jobs/runs", response_model=ResponseEnvelope[list[JobRunOut]])
 def admin_job_runs(
     limit: int = 50,
-    _: AccessContext = Depends(require_enterprise_policy("admin:jobs:read")),
+    _: AccessContext = Depends(admin_jobs_policy),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[JobRunOut]]:
     rows = JobRunRepository(db).list_recent(limit=limit)
@@ -46,7 +54,7 @@ def admin_job_runs(
 def admin_audit_logs(
     limit: int = 50,
     action: str | None = None,
-    _: AccessContext = Depends(require_enterprise_policy("admin:audit:read")),
+    _: AccessContext = Depends(admin_audit_policy),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[list[AuditLogOut]]:
     rows = AuditRepository(db).list_recent(limit=limit, action=action)
@@ -64,7 +72,7 @@ def admin_retry_job(
 
 @router.get("/jobs/recovery-check", response_model=ResponseEnvelope[RecoveryCheckOut])
 def admin_jobs_recovery_check(
-    _: AccessContext = Depends(require_enterprise_policy("admin:recovery:read")),
+    _: AccessContext = Depends(admin_recovery_policy),
     db: Session = Depends(db_session),
 ) -> ResponseEnvelope[RecoveryCheckOut]:
     data = RecoveryCheckService().evaluate(db=db)

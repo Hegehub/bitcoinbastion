@@ -14,6 +14,15 @@ SENSITIVE_KEYS = {
     "authorization",
     "x-bastion-session",
     "x-bastion-signature",
+    "bastion-request-signature",
+    "k1",
+    "lnurl_signature",
+    "device_private_key",
+    "recovery_material",
+    "preimage",
+    "payerdata",
+    "lnurl_linking_key",
+    "principal_hash",
 }
 
 BITCOIN_SEED_WARNING = (

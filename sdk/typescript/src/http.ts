@@ -1,4 +1,5 @@
 import { BastionAccessAuth, authHeaders } from "./auth.js";
+import { serializeRequestBody } from "./auth-v2.js";
 import type { NormalizedConfig } from "./config.js";
 import { AccessAuthRequiredError, BastionTimeoutError, errorFromStatus } from "./errors.js";
 import type { ResponseEnvelope } from "./schemas/common.js";
@@ -44,21 +45,23 @@ export class BastionHttpClient {
     const timeout = setTimeout(() => controller.abort(), this.config.timeoutMs);
     const signal = options.signal ?? controller.signal;
     const url = withQuery(joinUrl(this.config.baseUrl, this.config.apiPrefix, path), options.query);
-    const signingPath = new URL(url).pathname + new URL(url).search;
+    const parsedUrl = new URL(url);
+    const signingPath = parsedUrl.pathname;
+    const serializedBody = serializeRequestBody(options.body);
     try {
-      const accessHeaders = await this.accessHeaders(method, signingPath, options.body, Boolean(options.requireAuth));
+      const accessHeaders = await this.accessHeaders(method, signingPath, options.query, serializedBody, options.body, Boolean(options.requireAuth));
       const response = await this.config.fetchImpl(url, {
         method,
         signal,
         headers: {
           "content-type": "application/json",
           ...this.config.headers,
-          ...authHeaders(this.config.apiKey, {
-            allowLegacyBearerAuth: this.config.allowLegacyBearerAuth,
-          }),
+          ...(this.config.apiKey
+            ? (this.config.legacyBearerAuth ? { Authorization: `Bearer ${this.config.apiKey}` } : authHeaders(this.config.apiKey))
+            : {}),
           ...accessHeaders,
         },
-        body: options.body === undefined ? undefined : JSON.stringify(options.body),
+        body: options.body === undefined ? undefined : serializedBody,
       });
       const requestId = response.headers.get("x-request-id") ?? undefined;
       const payload = await parseJson(response);
@@ -74,7 +77,11 @@ export class BastionHttpClient {
     }
   }
 
-  private async accessHeaders(method: string, path: string, body: unknown, requireAuth: boolean): Promise<Record<string, string>> {
+  private async accessHeaders(method: string, path: string, query: Record<string, unknown> | undefined, serializedBody: string, body: unknown, requireAuth: boolean): Promise<Record<string, string>> {
+    if (this.config.auth?.signRequest) {
+      if (!requireAuth && !this.config.auth.getSession?.()) return {};
+      return this.config.auth.signRequest({ method, path, query, serializedBody });
+    }
     if (!this.accessAuth) {
       if (requireAuth) throw new AccessAuthRequiredError();
       return {};

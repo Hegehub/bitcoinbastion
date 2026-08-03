@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app.api.dependencies import get_admin_user
+from app.api.v1.admin import admin_recovery_policy
 from app.main import app
 
 
@@ -9,7 +9,7 @@ class FakeAdminUser:
 
 
 def test_admin_recovery_check_includes_hotspots_and_drills() -> None:
-    app.dependency_overrides[get_admin_user] = lambda: FakeAdminUser()
+    app.dependency_overrides[admin_recovery_policy] = lambda: FakeAdminUser()
     client = TestClient(app)
     try:
         response = client.get("/api/v1/admin/jobs/recovery-check")

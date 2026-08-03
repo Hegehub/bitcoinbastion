@@ -6,7 +6,21 @@ from typing import Any
 from rich.console import Console
 from rich.table import Table
 
-SECRET_KEYS = {"secret", "token", "authorization", "api_key", "signature", "signature_secret"}
+SECRET_KEYS = {
+    "secret",
+    "token",
+    "authorization",
+    "api_key",
+    "signature",
+    "signature_secret",
+    "k1",
+    "private_key",
+    "device_key",
+    "preimage",
+    "recovery_material",
+    "access_pass",
+    "linking_key",
+}
 
 
 def redact(value: Any) -> Any:

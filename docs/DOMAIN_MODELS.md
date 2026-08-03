@@ -295,3 +295,10 @@ Source: `app/db/models/citadel_assessment.py`.
 
 Citadel projections may include synthetic elements where explicitly identified
 by the relevant API response and status documentation.
+
+## Transparency checkpoint records
+
+Source: `app/db/models/transparency.py`.
+
+- `TransparencyCheckpointRecord`
+- `TransparencyCheckpointSource`

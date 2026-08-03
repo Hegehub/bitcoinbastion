@@ -1,4 +1,5 @@
 import type { BastionAccessAuthConfig } from "./auth.js";
+import type { BastionAuthProvider } from "./auth-v2.js";
 
 export interface BitcoinBastionClientConfig {
   baseUrl: string;
@@ -12,6 +13,10 @@ export interface BitcoinBastionClientConfig {
   fetchImpl?: typeof fetch;
   WebSocketImpl?: typeof WebSocket;
   accessAuth?: BastionAccessAuthConfig;
+  auth?: BastionAuthProvider;
+  /** @deprecated Temporary compatibility only; never used unless explicitly enabled. */
+  legacyBearerAuth?: false | { enabled: true };
+  expectedLnurlAuthDomain?: string;
   allowLegacyBearerAuth?: boolean;
   redactSensitiveLogs?: boolean;
 }
@@ -22,6 +27,9 @@ export interface NormalizedConfig extends Required<Pick<BitcoinBastionClientConf
   fetchImpl: typeof fetch;
   WebSocketImpl?: typeof WebSocket;
   accessAuth?: BastionAccessAuthConfig;
+  auth?: BastionAuthProvider;
+  legacyBearerAuth: false | { enabled: true };
+  expectedLnurlAuthDomain?: string;
   allowLegacyBearerAuth: boolean;
   redactSensitiveLogs: boolean;
 }
@@ -36,6 +44,9 @@ export function normalizeConfig(config: BitcoinBastionClientConfig): NormalizedC
     fetchImpl: config.fetchImpl ?? fetch,
     WebSocketImpl: config.WebSocketImpl,
     accessAuth: config.accessAuth,
+    auth: config.auth,
+    legacyBearerAuth: config.legacyBearerAuth ?? false,
+    expectedLnurlAuthDomain: config.expectedLnurlAuthDomain,
     allowLegacyBearerAuth: config.allowLegacyBearerAuth ?? false,
     redactSensitiveLogs: config.redactSensitiveLogs ?? true,
   };

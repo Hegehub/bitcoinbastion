@@ -3,7 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.api.dependencies import db_session, get_admin_user
+from app.api.dependencies import db_session
+from app.api.v1.admin import admin_jobs_policy
 from app.db.base import Base
 from app.db.models.job_run import JobRun
 from app.main import app
@@ -30,7 +31,7 @@ def test_admin_job_runs_with_real_schema() -> None:
         with SessionLocal() as session:
             yield session
 
-    app.dependency_overrides[get_admin_user] = lambda: FakeAdmin()
+    app.dependency_overrides[admin_jobs_policy] = lambda: FakeAdmin()
     app.dependency_overrides[db_session] = override_db
 
     client = TestClient(app)

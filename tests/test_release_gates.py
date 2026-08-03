@@ -27,3 +27,17 @@ def test_access_release_gate_target_declared() -> None:
     assert "access-release-gate:" in makefile
     assert "tests/security/test_access_layer_release_gate.py" in makefile
     assert "make access-release-gate" in gate_doc
+
+
+def test_wallet_lnurl_gate_is_required_and_truthful() -> None:
+    makefile = Path("Makefile").read_text()
+    workflow = Path(".github/workflows/ci.yml").read_text()
+    script = Path("scripts/wallet-lnurl-auth-release-gate.sh")
+    validation = Path("docs/WALLET_LNURL_AUTH_FINAL_VALIDATION.md").read_text()
+
+    assert script.stat().st_mode & 0o111
+    assert "wallet-lnurl-auth-release-gate:" in makefile
+    assert "make wallet-lnurl-auth-release-gate" in workflow
+    assert "--production" in script.read_text()
+    assert "NOT PRODUCTION-READY" in validation
+    assert "PQ-ready interfaces" in validation
