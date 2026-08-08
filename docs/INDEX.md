@@ -95,3 +95,4 @@ current implementation or readiness guidance.
 ## Historical material
 
 - [Archive index](archive/README.md)
+- [Prompt 1A contract-authority stop report](frontend/migration/01A_CONTRACT_AUTHORITY_STOP_REPORT.md) — unresolved source-authority gates before Prompt 1B.

@@ -4,6 +4,15 @@
 
 Every stage preserves no-custody, backend truth, four-state provenance, explicit degraded states, and separate PayRegister boundaries. A stage stops on ambiguous auth/scope/units/timestamps, unsafe serialization, irreversible action, missing owner, new dependency without approval, or a failed prerequisite.
 
+## Stage 1 authority split
+
+Prompt 1 is executed through two non-numbered subgates; Prompts 2–25 and the 69-feature allocation are unchanged:
+
+* **Prompt 1A — Contract Authority Remediation** owns canonical HTTP identity, security/disposition clarification, minimal representation of existing backend response/protocol contracts, authoritative WebSocket wire versioning, and the typed-client architecture/generator foundation. It does **not** complete Feature 53.
+* **Prompt 1B — Generated Contracts and Typed Clients** consumes approved 1A contracts, generates complete client ownership and the schema registry, completes Feature 53, and runs the final Prompt-1 gates.
+
+The split is mandatory because generated frontend metadata cannot authoritatively resolve API compatibility ownership, Access security policy, or wire-protocol compatibility. Prompt 2 requires successful Prompt 1B completion, not merely completion of the architecture subgate.
+
 | Prompt | Scope | Prerequisites | Feature IDs | Deliverables and observable acceptance | Verification | Rollout and rollback |
 |---:|---|---|---|---|---|---|
 | 0 | **re-baseline and reconciliation** | Exact-HEAD Prompt 0 B0 gates | None (mandatory domain work) | Own only the named workflows; deterministic artifacts/code, complete required states, privacy and accessibility behavior, and rollback notes. Accept only on current contract → security → client → adapter/view model → trigger → named render → states → privacy → contract test → browser evidence. | Focused unit/contract checks plus browser network/DOM/a11y at desktop/mobile where UI exists; failures are blockers, mocks are not runtime proof. | Per-surface/domain flag, staged local-first enablement; disable flag/revert this stage while retaining backend contracts and prior verified stage. |

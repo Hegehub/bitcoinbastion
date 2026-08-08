@@ -10724,8 +10724,8 @@
   "metadata": {
     "branch": "work",
     "command": "python scripts/generate_frontend_migration_audit.py",
-    "generated_at_utc": "2026-08-08T16:32:55+00:00",
-    "head": "08f6ed2b2fe8a14693e86b2427dc482085a873e4",
+    "generated_at_utc": "2026-08-08T17:43:57+00:00",
+    "head": "bbba12b5f56429f9964631e950cbe6f2bde6063f",
     "profile": "current environment / app.core.config defaults",
     "python": "Python 3.12.13"
   },
