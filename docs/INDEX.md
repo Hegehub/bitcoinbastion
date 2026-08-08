@@ -58,6 +58,11 @@ current implementation or readiness guidance.
 
 ## Frontend
 
+- [Frontend migration Prompt 0/25 baseline](frontend/migration/00_BASELINE_AUDIT.md)
+- [Prompt 1/25 contract-foundation blockers](frontend/migration/01_CONTRACT_FOUNDATION_BLOCKERS.md)
+- [Canonical frontend execution plan 0–25](frontend/migration/00_EXECUTION_PLAN_0_25.md)
+- [Approved reconciled 69-feature register](frontend/migration/00_69_FEATURE_REGISTER.md)
+
 - [Reflex frontend](REFLEX_FRONTEND.md)
 - [Reflex testing](FRONTEND_REFLEX_TESTING.md)
 - [Route/API parity contract](FRONTEND_REFLEX_API_PARITY.md)
@@ -90,3 +95,4 @@ current implementation or readiness guidance.
 ## Historical material
 
 - [Archive index](archive/README.md)
+- [Prompt 1A contract-authority stop report](frontend/migration/01A_CONTRACT_AUTHORITY_STOP_REPORT.md) — unresolved source-authority gates before Prompt 1B.

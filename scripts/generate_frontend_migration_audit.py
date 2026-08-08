@@ -9,7 +9,6 @@ records. Human-authored policy lives in the companion Markdown audit files.
 from __future__ import annotations
 
 from collections import Counter
-from datetime import datetime, timezone
 import json
 from pathlib import Path
 import re
@@ -63,24 +62,21 @@ def ref(v: Any) -> str:
 def prompt_for(path: str) -> int:
     p = path.lower()
     if "payregister" in p:
-        return 47
+        return 22
     if "lnurl" in p or "business-lightning" in p:
-        return 46
+        return 22
     if "/access" in p or "wallet-auth" in p:
-        return (
-            30
-            + sum(
-                x in p
-                for x in ("device", "entitlement", "recovery", "policy", "limit", "certificate")
-            )
-            % 7
-        )
+        if any(x in p for x in ("recovery", "revoke", "lockdown", "session")):
+            return 18
+        if any(x in p for x in ("profile", "entitlement", "delegat", "limit")):
+            return 17
+        return 16
     if "trace" in p:
-        return 21 + sum(x in p for x in ("evidence", "event", "graph", "privacy")) % 5
+        return 13 if any(x in p for x in ("event", "graph", "privacy", "topology")) else 12
     if "evidence" in p:
-        return 26 + sum(x in p for x in ("replay", "packet", "verify")) % 4
+        return 15 if any(x in p for x in ("replay", "verify", "lineage", "export")) else 14
     if any(x in p for x in ("market", "signal", "news", "intelligence", "timeline")):
-        return 16 + sum(x in p for x in ("signal", "timeline", "evidence", "narrative")) % 5
+        return 10 if any(x in p for x in ("timeline", "evidence", "narrative", "attribution")) else 9
     if any(
         x in p
         for x in (
@@ -94,26 +90,17 @@ def prompt_for(path: str) -> int:
             "job",
         )
     ):
-        return 13 + sum(x in p for x in ("operations", "observability")) % 3
+        return 9 if any(x in p for x in ("incident", "slo", "job")) else 8
     mapping = [
-        ("policy", 37),
-        ("audit", 38),
-        ("treasury", 39),
-        ("entit", 40),
-        ("watch", 40),
-        ("fees", 41),
-        ("onchain", 41),
-        ("wallet", 41),
-        ("citadel", 42),
-        ("privacy", 42),
-        ("plugin", 43),
-        ("webhook", 44),
-        ("explorer", 45),
+        ("policy", 19), ("audit", 19), ("treasury", 19),
+        ("entit", 20), ("watch", 20), ("fees", 20), ("onchain", 20),
+        ("wallet", 20), ("citadel", 20), ("privacy", 23),
+        ("plugin", 21), ("webhook", 21), ("explorer", 21),
     ]
     for key, n in mapping:
         if key in p:
             return n
-    return 13
+    return 8
 
 
 def disposition(method: str, path: str) -> tuple[str, str, str]:
@@ -177,7 +164,10 @@ def frontend_literals() -> tuple[list[str], dict[str, list[str]]]:
 def main() -> None:
     spec = app.openapi()
     head = git("rev-parse", "HEAD")
-    stamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    # Bind generated artifacts to the source revision rather than wall-clock time.
+    # This preserves an auditable UTC timestamp while making regeneration at the
+    # same HEAD byte-for-byte deterministic.
+    stamp = git("show", "-s", "--format=%cI", head)
     ops = []
     ids = []
     for path, item in sorted(spec["paths"].items()):
@@ -278,7 +268,7 @@ def main() -> None:
                     ),
                     "frontend_surface": "assigned domain screen",
                     "coverage_state": "NOT_STARTED",
-                    "implementation_prompt": 5,
+                    "implementation_prompt": 4,
                     "privacy_policy": "limit_payload=true; no session/secret material persisted",
                     "contract_test": "backend tests only; frontend subscriber not found",
                     "browser_e2e": "not verified",
@@ -288,6 +278,7 @@ def main() -> None:
     norm = {
         "metadata": {
             "head": head,
+            "branch": git("branch", "--show-current"),
             "generated_at_utc": stamp,
             "profile": "current environment / app.core.config defaults",
             "command": "python scripts/generate_frontend_migration_audit.py",
@@ -299,6 +290,7 @@ def main() -> None:
             "api_v1_paths": sum(p.startswith("/api/v1") for p in spec["paths"]),
             "api_v1_operations": sum(o["path"].startswith("/api/v1") for o in ops),
             "schemas": len(spec.get("components", {}).get("schemas", {})),
+            "security_schemes": sorted(spec.get("components", {}).get("securitySchemes", {})),
             "websockets": len(ws),
             "duplicate_operation_ids": sorted(k for k, v in Counter(ids).items() if v > 1),
         },

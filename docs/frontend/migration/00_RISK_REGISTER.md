@@ -16,7 +16,16 @@
 | R12 | Glass/geometry harms contrast/performance | high/medium | G10/G13; solid/reduced/low-power fallback |
 | R13 | Visualization dependency violates CSP/supply chain | medium/high | G14; no dependency until approved, vanilla/text fallback |
 | R14 | Wow placeholders copied as production | high/high | G9; view-model-first extraction and retained compatibility route |
-| R15 | Feature pack labels differ from undiscovered approved pack | high/medium | product owner reconcile labels without ID/count changes before Prompt 9 |
-| R16 | Browser harness cannot force all status states | high/high | Prompt 7/13; no verified claim until deterministic interception exists |
+| R15 | Reconciled approved labels could regress to provisional meanings | high/medium | owner-supplied register is canonical; validate exact IDs/names/owners on every regeneration |
+| R16 | Browser harness cannot force all status states | high/high | Prompts 4/23; no verified claim until deterministic interception exists |
 | R17 | Future Temporal work displaces current runtime truth | low/high | G15; Celery stays canonical, optional backend adapter only |
-| R18 | Documentation claims production readiness | medium/high | Prompt 52 revision-specific evidence or explicit limitation |
+| R18 | Documentation claims production readiness | medium/high | Prompt 25 revision-specific evidence or explicit limitation |
+
+## Prompt 1 stop-gate additions
+
+- **P1-B01:** duplicate UI-required operation ID prevents an operation-ID-keyed registry.
+- **P1-B02:** six UI-disposed operations have unspecified success response schemas.
+- **P1-B03:** nine WebSocket channels lack authoritative versioned payload schemas/security metadata.
+- **P1-B04:** complete typed client ownership cannot be generated safely until the preceding contract defects are resolved.
+
+See `01_CONTRACT_FOUNDATION_BLOCKERS.md`; none is treated as implemented or `CLIENT_ONLY`.
