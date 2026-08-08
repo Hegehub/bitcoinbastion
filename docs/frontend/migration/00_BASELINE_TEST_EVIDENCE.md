@@ -1,18 +1,27 @@
-# Baseline Test Evidence
+# Baseline Test Evidence — Prompt 0/25
 
-Revision: `ee2792fe4397184f9d6f068b7cee7c2b19fe17e8`; environment: Linux container, Python 3.12, current default runtime profile. Results below are updated only from actual commands; skipped/mocked/unavailable is never PASS.
+Revision: `63538ae5788b1df924f1aa459e500891011ed83a`; branch `work`; Linux container; Python 3.12.13; default application configuration. Proxy variables were explicitly removed only for Python frontend/test commands to reproduce the repository's isolated test profile; application configuration was not changed. Durations are observed wall-time approximations. Mocked/unavailable checks are never PASS.
 
-| Gate | Exact command | Result | Duration / notes |
-|---|---|---|---|
-| Snapshot + duplicate IDs | `time python scripts/generate_frontend_migration_audit.py` | PASS with contract warning | ~10s; one duplicate final operation ID; 9 WS registrations |
-| Frontend Ruff | `cd frontend && uv run ruff check .` | PASS | 13.3s |
-| Frontend mypy | `cd frontend && uv run mypy bastion_ui` | PASS | 4.5s; 354 files |
-| Frontend pytest | `cd frontend && uv run pytest` | PASS | 21.7s; 147 passed |
-| Root contract/security | `pytest -q tests/security/test_no_bitcoin_seed_auth.py tests/security/test_legacy_auth_disabled.py tests/security/test_wallet_auth_api_security.py tests/security/test_access_sensitive_logging.py` | PASS | 11.8s; 23 passed, 5 warnings |
-| Existing parity | `python scripts/check_route_api_parity.py` | PASS | 4.2s; non-authoritative static checker overclaims implementation |
-| Matrix validator | `python scripts/generate_frontend_migration_audit.py` | PASS | generation includes exactly-once stable IDs and deterministic order |
-| Reflex export | `cd frontend && uv run reflex export --frontend-only --no-zip` | PASS | ~36s; warnings for Node version, Reflex version and deprecated theme API |
-| Browser/startup/screens/a11y/forced states | browser harness | BLOCKED | no deterministic Prompt-0 browser interception/evidence harness established |
-| Docker | `docker version` | BLOCKED | Docker executable unavailable |
+| Gate | Exact command | Evidence class | Result | Duration / notes |
+|---|---|---|---|---|
+| Runtime OpenAPI/WS generation and diff | `python scripts/generate_frontend_migration_audit.py` | runtime-generated/local | PASS | ~13s; 351/369 HTTP, 9 WS, six security schemes; four FastAPI warnings and one duplicate final ID |
+| Duplicate/disposition/feature/prompt integrity | `python scripts/validate_frontend_migration_baseline.py` | contract-generated/local | PASS | 369 HTTP + 9 WS unique records; 69 IDs; 53 old prompt IDs |
+| URL/client-path inventory | generation command above (`00_FRONTEND_URL_AUDIT.json`) | source inventory | PASS | 68 literals; 53 matched, 15 stale/absent (inventory pass, not parity) |
+| Route/workflow/transformation inventory | `rg` counts recorded in baseline and matrices | source inventory | PASS | deterministic declarations only; ownership/unsafe semantics remain UNAVAILABLE |
+| Frontend Ruff | `cd frontend && env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY uv run ruff check bastion_ui` | executed local | PASS | all checks passed |
+| Frontend mypy | `cd frontend && env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY uv run mypy bastion_ui` | executed local | PASS | 354 files |
+| Frontend pytest | `cd frontend && env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY uv run pytest` | executed local/mocked tests | PASS | 147 passed in 3.50s |
+| Root API/contract/security | `env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY pytest -q tests/contract/test_access_openapi_contract.py tests/contract/test_websocket_contract.py tests/contract/test_websocket_streams.py tests/security/test_access_certificate_not_bearer.py tests/security/test_human_intent_required.py tests/security/test_entitlement_not_bearer_access.py` | executed contract/security | PASS | 45 passed in 14.36s; five warnings |
+| Existing parity checker | `python scripts/check_route_api_parity.py` | static/source-string | PASS | non-authoritative and insufficient alone; it labels registration/source presence implemented |
+| Documentation status/link truth | `python scripts/check_docs_truthfulness.py` | static documentation | PASS | routes=294, models=161; index links added; old plan explicitly superseded |
+| Reflex export | `cd frontend && env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY uv run reflex export --no-zip` | executed build/export | PASS | compiled 148/147; warnings for implicit sitemap plugin, old Reflex/Node and deprecated theme API |
+| Browser startup/route smoke | no deterministic browser command exists at HEAD | browser | BLOCKED | export is not browser evidence |
+| Desktop/mobile/keyboard/adaptive modes | no deterministic browser command exists at HEAD | browser | BLOCKED | 1440×900, 430×932, keyboard, reduced motion/transparency, high contrast unverified |
+| Forced status/degraded harness | no deterministic interception harness exists at HEAD | browser | BLOCKED | offline/degraded/401/403/404/409/422/429/5xx unverified |
+| CI/production | not invoked | CI/production | NOT RUN | local Prompt-0 evidence cannot substitute for immutable CI or production evidence |
 
-Browser gates individually remain **BLOCKED**, not passed: startup, 1440×900, 430×932, keyboard-only, reduced motion, reduced transparency, forced offline/degraded/401/403/404/409/422/429/5xx. Prompt 0 makes no perceptible UI change, so no change screenshot is required.
+No perceptible runnable UI change was made, so a screenshot is not applicable. The duplicate operation ID and stale URL findings are pre-existing contract/frontend debt, not Prompt-0 regressions.
+
+## Prompt 1 prerequisite revalidation
+
+Prompt 1 reran the runtime generator against starting HEAD `08f6ed2b2fe8a14693e86b2427dc482085a873e4` and made timestamp metadata deterministic. Contract counts remained unchanged. The prompt stopped before Feature 53 because of the exact blockers in `01_CONTRACT_FOUNDATION_BLOCKERS.md`; no coverage promotion occurred.
