@@ -32,6 +32,20 @@ def main() -> None:
         prompt = row.get("implementation_prompt")
         assert prompt is None or 1 <= prompt <= 25
 
+    authoritative_ui = [
+        row for row in operations
+        if row["authority_status"] == "AUTHORITATIVE_NOW"
+        and row["disposition"] in {"UI_REQUIRED", "UI_OPTIONAL"}
+    ]
+    deferred = [row for row in operations + websockets if row["authority_status"] == "DEFERRED_AUTHORITY"]
+    assert all(row["typed_client_owner"].startswith("generated.operation_bindings:") for row in authoritative_ui)
+    assert len({row["typed_client_owner"] for row in authoritative_ui}) == len(authoritative_ui)
+    assert all(row.get("authority_blocker_id") for row in deferred)
+    assert all(row.get("authority_future_owner") for row in deferred)
+    assert all(row.get("authority_reentry_condition") for row in deferred)
+    assert all(row.get("typed_client_owner", "none") == "none" for row in deferred)
+    assert all(row.get("wire_version_authority") == "unavailable" for row in websockets)
+
     feature_text = (DOCS / "00_69_FEATURE_REGISTER.md").read_text()
     feature_ids = [int(v) for v in re.findall(r"^\| (\d{2}) \|", feature_text, re.M)]
     assert feature_ids == list(range(1, 70))
@@ -40,7 +54,11 @@ def main() -> None:
     mappings = [(int(a), int(b)) for a, b in re.findall(r"^\| (\d+) \| (\d+) \| mapped", migration_text, re.M)]
     assert [old for old, _ in mappings] == list(range(53))
     assert set(new for _, new in mappings) == set(range(26))
-    print(f"PASS: {len(operations)} HTTP + {len(websockets)} WS records; 69 features; 53 prompt mappings")
+    print(
+        f"PASS: {len(operations)} HTTP + {len(websockets)} WS records; "
+        f"{len(authoritative_ui)} authoritative UI HTTP; {len(deferred)} deferred; "
+        "69 features; 53 prompt mappings"
+    )
 
 
 if __name__ == "__main__":

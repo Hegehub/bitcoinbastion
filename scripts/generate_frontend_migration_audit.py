@@ -38,6 +38,32 @@ ADMIN_MARKERS = (
     "/plugins",
     "/webhooks",
 )
+DEFERRED_HTTP: dict[tuple[str, str], dict[str, str]] = {
+    ("get", "/market-time-machine"): {
+        "blocker_id": "P1R2-B01",
+        "reason_code": "canonical_compatibility_ownership_unresolved",
+        "future_owner": "Prompt 25/25",
+        "reentry_condition": "API owner records canonical path, compatibility lifetime, and alias removal policy",
+    },
+    ("post", "/api/v1/access/api-keys/{key_id}/freeze"): {
+        "blocker_id": "P1R2-B02",
+        "reason_code": "access_security_contract_unresolved",
+        "future_owner": "Prompt 17/25",
+        "reentry_condition": "Access owner supplies tested scope, PoP/signing, intent, replay, audit, and reconciliation semantics",
+    },
+    ("post", "/api/v1/auth/login"): {
+        "blocker_id": "P1R2-B03",
+        "reason_code": "disabled_legacy_auth",
+        "future_owner": "Prompt 25/25",
+        "reentry_condition": "none; remove after compatibility window unless product owner establishes a non-password purpose",
+    },
+    ("post", "/api/v1/auth/register"): {
+        "blocker_id": "P1R2-B04",
+        "reason_code": "disabled_legacy_auth",
+        "future_owner": "Prompt 25/25",
+        "reentry_condition": "none; remove after compatibility window unless product owner establishes a non-password purpose",
+    },
+}
 
 
 def git(*args: str) -> str:
@@ -105,6 +131,11 @@ def prompt_for(path: str) -> int:
 
 def disposition(method: str, path: str) -> tuple[str, str, str]:
     p = path.lower()
+    deferred = DEFERRED_HTTP.get((method, path))
+    if deferred:
+        return "DEFERRED_WITH_REASON", deferred["reason_code"], (
+            "Access" if "/access/" in p else "Core"
+        )
     if any(x in p for x in SEPARATE_MARKERS):
         return (
             "SEPARATE_PRODUCT",
@@ -182,11 +213,17 @@ def main() -> None:
             body = op.get("requestBody", {})
             req = ref(body)
             responses = op.get("responses", {})
-            response = ref(
-                responses.get("200") or responses.get("201") or responses.get("202") or {}
-            )
+            success_status = next((code for code in sorted(responses) if code.startswith("2")), "")
+            response = "NoContent" if success_status == "204" else ref(responses.get(success_status, {}))
             protected = bool(op.get("security"))
             coverage = "NOT_STARTED"
+            deferred = DEFERRED_HTTP.get((method, path))
+            authority = "DEFERRED_AUTHORITY" if deferred else "AUTHORITATIVE_NOW"
+            transport_owner = (
+                "none; deferred contracts cannot own generic UI clients"
+                if deferred
+                else f"generated.operation_bindings:{oid}"
+            )
             ops.append(
                 {
                     "matrix_id": f"HTTP-{len(ops)+1:04d}",
@@ -196,6 +233,7 @@ def main() -> None:
                     "backend_owner": (op.get("tags") or ["unowned"])[0],
                     "request_schema": req or "none",
                     "response_schema": response or "unspecified",
+                    "success_status": success_status or "unspecified",
                     "error_envelope": "HTTP validation/error response; typed frontend normalization not verified",
                     "access_class": (
                         "protected"
@@ -218,6 +256,11 @@ def main() -> None:
                     ),
                     "disposition": disp,
                     "reason": reason,
+                    "authority_status": authority,
+                    "authority_blocker_id": deferred["blocker_id"] if deferred else None,
+                    "authority_future_owner": deferred["future_owner"] if deferred else None,
+                    "authority_reentry_condition": deferred["reentry_condition"] if deferred else None,
+                    "typed_client_owner": transport_owner if disp.startswith("UI_") else "none",
                     "product_boundary": product,
                     "frontend_surface": (
                         "TBD by assigned prompt" if disp.startswith("UI_") else "N/A"
@@ -234,7 +277,7 @@ def main() -> None:
                     "implementation_prompt": (
                         prompt_for(path)
                         if disp in ("UI_REQUIRED", "UI_OPTIONAL", "SEPARATE_PRODUCT")
-                        else None
+                        else (int(deferred["future_owner"].split()[1].split("/")[0]) if deferred else None)
                     ),
                     "coverage_state": (
                         coverage
@@ -257,6 +300,11 @@ def main() -> None:
                     "operation_id": route.name,
                     "backend_owner": "websockets/events",
                     "message_schema": "system/error/event JSON from websocket_serialization and broker",
+                    "authority_status": "DEFERRED_AUTHORITY",
+                    "authority_blocker_id": f"P1R2-B{len(ws)+5:02d}",
+                    "authority_future_owner": "Prompt 4/25",
+                    "authority_reentry_condition": "authoritative backward-compatible envelope and payload version contracts with unknown-version tests",
+                    "wire_version_authority": "unavailable",
                     "auth_contract": "no OpenAPI security metadata; runtime origin/Proof-of-Access review required",
                     "reconnect_fallback": "bounded exponential backoff, heartbeat 10–120s, visible stale state, HTTP fallback required; replay currently unavailable",
                     "disposition": disp,
@@ -306,6 +354,49 @@ def main() -> None:
     }
     (OUT / "00_openapi_frontend_rendering_matrix.json").write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    )
+    authoritative = [
+        {
+            "matrix_id": op["matrix_id"],
+            "operation_id": op["operation_id"],
+            "method": op["method"],
+            "path": op["path"],
+            "request_schema": op["request_schema"],
+            "success_schema": op["response_schema"],
+            "success_status": op["success_status"],
+            "error_schema": op["error_envelope"],
+            "security": op["required_plan_scope_poa_pop_signing_human_intent"],
+            "product": op["product_boundary"],
+            "owner": op["typed_client_owner"],
+            "transport_engine": "frontend.bastion_ui.transport.generated_transport",
+            "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+        }
+        for op in ops
+        if op["authority_status"] == "AUTHORITATIVE_NOW"
+        and op["disposition"] in ("UI_REQUIRED", "UI_OPTIONAL")
+    ]
+    ownership = {
+        "metadata": norm["metadata"],
+        "architecture": "generated typed operation descriptors over one shared injectable transport engine",
+        "authoritative_http_operations": authoritative,
+        "deferred_http_operations": [
+            {
+                "matrix_id": op["matrix_id"],
+                "operation_id": op["operation_id"],
+                "method": op["method"],
+                "path": op["path"],
+                "blocker_id": op["authority_blocker_id"],
+                "reason": op["reason"],
+                "future_owner": op["authority_future_owner"],
+                "reentry_condition": op["authority_reentry_condition"],
+            }
+            for op in ops
+            if op["authority_status"] == "DEFERRED_AUTHORITY"
+        ],
+        "deferred_websocket_protocols": ws,
+    }
+    (OUT / "01_HTTP_CLIENT_OWNERSHIP_INPUT.json").write_text(
+        json.dumps(ownership, indent=2, sort_keys=True) + "\n"
     )
     literals, sources = frontend_literals()
     paths = set(spec["paths"])
