@@ -1,3 +1,7 @@
+# SUPERSEDED — Historical Execution Plan 0–52
+
+> Superseded at HEAD `63538ae5788b1df924f1aa459e500891011ed83a` by [`00_EXECUTION_PLAN_0_25.md`](00_EXECUTION_PLAN_0_25.md). Retained intact below as unique historical sequencing evidence; do not assign new work from it.
+
 # Frozen Execution Plan — Prompts 1–52
 
 The count and dependency groups are frozen. Each prompt is a bounded vertical slice. If contract evidence makes the sequence insufficient, stop and propose an explicitly mapped renumbering; never silently change it.

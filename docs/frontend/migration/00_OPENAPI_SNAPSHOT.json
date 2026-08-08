@@ -8,12 +8,21 @@
     "operations": 369,
     "paths": 351,
     "schemas": 286,
+    "security_schemes": [
+      "BastionHumanIntentSignature",
+      "BastionPoPSession",
+      "BastionProofOfAccessSession",
+      "BastionProofOfAccessSignature",
+      "BastionRequestSignature",
+      "BastionWalletPoPSession"
+    ],
     "websockets": 9
   },
   "metadata": {
+    "branch": "work",
     "command": "python scripts/generate_frontend_migration_audit.py",
-    "generated_at_utc": "2026-08-03T18:11:29+00:00",
-    "head": "ee2792fe4397184f9d6f068b7cee7c2b19fe17e8",
+    "generated_at_utc": "2026-08-08T16:32:55+00:00",
+    "head": "08f6ed2b2fe8a14693e86b2427dc482085a873e4",
     "profile": "current environment / app.core.config defaults",
     "python": "Python 3.12.13"
   },
