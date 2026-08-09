@@ -18,7 +18,7 @@ from bastion_ui.transport.schema_compiler import (  # noqa: E402
 )
 
 
-def test_runtime_components_fail_closed_on_backend_any_schemas() -> None:
+def test_runtime_components_compile_without_python_any() -> None:
     components = app.openapi()["components"]["schemas"]
     compiler = OpenAPISchemaCompiler(components)
 
@@ -30,26 +30,8 @@ def test_runtime_components_fail_closed_on_backend_any_schemas() -> None:
         except SchemaCompileError as exc:
             failures[name] = str(exc)
 
-    assert len(compiled) == 271
-    assert len(failures) == 15
-    assert set(failures) == {
-        "AccessCertificateIssueResponse",
-        "AccessChallengeResponse",
-        "AccessLockdownResponse",
-        "AccessMeResponse",
-        "AccessPaymentIntentResponse",
-        "AccessPaymentIntentStatusResponse",
-        "AccessSessionResponse",
-        "ChildApiKeyCreateResponse",
-        "ChildApiKeyPublic",
-        "DelegatedPassCreateResponse",
-        "DelegatedPassPublic",
-        "RecoveryStartResponse",
-        "RecoveryStatusResponse",
-        "SubscriptionEntitlementResponse",
-        "ValidationError",
-    }
-    assert all("unsupported schema keys" in error for error in failures.values())
+    assert len(compiled) == 286
+    assert failures == {}
     assert len(compiler.dependency_graph()) == 286
 
 
@@ -83,5 +65,4 @@ def test_unresolved_and_unsupported_schemas_fail_explicitly() -> None:
     compiler = OpenAPISchemaCompiler({})
     with pytest.raises(SchemaCompileError, match="unresolved component"):
         compiler.compile({"$ref": "#/components/schemas/Missing"}, location="missing")
-    with pytest.raises(SchemaCompileError, match="unsupported schema"):
-        compiler.compile({}, location="empty")
+    assert isinstance(compiler.compile({}, location="empty"), JsonValueSchema)

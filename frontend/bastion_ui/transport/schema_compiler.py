@@ -92,6 +92,11 @@ class OpenAPISchemaCompiler:
         return self.compile(schema, location=f"components.schemas.{name}")
 
     def compile(self, schema: JsonSchema, *, location: str) -> CompiledSchema:
+        semantic_keys = set(schema) - {"title", "description", "examples", "default"}
+        if not semantic_keys:
+            # An empty OpenAPI schema is the specification's arbitrary-JSON
+            # vocabulary. Keep it JSON-bounded rather than degrading to Any.
+            return JsonValueSchema("json-value")
         reference = schema.get("$ref")
         if isinstance(reference, str):
             prefix = "#/components/schemas/"
