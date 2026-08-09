@@ -25,25 +25,43 @@ SCHEMA_KEYS = {
 }
 
 
-def _walk(value: object, counts: Counter[str], examples: dict[str, set[str]], owner: str) -> None:
+def _walk(
+    value: object,
+    counts: Counter[str],
+    examples: dict[str, set[str]],
+    owner: str,
+    schemas: dict[str, Any],
+    visited_refs: set[str],
+) -> None:
     if isinstance(value, dict):
         for key in SCHEMA_KEYS.intersection(value):
             counts[key] += 1
             examples[key].add(owner)
-        if value.get("type") in {"string", "integer", "number", "boolean", "array", "object", "null"}:
-            kind = f"type:{value['type']}"
+        value_type = value.get("type")
+        if isinstance(value_type, str) and value_type in {
+            "string", "integer", "number", "boolean", "array", "object", "null"
+        }:
+            kind = f"type:{value_type}"
             counts[kind] += 1
             examples[kind].add(owner)
-        for child in value.values():
-            _walk(child, counts, examples, owner)
+        reference = value.get("$ref")
+        if isinstance(reference, str) and reference.startswith("#/components/schemas/"):
+            schema_name = reference.rsplit("/", 1)[-1]
+            if schema_name not in visited_refs:
+                visited_refs.add(schema_name)
+                _walk(schemas[schema_name], counts, examples, owner, schemas, visited_refs)
+        for key, child in value.items():
+            if key != "$ref":
+                _walk(child, counts, examples, owner, schemas, visited_refs)
     elif isinstance(value, list):
         for child in value:
-            _walk(child, counts, examples, owner)
+            _walk(child, counts, examples, owner, schemas, visited_refs)
 
 
 def build_report() -> dict[str, Any]:
     spec = app.openapi()
     matrix = json.loads(MATRIX.read_text())
+    schemas = spec.get("components", {}).get("schemas", {})
     candidates = [
         row for row in matrix["http_operations"]
         if row["disposition"] in {"UI_REQUIRED", "UI_OPTIONAL"}
@@ -59,7 +77,7 @@ def build_report() -> dict[str, Any]:
     for row in candidates:
         operation = spec["paths"][row["path"]][row["method"].lower()]
         owner = row["operation_id"]
-        _walk(operation, schema_counts, examples, owner)
+        _walk(operation, schema_counts, examples, owner, schemas, set())
         for status, response in operation.get("responses", {}).items():
             if not status.startswith("2"):
                 continue
@@ -87,12 +105,19 @@ def build_report() -> dict[str, Any]:
         key for key in schema_counts
         if key in {"allOf", "oneOf", "anyOf", "discriminator", "additionalProperties"}
     )
+    protected_ids = {row["operation_id"] for row in protected}
+    mutation_ids = {row["operation_id"] for row in mutations}
+    protected_mutations = protected_ids & mutation_ids
     return {
         "counts": {
             "runtime_http": sum(1 for item in spec["paths"].values() for method in item if method.lower() in {"get", "post", "put", "patch", "delete", "head", "options", "trace"}),
             "generation_candidates": len(candidates),
             "protected_candidates": len(protected),
             "mutation_candidates": len(mutations),
+            "protected_only": len(protected_ids - mutation_ids),
+            "mutation_only": len(mutation_ids - protected_ids),
+            "protected_mutations": len(protected_mutations),
+            "b01_b02_unique_operations": len(protected_ids | mutation_ids),
             "ready": len(candidates) - len({b["operation_id"] for b in blockers}),
             "security_blocked": len(protected),
             "mutation_blocked": len(mutations),

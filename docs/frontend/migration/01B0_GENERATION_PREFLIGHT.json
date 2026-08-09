@@ -652,10 +652,14 @@
     }
   ],
   "counts": {
+    "b01_b02_unique_operations": 109,
     "generation_candidates": 309,
     "mutation_blocked": 65,
     "mutation_candidates": 65,
+    "mutation_only": 44,
     "protected_candidates": 65,
+    "protected_mutations": 21,
+    "protected_only": 44,
     "ready": 200,
     "runtime_http": 369,
     "schema_capabilities_unproven": 2,
@@ -1394,7 +1398,7 @@
   },
   "schema_vocabulary": {
     "$ref": {
-      "count": 443,
+      "count": 903,
       "examples": [
         "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
         "add_watchlist_api_v1_trace_watchlist_post",
@@ -1404,161 +1408,188 @@
       ]
     },
     "additionalProperties": {
-      "count": 126,
+      "count": 291,
       "examples": [
         "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
-        "approve_signal_api_v1_operator_signals__signal_id__approve_post",
-        "article_duplicates_api_v1_news_articles__article_id__duplicates_get",
-        "btc_candle_by_id_api_v1_market_btc_candles__candle_id__get",
-        "btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get"
-      ]
-    },
-    "anyOf": {
-      "count": 65,
-      "examples": [
-        "admin_audit_logs_api_v1_admin_audit_logs_get",
-        "btc_candles_api_v1_market_btc_candles_get",
-        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
-        "create_child_api_key_api_v1_access_api_keys_post",
-        "create_delegated_pass_api_v1_access_delegated_passes_post"
-      ]
-    },
-    "default": {
-      "count": 126,
-      "examples": [
-        "admin_audit_logs_api_v1_admin_audit_logs_get",
-        "admin_job_runs_api_v1_admin_jobs_runs_get",
-        "btc_candles_api_v1_market_btc_candles_get",
-        "btc_candles_latest_any_api_v1_market_btc_candles_latest_get",
-        "btc_price_history_api_v1_market_btc_price_history_get"
-      ]
-    },
-    "format": {
-      "count": 83,
-      "examples": [
-        "admin_audit_logs_api_v1_admin_audit_logs_get",
-        "admin_job_runs_api_v1_admin_jobs_runs_get",
-        "admin_jobs_api_v1_admin_jobs_get",
         "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get",
-        "admin_retry_job_api_v1_admin_jobs_retry_post"
-      ]
-    },
-    "maxLength": {
-      "count": 20,
-      "examples": [
-        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
-        "latest_provider_health_api_v1_metrics_provider_health_latest_get",
-        "latest_source_health_api_v1_metrics_source_health_latest_get",
-        "market_events_api_v1_market_time_machine_events_get",
-        "news_impact_api_v1_market_time_machine_news_impact_get"
-      ]
-    },
-    "maximum": {
-      "count": 15,
-      "examples": [
-        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
-        "citadel_assessment_api_v1_citadel_assessment_get",
-        "citadel_overview_api_v1_citadel_overview_get",
-        "market_events_api_v1_market_time_machine_events_get",
-        "market_timeline_intelligence_timeline_get"
-      ]
-    },
-    "minLength": {
-      "count": 20,
-      "examples": [
-        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
-        "latest_provider_health_api_v1_metrics_provider_health_latest_get",
-        "latest_source_health_api_v1_metrics_source_health_latest_get",
-        "market_events_api_v1_market_time_machine_events_get",
-        "news_impact_api_v1_market_time_machine_news_impact_get"
-      ]
-    },
-    "minimum": {
-      "count": 16,
-      "examples": [
-        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
-        "citadel_assessment_api_v1_citadel_assessment_get",
-        "citadel_overview_api_v1_citadel_overview_get",
-        "market_events_api_v1_market_time_machine_events_get",
-        "market_timeline_intelligence_timeline_get"
-      ]
-    },
-    "type": {
-      "count": 858,
-      "examples": [
-        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
-        "admin_audit_logs_api_v1_admin_audit_logs_get",
-        "admin_job_runs_api_v1_admin_jobs_runs_get",
-        "admin_jobs_api_v1_admin_jobs_get",
-        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
-      ]
-    },
-    "type:array": {
-      "count": 11,
-      "examples": [
-        "degraded_api_v1_health_degraded_get",
-        "dependencies_health_dependencies_get",
-        "drills_api_v1_operations_drills_get",
-        "jobs_api_v1_health_jobs_get",
-        "jobs_api_v1_operations_jobs_get"
-      ]
-    },
-    "type:boolean": {
-      "count": 5,
-      "examples": [
-        "citadel_assessment_api_v1_citadel_assessment_get",
-        "citadel_overview_api_v1_citadel_overview_get",
-        "onchain_state_api_v1_onchain_state_get",
-        "provider_health_history_api_v1_metrics_provider_health_history_get",
-        "source_health_history_api_v1_metrics_source_health_history_get"
-      ]
-    },
-    "type:integer": {
-      "count": 181,
-      "examples": [
-        "admin_audit_logs_api_v1_admin_audit_logs_get",
-        "admin_job_runs_api_v1_admin_jobs_runs_get",
-        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "admin_status_api_v1_admin_status_get",
         "approve_signal_api_v1_operator_signals__signal_id__approve_post",
         "article_duplicates_api_v1_news_articles__article_id__duplicates_get"
       ]
     },
-    "type:null": {
-      "count": 65,
+    "anyOf": {
+      "count": 562,
       "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
         "admin_audit_logs_api_v1_admin_audit_logs_get",
-        "btc_candles_api_v1_market_btc_candles_get",
-        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
-        "create_child_api_key_api_v1_access_api_keys_post",
-        "create_delegated_pass_api_v1_access_delegated_passes_post"
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
       ]
     },
-    "type:number": {
-      "count": 3,
+    "const": {
+      "count": 2,
       "examples": [
-        "list_entities_api_v1_entities_get",
-        "review_candle_attribution_api_v1_intelligence_candles_attributions__attribution_id__review_patch",
-        "signal_reliability_api_v1_market_time_machine_signal_reliability_get"
+        "create_human_intent_api_v1_access_intents_post",
+        "get_human_intent_api_v1_access_intents__intent_id__get"
       ]
     },
-    "type:object": {
-      "count": 126,
+    "default": {
+      "count": 603,
       "examples": [
-        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
-        "approve_signal_api_v1_operator_signals__signal_id__approve_post",
-        "article_duplicates_api_v1_news_articles__article_id__duplicates_get",
-        "btc_candle_by_id_api_v1_market_btc_candles__candle_id__get",
-        "btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get"
-      ]
-    },
-    "type:string": {
-      "count": 467,
-      "examples": [
-        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
         "admin_audit_logs_api_v1_admin_audit_logs_get",
         "admin_job_runs_api_v1_admin_jobs_runs_get",
         "admin_jobs_api_v1_admin_jobs_get",
         "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "enum": {
+      "count": 54,
+      "examples": [
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get",
+        "analyze_address_api_v1_trace_address__address__get",
+        "business_batch_api_v1_trace_business_batch_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "compare_policy_catalog_api_v1_policy_catalog_compare_post"
+      ]
+    },
+    "format": {
+      "count": 221,
+      "examples": [
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "maxLength": {
+      "count": 32,
+      "examples": [
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "create_request_api_v1_treasury_requests_post",
+        "create_simulation_api_v1_citadel_simulations_post",
+        "latest_provider_health_api_v1_metrics_provider_health_latest_get"
+      ]
+    },
+    "maximum": {
+      "count": 111,
+      "examples": [
+        "analyze_address_api_v1_trace_address__address__get",
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "assess_privacy_api_v1_privacy_assess_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "check_policy_api_v1_policy_check_post"
+      ]
+    },
+    "minItems": {
+      "count": 3,
+      "examples": [
+        "create_challenge_api_v1_access_challenges_post",
+        "create_child_api_key_api_v1_access_api_keys_post",
+        "create_delegated_pass_api_v1_access_delegated_passes_post"
+      ]
+    },
+    "minLength": {
+      "count": 33,
+      "examples": [
+        "admin_retry_job_api_v1_admin_jobs_retry_post",
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "check_policy_api_v1_policy_check_post",
+        "compare_policy_catalog_api_v1_policy_catalog_compare_post"
+      ]
+    },
+    "minimum": {
+      "count": 132,
+      "examples": [
+        "analyze_address_api_v1_trace_address__address__get",
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "assess_privacy_api_v1_privacy_assess_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "check_policy_api_v1_policy_check_post"
+      ]
+    },
+    "type": {
+      "count": 5963,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
+      ]
+    },
+    "type:array": {
+      "count": 757,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
+      ]
+    },
+    "type:boolean": {
+      "count": 256,
+      "examples": [
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "type:integer": {
+      "count": 676,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "type:null": {
+      "count": 337,
+      "examples": [
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get",
+        "analyze_address_api_v1_trace_address__address__get",
+        "approve_signal_api_v1_operator_signals__signal_id__approve_post"
+      ]
+    },
+    "type:number": {
+      "count": 220,
+      "examples": [
+        "analyze_address_api_v1_trace_address__address__get",
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "approve_signal_api_v1_operator_signals__signal_id__approve_post",
+        "assess_privacy_api_v1_privacy_assess_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get"
+      ]
+    },
+    "type:object": {
+      "count": 1315,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
+      ]
+    },
+    "type:string": {
+      "count": 2177,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
       ]
     }
   },

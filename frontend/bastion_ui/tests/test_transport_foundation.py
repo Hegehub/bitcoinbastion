@@ -103,3 +103,89 @@ def test_datetime_and_boolean_are_strict() -> None:
                 },
             }
         )
+
+@pytest.mark.asyncio
+async def test_no_content_is_typed_and_rejects_unexpected_body() -> None:
+    from bastion_ui.transport.foundation import NoContentDTO, NormalizedOperation, SecurityMetadata
+
+    operation = NormalizedOperation(
+        matrix_id="test-204",
+        operation_id="test_no_content",
+        method="DELETE",
+        path="/resource",
+        backend_tag="test",
+        product="Core",
+        disposition="UI_OPTIONAL",
+        success_status=204,
+        response_type=NoContentDTO,
+        security=SecurityMetadata("public:test", True, False, False, False, "test", "test"),
+        retry_safe=False,
+        owner="test:no-content",
+    )
+
+    async def empty_handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(204)
+
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(empty_handler), base_url="http://test"
+    ) as client:
+        result = await HttpTransport(client).invoke(operation)
+    assert result.status == 204
+
+    async def invalid_handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(204, content=b"unexpected")
+
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(invalid_handler), base_url="http://test"
+    ) as client:
+        with pytest.raises(SafeTransportError, match="unexpected_no_content_body"):
+            await HttpTransport(client).invoke(operation)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("response_type", "content_type", "attribute"),
+    [
+        ("text", "text/plain", "text"),
+        ("html", "text/html", "document"),
+    ],
+)
+async def test_text_and_html_are_typed_opaque_transport_values(
+    response_type: str, content_type: str, attribute: str
+) -> None:
+    from bastion_ui.transport.foundation import (
+        NormalizedOperation,
+        OpaqueHtmlDocumentDTO,
+        SecurityMetadata,
+        TextResponseDTO,
+    )
+
+    dto_type = TextResponseDTO if response_type == "text" else OpaqueHtmlDocumentDTO
+    operation = NormalizedOperation(
+        matrix_id=f"test-{response_type}",
+        operation_id=f"test_{response_type}",
+        method="GET",
+        path=f"/{response_type}",
+        backend_tag="test",
+        product="Core",
+        disposition="UI_OPTIONAL",
+        success_status=200,
+        response_type=dto_type,
+        security=SecurityMetadata("public:test", True, False, False, False, "test", "test"),
+        retry_safe=True,
+        owner=f"test:{response_type}",
+        response_media_type=content_type,
+    )
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            text="<script>opaque</script>",
+            headers={"content-type": content_type},
+        )
+
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(handler), base_url="http://test"
+    ) as client:
+        result = await HttpTransport(client).invoke(operation)
+    assert getattr(result, attribute) == "<script>opaque</script>"

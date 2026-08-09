@@ -14,6 +14,8 @@ import httpx
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 ResponseT = TypeVar("ResponseT", bound=BaseModel)
+type JsonScalar = None | bool | int | float | str
+type JsonValue = JsonScalar | list[JsonValue] | dict[str, JsonValue]
 
 
 class StrictTransportDTO(BaseModel):
@@ -40,6 +42,26 @@ class PublicStatusResponseDTO(StrictTransportDTO):
 class PublicStatusEnvelopeDTO(StrictTransportDTO):
     success: bool = True
     data: PublicStatusResponseDTO
+
+
+class NoContentDTO(StrictTransportDTO):
+    """First-class 204 success; it is not a 200 null or fabricated object."""
+
+    status: Literal[204] = 204
+
+
+class TextResponseDTO(StrictTransportDTO):
+    status: int
+    content_type: Literal["text/plain"]
+    text: str
+
+
+class OpaqueHtmlDocumentDTO(StrictTransportDTO):
+    """Opaque transport content that must never be treated as trusted/renderable HTML."""
+
+    status: int
+    content_type: Literal["text/html"]
+    document: str
 
 
 @dataclass(frozen=True)
@@ -73,6 +95,7 @@ class NormalizedOperation[ResponseT: BaseModel]:
     security: SecurityMetadata
     retry_safe: bool
     owner: str
+    response_media_type: str = "application/json"
 
 
 @dataclass(frozen=True)
@@ -136,6 +159,46 @@ class HttpTransport:
             ) from exc
         if response.status_code != operation.success_status:
             raise self._safe_http_error(response)
+        if operation.response_type is NoContentDTO:
+            if response.content:
+                raise SafeTransportError(
+                    204,
+                    "unexpected_no_content_body",
+                    False,
+                    "A no-content response contained data.",
+                )
+            return operation.response_type.model_validate({"status": 204})
+        content_type = response.headers.get("content-type", "").split(";", 1)[0]
+        if operation.response_type is TextResponseDTO:
+            if content_type != "text/plain":
+                raise SafeTransportError(
+                    response.status_code,
+                    "unexpected_content_type",
+                    False,
+                    "Unexpected response content type.",
+                )
+            return operation.response_type.model_validate(
+                {
+                    "status": response.status_code,
+                    "content_type": "text/plain",
+                    "text": response.text,
+                }
+            )
+        if operation.response_type is OpaqueHtmlDocumentDTO:
+            if content_type != "text/html":
+                raise SafeTransportError(
+                    response.status_code,
+                    "unexpected_content_type",
+                    False,
+                    "Unexpected response content type.",
+                )
+            return operation.response_type.model_validate(
+                {
+                    "status": response.status_code,
+                    "content_type": "text/html",
+                    "document": response.text,
+                }
+            )
         try:
             return operation.response_type.model_validate(response.json())
         except (ValueError, ValidationError) as exc:
