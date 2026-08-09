@@ -46,6 +46,11 @@ def main() -> None:
     assert all(row.get("typed_client_owner", "none") == "none" for row in deferred)
     assert all(row.get("wire_version_authority") == "unavailable" for row in websockets)
 
+    ownership = json.loads((DOCS / "01_HTTP_CLIENT_OWNERSHIP_INPUT.json").read_text())
+    assert len(ownership["authoritative_http_operations"]) == len(authoritative_ui)
+    assert all(row["blocker_id"] == "P1B-B01" for row in ownership["blocked_http_candidates"])
+    assert not authoritative_ui, "typed ownership must not be claimed before strict DTO/error/security generation"
+
     feature_text = (DOCS / "00_69_FEATURE_REGISTER.md").read_text()
     feature_ids = [int(v) for v in re.findall(r"^\| (\d{2}) \|", feature_text, re.M)]
     assert feature_ids == list(range(1, 70))

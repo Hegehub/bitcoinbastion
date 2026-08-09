@@ -1,0 +1,1601 @@
+{
+  "blockers": [
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "activate_address_api_v1_business_lightning_addresses__address_id__activate_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "add_watchlist_api_v1_trace_watchlist_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "admin_audit_logs_api_v1_admin_audit_logs_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "admin_job_runs_api_v1_admin_jobs_runs_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "admin_jobs_api_v1_admin_jobs_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "admin_retry_job_api_v1_admin_jobs_retry_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "admin_retry_job_api_v1_admin_jobs_retry_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "admin_status_api_v1_admin_status_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "approve_request_api_v1_treasury_requests__request_id__approve_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "approve_request_api_v1_treasury_requests__request_id__approve_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "approve_signal_api_v1_operator_signals__signal_id__approve_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "approve_signal_api_v1_operator_signals__signal_id__approve_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "assess_privacy_api_v1_privacy_assess_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "business_batch_api_v1_trace_business_batch_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "business_batch_api_v1_trace_business_batch_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "business_events_api_v1_trace_business_events_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "business_policy_profiles_api_v1_trace_business_policy_profiles_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "business_profile_api_v1_trace_business_profile_get"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "cancel_recovery_api_v1_access_recovery_cancel_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "check_policy_api_v1_policy_check_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "check_policy_api_v1_policy_check_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "compare_policy_catalog_api_v1_policy_catalog_compare_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "compare_policy_catalog_api_v1_policy_catalog_compare_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "complete_recovery_api_v1_access_recovery_complete_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "confidence_override_api_v1_operator_signals__signal_id__confidence_override_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "confidence_override_api_v1_operator_signals__signal_id__confidence_override_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_address_api_v1_business_lightning_addresses_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_challenge_api_v1_access_challenges_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_child_api_key_api_v1_access_api_keys_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_delegated_pass_api_v1_access_delegated_passes_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_domain_api_v1_business_lightning_domains_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_event_market_memory_operator_review_api_v1_intelligence_events__event_id__memory_operator_review_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_human_intent_api_v1_access_intents_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_payment_intent_api_v1_access_payment_intents_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "create_request_api_v1_treasury_requests_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_request_api_v1_treasury_requests_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_session_api_v1_access_sessions_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "create_simulation_api_v1_citadel_simulations_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "destination_review_api_v1_trace_destination_review_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "disable_plugin_api_v1_plugins__plugin_id__disable_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "disable_plugin_api_v1_plugins__plugin_id__disable_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "drills_api_v1_operations_drills_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "dry_run_plugin_api_v1_plugins__plugin_id__dry_run_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "dry_run_plugin_api_v1_plugins__plugin_id__dry_run_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "enable_plugin_api_v1_plugins__plugin_id__enable_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "enable_plugin_api_v1_plugins__plugin_id__enable_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "enterprise_default_policy_api_v1_trace_enterprise_rbac_default_policy_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "enterprise_evidence_access_api_v1_trace_enterprise_evidence_access_evaluate_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "enterprise_evidence_access_api_v1_trace_enterprise_evidence_access_evaluate_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "enterprise_permissions_api_v1_trace_enterprise_rbac_permissions_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "enterprise_profile_api_v1_trace_enterprise_profile_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "enterprise_proof_packet_api_v1_trace_enterprise_proof_packet_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "enterprise_proof_packet_api_v1_trace_enterprise_proof_packet_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "enterprise_roles_api_v1_trace_enterprise_rbac_roles_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "enterprise_sso_api_v1_trace_enterprise_sso_get"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "fee_recommendation_api_v1_fees_recommendation_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "freeze_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__freeze_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "generate_wallet_profile_health_report_api_v1_wallet_profiles__wallet_profile_id__health_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "generate_wallet_profile_health_report_api_v1_wallet_profiles__wallet_profile_id__health_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "get_operator_signal_api_v1_operator_signals__signal_id__get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "get_plugin_api_v1_plugins__plugin_id__get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "health_api_v1_operations_health_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "hold_signal_api_v1_operator_signals__signal_id__hold_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "hold_signal_api_v1_operator_signals__signal_id__hold_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "issue_certificate_api_v1_access_certificates_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "jobs_api_v1_operations_jobs_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "latest_provider_health_api_v1_metrics_provider_health_latest_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "latest_source_health_api_v1_metrics_source_health_latest_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_pending_approvals_api_v1_treasury_requests_pending_approvals_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_pending_signals_api_v1_operator_signals_pending_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_plugins_api_v1_plugins_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_policy_catalog_api_v1_policy_catalog_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_policy_executions_api_v1_policy_executions_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_profiles_api_v1_wallet_profiles_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_requests_api_v1_treasury_requests_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_users_api_v1_users_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_wallet_profile_health_reports_api_v1_wallet_profiles__wallet_profile_id__health_reports_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "list_watchlist_api_v1_entities_watchlist_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "liveness_api_v1_operations_liveness_get"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "lockdown_api_v1_access_lockdown_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "mark_false_positive_api_v1_operator_signals__signal_id__mark_false_positive_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "mark_false_positive_api_v1_operator_signals__signal_id__mark_false_positive_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "me_api_v1_users_me_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "metric_usage_summary_api_v1_metrics_usage_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "metrics_api_v1_operations_metrics_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "metrics_status_api_v1_metrics_status_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "metrics_summary_api_v1_operations_metrics_summary_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "needs_more_evidence_api_v1_operator_signals__signal_id__needs_more_evidence_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "needs_more_evidence_api_v1_operator_signals__signal_id__needs_more_evidence_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "operations_snapshot_api_v1_observability_snapshot_get"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "payment_context_api_v1_trace_payment_context_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "payment_intent_preview_api_v1_trace_payment_intent_preview_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "policy_execution_summary_api_v1_policy_executions_summary_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "provider_health_history_api_v1_metrics_provider_health_history_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "providers_api_v1_operations_providers_get"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "readiness_api_v1_operations_readiness_get"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "recalculate_citadel_api_v1_citadel_recalculate_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "recheck_domain_api_v1_business_lightning_domains__domain_id__recheck_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "record_candle_click_web_market_time_machine_candle_click_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "record_evidence_view_web_market_time_machine_evidence_view_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "record_marker_click_web_market_time_machine_marker_click_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "record_replay_open_web_market_time_machine_replay_open_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "refresh_entity_provenance_api_v1_entities_provenance_refresh_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "refresh_source_reputation_api_v1_news_sources_reputation_refresh_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "reject_request_api_v1_treasury_requests__request_id__reject_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "reject_request_api_v1_treasury_requests__request_id__reject_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "reject_signal_api_v1_operator_signals__signal_id__reject_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "reject_signal_api_v1_operator_signals__signal_id__reject_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "review_candle_attribution_api_v1_intelligence_candles_attributions__attribution_id__review_patch"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "revoke_address_api_v1_business_lightning_addresses__address_id__delete"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "revoke_child_api_key_api_v1_access_api_keys__key_id__delete"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "revoke_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__delete"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "revoke_domain_api_v1_business_lightning_domains__domain_id__delete"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "rotate_child_api_key_api_v1_access_api_keys__key_id__rotate_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "rotate_recovery_api_v1_access_recovery_rotate_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "runbooks_api_v1_operations_runbooks_get"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "setup_recovery_api_v1_access_recovery_setup_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "simulate_policy_api_v1_policy_simulate_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "simulate_policy_api_v1_policy_simulate_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "source_health_history_api_v1_metrics_source_health_history_get"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "start_recovery_api_v1_access_recovery_start_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "status_api_v1_operations_status_get"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "submit_recovery_factor_api_v1_access_recovery_factors_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "suspend_address_api_v1_business_lightning_addresses__address_id__suspend_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "trace_register_advisory_api_v1_trace_register_payment_advisory_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "trace_treasury_check_api_v1_trace_treasury_destination_check_post"
+    },
+    {
+      "blocker": "P1B0-B01",
+      "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+      "operation_id": "upsert_policy_catalog_api_v1_policy_catalog_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "upsert_policy_catalog_api_v1_policy_catalog_post"
+    },
+    {
+      "blocker": "P1B0-B02",
+      "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+      "operation_id": "wallet_health_api_v1_wallet_health_post"
+    }
+  ],
+  "counts": {
+    "b01_b02_unique_operations": 109,
+    "generation_candidates": 309,
+    "mutation_blocked": 65,
+    "mutation_candidates": 65,
+    "mutation_only": 44,
+    "protected_candidates": 65,
+    "protected_mutations": 21,
+    "protected_only": 44,
+    "ready": 200,
+    "runtime_http": 369,
+    "schema_capabilities_unproven": 2,
+    "security_blocked": 65
+  },
+  "mutations": [
+    {
+      "matrix_id": "HTTP-0003",
+      "method": "POST",
+      "operation_id": "create_child_api_key_api_v1_access_api_keys_post",
+      "path": "/api/v1/access/api-keys"
+    },
+    {
+      "matrix_id": "HTTP-0004",
+      "method": "DELETE",
+      "operation_id": "revoke_child_api_key_api_v1_access_api_keys__key_id__delete",
+      "path": "/api/v1/access/api-keys/{key_id}"
+    },
+    {
+      "matrix_id": "HTTP-0007",
+      "method": "POST",
+      "operation_id": "rotate_child_api_key_api_v1_access_api_keys__key_id__rotate_post",
+      "path": "/api/v1/access/api-keys/{key_id}/rotate"
+    },
+    {
+      "matrix_id": "HTTP-0008",
+      "method": "POST",
+      "operation_id": "issue_certificate_api_v1_access_certificates_post",
+      "path": "/api/v1/access/certificates"
+    },
+    {
+      "matrix_id": "HTTP-0009",
+      "method": "POST",
+      "operation_id": "create_challenge_api_v1_access_challenges_post",
+      "path": "/api/v1/access/challenges"
+    },
+    {
+      "matrix_id": "HTTP-0011",
+      "method": "POST",
+      "operation_id": "create_delegated_pass_api_v1_access_delegated_passes_post",
+      "path": "/api/v1/access/delegated-passes"
+    },
+    {
+      "matrix_id": "HTTP-0012",
+      "method": "DELETE",
+      "operation_id": "revoke_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__delete",
+      "path": "/api/v1/access/delegated-passes/{delegated_pass_id}"
+    },
+    {
+      "matrix_id": "HTTP-0014",
+      "method": "POST",
+      "operation_id": "freeze_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__freeze_post",
+      "path": "/api/v1/access/delegated-passes/{delegated_pass_id}/freeze"
+    },
+    {
+      "matrix_id": "HTTP-0015",
+      "method": "POST",
+      "operation_id": "create_human_intent_api_v1_access_intents_post",
+      "path": "/api/v1/access/intents"
+    },
+    {
+      "matrix_id": "HTTP-0018",
+      "method": "POST",
+      "operation_id": "lockdown_api_v1_access_lockdown_post",
+      "path": "/api/v1/access/lockdown"
+    },
+    {
+      "matrix_id": "HTTP-0022",
+      "method": "POST",
+      "operation_id": "create_payment_intent_api_v1_access_payment_intents_post",
+      "path": "/api/v1/access/payment-intents"
+    },
+    {
+      "matrix_id": "HTTP-0025",
+      "method": "POST",
+      "operation_id": "cancel_recovery_api_v1_access_recovery_cancel_post",
+      "path": "/api/v1/access/recovery/cancel"
+    },
+    {
+      "matrix_id": "HTTP-0026",
+      "method": "POST",
+      "operation_id": "complete_recovery_api_v1_access_recovery_complete_post",
+      "path": "/api/v1/access/recovery/complete"
+    },
+    {
+      "matrix_id": "HTTP-0027",
+      "method": "POST",
+      "operation_id": "submit_recovery_factor_api_v1_access_recovery_factors_post",
+      "path": "/api/v1/access/recovery/factors"
+    },
+    {
+      "matrix_id": "HTTP-0028",
+      "method": "POST",
+      "operation_id": "rotate_recovery_api_v1_access_recovery_rotate_post",
+      "path": "/api/v1/access/recovery/rotate"
+    },
+    {
+      "matrix_id": "HTTP-0029",
+      "method": "POST",
+      "operation_id": "setup_recovery_api_v1_access_recovery_setup_post",
+      "path": "/api/v1/access/recovery/setup"
+    },
+    {
+      "matrix_id": "HTTP-0030",
+      "method": "POST",
+      "operation_id": "start_recovery_api_v1_access_recovery_start_post",
+      "path": "/api/v1/access/recovery/start"
+    },
+    {
+      "matrix_id": "HTTP-0032",
+      "method": "POST",
+      "operation_id": "create_session_api_v1_access_sessions_post",
+      "path": "/api/v1/access/sessions"
+    },
+    {
+      "matrix_id": "HTTP-0036",
+      "method": "POST",
+      "operation_id": "admin_retry_job_api_v1_admin_jobs_retry_post",
+      "path": "/api/v1/admin/jobs/retry"
+    },
+    {
+      "matrix_id": "HTTP-0042",
+      "method": "POST",
+      "operation_id": "create_address_api_v1_business_lightning_addresses_post",
+      "path": "/api/v1/business/lightning-addresses"
+    },
+    {
+      "matrix_id": "HTTP-0043",
+      "method": "DELETE",
+      "operation_id": "revoke_address_api_v1_business_lightning_addresses__address_id__delete",
+      "path": "/api/v1/business/lightning-addresses/{address_id}"
+    },
+    {
+      "matrix_id": "HTTP-0045",
+      "method": "POST",
+      "operation_id": "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+      "path": "/api/v1/business/lightning-addresses/{address_id}/activate"
+    },
+    {
+      "matrix_id": "HTTP-0046",
+      "method": "POST",
+      "operation_id": "suspend_address_api_v1_business_lightning_addresses__address_id__suspend_post",
+      "path": "/api/v1/business/lightning-addresses/{address_id}/suspend"
+    },
+    {
+      "matrix_id": "HTTP-0048",
+      "method": "POST",
+      "operation_id": "create_domain_api_v1_business_lightning_domains_post",
+      "path": "/api/v1/business/lightning-domains"
+    },
+    {
+      "matrix_id": "HTTP-0049",
+      "method": "DELETE",
+      "operation_id": "revoke_domain_api_v1_business_lightning_domains__domain_id__delete",
+      "path": "/api/v1/business/lightning-domains/{domain_id}"
+    },
+    {
+      "matrix_id": "HTTP-0051",
+      "method": "POST",
+      "operation_id": "recheck_domain_api_v1_business_lightning_domains__domain_id__recheck_post",
+      "path": "/api/v1/business/lightning-domains/{domain_id}/recheck"
+    },
+    {
+      "matrix_id": "HTTP-0058",
+      "method": "POST",
+      "operation_id": "recalculate_citadel_api_v1_citadel_recalculate_post",
+      "path": "/api/v1/citadel/recalculate"
+    },
+    {
+      "matrix_id": "HTTP-0062",
+      "method": "POST",
+      "operation_id": "create_simulation_api_v1_citadel_simulations_post",
+      "path": "/api/v1/citadel/simulations"
+    },
+    {
+      "matrix_id": "HTTP-0065",
+      "method": "POST",
+      "operation_id": "refresh_entity_provenance_api_v1_entities_provenance_refresh_post",
+      "path": "/api/v1/entities/provenance/refresh"
+    },
+    {
+      "matrix_id": "HTTP-0075",
+      "method": "POST",
+      "operation_id": "fee_recommendation_api_v1_fees_recommendation_post",
+      "path": "/api/v1/fees/recommendation"
+    },
+    {
+      "matrix_id": "HTTP-0084",
+      "method": "PATCH",
+      "operation_id": "review_candle_attribution_api_v1_intelligence_candles_attributions__attribution_id__review_patch",
+      "path": "/api/v1/intelligence/candles/attributions/{attribution_id}/review"
+    },
+    {
+      "matrix_id": "HTTP-0096",
+      "method": "POST",
+      "operation_id": "create_event_market_memory_operator_review_api_v1_intelligence_events__event_id__memory_operator_review_post",
+      "path": "/api/v1/intelligence/events/{event_id}/memory/operator-review"
+    },
+    {
+      "matrix_id": "HTTP-0188",
+      "method": "POST",
+      "operation_id": "refresh_source_reputation_api_v1_news_sources_reputation_refresh_post",
+      "path": "/api/v1/news/sources/reputation/refresh"
+    },
+    {
+      "matrix_id": "HTTP-0214",
+      "method": "POST",
+      "operation_id": "approve_signal_api_v1_operator_signals__signal_id__approve_post",
+      "path": "/api/v1/operator/signals/{signal_id}/approve"
+    },
+    {
+      "matrix_id": "HTTP-0215",
+      "method": "POST",
+      "operation_id": "confidence_override_api_v1_operator_signals__signal_id__confidence_override_post",
+      "path": "/api/v1/operator/signals/{signal_id}/confidence-override"
+    },
+    {
+      "matrix_id": "HTTP-0216",
+      "method": "POST",
+      "operation_id": "hold_signal_api_v1_operator_signals__signal_id__hold_post",
+      "path": "/api/v1/operator/signals/{signal_id}/hold"
+    },
+    {
+      "matrix_id": "HTTP-0217",
+      "method": "POST",
+      "operation_id": "mark_false_positive_api_v1_operator_signals__signal_id__mark_false_positive_post",
+      "path": "/api/v1/operator/signals/{signal_id}/mark-false-positive"
+    },
+    {
+      "matrix_id": "HTTP-0218",
+      "method": "POST",
+      "operation_id": "needs_more_evidence_api_v1_operator_signals__signal_id__needs_more_evidence_post",
+      "path": "/api/v1/operator/signals/{signal_id}/needs-more-evidence"
+    },
+    {
+      "matrix_id": "HTTP-0219",
+      "method": "POST",
+      "operation_id": "reject_signal_api_v1_operator_signals__signal_id__reject_post",
+      "path": "/api/v1/operator/signals/{signal_id}/reject"
+    },
+    {
+      "matrix_id": "HTTP-0235",
+      "method": "POST",
+      "operation_id": "disable_plugin_api_v1_plugins__plugin_id__disable_post",
+      "path": "/api/v1/plugins/{plugin_id}/disable"
+    },
+    {
+      "matrix_id": "HTTP-0236",
+      "method": "POST",
+      "operation_id": "dry_run_plugin_api_v1_plugins__plugin_id__dry_run_post",
+      "path": "/api/v1/plugins/{plugin_id}/dry-run"
+    },
+    {
+      "matrix_id": "HTTP-0237",
+      "method": "POST",
+      "operation_id": "enable_plugin_api_v1_plugins__plugin_id__enable_post",
+      "path": "/api/v1/plugins/{plugin_id}/enable"
+    },
+    {
+      "matrix_id": "HTTP-0239",
+      "method": "POST",
+      "operation_id": "upsert_policy_catalog_api_v1_policy_catalog_post",
+      "path": "/api/v1/policy/catalog"
+    },
+    {
+      "matrix_id": "HTTP-0240",
+      "method": "POST",
+      "operation_id": "compare_policy_catalog_api_v1_policy_catalog_compare_post",
+      "path": "/api/v1/policy/catalog/compare"
+    },
+    {
+      "matrix_id": "HTTP-0241",
+      "method": "POST",
+      "operation_id": "check_policy_api_v1_policy_check_post",
+      "path": "/api/v1/policy/check"
+    },
+    {
+      "matrix_id": "HTTP-0244",
+      "method": "POST",
+      "operation_id": "simulate_policy_api_v1_policy_simulate_post",
+      "path": "/api/v1/policy/simulate"
+    },
+    {
+      "matrix_id": "HTTP-0245",
+      "method": "POST",
+      "operation_id": "assess_privacy_api_v1_privacy_assess_post",
+      "path": "/api/v1/privacy/assess"
+    },
+    {
+      "matrix_id": "HTTP-0264",
+      "method": "POST",
+      "operation_id": "business_batch_api_v1_trace_business_batch_post",
+      "path": "/api/v1/trace/business/batch"
+    },
+    {
+      "matrix_id": "HTTP-0268",
+      "method": "POST",
+      "operation_id": "destination_review_api_v1_trace_destination_review_post",
+      "path": "/api/v1/trace/destination-review"
+    },
+    {
+      "matrix_id": "HTTP-0269",
+      "method": "POST",
+      "operation_id": "enterprise_evidence_access_api_v1_trace_enterprise_evidence_access_evaluate_post",
+      "path": "/api/v1/trace/enterprise/evidence-access/evaluate"
+    },
+    {
+      "matrix_id": "HTTP-0271",
+      "method": "POST",
+      "operation_id": "enterprise_proof_packet_api_v1_trace_enterprise_proof_packet_post",
+      "path": "/api/v1/trace/enterprise/proof-packet"
+    },
+    {
+      "matrix_id": "HTTP-0279",
+      "method": "POST",
+      "operation_id": "payment_context_api_v1_trace_payment_context_post",
+      "path": "/api/v1/trace/payment-context"
+    },
+    {
+      "matrix_id": "HTTP-0280",
+      "method": "POST",
+      "operation_id": "payment_intent_preview_api_v1_trace_payment_intent_preview_post",
+      "path": "/api/v1/trace/payment-intent/preview"
+    },
+    {
+      "matrix_id": "HTTP-0281",
+      "method": "POST",
+      "operation_id": "trace_register_advisory_api_v1_trace_register_payment_advisory_post",
+      "path": "/api/v1/trace/register/payment-advisory"
+    },
+    {
+      "matrix_id": "HTTP-0298",
+      "method": "POST",
+      "operation_id": "trace_treasury_check_api_v1_trace_treasury_destination_check_post",
+      "path": "/api/v1/trace/treasury/destination-check"
+    },
+    {
+      "matrix_id": "HTTP-0300",
+      "method": "POST",
+      "operation_id": "add_watchlist_api_v1_trace_watchlist_post",
+      "path": "/api/v1/trace/watchlist"
+    },
+    {
+      "matrix_id": "HTTP-0302",
+      "method": "POST",
+      "operation_id": "create_request_api_v1_treasury_requests_post",
+      "path": "/api/v1/treasury/requests"
+    },
+    {
+      "matrix_id": "HTTP-0304",
+      "method": "POST",
+      "operation_id": "approve_request_api_v1_treasury_requests__request_id__approve_post",
+      "path": "/api/v1/treasury/requests/{request_id}/approve"
+    },
+    {
+      "matrix_id": "HTTP-0305",
+      "method": "POST",
+      "operation_id": "reject_request_api_v1_treasury_requests__request_id__reject_post",
+      "path": "/api/v1/treasury/requests/{request_id}/reject"
+    },
+    {
+      "matrix_id": "HTTP-0325",
+      "method": "POST",
+      "operation_id": "wallet_health_api_v1_wallet_health_post",
+      "path": "/api/v1/wallet/health"
+    },
+    {
+      "matrix_id": "HTTP-0327",
+      "method": "POST",
+      "operation_id": "generate_wallet_profile_health_report_api_v1_wallet_profiles__wallet_profile_id__health_post",
+      "path": "/api/v1/wallet/profiles/{wallet_profile_id}/health"
+    },
+    {
+      "matrix_id": "HTTP-0365",
+      "method": "POST",
+      "operation_id": "record_candle_click_web_market_time_machine_candle_click_post",
+      "path": "/web/market-time-machine/candle-click"
+    },
+    {
+      "matrix_id": "HTTP-0366",
+      "method": "POST",
+      "operation_id": "record_evidence_view_web_market_time_machine_evidence_view_post",
+      "path": "/web/market-time-machine/evidence-view"
+    },
+    {
+      "matrix_id": "HTTP-0367",
+      "method": "POST",
+      "operation_id": "record_marker_click_web_market_time_machine_marker_click_post",
+      "path": "/web/market-time-machine/marker-click"
+    },
+    {
+      "matrix_id": "HTTP-0368",
+      "method": "POST",
+      "operation_id": "record_replay_open_web_market_time_machine_replay_open_post",
+      "path": "/web/market-time-machine/replay-open"
+    }
+  ],
+  "protected_operations": [
+    {
+      "matrix_id": "HTTP-0033",
+      "operation_id": "admin_audit_logs_api_v1_admin_audit_logs_get",
+      "path": "/api/v1/admin/audit-logs"
+    },
+    {
+      "matrix_id": "HTTP-0034",
+      "operation_id": "admin_jobs_api_v1_admin_jobs_get",
+      "path": "/api/v1/admin/jobs"
+    },
+    {
+      "matrix_id": "HTTP-0035",
+      "operation_id": "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get",
+      "path": "/api/v1/admin/jobs/recovery-check"
+    },
+    {
+      "matrix_id": "HTTP-0036",
+      "operation_id": "admin_retry_job_api_v1_admin_jobs_retry_post",
+      "path": "/api/v1/admin/jobs/retry"
+    },
+    {
+      "matrix_id": "HTTP-0037",
+      "operation_id": "admin_job_runs_api_v1_admin_jobs_runs_get",
+      "path": "/api/v1/admin/jobs/runs"
+    },
+    {
+      "matrix_id": "HTTP-0038",
+      "operation_id": "admin_status_api_v1_admin_status_get",
+      "path": "/api/v1/admin/status"
+    },
+    {
+      "matrix_id": "HTTP-0066",
+      "operation_id": "list_watchlist_api_v1_entities_watchlist_get",
+      "path": "/api/v1/entities/watchlist"
+    },
+    {
+      "matrix_id": "HTTP-0161",
+      "operation_id": "provider_health_history_api_v1_metrics_provider_health_history_get",
+      "path": "/api/v1/metrics/provider-health/history"
+    },
+    {
+      "matrix_id": "HTTP-0162",
+      "operation_id": "latest_provider_health_api_v1_metrics_provider_health_latest_get",
+      "path": "/api/v1/metrics/provider-health/latest"
+    },
+    {
+      "matrix_id": "HTTP-0163",
+      "operation_id": "source_health_history_api_v1_metrics_source_health_history_get",
+      "path": "/api/v1/metrics/source-health/history"
+    },
+    {
+      "matrix_id": "HTTP-0164",
+      "operation_id": "latest_source_health_api_v1_metrics_source_health_latest_get",
+      "path": "/api/v1/metrics/source-health/latest"
+    },
+    {
+      "matrix_id": "HTTP-0165",
+      "operation_id": "metrics_status_api_v1_metrics_status_get",
+      "path": "/api/v1/metrics/status"
+    },
+    {
+      "matrix_id": "HTTP-0166",
+      "operation_id": "metric_usage_summary_api_v1_metrics_usage_get",
+      "path": "/api/v1/metrics/usage"
+    },
+    {
+      "matrix_id": "HTTP-0199",
+      "operation_id": "operations_snapshot_api_v1_observability_snapshot_get",
+      "path": "/api/v1/observability/snapshot"
+    },
+    {
+      "matrix_id": "HTTP-0202",
+      "operation_id": "drills_api_v1_operations_drills_get",
+      "path": "/api/v1/operations/drills"
+    },
+    {
+      "matrix_id": "HTTP-0203",
+      "operation_id": "health_api_v1_operations_health_get",
+      "path": "/api/v1/operations/health"
+    },
+    {
+      "matrix_id": "HTTP-0204",
+      "operation_id": "jobs_api_v1_operations_jobs_get",
+      "path": "/api/v1/operations/jobs"
+    },
+    {
+      "matrix_id": "HTTP-0205",
+      "operation_id": "liveness_api_v1_operations_liveness_get",
+      "path": "/api/v1/operations/liveness"
+    },
+    {
+      "matrix_id": "HTTP-0206",
+      "operation_id": "metrics_api_v1_operations_metrics_get",
+      "path": "/api/v1/operations/metrics"
+    },
+    {
+      "matrix_id": "HTTP-0207",
+      "operation_id": "metrics_summary_api_v1_operations_metrics_summary_get",
+      "path": "/api/v1/operations/metrics-summary"
+    },
+    {
+      "matrix_id": "HTTP-0208",
+      "operation_id": "providers_api_v1_operations_providers_get",
+      "path": "/api/v1/operations/providers"
+    },
+    {
+      "matrix_id": "HTTP-0209",
+      "operation_id": "readiness_api_v1_operations_readiness_get",
+      "path": "/api/v1/operations/readiness"
+    },
+    {
+      "matrix_id": "HTTP-0210",
+      "operation_id": "runbooks_api_v1_operations_runbooks_get",
+      "path": "/api/v1/operations/runbooks"
+    },
+    {
+      "matrix_id": "HTTP-0211",
+      "operation_id": "status_api_v1_operations_status_get",
+      "path": "/api/v1/operations/status"
+    },
+    {
+      "matrix_id": "HTTP-0212",
+      "operation_id": "list_pending_signals_api_v1_operator_signals_pending_get",
+      "path": "/api/v1/operator/signals/pending"
+    },
+    {
+      "matrix_id": "HTTP-0213",
+      "operation_id": "get_operator_signal_api_v1_operator_signals__signal_id__get",
+      "path": "/api/v1/operator/signals/{signal_id}"
+    },
+    {
+      "matrix_id": "HTTP-0214",
+      "operation_id": "approve_signal_api_v1_operator_signals__signal_id__approve_post",
+      "path": "/api/v1/operator/signals/{signal_id}/approve"
+    },
+    {
+      "matrix_id": "HTTP-0215",
+      "operation_id": "confidence_override_api_v1_operator_signals__signal_id__confidence_override_post",
+      "path": "/api/v1/operator/signals/{signal_id}/confidence-override"
+    },
+    {
+      "matrix_id": "HTTP-0216",
+      "operation_id": "hold_signal_api_v1_operator_signals__signal_id__hold_post",
+      "path": "/api/v1/operator/signals/{signal_id}/hold"
+    },
+    {
+      "matrix_id": "HTTP-0217",
+      "operation_id": "mark_false_positive_api_v1_operator_signals__signal_id__mark_false_positive_post",
+      "path": "/api/v1/operator/signals/{signal_id}/mark-false-positive"
+    },
+    {
+      "matrix_id": "HTTP-0218",
+      "operation_id": "needs_more_evidence_api_v1_operator_signals__signal_id__needs_more_evidence_post",
+      "path": "/api/v1/operator/signals/{signal_id}/needs-more-evidence"
+    },
+    {
+      "matrix_id": "HTTP-0219",
+      "operation_id": "reject_signal_api_v1_operator_signals__signal_id__reject_post",
+      "path": "/api/v1/operator/signals/{signal_id}/reject"
+    },
+    {
+      "matrix_id": "HTTP-0233",
+      "operation_id": "list_plugins_api_v1_plugins_get",
+      "path": "/api/v1/plugins"
+    },
+    {
+      "matrix_id": "HTTP-0234",
+      "operation_id": "get_plugin_api_v1_plugins__plugin_id__get",
+      "path": "/api/v1/plugins/{plugin_id}"
+    },
+    {
+      "matrix_id": "HTTP-0235",
+      "operation_id": "disable_plugin_api_v1_plugins__plugin_id__disable_post",
+      "path": "/api/v1/plugins/{plugin_id}/disable"
+    },
+    {
+      "matrix_id": "HTTP-0236",
+      "operation_id": "dry_run_plugin_api_v1_plugins__plugin_id__dry_run_post",
+      "path": "/api/v1/plugins/{plugin_id}/dry-run"
+    },
+    {
+      "matrix_id": "HTTP-0237",
+      "operation_id": "enable_plugin_api_v1_plugins__plugin_id__enable_post",
+      "path": "/api/v1/plugins/{plugin_id}/enable"
+    },
+    {
+      "matrix_id": "HTTP-0238",
+      "operation_id": "list_policy_catalog_api_v1_policy_catalog_get",
+      "path": "/api/v1/policy/catalog"
+    },
+    {
+      "matrix_id": "HTTP-0239",
+      "operation_id": "upsert_policy_catalog_api_v1_policy_catalog_post",
+      "path": "/api/v1/policy/catalog"
+    },
+    {
+      "matrix_id": "HTTP-0240",
+      "operation_id": "compare_policy_catalog_api_v1_policy_catalog_compare_post",
+      "path": "/api/v1/policy/catalog/compare"
+    },
+    {
+      "matrix_id": "HTTP-0241",
+      "operation_id": "check_policy_api_v1_policy_check_post",
+      "path": "/api/v1/policy/check"
+    },
+    {
+      "matrix_id": "HTTP-0242",
+      "operation_id": "list_policy_executions_api_v1_policy_executions_get",
+      "path": "/api/v1/policy/executions"
+    },
+    {
+      "matrix_id": "HTTP-0243",
+      "operation_id": "policy_execution_summary_api_v1_policy_executions_summary_get",
+      "path": "/api/v1/policy/executions/summary"
+    },
+    {
+      "matrix_id": "HTTP-0244",
+      "operation_id": "simulate_policy_api_v1_policy_simulate_post",
+      "path": "/api/v1/policy/simulate"
+    },
+    {
+      "matrix_id": "HTTP-0264",
+      "operation_id": "business_batch_api_v1_trace_business_batch_post",
+      "path": "/api/v1/trace/business/batch"
+    },
+    {
+      "matrix_id": "HTTP-0265",
+      "operation_id": "business_events_api_v1_trace_business_events_get",
+      "path": "/api/v1/trace/business/events"
+    },
+    {
+      "matrix_id": "HTTP-0266",
+      "operation_id": "business_policy_profiles_api_v1_trace_business_policy_profiles_get",
+      "path": "/api/v1/trace/business/policy-profiles"
+    },
+    {
+      "matrix_id": "HTTP-0267",
+      "operation_id": "business_profile_api_v1_trace_business_profile_get",
+      "path": "/api/v1/trace/business/profile"
+    },
+    {
+      "matrix_id": "HTTP-0269",
+      "operation_id": "enterprise_evidence_access_api_v1_trace_enterprise_evidence_access_evaluate_post",
+      "path": "/api/v1/trace/enterprise/evidence-access/evaluate"
+    },
+    {
+      "matrix_id": "HTTP-0270",
+      "operation_id": "enterprise_profile_api_v1_trace_enterprise_profile_get",
+      "path": "/api/v1/trace/enterprise/profile"
+    },
+    {
+      "matrix_id": "HTTP-0271",
+      "operation_id": "enterprise_proof_packet_api_v1_trace_enterprise_proof_packet_post",
+      "path": "/api/v1/trace/enterprise/proof-packet"
+    },
+    {
+      "matrix_id": "HTTP-0272",
+      "operation_id": "enterprise_default_policy_api_v1_trace_enterprise_rbac_default_policy_get",
+      "path": "/api/v1/trace/enterprise/rbac/default-policy"
+    },
+    {
+      "matrix_id": "HTTP-0273",
+      "operation_id": "enterprise_permissions_api_v1_trace_enterprise_rbac_permissions_get",
+      "path": "/api/v1/trace/enterprise/rbac/permissions"
+    },
+    {
+      "matrix_id": "HTTP-0274",
+      "operation_id": "enterprise_roles_api_v1_trace_enterprise_rbac_roles_get",
+      "path": "/api/v1/trace/enterprise/rbac/roles"
+    },
+    {
+      "matrix_id": "HTTP-0275",
+      "operation_id": "enterprise_sso_api_v1_trace_enterprise_sso_get",
+      "path": "/api/v1/trace/enterprise/sso"
+    },
+    {
+      "matrix_id": "HTTP-0301",
+      "operation_id": "list_requests_api_v1_treasury_requests_get",
+      "path": "/api/v1/treasury/requests"
+    },
+    {
+      "matrix_id": "HTTP-0302",
+      "operation_id": "create_request_api_v1_treasury_requests_post",
+      "path": "/api/v1/treasury/requests"
+    },
+    {
+      "matrix_id": "HTTP-0303",
+      "operation_id": "list_pending_approvals_api_v1_treasury_requests_pending_approvals_get",
+      "path": "/api/v1/treasury/requests/pending-approvals"
+    },
+    {
+      "matrix_id": "HTTP-0304",
+      "operation_id": "approve_request_api_v1_treasury_requests__request_id__approve_post",
+      "path": "/api/v1/treasury/requests/{request_id}/approve"
+    },
+    {
+      "matrix_id": "HTTP-0305",
+      "operation_id": "reject_request_api_v1_treasury_requests__request_id__reject_post",
+      "path": "/api/v1/treasury/requests/{request_id}/reject"
+    },
+    {
+      "matrix_id": "HTTP-0306",
+      "operation_id": "list_users_api_v1_users_get",
+      "path": "/api/v1/users"
+    },
+    {
+      "matrix_id": "HTTP-0307",
+      "operation_id": "me_api_v1_users_me_get",
+      "path": "/api/v1/users/me"
+    },
+    {
+      "matrix_id": "HTTP-0326",
+      "operation_id": "list_profiles_api_v1_wallet_profiles_get",
+      "path": "/api/v1/wallet/profiles"
+    },
+    {
+      "matrix_id": "HTTP-0327",
+      "operation_id": "generate_wallet_profile_health_report_api_v1_wallet_profiles__wallet_profile_id__health_post",
+      "path": "/api/v1/wallet/profiles/{wallet_profile_id}/health"
+    },
+    {
+      "matrix_id": "HTTP-0328",
+      "operation_id": "list_wallet_profile_health_reports_api_v1_wallet_profiles__wallet_profile_id__health_reports_get",
+      "path": "/api/v1/wallet/profiles/{wallet_profile_id}/health/reports"
+    }
+  ],
+  "response_vocabulary": {
+    "media_types": {
+      "application/json": 300,
+      "no-content": 3,
+      "text/html": 6
+    },
+    "success_statuses": {
+      "200": 305,
+      "201": 1,
+      "204": 3
+    }
+  },
+  "schema_vocabulary": {
+    "$ref": {
+      "count": 903,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
+      ]
+    },
+    "additionalProperties": {
+      "count": 291,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get",
+        "admin_status_api_v1_admin_status_get",
+        "approve_signal_api_v1_operator_signals__signal_id__approve_post",
+        "article_duplicates_api_v1_news_articles__article_id__duplicates_get"
+      ]
+    },
+    "anyOf": {
+      "count": 562,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "const": {
+      "count": 2,
+      "examples": [
+        "create_human_intent_api_v1_access_intents_post",
+        "get_human_intent_api_v1_access_intents__intent_id__get"
+      ]
+    },
+    "default": {
+      "count": 603,
+      "examples": [
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "enum": {
+      "count": 54,
+      "examples": [
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get",
+        "analyze_address_api_v1_trace_address__address__get",
+        "business_batch_api_v1_trace_business_batch_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "compare_policy_catalog_api_v1_policy_catalog_compare_post"
+      ]
+    },
+    "format": {
+      "count": 221,
+      "examples": [
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "maxLength": {
+      "count": 32,
+      "examples": [
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "create_request_api_v1_treasury_requests_post",
+        "create_simulation_api_v1_citadel_simulations_post",
+        "latest_provider_health_api_v1_metrics_provider_health_latest_get"
+      ]
+    },
+    "maximum": {
+      "count": 111,
+      "examples": [
+        "analyze_address_api_v1_trace_address__address__get",
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "assess_privacy_api_v1_privacy_assess_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "check_policy_api_v1_policy_check_post"
+      ]
+    },
+    "minItems": {
+      "count": 3,
+      "examples": [
+        "create_challenge_api_v1_access_challenges_post",
+        "create_child_api_key_api_v1_access_api_keys_post",
+        "create_delegated_pass_api_v1_access_delegated_passes_post"
+      ]
+    },
+    "minLength": {
+      "count": 33,
+      "examples": [
+        "admin_retry_job_api_v1_admin_jobs_retry_post",
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "check_policy_api_v1_policy_check_post",
+        "compare_policy_catalog_api_v1_policy_catalog_compare_post"
+      ]
+    },
+    "minimum": {
+      "count": 132,
+      "examples": [
+        "analyze_address_api_v1_trace_address__address__get",
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "assess_privacy_api_v1_privacy_assess_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get",
+        "check_policy_api_v1_policy_check_post"
+      ]
+    },
+    "type": {
+      "count": 5963,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
+      ]
+    },
+    "type:array": {
+      "count": 757,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
+      ]
+    },
+    "type:boolean": {
+      "count": 256,
+      "examples": [
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "type:integer": {
+      "count": 676,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get"
+      ]
+    },
+    "type:null": {
+      "count": 337,
+      "examples": [
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_recovery_check_api_v1_admin_jobs_recovery_check_get",
+        "analyze_address_api_v1_trace_address__address__get",
+        "approve_signal_api_v1_operator_signals__signal_id__approve_post"
+      ]
+    },
+    "type:number": {
+      "count": 220,
+      "examples": [
+        "analyze_address_api_v1_trace_address__address__get",
+        "approve_request_api_v1_treasury_requests__request_id__approve_post",
+        "approve_signal_api_v1_operator_signals__signal_id__approve_post",
+        "assess_privacy_api_v1_privacy_assess_post",
+        "candle_attribution_api_v1_market_time_machine_candle_attribution_get"
+      ]
+    },
+    "type:object": {
+      "count": 1315,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
+      ]
+    },
+    "type:string": {
+      "count": 2177,
+      "examples": [
+        "activate_address_api_v1_business_lightning_addresses__address_id__activate_post",
+        "add_watchlist_api_v1_trace_watchlist_post",
+        "admin_audit_logs_api_v1_admin_audit_logs_get",
+        "admin_job_runs_api_v1_admin_jobs_runs_get",
+        "admin_jobs_api_v1_admin_jobs_get"
+      ]
+    }
+  },
+  "unproven_schema_capabilities": [
+    "additionalProperties",
+    "anyOf"
+  ],
+  "websocket_authority": "DEFERRED_TO_PROMPT_4; wire versions must not be invented"
+}

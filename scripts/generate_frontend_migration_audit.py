@@ -218,11 +218,31 @@ def main() -> None:
             protected = bool(op.get("security"))
             coverage = "NOT_STARTED"
             deferred = DEFERRED_HTTP.get((method, path))
-            authority = "DEFERRED_AUTHORITY" if deferred else "AUTHORITATIVE_NOW"
-            transport_owner = (
-                "none; deferred contracts cannot own generic UI clients"
+            active_ui = disp in ("UI_REQUIRED", "UI_OPTIONAL")
+            # OpenAPI currently exposes no operation-specific safe error registry and the
+            # migration audit has not completed dependency-level security semantics. A
+            # descriptor name is not a generated typed client, so fail closed rather than
+            # promoting all candidates to authoritative ownership.
+            transport_contract_blocked = active_ui and deferred is None
+            authority = (
+                "DEFERRED_AUTHORITY"
+                if deferred or transport_contract_blocked
+                else "AUTHORITATIVE_NOW"
+            )
+            blocker_id = (
+                deferred["blocker_id"] if deferred else ("P1B-B01" if transport_contract_blocked else None)
+            )
+            future_owner = (
+                deferred["future_owner"] if deferred else ("Prompt 1B/25" if transport_contract_blocked else None)
+            )
+            reentry = (
+                deferred["reentry_condition"]
                 if deferred
-                else f"generated.operation_bindings:{oid}"
+                else (
+                    "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+                    if transport_contract_blocked
+                    else None
+                )
             )
             ops.append(
                 {
@@ -257,10 +277,10 @@ def main() -> None:
                     "disposition": disp,
                     "reason": reason,
                     "authority_status": authority,
-                    "authority_blocker_id": deferred["blocker_id"] if deferred else None,
-                    "authority_future_owner": deferred["future_owner"] if deferred else None,
-                    "authority_reentry_condition": deferred["reentry_condition"] if deferred else None,
-                    "typed_client_owner": transport_owner if disp.startswith("UI_") else "none",
+                    "authority_blocker_id": blocker_id,
+                    "authority_future_owner": future_owner,
+                    "authority_reentry_condition": reentry,
+                    "typed_client_owner": "none",
                     "product_boundary": product,
                     "frontend_surface": (
                         "TBD by assigned prompt" if disp.startswith("UI_") else "N/A"
@@ -375,10 +395,28 @@ def main() -> None:
         if op["authority_status"] == "AUTHORITATIVE_NOW"
         and op["disposition"] in ("UI_REQUIRED", "UI_OPTIONAL")
     ]
+    blocked_candidates = [
+        {
+            "matrix_id": op["matrix_id"],
+            "operation_id": op["operation_id"],
+            "method": op["method"],
+            "path": op["path"],
+            "request_schema": op["request_schema"],
+            "success_schema": op["response_schema"],
+            "error_schema": op["error_envelope"],
+            "security": op["required_plan_scope_poa_pop_signing_human_intent"],
+            "blocker_id": op["authority_blocker_id"],
+            "future_owner": op["authority_future_owner"],
+            "reentry_condition": op["authority_reentry_condition"],
+        }
+        for op in ops
+        if op["authority_blocker_id"] == "P1B-B01"
+    ]
     ownership = {
         "metadata": norm["metadata"],
         "architecture": "generated typed operation descriptors over one shared injectable transport engine",
         "authoritative_http_operations": authoritative,
+        "blocked_http_candidates": blocked_candidates,
         "deferred_http_operations": [
             {
                 "matrix_id": op["matrix_id"],

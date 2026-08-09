@@ -6,7 +6,7 @@ Use **generated typed operation descriptors over one shared injectable transport
 
 The generator reads runtime OpenAPI plus the deterministic disposition/authority matrix. It emits one descriptor owner per `AUTHORITATIVE_NOW` HTTP operation with an active UI disposition. Deferred and non-UI operations receive no generic client owner. PayRegister remains outside the Core generation set and requires its separate product transport module.
 
-Prompt 1A generates `01_HTTP_CLIENT_OWNERSHIP_INPUT.json` as the architecture input/proof. Prompt 1B will generate strict Python request/response/error bindings and the shared transport implementation from that input. Prompt 2 alone owns domain adapters and view models.
+Prompt 1A generates `01_HTTP_CLIENT_OWNERSHIP_INPUT.json` as an architecture input, not proof that clients exist. Prompt 1B pre-flight found that all 309 candidates still use a generic unverified error description and unreviewed security metadata. They therefore remain blocked candidates with no owner until strict Python request/response/error bindings and reviewed security metadata are generated. Prompt 2 alone owns domain adapters and view models.
 
 ## Alternatives
 
