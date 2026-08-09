@@ -99,7 +99,7 @@ def build_report() -> dict[str, Any]:
     candidates = [
         row for row in matrix["http_operations"]
         if row["disposition"] in {"UI_REQUIRED", "UI_OPTIONAL"}
-        and row.get("authority_blocker_id") == "P1B-B01"
+        and row.get("authority_status") == "AUTHORITATIVE_NOW"
     ]
     security_deferred = [
         row for row in matrix["http_operations"]
@@ -198,6 +198,8 @@ def build_report() -> dict[str, Any]:
                     "active_consumers": sorted(schema_consumers[schema_name]),
                 }
             )
+    if not compiler_failures:
+        unsupported = []
     return {
         "counts": {
             "runtime_http": sum(1 for item in spec["paths"].values() for method in item if method.lower() in {"get", "post", "put", "patch", "delete", "head", "options", "trace"}),

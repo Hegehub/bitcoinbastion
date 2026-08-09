@@ -89,7 +89,7 @@ def emit_annotation(schema: CompiledSchema) -> str:
         if not schema.properties and isinstance(schema.additional, MapSchema):
             return emit_annotation(schema.additional)
         if not schema.properties and schema.additional == "forbid":
-            return "dict[str, Never]"
+            return "ClosedEmptyObject"
         raise SourceEmissionError("inline object requires a canonical module-plan identity")
     raise SourceEmissionError(f"unsupported compiled schema {type(schema).__name__}")
 
@@ -97,17 +97,21 @@ def emit_annotation(schema: CompiledSchema) -> str:
 def emit_module(plan: ModulePlan) -> str:
     lines = [
         '"""Generated strict HTTP transport models. Do not edit."""',
+        "# ruff: noqa",
         "from __future__ import annotations",
         "",
         "from datetime import date, datetime",
         "from decimal import Decimal",
-        "from typing import Literal, Never",
+        "from typing import Literal",
         "from uuid import UUID",
         "",
         "from pydantic import BaseModel, ConfigDict, Field, RootModel",
         "",
         "type JsonValue = (None | bool | int | Decimal | str",
         "    | list[JsonValue] | dict[str, JsonValue])",
+        "",
+        "class ClosedEmptyObject(BaseModel):",
+        "    model_config = ConfigDict(extra='forbid', strict=True)",
         "",
     ]
     for canonical, schema in plan.components:

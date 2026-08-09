@@ -38,7 +38,10 @@ def main() -> None:
         and row["disposition"] in {"UI_REQUIRED", "UI_OPTIONAL"}
     ]
     deferred = [row for row in operations + websockets if row["authority_status"] == "DEFERRED_AUTHORITY"]
-    assert all(row["typed_client_owner"].startswith("generated.operation_bindings:") for row in authoritative_ui)
+    assert all(
+        row["typed_client_owner"].startswith("bastion_ui.transport.generated_http:")
+        for row in authoritative_ui
+    )
     assert len({row["typed_client_owner"] for row in authoritative_ui}) == len(authoritative_ui)
     assert all(row.get("authority_blocker_id") for row in deferred)
     assert all(row.get("authority_future_owner") for row in deferred)
@@ -48,8 +51,8 @@ def main() -> None:
 
     ownership = json.loads((DOCS / "01_HTTP_CLIENT_OWNERSHIP_INPUT.json").read_text())
     assert len(ownership["authoritative_http_operations"]) == len(authoritative_ui)
-    assert all(row["blocker_id"] == "P1B-B01" for row in ownership["blocked_http_candidates"])
-    assert not authoritative_ui, "typed ownership must not be claimed before strict DTO/error/security generation"
+    assert ownership["blocked_http_candidates"] == []
+    assert len(authoritative_ui) == 194
 
     feature_text = (DOCS / "00_69_FEATURE_REGISTER.md").read_text()
     feature_ids = [int(v) for v in re.findall(r"^\| (\d{2}) \|", feature_text, re.M)]

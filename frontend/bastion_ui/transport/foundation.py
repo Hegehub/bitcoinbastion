@@ -7,8 +7,11 @@ State, authorization policy, and signing keys do not belong here.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
+from decimal import Decimal
 from typing import Literal, TypeVar
+from urllib.parse import quote
+from uuid import UUID
 
 import httpx
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
@@ -16,6 +19,21 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 ResponseT = TypeVar("ResponseT", bound=BaseModel)
 type JsonScalar = None | bool | int | float | str
 type JsonValue = JsonScalar | list[JsonValue] | dict[str, JsonValue]
+
+
+def serialize_query_value(
+    value: JsonValue | date | datetime | Decimal | UUID,
+) -> str | int | float | bool | None:
+    """Serialize an application query value without admitting arbitrary objects."""
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, (date, datetime)):
+        return value.isoformat()
+    if isinstance(value, (Decimal, UUID)):
+        return str(value)
+    if isinstance(value, list):
+        return ",".join(str(serialize_query_value(item)) for item in value)
+    raise ValueError("object query parameters are not supported")
 
 
 class StrictTransportDTO(BaseModel):
@@ -128,7 +146,14 @@ class HttpTransport:
         self._client = client
         self._timeout = timeout_seconds
 
-    async def invoke(self, operation: NormalizedOperation[ResponseT]) -> ResponseT:
+    async def invoke(
+        self,
+        operation: NormalizedOperation[ResponseT],
+        *,
+        path_parameters: dict[str, str] | None = None,
+        query_parameters: dict[str, str | int | float | bool | None] | None = None,
+        body: JsonValue | None = None,
+    ) -> ResponseT:
         if not operation.security.public:
             raise SafeTransportError(
                 None,
@@ -137,9 +162,14 @@ class HttpTransport:
                 "Protected transport boundary required",
             )
         try:
+            path = operation.path
+            for name, value in sorted((path_parameters or {}).items()):
+                path = path.replace("{" + name + "}", quote(value, safe=""))
             response = await self._client.request(
                 operation.method,
-                operation.path,
+                path,
+                params=query_parameters,
+                json=body,
                 timeout=self._timeout,
             )
         except httpx.TimeoutException as exc:

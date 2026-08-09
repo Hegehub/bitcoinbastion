@@ -233,12 +233,15 @@ def main() -> None:
     stamp = git("show", "-s", "--format=%cI", head)
     ops = []
     ids = []
+    generated_http_path = ROOT / "frontend/bastion_ui/transport/generated_http.py"
+    generated_http = generated_http_path.read_text() if generated_http_path.exists() else ""
     for path, item in sorted(spec["paths"].items()):
         for method in METHODS:
             if method not in item:
                 continue
             op = item[method]
             oid = op.get("operationId", "")
+            generated_owner = f"async def {oid}(" in generated_http
             ids.append(oid)
             disp, reason, product = disposition(method, path)
             req = ""
@@ -284,6 +287,7 @@ def main() -> None:
                 and not contract_authority_deferred
                 and not legacy_html
                 and not schema_authority_missing
+                and not generated_owner
             )
             authority = (
                 "DEFERRED_AUTHORITY"
@@ -366,12 +370,14 @@ def main() -> None:
                         "protected" if unresolved_protected else
                         "mutation" if unresolved_mutation else None
                     ),
-                    "typed_client_owner": "none",
+                    "typed_client_owner": (
+                        f"bastion_ui.transport.generated_http:{oid}" if generated_owner else "none"
+                    ),
                     "product_boundary": product,
                     "frontend_surface": (
                         "TBD by assigned prompt" if disp.startswith("UI_") else "N/A"
                     ),
-                    "client_method": "not runtime-verified",
+                    "client_method": oid if generated_owner else "not runtime-verified",
                     "verified_url": path,
                     "adapter_view_model": "none verified",
                     "trigger_subscription": "none verified",
