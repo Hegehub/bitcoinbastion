@@ -75,7 +75,8 @@
       "frontend/bastion_ui/services/provider_health_client.py",
       "frontend/bastion_ui/services/sovereign_grid_client.py",
       "frontend/bastion_ui/services/status_client.py",
-      "frontend/bastion_ui/services/wow_client.py"
+      "frontend/bastion_ui/services/wow_client.py",
+      "frontend/bastion_ui/transport/generated_foundation.py"
     ],
     "/api/v1/health/providers": [
       "frontend/bastion_ui/services/console_client.py",
@@ -135,7 +136,8 @@
       "frontend/bastion_ui/services/sovereign_grid_client.py",
       "frontend/bastion_ui/services/status_client.py",
       "frontend/bastion_ui/services/wow_client.py",
-      "frontend/bastion_ui/state/api_explorer_state.py"
+      "frontend/bastion_ui/state/api_explorer_state.py",
+      "frontend/bastion_ui/transport/generated_foundation.py"
     ],
     "/api/v1/public/trace/{param}/summary": [
       "frontend/bastion_ui/services/api_explorer_client.py",
