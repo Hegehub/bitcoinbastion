@@ -47,7 +47,7 @@ def emit_operations(plan: OperationModulePlan) -> str:
         "from pydantic import BaseModel, ConfigDict, RootModel",
         "",
         "from bastion_ui.transport.foundation import (",
-        "    ContractRegistryEntry, HttpTransport, NormalizedOperation, SecurityMetadata,",
+        "    ContractRegistryEntry, HttpTransport, NormalizedOperation, SafeTransportError, SecurityMetadata,",
         "    serialize_query_value,",
         ")",
         "from bastion_ui.transport.generated_schemas import *  # noqa: F403",
@@ -75,6 +75,7 @@ def emit_operations(plan: OperationModulePlan) -> str:
             lines.append(f"    body: {emit_annotation(operation.request_body)}")
         lines.append("")
         success = _success_symbol(operation)
+        error = f"{base}Error"
         variants = operation.successes
         if len(variants) == 1 and variants[0].schema is not None:
             lines.extend(
@@ -86,6 +87,7 @@ def emit_operations(plan: OperationModulePlan) -> str:
             )
         else:
             raise ValueError(f"{operation.operation_id}: multiple success emission not implemented")
+        lines.extend([f"{error} = SafeTransportError", ""])
         security = f"{base.upper()}_SECURITY"
         descriptor = f"{base.upper()}_OPERATION"
         lines.extend(
@@ -124,7 +126,7 @@ def emit_operations(plan: OperationModulePlan) -> str:
             f"    {operation.operation_id!r}: ({operation.matrix_id!r}, {operation.owner_module!r}, {operation.callable_name!r}),"
         )
         registry.append(
-            f"    ContractRegistryEntry(registry_id={'http:' + operation.operation_id!r}, source_head=SOURCE_HEAD, operation={descriptor}, request_schema={request!r}, success_schema={success!r}),"
+            f"    ContractRegistryEntry(registry_id={'http:' + operation.operation_id!r}, source_head=SOURCE_HEAD, operation={descriptor}, request_schema={request!r}, success_schema={success!r}, error_schema={error!r}),"
         )
     lines.extend([f"SOURCE_HEAD = {plan.source_revision!r}", "", "OWNERSHIP = {"])
     lines.extend(ownership)

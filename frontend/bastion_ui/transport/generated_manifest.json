@@ -1,0 +1,14 @@
+{
+  "allowed_legacy_generated_files": [
+    "generated_foundation.py"
+  ],
+  "files": {
+    "generated_http.py": "cea44c0f556e1717f927af3ee609ed99b9bc0772cc732223f5169e1cb66c0ce6",
+    "generated_schemas.py": "dcad9a47f30acf31cceec48d3c23da4cdba8d9a16e793fa95990834ac802744b"
+  },
+  "generation_version": "1b1.v1",
+  "openapi_sha256": "e1b56601a41b084da399a419edaecd94e421b45d0a70c9ef6aff617c47061fff",
+  "operation_count": 194,
+  "schema_count": 286,
+  "source_revision": "0ff0049114b864079ed7aabbc3272c82b5d9b106"
+}

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -22,6 +23,7 @@ from bastion_ui.transport.source_emitter import ModulePlan, emit_module  # noqa:
 
 MATRIX = ROOT / "docs/frontend/migration/00_openapi_frontend_rendering_matrix.json"
 OUT = ROOT / "frontend/bastion_ui/transport"
+MANIFEST = OUT / "generated_manifest.json"
 
 
 def render() -> dict[Path, str]:
@@ -36,12 +38,28 @@ def render() -> dict[Path, str]:
     schemas = OpenAPISchemaCompiler(spec["components"]["schemas"]).compile_all()
     operations = compile_operations(spec, rows)
     source_revision = str(matrix["metadata"]["head"])
-    return {
+    outputs = {
         OUT / "generated_schemas.py": emit_module(ModulePlan.build(schemas)),
         OUT / "generated_http.py": emit_operations(
             OperationModulePlan.build(operations, source_revision=source_revision)
         ),
     }
+    manifest = {
+        "allowed_legacy_generated_files": ["generated_foundation.py"],
+        "files": {
+            path.name: hashlib.sha256(source.encode()).hexdigest()
+            for path, source in sorted(outputs.items())
+        },
+        "generation_version": "1b1.v1",
+        "openapi_sha256": hashlib.sha256(
+            json.dumps(spec, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest(),
+        "operation_count": len(operations),
+        "schema_count": len(schemas),
+        "source_revision": source_revision,
+    }
+    outputs[MANIFEST] = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
+    return outputs
 
 
 def main() -> None:

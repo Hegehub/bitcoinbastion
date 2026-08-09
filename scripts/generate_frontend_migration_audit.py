@@ -259,6 +259,8 @@ def main() -> None:
             )
             protected = bool(op.get("security"))
             coverage = "NOT_STARTED"
+            if generated_owner:
+                coverage = "CLIENT_ONLY"
             deferred = DEFERRED_HTTP.get((method, path))
             unresolved_mutation = active_ui and method.upper() in {"POST", "PUT", "PATCH", "DELETE"}
             unresolved_protected = active_ui and protected

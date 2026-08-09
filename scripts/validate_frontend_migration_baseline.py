@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 import re
 
@@ -53,6 +54,13 @@ def main() -> None:
     assert len(ownership["authoritative_http_operations"]) == len(authoritative_ui)
     assert ownership["blocked_http_candidates"] == []
     assert len(authoritative_ui) == 194
+    assert all(row["coverage_state"] == "CLIENT_ONLY" for row in authoritative_ui)
+
+    transport = ROOT / "frontend/bastion_ui/transport"
+    manifest = json.loads((transport / "generated_manifest.json").read_text())
+    assert manifest["operation_count"] == len(authoritative_ui)
+    for name, digest in manifest["files"].items():
+        assert hashlib.sha256((transport / name).read_bytes()).hexdigest() == digest
 
     feature_text = (DOCS / "00_69_FEATURE_REGISTER.md").read_text()
     feature_ids = [int(v) for v in re.findall(r"^\| (\d{2}) \|", feature_text, re.M)]

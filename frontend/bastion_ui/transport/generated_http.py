@@ -8,7 +8,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, RootModel
 
 from bastion_ui.transport.foundation import (
-    ContractRegistryEntry, HttpTransport, NormalizedOperation, SecurityMetadata,
+    ContractRegistryEntry, HttpTransport, NormalizedOperation, SafeTransportError, SecurityMetadata,
     serialize_query_value,
 )
 from bastion_ui.transport.generated_schemas import *  # noqa: F403
@@ -22,6 +22,8 @@ class ListChildApiKeysApiV1AccessApiKeysGetRequest(BaseModel):
 
 class ListChildApiKeysApiV1AccessApiKeysGetSuccess(RootModel[list[ChildApiKeyPublic]]):
     pass
+
+ListChildApiKeysApiV1AccessApiKeysGetError = SafeTransportError
 
 LISTCHILDAPIKEYSAPIV1ACCESSAPIKEYSGET_SECURITY = SecurityMetadata(
     identity='access-session:list_child_api_keys_api_v1_access_api_keys_get', public=False, access_required=True,
@@ -46,6 +48,8 @@ class GetChildApiKeyApiV1AccessApiKeysKeyIdGetRequest(BaseModel):
 class GetChildApiKeyApiV1AccessApiKeysKeyIdGetSuccess(RootModel[ChildApiKeyPublic]):
     pass
 
+GetChildApiKeyApiV1AccessApiKeysKeyIdGetError = SafeTransportError
+
 GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_SECURITY = SecurityMetadata(
     identity='access-session:get_child_api_key_api_v1_access_api_keys__key_id__get', public=False, access_required=True,
     signed_request_required=False, human_intent_required=False,
@@ -68,6 +72,8 @@ class ListDelegatedPassesApiV1AccessDelegatedPassesGetRequest(BaseModel):
 
 class ListDelegatedPassesApiV1AccessDelegatedPassesGetSuccess(RootModel[list[DelegatedPassPublic]]):
     pass
+
+ListDelegatedPassesApiV1AccessDelegatedPassesGetError = SafeTransportError
 
 LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_SECURITY = SecurityMetadata(
     identity='access-session:list_delegated_passes_api_v1_access_delegated_passes_get', public=False, access_required=True,
@@ -92,6 +98,8 @@ class GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetRequest(BaseMo
 class GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetSuccess(RootModel[DelegatedPassPublic]):
     pass
 
+GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetError = SafeTransportError
+
 GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_SECURITY = SecurityMetadata(
     identity='access-session:get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get', public=False, access_required=True,
     signed_request_required=False, human_intent_required=False,
@@ -114,6 +122,8 @@ class GetHumanIntentApiV1AccessIntentsIntentIdGetRequest(BaseModel):
 
 class GetHumanIntentApiV1AccessIntentsIntentIdGetSuccess(RootModel[HumanIntentResponse]):
     pass
+
+GetHumanIntentApiV1AccessIntentsIntentIdGetError = SafeTransportError
 
 GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_SECURITY = SecurityMetadata(
     identity='access-session:get_human_intent_api_v1_access_intents__intent_id__get', public=False, access_required=True,
@@ -138,6 +148,8 @@ class GetMeApiV1AccessMeGetRequest(BaseModel):
 class GetMeApiV1AccessMeGetSuccess(RootModel[AccessMeResponse]):
     pass
 
+GetMeApiV1AccessMeGetError = SafeTransportError
+
 GETMEAPIV1ACCESSMEGET_SECURITY = SecurityMetadata(
     identity='access-session:get_me_api_v1_access_me_get', public=False, access_required=True,
     signed_request_required=False, human_intent_required=False,
@@ -160,6 +172,8 @@ class GetMyEntitlementsApiV1AccessMeEntitlementsGetRequest(BaseModel):
 
 class GetMyEntitlementsApiV1AccessMeEntitlementsGetSuccess(RootModel[SubscriptionEntitlementResponse]):
     pass
+
+GetMyEntitlementsApiV1AccessMeEntitlementsGetError = SafeTransportError
 
 GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_SECURITY = SecurityMetadata(
     identity='access-session:get_my_entitlements_api_v1_access_me_entitlements_get', public=False, access_required=True,
@@ -184,6 +198,8 @@ class GetMyLimitsApiV1AccessMeLimitsGetRequest(BaseModel):
 class GetMyLimitsApiV1AccessMeLimitsGetSuccess(RootModel[AccessLimitsResponse]):
     pass
 
+GetMyLimitsApiV1AccessMeLimitsGetError = SafeTransportError
+
 GETMYLIMITSAPIV1ACCESSMELIMITSGET_SECURITY = SecurityMetadata(
     identity='access-session:get_my_limits_api_v1_access_me_limits_get', public=False, access_required=True,
     signed_request_required=False, human_intent_required=False,
@@ -206,6 +222,8 @@ class GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetRequest(B
 
 class GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetSuccess(RootModel[AccessPaymentIntentStatusResponse]):
     pass
+
+GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetError = SafeTransportError
 
 GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get', public=True, access_required=False,
@@ -230,6 +248,8 @@ class RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetRequest(BaseMod
 class RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetSuccess(RootModel[RecoveryStatusResponse]):
     pass
 
+RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetError = SafeTransportError
+
 RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_SECURITY = SecurityMetadata(
     identity='public:recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -252,6 +272,8 @@ class ListAddressesApiV1BusinessLightningAddressesGetRequest(BaseModel):
 
 class ListAddressesApiV1BusinessLightningAddressesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ListAddressesApiV1BusinessLightningAddressesGetError = SafeTransportError
 
 LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_SECURITY = SecurityMetadata(
     identity='public:list_addresses_api_v1_business_lightning_addresses_get', public=True, access_required=False,
@@ -276,6 +298,8 @@ class GetAddressApiV1BusinessLightningAddressesAddressIdGetRequest(BaseModel):
 class GetAddressApiV1BusinessLightningAddressesAddressIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetAddressApiV1BusinessLightningAddressesAddressIdGetError = SafeTransportError
+
 GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_SECURITY = SecurityMetadata(
     identity='public:get_address_api_v1_business_lightning_addresses__address_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -299,6 +323,8 @@ class ListDomainsApiV1BusinessLightningDomainsGetRequest(BaseModel):
 class ListDomainsApiV1BusinessLightningDomainsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+ListDomainsApiV1BusinessLightningDomainsGetError = SafeTransportError
+
 LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_SECURITY = SecurityMetadata(
     identity='public:list_domains_api_v1_business_lightning_domains_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -321,6 +347,8 @@ class GetDomainApiV1BusinessLightningDomainsDomainIdGetRequest(BaseModel):
 
 class GetDomainApiV1BusinessLightningDomainsDomainIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetDomainApiV1BusinessLightningDomainsDomainIdGetError = SafeTransportError
 
 GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_SECURITY = SecurityMetadata(
     identity='public:get_domain_api_v1_business_lightning_domains__domain_id__get', public=True, access_required=False,
@@ -348,6 +376,8 @@ class CitadelAssessmentApiV1CitadelAssessmentGetRequest(BaseModel):
 class CitadelAssessmentApiV1CitadelAssessmentGetSuccess(RootModel[ResponseEnvelopeCitadelAssessmentOut]):
     pass
 
+CitadelAssessmentApiV1CitadelAssessmentGetError = SafeTransportError
+
 CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_SECURITY = SecurityMetadata(
     identity='public:citadel_assessment_api_v1_citadel_assessment_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -371,6 +401,8 @@ class CitadelDependenciesApiV1CitadelDependenciesGetRequest(BaseModel):
 class CitadelDependenciesApiV1CitadelDependenciesGetSuccess(RootModel[ResponseEnvelopeCitadelDependencyGraphOut]):
     pass
 
+CitadelDependenciesApiV1CitadelDependenciesGetError = SafeTransportError
+
 CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_SECURITY = SecurityMetadata(
     identity='public:citadel_dependencies_api_v1_citadel_dependencies_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -393,6 +425,8 @@ class CitadelInheritanceApiV1CitadelInheritanceGetRequest(BaseModel):
 
 class CitadelInheritanceApiV1CitadelInheritanceGetSuccess(RootModel[ResponseEnvelopeCitadelInheritanceOut]):
     pass
+
+CitadelInheritanceApiV1CitadelInheritanceGetError = SafeTransportError
 
 CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_SECURITY = SecurityMetadata(
     identity='public:citadel_inheritance_api_v1_citadel_inheritance_get', public=True, access_required=False,
@@ -420,6 +454,8 @@ class CitadelOverviewApiV1CitadelOverviewGetRequest(BaseModel):
 class CitadelOverviewApiV1CitadelOverviewGetSuccess(RootModel[ResponseEnvelopeCitadelOverviewOut]):
     pass
 
+CitadelOverviewApiV1CitadelOverviewGetError = SafeTransportError
+
 CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_SECURITY = SecurityMetadata(
     identity='public:citadel_overview_api_v1_citadel_overview_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -442,6 +478,8 @@ class CitadelPolicyChecksApiV1CitadelPolicyChecksGetRequest(BaseModel):
 
 class CitadelPolicyChecksApiV1CitadelPolicyChecksGetSuccess(RootModel[ResponseEnvelopeCitadelPolicyChecksOut]):
     pass
+
+CitadelPolicyChecksApiV1CitadelPolicyChecksGetError = SafeTransportError
 
 CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_SECURITY = SecurityMetadata(
     identity='public:citadel_policy_checks_api_v1_citadel_policy_checks_get', public=True, access_required=False,
@@ -466,6 +504,8 @@ class CitadelRecoveryApiV1CitadelRecoveryGetRequest(BaseModel):
 class CitadelRecoveryApiV1CitadelRecoveryGetSuccess(RootModel[ResponseEnvelopeRecoveryReadinessOut]):
     pass
 
+CitadelRecoveryApiV1CitadelRecoveryGetError = SafeTransportError
+
 CITADELRECOVERYAPIV1CITADELRECOVERYGET_SECURITY = SecurityMetadata(
     identity='public:citadel_recovery_api_v1_citadel_recovery_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -488,6 +528,8 @@ class CitadelRepairPlanApiV1CitadelRepairPlanGetRequest(BaseModel):
 
 class CitadelRepairPlanApiV1CitadelRepairPlanGetSuccess(RootModel[ResponseEnvelopeCitadelRepairPlanOut]):
     pass
+
+CitadelRepairPlanApiV1CitadelRepairPlanGetError = SafeTransportError
 
 CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_SECURITY = SecurityMetadata(
     identity='public:citadel_repair_plan_api_v1_citadel_repair_plan_get', public=True, access_required=False,
@@ -512,6 +554,8 @@ class ListSimulationsApiV1CitadelSimulationsGetRequest(BaseModel):
 class ListSimulationsApiV1CitadelSimulationsGetSuccess(RootModel[ResponseEnvelopeListCitadelSimulationOut]):
     pass
 
+ListSimulationsApiV1CitadelSimulationsGetError = SafeTransportError
+
 LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_SECURITY = SecurityMetadata(
     identity='public:list_simulations_api_v1_citadel_simulations_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -534,6 +578,8 @@ class ListSnippetsApiV1EducationSnippetsGetRequest(BaseModel):
 
 class ListSnippetsApiV1EducationSnippetsGetSuccess(RootModel[ResponseEnvelopeListEducationSnippetOut]):
     pass
+
+ListSnippetsApiV1EducationSnippetsGetError = SafeTransportError
 
 LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_SECURITY = SecurityMetadata(
     identity='public:list_snippets_api_v1_education_snippets_get', public=True, access_required=False,
@@ -562,6 +608,8 @@ class ListEntitiesApiV1EntitiesGetRequest(BaseModel):
 class ListEntitiesApiV1EntitiesGetSuccess(RootModel[ResponseEnvelopePaginatedDataEntityOut]):
     pass
 
+ListEntitiesApiV1EntitiesGetError = SafeTransportError
+
 LISTENTITIESAPIV1ENTITIESGET_SECURITY = SecurityMetadata(
     identity='public:list_entities_api_v1_entities_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -586,6 +634,8 @@ class GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetRequest(BaseMode
 class GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetError = SafeTransportError
+
 GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -608,6 +658,8 @@ class ListEvidencePacketsApiV1EvidencePacketsGetRequest(BaseModel):
 
 class ListEvidencePacketsApiV1EvidencePacketsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ListEvidencePacketsApiV1EvidencePacketsGetError = SafeTransportError
 
 LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_SECURITY = SecurityMetadata(
     identity='public:list_evidence_packets_api_v1_evidence_packets_get', public=True, access_required=False,
@@ -633,6 +685,8 @@ class GetEvidencePacketApiV1EvidencePacketsPacketIdGetRequest(BaseModel):
 class GetEvidencePacketApiV1EvidencePacketsPacketIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetEvidencePacketApiV1EvidencePacketsPacketIdGetError = SafeTransportError
+
 GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_SECURITY = SecurityMetadata(
     identity='public:get_evidence_packet_api_v1_evidence_packets__packet_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -656,6 +710,8 @@ class GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGet
 class GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetError = SafeTransportError
+
 GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_SECURITY = SecurityMetadata(
     identity='public:get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -678,6 +734,8 @@ class GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetRequest(Ba
 
 class GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetError = SafeTransportError
 
 GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_SECURITY = SecurityMetadata(
     identity='public:get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get', public=True, access_required=False,
@@ -704,6 +762,8 @@ class ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetRequest(BaseModel):
 class ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetError = SafeTransportError
+
 REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_SECURITY = SecurityMetadata(
     identity='public:replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -727,6 +787,8 @@ class ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetRe
 
 class ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetError = SafeTransportError
 
 REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_SECURITY = SecurityMetadata(
     identity='public:replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get', public=True, access_required=False,
@@ -752,6 +814,8 @@ class ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetRequ
 class ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetError = SafeTransportError
+
 REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_SECURITY = SecurityMetadata(
     identity='public:replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -774,6 +838,8 @@ class HealthApiV1HealthGetRequest(BaseModel):
 
 class HealthApiV1HealthGetSuccess(RootModel[HealthOut]):
     pass
+
+HealthApiV1HealthGetError = SafeTransportError
 
 HEALTHAPIV1HEALTHGET_SECURITY = SecurityMetadata(
     identity='public:health_api_v1_health_get', public=True, access_required=False,
@@ -798,6 +864,8 @@ class DegradedApiV1HealthDegradedGetRequest(BaseModel):
 class DegradedApiV1HealthDegradedGetSuccess(RootModel[list[DegradedComponentOut]]):
     pass
 
+DegradedApiV1HealthDegradedGetError = SafeTransportError
+
 DEGRADEDAPIV1HEALTHDEGRADEDGET_SECURITY = SecurityMetadata(
     identity='public:degraded_api_v1_health_degraded_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -820,6 +888,8 @@ class JobsApiV1HealthJobsGetRequest(BaseModel):
 
 class JobsApiV1HealthJobsGetSuccess(RootModel[list[BackgroundJobHealthOut]]):
     pass
+
+JobsApiV1HealthJobsGetError = SafeTransportError
 
 JOBSAPIV1HEALTHJOBSGET_SECURITY = SecurityMetadata(
     identity='public:jobs_api_v1_health_jobs_get', public=True, access_required=False,
@@ -844,6 +914,8 @@ class LivenessApiV1HealthLiveGetRequest(BaseModel):
 class LivenessApiV1HealthLiveGetSuccess(RootModel[HealthOut]):
     pass
 
+LivenessApiV1HealthLiveGetError = SafeTransportError
+
 LIVENESSAPIV1HEALTHLIVEGET_SECURITY = SecurityMetadata(
     identity='public:liveness_api_v1_health_live_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -866,6 +938,8 @@ class ProvidersApiV1HealthProvidersGetRequest(BaseModel):
 
 class ProvidersApiV1HealthProvidersGetSuccess(RootModel[list[ProviderHealthSnapshotOut]]):
     pass
+
+ProvidersApiV1HealthProvidersGetError = SafeTransportError
 
 PROVIDERSAPIV1HEALTHPROVIDERSGET_SECURITY = SecurityMetadata(
     identity='public:providers_api_v1_health_providers_get', public=True, access_required=False,
@@ -890,6 +964,8 @@ class ReadinessApiV1HealthReadyGetRequest(BaseModel):
 class ReadinessApiV1HealthReadyGetSuccess(RootModel[HealthOut]):
     pass
 
+ReadinessApiV1HealthReadyGetError = SafeTransportError
+
 READINESSAPIV1HEALTHREADYGET_SECURITY = SecurityMetadata(
     identity='public:readiness_api_v1_health_ready_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -912,6 +988,8 @@ class RuntimeApiV1HealthRuntimeGetRequest(BaseModel):
 
 class RuntimeApiV1HealthRuntimeGetSuccess(RootModel[RuntimeStatusOut]):
     pass
+
+RuntimeApiV1HealthRuntimeGetError = SafeTransportError
 
 RUNTIMEAPIV1HEALTHRUNTIMEGET_SECURITY = SecurityMetadata(
     identity='public:runtime_api_v1_health_runtime_get', public=True, access_required=False,
@@ -936,6 +1014,8 @@ class SystemHealthApiV1HealthSystemGetRequest(BaseModel):
 class SystemHealthApiV1HealthSystemGetSuccess(RootModel[SystemHealthOut]):
     pass
 
+SystemHealthApiV1HealthSystemGetError = SafeTransportError
+
 SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_SECURITY = SecurityMetadata(
     identity='public:system_health_api_v1_health_system_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -958,6 +1038,8 @@ class GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetRequest(BaseModel)
 
 class GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetError = SafeTransportError
 
 GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get', public=True, access_required=False,
@@ -983,6 +1065,8 @@ class GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetRequest(
 class GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetError = SafeTransportError
+
 GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1007,6 +1091,8 @@ class GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetRequest(Ba
 class GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetError = SafeTransportError
+
 GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1029,6 +1115,8 @@ class GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetRequest(BaseMode
 
 class GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetError = SafeTransportError
 
 GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_context_api_v1_intelligence_candles__candle_id__context_get', public=True, access_required=False,
@@ -1053,6 +1141,8 @@ class GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetReques
 class GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetError = SafeTransportError
+
 GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1076,6 +1166,8 @@ class GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetRe
 class GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetError = SafeTransportError
+
 GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1098,6 +1190,8 @@ class ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetRequest(BaseModel):
 
 class ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetError = SafeTransportError
 
 EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_SECURITY = SecurityMetadata(
     identity='public:explain_candle_api_v1_intelligence_candles__candle_id__explain_get', public=True, access_required=False,
@@ -1123,6 +1217,8 @@ class GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetRequest(BaseModel)
 class GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetError = SafeTransportError
+
 GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1146,6 +1242,8 @@ class GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetR
 
 class GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetError = SafeTransportError
 
 GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get', public=True, access_required=False,
@@ -1171,6 +1269,8 @@ class GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetRequest(Base
 class GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetError = SafeTransportError
+
 GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1193,6 +1293,8 @@ class GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetRequest(BaseMod
 
 class GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetError = SafeTransportError
 
 GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_SECURITY = SecurityMetadata(
     identity='public:get_event_market_memory_api_v1_intelligence_events__event_id__memory_get', public=True, access_required=False,
@@ -1218,6 +1320,8 @@ class GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetReq
 class GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetError = SafeTransportError
+
 GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_SECURITY = SecurityMetadata(
     identity='public:get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1242,6 +1346,8 @@ class GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetRequ
 class GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetError = SafeTransportError
+
 GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_SECURITY = SecurityMetadata(
     identity='public:get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1264,6 +1370,8 @@ class GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetReque
 
 class GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetError = SafeTransportError
 
 GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_SECURITY = SecurityMetadata(
     identity='public:get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get', public=True, access_required=False,
@@ -1288,6 +1396,8 @@ class GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetRequest(Ba
 class GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetError = SafeTransportError
+
 GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_SECURITY = SecurityMetadata(
     identity='public:get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1310,6 +1420,8 @@ class ListNarrativesApiV1IntelligenceNarrativesGetRequest(BaseModel):
 
 class ListNarrativesApiV1IntelligenceNarrativesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ListNarrativesApiV1IntelligenceNarrativesGetError = SafeTransportError
 
 LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_SECURITY = SecurityMetadata(
     identity='public:list_narratives_api_v1_intelligence_narratives_get', public=True, access_required=False,
@@ -1334,6 +1446,8 @@ class GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetRequest(BaseMo
 class GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetError = SafeTransportError
+
 GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_SECURITY = SecurityMetadata(
     identity='public:get_active_narrative_memory_api_v1_intelligence_narratives_active_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1356,6 +1470,8 @@ class GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetRequest(BaseMo
 
 class GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetError = SafeTransportError
 
 GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_SECURITY = SecurityMetadata(
     identity='public:get_narrative_dominance_api_v1_intelligence_narratives_dominance_get', public=True, access_required=False,
@@ -1380,6 +1496,8 @@ class GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetRequest(BaseMod
 class GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetError = SafeTransportError
+
 GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_SECURITY = SecurityMetadata(
     identity='public:get_dominant_narratives_api_v1_intelligence_narratives_dominant_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1402,6 +1520,8 @@ class GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetRequest(BaseMod
 
 class GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetError = SafeTransportError
 
 GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_SECURITY = SecurityMetadata(
     identity='public:get_emerging_narratives_api_v1_intelligence_narratives_emerging_get', public=True, access_required=False,
@@ -1426,6 +1546,8 @@ class GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetRequest(BaseModel
 class GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetError = SafeTransportError
+
 GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_SECURITY = SecurityMetadata(
     identity='public:get_falling_narratives_api_v1_intelligence_narratives_falling_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1448,6 +1570,8 @@ class GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetRequest(BaseModel)
 
 class GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetError = SafeTransportError
 
 GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_SECURITY = SecurityMetadata(
     identity='public:get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get', public=True, access_required=False,
@@ -1473,6 +1597,8 @@ class GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetRequest(BaseModel)
 class GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetError = SafeTransportError
+
 GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_SECURITY = SecurityMetadata(
     identity='public:get_narrative_history_api_v1_intelligence_narratives_history_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1495,6 +1621,8 @@ class GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetRequest(BaseModel):
 
 class GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetError = SafeTransportError
 
 GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_SECURITY = SecurityMetadata(
     identity='public:get_narrative_memory_api_v1_intelligence_narratives_memory_get', public=True, access_required=False,
@@ -1519,6 +1647,8 @@ class GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetRequest(BaseModel):
 class GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetError = SafeTransportError
+
 GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_SECURITY = SecurityMetadata(
     identity='public:get_rising_narratives_api_v1_intelligence_narratives_rising_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1541,6 +1671,8 @@ class GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetRequest(BaseMo
 
 class GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetError = SafeTransportError
 
 GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_SECURITY = SecurityMetadata(
     identity='public:get_narrative_rotations_api_v1_intelligence_narratives_rotations_get', public=True, access_required=False,
@@ -1565,6 +1697,8 @@ class GetTopNarrativesApiV1IntelligenceNarrativesTopGetRequest(BaseModel):
 class GetTopNarrativesApiV1IntelligenceNarrativesTopGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetTopNarrativesApiV1IntelligenceNarrativesTopGetError = SafeTransportError
+
 GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_SECURITY = SecurityMetadata(
     identity='public:get_top_narratives_api_v1_intelligence_narratives_top_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1587,6 +1721,8 @@ class GetNarrativeApiV1IntelligenceNarrativesSlugGetRequest(BaseModel):
 
 class GetNarrativeApiV1IntelligenceNarrativesSlugGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetNarrativeApiV1IntelligenceNarrativesSlugGetError = SafeTransportError
 
 GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_SECURITY = SecurityMetadata(
     identity='public:get_narrative_api_v1_intelligence_narratives__slug__get', public=True, access_required=False,
@@ -1611,6 +1747,8 @@ class ListMarketPatternsApiV1IntelligencePatternsGetRequest(BaseModel):
 class ListMarketPatternsApiV1IntelligencePatternsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+ListMarketPatternsApiV1IntelligencePatternsGetError = SafeTransportError
+
 LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_SECURITY = SecurityMetadata(
     identity='public:list_market_patterns_api_v1_intelligence_patterns_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1634,6 +1772,8 @@ class GetMarketPatternApiV1IntelligencePatternsPatternIdGetRequest(BaseModel):
 class GetMarketPatternApiV1IntelligencePatternsPatternIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetMarketPatternApiV1IntelligencePatternsPatternIdGetError = SafeTransportError
+
 GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_SECURITY = SecurityMetadata(
     identity='public:get_market_pattern_api_v1_intelligence_patterns__pattern_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1656,6 +1796,8 @@ class GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetRequest
 
 class GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetError = SafeTransportError
 
 GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_SECURITY = SecurityMetadata(
     identity='public:get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get', public=True, access_required=False,
@@ -1681,6 +1823,8 @@ class GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGe
 class GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetError = SafeTransportError
+
 GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_SECURITY = SecurityMetadata(
     identity='public:get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1703,6 +1847,8 @@ class GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionP
 
 class GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetError = SafeTransportError
 
 GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILEGET_SECURITY = SecurityMetadata(
     identity='public:get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get', public=True, access_required=False,
@@ -1727,6 +1873,8 @@ class GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetR
 class GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetError = SafeTransportError
+
 GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_SECURITY = SecurityMetadata(
     identity='public:get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1749,6 +1897,8 @@ class GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetRequ
 
 class GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetError = SafeTransportError
 
 GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get', public=True, access_required=False,
@@ -1774,6 +1924,8 @@ class GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetRequest(
 class GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetError = SafeTransportError
+
 GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1797,6 +1949,8 @@ class GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetR
 
 class GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetError = SafeTransportError
 
 GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_SECURITY = SecurityMetadata(
     identity='public:get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get', public=True, access_required=False,
@@ -1822,6 +1976,8 @@ class GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetRequest(Bas
 class GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetError = SafeTransportError
+
 GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_SECURITY = SecurityMetadata(
     identity='public:get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1845,6 +2001,8 @@ class GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetRequest(BaseMo
 
 class GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetError = SafeTransportError
 
 GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_event_similarity_api_v1_intelligence_similarity_event__event_id__get', public=True, access_required=False,
@@ -1870,6 +2028,8 @@ class GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetRequest
 class GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetError = SafeTransportError
+
 GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1893,6 +2053,8 @@ class GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetRequest(BaseMode
 
 class GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetError = SafeTransportError
 
 GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_news_similarity_api_v1_intelligence_similarity_news__event_id__get', public=True, access_required=False,
@@ -1918,6 +2080,8 @@ class GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetRequ
 class GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetError = SafeTransportError
+
 GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_SECURITY = SecurityMetadata(
     identity='public:get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1941,6 +2105,8 @@ class GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetRequest
 
 class GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetError = SafeTransportError
 
 GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get', public=True, access_required=False,
@@ -1966,6 +2132,8 @@ class GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGet
 class GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetError = SafeTransportError
+
 GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_SECURITY = SecurityMetadata(
     identity='public:get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -1990,6 +2158,8 @@ class GetTimelineApiV1IntelligenceTimelineGetRequest(BaseModel):
 class GetTimelineApiV1IntelligenceTimelineGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetTimelineApiV1IntelligenceTimelineGetError = SafeTransportError
+
 GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_SECURITY = SecurityMetadata(
     identity='public:get_timeline_api_v1_intelligence_timeline_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2012,6 +2182,8 @@ class GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetRequest(BaseMo
 
 class GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetError = SafeTransportError
 
 GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_context_api_v1_intelligence_timeline_context__timeline_event_id__get', public=True, access_required=False,
@@ -2038,6 +2210,8 @@ class GetTimelineDayApiV1IntelligenceTimelineDayGetRequest(BaseModel):
 class GetTimelineDayApiV1IntelligenceTimelineDayGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetTimelineDayApiV1IntelligenceTimelineDayGetError = SafeTransportError
+
 GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_SECURITY = SecurityMetadata(
     identity='public:get_timeline_day_api_v1_intelligence_timeline_day_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2063,6 +2237,8 @@ class GetTimelineHourApiV1IntelligenceTimelineHourGetRequest(BaseModel):
 class GetTimelineHourApiV1IntelligenceTimelineHourGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetTimelineHourApiV1IntelligenceTimelineHourGetError = SafeTransportError
+
 GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_SECURITY = SecurityMetadata(
     identity='public:get_timeline_hour_api_v1_intelligence_timeline_hour_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2085,6 +2261,8 @@ class GetLatestApiV1IntelligenceTimelineLatestGetRequest(BaseModel):
 
 class GetLatestApiV1IntelligenceTimelineLatestGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetLatestApiV1IntelligenceTimelineLatestGetError = SafeTransportError
 
 GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_SECURITY = SecurityMetadata(
     identity='public:get_latest_api_v1_intelligence_timeline_latest_get', public=True, access_required=False,
@@ -2109,6 +2287,8 @@ class CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetRequest(Base
 class CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetError = SafeTransportError
+
 CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_SECURITY = SecurityMetadata(
     identity='public:current_narratives_api_v1_intelligence_timeline_narratives_current_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2132,6 +2312,8 @@ class HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenc
 class HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetError = SafeTransportError
+
 HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_SECURITY = SecurityMetadata(
     identity='public:high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2154,6 +2336,8 @@ class RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetRequest(Base
 
 class RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetError = SafeTransportError
 
 RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_SECURITY = SecurityMetadata(
     identity='public:recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get', public=True, access_required=False,
@@ -2179,6 +2363,8 @@ class GetWindowApiV1IntelligenceTimelineWindowGetRequest(BaseModel):
 
 class GetWindowApiV1IntelligenceTimelineWindowGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetWindowApiV1IntelligenceTimelineWindowGetError = SafeTransportError
 
 GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_SECURITY = SecurityMetadata(
     identity='public:get_window_api_v1_intelligence_timeline_window_get', public=True, access_required=False,
@@ -2207,6 +2393,8 @@ class CandleAttributionApiV1MarketTimeMachineCandleAttributionGetRequest(BaseMod
 class CandleAttributionApiV1MarketTimeMachineCandleAttributionGetSuccess(RootModel[MarketTimeMachineAnalyticsResponse]):
     pass
 
+CandleAttributionApiV1MarketTimeMachineCandleAttributionGetError = SafeTransportError
+
 CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_SECURITY = SecurityMetadata(
     identity='public:candle_attribution_api_v1_market_time_machine_candle_attribution_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2233,6 +2421,8 @@ class MarketEventsApiV1MarketTimeMachineEventsGetRequest(BaseModel):
 
 class MarketEventsApiV1MarketTimeMachineEventsGetSuccess(RootModel[MarketTimeMachineAnalyticsResponse]):
     pass
+
+MarketEventsApiV1MarketTimeMachineEventsGetError = SafeTransportError
 
 MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_SECURITY = SecurityMetadata(
     identity='public:market_events_api_v1_market_time_machine_events_get', public=True, access_required=False,
@@ -2261,6 +2451,8 @@ class NewsImpactApiV1MarketTimeMachineNewsImpactGetRequest(BaseModel):
 class NewsImpactApiV1MarketTimeMachineNewsImpactGetSuccess(RootModel[MarketTimeMachineAnalyticsResponse]):
     pass
 
+NewsImpactApiV1MarketTimeMachineNewsImpactGetError = SafeTransportError
+
 NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_SECURITY = SecurityMetadata(
     identity='public:news_impact_api_v1_market_time_machine_news_impact_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2286,6 +2478,8 @@ class ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetRequest(Bas
 
 class ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetSuccess(RootModel[MarketTimeMachineAnalyticsResponse]):
     pass
+
+ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetError = SafeTransportError
 
 PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_SECURITY = SecurityMetadata(
     identity='public:provider_degradation_api_v1_market_time_machine_provider_degradation_get', public=True, access_required=False,
@@ -2314,6 +2508,8 @@ class ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetRequest(BaseModel):
 class ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetSuccess(RootModel[MarketTimeMachineAnalyticsResponse]):
     pass
 
+ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetError = SafeTransportError
+
 REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_SECURITY = SecurityMetadata(
     identity='public:reaction_windows_api_v1_market_time_machine_reaction_windows_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2340,6 +2536,8 @@ class RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetRequest(BaseMod
 
 class RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetSuccess(RootModel[MarketTimeMachineAnalyticsResponse]):
     pass
+
+RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetError = SafeTransportError
 
 REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_SECURITY = SecurityMetadata(
     identity='public:regime_transitions_api_v1_market_time_machine_regime_transitions_get', public=True, access_required=False,
@@ -2368,6 +2566,8 @@ class SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetRequest(BaseMod
 class SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetSuccess(RootModel[MarketTimeMachineAnalyticsResponse]):
     pass
 
+SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetError = SafeTransportError
+
 SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_SECURITY = SecurityMetadata(
     identity='public:signal_reliability_api_v1_market_time_machine_signal_reliability_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2394,6 +2594,8 @@ class BtcCandlesApiV1MarketBtcCandlesGetRequest(BaseModel):
 class BtcCandlesApiV1MarketBtcCandlesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+BtcCandlesApiV1MarketBtcCandlesGetError = SafeTransportError
+
 BTCCANDLESAPIV1MARKETBTCCANDLESGET_SECURITY = SecurityMetadata(
     identity='public:btc_candles_api_v1_market_btc_candles_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2416,6 +2618,8 @@ class BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetRequest(BaseModel):
 
 class BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetError = SafeTransportError
 
 BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_SECURITY = SecurityMetadata(
     identity='public:btc_candles_latest_any_api_v1_market_btc_candles_latest_get', public=True, access_required=False,
@@ -2440,6 +2644,8 @@ class BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetRequest(BaseModel):
 class BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetError = SafeTransportError
+
 BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_SECURITY = SecurityMetadata(
     identity='public:btc_candle_by_id_api_v1_market_btc_candles__candle_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2462,6 +2668,8 @@ class BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetRequest(BaseModel
 
 class BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetError = SafeTransportError
 
 BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_SECURITY = SecurityMetadata(
     identity='public:btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get', public=True, access_required=False,
@@ -2486,6 +2694,8 @@ class BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetRequest(BaseModel):
 class BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetError = SafeTransportError
+
 BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_SECURITY = SecurityMetadata(
     identity='public:btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2508,6 +2718,8 @@ class BtcContextApiV1MarketBtcContextGetRequest(BaseModel):
 
 class BtcContextApiV1MarketBtcContextGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+BtcContextApiV1MarketBtcContextGetError = SafeTransportError
 
 BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_SECURITY = SecurityMetadata(
     identity='public:btc_context_api_v1_market_btc_context_get', public=True, access_required=False,
@@ -2532,6 +2744,8 @@ class BtcPriceApiV1MarketBtcPriceGetRequest(BaseModel):
 class BtcPriceApiV1MarketBtcPriceGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+BtcPriceApiV1MarketBtcPriceGetError = SafeTransportError
+
 BTCPRICEAPIV1MARKETBTCPRICEGET_SECURITY = SecurityMetadata(
     identity='public:btc_price_api_v1_market_btc_price_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2554,6 +2768,8 @@ class BtcPriceHistoryApiV1MarketBtcPriceHistoryGetRequest(BaseModel):
 
 class BtcPriceHistoryApiV1MarketBtcPriceHistoryGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+BtcPriceHistoryApiV1MarketBtcPriceHistoryGetError = SafeTransportError
 
 BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_SECURITY = SecurityMetadata(
     identity='public:btc_price_history_api_v1_market_btc_price_history_get', public=True, access_required=False,
@@ -2578,6 +2794,8 @@ class BtcProvidersApiV1MarketBtcProvidersGetRequest(BaseModel):
 class BtcProvidersApiV1MarketBtcProvidersGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+BtcProvidersApiV1MarketBtcProvidersGetError = SafeTransportError
+
 BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_SECURITY = SecurityMetadata(
     identity='public:btc_providers_api_v1_market_btc_providers_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2600,6 +2818,8 @@ class BtcProvidersHealthApiV1MarketBtcProvidersHealthGetRequest(BaseModel):
 
 class BtcProvidersHealthApiV1MarketBtcProvidersHealthGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+BtcProvidersHealthApiV1MarketBtcProvidersHealthGetError = SafeTransportError
 
 BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_SECURITY = SecurityMetadata(
     identity='public:btc_providers_health_api_v1_market_btc_providers_health_get', public=True, access_required=False,
@@ -2624,6 +2844,8 @@ class MarketHealthApiV1MarketHealthGetRequest(BaseModel):
 class MarketHealthApiV1MarketHealthGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+MarketHealthApiV1MarketHealthGetError = SafeTransportError
+
 MARKETHEALTHAPIV1MARKETHEALTHGET_SECURITY = SecurityMetadata(
     identity='public:market_health_api_v1_market_health_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2647,6 +2869,8 @@ class ProvidersHealthApiV1MarketProvidersHealthGetRequest(BaseModel):
 class ProvidersHealthApiV1MarketProvidersHealthGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+ProvidersHealthApiV1MarketProvidersHealthGetError = SafeTransportError
+
 PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_SECURITY = SecurityMetadata(
     identity='public:providers_health_api_v1_market_providers_health_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2669,6 +2893,8 @@ class ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetRequest(BaseModel)
 
 class ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetError = SafeTransportError
 
 ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_SECURITY = SecurityMetadata(
     identity='public:article_duplicates_api_v1_news_articles__article_id__duplicates_get', public=True, access_required=False,
@@ -2694,6 +2920,8 @@ class BySentimentApiV1NewsBySentimentLabelGetRequest(BaseModel):
 class BySentimentApiV1NewsBySentimentLabelGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
 
+BySentimentApiV1NewsBySentimentLabelGetError = SafeTransportError
+
 BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_SECURITY = SecurityMetadata(
     identity='public:by_sentiment_api_v1_news_by_sentiment__label__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2716,6 +2944,8 @@ class ListClustersApiV1NewsClustersGetRequest(BaseModel):
 
 class ListClustersApiV1NewsClustersGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ListClustersApiV1NewsClustersGetError = SafeTransportError
 
 LISTCLUSTERSAPIV1NEWSCLUSTERSGET_SECURITY = SecurityMetadata(
     identity='public:list_clusters_api_v1_news_clusters_get', public=True, access_required=False,
@@ -2740,6 +2970,8 @@ class GetClusterApiV1NewsClustersClusterIdGetRequest(BaseModel):
 class GetClusterApiV1NewsClustersClusterIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetClusterApiV1NewsClustersClusterIdGetError = SafeTransportError
+
 GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_SECURITY = SecurityMetadata(
     identity='public:get_cluster_api_v1_news_clusters__cluster_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2762,6 +2994,8 @@ class ListEventsApiV1NewsEventsGetRequest(BaseModel):
 
 class ListEventsApiV1NewsEventsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ListEventsApiV1NewsEventsGetError = SafeTransportError
 
 LISTEVENTSAPIV1NEWSEVENTSGET_SECURITY = SecurityMetadata(
     identity='public:list_events_api_v1_news_events_get', public=True, access_required=False,
@@ -2786,6 +3020,8 @@ class HighImpactEventsApiV1NewsEventsHighImpactGetRequest(BaseModel):
 class HighImpactEventsApiV1NewsEventsHighImpactGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+HighImpactEventsApiV1NewsEventsHighImpactGetError = SafeTransportError
+
 HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_SECURITY = SecurityMetadata(
     identity='public:high_impact_events_api_v1_news_events_high_impact_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2808,6 +3044,8 @@ class RegulatoryEventsApiV1NewsEventsRegulatoryGetRequest(BaseModel):
 
 class RegulatoryEventsApiV1NewsEventsRegulatoryGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+RegulatoryEventsApiV1NewsEventsRegulatoryGetError = SafeTransportError
 
 REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_SECURITY = SecurityMetadata(
     identity='public:regulatory_events_api_v1_news_events_regulatory_get', public=True, access_required=False,
@@ -2832,6 +3070,8 @@ class SecurityEventsApiV1NewsEventsSecurityGetRequest(BaseModel):
 class SecurityEventsApiV1NewsEventsSecurityGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+SecurityEventsApiV1NewsEventsSecurityGetError = SafeTransportError
+
 SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_SECURITY = SecurityMetadata(
     identity='public:security_events_api_v1_news_events_security_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2854,6 +3094,8 @@ class GetEventApiV1NewsEventsEventIdGetRequest(BaseModel):
 
 class GetEventApiV1NewsEventsEventIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetEventApiV1NewsEventsEventIdGetError = SafeTransportError
 
 GETEVENTAPIV1NEWSEVENTSEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_event_api_v1_news_events__event_id__get', public=True, access_required=False,
@@ -2878,6 +3120,8 @@ class GetEventArticlesApiV1NewsEventsEventIdArticlesGetRequest(BaseModel):
 class GetEventArticlesApiV1NewsEventsEventIdArticlesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetEventArticlesApiV1NewsEventsEventIdArticlesGetError = SafeTransportError
+
 GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_SECURITY = SecurityMetadata(
     identity='public:get_event_articles_api_v1_news_events__event_id__articles_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2900,6 +3144,8 @@ class GetEventImpactApiV1NewsEventsEventIdImpactGetRequest(BaseModel):
 
 class GetEventImpactApiV1NewsEventsEventIdImpactGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+GetEventImpactApiV1NewsEventsEventIdImpactGetError = SafeTransportError
 
 GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_SECURITY = SecurityMetadata(
     identity='public:get_event_impact_api_v1_news_events__event_id__impact_get', public=True, access_required=False,
@@ -2924,6 +3170,8 @@ class GetEventScoreApiV1NewsEventsEventIdScoreGetRequest(BaseModel):
 class GetEventScoreApiV1NewsEventsEventIdScoreGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+GetEventScoreApiV1NewsEventsEventIdScoreGetError = SafeTransportError
+
 GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_SECURITY = SecurityMetadata(
     identity='public:get_event_score_api_v1_news_events__event_id__score_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2947,6 +3195,8 @@ class HighImpactNewsApiV1NewsHighImpactGetRequest(BaseModel):
 class HighImpactNewsApiV1NewsHighImpactGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
 
+HighImpactNewsApiV1NewsHighImpactGetError = SafeTransportError
+
 HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_SECURITY = SecurityMetadata(
     identity='public:high_impact_news_api_v1_news_high_impact_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -2969,6 +3219,8 @@ class HighRelevanceApiV1NewsHighRelevanceGetRequest(BaseModel):
 
 class HighRelevanceApiV1NewsHighRelevanceGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
+
+HighRelevanceApiV1NewsHighRelevanceGetError = SafeTransportError
 
 HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_SECURITY = SecurityMetadata(
     identity='public:high_relevance_api_v1_news_high_relevance_get', public=True, access_required=False,
@@ -2994,6 +3246,8 @@ class LatestNewsApiV1NewsLatestGetRequest(BaseModel):
 class LatestNewsApiV1NewsLatestGetSuccess(RootModel[ResponseEnvelopePaginatedDataNewsArticleOut]):
     pass
 
+LatestNewsApiV1NewsLatestGetError = SafeTransportError
+
 LATESTNEWSAPIV1NEWSLATESTGET_SECURITY = SecurityMetadata(
     identity='public:latest_news_api_v1_news_latest_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3016,6 +3270,8 @@ class RegulatoryNewsApiV1NewsRegulatoryGetRequest(BaseModel):
 
 class RegulatoryNewsApiV1NewsRegulatoryGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
+
+RegulatoryNewsApiV1NewsRegulatoryGetError = SafeTransportError
 
 REGULATORYNEWSAPIV1NEWSREGULATORYGET_SECURITY = SecurityMetadata(
     identity='public:regulatory_news_api_v1_news_regulatory_get', public=True, access_required=False,
@@ -3040,6 +3296,8 @@ class SecurityNewsApiV1NewsSecurityGetRequest(BaseModel):
 class SecurityNewsApiV1NewsSecurityGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
 
+SecurityNewsApiV1NewsSecurityGetError = SafeTransportError
+
 SECURITYNEWSAPIV1NEWSSECURITYGET_SECURITY = SecurityMetadata(
     identity='public:security_news_api_v1_news_security_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3062,6 +3320,8 @@ class ListSourcesApiV1NewsSourcesGetRequest(BaseModel):
 
 class ListSourcesApiV1NewsSourcesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+ListSourcesApiV1NewsSourcesGetError = SafeTransportError
 
 LISTSOURCESAPIV1NEWSSOURCESGET_SECURITY = SecurityMetadata(
     identity='public:list_sources_api_v1_news_sources_get', public=True, access_required=False,
@@ -3086,6 +3346,8 @@ class CategoriesApiV1NewsSourcesCategoriesGetRequest(BaseModel):
 class CategoriesApiV1NewsSourcesCategoriesGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+CategoriesApiV1NewsSourcesCategoriesGetError = SafeTransportError
+
 CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_SECURITY = SecurityMetadata(
     identity='public:categories_api_v1_news_sources_categories_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3108,6 +3370,8 @@ class SourcesHealthApiV1NewsSourcesHealthGetRequest(BaseModel):
 
 class SourcesHealthApiV1NewsSourcesHealthGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+SourcesHealthApiV1NewsSourcesHealthGetError = SafeTransportError
 
 SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_SECURITY = SecurityMetadata(
     identity='public:sources_health_api_v1_news_sources_health_get', public=True, access_required=False,
@@ -3133,6 +3397,8 @@ class ListSourceReputationApiV1NewsSourcesReputationGetRequest(BaseModel):
 class ListSourceReputationApiV1NewsSourcesReputationGetSuccess(RootModel[ResponseEnvelopeListSourceReputationProfileOut]):
     pass
 
+ListSourceReputationApiV1NewsSourcesReputationGetError = SafeTransportError
+
 LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_SECURITY = SecurityMetadata(
     identity='public:list_source_reputation_api_v1_news_sources_reputation_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3155,6 +3421,8 @@ class TiersApiV1NewsSourcesTiersGetRequest(BaseModel):
 
 class TiersApiV1NewsSourcesTiersGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+TiersApiV1NewsSourcesTiersGetError = SafeTransportError
 
 TIERSAPIV1NEWSSOURCESTIERSGET_SECURITY = SecurityMetadata(
     identity='public:tiers_api_v1_news_sources_tiers_get', public=True, access_required=False,
@@ -3179,6 +3447,8 @@ class GetSourceApiV1NewsSourcesSourceIdGetRequest(BaseModel):
 class GetSourceApiV1NewsSourcesSourceIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetSourceApiV1NewsSourcesSourceIdGetError = SafeTransportError
+
 GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_SECURITY = SecurityMetadata(
     identity='public:get_source_api_v1_news_sources__source_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3201,6 +3471,8 @@ class SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetRequest(B
 
 class SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetError = SafeTransportError
 
 SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_SECURITY = SecurityMetadata(
     identity='public:source_confidence_events_api_v1_news_sources__source_id__confidence_events_get', public=True, access_required=False,
@@ -3225,6 +3497,8 @@ class SourceHealthApiV1NewsSourcesSourceIdHealthGetRequest(BaseModel):
 class SourceHealthApiV1NewsSourcesSourceIdHealthGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+SourceHealthApiV1NewsSourcesSourceIdHealthGetError = SafeTransportError
+
 SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_SECURITY = SecurityMetadata(
     identity='public:source_health_api_v1_news_sources__source_id__health_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3247,6 +3521,8 @@ class SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetRequest(BaseModel):
 
 class SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetError = SafeTransportError
 
 SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_SECURITY = SecurityMetadata(
     identity='public:source_snapshots_api_v1_news_sources__source_id__snapshots_get', public=True, access_required=False,
@@ -3271,6 +3547,8 @@ class GetArticleExplanationApiV1NewsArticleIdExplanationGetRequest(BaseModel):
 class GetArticleExplanationApiV1NewsArticleIdExplanationGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+GetArticleExplanationApiV1NewsArticleIdExplanationGetError = SafeTransportError
+
 GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_SECURITY = SecurityMetadata(
     identity='public:get_article_explanation_api_v1_news__article_id__explanation_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3293,6 +3571,8 @@ class GetArticleImpactApiV1NewsArticleIdImpactGetRequest(BaseModel):
 
 class GetArticleImpactApiV1NewsArticleIdImpactGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+GetArticleImpactApiV1NewsArticleIdImpactGetError = SafeTransportError
 
 GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_SECURITY = SecurityMetadata(
     identity='public:get_article_impact_api_v1_news__article_id__impact_get', public=True, access_required=False,
@@ -3317,6 +3597,8 @@ class GetArticleNarrativesApiV1NewsArticleIdNarrativesGetRequest(BaseModel):
 class GetArticleNarrativesApiV1NewsArticleIdNarrativesGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
 
+GetArticleNarrativesApiV1NewsArticleIdNarrativesGetError = SafeTransportError
+
 GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_SECURITY = SecurityMetadata(
     identity='public:get_article_narratives_api_v1_news__article_id__narratives_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3339,6 +3621,8 @@ class GetArticleScoreApiV1NewsArticleIdScoreGetRequest(BaseModel):
 
 class GetArticleScoreApiV1NewsArticleIdScoreGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+GetArticleScoreApiV1NewsArticleIdScoreGetError = SafeTransportError
 
 GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_SECURITY = SecurityMetadata(
     identity='public:get_article_score_api_v1_news__article_id__score_get', public=True, access_required=False,
@@ -3363,6 +3647,8 @@ class GetArticleScoresApiV1NewsArticleIdScoresGetRequest(BaseModel):
 class GetArticleScoresApiV1NewsArticleIdScoresGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+GetArticleScoresApiV1NewsArticleIdScoresGetError = SafeTransportError
+
 GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_SECURITY = SecurityMetadata(
     identity='public:get_article_scores_api_v1_news__article_id__scores_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3386,6 +3672,8 @@ class OnchainEventsApiV1OnchainEventsGetRequest(BaseModel):
 
 class OnchainEventsApiV1OnchainEventsGetSuccess(RootModel[ResponseEnvelopePaginatedDataOnchainEventOut]):
     pass
+
+OnchainEventsApiV1OnchainEventsGetError = SafeTransportError
 
 ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_SECURITY = SecurityMetadata(
     identity='public:onchain_events_api_v1_onchain_events_get', public=True, access_required=False,
@@ -3413,6 +3701,8 @@ class OnchainStateApiV1OnchainStateGetRequest(BaseModel):
 class OnchainStateApiV1OnchainStateGetSuccess(RootModel[ResponseEnvelopeOnchainChainStateOut]):
     pass
 
+OnchainStateApiV1OnchainStateGetError = SafeTransportError
+
 ONCHAINSTATEAPIV1ONCHAINSTATEGET_SECURITY = SecurityMetadata(
     identity='public:onchain_state_api_v1_onchain_state_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3435,6 +3725,8 @@ class PublicFeaturesApiV1PublicFeaturesGetRequest(BaseModel):
 
 class PublicFeaturesApiV1PublicFeaturesGetSuccess(RootModel[ResponseEnvelopeListPublicFeatureEntry]):
     pass
+
+PublicFeaturesApiV1PublicFeaturesGetError = SafeTransportError
 
 PUBLICFEATURESAPIV1PUBLICFEATURESGET_SECURITY = SecurityMetadata(
     identity='public:public_features_api_v1_public_features_get', public=True, access_required=False,
@@ -3459,6 +3751,8 @@ class PublicLandingApiV1PublicLandingGetRequest(BaseModel):
 class PublicLandingApiV1PublicLandingGetSuccess(RootModel[ResponseEnvelopePublicLandingResponse]):
     pass
 
+PublicLandingApiV1PublicLandingGetError = SafeTransportError
+
 PUBLICLANDINGAPIV1PUBLICLANDINGGET_SECURITY = SecurityMetadata(
     identity='public:public_landing_api_v1_public_landing_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3481,6 +3775,8 @@ class PublicRoadmapApiV1PublicRoadmapGetRequest(BaseModel):
 
 class PublicRoadmapApiV1PublicRoadmapGetSuccess(RootModel[ResponseEnvelopePublicRoadmapResponse]):
     pass
+
+PublicRoadmapApiV1PublicRoadmapGetError = SafeTransportError
 
 PUBLICROADMAPAPIV1PUBLICROADMAPGET_SECURITY = SecurityMetadata(
     identity='public:public_roadmap_api_v1_public_roadmap_get', public=True, access_required=False,
@@ -3505,6 +3801,8 @@ class PublicStatsApiV1PublicStatsGetRequest(BaseModel):
 class PublicStatsApiV1PublicStatsGetSuccess(RootModel[ResponseEnvelopePublicStatsResponse]):
     pass
 
+PublicStatsApiV1PublicStatsGetError = SafeTransportError
+
 PUBLICSTATSAPIV1PUBLICSTATSGET_SECURITY = SecurityMetadata(
     identity='public:public_stats_api_v1_public_stats_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3527,6 +3825,8 @@ class PublicStatusApiV1PublicStatusGetRequest(BaseModel):
 
 class PublicStatusApiV1PublicStatusGetSuccess(RootModel[ResponseEnvelopePublicStatusResponse]):
     pass
+
+PublicStatusApiV1PublicStatusGetError = SafeTransportError
 
 PUBLICSTATUSAPIV1PUBLICSTATUSGET_SECURITY = SecurityMetadata(
     identity='public:public_status_api_v1_public_status_get', public=True, access_required=False,
@@ -3551,6 +3851,8 @@ class PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetRequest(BaseModel):
 class PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetSuccess(RootModel[ResponseEnvelopePublicTraceSummary]):
     pass
 
+PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetError = SafeTransportError
+
 PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_SECURITY = SecurityMetadata(
     identity='public:public_trace_summary_api_v1_public_trace__report_id__summary_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3574,6 +3876,8 @@ class LatestSignalsApiV1SignalsLatestGetRequest(BaseModel):
 class LatestSignalsApiV1SignalsLatestGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+LatestSignalsApiV1SignalsLatestGetError = SafeTransportError
+
 LATESTSIGNALSAPIV1SIGNALSLATESTGET_SECURITY = SecurityMetadata(
     identity='public:latest_signals_api_v1_signals_latest_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3596,6 +3900,8 @@ class NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetRequest(BaseModel):
 
 class NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetError = SafeTransportError
 
 NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_SECURITY = SecurityMetadata(
     identity='public:news_market_impact_signals_api_v1_signals_news_market_impact_get', public=True, access_required=False,
@@ -3622,6 +3928,8 @@ class TopSignalsApiV1SignalsTopGetRequest(BaseModel):
 class TopSignalsApiV1SignalsTopGetSuccess(RootModel[ResponseEnvelopePaginatedDataSignalOut]):
     pass
 
+TopSignalsApiV1SignalsTopGetError = SafeTransportError
+
 TOPSIGNALSAPIV1SIGNALSTOPGET_SECURITY = SecurityMetadata(
     identity='public:top_signals_api_v1_signals_top_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3644,6 +3952,8 @@ class GetSignalApiV1SignalsSignalIdGetRequest(BaseModel):
 
 class GetSignalApiV1SignalsSignalIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetSignalApiV1SignalsSignalIdGetError = SafeTransportError
 
 GETSIGNALAPIV1SIGNALSSIGNALIDGET_SECURITY = SecurityMetadata(
     identity='public:get_signal_api_v1_signals__signal_id__get', public=True, access_required=False,
@@ -3668,6 +3978,8 @@ class GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetRequest(BaseModel)
 class GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetError = SafeTransportError
+
 GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_SECURITY = SecurityMetadata(
     identity='public:get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3690,6 +4002,8 @@ class GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetRequest(BaseModel):
 
 class GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetError = SafeTransportError
 
 GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_SECURITY = SecurityMetadata(
     identity='public:get_signal_evidence_api_v1_signals__signal_id__evidence_get', public=True, access_required=False,
@@ -3714,6 +4028,8 @@ class SignalExplanationApiV1SignalsSignalIdExplanationGetRequest(BaseModel):
 class SignalExplanationApiV1SignalsSignalIdExplanationGetSuccess(RootModel[ResponseEnvelopeSignalExplanationOut]):
     pass
 
+SignalExplanationApiV1SignalsSignalIdExplanationGetError = SafeTransportError
+
 SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_SECURITY = SecurityMetadata(
     identity='public:signal_explanation_api_v1_signals__signal_id__explanation_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3736,6 +4052,8 @@ class SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetRequest(BaseMod
 
 class SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetSuccess(RootModel[ResponseEnvelopeSignalRecommendationOut]):
     pass
+
+SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetError = SafeTransportError
 
 SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_SECURITY = SecurityMetadata(
     identity='public:signal_recommendations_api_v1_signals__signal_id__recommendations_get', public=True, access_required=False,
@@ -3760,6 +4078,8 @@ class StorageStatusApiV1StorageStatusGetRequest(BaseModel):
 class StorageStatusApiV1StorageStatusGetSuccess(RootModel[StorageStatusResponse]):
     pass
 
+StorageStatusApiV1StorageStatusGetError = SafeTransportError
+
 STORAGESTATUSAPIV1STORAGESTATUSGET_SECURITY = SecurityMetadata(
     identity='public:storage_status_api_v1_storage_status_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3782,6 +4102,8 @@ class TimescaleOperationsStatusApiV1StorageTimescaleStatusGetRequest(BaseModel):
 
 class TimescaleOperationsStatusApiV1StorageTimescaleStatusGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+TimescaleOperationsStatusApiV1StorageTimescaleStatusGetError = SafeTransportError
 
 TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_SECURITY = SecurityMetadata(
     identity='public:timescale_operations_status_api_v1_storage_timescale_status_get', public=True, access_required=False,
@@ -3806,6 +4128,8 @@ class AnalyzeAddressApiV1TraceAddressAddressGetRequest(BaseModel):
 class AnalyzeAddressApiV1TraceAddressAddressGetSuccess(RootModel[ResponseEnvelopeTraceReport]):
     pass
 
+AnalyzeAddressApiV1TraceAddressAddressGetError = SafeTransportError
+
 ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_SECURITY = SecurityMetadata(
     identity='public:analyze_address_api_v1_trace_address__address__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3828,6 +4152,8 @@ class TraceAlertsApiV1TraceAlertsGetRequest(BaseModel):
 
 class TraceAlertsApiV1TraceAlertsGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
+
+TraceAlertsApiV1TraceAlertsGetError = SafeTransportError
 
 TRACEALERTSAPIV1TRACEALERTSGET_SECURITY = SecurityMetadata(
     identity='public:trace_alerts_api_v1_trace_alerts_get', public=True, access_required=False,
@@ -3852,6 +4178,8 @@ class TraceEventsApiV1TraceEventsGetRequest(BaseModel):
 class TraceEventsApiV1TraceEventsGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
 
+TraceEventsApiV1TraceEventsGetError = SafeTransportError
+
 TRACEEVENTSAPIV1TRACEEVENTSGET_SECURITY = SecurityMetadata(
     identity='public:trace_events_api_v1_trace_events_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3874,6 +4202,8 @@ class TraceEventApiV1TraceEventsEventIdGetRequest(BaseModel):
 
 class TraceEventApiV1TraceEventsEventIdGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+TraceEventApiV1TraceEventsEventIdGetError = SafeTransportError
 
 TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_SECURITY = SecurityMetadata(
     identity='public:trace_event_api_v1_trace_events__event_id__get', public=True, access_required=False,
@@ -3898,6 +4228,8 @@ class LiteAddressCheckApiV1TraceLiteAddressGetRequest(BaseModel):
 class LiteAddressCheckApiV1TraceLiteAddressGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+LiteAddressCheckApiV1TraceLiteAddressGetError = SafeTransportError
+
 LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_SECURITY = SecurityMetadata(
     identity='public:lite_address_check_api_v1_trace_lite__address__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3920,6 +4252,8 @@ class GetReportApiV1TraceReportReportIdGetRequest(BaseModel):
 
 class GetReportApiV1TraceReportReportIdGetSuccess(RootModel[ResponseEnvelopeTraceReport]):
     pass
+
+GetReportApiV1TraceReportReportIdGetError = SafeTransportError
 
 GETREPORTAPIV1TRACEREPORTREPORTIDGET_SECURITY = SecurityMetadata(
     identity='public:get_report_api_v1_trace_report__report_id__get', public=True, access_required=False,
@@ -3944,6 +4278,8 @@ class TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetRequ
 class TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetError = SafeTransportError
+
 TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_SECURITY = SecurityMetadata(
     identity='public:trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -3966,6 +4302,8 @@ class GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetRequest(Base
 
 class GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetError = SafeTransportError
 
 GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_SECURITY = SecurityMetadata(
     identity='public:get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get', public=True, access_required=False,
@@ -3990,6 +4328,8 @@ class GetDustRadarApiV1TraceReportReportIdDustRadarGetRequest(BaseModel):
 class GetDustRadarApiV1TraceReportReportIdDustRadarGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+GetDustRadarApiV1TraceReportReportIdDustRadarGetError = SafeTransportError
+
 GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_SECURITY = SecurityMetadata(
     identity='public:get_dust_radar_api_v1_trace_report__report_id__dust_radar_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4012,6 +4352,8 @@ class ListEvidenceApiV1TraceReportReportIdEvidenceGetRequest(BaseModel):
 
 class ListEvidenceApiV1TraceReportReportIdEvidenceGetSuccess(RootModel[ResponseEnvelopeListTraceEvidence]):
     pass
+
+ListEvidenceApiV1TraceReportReportIdEvidenceGetError = SafeTransportError
 
 LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_SECURITY = SecurityMetadata(
     identity='public:list_evidence_api_v1_trace_report__report_id__evidence_get', public=True, access_required=False,
@@ -4036,6 +4378,8 @@ class TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetRequest(BaseModel)
 class TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
 
+TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetError = SafeTransportError
+
 TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_SECURITY = SecurityMetadata(
     identity='public:trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4058,6 +4402,8 @@ class GetOriginPassportApiV1TraceReportReportIdOriginPassportGetRequest(BaseMode
 
 class GetOriginPassportApiV1TraceReportReportIdOriginPassportGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+GetOriginPassportApiV1TraceReportReportIdOriginPassportGetError = SafeTransportError
 
 GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_SECURITY = SecurityMetadata(
     identity='public:get_origin_passport_api_v1_trace_report__report_id__origin_passport_get', public=True, access_required=False,
@@ -4082,6 +4428,8 @@ class TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetRequest(BaseModel):
 class TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetError = SafeTransportError
+
 TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_SECURITY = SecurityMetadata(
     identity='public:trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4104,6 +4452,8 @@ class GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetRequest(BaseModel)
 
 class GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetError = SafeTransportError
 
 GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_SECURITY = SecurityMetadata(
     identity='public:get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get', public=True, access_required=False,
@@ -4128,6 +4478,8 @@ class GetProofPacketApiV1TraceReportReportIdProofPacketGetRequest(BaseModel):
 class GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+GetProofPacketApiV1TraceReportReportIdProofPacketGetError = SafeTransportError
+
 GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_SECURITY = SecurityMetadata(
     identity='public:get_proof_packet_api_v1_trace_report__report_id__proof_packet_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4150,6 +4502,8 @@ class GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetRequ
 
 class GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetError = SafeTransportError
 
 GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_SECURITY = SecurityMetadata(
     identity='public:get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get', public=True, access_required=False,
@@ -4174,6 +4528,8 @@ class GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetRequest(BaseModel)
 class GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetSuccess(RootModel[ResponseEnvelopeListDictStrObject]):
     pass
 
+GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetError = SafeTransportError
+
 GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_SECURITY = SecurityMetadata(
     identity='public:get_source_summary_api_v1_trace_report__report_id__source_summary_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4196,6 +4552,8 @@ class GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetRequest(BaseModel):
 
 class GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
+
+GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetError = SafeTransportError
 
 GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_SECURITY = SecurityMetadata(
     identity='public:get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get', public=True, access_required=False,
@@ -4220,6 +4578,8 @@ class ListSourcesApiV1TraceSourcesGetRequest(BaseModel):
 class ListSourcesApiV1TraceSourcesGetSuccess(RootModel[ResponseEnvelopeListTraceSourceStatus]):
     pass
 
+ListSourcesApiV1TraceSourcesGetError = SafeTransportError
+
 LISTSOURCESAPIV1TRACESOURCESGET_SECURITY = SecurityMetadata(
     identity='public:list_sources_api_v1_trace_sources_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4242,6 +4602,8 @@ class GetSourceApiV1TraceSourcesSourceNameGetRequest(BaseModel):
 
 class GetSourceApiV1TraceSourcesSourceNameGetSuccess(RootModel[ResponseEnvelopeTraceSourceStatus]):
     pass
+
+GetSourceApiV1TraceSourcesSourceNameGetError = SafeTransportError
 
 GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_SECURITY = SecurityMetadata(
     identity='public:get_source_api_v1_trace_sources__source_name__get', public=True, access_required=False,
@@ -4266,6 +4628,8 @@ class TraceStatusApiV1TraceStatusGetRequest(BaseModel):
 class TraceStatusApiV1TraceStatusGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
     pass
 
+TraceStatusApiV1TraceStatusGetError = SafeTransportError
+
 TRACESTATUSAPIV1TRACESTATUSGET_SECURITY = SecurityMetadata(
     identity='public:trace_status_api_v1_trace_status_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4288,6 +4652,8 @@ class ListWatchlistApiV1TraceWatchlistGetRequest(BaseModel):
 
 class ListWatchlistApiV1TraceWatchlistGetSuccess(RootModel[ResponseEnvelopeListTraceWatchlistEntry]):
     pass
+
+ListWatchlistApiV1TraceWatchlistGetError = SafeTransportError
 
 LISTWATCHLISTAPIV1TRACEWATCHLISTGET_SECURITY = SecurityMetadata(
     identity='public:list_watchlist_api_v1_trace_watchlist_get', public=True, access_required=False,
@@ -4312,6 +4678,8 @@ class DependenciesHealthDependenciesGetRequest(BaseModel):
 class DependenciesHealthDependenciesGetSuccess(RootModel[list[DependencyHealthOut]]):
     pass
 
+DependenciesHealthDependenciesGetError = SafeTransportError
+
 DEPENDENCIESHEALTHDEPENDENCIESGET_SECURITY = SecurityMetadata(
     identity='public:dependencies_health_dependencies_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4334,6 +4702,8 @@ class IntelligenceHealthIntelligenceGetRequest(BaseModel):
 
 class IntelligenceHealthIntelligenceGetSuccess(RootModel[IntelligenceHealthOut]):
     pass
+
+IntelligenceHealthIntelligenceGetError = SafeTransportError
 
 INTELLIGENCEHEALTHINTELLIGENCEGET_SECURITY = SecurityMetadata(
     identity='public:intelligence_health_intelligence_get', public=True, access_required=False,
@@ -4358,6 +4728,8 @@ class LiveHealthLiveGetRequest(BaseModel):
 class LiveHealthLiveGetSuccess(RootModel[HealthOut]):
     pass
 
+LiveHealthLiveGetError = SafeTransportError
+
 LIVEHEALTHLIVEGET_SECURITY = SecurityMetadata(
     identity='public:live_health_live_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4380,6 +4752,8 @@ class OperationsHealthOperationsGetRequest(BaseModel):
 
 class OperationsHealthOperationsGetSuccess(RootModel[OperationsHealthOut]):
     pass
+
+OperationsHealthOperationsGetError = SafeTransportError
 
 OPERATIONSHEALTHOPERATIONSGET_SECURITY = SecurityMetadata(
     identity='public:operations_health_operations_get', public=True, access_required=False,
@@ -4404,6 +4778,8 @@ class ProvidersHealthProvidersGetRequest(BaseModel):
 class ProvidersHealthProvidersGetSuccess(RootModel[list[ProviderHealthSnapshotOut]]):
     pass
 
+ProvidersHealthProvidersGetError = SafeTransportError
+
 PROVIDERSHEALTHPROVIDERSGET_SECURITY = SecurityMetadata(
     identity='public:providers_health_providers_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4426,6 +4802,8 @@ class ReadyHealthReadyGetRequest(BaseModel):
 
 class ReadyHealthReadyGetSuccess(RootModel[OperationsHealthOut]):
     pass
+
+ReadyHealthReadyGetError = SafeTransportError
 
 READYHEALTHREADYGET_SECURITY = SecurityMetadata(
     identity='public:ready_health_ready_get', public=True, access_required=False,
@@ -4450,6 +4828,8 @@ class StartupHealthStartupGetRequest(BaseModel):
 class StartupHealthStartupGetSuccess(RootModel[HealthOut]):
     pass
 
+StartupHealthStartupGetError = SafeTransportError
+
 STARTUPHEALTHSTARTUPGET_SECURITY = SecurityMetadata(
     identity='public:startup_health_startup_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4472,6 +4852,8 @@ class WebCandleDtoWebCandleCandleIdGetRequest(BaseModel):
 
 class WebCandleDtoWebCandleCandleIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+WebCandleDtoWebCandleCandleIdGetError = SafeTransportError
 
 WEBCANDLEDTOWEBCANDLECANDLEIDGET_SECURITY = SecurityMetadata(
     identity='public:web_candle_dto_web_candle__candle_id__get', public=True, access_required=False,
@@ -4496,6 +4878,8 @@ class WebEvidenceDtoWebEvidencePacketIdGetRequest(BaseModel):
 class WebEvidenceDtoWebEvidencePacketIdGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+WebEvidenceDtoWebEvidencePacketIdGetError = SafeTransportError
+
 WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_SECURITY = SecurityMetadata(
     identity='public:web_evidence_dto_web_evidence__packet_id__get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4518,6 +4902,8 @@ class WebMarketTimeMachineDtoWebMarketTimeMachineGetRequest(BaseModel):
 
 class WebMarketTimeMachineDtoWebMarketTimeMachineGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
+
+WebMarketTimeMachineDtoWebMarketTimeMachineGetError = SafeTransportError
 
 WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_SECURITY = SecurityMetadata(
     identity='public:web_market_time_machine_dto_web_market_time_machine_get', public=True, access_required=False,
@@ -4546,6 +4932,8 @@ class WebTimelineDtoWebTimelineGetRequest(BaseModel):
 class WebTimelineDtoWebTimelineGetSuccess(RootModel[dict[str, JsonValue]]):
     pass
 
+WebTimelineDtoWebTimelineGetError = SafeTransportError
+
 WEBTIMELINEDTOWEBTIMELINEGET_SECURITY = SecurityMetadata(
     identity='public:web_timeline_dto_web_timeline_get', public=True, access_required=False,
     signed_request_required=False, human_intent_required=False,
@@ -4562,7 +4950,7 @@ WEBTIMELINEDTOWEBTIMELINEGET_OPERATION = NormalizedOperation(
 async def web_timeline_dto_web_timeline_get(transport: HttpTransport, request: WebTimelineDtoWebTimelineGetRequest) -> WebTimelineDtoWebTimelineGetSuccess:
     return await transport.invoke(WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, path_parameters={}, query_parameters={'filter': serialize_query_value(request.filter), 'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'sort': serialize_query_value(request.sort), 'window': serialize_query_value(request.window)}, body=None)
 
-SOURCE_HEAD = '298a34dc1c12e97d458e56f1a80e0c40482cbc3d'
+SOURCE_HEAD = '0ff0049114b864079ed7aabbc3272c82b5d9b106'
 
 OWNERSHIP = {
     'list_child_api_keys_api_v1_access_api_keys_get': ('HTTP-0002', 'bastion_ui.transport.generated_http', 'list_child_api_keys_api_v1_access_api_keys_get'),
@@ -4762,198 +5150,198 @@ OWNERSHIP = {
 }
 
 FEATURE_53 = (
-    ContractRegistryEntry(registry_id='http:list_child_api_keys_api_v1_access_api_keys_get', source_head=SOURCE_HEAD, operation=LISTCHILDAPIKEYSAPIV1ACCESSAPIKEYSGET_OPERATION, request_schema='ListChildApiKeysApiV1AccessApiKeysGetRequest', success_schema='ListChildApiKeysApiV1AccessApiKeysGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_child_api_key_api_v1_access_api_keys__key_id__get', source_head=SOURCE_HEAD, operation=GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_OPERATION, request_schema='GetChildApiKeyApiV1AccessApiKeysKeyIdGetRequest', success_schema='GetChildApiKeyApiV1AccessApiKeysKeyIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_delegated_passes_api_v1_access_delegated_passes_get', source_head=SOURCE_HEAD, operation=LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_OPERATION, request_schema='ListDelegatedPassesApiV1AccessDelegatedPassesGetRequest', success_schema='ListDelegatedPassesApiV1AccessDelegatedPassesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get', source_head=SOURCE_HEAD, operation=GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_OPERATION, request_schema='GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetRequest', success_schema='GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_human_intent_api_v1_access_intents__intent_id__get', source_head=SOURCE_HEAD, operation=GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION, request_schema='GetHumanIntentApiV1AccessIntentsIntentIdGetRequest', success_schema='GetHumanIntentApiV1AccessIntentsIntentIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_me_api_v1_access_me_get', source_head=SOURCE_HEAD, operation=GETMEAPIV1ACCESSMEGET_OPERATION, request_schema='GetMeApiV1AccessMeGetRequest', success_schema='GetMeApiV1AccessMeGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_my_entitlements_api_v1_access_me_entitlements_get', source_head=SOURCE_HEAD, operation=GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_OPERATION, request_schema='GetMyEntitlementsApiV1AccessMeEntitlementsGetRequest', success_schema='GetMyEntitlementsApiV1AccessMeEntitlementsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_my_limits_api_v1_access_me_limits_get', source_head=SOURCE_HEAD, operation=GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION, request_schema='GetMyLimitsApiV1AccessMeLimitsGetRequest', success_schema='GetMyLimitsApiV1AccessMeLimitsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get', source_head=SOURCE_HEAD, operation=GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_OPERATION, request_schema='GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetRequest', success_schema='GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get', source_head=SOURCE_HEAD, operation=RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_OPERATION, request_schema='RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetRequest', success_schema='RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_addresses_api_v1_business_lightning_addresses_get', source_head=SOURCE_HEAD, operation=LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_OPERATION, request_schema='ListAddressesApiV1BusinessLightningAddressesGetRequest', success_schema='ListAddressesApiV1BusinessLightningAddressesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_address_api_v1_business_lightning_addresses__address_id__get', source_head=SOURCE_HEAD, operation=GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_OPERATION, request_schema='GetAddressApiV1BusinessLightningAddressesAddressIdGetRequest', success_schema='GetAddressApiV1BusinessLightningAddressesAddressIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_domains_api_v1_business_lightning_domains_get', source_head=SOURCE_HEAD, operation=LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_OPERATION, request_schema='ListDomainsApiV1BusinessLightningDomainsGetRequest', success_schema='ListDomainsApiV1BusinessLightningDomainsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_domain_api_v1_business_lightning_domains__domain_id__get', source_head=SOURCE_HEAD, operation=GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_OPERATION, request_schema='GetDomainApiV1BusinessLightningDomainsDomainIdGetRequest', success_schema='GetDomainApiV1BusinessLightningDomainsDomainIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:citadel_assessment_api_v1_citadel_assessment_get', source_head=SOURCE_HEAD, operation=CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_OPERATION, request_schema='CitadelAssessmentApiV1CitadelAssessmentGetRequest', success_schema='CitadelAssessmentApiV1CitadelAssessmentGetSuccess'),
-    ContractRegistryEntry(registry_id='http:citadel_dependencies_api_v1_citadel_dependencies_get', source_head=SOURCE_HEAD, operation=CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_OPERATION, request_schema='CitadelDependenciesApiV1CitadelDependenciesGetRequest', success_schema='CitadelDependenciesApiV1CitadelDependenciesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:citadel_inheritance_api_v1_citadel_inheritance_get', source_head=SOURCE_HEAD, operation=CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_OPERATION, request_schema='CitadelInheritanceApiV1CitadelInheritanceGetRequest', success_schema='CitadelInheritanceApiV1CitadelInheritanceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:citadel_overview_api_v1_citadel_overview_get', source_head=SOURCE_HEAD, operation=CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_OPERATION, request_schema='CitadelOverviewApiV1CitadelOverviewGetRequest', success_schema='CitadelOverviewApiV1CitadelOverviewGetSuccess'),
-    ContractRegistryEntry(registry_id='http:citadel_policy_checks_api_v1_citadel_policy_checks_get', source_head=SOURCE_HEAD, operation=CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_OPERATION, request_schema='CitadelPolicyChecksApiV1CitadelPolicyChecksGetRequest', success_schema='CitadelPolicyChecksApiV1CitadelPolicyChecksGetSuccess'),
-    ContractRegistryEntry(registry_id='http:citadel_recovery_api_v1_citadel_recovery_get', source_head=SOURCE_HEAD, operation=CITADELRECOVERYAPIV1CITADELRECOVERYGET_OPERATION, request_schema='CitadelRecoveryApiV1CitadelRecoveryGetRequest', success_schema='CitadelRecoveryApiV1CitadelRecoveryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:citadel_repair_plan_api_v1_citadel_repair_plan_get', source_head=SOURCE_HEAD, operation=CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_OPERATION, request_schema='CitadelRepairPlanApiV1CitadelRepairPlanGetRequest', success_schema='CitadelRepairPlanApiV1CitadelRepairPlanGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_simulations_api_v1_citadel_simulations_get', source_head=SOURCE_HEAD, operation=LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_OPERATION, request_schema='ListSimulationsApiV1CitadelSimulationsGetRequest', success_schema='ListSimulationsApiV1CitadelSimulationsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_snippets_api_v1_education_snippets_get', source_head=SOURCE_HEAD, operation=LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_OPERATION, request_schema='ListSnippetsApiV1EducationSnippetsGetRequest', success_schema='ListSnippetsApiV1EducationSnippetsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_entities_api_v1_entities_get', source_head=SOURCE_HEAD, operation=LISTENTITIESAPIV1ENTITIESGET_OPERATION, request_schema='ListEntitiesApiV1EntitiesGetRequest', success_schema='ListEntitiesApiV1EntitiesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get', source_head=SOURCE_HEAD, operation=GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_OPERATION, request_schema='GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetRequest', success_schema='GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_evidence_packets_api_v1_evidence_packets_get', source_head=SOURCE_HEAD, operation=LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_OPERATION, request_schema='ListEvidencePacketsApiV1EvidencePacketsGetRequest', success_schema='ListEvidencePacketsApiV1EvidencePacketsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_evidence_packet_api_v1_evidence_packets__packet_id__get', source_head=SOURCE_HEAD, operation=GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_OPERATION, request_schema='GetEvidencePacketApiV1EvidencePacketsPacketIdGetRequest', success_schema='GetEvidencePacketApiV1EvidencePacketsPacketIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get', source_head=SOURCE_HEAD, operation=GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_OPERATION, request_schema='GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetRequest', success_schema='GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get', source_head=SOURCE_HEAD, operation=GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_OPERATION, request_schema='GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetRequest', success_schema='GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetSuccess'),
-    ContractRegistryEntry(registry_id='http:replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get', source_head=SOURCE_HEAD, operation=REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_OPERATION, request_schema='ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetRequest', success_schema='ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get', source_head=SOURCE_HEAD, operation=REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_OPERATION, request_schema='ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetRequest', success_schema='ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetSuccess'),
-    ContractRegistryEntry(registry_id='http:replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get', source_head=SOURCE_HEAD, operation=REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_OPERATION, request_schema='ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetRequest', success_schema='ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetSuccess'),
-    ContractRegistryEntry(registry_id='http:health_api_v1_health_get', source_head=SOURCE_HEAD, operation=HEALTHAPIV1HEALTHGET_OPERATION, request_schema='HealthApiV1HealthGetRequest', success_schema='HealthApiV1HealthGetSuccess'),
-    ContractRegistryEntry(registry_id='http:degraded_api_v1_health_degraded_get', source_head=SOURCE_HEAD, operation=DEGRADEDAPIV1HEALTHDEGRADEDGET_OPERATION, request_schema='DegradedApiV1HealthDegradedGetRequest', success_schema='DegradedApiV1HealthDegradedGetSuccess'),
-    ContractRegistryEntry(registry_id='http:jobs_api_v1_health_jobs_get', source_head=SOURCE_HEAD, operation=JOBSAPIV1HEALTHJOBSGET_OPERATION, request_schema='JobsApiV1HealthJobsGetRequest', success_schema='JobsApiV1HealthJobsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:liveness_api_v1_health_live_get', source_head=SOURCE_HEAD, operation=LIVENESSAPIV1HEALTHLIVEGET_OPERATION, request_schema='LivenessApiV1HealthLiveGetRequest', success_schema='LivenessApiV1HealthLiveGetSuccess'),
-    ContractRegistryEntry(registry_id='http:providers_api_v1_health_providers_get', source_head=SOURCE_HEAD, operation=PROVIDERSAPIV1HEALTHPROVIDERSGET_OPERATION, request_schema='ProvidersApiV1HealthProvidersGetRequest', success_schema='ProvidersApiV1HealthProvidersGetSuccess'),
-    ContractRegistryEntry(registry_id='http:readiness_api_v1_health_ready_get', source_head=SOURCE_HEAD, operation=READINESSAPIV1HEALTHREADYGET_OPERATION, request_schema='ReadinessApiV1HealthReadyGetRequest', success_schema='ReadinessApiV1HealthReadyGetSuccess'),
-    ContractRegistryEntry(registry_id='http:runtime_api_v1_health_runtime_get', source_head=SOURCE_HEAD, operation=RUNTIMEAPIV1HEALTHRUNTIMEGET_OPERATION, request_schema='RuntimeApiV1HealthRuntimeGetRequest', success_schema='RuntimeApiV1HealthRuntimeGetSuccess'),
-    ContractRegistryEntry(registry_id='http:system_health_api_v1_health_system_get', source_head=SOURCE_HEAD, operation=SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_OPERATION, request_schema='SystemHealthApiV1HealthSystemGetRequest', success_schema='SystemHealthApiV1HealthSystemGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get', source_head=SOURCE_HEAD, operation=GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_OPERATION, request_schema='GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetRequest', success_schema='GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get', source_head=SOURCE_HEAD, operation=GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_OPERATION, request_schema='GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetRequest', success_schema='GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get', source_head=SOURCE_HEAD, operation=GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_OPERATION, request_schema='GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetRequest', success_schema='GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_context_api_v1_intelligence_candles__candle_id__context_get', source_head=SOURCE_HEAD, operation=GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_OPERATION, request_schema='GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetRequest', success_schema='GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get', source_head=SOURCE_HEAD, operation=GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_OPERATION, request_schema='GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetRequest', success_schema='GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get', source_head=SOURCE_HEAD, operation=GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_OPERATION, request_schema='GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetRequest', success_schema='GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:explain_candle_api_v1_intelligence_candles__candle_id__explain_get', source_head=SOURCE_HEAD, operation=EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_OPERATION, request_schema='ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetRequest', success_schema='ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get', source_head=SOURCE_HEAD, operation=GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_OPERATION, request_schema='GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetRequest', success_schema='GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get', source_head=SOURCE_HEAD, operation=GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_OPERATION, request_schema='GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetRequest', success_schema='GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get', source_head=SOURCE_HEAD, operation=GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_OPERATION, request_schema='GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetRequest', success_schema='GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_market_memory_api_v1_intelligence_events__event_id__memory_get', source_head=SOURCE_HEAD, operation=GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_OPERATION, request_schema='GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetRequest', success_schema='GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get', source_head=SOURCE_HEAD, operation=GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_OPERATION, request_schema='GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetRequest', success_schema='GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get', source_head=SOURCE_HEAD, operation=GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_OPERATION, request_schema='GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetRequest', success_schema='GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get', source_head=SOURCE_HEAD, operation=GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_OPERATION, request_schema='GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetRequest', success_schema='GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get', source_head=SOURCE_HEAD, operation=GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_OPERATION, request_schema='GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetRequest', success_schema='GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_narratives_api_v1_intelligence_narratives_get', source_head=SOURCE_HEAD, operation=LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_OPERATION, request_schema='ListNarrativesApiV1IntelligenceNarrativesGetRequest', success_schema='ListNarrativesApiV1IntelligenceNarrativesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_active_narrative_memory_api_v1_intelligence_narratives_active_get', source_head=SOURCE_HEAD, operation=GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_OPERATION, request_schema='GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetRequest', success_schema='GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_narrative_dominance_api_v1_intelligence_narratives_dominance_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_OPERATION, request_schema='GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetRequest', success_schema='GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_dominant_narratives_api_v1_intelligence_narratives_dominant_get', source_head=SOURCE_HEAD, operation=GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_OPERATION, request_schema='GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetRequest', success_schema='GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_emerging_narratives_api_v1_intelligence_narratives_emerging_get', source_head=SOURCE_HEAD, operation=GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_OPERATION, request_schema='GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetRequest', success_schema='GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_falling_narratives_api_v1_intelligence_narratives_falling_get', source_head=SOURCE_HEAD, operation=GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_OPERATION, request_schema='GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetRequest', success_schema='GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_OPERATION, request_schema='GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetRequest', success_schema='GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_narrative_history_api_v1_intelligence_narratives_history_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_OPERATION, request_schema='GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetRequest', success_schema='GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_narrative_memory_api_v1_intelligence_narratives_memory_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_OPERATION, request_schema='GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetRequest', success_schema='GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_rising_narratives_api_v1_intelligence_narratives_rising_get', source_head=SOURCE_HEAD, operation=GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_OPERATION, request_schema='GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetRequest', success_schema='GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_narrative_rotations_api_v1_intelligence_narratives_rotations_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_OPERATION, request_schema='GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetRequest', success_schema='GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_top_narratives_api_v1_intelligence_narratives_top_get', source_head=SOURCE_HEAD, operation=GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_OPERATION, request_schema='GetTopNarrativesApiV1IntelligenceNarrativesTopGetRequest', success_schema='GetTopNarrativesApiV1IntelligenceNarrativesTopGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_narrative_api_v1_intelligence_narratives__slug__get', source_head=SOURCE_HEAD, operation=GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_OPERATION, request_schema='GetNarrativeApiV1IntelligenceNarrativesSlugGetRequest', success_schema='GetNarrativeApiV1IntelligenceNarrativesSlugGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_market_patterns_api_v1_intelligence_patterns_get', source_head=SOURCE_HEAD, operation=LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_OPERATION, request_schema='ListMarketPatternsApiV1IntelligencePatternsGetRequest', success_schema='ListMarketPatternsApiV1IntelligencePatternsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_market_pattern_api_v1_intelligence_patterns__pattern_id__get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_OPERATION, request_schema='GetMarketPatternApiV1IntelligencePatternsPatternIdGetRequest', success_schema='GetMarketPatternApiV1IntelligencePatternsPatternIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_OPERATION, request_schema='GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetRequest', success_schema='GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_OPERATION, request_schema='GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetRequest', success_schema='GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILEGET_OPERATION, request_schema='GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetRequest', success_schema='GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_OPERATION, request_schema='GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetRequest', success_schema='GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get', source_head=SOURCE_HEAD, operation=GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_OPERATION, request_schema='GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetRequest', success_schema='GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get', source_head=SOURCE_HEAD, operation=GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_OPERATION, request_schema='GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetRequest', success_schema='GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get', source_head=SOURCE_HEAD, operation=GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_OPERATION, request_schema='GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetRequest', success_schema='GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get', source_head=SOURCE_HEAD, operation=GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_OPERATION, request_schema='GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetRequest', success_schema='GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_similarity_api_v1_intelligence_similarity_event__event_id__get', source_head=SOURCE_HEAD, operation=GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_OPERATION, request_schema='GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetRequest', success_schema='GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get', source_head=SOURCE_HEAD, operation=GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_OPERATION, request_schema='GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetRequest', success_schema='GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_news_similarity_api_v1_intelligence_similarity_news__event_id__get', source_head=SOURCE_HEAD, operation=GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_OPERATION, request_schema='GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetRequest', success_schema='GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get', source_head=SOURCE_HEAD, operation=GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_OPERATION, request_schema='GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetRequest', success_schema='GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get', source_head=SOURCE_HEAD, operation=GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_OPERATION, request_schema='GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetRequest', success_schema='GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get', source_head=SOURCE_HEAD, operation=GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_OPERATION, request_schema='GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetRequest', success_schema='GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_timeline_api_v1_intelligence_timeline_get', source_head=SOURCE_HEAD, operation=GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_OPERATION, request_schema='GetTimelineApiV1IntelligenceTimelineGetRequest', success_schema='GetTimelineApiV1IntelligenceTimelineGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_context_api_v1_intelligence_timeline_context__timeline_event_id__get', source_head=SOURCE_HEAD, operation=GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_OPERATION, request_schema='GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetRequest', success_schema='GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_timeline_day_api_v1_intelligence_timeline_day_get', source_head=SOURCE_HEAD, operation=GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_OPERATION, request_schema='GetTimelineDayApiV1IntelligenceTimelineDayGetRequest', success_schema='GetTimelineDayApiV1IntelligenceTimelineDayGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_timeline_hour_api_v1_intelligence_timeline_hour_get', source_head=SOURCE_HEAD, operation=GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_OPERATION, request_schema='GetTimelineHourApiV1IntelligenceTimelineHourGetRequest', success_schema='GetTimelineHourApiV1IntelligenceTimelineHourGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_latest_api_v1_intelligence_timeline_latest_get', source_head=SOURCE_HEAD, operation=GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_OPERATION, request_schema='GetLatestApiV1IntelligenceTimelineLatestGetRequest', success_schema='GetLatestApiV1IntelligenceTimelineLatestGetSuccess'),
-    ContractRegistryEntry(registry_id='http:current_narratives_api_v1_intelligence_timeline_narratives_current_get', source_head=SOURCE_HEAD, operation=CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_OPERATION, request_schema='CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetRequest', success_schema='CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetSuccess'),
-    ContractRegistryEntry(registry_id='http:high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get', source_head=SOURCE_HEAD, operation=HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_OPERATION, request_schema='HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetRequest', success_schema='HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get', source_head=SOURCE_HEAD, operation=RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_OPERATION, request_schema='RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetRequest', success_schema='RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_window_api_v1_intelligence_timeline_window_get', source_head=SOURCE_HEAD, operation=GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_OPERATION, request_schema='GetWindowApiV1IntelligenceTimelineWindowGetRequest', success_schema='GetWindowApiV1IntelligenceTimelineWindowGetSuccess'),
-    ContractRegistryEntry(registry_id='http:candle_attribution_api_v1_market_time_machine_candle_attribution_get', source_head=SOURCE_HEAD, operation=CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_OPERATION, request_schema='CandleAttributionApiV1MarketTimeMachineCandleAttributionGetRequest', success_schema='CandleAttributionApiV1MarketTimeMachineCandleAttributionGetSuccess'),
-    ContractRegistryEntry(registry_id='http:market_events_api_v1_market_time_machine_events_get', source_head=SOURCE_HEAD, operation=MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_OPERATION, request_schema='MarketEventsApiV1MarketTimeMachineEventsGetRequest', success_schema='MarketEventsApiV1MarketTimeMachineEventsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:news_impact_api_v1_market_time_machine_news_impact_get', source_head=SOURCE_HEAD, operation=NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_OPERATION, request_schema='NewsImpactApiV1MarketTimeMachineNewsImpactGetRequest', success_schema='NewsImpactApiV1MarketTimeMachineNewsImpactGetSuccess'),
-    ContractRegistryEntry(registry_id='http:provider_degradation_api_v1_market_time_machine_provider_degradation_get', source_head=SOURCE_HEAD, operation=PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_OPERATION, request_schema='ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetRequest', success_schema='ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetSuccess'),
-    ContractRegistryEntry(registry_id='http:reaction_windows_api_v1_market_time_machine_reaction_windows_get', source_head=SOURCE_HEAD, operation=REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_OPERATION, request_schema='ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetRequest', success_schema='ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:regime_transitions_api_v1_market_time_machine_regime_transitions_get', source_head=SOURCE_HEAD, operation=REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_OPERATION, request_schema='RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetRequest', success_schema='RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:signal_reliability_api_v1_market_time_machine_signal_reliability_get', source_head=SOURCE_HEAD, operation=SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_OPERATION, request_schema='SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetRequest', success_schema='SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_candles_api_v1_market_btc_candles_get', source_head=SOURCE_HEAD, operation=BTCCANDLESAPIV1MARKETBTCCANDLESGET_OPERATION, request_schema='BtcCandlesApiV1MarketBtcCandlesGetRequest', success_schema='BtcCandlesApiV1MarketBtcCandlesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_candles_latest_any_api_v1_market_btc_candles_latest_get', source_head=SOURCE_HEAD, operation=BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_OPERATION, request_schema='BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetRequest', success_schema='BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_candle_by_id_api_v1_market_btc_candles__candle_id__get', source_head=SOURCE_HEAD, operation=BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_OPERATION, request_schema='BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetRequest', success_schema='BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get', source_head=SOURCE_HEAD, operation=BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_OPERATION, request_schema='BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetRequest', success_schema='BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get', source_head=SOURCE_HEAD, operation=BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_OPERATION, request_schema='BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetRequest', success_schema='BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_context_api_v1_market_btc_context_get', source_head=SOURCE_HEAD, operation=BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_OPERATION, request_schema='BtcContextApiV1MarketBtcContextGetRequest', success_schema='BtcContextApiV1MarketBtcContextGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_price_api_v1_market_btc_price_get', source_head=SOURCE_HEAD, operation=BTCPRICEAPIV1MARKETBTCPRICEGET_OPERATION, request_schema='BtcPriceApiV1MarketBtcPriceGetRequest', success_schema='BtcPriceApiV1MarketBtcPriceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_price_history_api_v1_market_btc_price_history_get', source_head=SOURCE_HEAD, operation=BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_OPERATION, request_schema='BtcPriceHistoryApiV1MarketBtcPriceHistoryGetRequest', success_schema='BtcPriceHistoryApiV1MarketBtcPriceHistoryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_providers_api_v1_market_btc_providers_get', source_head=SOURCE_HEAD, operation=BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_OPERATION, request_schema='BtcProvidersApiV1MarketBtcProvidersGetRequest', success_schema='BtcProvidersApiV1MarketBtcProvidersGetSuccess'),
-    ContractRegistryEntry(registry_id='http:btc_providers_health_api_v1_market_btc_providers_health_get', source_head=SOURCE_HEAD, operation=BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_OPERATION, request_schema='BtcProvidersHealthApiV1MarketBtcProvidersHealthGetRequest', success_schema='BtcProvidersHealthApiV1MarketBtcProvidersHealthGetSuccess'),
-    ContractRegistryEntry(registry_id='http:market_health_api_v1_market_health_get', source_head=SOURCE_HEAD, operation=MARKETHEALTHAPIV1MARKETHEALTHGET_OPERATION, request_schema='MarketHealthApiV1MarketHealthGetRequest', success_schema='MarketHealthApiV1MarketHealthGetSuccess'),
-    ContractRegistryEntry(registry_id='http:providers_health_api_v1_market_providers_health_get', source_head=SOURCE_HEAD, operation=PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_OPERATION, request_schema='ProvidersHealthApiV1MarketProvidersHealthGetRequest', success_schema='ProvidersHealthApiV1MarketProvidersHealthGetSuccess'),
-    ContractRegistryEntry(registry_id='http:article_duplicates_api_v1_news_articles__article_id__duplicates_get', source_head=SOURCE_HEAD, operation=ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_OPERATION, request_schema='ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetRequest', success_schema='ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:by_sentiment_api_v1_news_by_sentiment__label__get', source_head=SOURCE_HEAD, operation=BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_OPERATION, request_schema='BySentimentApiV1NewsBySentimentLabelGetRequest', success_schema='BySentimentApiV1NewsBySentimentLabelGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_clusters_api_v1_news_clusters_get', source_head=SOURCE_HEAD, operation=LISTCLUSTERSAPIV1NEWSCLUSTERSGET_OPERATION, request_schema='ListClustersApiV1NewsClustersGetRequest', success_schema='ListClustersApiV1NewsClustersGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_cluster_api_v1_news_clusters__cluster_id__get', source_head=SOURCE_HEAD, operation=GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_OPERATION, request_schema='GetClusterApiV1NewsClustersClusterIdGetRequest', success_schema='GetClusterApiV1NewsClustersClusterIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_events_api_v1_news_events_get', source_head=SOURCE_HEAD, operation=LISTEVENTSAPIV1NEWSEVENTSGET_OPERATION, request_schema='ListEventsApiV1NewsEventsGetRequest', success_schema='ListEventsApiV1NewsEventsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:high_impact_events_api_v1_news_events_high_impact_get', source_head=SOURCE_HEAD, operation=HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_OPERATION, request_schema='HighImpactEventsApiV1NewsEventsHighImpactGetRequest', success_schema='HighImpactEventsApiV1NewsEventsHighImpactGetSuccess'),
-    ContractRegistryEntry(registry_id='http:regulatory_events_api_v1_news_events_regulatory_get', source_head=SOURCE_HEAD, operation=REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_OPERATION, request_schema='RegulatoryEventsApiV1NewsEventsRegulatoryGetRequest', success_schema='RegulatoryEventsApiV1NewsEventsRegulatoryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:security_events_api_v1_news_events_security_get', source_head=SOURCE_HEAD, operation=SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_OPERATION, request_schema='SecurityEventsApiV1NewsEventsSecurityGetRequest', success_schema='SecurityEventsApiV1NewsEventsSecurityGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_api_v1_news_events__event_id__get', source_head=SOURCE_HEAD, operation=GETEVENTAPIV1NEWSEVENTSEVENTIDGET_OPERATION, request_schema='GetEventApiV1NewsEventsEventIdGetRequest', success_schema='GetEventApiV1NewsEventsEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_articles_api_v1_news_events__event_id__articles_get', source_head=SOURCE_HEAD, operation=GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_OPERATION, request_schema='GetEventArticlesApiV1NewsEventsEventIdArticlesGetRequest', success_schema='GetEventArticlesApiV1NewsEventsEventIdArticlesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_impact_api_v1_news_events__event_id__impact_get', source_head=SOURCE_HEAD, operation=GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_OPERATION, request_schema='GetEventImpactApiV1NewsEventsEventIdImpactGetRequest', success_schema='GetEventImpactApiV1NewsEventsEventIdImpactGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_event_score_api_v1_news_events__event_id__score_get', source_head=SOURCE_HEAD, operation=GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_OPERATION, request_schema='GetEventScoreApiV1NewsEventsEventIdScoreGetRequest', success_schema='GetEventScoreApiV1NewsEventsEventIdScoreGetSuccess'),
-    ContractRegistryEntry(registry_id='http:high_impact_news_api_v1_news_high_impact_get', source_head=SOURCE_HEAD, operation=HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_OPERATION, request_schema='HighImpactNewsApiV1NewsHighImpactGetRequest', success_schema='HighImpactNewsApiV1NewsHighImpactGetSuccess'),
-    ContractRegistryEntry(registry_id='http:high_relevance_api_v1_news_high_relevance_get', source_head=SOURCE_HEAD, operation=HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_OPERATION, request_schema='HighRelevanceApiV1NewsHighRelevanceGetRequest', success_schema='HighRelevanceApiV1NewsHighRelevanceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:latest_news_api_v1_news_latest_get', source_head=SOURCE_HEAD, operation=LATESTNEWSAPIV1NEWSLATESTGET_OPERATION, request_schema='LatestNewsApiV1NewsLatestGetRequest', success_schema='LatestNewsApiV1NewsLatestGetSuccess'),
-    ContractRegistryEntry(registry_id='http:regulatory_news_api_v1_news_regulatory_get', source_head=SOURCE_HEAD, operation=REGULATORYNEWSAPIV1NEWSREGULATORYGET_OPERATION, request_schema='RegulatoryNewsApiV1NewsRegulatoryGetRequest', success_schema='RegulatoryNewsApiV1NewsRegulatoryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:security_news_api_v1_news_security_get', source_head=SOURCE_HEAD, operation=SECURITYNEWSAPIV1NEWSSECURITYGET_OPERATION, request_schema='SecurityNewsApiV1NewsSecurityGetRequest', success_schema='SecurityNewsApiV1NewsSecurityGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_sources_api_v1_news_sources_get', source_head=SOURCE_HEAD, operation=LISTSOURCESAPIV1NEWSSOURCESGET_OPERATION, request_schema='ListSourcesApiV1NewsSourcesGetRequest', success_schema='ListSourcesApiV1NewsSourcesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:categories_api_v1_news_sources_categories_get', source_head=SOURCE_HEAD, operation=CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_OPERATION, request_schema='CategoriesApiV1NewsSourcesCategoriesGetRequest', success_schema='CategoriesApiV1NewsSourcesCategoriesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:sources_health_api_v1_news_sources_health_get', source_head=SOURCE_HEAD, operation=SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_OPERATION, request_schema='SourcesHealthApiV1NewsSourcesHealthGetRequest', success_schema='SourcesHealthApiV1NewsSourcesHealthGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_source_reputation_api_v1_news_sources_reputation_get', source_head=SOURCE_HEAD, operation=LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_OPERATION, request_schema='ListSourceReputationApiV1NewsSourcesReputationGetRequest', success_schema='ListSourceReputationApiV1NewsSourcesReputationGetSuccess'),
-    ContractRegistryEntry(registry_id='http:tiers_api_v1_news_sources_tiers_get', source_head=SOURCE_HEAD, operation=TIERSAPIV1NEWSSOURCESTIERSGET_OPERATION, request_schema='TiersApiV1NewsSourcesTiersGetRequest', success_schema='TiersApiV1NewsSourcesTiersGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_source_api_v1_news_sources__source_id__get', source_head=SOURCE_HEAD, operation=GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_OPERATION, request_schema='GetSourceApiV1NewsSourcesSourceIdGetRequest', success_schema='GetSourceApiV1NewsSourcesSourceIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:source_confidence_events_api_v1_news_sources__source_id__confidence_events_get', source_head=SOURCE_HEAD, operation=SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_OPERATION, request_schema='SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetRequest', success_schema='SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:source_health_api_v1_news_sources__source_id__health_get', source_head=SOURCE_HEAD, operation=SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_OPERATION, request_schema='SourceHealthApiV1NewsSourcesSourceIdHealthGetRequest', success_schema='SourceHealthApiV1NewsSourcesSourceIdHealthGetSuccess'),
-    ContractRegistryEntry(registry_id='http:source_snapshots_api_v1_news_sources__source_id__snapshots_get', source_head=SOURCE_HEAD, operation=SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_OPERATION, request_schema='SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetRequest', success_schema='SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_article_explanation_api_v1_news__article_id__explanation_get', source_head=SOURCE_HEAD, operation=GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_OPERATION, request_schema='GetArticleExplanationApiV1NewsArticleIdExplanationGetRequest', success_schema='GetArticleExplanationApiV1NewsArticleIdExplanationGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_article_impact_api_v1_news__article_id__impact_get', source_head=SOURCE_HEAD, operation=GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_OPERATION, request_schema='GetArticleImpactApiV1NewsArticleIdImpactGetRequest', success_schema='GetArticleImpactApiV1NewsArticleIdImpactGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_article_narratives_api_v1_news__article_id__narratives_get', source_head=SOURCE_HEAD, operation=GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_OPERATION, request_schema='GetArticleNarrativesApiV1NewsArticleIdNarrativesGetRequest', success_schema='GetArticleNarrativesApiV1NewsArticleIdNarrativesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_article_score_api_v1_news__article_id__score_get', source_head=SOURCE_HEAD, operation=GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_OPERATION, request_schema='GetArticleScoreApiV1NewsArticleIdScoreGetRequest', success_schema='GetArticleScoreApiV1NewsArticleIdScoreGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_article_scores_api_v1_news__article_id__scores_get', source_head=SOURCE_HEAD, operation=GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_OPERATION, request_schema='GetArticleScoresApiV1NewsArticleIdScoresGetRequest', success_schema='GetArticleScoresApiV1NewsArticleIdScoresGetSuccess'),
-    ContractRegistryEntry(registry_id='http:onchain_events_api_v1_onchain_events_get', source_head=SOURCE_HEAD, operation=ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_OPERATION, request_schema='OnchainEventsApiV1OnchainEventsGetRequest', success_schema='OnchainEventsApiV1OnchainEventsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:onchain_state_api_v1_onchain_state_get', source_head=SOURCE_HEAD, operation=ONCHAINSTATEAPIV1ONCHAINSTATEGET_OPERATION, request_schema='OnchainStateApiV1OnchainStateGetRequest', success_schema='OnchainStateApiV1OnchainStateGetSuccess'),
-    ContractRegistryEntry(registry_id='http:public_features_api_v1_public_features_get', source_head=SOURCE_HEAD, operation=PUBLICFEATURESAPIV1PUBLICFEATURESGET_OPERATION, request_schema='PublicFeaturesApiV1PublicFeaturesGetRequest', success_schema='PublicFeaturesApiV1PublicFeaturesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:public_landing_api_v1_public_landing_get', source_head=SOURCE_HEAD, operation=PUBLICLANDINGAPIV1PUBLICLANDINGGET_OPERATION, request_schema='PublicLandingApiV1PublicLandingGetRequest', success_schema='PublicLandingApiV1PublicLandingGetSuccess'),
-    ContractRegistryEntry(registry_id='http:public_roadmap_api_v1_public_roadmap_get', source_head=SOURCE_HEAD, operation=PUBLICROADMAPAPIV1PUBLICROADMAPGET_OPERATION, request_schema='PublicRoadmapApiV1PublicRoadmapGetRequest', success_schema='PublicRoadmapApiV1PublicRoadmapGetSuccess'),
-    ContractRegistryEntry(registry_id='http:public_stats_api_v1_public_stats_get', source_head=SOURCE_HEAD, operation=PUBLICSTATSAPIV1PUBLICSTATSGET_OPERATION, request_schema='PublicStatsApiV1PublicStatsGetRequest', success_schema='PublicStatsApiV1PublicStatsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:public_status_api_v1_public_status_get', source_head=SOURCE_HEAD, operation=PUBLICSTATUSAPIV1PUBLICSTATUSGET_OPERATION, request_schema='PublicStatusApiV1PublicStatusGetRequest', success_schema='PublicStatusApiV1PublicStatusGetSuccess'),
-    ContractRegistryEntry(registry_id='http:public_trace_summary_api_v1_public_trace__report_id__summary_get', source_head=SOURCE_HEAD, operation=PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_OPERATION, request_schema='PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetRequest', success_schema='PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:latest_signals_api_v1_signals_latest_get', source_head=SOURCE_HEAD, operation=LATESTSIGNALSAPIV1SIGNALSLATESTGET_OPERATION, request_schema='LatestSignalsApiV1SignalsLatestGetRequest', success_schema='LatestSignalsApiV1SignalsLatestGetSuccess'),
-    ContractRegistryEntry(registry_id='http:news_market_impact_signals_api_v1_signals_news_market_impact_get', source_head=SOURCE_HEAD, operation=NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_OPERATION, request_schema='NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetRequest', success_schema='NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetSuccess'),
-    ContractRegistryEntry(registry_id='http:top_signals_api_v1_signals_top_get', source_head=SOURCE_HEAD, operation=TOPSIGNALSAPIV1SIGNALSTOPGET_OPERATION, request_schema='TopSignalsApiV1SignalsTopGetRequest', success_schema='TopSignalsApiV1SignalsTopGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_signal_api_v1_signals__signal_id__get', source_head=SOURCE_HEAD, operation=GETSIGNALAPIV1SIGNALSSIGNALIDGET_OPERATION, request_schema='GetSignalApiV1SignalsSignalIdGetRequest', success_schema='GetSignalApiV1SignalsSignalIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get', source_head=SOURCE_HEAD, operation=GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_OPERATION, request_schema='GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetRequest', success_schema='GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_signal_evidence_api_v1_signals__signal_id__evidence_get', source_head=SOURCE_HEAD, operation=GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_OPERATION, request_schema='GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetRequest', success_schema='GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:signal_explanation_api_v1_signals__signal_id__explanation_get', source_head=SOURCE_HEAD, operation=SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_OPERATION, request_schema='SignalExplanationApiV1SignalsSignalIdExplanationGetRequest', success_schema='SignalExplanationApiV1SignalsSignalIdExplanationGetSuccess'),
-    ContractRegistryEntry(registry_id='http:signal_recommendations_api_v1_signals__signal_id__recommendations_get', source_head=SOURCE_HEAD, operation=SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_OPERATION, request_schema='SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetRequest', success_schema='SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:storage_status_api_v1_storage_status_get', source_head=SOURCE_HEAD, operation=STORAGESTATUSAPIV1STORAGESTATUSGET_OPERATION, request_schema='StorageStatusApiV1StorageStatusGetRequest', success_schema='StorageStatusApiV1StorageStatusGetSuccess'),
-    ContractRegistryEntry(registry_id='http:timescale_operations_status_api_v1_storage_timescale_status_get', source_head=SOURCE_HEAD, operation=TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_OPERATION, request_schema='TimescaleOperationsStatusApiV1StorageTimescaleStatusGetRequest', success_schema='TimescaleOperationsStatusApiV1StorageTimescaleStatusGetSuccess'),
-    ContractRegistryEntry(registry_id='http:analyze_address_api_v1_trace_address__address__get', source_head=SOURCE_HEAD, operation=ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_OPERATION, request_schema='AnalyzeAddressApiV1TraceAddressAddressGetRequest', success_schema='AnalyzeAddressApiV1TraceAddressAddressGetSuccess'),
-    ContractRegistryEntry(registry_id='http:trace_alerts_api_v1_trace_alerts_get', source_head=SOURCE_HEAD, operation=TRACEALERTSAPIV1TRACEALERTSGET_OPERATION, request_schema='TraceAlertsApiV1TraceAlertsGetRequest', success_schema='TraceAlertsApiV1TraceAlertsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:trace_events_api_v1_trace_events_get', source_head=SOURCE_HEAD, operation=TRACEEVENTSAPIV1TRACEEVENTSGET_OPERATION, request_schema='TraceEventsApiV1TraceEventsGetRequest', success_schema='TraceEventsApiV1TraceEventsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:trace_event_api_v1_trace_events__event_id__get', source_head=SOURCE_HEAD, operation=TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_OPERATION, request_schema='TraceEventApiV1TraceEventsEventIdGetRequest', success_schema='TraceEventApiV1TraceEventsEventIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:lite_address_check_api_v1_trace_lite__address__get', source_head=SOURCE_HEAD, operation=LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_OPERATION, request_schema='LiteAddressCheckApiV1TraceLiteAddressGetRequest', success_schema='LiteAddressCheckApiV1TraceLiteAddressGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_report_api_v1_trace_report__report_id__get', source_head=SOURCE_HEAD, operation=GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION, request_schema='GetReportApiV1TraceReportReportIdGetRequest', success_schema='GetReportApiV1TraceReportReportIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get', source_head=SOURCE_HEAD, operation=TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_OPERATION, request_schema='TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetRequest', success_schema='TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get', source_head=SOURCE_HEAD, operation=GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_OPERATION, request_schema='GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetRequest', success_schema='GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_dust_radar_api_v1_trace_report__report_id__dust_radar_get', source_head=SOURCE_HEAD, operation=GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_OPERATION, request_schema='GetDustRadarApiV1TraceReportReportIdDustRadarGetRequest', success_schema='GetDustRadarApiV1TraceReportReportIdDustRadarGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_evidence_api_v1_trace_report__report_id__evidence_get', source_head=SOURCE_HEAD, operation=LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_OPERATION, request_schema='ListEvidenceApiV1TraceReportReportIdEvidenceGetRequest', success_schema='ListEvidenceApiV1TraceReportReportIdEvidenceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get', source_head=SOURCE_HEAD, operation=TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION, request_schema='TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetRequest', success_schema='TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_origin_passport_api_v1_trace_report__report_id__origin_passport_get', source_head=SOURCE_HEAD, operation=GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_OPERATION, request_schema='GetOriginPassportApiV1TraceReportReportIdOriginPassportGetRequest', success_schema='GetOriginPassportApiV1TraceReportReportIdOriginPassportGetSuccess'),
-    ContractRegistryEntry(registry_id='http:trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get', source_head=SOURCE_HEAD, operation=TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_OPERATION, request_schema='TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetRequest', success_schema='TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get', source_head=SOURCE_HEAD, operation=GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION, request_schema='GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetRequest', success_schema='GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_proof_packet_api_v1_trace_report__report_id__proof_packet_get', source_head=SOURCE_HEAD, operation=GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION, request_schema='GetProofPacketApiV1TraceReportReportIdProofPacketGetRequest', success_schema='GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get', source_head=SOURCE_HEAD, operation=GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_OPERATION, request_schema='GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetRequest', success_schema='GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_source_summary_api_v1_trace_report__report_id__source_summary_get', source_head=SOURCE_HEAD, operation=GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_OPERATION, request_schema='GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetRequest', success_schema='GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get', source_head=SOURCE_HEAD, operation=GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_OPERATION, request_schema='GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetRequest', success_schema='GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_sources_api_v1_trace_sources_get', source_head=SOURCE_HEAD, operation=LISTSOURCESAPIV1TRACESOURCESGET_OPERATION, request_schema='ListSourcesApiV1TraceSourcesGetRequest', success_schema='ListSourcesApiV1TraceSourcesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:get_source_api_v1_trace_sources__source_name__get', source_head=SOURCE_HEAD, operation=GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_OPERATION, request_schema='GetSourceApiV1TraceSourcesSourceNameGetRequest', success_schema='GetSourceApiV1TraceSourcesSourceNameGetSuccess'),
-    ContractRegistryEntry(registry_id='http:trace_status_api_v1_trace_status_get', source_head=SOURCE_HEAD, operation=TRACESTATUSAPIV1TRACESTATUSGET_OPERATION, request_schema='TraceStatusApiV1TraceStatusGetRequest', success_schema='TraceStatusApiV1TraceStatusGetSuccess'),
-    ContractRegistryEntry(registry_id='http:list_watchlist_api_v1_trace_watchlist_get', source_head=SOURCE_HEAD, operation=LISTWATCHLISTAPIV1TRACEWATCHLISTGET_OPERATION, request_schema='ListWatchlistApiV1TraceWatchlistGetRequest', success_schema='ListWatchlistApiV1TraceWatchlistGetSuccess'),
-    ContractRegistryEntry(registry_id='http:dependencies_health_dependencies_get', source_head=SOURCE_HEAD, operation=DEPENDENCIESHEALTHDEPENDENCIESGET_OPERATION, request_schema='DependenciesHealthDependenciesGetRequest', success_schema='DependenciesHealthDependenciesGetSuccess'),
-    ContractRegistryEntry(registry_id='http:intelligence_health_intelligence_get', source_head=SOURCE_HEAD, operation=INTELLIGENCEHEALTHINTELLIGENCEGET_OPERATION, request_schema='IntelligenceHealthIntelligenceGetRequest', success_schema='IntelligenceHealthIntelligenceGetSuccess'),
-    ContractRegistryEntry(registry_id='http:live_health_live_get', source_head=SOURCE_HEAD, operation=LIVEHEALTHLIVEGET_OPERATION, request_schema='LiveHealthLiveGetRequest', success_schema='LiveHealthLiveGetSuccess'),
-    ContractRegistryEntry(registry_id='http:operations_health_operations_get', source_head=SOURCE_HEAD, operation=OPERATIONSHEALTHOPERATIONSGET_OPERATION, request_schema='OperationsHealthOperationsGetRequest', success_schema='OperationsHealthOperationsGetSuccess'),
-    ContractRegistryEntry(registry_id='http:providers_health_providers_get', source_head=SOURCE_HEAD, operation=PROVIDERSHEALTHPROVIDERSGET_OPERATION, request_schema='ProvidersHealthProvidersGetRequest', success_schema='ProvidersHealthProvidersGetSuccess'),
-    ContractRegistryEntry(registry_id='http:ready_health_ready_get', source_head=SOURCE_HEAD, operation=READYHEALTHREADYGET_OPERATION, request_schema='ReadyHealthReadyGetRequest', success_schema='ReadyHealthReadyGetSuccess'),
-    ContractRegistryEntry(registry_id='http:startup_health_startup_get', source_head=SOURCE_HEAD, operation=STARTUPHEALTHSTARTUPGET_OPERATION, request_schema='StartupHealthStartupGetRequest', success_schema='StartupHealthStartupGetSuccess'),
-    ContractRegistryEntry(registry_id='http:web_candle_dto_web_candle__candle_id__get', source_head=SOURCE_HEAD, operation=WEBCANDLEDTOWEBCANDLECANDLEIDGET_OPERATION, request_schema='WebCandleDtoWebCandleCandleIdGetRequest', success_schema='WebCandleDtoWebCandleCandleIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:web_evidence_dto_web_evidence__packet_id__get', source_head=SOURCE_HEAD, operation=WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_OPERATION, request_schema='WebEvidenceDtoWebEvidencePacketIdGetRequest', success_schema='WebEvidenceDtoWebEvidencePacketIdGetSuccess'),
-    ContractRegistryEntry(registry_id='http:web_market_time_machine_dto_web_market_time_machine_get', source_head=SOURCE_HEAD, operation=WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_OPERATION, request_schema='WebMarketTimeMachineDtoWebMarketTimeMachineGetRequest', success_schema='WebMarketTimeMachineDtoWebMarketTimeMachineGetSuccess'),
-    ContractRegistryEntry(registry_id='http:web_timeline_dto_web_timeline_get', source_head=SOURCE_HEAD, operation=WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, request_schema='WebTimelineDtoWebTimelineGetRequest', success_schema='WebTimelineDtoWebTimelineGetSuccess'),
+    ContractRegistryEntry(registry_id='http:list_child_api_keys_api_v1_access_api_keys_get', source_head=SOURCE_HEAD, operation=LISTCHILDAPIKEYSAPIV1ACCESSAPIKEYSGET_OPERATION, request_schema='ListChildApiKeysApiV1AccessApiKeysGetRequest', success_schema='ListChildApiKeysApiV1AccessApiKeysGetSuccess', error_schema='ListChildApiKeysApiV1AccessApiKeysGetError'),
+    ContractRegistryEntry(registry_id='http:get_child_api_key_api_v1_access_api_keys__key_id__get', source_head=SOURCE_HEAD, operation=GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_OPERATION, request_schema='GetChildApiKeyApiV1AccessApiKeysKeyIdGetRequest', success_schema='GetChildApiKeyApiV1AccessApiKeysKeyIdGetSuccess', error_schema='GetChildApiKeyApiV1AccessApiKeysKeyIdGetError'),
+    ContractRegistryEntry(registry_id='http:list_delegated_passes_api_v1_access_delegated_passes_get', source_head=SOURCE_HEAD, operation=LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_OPERATION, request_schema='ListDelegatedPassesApiV1AccessDelegatedPassesGetRequest', success_schema='ListDelegatedPassesApiV1AccessDelegatedPassesGetSuccess', error_schema='ListDelegatedPassesApiV1AccessDelegatedPassesGetError'),
+    ContractRegistryEntry(registry_id='http:get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get', source_head=SOURCE_HEAD, operation=GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_OPERATION, request_schema='GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetRequest', success_schema='GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetSuccess', error_schema='GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_human_intent_api_v1_access_intents__intent_id__get', source_head=SOURCE_HEAD, operation=GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION, request_schema='GetHumanIntentApiV1AccessIntentsIntentIdGetRequest', success_schema='GetHumanIntentApiV1AccessIntentsIntentIdGetSuccess', error_schema='GetHumanIntentApiV1AccessIntentsIntentIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_me_api_v1_access_me_get', source_head=SOURCE_HEAD, operation=GETMEAPIV1ACCESSMEGET_OPERATION, request_schema='GetMeApiV1AccessMeGetRequest', success_schema='GetMeApiV1AccessMeGetSuccess', error_schema='GetMeApiV1AccessMeGetError'),
+    ContractRegistryEntry(registry_id='http:get_my_entitlements_api_v1_access_me_entitlements_get', source_head=SOURCE_HEAD, operation=GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_OPERATION, request_schema='GetMyEntitlementsApiV1AccessMeEntitlementsGetRequest', success_schema='GetMyEntitlementsApiV1AccessMeEntitlementsGetSuccess', error_schema='GetMyEntitlementsApiV1AccessMeEntitlementsGetError'),
+    ContractRegistryEntry(registry_id='http:get_my_limits_api_v1_access_me_limits_get', source_head=SOURCE_HEAD, operation=GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION, request_schema='GetMyLimitsApiV1AccessMeLimitsGetRequest', success_schema='GetMyLimitsApiV1AccessMeLimitsGetSuccess', error_schema='GetMyLimitsApiV1AccessMeLimitsGetError'),
+    ContractRegistryEntry(registry_id='http:get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get', source_head=SOURCE_HEAD, operation=GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_OPERATION, request_schema='GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetRequest', success_schema='GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetSuccess', error_schema='GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetError'),
+    ContractRegistryEntry(registry_id='http:recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get', source_head=SOURCE_HEAD, operation=RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_OPERATION, request_schema='RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetRequest', success_schema='RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetSuccess', error_schema='RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetError'),
+    ContractRegistryEntry(registry_id='http:list_addresses_api_v1_business_lightning_addresses_get', source_head=SOURCE_HEAD, operation=LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_OPERATION, request_schema='ListAddressesApiV1BusinessLightningAddressesGetRequest', success_schema='ListAddressesApiV1BusinessLightningAddressesGetSuccess', error_schema='ListAddressesApiV1BusinessLightningAddressesGetError'),
+    ContractRegistryEntry(registry_id='http:get_address_api_v1_business_lightning_addresses__address_id__get', source_head=SOURCE_HEAD, operation=GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_OPERATION, request_schema='GetAddressApiV1BusinessLightningAddressesAddressIdGetRequest', success_schema='GetAddressApiV1BusinessLightningAddressesAddressIdGetSuccess', error_schema='GetAddressApiV1BusinessLightningAddressesAddressIdGetError'),
+    ContractRegistryEntry(registry_id='http:list_domains_api_v1_business_lightning_domains_get', source_head=SOURCE_HEAD, operation=LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_OPERATION, request_schema='ListDomainsApiV1BusinessLightningDomainsGetRequest', success_schema='ListDomainsApiV1BusinessLightningDomainsGetSuccess', error_schema='ListDomainsApiV1BusinessLightningDomainsGetError'),
+    ContractRegistryEntry(registry_id='http:get_domain_api_v1_business_lightning_domains__domain_id__get', source_head=SOURCE_HEAD, operation=GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_OPERATION, request_schema='GetDomainApiV1BusinessLightningDomainsDomainIdGetRequest', success_schema='GetDomainApiV1BusinessLightningDomainsDomainIdGetSuccess', error_schema='GetDomainApiV1BusinessLightningDomainsDomainIdGetError'),
+    ContractRegistryEntry(registry_id='http:citadel_assessment_api_v1_citadel_assessment_get', source_head=SOURCE_HEAD, operation=CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_OPERATION, request_schema='CitadelAssessmentApiV1CitadelAssessmentGetRequest', success_schema='CitadelAssessmentApiV1CitadelAssessmentGetSuccess', error_schema='CitadelAssessmentApiV1CitadelAssessmentGetError'),
+    ContractRegistryEntry(registry_id='http:citadel_dependencies_api_v1_citadel_dependencies_get', source_head=SOURCE_HEAD, operation=CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_OPERATION, request_schema='CitadelDependenciesApiV1CitadelDependenciesGetRequest', success_schema='CitadelDependenciesApiV1CitadelDependenciesGetSuccess', error_schema='CitadelDependenciesApiV1CitadelDependenciesGetError'),
+    ContractRegistryEntry(registry_id='http:citadel_inheritance_api_v1_citadel_inheritance_get', source_head=SOURCE_HEAD, operation=CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_OPERATION, request_schema='CitadelInheritanceApiV1CitadelInheritanceGetRequest', success_schema='CitadelInheritanceApiV1CitadelInheritanceGetSuccess', error_schema='CitadelInheritanceApiV1CitadelInheritanceGetError'),
+    ContractRegistryEntry(registry_id='http:citadel_overview_api_v1_citadel_overview_get', source_head=SOURCE_HEAD, operation=CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_OPERATION, request_schema='CitadelOverviewApiV1CitadelOverviewGetRequest', success_schema='CitadelOverviewApiV1CitadelOverviewGetSuccess', error_schema='CitadelOverviewApiV1CitadelOverviewGetError'),
+    ContractRegistryEntry(registry_id='http:citadel_policy_checks_api_v1_citadel_policy_checks_get', source_head=SOURCE_HEAD, operation=CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_OPERATION, request_schema='CitadelPolicyChecksApiV1CitadelPolicyChecksGetRequest', success_schema='CitadelPolicyChecksApiV1CitadelPolicyChecksGetSuccess', error_schema='CitadelPolicyChecksApiV1CitadelPolicyChecksGetError'),
+    ContractRegistryEntry(registry_id='http:citadel_recovery_api_v1_citadel_recovery_get', source_head=SOURCE_HEAD, operation=CITADELRECOVERYAPIV1CITADELRECOVERYGET_OPERATION, request_schema='CitadelRecoveryApiV1CitadelRecoveryGetRequest', success_schema='CitadelRecoveryApiV1CitadelRecoveryGetSuccess', error_schema='CitadelRecoveryApiV1CitadelRecoveryGetError'),
+    ContractRegistryEntry(registry_id='http:citadel_repair_plan_api_v1_citadel_repair_plan_get', source_head=SOURCE_HEAD, operation=CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_OPERATION, request_schema='CitadelRepairPlanApiV1CitadelRepairPlanGetRequest', success_schema='CitadelRepairPlanApiV1CitadelRepairPlanGetSuccess', error_schema='CitadelRepairPlanApiV1CitadelRepairPlanGetError'),
+    ContractRegistryEntry(registry_id='http:list_simulations_api_v1_citadel_simulations_get', source_head=SOURCE_HEAD, operation=LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_OPERATION, request_schema='ListSimulationsApiV1CitadelSimulationsGetRequest', success_schema='ListSimulationsApiV1CitadelSimulationsGetSuccess', error_schema='ListSimulationsApiV1CitadelSimulationsGetError'),
+    ContractRegistryEntry(registry_id='http:list_snippets_api_v1_education_snippets_get', source_head=SOURCE_HEAD, operation=LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_OPERATION, request_schema='ListSnippetsApiV1EducationSnippetsGetRequest', success_schema='ListSnippetsApiV1EducationSnippetsGetSuccess', error_schema='ListSnippetsApiV1EducationSnippetsGetError'),
+    ContractRegistryEntry(registry_id='http:list_entities_api_v1_entities_get', source_head=SOURCE_HEAD, operation=LISTENTITIESAPIV1ENTITIESGET_OPERATION, request_schema='ListEntitiesApiV1EntitiesGetRequest', success_schema='ListEntitiesApiV1EntitiesGetSuccess', error_schema='ListEntitiesApiV1EntitiesGetError'),
+    ContractRegistryEntry(registry_id='http:get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get', source_head=SOURCE_HEAD, operation=GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_OPERATION, request_schema='GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetRequest', success_schema='GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetSuccess', error_schema='GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:list_evidence_packets_api_v1_evidence_packets_get', source_head=SOURCE_HEAD, operation=LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_OPERATION, request_schema='ListEvidencePacketsApiV1EvidencePacketsGetRequest', success_schema='ListEvidencePacketsApiV1EvidencePacketsGetSuccess', error_schema='ListEvidencePacketsApiV1EvidencePacketsGetError'),
+    ContractRegistryEntry(registry_id='http:get_evidence_packet_api_v1_evidence_packets__packet_id__get', source_head=SOURCE_HEAD, operation=GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_OPERATION, request_schema='GetEvidencePacketApiV1EvidencePacketsPacketIdGetRequest', success_schema='GetEvidencePacketApiV1EvidencePacketsPacketIdGetSuccess', error_schema='GetEvidencePacketApiV1EvidencePacketsPacketIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get', source_head=SOURCE_HEAD, operation=GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_OPERATION, request_schema='GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetRequest', success_schema='GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetSuccess', error_schema='GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetError'),
+    ContractRegistryEntry(registry_id='http:get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get', source_head=SOURCE_HEAD, operation=GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_OPERATION, request_schema='GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetRequest', success_schema='GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetSuccess', error_schema='GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetError'),
+    ContractRegistryEntry(registry_id='http:replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get', source_head=SOURCE_HEAD, operation=REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_OPERATION, request_schema='ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetRequest', success_schema='ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetSuccess', error_schema='ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetError'),
+    ContractRegistryEntry(registry_id='http:replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get', source_head=SOURCE_HEAD, operation=REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_OPERATION, request_schema='ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetRequest', success_schema='ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetSuccess', error_schema='ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetError'),
+    ContractRegistryEntry(registry_id='http:replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get', source_head=SOURCE_HEAD, operation=REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_OPERATION, request_schema='ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetRequest', success_schema='ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetSuccess', error_schema='ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetError'),
+    ContractRegistryEntry(registry_id='http:health_api_v1_health_get', source_head=SOURCE_HEAD, operation=HEALTHAPIV1HEALTHGET_OPERATION, request_schema='HealthApiV1HealthGetRequest', success_schema='HealthApiV1HealthGetSuccess', error_schema='HealthApiV1HealthGetError'),
+    ContractRegistryEntry(registry_id='http:degraded_api_v1_health_degraded_get', source_head=SOURCE_HEAD, operation=DEGRADEDAPIV1HEALTHDEGRADEDGET_OPERATION, request_schema='DegradedApiV1HealthDegradedGetRequest', success_schema='DegradedApiV1HealthDegradedGetSuccess', error_schema='DegradedApiV1HealthDegradedGetError'),
+    ContractRegistryEntry(registry_id='http:jobs_api_v1_health_jobs_get', source_head=SOURCE_HEAD, operation=JOBSAPIV1HEALTHJOBSGET_OPERATION, request_schema='JobsApiV1HealthJobsGetRequest', success_schema='JobsApiV1HealthJobsGetSuccess', error_schema='JobsApiV1HealthJobsGetError'),
+    ContractRegistryEntry(registry_id='http:liveness_api_v1_health_live_get', source_head=SOURCE_HEAD, operation=LIVENESSAPIV1HEALTHLIVEGET_OPERATION, request_schema='LivenessApiV1HealthLiveGetRequest', success_schema='LivenessApiV1HealthLiveGetSuccess', error_schema='LivenessApiV1HealthLiveGetError'),
+    ContractRegistryEntry(registry_id='http:providers_api_v1_health_providers_get', source_head=SOURCE_HEAD, operation=PROVIDERSAPIV1HEALTHPROVIDERSGET_OPERATION, request_schema='ProvidersApiV1HealthProvidersGetRequest', success_schema='ProvidersApiV1HealthProvidersGetSuccess', error_schema='ProvidersApiV1HealthProvidersGetError'),
+    ContractRegistryEntry(registry_id='http:readiness_api_v1_health_ready_get', source_head=SOURCE_HEAD, operation=READINESSAPIV1HEALTHREADYGET_OPERATION, request_schema='ReadinessApiV1HealthReadyGetRequest', success_schema='ReadinessApiV1HealthReadyGetSuccess', error_schema='ReadinessApiV1HealthReadyGetError'),
+    ContractRegistryEntry(registry_id='http:runtime_api_v1_health_runtime_get', source_head=SOURCE_HEAD, operation=RUNTIMEAPIV1HEALTHRUNTIMEGET_OPERATION, request_schema='RuntimeApiV1HealthRuntimeGetRequest', success_schema='RuntimeApiV1HealthRuntimeGetSuccess', error_schema='RuntimeApiV1HealthRuntimeGetError'),
+    ContractRegistryEntry(registry_id='http:system_health_api_v1_health_system_get', source_head=SOURCE_HEAD, operation=SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_OPERATION, request_schema='SystemHealthApiV1HealthSystemGetRequest', success_schema='SystemHealthApiV1HealthSystemGetSuccess', error_schema='SystemHealthApiV1HealthSystemGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get', source_head=SOURCE_HEAD, operation=GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_OPERATION, request_schema='GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetRequest', success_schema='GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetSuccess', error_schema='GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get', source_head=SOURCE_HEAD, operation=GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_OPERATION, request_schema='GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetRequest', success_schema='GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetSuccess', error_schema='GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get', source_head=SOURCE_HEAD, operation=GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_OPERATION, request_schema='GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetRequest', success_schema='GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetSuccess', error_schema='GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_context_api_v1_intelligence_candles__candle_id__context_get', source_head=SOURCE_HEAD, operation=GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_OPERATION, request_schema='GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetRequest', success_schema='GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetSuccess', error_schema='GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get', source_head=SOURCE_HEAD, operation=GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_OPERATION, request_schema='GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetRequest', success_schema='GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetSuccess', error_schema='GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get', source_head=SOURCE_HEAD, operation=GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_OPERATION, request_schema='GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetRequest', success_schema='GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetSuccess', error_schema='GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetError'),
+    ContractRegistryEntry(registry_id='http:explain_candle_api_v1_intelligence_candles__candle_id__explain_get', source_head=SOURCE_HEAD, operation=EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_OPERATION, request_schema='ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetRequest', success_schema='ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetSuccess', error_schema='ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get', source_head=SOURCE_HEAD, operation=GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_OPERATION, request_schema='GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetRequest', success_schema='GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetSuccess', error_schema='GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get', source_head=SOURCE_HEAD, operation=GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_OPERATION, request_schema='GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetRequest', success_schema='GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetSuccess', error_schema='GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get', source_head=SOURCE_HEAD, operation=GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_OPERATION, request_schema='GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetRequest', success_schema='GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetSuccess', error_schema='GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_market_memory_api_v1_intelligence_events__event_id__memory_get', source_head=SOURCE_HEAD, operation=GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_OPERATION, request_schema='GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetRequest', success_schema='GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetSuccess', error_schema='GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get', source_head=SOURCE_HEAD, operation=GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_OPERATION, request_schema='GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetRequest', success_schema='GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetSuccess', error_schema='GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get', source_head=SOURCE_HEAD, operation=GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_OPERATION, request_schema='GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetRequest', success_schema='GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetSuccess', error_schema='GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get', source_head=SOURCE_HEAD, operation=GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_OPERATION, request_schema='GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetRequest', success_schema='GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetSuccess', error_schema='GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetError'),
+    ContractRegistryEntry(registry_id='http:get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get', source_head=SOURCE_HEAD, operation=GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_OPERATION, request_schema='GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetRequest', success_schema='GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetSuccess', error_schema='GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetError'),
+    ContractRegistryEntry(registry_id='http:list_narratives_api_v1_intelligence_narratives_get', source_head=SOURCE_HEAD, operation=LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_OPERATION, request_schema='ListNarrativesApiV1IntelligenceNarrativesGetRequest', success_schema='ListNarrativesApiV1IntelligenceNarrativesGetSuccess', error_schema='ListNarrativesApiV1IntelligenceNarrativesGetError'),
+    ContractRegistryEntry(registry_id='http:get_active_narrative_memory_api_v1_intelligence_narratives_active_get', source_head=SOURCE_HEAD, operation=GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_OPERATION, request_schema='GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetRequest', success_schema='GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetSuccess', error_schema='GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetError'),
+    ContractRegistryEntry(registry_id='http:get_narrative_dominance_api_v1_intelligence_narratives_dominance_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_OPERATION, request_schema='GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetRequest', success_schema='GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetSuccess', error_schema='GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetError'),
+    ContractRegistryEntry(registry_id='http:get_dominant_narratives_api_v1_intelligence_narratives_dominant_get', source_head=SOURCE_HEAD, operation=GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_OPERATION, request_schema='GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetRequest', success_schema='GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetSuccess', error_schema='GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetError'),
+    ContractRegistryEntry(registry_id='http:get_emerging_narratives_api_v1_intelligence_narratives_emerging_get', source_head=SOURCE_HEAD, operation=GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_OPERATION, request_schema='GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetRequest', success_schema='GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetSuccess', error_schema='GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetError'),
+    ContractRegistryEntry(registry_id='http:get_falling_narratives_api_v1_intelligence_narratives_falling_get', source_head=SOURCE_HEAD, operation=GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_OPERATION, request_schema='GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetRequest', success_schema='GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetSuccess', error_schema='GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetError'),
+    ContractRegistryEntry(registry_id='http:get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_OPERATION, request_schema='GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetRequest', success_schema='GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetSuccess', error_schema='GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetError'),
+    ContractRegistryEntry(registry_id='http:get_narrative_history_api_v1_intelligence_narratives_history_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_OPERATION, request_schema='GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetRequest', success_schema='GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetSuccess', error_schema='GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetError'),
+    ContractRegistryEntry(registry_id='http:get_narrative_memory_api_v1_intelligence_narratives_memory_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_OPERATION, request_schema='GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetRequest', success_schema='GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetSuccess', error_schema='GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetError'),
+    ContractRegistryEntry(registry_id='http:get_rising_narratives_api_v1_intelligence_narratives_rising_get', source_head=SOURCE_HEAD, operation=GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_OPERATION, request_schema='GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetRequest', success_schema='GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetSuccess', error_schema='GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetError'),
+    ContractRegistryEntry(registry_id='http:get_narrative_rotations_api_v1_intelligence_narratives_rotations_get', source_head=SOURCE_HEAD, operation=GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_OPERATION, request_schema='GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetRequest', success_schema='GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetSuccess', error_schema='GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetError'),
+    ContractRegistryEntry(registry_id='http:get_top_narratives_api_v1_intelligence_narratives_top_get', source_head=SOURCE_HEAD, operation=GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_OPERATION, request_schema='GetTopNarrativesApiV1IntelligenceNarrativesTopGetRequest', success_schema='GetTopNarrativesApiV1IntelligenceNarrativesTopGetSuccess', error_schema='GetTopNarrativesApiV1IntelligenceNarrativesTopGetError'),
+    ContractRegistryEntry(registry_id='http:get_narrative_api_v1_intelligence_narratives__slug__get', source_head=SOURCE_HEAD, operation=GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_OPERATION, request_schema='GetNarrativeApiV1IntelligenceNarrativesSlugGetRequest', success_schema='GetNarrativeApiV1IntelligenceNarrativesSlugGetSuccess', error_schema='GetNarrativeApiV1IntelligenceNarrativesSlugGetError'),
+    ContractRegistryEntry(registry_id='http:list_market_patterns_api_v1_intelligence_patterns_get', source_head=SOURCE_HEAD, operation=LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_OPERATION, request_schema='ListMarketPatternsApiV1IntelligencePatternsGetRequest', success_schema='ListMarketPatternsApiV1IntelligencePatternsGetSuccess', error_schema='ListMarketPatternsApiV1IntelligencePatternsGetError'),
+    ContractRegistryEntry(registry_id='http:get_market_pattern_api_v1_intelligence_patterns__pattern_id__get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_OPERATION, request_schema='GetMarketPatternApiV1IntelligencePatternsPatternIdGetRequest', success_schema='GetMarketPatternApiV1IntelligencePatternsPatternIdGetSuccess', error_schema='GetMarketPatternApiV1IntelligencePatternsPatternIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_OPERATION, request_schema='GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetRequest', success_schema='GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetSuccess', error_schema='GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetError'),
+    ContractRegistryEntry(registry_id='http:get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_OPERATION, request_schema='GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetRequest', success_schema='GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetSuccess', error_schema='GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetError'),
+    ContractRegistryEntry(registry_id='http:get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILEGET_OPERATION, request_schema='GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetRequest', success_schema='GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetSuccess', error_schema='GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetError'),
+    ContractRegistryEntry(registry_id='http:get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get', source_head=SOURCE_HEAD, operation=GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_OPERATION, request_schema='GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetRequest', success_schema='GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetSuccess', error_schema='GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetError'),
+    ContractRegistryEntry(registry_id='http:get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get', source_head=SOURCE_HEAD, operation=GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_OPERATION, request_schema='GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetRequest', success_schema='GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetSuccess', error_schema='GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get', source_head=SOURCE_HEAD, operation=GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_OPERATION, request_schema='GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetRequest', success_schema='GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetSuccess', error_schema='GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get', source_head=SOURCE_HEAD, operation=GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_OPERATION, request_schema='GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetRequest', success_schema='GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetSuccess', error_schema='GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get', source_head=SOURCE_HEAD, operation=GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_OPERATION, request_schema='GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetRequest', success_schema='GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetSuccess', error_schema='GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_similarity_api_v1_intelligence_similarity_event__event_id__get', source_head=SOURCE_HEAD, operation=GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_OPERATION, request_schema='GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetRequest', success_schema='GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetSuccess', error_schema='GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get', source_head=SOURCE_HEAD, operation=GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_OPERATION, request_schema='GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetRequest', success_schema='GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetSuccess', error_schema='GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_news_similarity_api_v1_intelligence_similarity_news__event_id__get', source_head=SOURCE_HEAD, operation=GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_OPERATION, request_schema='GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetRequest', success_schema='GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetSuccess', error_schema='GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get', source_head=SOURCE_HEAD, operation=GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_OPERATION, request_schema='GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetRequest', success_schema='GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetSuccess', error_schema='GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get', source_head=SOURCE_HEAD, operation=GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_OPERATION, request_schema='GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetRequest', success_schema='GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetSuccess', error_schema='GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get', source_head=SOURCE_HEAD, operation=GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_OPERATION, request_schema='GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetRequest', success_schema='GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetSuccess', error_schema='GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetError'),
+    ContractRegistryEntry(registry_id='http:get_timeline_api_v1_intelligence_timeline_get', source_head=SOURCE_HEAD, operation=GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_OPERATION, request_schema='GetTimelineApiV1IntelligenceTimelineGetRequest', success_schema='GetTimelineApiV1IntelligenceTimelineGetSuccess', error_schema='GetTimelineApiV1IntelligenceTimelineGetError'),
+    ContractRegistryEntry(registry_id='http:get_context_api_v1_intelligence_timeline_context__timeline_event_id__get', source_head=SOURCE_HEAD, operation=GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_OPERATION, request_schema='GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetRequest', success_schema='GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetSuccess', error_schema='GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_timeline_day_api_v1_intelligence_timeline_day_get', source_head=SOURCE_HEAD, operation=GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_OPERATION, request_schema='GetTimelineDayApiV1IntelligenceTimelineDayGetRequest', success_schema='GetTimelineDayApiV1IntelligenceTimelineDayGetSuccess', error_schema='GetTimelineDayApiV1IntelligenceTimelineDayGetError'),
+    ContractRegistryEntry(registry_id='http:get_timeline_hour_api_v1_intelligence_timeline_hour_get', source_head=SOURCE_HEAD, operation=GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_OPERATION, request_schema='GetTimelineHourApiV1IntelligenceTimelineHourGetRequest', success_schema='GetTimelineHourApiV1IntelligenceTimelineHourGetSuccess', error_schema='GetTimelineHourApiV1IntelligenceTimelineHourGetError'),
+    ContractRegistryEntry(registry_id='http:get_latest_api_v1_intelligence_timeline_latest_get', source_head=SOURCE_HEAD, operation=GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_OPERATION, request_schema='GetLatestApiV1IntelligenceTimelineLatestGetRequest', success_schema='GetLatestApiV1IntelligenceTimelineLatestGetSuccess', error_schema='GetLatestApiV1IntelligenceTimelineLatestGetError'),
+    ContractRegistryEntry(registry_id='http:current_narratives_api_v1_intelligence_timeline_narratives_current_get', source_head=SOURCE_HEAD, operation=CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_OPERATION, request_schema='CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetRequest', success_schema='CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetSuccess', error_schema='CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetError'),
+    ContractRegistryEntry(registry_id='http:high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get', source_head=SOURCE_HEAD, operation=HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_OPERATION, request_schema='HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetRequest', success_schema='HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetSuccess', error_schema='HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetError'),
+    ContractRegistryEntry(registry_id='http:recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get', source_head=SOURCE_HEAD, operation=RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_OPERATION, request_schema='RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetRequest', success_schema='RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetSuccess', error_schema='RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetError'),
+    ContractRegistryEntry(registry_id='http:get_window_api_v1_intelligence_timeline_window_get', source_head=SOURCE_HEAD, operation=GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_OPERATION, request_schema='GetWindowApiV1IntelligenceTimelineWindowGetRequest', success_schema='GetWindowApiV1IntelligenceTimelineWindowGetSuccess', error_schema='GetWindowApiV1IntelligenceTimelineWindowGetError'),
+    ContractRegistryEntry(registry_id='http:candle_attribution_api_v1_market_time_machine_candle_attribution_get', source_head=SOURCE_HEAD, operation=CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_OPERATION, request_schema='CandleAttributionApiV1MarketTimeMachineCandleAttributionGetRequest', success_schema='CandleAttributionApiV1MarketTimeMachineCandleAttributionGetSuccess', error_schema='CandleAttributionApiV1MarketTimeMachineCandleAttributionGetError'),
+    ContractRegistryEntry(registry_id='http:market_events_api_v1_market_time_machine_events_get', source_head=SOURCE_HEAD, operation=MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_OPERATION, request_schema='MarketEventsApiV1MarketTimeMachineEventsGetRequest', success_schema='MarketEventsApiV1MarketTimeMachineEventsGetSuccess', error_schema='MarketEventsApiV1MarketTimeMachineEventsGetError'),
+    ContractRegistryEntry(registry_id='http:news_impact_api_v1_market_time_machine_news_impact_get', source_head=SOURCE_HEAD, operation=NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_OPERATION, request_schema='NewsImpactApiV1MarketTimeMachineNewsImpactGetRequest', success_schema='NewsImpactApiV1MarketTimeMachineNewsImpactGetSuccess', error_schema='NewsImpactApiV1MarketTimeMachineNewsImpactGetError'),
+    ContractRegistryEntry(registry_id='http:provider_degradation_api_v1_market_time_machine_provider_degradation_get', source_head=SOURCE_HEAD, operation=PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_OPERATION, request_schema='ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetRequest', success_schema='ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetSuccess', error_schema='ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetError'),
+    ContractRegistryEntry(registry_id='http:reaction_windows_api_v1_market_time_machine_reaction_windows_get', source_head=SOURCE_HEAD, operation=REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_OPERATION, request_schema='ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetRequest', success_schema='ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetSuccess', error_schema='ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetError'),
+    ContractRegistryEntry(registry_id='http:regime_transitions_api_v1_market_time_machine_regime_transitions_get', source_head=SOURCE_HEAD, operation=REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_OPERATION, request_schema='RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetRequest', success_schema='RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetSuccess', error_schema='RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetError'),
+    ContractRegistryEntry(registry_id='http:signal_reliability_api_v1_market_time_machine_signal_reliability_get', source_head=SOURCE_HEAD, operation=SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_OPERATION, request_schema='SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetRequest', success_schema='SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetSuccess', error_schema='SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetError'),
+    ContractRegistryEntry(registry_id='http:btc_candles_api_v1_market_btc_candles_get', source_head=SOURCE_HEAD, operation=BTCCANDLESAPIV1MARKETBTCCANDLESGET_OPERATION, request_schema='BtcCandlesApiV1MarketBtcCandlesGetRequest', success_schema='BtcCandlesApiV1MarketBtcCandlesGetSuccess', error_schema='BtcCandlesApiV1MarketBtcCandlesGetError'),
+    ContractRegistryEntry(registry_id='http:btc_candles_latest_any_api_v1_market_btc_candles_latest_get', source_head=SOURCE_HEAD, operation=BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_OPERATION, request_schema='BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetRequest', success_schema='BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetSuccess', error_schema='BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetError'),
+    ContractRegistryEntry(registry_id='http:btc_candle_by_id_api_v1_market_btc_candles__candle_id__get', source_head=SOURCE_HEAD, operation=BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_OPERATION, request_schema='BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetRequest', success_schema='BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetSuccess', error_schema='BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetError'),
+    ContractRegistryEntry(registry_id='http:btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get', source_head=SOURCE_HEAD, operation=BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_OPERATION, request_schema='BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetRequest', success_schema='BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetSuccess', error_schema='BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetError'),
+    ContractRegistryEntry(registry_id='http:btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get', source_head=SOURCE_HEAD, operation=BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_OPERATION, request_schema='BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetRequest', success_schema='BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetSuccess', error_schema='BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetError'),
+    ContractRegistryEntry(registry_id='http:btc_context_api_v1_market_btc_context_get', source_head=SOURCE_HEAD, operation=BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_OPERATION, request_schema='BtcContextApiV1MarketBtcContextGetRequest', success_schema='BtcContextApiV1MarketBtcContextGetSuccess', error_schema='BtcContextApiV1MarketBtcContextGetError'),
+    ContractRegistryEntry(registry_id='http:btc_price_api_v1_market_btc_price_get', source_head=SOURCE_HEAD, operation=BTCPRICEAPIV1MARKETBTCPRICEGET_OPERATION, request_schema='BtcPriceApiV1MarketBtcPriceGetRequest', success_schema='BtcPriceApiV1MarketBtcPriceGetSuccess', error_schema='BtcPriceApiV1MarketBtcPriceGetError'),
+    ContractRegistryEntry(registry_id='http:btc_price_history_api_v1_market_btc_price_history_get', source_head=SOURCE_HEAD, operation=BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_OPERATION, request_schema='BtcPriceHistoryApiV1MarketBtcPriceHistoryGetRequest', success_schema='BtcPriceHistoryApiV1MarketBtcPriceHistoryGetSuccess', error_schema='BtcPriceHistoryApiV1MarketBtcPriceHistoryGetError'),
+    ContractRegistryEntry(registry_id='http:btc_providers_api_v1_market_btc_providers_get', source_head=SOURCE_HEAD, operation=BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_OPERATION, request_schema='BtcProvidersApiV1MarketBtcProvidersGetRequest', success_schema='BtcProvidersApiV1MarketBtcProvidersGetSuccess', error_schema='BtcProvidersApiV1MarketBtcProvidersGetError'),
+    ContractRegistryEntry(registry_id='http:btc_providers_health_api_v1_market_btc_providers_health_get', source_head=SOURCE_HEAD, operation=BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_OPERATION, request_schema='BtcProvidersHealthApiV1MarketBtcProvidersHealthGetRequest', success_schema='BtcProvidersHealthApiV1MarketBtcProvidersHealthGetSuccess', error_schema='BtcProvidersHealthApiV1MarketBtcProvidersHealthGetError'),
+    ContractRegistryEntry(registry_id='http:market_health_api_v1_market_health_get', source_head=SOURCE_HEAD, operation=MARKETHEALTHAPIV1MARKETHEALTHGET_OPERATION, request_schema='MarketHealthApiV1MarketHealthGetRequest', success_schema='MarketHealthApiV1MarketHealthGetSuccess', error_schema='MarketHealthApiV1MarketHealthGetError'),
+    ContractRegistryEntry(registry_id='http:providers_health_api_v1_market_providers_health_get', source_head=SOURCE_HEAD, operation=PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_OPERATION, request_schema='ProvidersHealthApiV1MarketProvidersHealthGetRequest', success_schema='ProvidersHealthApiV1MarketProvidersHealthGetSuccess', error_schema='ProvidersHealthApiV1MarketProvidersHealthGetError'),
+    ContractRegistryEntry(registry_id='http:article_duplicates_api_v1_news_articles__article_id__duplicates_get', source_head=SOURCE_HEAD, operation=ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_OPERATION, request_schema='ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetRequest', success_schema='ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetSuccess', error_schema='ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetError'),
+    ContractRegistryEntry(registry_id='http:by_sentiment_api_v1_news_by_sentiment__label__get', source_head=SOURCE_HEAD, operation=BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_OPERATION, request_schema='BySentimentApiV1NewsBySentimentLabelGetRequest', success_schema='BySentimentApiV1NewsBySentimentLabelGetSuccess', error_schema='BySentimentApiV1NewsBySentimentLabelGetError'),
+    ContractRegistryEntry(registry_id='http:list_clusters_api_v1_news_clusters_get', source_head=SOURCE_HEAD, operation=LISTCLUSTERSAPIV1NEWSCLUSTERSGET_OPERATION, request_schema='ListClustersApiV1NewsClustersGetRequest', success_schema='ListClustersApiV1NewsClustersGetSuccess', error_schema='ListClustersApiV1NewsClustersGetError'),
+    ContractRegistryEntry(registry_id='http:get_cluster_api_v1_news_clusters__cluster_id__get', source_head=SOURCE_HEAD, operation=GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_OPERATION, request_schema='GetClusterApiV1NewsClustersClusterIdGetRequest', success_schema='GetClusterApiV1NewsClustersClusterIdGetSuccess', error_schema='GetClusterApiV1NewsClustersClusterIdGetError'),
+    ContractRegistryEntry(registry_id='http:list_events_api_v1_news_events_get', source_head=SOURCE_HEAD, operation=LISTEVENTSAPIV1NEWSEVENTSGET_OPERATION, request_schema='ListEventsApiV1NewsEventsGetRequest', success_schema='ListEventsApiV1NewsEventsGetSuccess', error_schema='ListEventsApiV1NewsEventsGetError'),
+    ContractRegistryEntry(registry_id='http:high_impact_events_api_v1_news_events_high_impact_get', source_head=SOURCE_HEAD, operation=HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_OPERATION, request_schema='HighImpactEventsApiV1NewsEventsHighImpactGetRequest', success_schema='HighImpactEventsApiV1NewsEventsHighImpactGetSuccess', error_schema='HighImpactEventsApiV1NewsEventsHighImpactGetError'),
+    ContractRegistryEntry(registry_id='http:regulatory_events_api_v1_news_events_regulatory_get', source_head=SOURCE_HEAD, operation=REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_OPERATION, request_schema='RegulatoryEventsApiV1NewsEventsRegulatoryGetRequest', success_schema='RegulatoryEventsApiV1NewsEventsRegulatoryGetSuccess', error_schema='RegulatoryEventsApiV1NewsEventsRegulatoryGetError'),
+    ContractRegistryEntry(registry_id='http:security_events_api_v1_news_events_security_get', source_head=SOURCE_HEAD, operation=SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_OPERATION, request_schema='SecurityEventsApiV1NewsEventsSecurityGetRequest', success_schema='SecurityEventsApiV1NewsEventsSecurityGetSuccess', error_schema='SecurityEventsApiV1NewsEventsSecurityGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_api_v1_news_events__event_id__get', source_head=SOURCE_HEAD, operation=GETEVENTAPIV1NEWSEVENTSEVENTIDGET_OPERATION, request_schema='GetEventApiV1NewsEventsEventIdGetRequest', success_schema='GetEventApiV1NewsEventsEventIdGetSuccess', error_schema='GetEventApiV1NewsEventsEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_articles_api_v1_news_events__event_id__articles_get', source_head=SOURCE_HEAD, operation=GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_OPERATION, request_schema='GetEventArticlesApiV1NewsEventsEventIdArticlesGetRequest', success_schema='GetEventArticlesApiV1NewsEventsEventIdArticlesGetSuccess', error_schema='GetEventArticlesApiV1NewsEventsEventIdArticlesGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_impact_api_v1_news_events__event_id__impact_get', source_head=SOURCE_HEAD, operation=GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_OPERATION, request_schema='GetEventImpactApiV1NewsEventsEventIdImpactGetRequest', success_schema='GetEventImpactApiV1NewsEventsEventIdImpactGetSuccess', error_schema='GetEventImpactApiV1NewsEventsEventIdImpactGetError'),
+    ContractRegistryEntry(registry_id='http:get_event_score_api_v1_news_events__event_id__score_get', source_head=SOURCE_HEAD, operation=GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_OPERATION, request_schema='GetEventScoreApiV1NewsEventsEventIdScoreGetRequest', success_schema='GetEventScoreApiV1NewsEventsEventIdScoreGetSuccess', error_schema='GetEventScoreApiV1NewsEventsEventIdScoreGetError'),
+    ContractRegistryEntry(registry_id='http:high_impact_news_api_v1_news_high_impact_get', source_head=SOURCE_HEAD, operation=HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_OPERATION, request_schema='HighImpactNewsApiV1NewsHighImpactGetRequest', success_schema='HighImpactNewsApiV1NewsHighImpactGetSuccess', error_schema='HighImpactNewsApiV1NewsHighImpactGetError'),
+    ContractRegistryEntry(registry_id='http:high_relevance_api_v1_news_high_relevance_get', source_head=SOURCE_HEAD, operation=HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_OPERATION, request_schema='HighRelevanceApiV1NewsHighRelevanceGetRequest', success_schema='HighRelevanceApiV1NewsHighRelevanceGetSuccess', error_schema='HighRelevanceApiV1NewsHighRelevanceGetError'),
+    ContractRegistryEntry(registry_id='http:latest_news_api_v1_news_latest_get', source_head=SOURCE_HEAD, operation=LATESTNEWSAPIV1NEWSLATESTGET_OPERATION, request_schema='LatestNewsApiV1NewsLatestGetRequest', success_schema='LatestNewsApiV1NewsLatestGetSuccess', error_schema='LatestNewsApiV1NewsLatestGetError'),
+    ContractRegistryEntry(registry_id='http:regulatory_news_api_v1_news_regulatory_get', source_head=SOURCE_HEAD, operation=REGULATORYNEWSAPIV1NEWSREGULATORYGET_OPERATION, request_schema='RegulatoryNewsApiV1NewsRegulatoryGetRequest', success_schema='RegulatoryNewsApiV1NewsRegulatoryGetSuccess', error_schema='RegulatoryNewsApiV1NewsRegulatoryGetError'),
+    ContractRegistryEntry(registry_id='http:security_news_api_v1_news_security_get', source_head=SOURCE_HEAD, operation=SECURITYNEWSAPIV1NEWSSECURITYGET_OPERATION, request_schema='SecurityNewsApiV1NewsSecurityGetRequest', success_schema='SecurityNewsApiV1NewsSecurityGetSuccess', error_schema='SecurityNewsApiV1NewsSecurityGetError'),
+    ContractRegistryEntry(registry_id='http:list_sources_api_v1_news_sources_get', source_head=SOURCE_HEAD, operation=LISTSOURCESAPIV1NEWSSOURCESGET_OPERATION, request_schema='ListSourcesApiV1NewsSourcesGetRequest', success_schema='ListSourcesApiV1NewsSourcesGetSuccess', error_schema='ListSourcesApiV1NewsSourcesGetError'),
+    ContractRegistryEntry(registry_id='http:categories_api_v1_news_sources_categories_get', source_head=SOURCE_HEAD, operation=CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_OPERATION, request_schema='CategoriesApiV1NewsSourcesCategoriesGetRequest', success_schema='CategoriesApiV1NewsSourcesCategoriesGetSuccess', error_schema='CategoriesApiV1NewsSourcesCategoriesGetError'),
+    ContractRegistryEntry(registry_id='http:sources_health_api_v1_news_sources_health_get', source_head=SOURCE_HEAD, operation=SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_OPERATION, request_schema='SourcesHealthApiV1NewsSourcesHealthGetRequest', success_schema='SourcesHealthApiV1NewsSourcesHealthGetSuccess', error_schema='SourcesHealthApiV1NewsSourcesHealthGetError'),
+    ContractRegistryEntry(registry_id='http:list_source_reputation_api_v1_news_sources_reputation_get', source_head=SOURCE_HEAD, operation=LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_OPERATION, request_schema='ListSourceReputationApiV1NewsSourcesReputationGetRequest', success_schema='ListSourceReputationApiV1NewsSourcesReputationGetSuccess', error_schema='ListSourceReputationApiV1NewsSourcesReputationGetError'),
+    ContractRegistryEntry(registry_id='http:tiers_api_v1_news_sources_tiers_get', source_head=SOURCE_HEAD, operation=TIERSAPIV1NEWSSOURCESTIERSGET_OPERATION, request_schema='TiersApiV1NewsSourcesTiersGetRequest', success_schema='TiersApiV1NewsSourcesTiersGetSuccess', error_schema='TiersApiV1NewsSourcesTiersGetError'),
+    ContractRegistryEntry(registry_id='http:get_source_api_v1_news_sources__source_id__get', source_head=SOURCE_HEAD, operation=GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_OPERATION, request_schema='GetSourceApiV1NewsSourcesSourceIdGetRequest', success_schema='GetSourceApiV1NewsSourcesSourceIdGetSuccess', error_schema='GetSourceApiV1NewsSourcesSourceIdGetError'),
+    ContractRegistryEntry(registry_id='http:source_confidence_events_api_v1_news_sources__source_id__confidence_events_get', source_head=SOURCE_HEAD, operation=SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_OPERATION, request_schema='SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetRequest', success_schema='SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetSuccess', error_schema='SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetError'),
+    ContractRegistryEntry(registry_id='http:source_health_api_v1_news_sources__source_id__health_get', source_head=SOURCE_HEAD, operation=SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_OPERATION, request_schema='SourceHealthApiV1NewsSourcesSourceIdHealthGetRequest', success_schema='SourceHealthApiV1NewsSourcesSourceIdHealthGetSuccess', error_schema='SourceHealthApiV1NewsSourcesSourceIdHealthGetError'),
+    ContractRegistryEntry(registry_id='http:source_snapshots_api_v1_news_sources__source_id__snapshots_get', source_head=SOURCE_HEAD, operation=SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_OPERATION, request_schema='SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetRequest', success_schema='SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetSuccess', error_schema='SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetError'),
+    ContractRegistryEntry(registry_id='http:get_article_explanation_api_v1_news__article_id__explanation_get', source_head=SOURCE_HEAD, operation=GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_OPERATION, request_schema='GetArticleExplanationApiV1NewsArticleIdExplanationGetRequest', success_schema='GetArticleExplanationApiV1NewsArticleIdExplanationGetSuccess', error_schema='GetArticleExplanationApiV1NewsArticleIdExplanationGetError'),
+    ContractRegistryEntry(registry_id='http:get_article_impact_api_v1_news__article_id__impact_get', source_head=SOURCE_HEAD, operation=GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_OPERATION, request_schema='GetArticleImpactApiV1NewsArticleIdImpactGetRequest', success_schema='GetArticleImpactApiV1NewsArticleIdImpactGetSuccess', error_schema='GetArticleImpactApiV1NewsArticleIdImpactGetError'),
+    ContractRegistryEntry(registry_id='http:get_article_narratives_api_v1_news__article_id__narratives_get', source_head=SOURCE_HEAD, operation=GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_OPERATION, request_schema='GetArticleNarrativesApiV1NewsArticleIdNarrativesGetRequest', success_schema='GetArticleNarrativesApiV1NewsArticleIdNarrativesGetSuccess', error_schema='GetArticleNarrativesApiV1NewsArticleIdNarrativesGetError'),
+    ContractRegistryEntry(registry_id='http:get_article_score_api_v1_news__article_id__score_get', source_head=SOURCE_HEAD, operation=GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_OPERATION, request_schema='GetArticleScoreApiV1NewsArticleIdScoreGetRequest', success_schema='GetArticleScoreApiV1NewsArticleIdScoreGetSuccess', error_schema='GetArticleScoreApiV1NewsArticleIdScoreGetError'),
+    ContractRegistryEntry(registry_id='http:get_article_scores_api_v1_news__article_id__scores_get', source_head=SOURCE_HEAD, operation=GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_OPERATION, request_schema='GetArticleScoresApiV1NewsArticleIdScoresGetRequest', success_schema='GetArticleScoresApiV1NewsArticleIdScoresGetSuccess', error_schema='GetArticleScoresApiV1NewsArticleIdScoresGetError'),
+    ContractRegistryEntry(registry_id='http:onchain_events_api_v1_onchain_events_get', source_head=SOURCE_HEAD, operation=ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_OPERATION, request_schema='OnchainEventsApiV1OnchainEventsGetRequest', success_schema='OnchainEventsApiV1OnchainEventsGetSuccess', error_schema='OnchainEventsApiV1OnchainEventsGetError'),
+    ContractRegistryEntry(registry_id='http:onchain_state_api_v1_onchain_state_get', source_head=SOURCE_HEAD, operation=ONCHAINSTATEAPIV1ONCHAINSTATEGET_OPERATION, request_schema='OnchainStateApiV1OnchainStateGetRequest', success_schema='OnchainStateApiV1OnchainStateGetSuccess', error_schema='OnchainStateApiV1OnchainStateGetError'),
+    ContractRegistryEntry(registry_id='http:public_features_api_v1_public_features_get', source_head=SOURCE_HEAD, operation=PUBLICFEATURESAPIV1PUBLICFEATURESGET_OPERATION, request_schema='PublicFeaturesApiV1PublicFeaturesGetRequest', success_schema='PublicFeaturesApiV1PublicFeaturesGetSuccess', error_schema='PublicFeaturesApiV1PublicFeaturesGetError'),
+    ContractRegistryEntry(registry_id='http:public_landing_api_v1_public_landing_get', source_head=SOURCE_HEAD, operation=PUBLICLANDINGAPIV1PUBLICLANDINGGET_OPERATION, request_schema='PublicLandingApiV1PublicLandingGetRequest', success_schema='PublicLandingApiV1PublicLandingGetSuccess', error_schema='PublicLandingApiV1PublicLandingGetError'),
+    ContractRegistryEntry(registry_id='http:public_roadmap_api_v1_public_roadmap_get', source_head=SOURCE_HEAD, operation=PUBLICROADMAPAPIV1PUBLICROADMAPGET_OPERATION, request_schema='PublicRoadmapApiV1PublicRoadmapGetRequest', success_schema='PublicRoadmapApiV1PublicRoadmapGetSuccess', error_schema='PublicRoadmapApiV1PublicRoadmapGetError'),
+    ContractRegistryEntry(registry_id='http:public_stats_api_v1_public_stats_get', source_head=SOURCE_HEAD, operation=PUBLICSTATSAPIV1PUBLICSTATSGET_OPERATION, request_schema='PublicStatsApiV1PublicStatsGetRequest', success_schema='PublicStatsApiV1PublicStatsGetSuccess', error_schema='PublicStatsApiV1PublicStatsGetError'),
+    ContractRegistryEntry(registry_id='http:public_status_api_v1_public_status_get', source_head=SOURCE_HEAD, operation=PUBLICSTATUSAPIV1PUBLICSTATUSGET_OPERATION, request_schema='PublicStatusApiV1PublicStatusGetRequest', success_schema='PublicStatusApiV1PublicStatusGetSuccess', error_schema='PublicStatusApiV1PublicStatusGetError'),
+    ContractRegistryEntry(registry_id='http:public_trace_summary_api_v1_public_trace__report_id__summary_get', source_head=SOURCE_HEAD, operation=PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_OPERATION, request_schema='PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetRequest', success_schema='PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetSuccess', error_schema='PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetError'),
+    ContractRegistryEntry(registry_id='http:latest_signals_api_v1_signals_latest_get', source_head=SOURCE_HEAD, operation=LATESTSIGNALSAPIV1SIGNALSLATESTGET_OPERATION, request_schema='LatestSignalsApiV1SignalsLatestGetRequest', success_schema='LatestSignalsApiV1SignalsLatestGetSuccess', error_schema='LatestSignalsApiV1SignalsLatestGetError'),
+    ContractRegistryEntry(registry_id='http:news_market_impact_signals_api_v1_signals_news_market_impact_get', source_head=SOURCE_HEAD, operation=NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_OPERATION, request_schema='NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetRequest', success_schema='NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetSuccess', error_schema='NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetError'),
+    ContractRegistryEntry(registry_id='http:top_signals_api_v1_signals_top_get', source_head=SOURCE_HEAD, operation=TOPSIGNALSAPIV1SIGNALSTOPGET_OPERATION, request_schema='TopSignalsApiV1SignalsTopGetRequest', success_schema='TopSignalsApiV1SignalsTopGetSuccess', error_schema='TopSignalsApiV1SignalsTopGetError'),
+    ContractRegistryEntry(registry_id='http:get_signal_api_v1_signals__signal_id__get', source_head=SOURCE_HEAD, operation=GETSIGNALAPIV1SIGNALSSIGNALIDGET_OPERATION, request_schema='GetSignalApiV1SignalsSignalIdGetRequest', success_schema='GetSignalApiV1SignalsSignalIdGetSuccess', error_schema='GetSignalApiV1SignalsSignalIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get', source_head=SOURCE_HEAD, operation=GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_OPERATION, request_schema='GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetRequest', success_schema='GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetSuccess', error_schema='GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetError'),
+    ContractRegistryEntry(registry_id='http:get_signal_evidence_api_v1_signals__signal_id__evidence_get', source_head=SOURCE_HEAD, operation=GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_OPERATION, request_schema='GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetRequest', success_schema='GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetSuccess', error_schema='GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetError'),
+    ContractRegistryEntry(registry_id='http:signal_explanation_api_v1_signals__signal_id__explanation_get', source_head=SOURCE_HEAD, operation=SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_OPERATION, request_schema='SignalExplanationApiV1SignalsSignalIdExplanationGetRequest', success_schema='SignalExplanationApiV1SignalsSignalIdExplanationGetSuccess', error_schema='SignalExplanationApiV1SignalsSignalIdExplanationGetError'),
+    ContractRegistryEntry(registry_id='http:signal_recommendations_api_v1_signals__signal_id__recommendations_get', source_head=SOURCE_HEAD, operation=SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_OPERATION, request_schema='SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetRequest', success_schema='SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetSuccess', error_schema='SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetError'),
+    ContractRegistryEntry(registry_id='http:storage_status_api_v1_storage_status_get', source_head=SOURCE_HEAD, operation=STORAGESTATUSAPIV1STORAGESTATUSGET_OPERATION, request_schema='StorageStatusApiV1StorageStatusGetRequest', success_schema='StorageStatusApiV1StorageStatusGetSuccess', error_schema='StorageStatusApiV1StorageStatusGetError'),
+    ContractRegistryEntry(registry_id='http:timescale_operations_status_api_v1_storage_timescale_status_get', source_head=SOURCE_HEAD, operation=TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_OPERATION, request_schema='TimescaleOperationsStatusApiV1StorageTimescaleStatusGetRequest', success_schema='TimescaleOperationsStatusApiV1StorageTimescaleStatusGetSuccess', error_schema='TimescaleOperationsStatusApiV1StorageTimescaleStatusGetError'),
+    ContractRegistryEntry(registry_id='http:analyze_address_api_v1_trace_address__address__get', source_head=SOURCE_HEAD, operation=ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_OPERATION, request_schema='AnalyzeAddressApiV1TraceAddressAddressGetRequest', success_schema='AnalyzeAddressApiV1TraceAddressAddressGetSuccess', error_schema='AnalyzeAddressApiV1TraceAddressAddressGetError'),
+    ContractRegistryEntry(registry_id='http:trace_alerts_api_v1_trace_alerts_get', source_head=SOURCE_HEAD, operation=TRACEALERTSAPIV1TRACEALERTSGET_OPERATION, request_schema='TraceAlertsApiV1TraceAlertsGetRequest', success_schema='TraceAlertsApiV1TraceAlertsGetSuccess', error_schema='TraceAlertsApiV1TraceAlertsGetError'),
+    ContractRegistryEntry(registry_id='http:trace_events_api_v1_trace_events_get', source_head=SOURCE_HEAD, operation=TRACEEVENTSAPIV1TRACEEVENTSGET_OPERATION, request_schema='TraceEventsApiV1TraceEventsGetRequest', success_schema='TraceEventsApiV1TraceEventsGetSuccess', error_schema='TraceEventsApiV1TraceEventsGetError'),
+    ContractRegistryEntry(registry_id='http:trace_event_api_v1_trace_events__event_id__get', source_head=SOURCE_HEAD, operation=TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_OPERATION, request_schema='TraceEventApiV1TraceEventsEventIdGetRequest', success_schema='TraceEventApiV1TraceEventsEventIdGetSuccess', error_schema='TraceEventApiV1TraceEventsEventIdGetError'),
+    ContractRegistryEntry(registry_id='http:lite_address_check_api_v1_trace_lite__address__get', source_head=SOURCE_HEAD, operation=LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_OPERATION, request_schema='LiteAddressCheckApiV1TraceLiteAddressGetRequest', success_schema='LiteAddressCheckApiV1TraceLiteAddressGetSuccess', error_schema='LiteAddressCheckApiV1TraceLiteAddressGetError'),
+    ContractRegistryEntry(registry_id='http:get_report_api_v1_trace_report__report_id__get', source_head=SOURCE_HEAD, operation=GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION, request_schema='GetReportApiV1TraceReportReportIdGetRequest', success_schema='GetReportApiV1TraceReportReportIdGetSuccess', error_schema='GetReportApiV1TraceReportReportIdGetError'),
+    ContractRegistryEntry(registry_id='http:trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get', source_head=SOURCE_HEAD, operation=TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_OPERATION, request_schema='TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetRequest', success_schema='TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetSuccess', error_schema='TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetError'),
+    ContractRegistryEntry(registry_id='http:get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get', source_head=SOURCE_HEAD, operation=GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_OPERATION, request_schema='GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetRequest', success_schema='GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetSuccess', error_schema='GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetError'),
+    ContractRegistryEntry(registry_id='http:get_dust_radar_api_v1_trace_report__report_id__dust_radar_get', source_head=SOURCE_HEAD, operation=GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_OPERATION, request_schema='GetDustRadarApiV1TraceReportReportIdDustRadarGetRequest', success_schema='GetDustRadarApiV1TraceReportReportIdDustRadarGetSuccess', error_schema='GetDustRadarApiV1TraceReportReportIdDustRadarGetError'),
+    ContractRegistryEntry(registry_id='http:list_evidence_api_v1_trace_report__report_id__evidence_get', source_head=SOURCE_HEAD, operation=LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_OPERATION, request_schema='ListEvidenceApiV1TraceReportReportIdEvidenceGetRequest', success_schema='ListEvidenceApiV1TraceReportReportIdEvidenceGetSuccess', error_schema='ListEvidenceApiV1TraceReportReportIdEvidenceGetError'),
+    ContractRegistryEntry(registry_id='http:trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get', source_head=SOURCE_HEAD, operation=TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION, request_schema='TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetRequest', success_schema='TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetSuccess', error_schema='TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetError'),
+    ContractRegistryEntry(registry_id='http:get_origin_passport_api_v1_trace_report__report_id__origin_passport_get', source_head=SOURCE_HEAD, operation=GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_OPERATION, request_schema='GetOriginPassportApiV1TraceReportReportIdOriginPassportGetRequest', success_schema='GetOriginPassportApiV1TraceReportReportIdOriginPassportGetSuccess', error_schema='GetOriginPassportApiV1TraceReportReportIdOriginPassportGetError'),
+    ContractRegistryEntry(registry_id='http:trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get', source_head=SOURCE_HEAD, operation=TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_OPERATION, request_schema='TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetRequest', success_schema='TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetSuccess', error_schema='TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetError'),
+    ContractRegistryEntry(registry_id='http:get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get', source_head=SOURCE_HEAD, operation=GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION, request_schema='GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetRequest', success_schema='GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetSuccess', error_schema='GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetError'),
+    ContractRegistryEntry(registry_id='http:get_proof_packet_api_v1_trace_report__report_id__proof_packet_get', source_head=SOURCE_HEAD, operation=GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION, request_schema='GetProofPacketApiV1TraceReportReportIdProofPacketGetRequest', success_schema='GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess', error_schema='GetProofPacketApiV1TraceReportReportIdProofPacketGetError'),
+    ContractRegistryEntry(registry_id='http:get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get', source_head=SOURCE_HEAD, operation=GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_OPERATION, request_schema='GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetRequest', success_schema='GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetSuccess', error_schema='GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetError'),
+    ContractRegistryEntry(registry_id='http:get_source_summary_api_v1_trace_report__report_id__source_summary_get', source_head=SOURCE_HEAD, operation=GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_OPERATION, request_schema='GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetRequest', success_schema='GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetSuccess', error_schema='GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetError'),
+    ContractRegistryEntry(registry_id='http:get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get', source_head=SOURCE_HEAD, operation=GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_OPERATION, request_schema='GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetRequest', success_schema='GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetSuccess', error_schema='GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetError'),
+    ContractRegistryEntry(registry_id='http:list_sources_api_v1_trace_sources_get', source_head=SOURCE_HEAD, operation=LISTSOURCESAPIV1TRACESOURCESGET_OPERATION, request_schema='ListSourcesApiV1TraceSourcesGetRequest', success_schema='ListSourcesApiV1TraceSourcesGetSuccess', error_schema='ListSourcesApiV1TraceSourcesGetError'),
+    ContractRegistryEntry(registry_id='http:get_source_api_v1_trace_sources__source_name__get', source_head=SOURCE_HEAD, operation=GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_OPERATION, request_schema='GetSourceApiV1TraceSourcesSourceNameGetRequest', success_schema='GetSourceApiV1TraceSourcesSourceNameGetSuccess', error_schema='GetSourceApiV1TraceSourcesSourceNameGetError'),
+    ContractRegistryEntry(registry_id='http:trace_status_api_v1_trace_status_get', source_head=SOURCE_HEAD, operation=TRACESTATUSAPIV1TRACESTATUSGET_OPERATION, request_schema='TraceStatusApiV1TraceStatusGetRequest', success_schema='TraceStatusApiV1TraceStatusGetSuccess', error_schema='TraceStatusApiV1TraceStatusGetError'),
+    ContractRegistryEntry(registry_id='http:list_watchlist_api_v1_trace_watchlist_get', source_head=SOURCE_HEAD, operation=LISTWATCHLISTAPIV1TRACEWATCHLISTGET_OPERATION, request_schema='ListWatchlistApiV1TraceWatchlistGetRequest', success_schema='ListWatchlistApiV1TraceWatchlistGetSuccess', error_schema='ListWatchlistApiV1TraceWatchlistGetError'),
+    ContractRegistryEntry(registry_id='http:dependencies_health_dependencies_get', source_head=SOURCE_HEAD, operation=DEPENDENCIESHEALTHDEPENDENCIESGET_OPERATION, request_schema='DependenciesHealthDependenciesGetRequest', success_schema='DependenciesHealthDependenciesGetSuccess', error_schema='DependenciesHealthDependenciesGetError'),
+    ContractRegistryEntry(registry_id='http:intelligence_health_intelligence_get', source_head=SOURCE_HEAD, operation=INTELLIGENCEHEALTHINTELLIGENCEGET_OPERATION, request_schema='IntelligenceHealthIntelligenceGetRequest', success_schema='IntelligenceHealthIntelligenceGetSuccess', error_schema='IntelligenceHealthIntelligenceGetError'),
+    ContractRegistryEntry(registry_id='http:live_health_live_get', source_head=SOURCE_HEAD, operation=LIVEHEALTHLIVEGET_OPERATION, request_schema='LiveHealthLiveGetRequest', success_schema='LiveHealthLiveGetSuccess', error_schema='LiveHealthLiveGetError'),
+    ContractRegistryEntry(registry_id='http:operations_health_operations_get', source_head=SOURCE_HEAD, operation=OPERATIONSHEALTHOPERATIONSGET_OPERATION, request_schema='OperationsHealthOperationsGetRequest', success_schema='OperationsHealthOperationsGetSuccess', error_schema='OperationsHealthOperationsGetError'),
+    ContractRegistryEntry(registry_id='http:providers_health_providers_get', source_head=SOURCE_HEAD, operation=PROVIDERSHEALTHPROVIDERSGET_OPERATION, request_schema='ProvidersHealthProvidersGetRequest', success_schema='ProvidersHealthProvidersGetSuccess', error_schema='ProvidersHealthProvidersGetError'),
+    ContractRegistryEntry(registry_id='http:ready_health_ready_get', source_head=SOURCE_HEAD, operation=READYHEALTHREADYGET_OPERATION, request_schema='ReadyHealthReadyGetRequest', success_schema='ReadyHealthReadyGetSuccess', error_schema='ReadyHealthReadyGetError'),
+    ContractRegistryEntry(registry_id='http:startup_health_startup_get', source_head=SOURCE_HEAD, operation=STARTUPHEALTHSTARTUPGET_OPERATION, request_schema='StartupHealthStartupGetRequest', success_schema='StartupHealthStartupGetSuccess', error_schema='StartupHealthStartupGetError'),
+    ContractRegistryEntry(registry_id='http:web_candle_dto_web_candle__candle_id__get', source_head=SOURCE_HEAD, operation=WEBCANDLEDTOWEBCANDLECANDLEIDGET_OPERATION, request_schema='WebCandleDtoWebCandleCandleIdGetRequest', success_schema='WebCandleDtoWebCandleCandleIdGetSuccess', error_schema='WebCandleDtoWebCandleCandleIdGetError'),
+    ContractRegistryEntry(registry_id='http:web_evidence_dto_web_evidence__packet_id__get', source_head=SOURCE_HEAD, operation=WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_OPERATION, request_schema='WebEvidenceDtoWebEvidencePacketIdGetRequest', success_schema='WebEvidenceDtoWebEvidencePacketIdGetSuccess', error_schema='WebEvidenceDtoWebEvidencePacketIdGetError'),
+    ContractRegistryEntry(registry_id='http:web_market_time_machine_dto_web_market_time_machine_get', source_head=SOURCE_HEAD, operation=WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_OPERATION, request_schema='WebMarketTimeMachineDtoWebMarketTimeMachineGetRequest', success_schema='WebMarketTimeMachineDtoWebMarketTimeMachineGetSuccess', error_schema='WebMarketTimeMachineDtoWebMarketTimeMachineGetError'),
+    ContractRegistryEntry(registry_id='http:web_timeline_dto_web_timeline_get', source_head=SOURCE_HEAD, operation=WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, request_schema='WebTimelineDtoWebTimelineGetRequest', success_schema='WebTimelineDtoWebTimelineGetSuccess', error_schema='WebTimelineDtoWebTimelineGetError'),
 )
