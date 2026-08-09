@@ -11,7 +11,12 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "frontend"))
 from app.main import app  # noqa: E402
+from bastion_ui.transport.schema_compiler import (  # noqa: E402
+    OpenAPISchemaCompiler,
+    SchemaCompileError,
+)
 
 DOCS = ROOT / "docs/frontend/migration"
 MATRIX = DOCS / "00_openapi_frontend_rendering_matrix.json"
@@ -58,6 +63,35 @@ def _walk(
             _walk(child, counts, examples, owner, schemas, visited_refs)
 
 
+def _contains_key(value: object, target: str) -> bool:
+    if isinstance(value, dict):
+        return target in value or any(_contains_key(child, target) for child in value.values())
+    if isinstance(value, list):
+        return any(_contains_key(child, target) for child in value)
+    return False
+
+
+def _reachable_refs(value: object, schemas: dict[str, Any]) -> set[str]:
+    refs: set[str] = set()
+
+    def collect(node: object) -> None:
+        if isinstance(node, dict):
+            reference = node.get("$ref")
+            if isinstance(reference, str) and reference.startswith("#/components/schemas/"):
+                name = reference.rsplit("/", 1)[-1]
+                if name not in refs:
+                    refs.add(name)
+                    collect(schemas[name])
+            for child in node.values():
+                collect(child)
+        elif isinstance(node, list):
+            for child in node:
+                collect(child)
+
+    collect(value)
+    return refs
+
+
 def build_report() -> dict[str, Any]:
     spec = app.openapi()
     matrix = json.loads(MATRIX.read_text())
@@ -65,7 +99,15 @@ def build_report() -> dict[str, Any]:
     candidates = [
         row for row in matrix["http_operations"]
         if row["disposition"] in {"UI_REQUIRED", "UI_OPTIONAL"}
-        and row.get("authority_blocker_id") == "P1B-B01"
+        and row.get("authority_status") == "AUTHORITATIVE_NOW"
+    ]
+    security_deferred = [
+        row for row in matrix["http_operations"]
+        if row.get("deferred_contract_kind") in {"protected", "protected_mutation"}
+    ]
+    mutation_deferred = [
+        row for row in matrix["http_operations"]
+        if row.get("deferred_contract_kind") in {"mutation", "protected_mutation"}
     ]
     schema_counts: Counter[str] = Counter()
     examples: dict[str, set[str]] = defaultdict(set)
@@ -74,9 +116,15 @@ def build_report() -> dict[str, Any]:
     protected: list[dict[str, str]] = []
     mutations: list[dict[str, str]] = []
     blockers: list[dict[str, str]] = []
+    schema_consumers: dict[str, set[str]] = defaultdict(set)
+    html_operations: list[dict[str, str]] = []
+    no_content_operations: list[dict[str, str]] = []
+    deferred_no_content_operations: list[dict[str, str]] = []
     for row in candidates:
         operation = spec["paths"][row["path"]][row["method"].lower()]
         owner = row["operation_id"]
+        for schema_name in _reachable_refs(operation, schemas):
+            schema_consumers[schema_name].add(owner)
         _walk(operation, schema_counts, examples, owner, schemas, set())
         for status, response in operation.get("responses", {}).items():
             if not status.startswith("2"):
@@ -85,8 +133,15 @@ def build_report() -> dict[str, Any]:
             content = response.get("content", {})
             if not content and status == "204":
                 media_counts["no-content"] += 1
+                no_content_operations.append(
+                    {"matrix_id": row["matrix_id"], "operation_id": owner, "path": row["path"]}
+                )
             for media in content:
                 media_counts[media] += 1
+                if media == "text/html":
+                    html_operations.append(
+                        {"matrix_id": row["matrix_id"], "operation_id": owner, "path": row["path"]}
+                    )
         if row["access_class"] == "protected":
             protected.append({"matrix_id": row["matrix_id"], "operation_id": owner, "path": row["path"]})
             blockers.append({
@@ -95,12 +150,30 @@ def build_report() -> dict[str, Any]:
                 "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
             })
         if row["method"] in MUTATION_METHODS:
-            mutations.append({"matrix_id": row["matrix_id"], "operation_id": owner, "method": row["method"], "path": row["path"]})
+            mutations.append(
+                {
+                    "matrix_id": row["matrix_id"],
+                    "operation_id": owner,
+                    "method": row["method"],
+                    "path": row["path"],
+                }
+            )
             blockers.append({
                 "operation_id": owner,
                 "blocker": "P1B0-B02",
                 "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
             })
+    for row in matrix["http_operations"]:
+        if row.get("success_status") == "204" and row["disposition"] == "DEFERRED_WITH_REASON":
+            deferred_no_content_operations.append(
+                {
+                    "matrix_id": row["matrix_id"],
+                    "operation_id": row["operation_id"],
+                    "method": row["method"],
+                    "path": row["path"],
+                    "blocker_id": row.get("authority_blocker_id", ""),
+                }
+            )
     unsupported = sorted(
         key for key in schema_counts
         if key in {"allOf", "oneOf", "anyOf", "discriminator", "additionalProperties"}
@@ -108,10 +181,31 @@ def build_report() -> dict[str, Any]:
     protected_ids = {row["operation_id"] for row in protected}
     mutation_ids = {row["operation_id"] for row in mutations}
     protected_mutations = protected_ids & mutation_ids
+    construct_schemas = {
+        key: sorted(name for name, schema in schemas.items() if _contains_key(schema, key))
+        for key in ("anyOf", "additionalProperties")
+    }
+    compiler = OpenAPISchemaCompiler(schemas)
+    compiler_failures: list[dict[str, object]] = []
+    for schema_name in sorted(schemas):
+        try:
+            compiler.compile_component(schema_name)
+        except SchemaCompileError as exc:
+            compiler_failures.append(
+                {
+                    "schema_id": schema_name,
+                    "error": str(exc),
+                    "active_consumers": sorted(schema_consumers[schema_name]),
+                }
+            )
+    if not compiler_failures:
+        unsupported = []
     return {
         "counts": {
             "runtime_http": sum(1 for item in spec["paths"].values() for method in item if method.lower() in {"get", "post", "put", "patch", "delete", "head", "options", "trace"}),
             "generation_candidates": len(candidates),
+            "security_deferred": len(security_deferred),
+            "mutation_deferred": len(mutation_deferred),
             "protected_candidates": len(protected),
             "mutation_candidates": len(mutations),
             "protected_only": len(protected_ids - mutation_ids),
@@ -125,9 +219,21 @@ def build_report() -> dict[str, Any]:
         },
         "protected_operations": protected,
         "mutations": mutations,
+        "security_deferred_operations": security_deferred,
+        "mutation_deferred_operations": mutation_deferred,
+        "html_operations": html_operations,
+        "no_content_operations": no_content_operations,
+        "deferred_no_content_operations": deferred_no_content_operations,
         "schema_vocabulary": {
-            key: {"count": schema_counts[key], "examples": sorted(examples[key])[:5]}
+            key: {"count": schema_counts[key], "operations": sorted(examples[key])}
             for key in sorted(schema_counts)
+        },
+        "construct_schema_ids": construct_schemas,
+        "schema_compiler": {
+            "components": len(schemas),
+            "compiled": len(schemas) - len(compiler_failures),
+            "failures": compiler_failures,
+            "cycles": compiler.cycles(),
         },
         "response_vocabulary": {
             "success_statuses": dict(sorted(success_counts.items())),

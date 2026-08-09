@@ -1,13 +1,151 @@
 {
-  "literal_count": 68,
+  "literal_count": 223,
   "matched": [
+    "/api/v1/access/api-keys",
+    "/api/v1/access/api-keys/{param}",
+    "/api/v1/access/delegated-passes",
+    "/api/v1/access/delegated-passes/{param}",
+    "/api/v1/access/intents/{param}",
+    "/api/v1/access/me",
+    "/api/v1/access/me/entitlements",
+    "/api/v1/access/me/limits",
+    "/api/v1/access/payment-intents/{param}",
+    "/api/v1/access/recovery/status/{param}",
+    "/api/v1/business/lightning-addresses",
+    "/api/v1/business/lightning-addresses/{param}",
+    "/api/v1/business/lightning-domains",
+    "/api/v1/business/lightning-domains/{param}",
+    "/api/v1/citadel/assessment",
+    "/api/v1/citadel/dependencies",
+    "/api/v1/citadel/inheritance",
+    "/api/v1/citadel/overview",
+    "/api/v1/citadel/policy-checks",
+    "/api/v1/citadel/recovery",
+    "/api/v1/citadel/repair-plan",
+    "/api/v1/citadel/simulations",
+    "/api/v1/education/snippets",
+    "/api/v1/entities",
+    "/api/v1/evidence/market-memory/{param}",
     "/api/v1/evidence/packets",
+    "/api/v1/evidence/packets/{param}",
+    "/api/v1/evidence/packets/{param}/relationships",
+    "/api/v1/evidence/packets/{param}/timeline",
+    "/api/v1/evidence/replay/{param}/{param}",
+    "/api/v1/evidence/replay/{param}/{param}/integrity",
+    "/api/v1/evidence/replay/{param}/{param}/timeline",
     "/api/v1/health",
+    "/api/v1/health/degraded",
+    "/api/v1/health/jobs",
+    "/api/v1/health/live",
     "/api/v1/health/providers",
+    "/api/v1/health/ready",
+    "/api/v1/health/runtime",
+    "/api/v1/health/system",
+    "/api/v1/intelligence/candles/{param}",
+    "/api/v1/intelligence/candles/{param}/attribution",
+    "/api/v1/intelligence/candles/{param}/candidates",
+    "/api/v1/intelligence/candles/{param}/context",
+    "/api/v1/intelligence/candles/{param}/events",
+    "/api/v1/intelligence/candles/{param}/evidence",
+    "/api/v1/intelligence/candles/{param}/explain",
+    "/api/v1/intelligence/candles/{param}/replay",
+    "/api/v1/intelligence/candles/{param}/similar",
+    "/api/v1/intelligence/candles/{param}/top-events",
+    "/api/v1/intelligence/events/{param}/memory",
+    "/api/v1/intelligence/events/{param}/memory/replay",
+    "/api/v1/intelligence/events/{param}/similar",
+    "/api/v1/intelligence/events/{param}/timeline",
+    "/api/v1/intelligence/impact/high-confidence",
     "/api/v1/intelligence/narratives",
+    "/api/v1/intelligence/narratives/active",
+    "/api/v1/intelligence/narratives/dominance",
+    "/api/v1/intelligence/narratives/dominant",
+    "/api/v1/intelligence/narratives/emerging",
+    "/api/v1/intelligence/narratives/falling",
+    "/api/v1/intelligence/narratives/heatmap",
+    "/api/v1/intelligence/narratives/history",
+    "/api/v1/intelligence/narratives/memory",
+    "/api/v1/intelligence/narratives/rising",
+    "/api/v1/intelligence/narratives/rotations",
+    "/api/v1/intelligence/narratives/top",
+    "/api/v1/intelligence/narratives/{param}",
+    "/api/v1/intelligence/patterns",
+    "/api/v1/intelligence/patterns/{param}",
+    "/api/v1/intelligence/patterns/{param}/history",
+    "/api/v1/intelligence/patterns/{param}/occurrences",
+    "/api/v1/intelligence/patterns/{param}/reaction-profile",
+    "/api/v1/intelligence/patterns/{param}/statistics",
+    "/api/v1/intelligence/reaction-profile/{param}",
+    "/api/v1/intelligence/similar-events/{param}",
+    "/api/v1/intelligence/similarity/articles/{param}",
+    "/api/v1/intelligence/similarity/candle/{param}",
+    "/api/v1/intelligence/similarity/event/{param}",
+    "/api/v1/intelligence/similarity/events/{param}",
+    "/api/v1/intelligence/similarity/news/{param}",
+    "/api/v1/intelligence/similarity/signals/{param}",
+    "/api/v1/intelligence/similarity/{param}",
+    "/api/v1/intelligence/similarity/{param}/matches",
+    "/api/v1/intelligence/timeline",
+    "/api/v1/intelligence/timeline/context/{param}",
+    "/api/v1/intelligence/timeline/day",
+    "/api/v1/intelligence/timeline/hour",
+    "/api/v1/intelligence/timeline/latest",
+    "/api/v1/intelligence/timeline/narratives/current",
+    "/api/v1/intelligence/timeline/news-impacts/high-confidence",
+    "/api/v1/intelligence/timeline/news-impacts/recent",
+    "/api/v1/intelligence/timeline/window",
+    "/api/v1/market-time-machine/candle-attribution",
+    "/api/v1/market-time-machine/events",
+    "/api/v1/market-time-machine/news-impact",
+    "/api/v1/market-time-machine/provider-degradation",
+    "/api/v1/market-time-machine/reaction-windows",
+    "/api/v1/market-time-machine/regime-transitions",
+    "/api/v1/market-time-machine/signal-reliability",
+    "/api/v1/market/btc/candles",
+    "/api/v1/market/btc/candles/latest",
+    "/api/v1/market/btc/candles/{param}",
+    "/api/v1/market/btc/candles/{param}/evidence",
+    "/api/v1/market/btc/candles/{param}/latest",
+    "/api/v1/market/btc/context",
+    "/api/v1/market/btc/price",
+    "/api/v1/market/btc/price/history",
+    "/api/v1/market/btc/providers",
+    "/api/v1/market/btc/providers/health",
     "/api/v1/market/health",
     "/api/v1/market/providers/health",
+    "/api/v1/news/articles/{param}/duplicates",
+    "/api/v1/news/by-sentiment/{param}",
+    "/api/v1/news/clusters",
+    "/api/v1/news/clusters/{param}",
+    "/api/v1/news/events",
+    "/api/v1/news/events/high-impact",
+    "/api/v1/news/events/regulatory",
+    "/api/v1/news/events/security",
+    "/api/v1/news/events/{param}",
+    "/api/v1/news/events/{param}/articles",
+    "/api/v1/news/events/{param}/impact",
+    "/api/v1/news/events/{param}/score",
+    "/api/v1/news/high-impact",
+    "/api/v1/news/high-relevance",
+    "/api/v1/news/latest",
+    "/api/v1/news/regulatory",
+    "/api/v1/news/security",
     "/api/v1/news/sources",
+    "/api/v1/news/sources/categories",
+    "/api/v1/news/sources/health",
+    "/api/v1/news/sources/reputation",
+    "/api/v1/news/sources/tiers",
+    "/api/v1/news/sources/{param}",
+    "/api/v1/news/sources/{param}/confidence-events",
+    "/api/v1/news/sources/{param}/health",
+    "/api/v1/news/sources/{param}/snapshots",
+    "/api/v1/news/{param}/explanation",
+    "/api/v1/news/{param}/impact",
+    "/api/v1/news/{param}/narratives",
+    "/api/v1/news/{param}/score",
+    "/api/v1/news/{param}/scores",
+    "/api/v1/onchain/events",
+    "/api/v1/onchain/state",
     "/api/v1/operations/status",
     "/api/v1/public/features",
     "/api/v1/public/landing",
@@ -16,13 +154,26 @@
     "/api/v1/public/status",
     "/api/v1/public/trace/{param}/summary",
     "/api/v1/signals/latest",
+    "/api/v1/signals/news-market-impact",
     "/api/v1/signals/top",
+    "/api/v1/signals/{param}",
+    "/api/v1/signals/{param}/delivery-logs",
+    "/api/v1/signals/{param}/evidence",
+    "/api/v1/signals/{param}/explanation",
+    "/api/v1/signals/{param}/recommendations",
+    "/api/v1/storage/status",
+    "/api/v1/storage/timescale/status",
     "/api/v1/trace/address/{param}",
+    "/api/v1/trace/alerts",
+    "/api/v1/trace/events",
+    "/api/v1/trace/events/{param}",
     "/api/v1/trace/lite/{param}",
     "/api/v1/trace/report/{param}",
+    "/api/v1/trace/report/{param}/citadel-contribution",
     "/api/v1/trace/report/{param}/counterparty-lens",
     "/api/v1/trace/report/{param}/dust-radar",
     "/api/v1/trace/report/{param}/evidence",
+    "/api/v1/trace/report/{param}/evidence-refs",
     "/api/v1/trace/report/{param}/origin-passport",
     "/api/v1/trace/report/{param}/policy-facts",
     "/api/v1/trace/report/{param}/privacy-shield",
@@ -30,6 +181,10 @@
     "/api/v1/trace/report/{param}/provider-disagreement",
     "/api/v1/trace/report/{param}/source-summary",
     "/api/v1/trace/report/{param}/utxo-hygiene",
+    "/api/v1/trace/sources",
+    "/api/v1/trace/sources/{param}",
+    "/api/v1/trace/status",
+    "/api/v1/trace/watchlist",
     "/api/v1/wallet-auth/challenges",
     "/api/v1/wallet-auth/devices",
     "/api/v1/wallet-auth/entitlements",
@@ -55,18 +210,112 @@
     "/v1/lnurl/pay/subscriptions",
     "/v1/lnurl/withdraw/requests"
   ],
-  "matched_count": 53,
+  "matched_count": 208,
   "sources": {
+    "/api/v1/access/api-keys": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/api-keys/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/delegated-passes": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/delegated-passes/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/intents/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/me": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/me/entitlements": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/me/limits": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/payment-intents/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/recovery/status/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
     "/api/v1/audit/events": [
       "frontend/bastion_ui/services/audit_client.py",
       "frontend/bastion_ui/state/console_audit_state.py"
     ],
+    "/api/v1/business/lightning-addresses": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/business/lightning-addresses/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/business/lightning-domains": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/business/lightning-domains/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/citadel/assessment": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/citadel/dependencies": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/citadel/inheritance": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/citadel/overview": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/citadel/policy-checks": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/citadel/recovery": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/citadel/repair-plan": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/citadel/simulations": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/education/snippets": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/entities": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
     "/api/v1/evidence": [
       "frontend/bastion_ui/state/console_evidence_state.py"
     ],
+    "/api/v1/evidence/market-memory/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
     "/api/v1/evidence/packets": [
       "frontend/bastion_ui/services/market_client.py",
-      "frontend/bastion_ui/services/market_client.py"
+      "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/evidence/packets/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/evidence/packets/{param}/relationships": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/evidence/packets/{param}/timeline": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/evidence/replay/{param}/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/evidence/replay/{param}/{param}/integrity": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/evidence/replay/{param}/{param}/timeline": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/evidence/{param}": [
       "frontend/bastion_ui/services/wow_client.py"
@@ -75,27 +324,355 @@
       "frontend/bastion_ui/services/provider_health_client.py",
       "frontend/bastion_ui/services/sovereign_grid_client.py",
       "frontend/bastion_ui/services/status_client.py",
-      "frontend/bastion_ui/services/wow_client.py"
+      "frontend/bastion_ui/services/wow_client.py",
+      "frontend/bastion_ui/transport/generated_foundation.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/health/degraded": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/health/jobs": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/health/live": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/health/providers": [
       "frontend/bastion_ui/services/console_client.py",
-      "frontend/bastion_ui/services/status_client.py"
+      "frontend/bastion_ui/services/status_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/health/ready": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/health/runtime": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/health/system": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/attribution": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/candidates": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/context": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/events": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/evidence": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/explain": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/replay": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/similar": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/candles/{param}/top-events": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/events/{param}/memory": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/events/{param}/memory/replay": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/events/{param}/similar": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/events/{param}/timeline": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/impact/high-confidence": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/intelligence/narratives": [
-      "frontend/bastion_ui/services/market_client.py"
+      "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/active": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/dominance": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/dominant": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/emerging": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/falling": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/heatmap": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/history": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/memory": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/rising": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/rotations": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/top": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/narratives/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/patterns": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/patterns/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/patterns/{param}/history": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/patterns/{param}/occurrences": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/patterns/{param}/reaction-profile": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/patterns/{param}/statistics": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/reaction-profile/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similar-events/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similarity/articles/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similarity/candle/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similarity/event/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similarity/events/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similarity/news/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similarity/signals/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similarity/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/similarity/{param}/matches": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline/context/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline/day": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline/hour": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline/latest": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline/narratives/current": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline/news-impacts/high-confidence": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline/news-impacts/recent": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/intelligence/timeline/window": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market-time-machine/candle-attribution": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market-time-machine/events": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market-time-machine/news-impact": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market-time-machine/provider-degradation": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market-time-machine/reaction-windows": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market-time-machine/regime-transitions": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market-time-machine/signal-reliability": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/candles": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/candles/latest": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/candles/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/candles/{param}/evidence": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/candles/{param}/latest": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/context": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/price": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/price/history": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/providers": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/btc/providers/health": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/market/health": [
-      "frontend/bastion_ui/services/market_client.py"
+      "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/market/providers/health": [
-      "frontend/bastion_ui/services/market_client.py"
+      "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/articles/{param}/duplicates": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/by-sentiment/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/clusters": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/clusters/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/events": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/events/high-impact": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/events/regulatory": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/events/security": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/events/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/events/{param}/articles": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/events/{param}/impact": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/events/{param}/score": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/high-impact": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/high-relevance": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/latest": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/regulatory": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/security": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/news/sources": [
-      "frontend/bastion_ui/services/market_client.py"
+      "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/sources/categories": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/sources/health": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/sources/reputation": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/sources/tiers": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/sources/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/sources/{param}/confidence-events": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/sources/{param}/health": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/sources/{param}/snapshots": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/{param}/explanation": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/{param}/impact": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/{param}/narratives": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/{param}/score": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/news/{param}/scores": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/observability": [
       "frontend/bastion_ui/services/audit_client.py",
       "frontend/bastion_ui/services/sovereign_grid_client.py"
+    ],
+    "/api/v1/onchain/events": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/onchain/state": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/operations/status": [
       "frontend/bastion_ui/services/console_client.py"
@@ -115,18 +692,22 @@
       "frontend/bastion_ui/services/api_explorer_client.py",
       "frontend/bastion_ui/services/api_explorer_client.py",
       "frontend/bastion_ui/services/public_client.py",
-      "frontend/bastion_ui/services/sovereign_grid_client.py"
+      "frontend/bastion_ui/services/sovereign_grid_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/public/landing": [
-      "frontend/bastion_ui/services/public_client.py"
+      "frontend/bastion_ui/services/public_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/public/roadmap": [
       "frontend/bastion_ui/services/api_explorer_client.py",
       "frontend/bastion_ui/services/api_explorer_client.py",
-      "frontend/bastion_ui/services/public_client.py"
+      "frontend/bastion_ui/services/public_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/public/stats": [
-      "frontend/bastion_ui/services/public_client.py"
+      "frontend/bastion_ui/services/public_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/public/status": [
       "frontend/bastion_ui/services/api_explorer_client.py",
@@ -135,69 +716,138 @@
       "frontend/bastion_ui/services/sovereign_grid_client.py",
       "frontend/bastion_ui/services/status_client.py",
       "frontend/bastion_ui/services/wow_client.py",
-      "frontend/bastion_ui/state/api_explorer_state.py"
+      "frontend/bastion_ui/state/api_explorer_state.py",
+      "frontend/bastion_ui/transport/generated_foundation.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/public/trace/{param}/summary": [
       "frontend/bastion_ui/services/api_explorer_client.py",
       "frontend/bastion_ui/services/evidence_client.py",
       "frontend/bastion_ui/services/public_client.py",
       "frontend/bastion_ui/services/trace_client.py",
-      "frontend/bastion_ui/services/wow_client.py"
+      "frontend/bastion_ui/services/wow_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/signals/latest": [
       "frontend/bastion_ui/services/market_client.py",
-      "frontend/bastion_ui/services/market_client.py"
+      "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/signals/news-market-impact": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/signals/top": [
       "frontend/bastion_ui/services/api_explorer_client.py",
-      "frontend/bastion_ui/services/api_explorer_client.py"
+      "frontend/bastion_ui/services/api_explorer_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/signals/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/signals/{param}/delivery-logs": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/signals/{param}/evidence": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/signals/{param}/explanation": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/signals/{param}/recommendations": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/storage/status": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/storage/timescale/status": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/address/{param}": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/alerts": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/events": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/events/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/lite/{param}": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/recent": [
       "frontend/bastion_ui/state/console_trace_state.py"
     ],
     "/api/v1/trace/report/{param}": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/citadel-contribution": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/counterparty-lens": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/dust-radar": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/evidence": [
       "frontend/bastion_ui/services/evidence_client.py",
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/evidence-refs": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/origin-passport": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/policy-facts": [
       "frontend/bastion_ui/services/policy_client.py",
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/privacy-shield": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/proof-packet": [
       "frontend/bastion_ui/services/evidence_client.py",
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/provider-disagreement": [
       "frontend/bastion_ui/services/evidence_client.py",
       "frontend/bastion_ui/services/provider_health_client.py",
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/source-summary": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/utxo-hygiene": [
-      "frontend/bastion_ui/services/trace_client.py"
+      "frontend/bastion_ui/services/trace_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/sources": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/sources/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/status": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/watchlist": [
+      "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/treasury/drafts": [
       "frontend/bastion_ui/services/api_explorer_client.py"

@@ -93,15 +93,15 @@ class SubscriptionEntitlementOverlay(BaseModel):
 class SubscriptionEntitlementResponse(BaseModel):
     plan_code: PlanCode
     status: str
-    valid_from: Any
-    valid_until: Any
-    grace_until: Any | None = None
+    valid_from: datetime
+    valid_until: datetime
+    grace_until: datetime | None = None
     metric_groups: list[str]
     scopes: list[str]
     limits: dict[str, Any]
     crypto_epoch: int
     issuer_key_id: str | None = None
-    created_at: Any
+    created_at: datetime
     locked_metric_groups: list[dict[str, Any]] = Field(default_factory=list)
 
 
@@ -124,7 +124,7 @@ class AccessPaymentIntentResponse(BaseModel):
     amount_sats: int
     plan_code: PlanCode
     checkout_url: str | None = None
-    expires_at: Any | None = None
+    expires_at: datetime | None = None
     certificate_available: bool = False
 
 
@@ -149,7 +149,7 @@ class AccessCertificateIssueResponse(BaseModel):
     access_certificate: dict[str, Any]
     certificate_fingerprint: str
     plan_code: PlanCode
-    expires_at: Any
+    expires_at: datetime
     save_warning: str
     subscription_entitlement: SubscriptionEntitlementResponse | None = None
     recovery_setup_recommended: bool = True
@@ -161,7 +161,7 @@ class AccessMeResponse(BaseModel):
     entitlement_status: str
     active_scopes: list[str]
     device_status: str
-    session_expires_at: Any
+    session_expires_at: datetime
     access_integrity_summary: dict[str, Any]
     recovery_status_summary: dict[str, Any]
 
@@ -220,7 +220,7 @@ class AccessLockdownResponse(BaseModel):
     affected_offline_packs: int
     recovery_only: bool
     audit_event_hash: str
-    created_at: Any
+    created_at: datetime
 
 
 class AccessChallengeCreate(BaseModel):
@@ -234,7 +234,7 @@ class AccessChallengeResponse(BaseModel):
     challenge_id: str
     challenge_hash: str
     challenge_payload: dict[str, Any]
-    expires_at: Any
+    expires_at: datetime
     status: str
 
 
@@ -255,7 +255,7 @@ class AccessSessionResponse(BaseModel):
     device_key_fingerprint: str
     plan_code: PlanCode
     scopes: list[str]
-    expires_at: Any
+    expires_at: datetime
     policy_mode: str
     requires_request_signing: bool
 
@@ -279,7 +279,7 @@ class ChildApiKeyCreateResponse(BaseModel):
     raw_child_api_key: str
     scopes: list[str]
     limits: dict[str, Any]
-    expires_at: Any
+    expires_at: datetime
     warning: str = "Store this key now. It will not be shown again."
 
 
@@ -290,9 +290,9 @@ class ChildApiKeyPublic(BaseModel):
     denied_scopes: list[str] = Field(default_factory=list)
     limits: dict[str, Any] = Field(default_factory=dict)
     status: str
-    created_at: Any
-    expires_at: Any
-    last_used_at: Any | None = None
+    created_at: datetime
+    expires_at: datetime
+    last_used_at: datetime | None = None
     requires_request_signing: bool = True
     can_delegate: bool = False
 
@@ -317,7 +317,7 @@ class DelegatedPassCreateResponse(BaseModel):
     raw_delegated_pass: str
     scopes: list[str]
     constraints: dict[str, Any]
-    expires_at: Any
+    expires_at: datetime
     warning: str = "Store this delegated pass now. It will not be shown again."
 
 
@@ -328,9 +328,9 @@ class DelegatedPassPublic(BaseModel):
     scopes: list[str]
     constraints: dict[str, Any] = Field(default_factory=dict)
     status: str
-    valid_from: Any
-    expires_at: Any
-    last_used_at: Any | None = None
+    valid_from: datetime
+    expires_at: datetime
+    last_used_at: datetime | None = None
     can_create_child_keys: bool = False
     can_delegate: bool = False
 
@@ -372,7 +372,7 @@ class RecoveryStartResponse(BaseModel):
     required_factors: list[str]
     allowed_factors: list[str]
     threshold: int
-    cooldown_until: Any
+    cooldown_until: datetime
     safety_warnings: list[str]
     status: str
 
@@ -402,7 +402,7 @@ class RecoveryStatusResponse(BaseModel):
     missing_factor_count: int
     decision: str
     reason: str
-    cooldown_until: Any | None = None
+    cooldown_until: datetime | None = None
 
 
 class RecoveryCompleteRequest(BaseModel):

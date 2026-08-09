@@ -1,0 +1,669 @@
+{
+  "entries": [
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/audit_client.py",
+        "frontend/bastion_ui/state/console_audit_state.py"
+      ],
+      "literal": "/api/v1/audit/events",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/state/console_evidence_state.py"
+      ],
+      "literal": "/api/v1/evidence",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/market_client.py",
+        "frontend/bastion_ui/services/market_client.py"
+      ],
+      "literal": "/api/v1/evidence/packets",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/wow_client.py"
+      ],
+      "literal": "/api/v1/evidence/{param}",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/provider_health_client.py",
+        "frontend/bastion_ui/services/sovereign_grid_client.py",
+        "frontend/bastion_ui/services/status_client.py",
+        "frontend/bastion_ui/services/wow_client.py",
+        "frontend/bastion_ui/transport/generated_foundation.py"
+      ],
+      "literal": "/api/v1/health",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/console_client.py",
+        "frontend/bastion_ui/services/status_client.py"
+      ],
+      "literal": "/api/v1/health/providers",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/market_client.py"
+      ],
+      "literal": "/api/v1/intelligence/narratives",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/market_client.py"
+      ],
+      "literal": "/api/v1/market/health",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/market_client.py"
+      ],
+      "literal": "/api/v1/market/providers/health",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/market_client.py"
+      ],
+      "literal": "/api/v1/news/sources",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/audit_client.py",
+        "frontend/bastion_ui/services/sovereign_grid_client.py"
+      ],
+      "literal": "/api/v1/observability",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/console_client.py"
+      ],
+      "literal": "/api/v1/operations/status",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/policy_client.py",
+        "frontend/bastion_ui/state/console_policy_state.py"
+      ],
+      "literal": "/api/v1/policy",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/api_explorer_client.py"
+      ],
+      "literal": "/api/v1/policy/rules/{param}",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/provider_health_client.py",
+        "frontend/bastion_ui/state/console_provider_health_state.py"
+      ],
+      "literal": "/api/v1/provider-health",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/api_explorer_client.py",
+        "frontend/bastion_ui/services/api_explorer_client.py",
+        "frontend/bastion_ui/services/public_client.py",
+        "frontend/bastion_ui/services/sovereign_grid_client.py"
+      ],
+      "literal": "/api/v1/public/features",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/public_client.py"
+      ],
+      "literal": "/api/v1/public/landing",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/api_explorer_client.py",
+        "frontend/bastion_ui/services/api_explorer_client.py",
+        "frontend/bastion_ui/services/public_client.py"
+      ],
+      "literal": "/api/v1/public/roadmap",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/public_client.py"
+      ],
+      "literal": "/api/v1/public/stats",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/api_explorer_client.py",
+        "frontend/bastion_ui/services/api_explorer_client.py",
+        "frontend/bastion_ui/services/public_client.py",
+        "frontend/bastion_ui/services/sovereign_grid_client.py",
+        "frontend/bastion_ui/services/status_client.py",
+        "frontend/bastion_ui/services/wow_client.py",
+        "frontend/bastion_ui/state/api_explorer_state.py",
+        "frontend/bastion_ui/transport/generated_foundation.py"
+      ],
+      "literal": "/api/v1/public/status",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/api_explorer_client.py",
+        "frontend/bastion_ui/services/evidence_client.py",
+        "frontend/bastion_ui/services/public_client.py",
+        "frontend/bastion_ui/services/trace_client.py",
+        "frontend/bastion_ui/services/wow_client.py"
+      ],
+      "literal": "/api/v1/public/trace/{param}/summary",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/market_client.py",
+        "frontend/bastion_ui/services/market_client.py"
+      ],
+      "literal": "/api/v1/signals/latest",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/api_explorer_client.py",
+        "frontend/bastion_ui/services/api_explorer_client.py"
+      ],
+      "literal": "/api/v1/signals/top",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/address/{param}",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/lite/{param}",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/state/console_trace_state.py"
+      ],
+      "literal": "/api/v1/trace/recent",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/counterparty-lens",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/dust-radar",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/evidence_client.py",
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/evidence",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/origin-passport",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/policy_client.py",
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/policy-facts",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/privacy-shield",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/evidence_client.py",
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/proof-packet",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/evidence_client.py",
+        "frontend/bastion_ui/services/provider_health_client.py",
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/provider-disagreement",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/source-summary",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/report/{param}/utxo-hygiene",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/api_explorer_client.py"
+      ],
+      "literal": "/api/v1/treasury/drafts",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/challenges",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/devices",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/devices/{quote(device_id,",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/entitlements",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/lockdown",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/login",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/me",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/recovery/start",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/recovery/{quote(recovery_id,",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/register",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/sessions",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/wallet_auth_client.py",
+        "frontend/bastion_ui/wallet_auth_client.py"
+      ],
+      "literal": "/api/v1/wallet-auth/step-up",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/services/api_explorer_client.py"
+      ],
+      "literal": "/api/v1/webhooks/secrets",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/certificates",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/challenges",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/entitlements",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/limits",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/lockdown",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/me",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/payment-intents",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/payment-intents/{param}",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/recovery/start",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/recovery/status/{param}",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/access_client.py"
+      ],
+      "literal": "/v1/access/sessions",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/lnurl_client.py",
+        "frontend/bastion_ui/services/lnurl_client.py"
+      ],
+      "literal": "/v1/lnurl/auth/challenges",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/lnurl_client.py",
+        "frontend/bastion_ui/services/lnurl_client.py"
+      ],
+      "literal": "/v1/lnurl/auth/sessions",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/lnurl_client.py"
+      ],
+      "literal": "/v1/lnurl/auth/step-up",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/lnurl_client.py",
+        "frontend/bastion_ui/services/lnurl_client.py"
+      ],
+      "literal": "/v1/lnurl/pay/subscriptions",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
+      "active_canonical_owner": null,
+      "classification": "STALE_RUNTIME_ABSENT",
+      "consumers": [
+        "frontend/bastion_ui/lnurl_client.py",
+        "frontend/bastion_ui/services/lnurl_client.py"
+      ],
+      "literal": "/v1/lnurl/pay/verify/{quote(payment_id,",
+      "removal_condition": "remove only after consumer and replacement-route review"
+    },
+    {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/lnurl_client.py",
+        "frontend/bastion_ui/services/lnurl_client.py"
+      ],
+      "literal": "/v1/lnurl/withdraw/requests",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    }
+  ],
+  "policy": "handwritten paths are non-canonical and do not count as generated ownership",
+  "source_audit": "docs/frontend/migration/00_FRONTEND_URL_AUDIT.json"
+}

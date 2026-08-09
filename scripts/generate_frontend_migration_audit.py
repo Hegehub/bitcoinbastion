@@ -192,8 +192,40 @@ def frontend_literals() -> tuple[list[str], dict[str, list[str]]]:
     return sorted(found), found
 
 
+def has_untyped_schema(value: object, schemas: dict[str, Any], visited: set[str] | None = None) -> bool:
+    """Detect backend `Any` schema fragments without inventing a frontend type."""
+    seen = visited or set()
+    if isinstance(value, dict):
+        meaningful = {
+            "$ref", "type", "anyOf", "oneOf", "allOf", "enum", "const",
+            "properties", "additionalProperties",
+        }
+        if value and not meaningful.intersection(value) and set(value) <= {
+            "title", "description", "default", "examples",
+        }:
+            return True
+        if not value:
+            return True
+        reference = value.get("$ref")
+        if isinstance(reference, str) and reference.startswith("#/components/schemas/"):
+            name = reference.rsplit("/", 1)[-1]
+            if name not in seen:
+                seen.add(name)
+                if has_untyped_schema(schemas[name], schemas, seen):
+                    return True
+        return any(
+            has_untyped_schema(child, schemas, seen)
+            for key, child in value.items()
+            if key not in {"$ref", "default", "examples", "title", "description"}
+        )
+    if isinstance(value, list):
+        return any(has_untyped_schema(child, schemas, seen) for child in value)
+    return False
+
+
 def main() -> None:
     spec = app.openapi()
+    schemas = spec.get("components", {}).get("schemas", {})
     head = git("rev-parse", "HEAD")
     # Bind generated artifacts to the source revision rather than wall-clock time.
     # This preserves an auditable UTC timestamp while making regeneration at the
@@ -201,12 +233,15 @@ def main() -> None:
     stamp = git("show", "-s", "--format=%cI", head)
     ops = []
     ids = []
+    generated_http_path = ROOT / "frontend/bastion_ui/transport/generated_http.py"
+    generated_http = generated_http_path.read_text() if generated_http_path.exists() else ""
     for path, item in sorted(spec["paths"].items()):
         for method in METHODS:
             if method not in item:
                 continue
             op = item[method]
             oid = op.get("operationId", "")
+            generated_owner = f"async def {oid}(" in generated_http
             ids.append(oid)
             disp, reason, product = disposition(method, path)
             req = ""
@@ -215,31 +250,83 @@ def main() -> None:
             responses = op.get("responses", {})
             success_status = next((code for code in sorted(responses) if code.startswith("2")), "")
             response = "NoContent" if success_status == "204" else ref(responses.get(success_status, {}))
+            success_content = responses.get(success_status, {}).get("content", {})
+            active_ui = disp in ("UI_REQUIRED", "UI_OPTIONAL")
+            legacy_html = "text/html" in success_content and disp in {"UI_REQUIRED", "UI_OPTIONAL"}
+            schema_authority_missing = active_ui and (
+                bool(body) and has_untyped_schema(body, schemas)
+                or has_untyped_schema(responses.get(success_status, {}), schemas)
+            )
             protected = bool(op.get("security"))
             coverage = "NOT_STARTED"
+            if generated_owner:
+                coverage = "CLIENT_ONLY"
             deferred = DEFERRED_HTTP.get((method, path))
-            active_ui = disp in ("UI_REQUIRED", "UI_OPTIONAL")
+            unresolved_mutation = active_ui and method.upper() in {"POST", "PUT", "PATCH", "DELETE"}
+            unresolved_protected = active_ui and protected
+            contract_authority_deferred = unresolved_mutation or unresolved_protected
+            if contract_authority_deferred:
+                disp = "DEFERRED_WITH_REASON"
+                missing = []
+                if unresolved_protected:
+                    missing.append("protected_security_contract_unresolved")
+                if unresolved_mutation:
+                    missing.append("mutation_safety_contract_unresolved")
+                reason = "+".join(missing)
+            elif legacy_html:
+                disp = "DEFERRED_WITH_REASON"
+                reason = "legacy_server_html_not_generic_reflex_transport"
+            elif schema_authority_missing:
+                disp = "DEFERRED_WITH_REASON"
+                reason = "backend_schema_contains_untyped_any"
             # OpenAPI currently exposes no operation-specific safe error registry and the
             # migration audit has not completed dependency-level security semantics. A
             # descriptor name is not a generated typed client, so fail closed rather than
             # promoting all candidates to authoritative ownership.
-            transport_contract_blocked = active_ui and deferred is None
+            transport_contract_blocked = (
+                active_ui
+                and deferred is None
+                and not contract_authority_deferred
+                and not legacy_html
+                and not schema_authority_missing
+                and not generated_owner
+            )
             authority = (
                 "DEFERRED_AUTHORITY"
-                if deferred or transport_contract_blocked
+                if deferred
+                or transport_contract_blocked
+                or contract_authority_deferred
+                or legacy_html
+                or schema_authority_missing
                 else "AUTHORITATIVE_NOW"
             )
-            blocker_id = (
-                deferred["blocker_id"] if deferred else ("P1B-B01" if transport_contract_blocked else None)
+            blocker_id = deferred["blocker_id"] if deferred else (
+                "P1B0-B01+B02" if unresolved_protected and unresolved_mutation else
+                "P1B0-B01" if unresolved_protected else
+                "P1B0-B02" if unresolved_mutation else
+                "P1B0-B03-HTML" if legacy_html else
+                "P1B0-B03-SCHEMA" if schema_authority_missing else
+                "P1B-B01" if transport_contract_blocked else None
             )
             future_owner = (
-                deferred["future_owner"] if deferred else ("Prompt 1B/25" if transport_contract_blocked else None)
+                deferred["future_owner"] if deferred else (
+                    f"Prompt {prompt_for(path)}/25" if contract_authority_deferred else
+                    "Prompt 25/25" if legacy_html else
+                    "Prompt 1B/25" if schema_authority_missing else
+                    "Prompt 1B/25" if transport_contract_blocked else None
+                )
             )
             reentry = (
                 deferred["reentry_condition"]
                 if deferred
                 else (
-                    "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+                    "backend owner supplies tested security and mutation semantics before UI generation"
+                    if contract_authority_deferred
+                    else "migrate or remove legacy server HTML; do not expose as generic Reflex transport"
+                    if legacy_html
+                    else "backend owner replaces untyped Any schema fields with authoritative transport types"
+                    if schema_authority_missing
+                    else "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
                     if transport_contract_blocked
                     else None
                 )
@@ -280,12 +367,19 @@ def main() -> None:
                     "authority_blocker_id": blocker_id,
                     "authority_future_owner": future_owner,
                     "authority_reentry_condition": reentry,
-                    "typed_client_owner": "none",
+                    "deferred_contract_kind": (
+                        "protected_mutation" if unresolved_protected and unresolved_mutation else
+                        "protected" if unresolved_protected else
+                        "mutation" if unresolved_mutation else None
+                    ),
+                    "typed_client_owner": (
+                        f"bastion_ui.transport.generated_http:{oid}" if generated_owner else "none"
+                    ),
                     "product_boundary": product,
                     "frontend_surface": (
                         "TBD by assigned prompt" if disp.startswith("UI_") else "N/A"
                     ),
-                    "client_method": "not runtime-verified",
+                    "client_method": oid if generated_owner else "not runtime-verified",
                     "verified_url": path,
                     "adapter_view_model": "none verified",
                     "trigger_subscription": "none verified",

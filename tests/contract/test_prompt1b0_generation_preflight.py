@@ -7,22 +7,26 @@ def test_full_generation_preflight_is_fail_closed_and_complete() -> None:
 
     assert counts == {
         "runtime_http": 369,
-        "generation_candidates": 309,
-        "protected_candidates": 65,
-        "mutation_candidates": 65,
-        "protected_only": 44,
-        "mutation_only": 44,
-        "protected_mutations": 21,
-        "b01_b02_unique_operations": 109,
-        "ready": 200,
-        "security_blocked": 65,
-        "mutation_blocked": 65,
-        "schema_capabilities_unproven": 2,
+        "generation_candidates": 194,
+        "protected_candidates": 0,
+        "mutation_candidates": 0,
+        "protected_only": 0,
+        "mutation_only": 0,
+        "protected_mutations": 0,
+        "b01_b02_unique_operations": 0,
+        "ready": 194,
+        "security_blocked": 0,
+        "mutation_blocked": 0,
+        "security_deferred": 65,
+        "mutation_deferred": 65,
+        "schema_capabilities_unproven": 0,
     }
-    assert report["unproven_schema_capabilities"] == ["additionalProperties", "anyOf"]
+    assert report["unproven_schema_capabilities"] == []
     assert report["response_vocabulary"] == {
-        "media_types": {"application/json": 300, "no-content": 3, "text/html": 6},
-        "success_statuses": {"200": 305, "201": 1, "204": 3},
+        "media_types": {"application/json": 194},
+        "success_statuses": {"200": 194},
     }
-    assert all(row["blocker"] in {"P1B0-B01", "P1B0-B02"} for row in report["blockers"])
+    assert report["blockers"] == []
+    assert report["html_operations"] == []
+    assert len(report["deferred_no_content_operations"]) == 4
     assert report["websocket_authority"].startswith("DEFERRED_TO_PROMPT_4")

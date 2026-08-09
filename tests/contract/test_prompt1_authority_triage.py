@@ -31,8 +31,8 @@ def test_authority_triage_fails_closed_and_assigns_exactly_one_http_owner() -> N
     # owners: no strict error DTO or reviewed security metadata had been generated.
     assert ownership["authoritative_http_operations"] == []
     candidates = ownership["blocked_http_candidates"]
-    assert len(candidates) == 309
-    assert len({row["matrix_id"] for row in candidates}) == 309
+    assert len(candidates) == 186
+    assert len({row["matrix_id"] for row in candidates}) == 186
     assert all(row["blocker_id"] == "P1B-B01" for row in candidates)
     assert not any(row["path"].startswith("/api/v1/auth/") for row in candidates)
 

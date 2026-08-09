@@ -60,6 +60,9 @@ current implementation or readiness guidance.
 
 - [Frontend migration Prompt 0/25 baseline](frontend/migration/00_BASELINE_AUDIT.md)
 - [Prompt 1/25 contract-foundation blockers](frontend/migration/01_CONTRACT_FOUNDATION_BLOCKERS.md)
+- [Prompt 1B1/25 Stage-1 HTTP transport release](frontend/migration/01B1_STAGE1_RELEASE.md)
+- [Stage-1 transport compatibility register](frontend/migration/01B1_TRANSPORT_COMPATIBILITY.json)
+- [Prompt 2 Stage-1 revision prerequisite stop](frontend/migration/02_STAGE1_PREREQUISITE_STOP.md)
 - [Canonical frontend execution plan 0–25](frontend/migration/00_EXECUTION_PLAN_0_25.md)
 - [Approved reconciled 69-feature register](frontend/migration/00_69_FEATURE_REGISTER.md)
 
