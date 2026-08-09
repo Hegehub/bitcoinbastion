@@ -1,15 +1,15 @@
 # Endpoint Disposition Register
 
-Generated at `2026-08-09T16:24:14+00:00` from `04d315083f4b4a61f15952d11fbb1dbe98f31a14`. Each runtime operation/channel occurs once in the machine matrix.
+Generated at `2026-08-09T16:29:44+00:00` from `3ca9727dfe52274ccee929e1373dc52fe16f2232`. Each runtime operation/channel occurs once in the machine matrix.
 
 ## Totals
 
 - **CALLBACK_ONLY:** 18
-- **DEFERRED_WITH_REASON:** 119
+- **DEFERRED_WITH_REASON:** 127
 - **PROTOCOL_ONLY:** 25
 - **SEPARATE_PRODUCT:** 13
 - **UI_OPTIONAL:** 1
-- **UI_REQUIRED:** 202
+- **UI_REQUIRED:** 194
 
 ## Rules
 

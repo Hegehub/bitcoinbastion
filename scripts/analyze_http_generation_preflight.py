@@ -11,7 +11,12 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "frontend"))
 from app.main import app  # noqa: E402
+from bastion_ui.transport.schema_compiler import (  # noqa: E402
+    OpenAPISchemaCompiler,
+    SchemaCompileError,
+)
 
 DOCS = ROOT / "docs/frontend/migration"
 MATRIX = DOCS / "00_openapi_frontend_rendering_matrix.json"
@@ -66,6 +71,27 @@ def _contains_key(value: object, target: str) -> bool:
     return False
 
 
+def _reachable_refs(value: object, schemas: dict[str, Any]) -> set[str]:
+    refs: set[str] = set()
+
+    def collect(node: object) -> None:
+        if isinstance(node, dict):
+            reference = node.get("$ref")
+            if isinstance(reference, str) and reference.startswith("#/components/schemas/"):
+                name = reference.rsplit("/", 1)[-1]
+                if name not in refs:
+                    refs.add(name)
+                    collect(schemas[name])
+            for child in node.values():
+                collect(child)
+        elif isinstance(node, list):
+            for child in node:
+                collect(child)
+
+    collect(value)
+    return refs
+
+
 def build_report() -> dict[str, Any]:
     spec = app.openapi()
     matrix = json.loads(MATRIX.read_text())
@@ -90,12 +116,15 @@ def build_report() -> dict[str, Any]:
     protected: list[dict[str, str]] = []
     mutations: list[dict[str, str]] = []
     blockers: list[dict[str, str]] = []
+    schema_consumers: dict[str, set[str]] = defaultdict(set)
     html_operations: list[dict[str, str]] = []
     no_content_operations: list[dict[str, str]] = []
     deferred_no_content_operations: list[dict[str, str]] = []
     for row in candidates:
         operation = spec["paths"][row["path"]][row["method"].lower()]
         owner = row["operation_id"]
+        for schema_name in _reachable_refs(operation, schemas):
+            schema_consumers[schema_name].add(owner)
         _walk(operation, schema_counts, examples, owner, schemas, set())
         for status, response in operation.get("responses", {}).items():
             if not status.startswith("2"):
@@ -156,6 +185,19 @@ def build_report() -> dict[str, Any]:
         key: sorted(name for name, schema in schemas.items() if _contains_key(schema, key))
         for key in ("anyOf", "additionalProperties")
     }
+    compiler = OpenAPISchemaCompiler(schemas)
+    compiler_failures: list[dict[str, object]] = []
+    for schema_name in sorted(schemas):
+        try:
+            compiler.compile_component(schema_name)
+        except SchemaCompileError as exc:
+            compiler_failures.append(
+                {
+                    "schema_id": schema_name,
+                    "error": str(exc),
+                    "active_consumers": sorted(schema_consumers[schema_name]),
+                }
+            )
     return {
         "counts": {
             "runtime_http": sum(1 for item in spec["paths"].values() for method in item if method.lower() in {"get", "post", "put", "patch", "delete", "head", "options", "trace"}),
@@ -185,6 +227,12 @@ def build_report() -> dict[str, Any]:
             for key in sorted(schema_counts)
         },
         "construct_schema_ids": construct_schemas,
+        "schema_compiler": {
+            "components": len(schemas),
+            "compiled": len(schemas) - len(compiler_failures),
+            "failures": compiler_failures,
+            "cycles": compiler.cycles(),
+        },
         "response_vocabulary": {
             "success_statuses": dict(sorted(success_counts.items())),
             "media_types": dict(sorted(media_counts.items())),

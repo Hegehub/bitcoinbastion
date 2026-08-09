@@ -6,58 +6,6 @@
       "blocker_id": "P1B-B01",
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
       "future_owner": "Prompt 1B/25",
-      "matrix_id": "HTTP-0002",
-      "method": "GET",
-      "operation_id": "list_child_api_keys_api_v1_access_api_keys_get",
-      "path": "/api/v1/access/api-keys",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata",
-      "request_schema": "none",
-      "security": "none observed in OpenAPI; runtime dependency review required",
-      "success_schema": "list[ChildApiKeyPublic]"
-    },
-    {
-      "blocker_id": "P1B-B01",
-      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "future_owner": "Prompt 1B/25",
-      "matrix_id": "HTTP-0005",
-      "method": "GET",
-      "operation_id": "get_child_api_key_api_v1_access_api_keys__key_id__get",
-      "path": "/api/v1/access/api-keys/{key_id}",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata",
-      "request_schema": "none",
-      "security": "none observed in OpenAPI; runtime dependency review required",
-      "success_schema": "ChildApiKeyPublic"
-    },
-    {
-      "blocker_id": "P1B-B01",
-      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "future_owner": "Prompt 1B/25",
-      "matrix_id": "HTTP-0010",
-      "method": "GET",
-      "operation_id": "list_delegated_passes_api_v1_access_delegated_passes_get",
-      "path": "/api/v1/access/delegated-passes",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata",
-      "request_schema": "none",
-      "security": "none observed in OpenAPI; runtime dependency review required",
-      "success_schema": "list[DelegatedPassPublic]"
-    },
-    {
-      "blocker_id": "P1B-B01",
-      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "future_owner": "Prompt 1B/25",
-      "matrix_id": "HTTP-0013",
-      "method": "GET",
-      "operation_id": "get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get",
-      "path": "/api/v1/access/delegated-passes/{delegated_pass_id}",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata",
-      "request_schema": "none",
-      "security": "none observed in OpenAPI; runtime dependency review required",
-      "success_schema": "DelegatedPassPublic"
-    },
-    {
-      "blocker_id": "P1B-B01",
-      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0016",
       "method": "GET",
       "operation_id": "get_human_intent_api_v1_access_intents__intent_id__get",
@@ -71,32 +19,6 @@
       "blocker_id": "P1B-B01",
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
       "future_owner": "Prompt 1B/25",
-      "matrix_id": "HTTP-0019",
-      "method": "GET",
-      "operation_id": "get_me_api_v1_access_me_get",
-      "path": "/api/v1/access/me",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata",
-      "request_schema": "none",
-      "security": "none observed in OpenAPI; runtime dependency review required",
-      "success_schema": "AccessMeResponse"
-    },
-    {
-      "blocker_id": "P1B-B01",
-      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "future_owner": "Prompt 1B/25",
-      "matrix_id": "HTTP-0020",
-      "method": "GET",
-      "operation_id": "get_my_entitlements_api_v1_access_me_entitlements_get",
-      "path": "/api/v1/access/me/entitlements",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata",
-      "request_schema": "none",
-      "security": "none observed in OpenAPI; runtime dependency review required",
-      "success_schema": "SubscriptionEntitlementResponse"
-    },
-    {
-      "blocker_id": "P1B-B01",
-      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0021",
       "method": "GET",
       "operation_id": "get_my_limits_api_v1_access_me_limits_get",
@@ -105,32 +27,6 @@
       "request_schema": "none",
       "security": "none observed in OpenAPI; runtime dependency review required",
       "success_schema": "AccessLimitsResponse"
-    },
-    {
-      "blocker_id": "P1B-B01",
-      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "future_owner": "Prompt 1B/25",
-      "matrix_id": "HTTP-0023",
-      "method": "GET",
-      "operation_id": "get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get",
-      "path": "/api/v1/access/payment-intents/{payment_intent_id}",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata",
-      "request_schema": "none",
-      "security": "none observed in OpenAPI; runtime dependency review required",
-      "success_schema": "AccessPaymentIntentStatusResponse"
-    },
-    {
-      "blocker_id": "P1B-B01",
-      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "future_owner": "Prompt 1B/25",
-      "matrix_id": "HTTP-0031",
-      "method": "GET",
-      "operation_id": "recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get",
-      "path": "/api/v1/access/recovery/status/{recovery_attempt_id}",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata",
-      "request_schema": "none",
-      "security": "none observed in OpenAPI; runtime dependency review required",
-      "success_schema": "RecoveryStatusResponse"
     },
     {
       "blocker_id": "P1B-B01",
@@ -2527,14 +2423,14 @@
   ],
   "deferred_http_operations": [
     {
-      "blocker_id": "P1B-B01",
+      "blocker_id": "P1B0-B03-SCHEMA",
       "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0002",
       "method": "GET",
       "operation_id": "list_child_api_keys_api_v1_access_api_keys_get",
       "path": "/api/v1/access/api-keys",
-      "reason": "User-visible read model or bounded workflow; implementation still requires all ten parity links.",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+      "reason": "backend_schema_contains_untyped_any",
+      "reentry_condition": "backend owner replaces untyped Any schema fields with authoritative transport types"
     },
     {
       "blocker_id": "P1B0-B02",
@@ -2557,14 +2453,14 @@
       "reentry_condition": "backend owner supplies tested security and mutation semantics before UI generation"
     },
     {
-      "blocker_id": "P1B-B01",
+      "blocker_id": "P1B0-B03-SCHEMA",
       "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0005",
       "method": "GET",
       "operation_id": "get_child_api_key_api_v1_access_api_keys__key_id__get",
       "path": "/api/v1/access/api-keys/{key_id}",
-      "reason": "User-visible read model or bounded workflow; implementation still requires all ten parity links.",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+      "reason": "backend_schema_contains_untyped_any",
+      "reentry_condition": "backend owner replaces untyped Any schema fields with authoritative transport types"
     },
     {
       "blocker_id": "P1R2-B02",
@@ -2607,14 +2503,14 @@
       "reentry_condition": "backend owner supplies tested security and mutation semantics before UI generation"
     },
     {
-      "blocker_id": "P1B-B01",
+      "blocker_id": "P1B0-B03-SCHEMA",
       "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0010",
       "method": "GET",
       "operation_id": "list_delegated_passes_api_v1_access_delegated_passes_get",
       "path": "/api/v1/access/delegated-passes",
-      "reason": "User-visible read model or bounded workflow; implementation still requires all ten parity links.",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+      "reason": "backend_schema_contains_untyped_any",
+      "reentry_condition": "backend owner replaces untyped Any schema fields with authoritative transport types"
     },
     {
       "blocker_id": "P1B0-B02",
@@ -2637,14 +2533,14 @@
       "reentry_condition": "backend owner supplies tested security and mutation semantics before UI generation"
     },
     {
-      "blocker_id": "P1B-B01",
+      "blocker_id": "P1B0-B03-SCHEMA",
       "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0013",
       "method": "GET",
       "operation_id": "get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get",
       "path": "/api/v1/access/delegated-passes/{delegated_pass_id}",
-      "reason": "User-visible read model or bounded workflow; implementation still requires all ten parity links.",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+      "reason": "backend_schema_contains_untyped_any",
+      "reentry_condition": "backend owner replaces untyped Any schema fields with authoritative transport types"
     },
     {
       "blocker_id": "P1B0-B02",
@@ -2687,24 +2583,24 @@
       "reentry_condition": "backend owner supplies tested security and mutation semantics before UI generation"
     },
     {
-      "blocker_id": "P1B-B01",
+      "blocker_id": "P1B0-B03-SCHEMA",
       "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0019",
       "method": "GET",
       "operation_id": "get_me_api_v1_access_me_get",
       "path": "/api/v1/access/me",
-      "reason": "User-visible read model or bounded workflow; implementation still requires all ten parity links.",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+      "reason": "backend_schema_contains_untyped_any",
+      "reentry_condition": "backend owner replaces untyped Any schema fields with authoritative transport types"
     },
     {
-      "blocker_id": "P1B-B01",
+      "blocker_id": "P1B0-B03-SCHEMA",
       "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0020",
       "method": "GET",
       "operation_id": "get_my_entitlements_api_v1_access_me_entitlements_get",
       "path": "/api/v1/access/me/entitlements",
-      "reason": "User-visible read model or bounded workflow; implementation still requires all ten parity links.",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+      "reason": "backend_schema_contains_untyped_any",
+      "reentry_condition": "backend owner replaces untyped Any schema fields with authoritative transport types"
     },
     {
       "blocker_id": "P1B-B01",
@@ -2727,14 +2623,14 @@
       "reentry_condition": "backend owner supplies tested security and mutation semantics before UI generation"
     },
     {
-      "blocker_id": "P1B-B01",
+      "blocker_id": "P1B0-B03-SCHEMA",
       "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0023",
       "method": "GET",
       "operation_id": "get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get",
       "path": "/api/v1/access/payment-intents/{payment_intent_id}",
-      "reason": "User-visible read model or bounded workflow; implementation still requires all ten parity links.",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+      "reason": "backend_schema_contains_untyped_any",
+      "reentry_condition": "backend owner replaces untyped Any schema fields with authoritative transport types"
     },
     {
       "blocker_id": "P1B0-B02",
@@ -2797,14 +2693,14 @@
       "reentry_condition": "backend owner supplies tested security and mutation semantics before UI generation"
     },
     {
-      "blocker_id": "P1B-B01",
+      "blocker_id": "P1B0-B03-SCHEMA",
       "future_owner": "Prompt 1B/25",
       "matrix_id": "HTTP-0031",
       "method": "GET",
       "operation_id": "recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get",
       "path": "/api/v1/access/recovery/status/{recovery_attempt_id}",
-      "reason": "User-visible read model or bounded workflow; implementation still requires all ten parity links.",
-      "reentry_condition": "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+      "reason": "backend_schema_contains_untyped_any",
+      "reentry_condition": "backend owner replaces untyped Any schema fields with authoritative transport types"
     },
     {
       "blocker_id": "P1B0-B02",
@@ -5878,8 +5774,8 @@
   "metadata": {
     "branch": "work",
     "command": "python scripts/generate_frontend_migration_audit.py",
-    "generated_at_utc": "2026-08-09T16:24:14+00:00",
-    "head": "04d315083f4b4a61f15952d11fbb1dbe98f31a14",
+    "generated_at_utc": "2026-08-09T16:29:44+00:00",
+    "head": "3ca9727dfe52274ccee929e1373dc52fe16f2232",
     "profile": "current environment / app.core.config defaults",
     "python": "Python 3.12.13"
   }

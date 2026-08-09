@@ -7,14 +7,14 @@ def test_full_generation_preflight_is_fail_closed_and_complete() -> None:
 
     assert counts == {
         "runtime_http": 369,
-        "generation_candidates": 194,
+        "generation_candidates": 186,
         "protected_candidates": 0,
         "mutation_candidates": 0,
         "protected_only": 0,
         "mutation_only": 0,
         "protected_mutations": 0,
         "b01_b02_unique_operations": 0,
-        "ready": 194,
+        "ready": 186,
         "security_blocked": 0,
         "mutation_blocked": 0,
         "security_deferred": 65,
@@ -23,8 +23,8 @@ def test_full_generation_preflight_is_fail_closed_and_complete() -> None:
     }
     assert report["unproven_schema_capabilities"] == ["additionalProperties", "anyOf"]
     assert report["response_vocabulary"] == {
-        "media_types": {"application/json": 194},
-        "success_statuses": {"200": 194},
+        "media_types": {"application/json": 186},
+        "success_statuses": {"200": 186},
     }
     assert report["blockers"] == []
     assert report["html_operations"] == []
