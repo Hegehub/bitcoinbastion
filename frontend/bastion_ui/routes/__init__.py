@@ -34,6 +34,7 @@ from bastion_ui.routes.operations import operations_page
 from bastion_ui.routes.platform import platform_page
 from bastion_ui.routes.roadmap import roadmap_page
 from bastion_ui.routes.security import security_page
+from bastion_ui.routes.security_posture import security_posture_page
 from bastion_ui.routes.status import status_page
 from bastion_ui.routes.trace import trace_page
 from bastion_ui.routes.wallet_auth import (
@@ -55,6 +56,7 @@ from bastion_ui.routes.wallet_auth import (
     wallet_step_up_page,
     wallet_subscription_page,
 )
+from bastion_ui.routes.websocket_lab import websocket_lab_page
 
 
 @dataclass(frozen=True)
@@ -114,5 +116,7 @@ PUBLIC_ROUTE_SPECS: tuple[PublicRouteSpec, ...] = (
     PublicRouteSpec("/status", "Status", status_page),
     PublicRouteSpec("/roadmap", "Roadmap", roadmap_page),
     PublicRouteSpec("/security", "Security", security_page),
+    PublicRouteSpec("/access/security-posture", "Access Security Posture", security_posture_page),
+    PublicRouteSpec("/websocket-lab", "WebSocket Contract Laboratory", websocket_lab_page),
     PublicRouteSpec("/docs", "Docs", docs_page),
 )

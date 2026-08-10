@@ -58,6 +58,15 @@ current implementation or readiness guidance.
 
 ## Frontend
 
+- [Frontend migration Prompt 0/25 baseline](frontend/migration/00_BASELINE_AUDIT.md)
+- [Prompt 1/25 contract-foundation blockers](frontend/migration/01_CONTRACT_FOUNDATION_BLOCKERS.md)
+- [Prompt 1B1/25 Stage-1 HTTP transport release](frontend/migration/01B1_STAGE1_RELEASE.md)
+- [Stage-1 transport compatibility register](frontend/migration/01B1_TRANSPORT_COMPATIBILITY.json)
+- [Prompt 2 Stage-1 revision prerequisite stop](frontend/migration/02_STAGE1_PREREQUISITE_STOP.md)
+- [Prompt 2R Stage-1 revision reconciliation](frontend/migration/02R_REVISION_RECONCILIATION.md)
+- [Canonical frontend execution plan 0–25](frontend/migration/00_EXECUTION_PLAN_0_25.md)
+- [Approved reconciled 69-feature register](frontend/migration/00_69_FEATURE_REGISTER.md)
+
 - [Reflex frontend](REFLEX_FRONTEND.md)
 - [Reflex testing](FRONTEND_REFLEX_TESTING.md)
 - [Route/API parity contract](FRONTEND_REFLEX_API_PARITY.md)
@@ -90,3 +99,7 @@ current implementation or readiness guidance.
 ## Historical material
 
 - [Archive index](archive/README.md)
+- [Prompt 1A contract-authority stop report](frontend/migration/01A_CONTRACT_AUTHORITY_STOP_REPORT.md) — unresolved source-authority gates before Prompt 1B.
+* [Prompt 2 safe projections and provenance](frontend/migration/02_PROMPT2_IMPLEMENTATION.md)
+* [Feature 67 Proof-of-Access security shell](frontend/migration/03_FEATURE67_SECURITY_SHELL.md)
+* [Prompt 4 WebSocket contracts and lifecycle](frontend/migration/04_WEBSOCKET_RELEASE.md)

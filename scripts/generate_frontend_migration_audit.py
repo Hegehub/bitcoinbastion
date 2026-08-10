@@ -9,7 +9,6 @@ records. Human-authored policy lives in the companion Markdown audit files.
 from __future__ import annotations
 
 from collections import Counter
-from datetime import datetime, timezone
 import json
 from pathlib import Path
 import re
@@ -22,6 +21,8 @@ sys.path.insert(0, str(ROOT))
 from app.main import app  # noqa: E402
 from app.api.v1.ws import router as ws_router  # noqa: E402
 from app.core.config import get_settings  # noqa: E402
+from app.services.events.websocket_registry import WEBSOCKET_CONTRACTS  # noqa: E402
+from scripts.stage1_fingerprints import manifest as stage1_manifest  # noqa: E402
 
 OUT = ROOT / "docs/frontend/migration"
 METHODS = ("delete", "get", "head", "options", "patch", "post", "put", "trace")
@@ -39,6 +40,32 @@ ADMIN_MARKERS = (
     "/plugins",
     "/webhooks",
 )
+DEFERRED_HTTP: dict[tuple[str, str], dict[str, str]] = {
+    ("get", "/market-time-machine"): {
+        "blocker_id": "P1R2-B01",
+        "reason_code": "canonical_compatibility_ownership_unresolved",
+        "future_owner": "Prompt 25/25",
+        "reentry_condition": "API owner records canonical path, compatibility lifetime, and alias removal policy",
+    },
+    ("post", "/api/v1/access/api-keys/{key_id}/freeze"): {
+        "blocker_id": "P1R2-B02",
+        "reason_code": "access_security_contract_unresolved",
+        "future_owner": "Prompt 17/25",
+        "reentry_condition": "Access owner supplies tested scope, PoP/signing, intent, replay, audit, and reconciliation semantics",
+    },
+    ("post", "/api/v1/auth/login"): {
+        "blocker_id": "P1R2-B03",
+        "reason_code": "disabled_legacy_auth",
+        "future_owner": "Prompt 25/25",
+        "reentry_condition": "none; remove after compatibility window unless product owner establishes a non-password purpose",
+    },
+    ("post", "/api/v1/auth/register"): {
+        "blocker_id": "P1R2-B04",
+        "reason_code": "disabled_legacy_auth",
+        "future_owner": "Prompt 25/25",
+        "reentry_condition": "none; remove after compatibility window unless product owner establishes a non-password purpose",
+    },
+}
 
 
 def git(*args: str) -> str:
@@ -56,31 +83,30 @@ def ref(v: Any) -> str:
         c = v["content"]
         return ref(c.get("application/json", next(iter(c.values()), {})))
     if v.get("type") == "array":
-        return f"list[{ref(v.get('items',{})) or 'unknown'}]"
+        return f"list[{ref(v.get('items', {})) or 'unknown'}]"
     return v.get("title") or v.get("type", "")
 
 
 def prompt_for(path: str) -> int:
     p = path.lower()
     if "payregister" in p:
-        return 47
+        return 22
     if "lnurl" in p or "business-lightning" in p:
-        return 46
+        return 22
     if "/access" in p or "wallet-auth" in p:
-        return (
-            30
-            + sum(
-                x in p
-                for x in ("device", "entitlement", "recovery", "policy", "limit", "certificate")
-            )
-            % 7
-        )
+        if any(x in p for x in ("recovery", "revoke", "lockdown", "session")):
+            return 18
+        if any(x in p for x in ("profile", "entitlement", "delegat", "limit")):
+            return 17
+        return 16
     if "trace" in p:
-        return 21 + sum(x in p for x in ("evidence", "event", "graph", "privacy")) % 5
+        return 13 if any(x in p for x in ("event", "graph", "privacy", "topology")) else 12
     if "evidence" in p:
-        return 26 + sum(x in p for x in ("replay", "packet", "verify")) % 4
+        return 15 if any(x in p for x in ("replay", "verify", "lineage", "export")) else 14
     if any(x in p for x in ("market", "signal", "news", "intelligence", "timeline")):
-        return 16 + sum(x in p for x in ("signal", "timeline", "evidence", "narrative")) % 5
+        return (
+            10 if any(x in p for x in ("timeline", "evidence", "narrative", "attribution")) else 9
+        )
     if any(
         x in p
         for x in (
@@ -94,30 +120,37 @@ def prompt_for(path: str) -> int:
             "job",
         )
     ):
-        return 13 + sum(x in p for x in ("operations", "observability")) % 3
+        return 9 if any(x in p for x in ("incident", "slo", "job")) else 8
     mapping = [
-        ("policy", 37),
-        ("audit", 38),
-        ("treasury", 39),
-        ("entit", 40),
-        ("watch", 40),
-        ("fees", 41),
-        ("onchain", 41),
-        ("wallet", 41),
-        ("citadel", 42),
-        ("privacy", 42),
-        ("plugin", 43),
-        ("webhook", 44),
-        ("explorer", 45),
+        ("policy", 19),
+        ("audit", 19),
+        ("treasury", 19),
+        ("entit", 20),
+        ("watch", 20),
+        ("fees", 20),
+        ("onchain", 20),
+        ("wallet", 20),
+        ("citadel", 20),
+        ("privacy", 23),
+        ("plugin", 21),
+        ("webhook", 21),
+        ("explorer", 21),
     ]
     for key, n in mapping:
         if key in p:
             return n
-    return 13
+    return 8
 
 
 def disposition(method: str, path: str) -> tuple[str, str, str]:
     p = path.lower()
+    deferred = DEFERRED_HTTP.get((method, path))
+    if deferred:
+        return (
+            "DEFERRED_WITH_REASON",
+            deferred["reason_code"],
+            ("Access" if "/access/" in p else "Core"),
+        )
     if any(x in p for x in SEPARATE_MARKERS):
         return (
             "SEPARATE_PRODUCT",
@@ -174,38 +207,194 @@ def frontend_literals() -> tuple[list[str], dict[str, list[str]]]:
     return sorted(found), found
 
 
+def has_untyped_schema(
+    value: object, schemas: dict[str, Any], visited: set[str] | None = None
+) -> bool:
+    """Detect backend `Any` schema fragments without inventing a frontend type."""
+    seen = visited or set()
+    if isinstance(value, dict):
+        meaningful = {
+            "$ref",
+            "type",
+            "anyOf",
+            "oneOf",
+            "allOf",
+            "enum",
+            "const",
+            "properties",
+            "additionalProperties",
+        }
+        if (
+            value
+            and not meaningful.intersection(value)
+            and set(value)
+            <= {
+                "title",
+                "description",
+                "default",
+                "examples",
+            }
+        ):
+            return True
+        if not value:
+            return True
+        reference = value.get("$ref")
+        if isinstance(reference, str) and reference.startswith("#/components/schemas/"):
+            name = reference.rsplit("/", 1)[-1]
+            if name not in seen:
+                seen.add(name)
+                if has_untyped_schema(schemas[name], schemas, seen):
+                    return True
+        return any(
+            has_untyped_schema(child, schemas, seen)
+            for key, child in value.items()
+            if key not in {"$ref", "default", "examples", "title", "description"}
+        )
+    if isinstance(value, list):
+        return any(has_untyped_schema(child, schemas, seen) for child in value)
+    return False
+
+
 def main() -> None:
     spec = app.openapi()
+    schemas = spec.get("components", {}).get("schemas", {})
     head = git("rev-parse", "HEAD")
-    stamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    fingerprints = stage1_manifest()
+    # Bind generated artifacts to the source revision rather than wall-clock time.
+    # This preserves an auditable UTC timestamp while making regeneration at the
+    # same HEAD byte-for-byte deterministic.
+    stamp = git("show", "-s", "--format=%cI", head)
     ops = []
     ids = []
+    generated_http_path = ROOT / "frontend/bastion_ui/transport/generated_http.py"
+    generated_http = generated_http_path.read_text() if generated_http_path.exists() else ""
     for path, item in sorted(spec["paths"].items()):
         for method in METHODS:
             if method not in item:
                 continue
             op = item[method]
             oid = op.get("operationId", "")
+            generated_owner = f"async def {oid}(" in generated_http
             ids.append(oid)
             disp, reason, product = disposition(method, path)
             req = ""
             body = op.get("requestBody", {})
             req = ref(body)
             responses = op.get("responses", {})
-            response = ref(
-                responses.get("200") or responses.get("201") or responses.get("202") or {}
+            success_status = next((code for code in sorted(responses) if code.startswith("2")), "")
+            response = (
+                "NoContent" if success_status == "204" else ref(responses.get(success_status, {}))
+            )
+            success_content = responses.get(success_status, {}).get("content", {})
+            active_ui = disp in ("UI_REQUIRED", "UI_OPTIONAL")
+            legacy_html = "text/html" in success_content and disp in {"UI_REQUIRED", "UI_OPTIONAL"}
+            schema_authority_missing = active_ui and (
+                bool(body)
+                and has_untyped_schema(body, schemas)
+                or has_untyped_schema(responses.get(success_status, {}), schemas)
             )
             protected = bool(op.get("security"))
             coverage = "NOT_STARTED"
+            if generated_owner:
+                coverage = "CLIENT_ONLY"
+            deferred = DEFERRED_HTTP.get((method, path))
+            unresolved_mutation = active_ui and method.upper() in {"POST", "PUT", "PATCH", "DELETE"}
+            unresolved_protected = active_ui and protected
+            contract_authority_deferred = unresolved_mutation or unresolved_protected
+            if contract_authority_deferred:
+                disp = "DEFERRED_WITH_REASON"
+                missing = []
+                if unresolved_protected:
+                    missing.append("protected_security_contract_unresolved")
+                if unresolved_mutation:
+                    missing.append("mutation_safety_contract_unresolved")
+                reason = "+".join(missing)
+            elif legacy_html:
+                disp = "DEFERRED_WITH_REASON"
+                reason = "legacy_server_html_not_generic_reflex_transport"
+            elif schema_authority_missing:
+                disp = "DEFERRED_WITH_REASON"
+                reason = "backend_schema_contains_untyped_any"
+            # OpenAPI currently exposes no operation-specific safe error registry and the
+            # migration audit has not completed dependency-level security semantics. A
+            # descriptor name is not a generated typed client, so fail closed rather than
+            # promoting all candidates to authoritative ownership.
+            transport_contract_blocked = (
+                active_ui
+                and deferred is None
+                and not contract_authority_deferred
+                and not legacy_html
+                and not schema_authority_missing
+                and not generated_owner
+            )
+            authority = (
+                "DEFERRED_AUTHORITY"
+                if deferred
+                or transport_contract_blocked
+                or contract_authority_deferred
+                or legacy_html
+                or schema_authority_missing
+                else "AUTHORITATIVE_NOW"
+            )
+            blocker_id = (
+                deferred["blocker_id"]
+                if deferred
+                else (
+                    "P1B0-B01+B02"
+                    if unresolved_protected and unresolved_mutation
+                    else "P1B0-B01"
+                    if unresolved_protected
+                    else "P1B0-B02"
+                    if unresolved_mutation
+                    else "P1B0-B03-HTML"
+                    if legacy_html
+                    else "P1B0-B03-SCHEMA"
+                    if schema_authority_missing
+                    else "P1B-B01"
+                    if transport_contract_blocked
+                    else None
+                )
+            )
+            future_owner = (
+                deferred["future_owner"]
+                if deferred
+                else (
+                    f"Prompt {prompt_for(path)}/25"
+                    if contract_authority_deferred
+                    else "Prompt 25/25"
+                    if legacy_html
+                    else "Prompt 1B/25"
+                    if schema_authority_missing
+                    else "Prompt 1B/25"
+                    if transport_contract_blocked
+                    else None
+                )
+            )
+            reentry = (
+                deferred["reentry_condition"]
+                if deferred
+                else (
+                    "backend owner supplies tested security and mutation semantics before UI generation"
+                    if contract_authority_deferred
+                    else "migrate or remove legacy server HTML; do not expose as generic Reflex transport"
+                    if legacy_html
+                    else "backend owner replaces untyped Any schema fields with authoritative transport types"
+                    if schema_authority_missing
+                    else "generate strict request/success/error DTOs and encode reviewed dependency-level security metadata"
+                    if transport_contract_blocked
+                    else None
+                )
+            )
             ops.append(
                 {
-                    "matrix_id": f"HTTP-{len(ops)+1:04d}",
+                    "matrix_id": f"HTTP-{len(ops) + 1:04d}",
                     "method": method.upper(),
                     "path": path,
                     "operation_id": oid,
                     "backend_owner": (op.get("tags") or ["unowned"])[0],
                     "request_schema": req or "none",
                     "response_schema": response or "unspecified",
+                    "success_status": success_status or "unspecified",
                     "error_envelope": "HTTP validation/error response; typed frontend normalization not verified",
                     "access_class": (
                         "protected"
@@ -228,11 +417,27 @@ def main() -> None:
                     ),
                     "disposition": disp,
                     "reason": reason,
+                    "authority_status": authority,
+                    "authority_blocker_id": blocker_id,
+                    "authority_future_owner": future_owner,
+                    "authority_reentry_condition": reentry,
+                    "deferred_contract_kind": (
+                        "protected_mutation"
+                        if unresolved_protected and unresolved_mutation
+                        else "protected"
+                        if unresolved_protected
+                        else "mutation"
+                        if unresolved_mutation
+                        else None
+                    ),
+                    "typed_client_owner": (
+                        f"bastion_ui.transport.generated_http:{oid}" if generated_owner else "none"
+                    ),
                     "product_boundary": product,
                     "frontend_surface": (
                         "TBD by assigned prompt" if disp.startswith("UI_") else "N/A"
                     ),
-                    "client_method": "not runtime-verified",
+                    "client_method": oid if generated_owner else "not runtime-verified",
                     "verified_url": path,
                     "adapter_view_model": "none verified",
                     "trigger_subscription": "none verified",
@@ -244,7 +449,11 @@ def main() -> None:
                     "implementation_prompt": (
                         prompt_for(path)
                         if disp in ("UI_REQUIRED", "UI_OPTIONAL", "SEPARATE_PRODUCT")
-                        else None
+                        else (
+                            int(deferred["future_owner"].split()[1].split("/")[0])
+                            if deferred
+                            else None
+                        )
                     ),
                     "coverage_state": (
                         coverage
@@ -256,18 +465,25 @@ def main() -> None:
             )
     # Starlette registrations are runtime truth; OpenAPI omits WS.
     ws = []
+    ws_contracts = {contract.route: contract for contract in WEBSOCKET_CONTRACTS}
     for route in sorted(ws_router.routes, key=lambda r: getattr(r, "path", "")):
         if route.__class__.__name__ == "APIWebSocketRoute":
             path = f"{get_settings().api_prefix}{route.path}"
             disp = "UI_REQUIRED" if path != "/api/v1/ws/events" else "UI_OPTIONAL"
+            contract = ws_contracts[path]
             ws.append(
                 {
-                    "matrix_id": f"WS-{len(ws)+1:03d}",
+                    "matrix_id": f"WS-{len(ws) + 1:03d}",
                     "channel": path,
                     "operation_id": route.name,
                     "backend_owner": "websockets/events",
-                    "message_schema": "system/error/event JSON from websocket_serialization and broker",
-                    "auth_contract": "no OpenAPI security metadata; runtime origin/Proof-of-Access review required",
+                    "message_schema": "WireFrame discriminated union from websocket_contracts",
+                    "authority_status": "AUTHORITATIVE_NOW",
+                    "authority_blocker_id": contract.blocker_id,
+                    "authority_future_owner": "Prompt 4/25 (resolved)",
+                    "authority_reentry_condition": "none; version changes follow documented compatibility policy",
+                    "wire_version_authority": str(contract.wire_version),
+                    "auth_contract": contract.security_profile,
                     "reconnect_fallback": "bounded exponential backoff, heartbeat 10–120s, visible stale state, HTTP fallback required; replay currently unavailable",
                     "disposition": disp,
                     "reason": "Live user-visible domain updates; generic event stream optional when specialized channels exist.",
@@ -277,10 +493,10 @@ def main() -> None:
                         else "Core"
                     ),
                     "frontend_surface": "assigned domain screen",
-                    "coverage_state": "NOT_STARTED",
-                    "implementation_prompt": 5,
+                    "coverage_state": "CLIENT_ONLY",
+                    "implementation_prompt": 4,
                     "privacy_policy": "limit_payload=true; no session/secret material persisted",
-                    "contract_test": "backend tests only; frontend subscriber not found",
+                    "contract_test": "tests/contract/test_websocket_versioned_contracts.py",
                     "browser_e2e": "not verified",
                     "rollback_disable": "disable subscription and retain visible polling/unavailable state",
                 }
@@ -288,6 +504,9 @@ def main() -> None:
     norm = {
         "metadata": {
             "head": head,
+            "contract_source_fingerprint": fingerprints["contract_source_fingerprint"],
+            "generator_fingerprint": fingerprints["generator_fingerprint"],
+            "branch": git("branch", "--show-current"),
             "generated_at_utc": stamp,
             "profile": "current environment / app.core.config defaults",
             "command": "python scripts/generate_frontend_migration_audit.py",
@@ -299,6 +518,7 @@ def main() -> None:
             "api_v1_paths": sum(p.startswith("/api/v1") for p in spec["paths"]),
             "api_v1_operations": sum(o["path"].startswith("/api/v1") for o in ops),
             "schemas": len(spec.get("components", {}).get("schemas", {})),
+            "security_schemes": sorted(spec.get("components", {}).get("securitySchemes", {})),
             "websockets": len(ws),
             "duplicate_operation_ids": sorted(k for k, v in Counter(ids).items() if v > 1),
         },
@@ -314,6 +534,68 @@ def main() -> None:
     }
     (OUT / "00_openapi_frontend_rendering_matrix.json").write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    )
+    authoritative = [
+        {
+            "matrix_id": op["matrix_id"],
+            "operation_id": op["operation_id"],
+            "method": op["method"],
+            "path": op["path"],
+            "request_schema": op["request_schema"],
+            "success_schema": op["response_schema"],
+            "success_status": op["success_status"],
+            "error_schema": op["error_envelope"],
+            "security": op["required_plan_scope_poa_pop_signing_human_intent"],
+            "product": op["product_boundary"],
+            "owner": op["typed_client_owner"],
+            "transport_engine": "frontend.bastion_ui.transport.generated_transport",
+            "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+        }
+        for op in ops
+        if op["authority_status"] == "AUTHORITATIVE_NOW"
+        and op["disposition"] in ("UI_REQUIRED", "UI_OPTIONAL")
+    ]
+    blocked_candidates = [
+        {
+            "matrix_id": op["matrix_id"],
+            "operation_id": op["operation_id"],
+            "method": op["method"],
+            "path": op["path"],
+            "request_schema": op["request_schema"],
+            "success_schema": op["response_schema"],
+            "error_schema": op["error_envelope"],
+            "security": op["required_plan_scope_poa_pop_signing_human_intent"],
+            "blocker_id": op["authority_blocker_id"],
+            "future_owner": op["authority_future_owner"],
+            "reentry_condition": op["authority_reentry_condition"],
+        }
+        for op in ops
+        if op["authority_blocker_id"] == "P1B-B01"
+    ]
+    ownership = {
+        "metadata": norm["metadata"],
+        "architecture": "generated typed operation descriptors over one shared injectable transport engine",
+        "authoritative_http_operations": authoritative,
+        "blocked_http_candidates": blocked_candidates,
+        "deferred_http_operations": [
+            {
+                "matrix_id": op["matrix_id"],
+                "operation_id": op["operation_id"],
+                "method": op["method"],
+                "path": op["path"],
+                "blocker_id": op["authority_blocker_id"],
+                "reason": op["reason"],
+                "future_owner": op["authority_future_owner"],
+                "reentry_condition": op["authority_reentry_condition"],
+            }
+            for op in ops
+            if op["authority_status"] == "DEFERRED_AUTHORITY"
+        ],
+        "authoritative_websocket_contracts": ws,
+        "deferred_websocket_protocols": [],
+    }
+    (OUT / "01_HTTP_CLIENT_OWNERSHIP_INPUT.json").write_text(
+        json.dumps(ownership, indent=2, sort_keys=True) + "\n"
     )
     literals, sources = frontend_literals()
     paths = set(spec["paths"])

@@ -8,12 +8,23 @@
     "operations": 369,
     "paths": 351,
     "schemas": 286,
+    "security_schemes": [
+      "BastionHumanIntentSignature",
+      "BastionPoPSession",
+      "BastionProofOfAccessSession",
+      "BastionProofOfAccessSignature",
+      "BastionRequestSignature",
+      "BastionWalletPoPSession"
+    ],
     "websockets": 9
   },
   "metadata": {
+    "branch": "work",
     "command": "python scripts/generate_frontend_migration_audit.py",
-    "generated_at_utc": "2026-08-03T18:11:29+00:00",
-    "head": "ee2792fe4397184f9d6f068b7cee7c2b19fe17e8",
+    "contract_source_fingerprint": "6bd8ca2f70d64392449a5d12d847b6835bd8692e811a938eb7d189cbb543f5b6",
+    "generated_at_utc": "2026-08-10T16:11:31+00:00",
+    "generator_fingerprint": "9f06cedaa5fa0755e6fd6b0993b1ade81efddbe4a074200639d1953db2da5ae2",
+    "head": "818acbe761a20b84940ba9493076c09a78bbc22e",
     "profile": "current environment / app.core.config defaults",
     "python": "Python 3.12.13"
   },
@@ -96,7 +107,9 @@
               "type": "string"
             },
             "expires_at": {
-              "title": "Expires At"
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
             },
             "plan_code": {
               "$ref": "#/components/schemas/PlanCode"
@@ -197,7 +210,9 @@
               "type": "object"
             },
             "expires_at": {
-              "title": "Expires At"
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
             },
             "status": {
               "title": "Status",
@@ -312,7 +327,9 @@
               "type": "string"
             },
             "created_at": {
-              "title": "Created At"
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
             },
             "lockdown_id": {
               "title": "Lockdown Id",
@@ -389,7 +406,9 @@
               "type": "object"
             },
             "session_expires_at": {
-              "title": "Session Expires At"
+              "format": "date-time",
+              "title": "Session Expires At",
+              "type": "string"
             }
           },
           "required": [
@@ -482,7 +501,10 @@
             },
             "expires_at": {
               "anyOf": [
-                {},
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
                 {
                   "type": "null"
                 }
@@ -550,7 +572,10 @@
             },
             "expires_at": {
               "anyOf": [
-                {},
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
                 {
                   "type": "null"
                 }
@@ -663,7 +688,9 @@
               "type": "string"
             },
             "expires_at": {
-              "title": "Expires At"
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
             },
             "plan_code": {
               "$ref": "#/components/schemas/PlanCode"
@@ -1075,7 +1102,9 @@
         "ChildApiKeyCreateResponse": {
           "properties": {
             "expires_at": {
-              "title": "Expires At"
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
             },
             "key_id": {
               "title": "Key Id",
@@ -1121,7 +1150,9 @@
               "type": "boolean"
             },
             "created_at": {
-              "title": "Created At"
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
             },
             "denied_scopes": {
               "items": {
@@ -1131,7 +1162,9 @@
               "type": "array"
             },
             "expires_at": {
-              "title": "Expires At"
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
             },
             "key_id": {
               "title": "Key Id",
@@ -1139,7 +1172,10 @@
             },
             "last_used_at": {
               "anyOf": [
-                {},
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
                 {
                   "type": "null"
                 }
@@ -2195,7 +2231,9 @@
               "type": "string"
             },
             "expires_at": {
-              "title": "Expires At"
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
             },
             "raw_delegated_pass": {
               "title": "Raw Delegated Pass",
@@ -2257,11 +2295,16 @@
               "title": "Delegated To Label"
             },
             "expires_at": {
-              "title": "Expires At"
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
             },
             "last_used_at": {
               "anyOf": [
-                {},
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
                 {
                   "type": "null"
                 }
@@ -2291,7 +2334,9 @@
               "type": "string"
             },
             "valid_from": {
-              "title": "Valid From"
+              "format": "date-time",
+              "title": "Valid From",
+              "type": "string"
             }
           },
           "required": [
@@ -7590,7 +7635,9 @@
               "type": "array"
             },
             "cooldown_until": {
-              "title": "Cooldown Until"
+              "format": "date-time",
+              "title": "Cooldown Until",
+              "type": "string"
             },
             "recovery_attempt_id": {
               "title": "Recovery Attempt Id",
@@ -7635,7 +7682,10 @@
           "properties": {
             "cooldown_until": {
               "anyOf": [
-                {},
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
                 {
                   "type": "null"
                 }
@@ -9309,7 +9359,9 @@
         "SubscriptionEntitlementResponse": {
           "properties": {
             "created_at": {
-              "title": "Created At"
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
             },
             "crypto_epoch": {
               "title": "Crypto Epoch",
@@ -9317,7 +9369,10 @@
             },
             "grace_until": {
               "anyOf": [
-                {},
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
                 {
                   "type": "null"
                 }
@@ -9370,10 +9425,14 @@
               "type": "string"
             },
             "valid_from": {
-              "title": "Valid From"
+              "format": "date-time",
+              "title": "Valid From",
+              "type": "string"
             },
             "valid_until": {
-              "title": "Valid Until"
+              "format": "date-time",
+              "title": "Valid Until",
+              "type": "string"
             }
           },
           "required": [

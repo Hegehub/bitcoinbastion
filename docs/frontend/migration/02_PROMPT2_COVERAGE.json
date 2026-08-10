@@ -1,0 +1,12 @@
+{
+  "feature_52": "IMPLEMENTED_VERIFIED",
+  "feature_54": "IMPLEMENTED_VERIFIED",
+  "operations": {
+    "HTTP-0250": {
+      "operation_id": "public_status_api_v1_public_status_get",
+      "coverage": "IMPLEMENTED_VERIFIED",
+      "evidence": ["canonical_client", "adapter", "safe_state", "keyboard_trigger", "named_dom", "browser_smoke", "privacy_tests"]
+    }
+  },
+  "scope_note": "Representative foundation only; other Stage-1 operations retain their existing granular coverage."
+}
