@@ -1,14 +1,19 @@
 # WebSocket Frontend Matrix
 
-The nine channels are generated in the complete JSON matrix. All currently have **no verified Reflex subscriber** and coverage `NOT_STARTED`.
+The nine channels use backend-owned `bitcoin-bastion.events` wire version 1 and one canonical frontend transport owner. Payloads are bounded, sanitized JSON facts inside a strict discriminated envelope; the payload map is explicitly the event-outbox compatibility boundary, not an unreviewed `Any` fallback.
 
 | Channel family | Message/auth contract | Reconnect and fallback | Owner/prompt |
 |---|---|---|---|
-| events | broker event plus system/error envelopes; topics validated; auth/origin review unresolved | heartbeat 10–120 s; bounded jittered reconnect; replay request visibly reports unavailable; HTTP fallback | Core, Prompt 4 |
-| signals/news/market/intelligence-timeline | specialized event-type filters; payload limiting defaults on | freeze last value as stale, never silently live; matching HTTP read model | Market, Prompt 4 then 9–11 |
-| onchain | specialized public operational data only | stale age and HTTP status fallback | Core, Prompt 4/20 |
-| trace | public-data advisory events only | report polling fallback; disagreement/partial preserved | Trace, Prompt 4/12–13 |
-| treasury | operator capability and Human Intent boundary required; no execution | disconnect disables mutation affordances | Operator Console, Prompt 4/19 |
-| provider-health | operator capability; limited payload | provider HTTP health fallback and degraded badge | Operations, Prompt 4/8–9 |
+| events | v1 system/error/heartbeat/event; all supported topics | bounded reconnect; replay explicitly unavailable; current HTTP refresh on gap | Core, `P1R2-B05`, resolved |
+| signals | v1 specialized event types | stale on loss; matching HTTP read | Market, `P1R2-B06`, resolved |
+| news | v1 specialized event types | stale on loss; matching HTTP read | Market, `P1R2-B07`, resolved |
+| onchain | v1 public advisory events | stale age and HTTP fallback | Core, `P1R2-B08`, resolved |
+| market | v1 specialized event types | coalesce rendering, retain event identity | Market, `P1R2-B09`, resolved |
+| trace | v1 public-data advisory events | HTTP refresh; disagreement/partial preserved | Trace, `P1R2-B10`, resolved |
+| treasury | v1 advisory notification stream; no execution messages | disconnect disables mutation affordances | Console, `P1R2-B11`, resolved |
+| provider-health | v1 limited advisory payload | verified live connection harness and HTTP fallback | Operations, `P1R2-B12`, resolved |
+| intelligence-timeline | v1 specialized event types | stale on loss; HTTP refresh | Market, `P1R2-B13`, resolved |
 
 No channel may transport signing material, one-time credentials, recovery factors or rejected sensitive input. `last_event_id` replay is explicitly unavailable in the current backend.
+
+Ordering is by unique `event_id` identity; timestamps are not treated as a total order. Duplicate IDs are suppressed in a bounded 128-ID window. Because replay authority does not exist, suspected gaps or reconnects mark the view degraded and trigger a current authoritative HTTP refresh rather than fabricating events. Wire v1 accepts only v1; unknown versions fail closed. Breaking required-field, discriminator, unit, timestamp, or ordering changes require a new wire version.

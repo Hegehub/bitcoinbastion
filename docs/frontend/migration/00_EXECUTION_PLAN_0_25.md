@@ -4,6 +4,17 @@
 
 Every stage preserves no-custody, backend truth, four-state provenance, explicit degraded states, and separate PayRegister boundaries. A stage stops on ambiguous auth/scope/units/timestamps, unsafe serialization, irreversible action, missing owner, new dependency without approval, or a failed prerequisite.
 
+## Stage handoff revision rule
+
+At the start of every prompt, record HEAD and worktree state and run the upstream
+handoff validator before downstream edits. `source_revision` means the revision
+whose Stage-owned source inputs produced an artifact; a later consumer commit
+must not relabel it. If Stage-owned inputs changed, regenerate upstream outputs.
+If only downstream files changed, validate that fact with the source-input diff
+and semantic fingerprints. Dirty Stage-owned source input blocks clean-HEAD
+provenance until committed or represented by an explicit deterministic source
+fingerprint.
+
 ## Stage 1 authority split
 
 Prompt 1 is executed through two non-numbered subgates; Prompts 2–25 and the 69-feature allocation are unchanged:
@@ -41,3 +52,6 @@ The split is mandatory because generated frontend metadata cannot authoritativel
 | 23 | **cross-screen state/privacy/accessibility/EN-RU/timezone/units** | Prompt 22 acceptance and all inherited security gates | 34,36,39,40,41,42,61,63,64,65,66 | Own only the named workflows; deterministic artifacts/code, complete required states, privacy and accessibility behavior, and rollback notes. Accept only on current contract → security → client → adapter/view model → trigger → named render → states → privacy → contract test → browser evidence. | Focused unit/contract checks plus browser network/DOM/a11y at desktop/mobile where UI exists; failures are blockers, mocks are not runtime proof. | Per-surface/domain flag, staged local-first enablement; disable flag/revert this stage while retaining backend contracts and prior verified stage. |
 | 24 | **observability/performance/CSP/dependencies/security** | Prompt 23 acceptance and all inherited security gates | 49,68,69 | Own only the named workflows; deterministic artifacts/code, complete required states, privacy and accessibility behavior, and rollback notes. Accept only on current contract → security → client → adapter/view model → trigger → named render → states → privacy → contract test → browser evidence. | Focused unit/contract checks plus browser network/DOM/a11y at desktop/mobile where UI exists; failures are blockers, mocks are not runtime proof. | Per-surface/domain flag, staged local-first enablement; disable flag/revert this stage while retaining backend contracts and prior verified stage. |
 | 25 | **regression/cleanup/docs/release evidence/rollback rehearsal** | Prompt 24 acceptance and all inherited security gates | None (mandatory domain work) | Own only the named workflows; deterministic artifacts/code, complete required states, privacy and accessibility behavior, and rollback notes. Accept only on current contract → security → client → adapter/view model → trigger → named render → states → privacy → contract test → browser evidence. | Focused unit/contract checks plus browser network/DOM/a11y at desktop/mobile where UI exists; failures are blockers, mocks are not runtime proof. | Per-surface/domain flag, staged local-first enablement; disable flag/revert this stage while retaining backend contracts and prior verified stage. |
+## Semantic stage handoff rule
+
+Every downstream stage runs `python scripts/validate_stage1_handoff.py`. Generated artifacts retain the truthful `source_revision` at which they were written, while deterministic contract-source and generator fingerprints decide semantic currency. `VALID_CURRENT_REVISION` and `VALID_UNCHANGED_SOURCE` may proceed; `STALE_SOURCE_INPUTS`, `STALE_GENERATOR`, `INVALID_ARTIFACT`, and `UNVERIFIABLE_SOURCE_INPUTS` fail closed. Unrelated downstream changes do not force regeneration. Dirty Stage-1 inputs must be committed before generation, and revision strings must never be manually relabelled.

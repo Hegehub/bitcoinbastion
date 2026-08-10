@@ -4950,7 +4950,7 @@ WEBTIMELINEDTOWEBTIMELINEGET_OPERATION = NormalizedOperation(
 async def web_timeline_dto_web_timeline_get(transport: HttpTransport, request: WebTimelineDtoWebTimelineGetRequest) -> WebTimelineDtoWebTimelineGetSuccess:
     return await transport.invoke(WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, path_parameters={}, query_parameters={'filter': serialize_query_value(request.filter), 'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'sort': serialize_query_value(request.sort), 'window': serialize_query_value(request.window)}, body=None)
 
-SOURCE_HEAD = '0ff0049114b864079ed7aabbc3272c82b5d9b106'
+SOURCE_HEAD = '818acbe761a20b84940ba9493076c09a78bbc22e'
 
 OWNERSHIP = {
     'list_child_api_keys_api_v1_access_api_keys_get': ('HTTP-0002', 'bastion_ui.transport.generated_http', 'list_child_api_keys_api_v1_access_api_keys_get'),

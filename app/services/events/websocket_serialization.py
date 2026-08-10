@@ -5,6 +5,7 @@ import json
 from app.db.models.event_outbox import EventOutbox
 from app.events.serializer import serialize_event_json
 from app.services.events.websocket_filters import event_type_to_topic
+from app.services.events.websocket_contracts import WIRE_PROTOCOL_FAMILY, WIRE_PROTOCOL_VERSION
 
 MAX_PAYLOAD_BYTES = 16 * 1024
 FORBIDDEN_MATERIAL = (
@@ -48,11 +49,24 @@ def utc_timestamp(value: datetime | None = None) -> str:
 
 
 def system_message(event_type: str, message: str, **extra: object) -> dict[str, object]:
-    return {"type": "system", "event_type": event_type, "message": message, **extra}
+    return {
+        "protocol": WIRE_PROTOCOL_FAMILY,
+        "wire_version": WIRE_PROTOCOL_VERSION,
+        "type": "system",
+        "event_type": event_type,
+        "message": message,
+        **extra,
+    }
 
 
 def heartbeat_message() -> dict[str, object]:
-    return {"type": "heartbeat", "event_type": "heartbeat", "timestamp": utc_timestamp()}
+    return {
+        "protocol": WIRE_PROTOCOL_FAMILY,
+        "wire_version": WIRE_PROTOCOL_VERSION,
+        "type": "heartbeat",
+        "event_type": "heartbeat",
+        "timestamp": utc_timestamp(),
+    }
 
 
 def error_message(
@@ -63,6 +77,8 @@ def error_message(
     recoverable: bool = True,
 ) -> dict[str, object]:
     return {
+        "protocol": WIRE_PROTOCOL_FAMILY,
+        "wire_version": WIRE_PROTOCOL_VERSION,
         "type": "error",
         "event_type": "subscription.invalid",
         "code": code,
@@ -146,18 +162,21 @@ def serialize_event_payload(
     if not isinstance(limitations, list):
         limitations = [str(limitations)]
     return {
+        "protocol": WIRE_PROTOCOL_FAMILY,
+        "wire_version": WIRE_PROTOCOL_VERSION,
         "type": "event",
         "event_id": event_id,
         "event_type": event_type,
         "domain": domain,
         "topic": topic,
         "version": version,
+        "event_version": version,
         "occurred_at": utc_timestamp(occurred_at),
         "published_at": utc_timestamp(),
-        "data": sanitized_payload,
         "limitations": limitations,
         "degraded": envelope_metadata["degraded"],
         "stale": envelope_metadata["stale"],
+        "data": sanitized_payload,
         "payload": sanitized_payload,
         "metadata": envelope_metadata,
     }

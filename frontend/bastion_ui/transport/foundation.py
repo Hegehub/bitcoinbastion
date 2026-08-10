@@ -127,7 +127,7 @@ class ContractRegistryEntry:
     generation_version: str = "1b0.v1"
 
 
-@dataclass(frozen=True)
+@dataclass
 class SafeTransportError(Exception):
     status: int | None
     code: str
@@ -230,7 +230,10 @@ class HttpTransport:
                 }
             )
         try:
-            return operation.response_type.model_validate(response.json())
+            # Validate the actual JSON bytes. Pydantic strict mode correctly
+            # accepts JSON date-time strings here while still rejecting Python
+            # string coercion passed directly to model_validate().
+            return operation.response_type.model_validate_json(response.content)
         except (ValueError, ValidationError) as exc:
             raise SafeTransportError(
                 response.status_code,

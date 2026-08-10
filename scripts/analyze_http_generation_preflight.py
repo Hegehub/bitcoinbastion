@@ -23,10 +23,28 @@ MATRIX = DOCS / "00_openapi_frontend_rendering_matrix.json"
 OUT = DOCS / "01B0_GENERATION_PREFLIGHT.json"
 MUTATION_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 SCHEMA_KEYS = {
-    "$ref", "type", "format", "enum", "const", "allOf", "oneOf", "anyOf",
-    "discriminator", "additionalProperties", "nullable", "pattern", "minimum",
-    "maximum", "minLength", "maxLength", "minItems", "maxItems", "readOnly",
-    "writeOnly", "default", "deprecated",
+    "$ref",
+    "type",
+    "format",
+    "enum",
+    "const",
+    "allOf",
+    "oneOf",
+    "anyOf",
+    "discriminator",
+    "additionalProperties",
+    "nullable",
+    "pattern",
+    "minimum",
+    "maximum",
+    "minLength",
+    "maxLength",
+    "minItems",
+    "maxItems",
+    "readOnly",
+    "writeOnly",
+    "default",
+    "deprecated",
 }
 
 
@@ -44,7 +62,13 @@ def _walk(
             examples[key].add(owner)
         value_type = value.get("type")
         if isinstance(value_type, str) and value_type in {
-            "string", "integer", "number", "boolean", "array", "object", "null"
+            "string",
+            "integer",
+            "number",
+            "boolean",
+            "array",
+            "object",
+            "null",
         }:
             kind = f"type:{value_type}"
             counts[kind] += 1
@@ -97,16 +121,19 @@ def build_report() -> dict[str, Any]:
     matrix = json.loads(MATRIX.read_text())
     schemas = spec.get("components", {}).get("schemas", {})
     candidates = [
-        row for row in matrix["http_operations"]
+        row
+        for row in matrix["http_operations"]
         if row["disposition"] in {"UI_REQUIRED", "UI_OPTIONAL"}
         and row.get("authority_status") == "AUTHORITATIVE_NOW"
     ]
     security_deferred = [
-        row for row in matrix["http_operations"]
+        row
+        for row in matrix["http_operations"]
         if row.get("deferred_contract_kind") in {"protected", "protected_mutation"}
     ]
     mutation_deferred = [
-        row for row in matrix["http_operations"]
+        row
+        for row in matrix["http_operations"]
         if row.get("deferred_contract_kind") in {"mutation", "protected_mutation"}
     ]
     schema_counts: Counter[str] = Counter()
@@ -143,12 +170,16 @@ def build_report() -> dict[str, Any]:
                         {"matrix_id": row["matrix_id"], "operation_id": owner, "path": row["path"]}
                     )
         if row["access_class"] == "protected":
-            protected.append({"matrix_id": row["matrix_id"], "operation_id": owner, "path": row["path"]})
-            blockers.append({
-                "operation_id": owner,
-                "blocker": "P1B0-B01",
-                "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
-            })
+            protected.append(
+                {"matrix_id": row["matrix_id"], "operation_id": owner, "path": row["path"]}
+            )
+            blockers.append(
+                {
+                    "operation_id": owner,
+                    "blocker": "P1B0-B01",
+                    "missing": "reviewed dependency-level scope/PoP/signing/intent/step-up/replay metadata",
+                }
+            )
         if row["method"] in MUTATION_METHODS:
             mutations.append(
                 {
@@ -158,11 +189,13 @@ def build_report() -> dict[str, Any]:
                     "path": row["path"],
                 }
             )
-            blockers.append({
-                "operation_id": owner,
-                "blocker": "P1B0-B02",
-                "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
-            })
+            blockers.append(
+                {
+                    "operation_id": owner,
+                    "blocker": "P1B0-B02",
+                    "missing": "source-backed idempotency, retry, replay, Human Intent, and reconciliation semantics",
+                }
+            )
     for row in matrix["http_operations"]:
         if row.get("success_status") == "204" and row["disposition"] == "DEFERRED_WITH_REASON":
             deferred_no_content_operations.append(
@@ -175,7 +208,8 @@ def build_report() -> dict[str, Any]:
                 }
             )
     unsupported = sorted(
-        key for key in schema_counts
+        key
+        for key in schema_counts
         if key in {"allOf", "oneOf", "anyOf", "discriminator", "additionalProperties"}
     )
     protected_ids = {row["operation_id"] for row in protected}
@@ -202,7 +236,13 @@ def build_report() -> dict[str, Any]:
         unsupported = []
     return {
         "counts": {
-            "runtime_http": sum(1 for item in spec["paths"].values() for method in item if method.lower() in {"get", "post", "put", "patch", "delete", "head", "options", "trace"}),
+            "runtime_http": sum(
+                1
+                for item in spec["paths"].values()
+                for method in item
+                if method.lower()
+                in {"get", "post", "put", "patch", "delete", "head", "options", "trace"}
+            ),
             "generation_candidates": len(candidates),
             "security_deferred": len(security_deferred),
             "mutation_deferred": len(mutation_deferred),
@@ -241,7 +281,7 @@ def build_report() -> dict[str, Any]:
         },
         "unproven_schema_capabilities": unsupported,
         "blockers": sorted(blockers, key=lambda row: (row["operation_id"], row["blocker"])),
-        "websocket_authority": "DEFERRED_TO_PROMPT_4; wire versions must not be invented",
+        "websocket_authority": "AUTHORITATIVE_PROMPT_4; backend WireFrame v1 registry owns nine routes",
     }
 
 

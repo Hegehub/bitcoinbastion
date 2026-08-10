@@ -20,6 +20,7 @@ from bastion_ui.transport.operation_emitter import (  # noqa: E402
 )
 from bastion_ui.transport.schema_compiler import OpenAPISchemaCompiler  # noqa: E402
 from bastion_ui.transport.source_emitter import ModulePlan, emit_module  # noqa: E402
+from scripts.stage1_fingerprints import dirty_stage1_inputs, manifest as stage1_manifest  # noqa: E402
 
 MATRIX = ROOT / "docs/frontend/migration/00_openapi_frontend_rendering_matrix.json"
 OUT = ROOT / "frontend/bastion_ui/transport"
@@ -27,6 +28,9 @@ MANIFEST = OUT / "generated_manifest.json"
 
 
 def render() -> dict[Path, str]:
+    dirty = dirty_stage1_inputs()
+    if dirty:
+        raise RuntimeError(f"dirty Stage-1 inputs cannot be generated: {dirty}")
     spec = app.openapi()
     matrix = json.loads(MATRIX.read_text())
     rows = [
@@ -38,6 +42,7 @@ def render() -> dict[Path, str]:
     schemas = OpenAPISchemaCompiler(spec["components"]["schemas"]).compile_all()
     operations = compile_operations(spec, rows)
     source_revision = str(matrix["metadata"]["head"])
+    fingerprints = stage1_manifest()
     outputs = {
         OUT / "generated_schemas.py": emit_module(ModulePlan.build(schemas)),
         OUT / "generated_http.py": emit_operations(
@@ -57,8 +62,14 @@ def render() -> dict[Path, str]:
         "operation_count": len(operations),
         "schema_count": len(schemas),
         "source_revision": source_revision,
+        "contract_source_fingerprint": fingerprints["contract_source_fingerprint"],
+        "generator_fingerprint": fingerprints["generator_fingerprint"],
+        "dirty_stage1_inputs": [],
     }
     outputs[MANIFEST] = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
+    outputs[OUT / "stage1_source_inputs.json"] = json.dumps(
+        {"source_revision": source_revision, **fingerprints}, indent=2, sort_keys=True
+    ) + "\n"
     return outputs
 
 

@@ -165,7 +165,7 @@ class OpenAPISchemaCompiler:
     def cycles(self) -> tuple[tuple[str, ...], ...]:
         graph = self.dependency_graph()
         cycles: set[tuple[str, ...]] = set()
- 
+
         def visit(node: str, path: tuple[str, ...]) -> None:
             if node in path:
                 cycle = path[path.index(node):]

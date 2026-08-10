@@ -1,0 +1,5157 @@
+{
+  "contract_source_fingerprint": "6bd8ca2f70d64392449a5d12d847b6835bd8692e811a938eb7d189cbb543f5b6",
+  "generator_fingerprint": "9f06cedaa5fa0755e6fd6b0993b1ade81efddbe4a074200639d1953db2da5ae2",
+  "inputs": [
+    {
+      "path": "app/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/api/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/api/access_dependencies.py",
+      "role": "contract_source",
+      "sha256": "839e913e1e4c1042a12e1fabadb757e37825f443a6ec704f8de0eeb647f2cb22"
+    },
+    {
+      "path": "app/api/dependencies.py",
+      "role": "contract_source",
+      "sha256": "dd9c89b335195cdf97a5288898df5105637d6c0e3899fd37167f23e476910cc7"
+    },
+    {
+      "path": "app/api/errors.py",
+      "role": "contract_source",
+      "sha256": "e2f7ba740fc2fd4d0c737e1e36e0a03f8153bd2e4c96f336c9db6609b8f8e80b"
+    },
+    {
+      "path": "app/api/health_root.py",
+      "role": "contract_source",
+      "sha256": "6cf9eb37aadedc00183aa013471031b92f9816636a26220e5f4bf0c2eb455689"
+    },
+    {
+      "path": "app/api/middleware.py",
+      "role": "contract_source",
+      "sha256": "4b96e47b780dd2d7e41be282599672cd09f05231234708b7231b666b2aa8c593"
+    },
+    {
+      "path": "app/api/openapi.py",
+      "role": "contract_source",
+      "sha256": "cf4eefefe8655ceba0d564936383b712182af580dce165a8a5c84d049d0fe568"
+    },
+    {
+      "path": "app/api/response_envelope.py",
+      "role": "contract_source",
+      "sha256": "2a57092cd756b937cbcf9437e5c43ba7882d0f9b8d1c999e254350d29a37f9e2"
+    },
+    {
+      "path": "app/api/v1/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/api/v1/access.py",
+      "role": "contract_source",
+      "sha256": "f8249000960a7e2a3de963b90cb53015b86fb6bb04224dfcd03d16ec1aba4cdd"
+    },
+    {
+      "path": "app/api/v1/admin.py",
+      "role": "contract_source",
+      "sha256": "1a36f755dabcce36a1f535ab96d23641f1435919e4a4e34318882e69a04e4666"
+    },
+    {
+      "path": "app/api/v1/auth.py",
+      "role": "contract_source",
+      "sha256": "c0e5961ac8018d7d864c5432a00b128c40fa7bfd35443b2cb3d940647f74f508"
+    },
+    {
+      "path": "app/api/v1/business_lightning.py",
+      "role": "contract_source",
+      "sha256": "7d5e4dac94471292782b8b42b5edcebb5761e283580b5b0d613bcbfb2bd16c23"
+    },
+    {
+      "path": "app/api/v1/citadel.py",
+      "role": "contract_source",
+      "sha256": "1168ceda487d60fc5da2976f597b9c663edfcc5d6662b8c2791bdeb1432b9a0f"
+    },
+    {
+      "path": "app/api/v1/education.py",
+      "role": "contract_source",
+      "sha256": "8f6d551a460878d701c889f3735f9d9fc31d58fce6056a9feda3fcbe6a9c4a13"
+    },
+    {
+      "path": "app/api/v1/entities.py",
+      "role": "contract_source",
+      "sha256": "b76869a8c1f856f211025990daf38b24486feaf944c832548dfa62bbb1610ae8"
+    },
+    {
+      "path": "app/api/v1/evidence.py",
+      "role": "contract_source",
+      "sha256": "b600511291d12406070ca4e9e0ccdf8c4f2ad989ac94debf1389a510467c61e9"
+    },
+    {
+      "path": "app/api/v1/fees.py",
+      "role": "contract_source",
+      "sha256": "40997077c414a2b749cdbe34ddf38c4a5f7b98a6079a22d2897d96987205c395"
+    },
+    {
+      "path": "app/api/v1/health.py",
+      "role": "contract_source",
+      "sha256": "7205c451ba0ac24cb8ecd993abee839b56d2a959e8f4d7b91d376190ebf0d507"
+    },
+    {
+      "path": "app/api/v1/intelligence.py",
+      "role": "contract_source",
+      "sha256": "015b9c9fe4d58f6dfbf059ea9c3f995039dc6b1aa7a41f3fc1972d9072f1af9c"
+    },
+    {
+      "path": "app/api/v1/intelligence_signals.py",
+      "role": "contract_source",
+      "sha256": "469e0d6d101c345e2bc8301be69c4175861e3b7d0e1d0b8865e31ae3a167bf32"
+    },
+    {
+      "path": "app/api/v1/intelligence_timeline.py",
+      "role": "contract_source",
+      "sha256": "59ff666601c7c7c4a0126ce2cd965e62a456abbac68fbff424fcba00b25ed273"
+    },
+    {
+      "path": "app/api/v1/lnurl.py",
+      "role": "contract_source",
+      "sha256": "b485b0fc30b6a654ecb7360ab73d402d83f614f4cacffda06f682899e9964404"
+    },
+    {
+      "path": "app/api/v1/lnurl_activation.py",
+      "role": "contract_source",
+      "sha256": "578ee3fd590688280073415cb90e98e814726ba42b1c6f693f376836499d10d0"
+    },
+    {
+      "path": "app/api/v1/market.py",
+      "role": "contract_source",
+      "sha256": "9b8accea3bfb838a69c361c4bfaf494658255d2b78b2c2997f6985286d64e8cd"
+    },
+    {
+      "path": "app/api/v1/market_data.py",
+      "role": "contract_source",
+      "sha256": "2d5830978339ef9444b99326084e21afad834b9ac8eea79bec451fb680fe3862"
+    },
+    {
+      "path": "app/api/v1/market_intelligence.py",
+      "role": "contract_source",
+      "sha256": "20ce4000b72af63d16614b1a3af1c0728ebecd26ef8e53b87cbc48f6252598d0"
+    },
+    {
+      "path": "app/api/v1/market_time_machine.py",
+      "role": "contract_source",
+      "sha256": "8f5bdc3281e980f100ad8c9b7168cc1b4b548fe5ea067380bb48ea3b52345a20"
+    },
+    {
+      "path": "app/api/v1/metrics_status.py",
+      "role": "contract_source",
+      "sha256": "034916e2e6d032863a6a284ecba9db453beb1c751ddf57436666a397a7745773"
+    },
+    {
+      "path": "app/api/v1/news.py",
+      "role": "contract_source",
+      "sha256": "569825202ef7c64252aa97a4d2d600311623a083383c5bf534a9e06ad31e8292"
+    },
+    {
+      "path": "app/api/v1/observability.py",
+      "role": "contract_source",
+      "sha256": "cc0a7f296787235c4b1cd98c66737cc0cce36ff90a80d2d9936ca0624b107d98"
+    },
+    {
+      "path": "app/api/v1/onchain.py",
+      "role": "contract_source",
+      "sha256": "32f98a5db887d20b5a70e9e096248a96c7991c2bb77e1a673c7fa4ff50d7bd60"
+    },
+    {
+      "path": "app/api/v1/operations.py",
+      "role": "contract_source",
+      "sha256": "53e0c02b90b949c38d60926f7f15639ed48b6c5e268a35cbd525a6a7d5dc1728"
+    },
+    {
+      "path": "app/api/v1/operator_signals.py",
+      "role": "contract_source",
+      "sha256": "abc57920052ba036c663251d41ad52c07d98d050e4b7b3ac146661fa505c7a65"
+    },
+    {
+      "path": "app/api/v1/payregister_lnurl.py",
+      "role": "contract_source",
+      "sha256": "9fc7100ec372d2bc391fcd3fb304c6a0cb2052dac9759cc3dd9ebfa0e9736d43"
+    },
+    {
+      "path": "app/api/v1/plugins.py",
+      "role": "contract_source",
+      "sha256": "c1b717ac3954dce6ee88b562230e0fbd00fa1449330994ebea07904c35e290b3"
+    },
+    {
+      "path": "app/api/v1/policy.py",
+      "role": "contract_source",
+      "sha256": "22ca365089c3a8805a8e406e2ef82ce328c20161c9eedf35391aaaad0b1dee1e"
+    },
+    {
+      "path": "app/api/v1/privacy.py",
+      "role": "contract_source",
+      "sha256": "4c2e8ed949b9631b3e8af84c4823a559c4d6c6f8793835c23aa45037868c3782"
+    },
+    {
+      "path": "app/api/v1/public.py",
+      "role": "contract_source",
+      "sha256": "0a96b258d90d0791cb5c52b5e823d7ca5f548363c9f13558f8ac628412f6f025"
+    },
+    {
+      "path": "app/api/v1/signals.py",
+      "role": "contract_source",
+      "sha256": "08f3bc053f247266a5725106f1be18c8e238426b2e92152fc7080069fdec5a9c"
+    },
+    {
+      "path": "app/api/v1/storage_status.py",
+      "role": "contract_source",
+      "sha256": "bca8c479ad3ce0c70a5076bd866fc245d53cacc8686605a6b0aae6da90f5fed2"
+    },
+    {
+      "path": "app/api/v1/trace.py",
+      "role": "contract_source",
+      "sha256": "d085a64ea2afe920afdd34d837e721f4137a99b430000b09dff68b1c2f3aa309"
+    },
+    {
+      "path": "app/api/v1/treasury.py",
+      "role": "contract_source",
+      "sha256": "c424898c3dfb02d296760d32588ceeafbc40be4d2fb744552dbb31a734fda3b7"
+    },
+    {
+      "path": "app/api/v1/users.py",
+      "role": "contract_source",
+      "sha256": "caed7d39dfd1da776b31531d9fa4b13d6879bcd7192f675861f685fa0e706012"
+    },
+    {
+      "path": "app/api/v1/wallet.py",
+      "role": "contract_source",
+      "sha256": "9182600cb594649b27e2f0e5b40124d17b1476b7ee9af85abe0bc3d140518ea7"
+    },
+    {
+      "path": "app/api/v1/wallet_auth.py",
+      "role": "contract_source",
+      "sha256": "4cfdba6b2e53816cfd35a2e4b86b3f39e493abc04187abc55803029675adb022"
+    },
+    {
+      "path": "app/api/v1/webhooks.py",
+      "role": "contract_source",
+      "sha256": "590742e5026537338d6d00f84c6089ebe681b665da083fffa20d36cd99a1d8b3"
+    },
+    {
+      "path": "app/api/v1/ws.py",
+      "role": "contract_source",
+      "sha256": "f69ea9a217559c178ffe92cc1afd73e303e5ae4e36f1cd949e2446bcb0bb80fb"
+    },
+    {
+      "path": "app/api/wallet_auth_dependencies.py",
+      "role": "contract_source",
+      "sha256": "ef16e579ab99628ab6aa965a100aeaa00a4534b1d1cb65784f79c86c36f1bd0d"
+    },
+    {
+      "path": "app/api/well_known/__init__.py",
+      "role": "contract_source",
+      "sha256": "888911333e14eb743f591aa1e96819a486aee872647b1571dc01af8e52e121aa"
+    },
+    {
+      "path": "app/api/well_known/lnurlp.py",
+      "role": "contract_source",
+      "sha256": "fbee956661938412eeb89b2aa733ea729663c96de0f4af695bb7e38c90fe8868"
+    },
+    {
+      "path": "app/bot/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/bot/handlers/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/bot/handlers/access.py",
+      "role": "contract_source",
+      "sha256": "1438e0edfe8c2b673dde12211229aae0f2b3e1778eb65ad99a75696ee98fdce0"
+    },
+    {
+      "path": "app/bot/handlers/commands.py",
+      "role": "contract_source",
+      "sha256": "4610d87636d17bbd341610507b73e5a8b0ee92b5a74603a01a39387a3290bad7"
+    },
+    {
+      "path": "app/bot/handlers/runtime_actions.py",
+      "role": "contract_source",
+      "sha256": "7c930080b5f637fc6e8cba9535cce77954840767a184d6c8d00687d4c3d4266e"
+    },
+    {
+      "path": "app/bot/runner.py",
+      "role": "contract_source",
+      "sha256": "05de07ec71162cbc380feff543eaa9b6119e01e41330f7a8f45d541a3934f55d"
+    },
+    {
+      "path": "app/bot/services/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/cli/seed_narratives.py",
+      "role": "contract_source",
+      "sha256": "ba94c7c256704e8ff65b6ccde0018b6dcda3d03f582e6c3fd9fd2de684b5384b"
+    },
+    {
+      "path": "app/cli/seed_news_sources.py",
+      "role": "contract_source",
+      "sha256": "ce0bb83fd379ba2ff5fae420949bfd03e8c6be6119d40eea30ec47a3659fd2b1"
+    },
+    {
+      "path": "app/core/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/core/cache.py",
+      "role": "contract_source",
+      "sha256": "1b4fc1312bbe156c4239d0d24e6c1ab4c322b00b2acf99646b8682908ca4163f"
+    },
+    {
+      "path": "app/core/config.py",
+      "role": "contract_source",
+      "sha256": "1a67f6a9f06db6b1b7b3013554a3b1c0fd61edac08bcef939924d90c14674ca4"
+    },
+    {
+      "path": "app/core/enums.py",
+      "role": "contract_source",
+      "sha256": "71ed74cb237184d03ad50c58a41bd9158da1b31de1ad0327ab45f30903679ab3"
+    },
+    {
+      "path": "app/core/exceptions.py",
+      "role": "contract_source",
+      "sha256": "c7a48f15d39e484608b2132ce61822be346ce3fdf827535fc56ed701f1390102"
+    },
+    {
+      "path": "app/core/log_sanitizer.py",
+      "role": "contract_source",
+      "sha256": "2fd8f2730ca93117ea841bc3ba8b40142e047c3d2a971c1a77847b3c2662b915"
+    },
+    {
+      "path": "app/core/logging.py",
+      "role": "contract_source",
+      "sha256": "04ccd7cf8fe23b082ab722090c60ebf9e4fab529d317b2a579893bcba5d5b5db"
+    },
+    {
+      "path": "app/core/monitoring.py",
+      "role": "contract_source",
+      "sha256": "11594940a77984cf692d40a55a0fedc965aeaaba66b5edb963797b477c688ccd"
+    },
+    {
+      "path": "app/core/request_limits.py",
+      "role": "contract_source",
+      "sha256": "95a8b0dc8480b64e75d2161be1d5d9a722adf778e0380fc26f41af26d711e260"
+    },
+    {
+      "path": "app/core/security.py",
+      "role": "contract_source",
+      "sha256": "7537560c3a8bb9d0dcc13721702cd49d0b6725cf5816c57e5a3acf4f78aba134"
+    },
+    {
+      "path": "app/core/telemetry.py",
+      "role": "contract_source",
+      "sha256": "962aa5362514d7df77b9a7db29c5a7f9075f68a9411d3439c140c896898e4522"
+    },
+    {
+      "path": "app/db/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/db/base.py",
+      "role": "contract_source",
+      "sha256": "987edfd9dfe38b2c49492c7d1a4e774015d16b72e2281b018e4160be6b47d560"
+    },
+    {
+      "path": "app/db/migrations/env.py",
+      "role": "contract_source",
+      "sha256": "14cc590da9c6f6c3dc8e93ab6bd4d90630014c24270b7261c07cb90b0aed5d7d"
+    },
+    {
+      "path": "app/db/migrations/versions/20260413_0001_initial.py",
+      "role": "contract_source",
+      "sha256": "1e9513b366396d7018273821522e8f3b57bb04bf1d0e0b864094ab100d3fb35d"
+    },
+    {
+      "path": "app/db/migrations/versions/20260413_0002_expand_domain_models.py",
+      "role": "contract_source",
+      "sha256": "57b46b92154481a49a759b3cadcb978dad4e806890e606f5fb2ae91b304995d6"
+    },
+    {
+      "path": "app/db/migrations/versions/20260413_0003_job_runs.py",
+      "role": "contract_source",
+      "sha256": "e8b645c1382158f77f7069dd887d4d6e7d9cfaf051c827619a893922ba4a8bf0"
+    },
+    {
+      "path": "app/db/migrations/versions/20260414_0004_policy_runtime.py",
+      "role": "contract_source",
+      "sha256": "7e5aa1e2cf830292b516139abe49082c2424cb7e7bc3b3177dbac84a3e586537"
+    },
+    {
+      "path": "app/db/migrations/versions/20260414_0005_source_reputation_profiles.py",
+      "role": "contract_source",
+      "sha256": "5b88d79331106f16f9c9cd30c19fe098aea6a06cc59c7af534b508bad48dfb78"
+    },
+    {
+      "path": "app/db/migrations/versions/20260414_0006_signal_explainability_graph.py",
+      "role": "contract_source",
+      "sha256": "ffb24c76c3debf6f572eb6497c166c75d5550cbb16cbf3f791b17be6e2afeb8e"
+    },
+    {
+      "path": "app/db/migrations/versions/20260416_0007_citadel_assessments.py",
+      "role": "contract_source",
+      "sha256": "a744b5a4046155b8cd728163e5886719e4c09cf142d5ce401ddf3ff703727a14"
+    },
+    {
+      "path": "app/db/migrations/versions/20260430_0008_rename_onchain_tags_to_tags_json.py",
+      "role": "contract_source",
+      "sha256": "b99348be2b0473f3691ab0c343694e55cbee8a76f63f0b3bffffd8c7022805ab"
+    },
+    {
+      "path": "app/db/migrations/versions/20260522_0009_bastion_trace_initial.py",
+      "role": "contract_source",
+      "sha256": "bcc607ee03afa1ca841154fdd8ecf4de7bee85ece5f3d1f2de68f505161c34a9"
+    },
+    {
+      "path": "app/db/migrations/versions/20260522_0010_trace_origin_source_metadata.py",
+      "role": "contract_source",
+      "sha256": "3958dad945b6c63779063caf6b3268a9f8d38daaeb25d7a9ea930a2e70bc4ecd"
+    },
+    {
+      "path": "app/db/migrations/versions/20260522_0011_trace_privacy_shield_metadata.py",
+      "role": "contract_source",
+      "sha256": "52ac651cadcb23c265b66acb6f25e37a16a81531963a2d3d6b73c968f0f2e87d"
+    },
+    {
+      "path": "app/db/migrations/versions/20260522_0012_trace_counterparty_lens_metadata.py",
+      "role": "contract_source",
+      "sha256": "497a07c03980ac36b6142ed1972e2b3da66f11b6bb5c0ee7902afbb179832829"
+    },
+    {
+      "path": "app/db/migrations/versions/20260522_0013_trace_business_tier_baseline.py",
+      "role": "contract_source",
+      "sha256": "6506480131c63b392d6890a40848055b95d6626a87765c5fb8b8a0cbdd325196"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0014_market_intelligence_foundation.py",
+      "role": "contract_source",
+      "sha256": "c4f0eb8c5090d0ce33c494ece1f56740886df8631050790af254a1577818120f"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0015_news_ingestion_foundation.py",
+      "role": "contract_source",
+      "sha256": "115b883daca8e45c439647373c20052a946101e501e06b83f403ed6b533bafc0"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0016_source_registry.py",
+      "role": "contract_source",
+      "sha256": "adec6f5b82bb94df4a14520e5af2f2e157207627b3c21c2e4883ab29290486e1"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0017_source_health_confidence.py",
+      "role": "contract_source",
+      "sha256": "348eeec8e732754537b6382f3dfe38ea30c97e89b4faa354ae5a2d267cacde50"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0018_news_dedup_clusters.py",
+      "role": "contract_source",
+      "sha256": "da980a8fd8033c8904f7f65e0edf535ee5e576cfe00f69b333b2587b5d582085"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0019_canonical_news_events.py",
+      "role": "contract_source",
+      "sha256": "688388b1d0b58dfd7aa7cfb825d36af84803413e51e7b7ff4734f58290493c63"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0020_market_data_provider_layer.py",
+      "role": "contract_source",
+      "sha256": "d67e0bb25cfff16519eea9862fd8762ac437b9c862dfd075afb10c3de57c011c"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0021_market_price_provider_layer_v2.py",
+      "role": "contract_source",
+      "sha256": "37b13b8df5e2ae860712b63f723672a8586db1214f36be5fa87cc1ab1afe0e9b"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0022_btc_candle_engine.py",
+      "role": "contract_source",
+      "sha256": "04208df6b99a9bacbcfe1c2bc59ad5d0caee67f4c854f5794f46213ca041ef90"
+    },
+    {
+      "path": "app/db/migrations/versions/20260526_0023_candle_lifecycle_upgrade.py",
+      "role": "contract_source",
+      "sha256": "cea98b2ddd5092d0d3e3abd52138edb6844d46029d0fdd9eddb3c1beabe58ee3"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0024_candle_runs_snapshots.py",
+      "role": "contract_source",
+      "sha256": "d56617c47666ac06f2053be8c4d5f7e3a4fd1dc6114399dba73669925942e469"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0025_intelligence_timeline_foundation.py",
+      "role": "contract_source",
+      "sha256": "1c6d3ae39953f16ee21556824fa6ea912918a035be8c35b7cd7bef0d6f715de4"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0026_news_scoring_engine.py",
+      "role": "contract_source",
+      "sha256": "38ca65857318da4ac9676963fe92d8f7c0f9ef6792249697239c6f082a170008"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0027_news_article_scores.py",
+      "role": "contract_source",
+      "sha256": "ab3c7e5f9f071b7c739ee8752552e755b9a91732bc4658f14ffd0ffa747487b7"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0028_news_narrative_tags.py",
+      "role": "contract_source",
+      "sha256": "cb79767d7331b32defba1de193c074c32f2ea09be4aa6b056237462cde39e108"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0029_news_price_impacts_confidence.py",
+      "role": "contract_source",
+      "sha256": "f9f44e550909ea0d091ac53375cf589014395742959e3311c6dbe57f0a1dcb4a"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0030_scoring_factors_explanations.py",
+      "role": "contract_source",
+      "sha256": "3da331c3797fbe54281c80fc35490c1ef0a6921bfd3a2ef3d57ab850a00569a2"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0031_candle_attribution.py",
+      "role": "contract_source",
+      "sha256": "e8800e2f635ad3a9b883b9ac21138500d060ec5d34171a59ac7331a4070da8f3"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0032_news_price_impact_engine.py",
+      "role": "contract_source",
+      "sha256": "9122567ac39cb1fe31c8582998eb38a25b8b34fcd3e8860921af9182901ce847"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0033_production_candle_attribution_engine.py",
+      "role": "contract_source",
+      "sha256": "d5805ce89e837cca30d292603c16a722a4261fa3d8b8b781ef57c9a8d142b078"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0034_candle_attribution_foundation_context.py",
+      "role": "contract_source",
+      "sha256": "03e86954dfe131d891e11d33a9a6615833aacef1ffb2ea7d9e65d791f2c62172"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0035_historical_similarity_engine.py",
+      "role": "contract_source",
+      "sha256": "68d568645071730e11ffa053dbb968608d701b69124b37d6dff9e5c55ff7a32b"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0036_production_historical_similarity.py",
+      "role": "contract_source",
+      "sha256": "3152420e03dbd4a0c5eb9e6c6fb6c9f269ebf66cdf32f662bd76f23ce1b9d109"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0037_historical_similarity_result_expansion.py",
+      "role": "contract_source",
+      "sha256": "56087857a083bbebace2f400e5b790620c24456382f07247b95a614655308332"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0038_market_pattern_catalog_fields.py",
+      "role": "contract_source",
+      "sha256": "087dc2f35177a7b01be1d4c572fb538e41d0bc76755ef13b7e7737ab5422b61c"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0039_market_memory_patterns_similarity.py",
+      "role": "contract_source",
+      "sha256": "6eb0a638b8ce717d0c7f6d7ac8764c8277bc90d7d3548b164e0d82468958e299"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0040_historical_similarity_foundation.py",
+      "role": "contract_source",
+      "sha256": "68530847bc7f7a10e984b2334043248624afee0951214d1d89151e4725a85ce7"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0041_narrative_heatmap_engine.py",
+      "role": "contract_source",
+      "sha256": "6d668487eab62c9be5111089a02b45c15d526fde0bb6911fa86d7a44d7456432"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0042_narrative_heatmap_bmtm33.py",
+      "role": "contract_source",
+      "sha256": "77ca05c1e7236862177c7bb949c933f70827d5999078e60aa6cd59083c7b2844"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0043_narrative_heatmap_task34.py",
+      "role": "contract_source",
+      "sha256": "357bb4becf8ab041e52e7d283a9f03875dc3a6e4b26e2e0134b443fe679f4750"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0044_market_memory_engine.py",
+      "role": "contract_source",
+      "sha256": "865c10e9460e3cc0646abf9bf74899fc33274b86ad80f57f37847dccf2755976"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0045_signal_governance.py",
+      "role": "contract_source",
+      "sha256": "6edc0671c50c9ac583e771bdcbb6798795e8d2988033bc2f4d0c135dbf7e5acd"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0046_evidence_packets_replay.py",
+      "role": "contract_source",
+      "sha256": "04a6d9e86ced40f872bcb08783734e8c743966690b55d04bab214bac994be130"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0047_historical_similarity_pattern_memory.py",
+      "role": "contract_source",
+      "sha256": "84d336329ec8d7a1d44b88fa27ee09e8f43dc05345762b931aa926c8104af3a6"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0048_historical_similarity_finalization.py",
+      "role": "contract_source",
+      "sha256": "fd868c04d7e917b4e702804a7968c131f4fdb23dae63f14e869d66fd9215baa7"
+    },
+    {
+      "path": "app/db/migrations/versions/20260527_0049_production_observability_runtime.py",
+      "role": "contract_source",
+      "sha256": "858105de93749b8e46c409ec13ca49506d8e679d6e4a941447eac91e1f23ecc8"
+    },
+    {
+      "path": "app/db/migrations/versions/20260605_0050_operations_control_plane.py",
+      "role": "contract_source",
+      "sha256": "1db96b8f056291cd6b3197f4896372d5fcb08fec791649d535d2f4b093ae1009"
+    },
+    {
+      "path": "app/db/migrations/versions/20260605_0051_disaster_recovery_validation.py",
+      "role": "contract_source",
+      "sha256": "a7b3ef589cea6b3e30e9cae0a371f71de856ab34b3e436f35d77f56cc11dfcd0"
+    },
+    {
+      "path": "app/db/migrations/versions/20260605_0052_final_rc_schema_runtime_parity.py",
+      "role": "contract_source",
+      "sha256": "4731c6e9906a8dbcdf8fff4d077f5e60f1bc084eb307ce56c6a3ef5110883e78"
+    },
+    {
+      "path": "app/db/migrations/versions/20260607_0053_add_event_outbox.py",
+      "role": "contract_source",
+      "sha256": "1c4e44b1fdcf86ff10a60c0ecd5c4e7e1d414b23d8eeca8527ad26f172317b6f"
+    },
+    {
+      "path": "app/db/migrations/versions/20260608_0054_add_webhooks.py",
+      "role": "contract_source",
+      "sha256": "e8394bc6c6fb56560f9e84870f92eaad7dc1331aa512af9cd8e25ce8e5ddb41a"
+    },
+    {
+      "path": "app/db/migrations/versions/20260608_0055_harden_webhook_delivery_logs.py",
+      "role": "contract_source",
+      "sha256": "4c240bff2e015e8513aab1f1c2d410f1261b20bdff4978bcc7c86638f0e1a4c0"
+    },
+    {
+      "path": "app/db/migrations/versions/20260619_0056_storage_artifacts.py",
+      "role": "contract_source",
+      "sha256": "d3059015d09ccaeeb4b82addafda801df6b6bf05ffcdcbee918e0f1aa1514ca0"
+    },
+    {
+      "path": "app/db/migrations/versions/20260620_0057_storage_outbox_events.py",
+      "role": "contract_source",
+      "sha256": "6677d42652ac30b3a374fcd766a2ff377ddd59f706c68b659c35938f62a2c328"
+    },
+    {
+      "path": "app/db/migrations/versions/20260622_0058_timescale_market_timeseries.py",
+      "role": "contract_source",
+      "sha256": "c4b884f91d96e97aaf1ab0958be6aed4a94daf7916b4f8f64e49dbbe095ab8dc"
+    },
+    {
+      "path": "app/db/migrations/versions/20260622_0059_provider_source_health_timeseries.py",
+      "role": "contract_source",
+      "sha256": "b5dc7a26772b3ea6eab360de40eebd8859d142cbacb95ece8a010b68a6832e6d"
+    },
+    {
+      "path": "app/db/migrations/versions/20260625_0060_metric_usage_events.py",
+      "role": "contract_source",
+      "sha256": "f5ca7e1f11fca9cbe7b3193c1a899e8e3b3d5ee567c4e5eea2ea8624305952bd"
+    },
+    {
+      "path": "app/db/migrations/versions/20260625_0061_timescale_operations.py",
+      "role": "contract_source",
+      "sha256": "068d7c3341ac4508d000fb6f5097eadf30cbe8a2dc893e2c05062bf25fe4d5e4"
+    },
+    {
+      "path": "app/db/migrations/versions/20260629_0062_provider_source_timeseries_coverage.py",
+      "role": "contract_source",
+      "sha256": "7d2848e724aa17d34f1cc55bcc228af77d06d75254604a72f23060a5e6943a52"
+    },
+    {
+      "path": "app/db/migrations/versions/20260701_0063_access_layer_tables.py",
+      "role": "contract_source",
+      "sha256": "2a63f70886a757c5b66268b85241530ab485f03e4e127534da5ac53aa634cdb4"
+    },
+    {
+      "path": "app/db/migrations/versions/20260705_0064_access_human_intents.py",
+      "role": "contract_source",
+      "sha256": "9e883216eb8d803f064055ec30671c749f167b8fb3d3674b9e48c8cc2cb95d23"
+    },
+    {
+      "path": "app/db/migrations/versions/20260709_0065_wallet_lnurl_auth_models.py",
+      "role": "contract_source",
+      "sha256": "5f0cc6852f0e92aef31919e3882c3ab8f87e4231bc8cf37ef86c4d1650df00db"
+    },
+    {
+      "path": "app/db/migrations/versions/20260712_0066_wallet_auth_challenges.py",
+      "role": "contract_source",
+      "sha256": "aed8ebaea046807e740ebcfa2246be4e296fd0cd15d6a70829747b050813c8ee"
+    },
+    {
+      "path": "app/db/migrations/versions/20260726_0067_wallet_lnurl_audit_chain.py",
+      "role": "contract_source",
+      "sha256": "750e2b5782e332903beb261142482234c17ab0724ce04440338f0b39f810ed76"
+    },
+    {
+      "path": "app/db/migrations/versions/20260726_0068_principal_certificate_binding.py",
+      "role": "contract_source",
+      "sha256": "13484840c0785e72dc502f4c4e7e017eddbfa97a348479ea764a40f219dd2da4"
+    },
+    {
+      "path": "app/db/migrations/versions/20260726_0069_offline_validity_packs.py",
+      "role": "contract_source",
+      "sha256": "23b7085921f09055e55e288f7671219d3137496ef4be2d19a71051eb46ba0c20"
+    },
+    {
+      "path": "app/db/migrations/versions/20260726_0070_pq_issuer_metadata.py",
+      "role": "contract_source",
+      "sha256": "2acd40f465b215dcd8cc96dff43cbfd71c7de24582c723eac02662af47a6d0c3"
+    },
+    {
+      "path": "app/db/migrations/versions/20260727_0071_transparency_checkpoints.py",
+      "role": "contract_source",
+      "sha256": "339eadfd72cc252501dedc937634e0aeb727ad4762de1ade0c5b41800ba30638"
+    },
+    {
+      "path": "app/db/migrations/versions/9ecab5c090cf_align_models_schema_truth.py",
+      "role": "contract_source",
+      "sha256": "18f16ba437e9ef153d9a8c599c628ad18c3b83fea4b8b3a2dbe8a98958e53c31"
+    },
+    {
+      "path": "app/db/mixins.py",
+      "role": "contract_source",
+      "sha256": "86464cc503167d344721d41f919276a06a9965201ff0ed4df4b62c6749beebc4"
+    },
+    {
+      "path": "app/db/models/__init__.py",
+      "role": "contract_source",
+      "sha256": "e168ba534725b46558c6c0f4c72e3af087c1b30e097cfa4b8be12a6c8a058b19"
+    },
+    {
+      "path": "app/db/models/access.py",
+      "role": "contract_source",
+      "sha256": "b41db152d708ac1a1356ec973d504526dd297610b813b8d77822e1df48f42000"
+    },
+    {
+      "path": "app/db/models/attribution_context_snapshot.py",
+      "role": "contract_source",
+      "sha256": "d431b903c6b90c3e52cb46f69995d609472386689bf00b1770c66b5919cf2a56"
+    },
+    {
+      "path": "app/db/models/attribution_replay_log.py",
+      "role": "contract_source",
+      "sha256": "abb2069bd5fdd1cc8840bc7689066b55aa03536a43ccd185bfc34022e5655e4b"
+    },
+    {
+      "path": "app/db/models/audit.py",
+      "role": "contract_source",
+      "sha256": "54cf2c846b43362766c24e4d6277ef2639d85601cdcc0d2e437599785f1bfef2"
+    },
+    {
+      "path": "app/db/models/auth.py",
+      "role": "contract_source",
+      "sha256": "b3fcc11e3e2f538643127cd825fb2fca66590c56cdce1a8b391d16ef57efe1fa"
+    },
+    {
+      "path": "app/db/models/bastion_trace.py",
+      "role": "contract_source",
+      "sha256": "f4ea4c3640fa97096a36763cdfb893985f5ecdd6e0bc16719bdd983edc42ad7d"
+    },
+    {
+      "path": "app/db/models/btc_candle.py",
+      "role": "contract_source",
+      "sha256": "473ee24b0c958ef9caf294178c49aec9eba7b7c0372a1737f6a2ae3a10d20515"
+    },
+    {
+      "path": "app/db/models/btc_price_point.py",
+      "role": "contract_source",
+      "sha256": "cd3b3c98ab48af9abfe1ce6f1e70543b6ab4ecfd2089cc1c39263bb7eaec4f21"
+    },
+    {
+      "path": "app/db/models/btc_price_points.py",
+      "role": "contract_source",
+      "sha256": "57ae2f15a1dae19a782da2487959af40ebde8e119de44e241a0840213eeead83"
+    },
+    {
+      "path": "app/db/models/candle_attribution.py",
+      "role": "contract_source",
+      "sha256": "779e48fd45a588cef3a61c8efaccaef15b912ac4cff5e6eea65cfb1a8220c614"
+    },
+    {
+      "path": "app/db/models/candle_attribution_candidate.py",
+      "role": "contract_source",
+      "sha256": "b76a16af7ebd1104c33554e3bf971872adc17c270265879ff18867dfd6636eb0"
+    },
+    {
+      "path": "app/db/models/candle_build_run.py",
+      "role": "contract_source",
+      "sha256": "f50b7501e1aac5b7860884f296a79cba92581235655f60813493e61925110e85"
+    },
+    {
+      "path": "app/db/models/candle_context_snapshot.py",
+      "role": "contract_source",
+      "sha256": "93616f8c8986037f3da4d5cfc7b003f62415e85a4d05bff4f445e570f674330d"
+    },
+    {
+      "path": "app/db/models/candle_provider_snapshot.py",
+      "role": "contract_source",
+      "sha256": "345861408bcf2874e6489979501eaa676772f5447bf3280d114bf2b1c99894a9"
+    },
+    {
+      "path": "app/db/models/citadel_assessment.py",
+      "role": "contract_source",
+      "sha256": "6ee4798859e95c4796c6f6d0f83866f5d3837b1e286b73cc2a000d4ae1ac0c3f"
+    },
+    {
+      "path": "app/db/models/delivery.py",
+      "role": "contract_source",
+      "sha256": "19703071baf6d70878a9b210cc68a18472adc12642b0d70603335eea97ee9ae9"
+    },
+    {
+      "path": "app/db/models/entity.py",
+      "role": "contract_source",
+      "sha256": "d67aa89d6047ce8f54771702d60e3cc7f872a8ccc80dc69cddf025b6395d3f9c"
+    },
+    {
+      "path": "app/db/models/event_fingerprint.py",
+      "role": "contract_source",
+      "sha256": "7448d912cb5e28ed2faa8e8611a72fdc4970c9e52eb4718e805696fb431601f1"
+    },
+    {
+      "path": "app/db/models/event_outbox.py",
+      "role": "contract_source",
+      "sha256": "9ba79102c135c57252dacc7d332c7fbd549988bc7a3a976ab36d407d0643126c"
+    },
+    {
+      "path": "app/db/models/event_pattern_match.py",
+      "role": "contract_source",
+      "sha256": "fffa82bce4233ed637ba3fe0e4ad269a864543c73bde84a4d79c15ea18eb7dce"
+    },
+    {
+      "path": "app/db/models/evidence_packet.py",
+      "role": "contract_source",
+      "sha256": "135b0ece0e9473963e32f12815244286a1584c1fcbc2b6b2c616470e7a9a2601"
+    },
+    {
+      "path": "app/db/models/explainability.py",
+      "role": "contract_source",
+      "sha256": "bee3212fab1e1a83d9f3e0bc24bc60cb09121ea43fe6092f8a4ea8406c362177"
+    },
+    {
+      "path": "app/db/models/historical_event_profile.py",
+      "role": "contract_source",
+      "sha256": "27474125628a7699b68c5ab747246e9b77342c3c88bd74e414776e23acd50ac9"
+    },
+    {
+      "path": "app/db/models/historical_event_similarity.py",
+      "role": "contract_source",
+      "sha256": "27fd9027a06823d33f14faa18971960321ee749ef2e989174637b317e9afa224"
+    },
+    {
+      "path": "app/db/models/historical_pattern.py",
+      "role": "contract_source",
+      "sha256": "802593324595deae72c1d94e6109fba437df53a9a95374858345ea16db11660c"
+    },
+    {
+      "path": "app/db/models/historical_reaction_profile.py",
+      "role": "contract_source",
+      "sha256": "1101ba9128a38162be1d897fe4e830268a4db25137a880068947a29ca7259158"
+    },
+    {
+      "path": "app/db/models/historical_reaction_statistics.py",
+      "role": "contract_source",
+      "sha256": "ba83410ee03f6654368978d39481884166d1fdf0009fb2c83533292767d7a0d4"
+    },
+    {
+      "path": "app/db/models/historical_similarity_match.py",
+      "role": "contract_source",
+      "sha256": "b172884aafe595fd138c4178dd608694201371f654eddfadb235182eb0fb6d28"
+    },
+    {
+      "path": "app/db/models/historical_similarity_record.py",
+      "role": "contract_source",
+      "sha256": "84be21ffbe2cb71356231ca38eb6edf2d79e1267fc862f630cdc7b2c65ea5bc8"
+    },
+    {
+      "path": "app/db/models/historical_similarity_result.py",
+      "role": "contract_source",
+      "sha256": "c22cae8d32f10bca96c5f06d5206ad3fac81887a2064ba11d35528d438af62df"
+    },
+    {
+      "path": "app/db/models/impact_confidence_breakdown.py",
+      "role": "contract_source",
+      "sha256": "f84e1bdfe6dd8aa18badb6a810762780e61bcc7d76a4396293790aa38654a7dd"
+    },
+    {
+      "path": "app/db/models/impact_window_snapshot.py",
+      "role": "contract_source",
+      "sha256": "4a5a686eaf5c83e74db253e01521bb284d254cb584aaf5a52a6f1ed2b99f0c96"
+    },
+    {
+      "path": "app/db/models/intelligence_signals.py",
+      "role": "contract_source",
+      "sha256": "769ef28edb08acc1de270d5f752d98a0a82c5957c1f77cab07e2e15e306f3592"
+    },
+    {
+      "path": "app/db/models/intelligence_timeline.py",
+      "role": "contract_source",
+      "sha256": "4054299e8ec9add4818574a390d1c91f6fbf22b35bd193c5e994980d99ed64c9"
+    },
+    {
+      "path": "app/db/models/job_run.py",
+      "role": "contract_source",
+      "sha256": "7a74201bb8e91504b04fadf5c3368903fa2c7559b7e629f1e9609924af3ed899"
+    },
+    {
+      "path": "app/db/models/lnurl.py",
+      "role": "contract_source",
+      "sha256": "dd24c357c251af7f45fbc4e45e8c96642efc242f9a64da3ef1fab8e29efcea42"
+    },
+    {
+      "path": "app/db/models/market_data.py",
+      "role": "contract_source",
+      "sha256": "fbd2c0b7e6b54761244d551f14539cc1f870d8bfd33a2221ee159465b49c897b"
+    },
+    {
+      "path": "app/db/models/market_memory_operator_review.py",
+      "role": "contract_source",
+      "sha256": "e71bbef7f1b56b1a0561167f3b588dcbe1da52420491859eeb8fb262f427df2f"
+    },
+    {
+      "path": "app/db/models/market_memory_record.py",
+      "role": "contract_source",
+      "sha256": "3c451bd7ee811c4952e6e6252b0a33bb7fe38790b0c05dac7890d2fe6af2fa68"
+    },
+    {
+      "path": "app/db/models/market_narrative.py",
+      "role": "contract_source",
+      "sha256": "f34d4f501962a96c5c96fde81b7ca9194673a5c5aa8a88f8138af01e75b0f78b"
+    },
+    {
+      "path": "app/db/models/market_pattern.py",
+      "role": "contract_source",
+      "sha256": "1b72aae9f8f2581b2acaf9fc29676ec23400b698d01e01db473870f676fff883"
+    },
+    {
+      "path": "app/db/models/market_pattern_library.py",
+      "role": "contract_source",
+      "sha256": "6102888c75b8093d492b81043b784b3d5939dcfc713d75b526983c9c606a7e94"
+    },
+    {
+      "path": "app/db/models/market_provider_health.py",
+      "role": "contract_source",
+      "sha256": "fff843f4376c360ba1f8a8ca072ee5db3e83757d3c00efc7d411b18f438b1eb0"
+    },
+    {
+      "path": "app/db/models/mempool_fee_snapshot.py",
+      "role": "contract_source",
+      "sha256": "c7abc2399bf2d0ac73804c2b0f71cc888e63d5ab773742f23bd78981db4afb34"
+    },
+    {
+      "path": "app/db/models/metric_usage_event.py",
+      "role": "contract_source",
+      "sha256": "698ff5bccc7b32eb98866a7e06779ea98bf8d896be7517efac4acd900af674b3"
+    },
+    {
+      "path": "app/db/models/narrative_keyword.py",
+      "role": "contract_source",
+      "sha256": "5f5044ffeedbb2f21b8f58b8b1f138509f5b714d004e1bc9aed7b0d1d8e66f56"
+    },
+    {
+      "path": "app/db/models/narrative_memory_snapshot.py",
+      "role": "contract_source",
+      "sha256": "594925ce3b49ce040a88b190afd004ed14b2f3be5019605a72027dd0c3ec5e84"
+    },
+    {
+      "path": "app/db/models/narrative_observation.py",
+      "role": "contract_source",
+      "sha256": "33f2c95f5f23e773c4d9469eb6b36532c813c77c98f2c2cfdc7523fe0f225da9"
+    },
+    {
+      "path": "app/db/models/narrative_snapshot.py",
+      "role": "contract_source",
+      "sha256": "27e72f8388062ab895434c2111012e0bea3b36a0570ae83a8db6b70c017d9e68"
+    },
+    {
+      "path": "app/db/models/news.py",
+      "role": "contract_source",
+      "sha256": "de09b812fac5109dd34d84be0646a242a53cf94e4e4683dc5d6568c44cecea1d"
+    },
+    {
+      "path": "app/db/models/news_article.py",
+      "role": "contract_source",
+      "sha256": "b036cd4d2f80667d8a9a89b184db0db5b3f0dabf9c23080f8e87666be5877109"
+    },
+    {
+      "path": "app/db/models/news_article_cluster.py",
+      "role": "contract_source",
+      "sha256": "ca47ef18eac9d553c9f28090013d7254decd2828e9f4eea33c9f24503c468e87"
+    },
+    {
+      "path": "app/db/models/news_article_score.py",
+      "role": "contract_source",
+      "sha256": "7271aece1bf028ce3762f3dafd36c2aaf300c0802d86ed972753c8bed6303685"
+    },
+    {
+      "path": "app/db/models/news_event.py",
+      "role": "contract_source",
+      "sha256": "ae4300950ec27313e8f1f0dbe6cac6c4aabd71a758fac3070a59f18e2e2e5fc2"
+    },
+    {
+      "path": "app/db/models/news_event_article.py",
+      "role": "contract_source",
+      "sha256": "760bcf0a3f84081a1b4bca7a817e727af7ca04e27b59930b91b89801afd5143c"
+    },
+    {
+      "path": "app/db/models/news_event_cluster.py",
+      "role": "contract_source",
+      "sha256": "4ebef1d6f564d1ebdc0f149d10c3736d3071a3b916354430d41de2c4950bb5a6"
+    },
+    {
+      "path": "app/db/models/news_fetch_log.py",
+      "role": "contract_source",
+      "sha256": "64725af0681b1f98cd8259ac22c6ae9224073928367055b0d48874de28ba65fa"
+    },
+    {
+      "path": "app/db/models/news_narrative_tag.py",
+      "role": "contract_source",
+      "sha256": "8cd9bf1218e7c71db74f7841289822a4e9806a679b0fb5bc5b089d299870befd"
+    },
+    {
+      "path": "app/db/models/news_price_impact.py",
+      "role": "contract_source",
+      "sha256": "ff5869cedadb56e12f783cde5313dd63b647d5ffc7d1b50bafe07dff125f7269"
+    },
+    {
+      "path": "app/db/models/news_raw_payload.py",
+      "role": "contract_source",
+      "sha256": "f3bc0513f0b679b3ead773c00e2db5457eaa7efe2f354ab39c096f2446f39784"
+    },
+    {
+      "path": "app/db/models/news_score.py",
+      "role": "contract_source",
+      "sha256": "8e4f31a77f3ee0661a4bb61a6776e6f7ad5eb2f69fbf76db668cedfa245e00bd"
+    },
+    {
+      "path": "app/db/models/news_source.py",
+      "role": "contract_source",
+      "sha256": "7930b45778fe0650de8b903fefec8dfa5f1213ce703717391678042143deeb94"
+    },
+    {
+      "path": "app/db/models/observability_health.py",
+      "role": "contract_source",
+      "sha256": "dc4015af126f88ad4fdf6e3c111f172942703a68e19203a4ef5c015f12429408"
+    },
+    {
+      "path": "app/db/models/onchain.py",
+      "role": "contract_source",
+      "sha256": "d3aa5f22059f5a2501e7e1f3b9f178bc95c93f47ca271522d516c768bff7b9f9"
+    },
+    {
+      "path": "app/db/models/operations_control.py",
+      "role": "contract_source",
+      "sha256": "04087ab8fe646bf719962e2294977bf35f9141dd4c264414050d49a807b36bb6"
+    },
+    {
+      "path": "app/db/models/pattern_embedding_placeholder.py",
+      "role": "contract_source",
+      "sha256": "a549c9e855bd37380d2970d11aa93a2a9ba7112a12dcf651998ff33ddd67b707"
+    },
+    {
+      "path": "app/db/models/pattern_occurrence.py",
+      "role": "contract_source",
+      "sha256": "fcde5758dc582a4534578b5e7c8528ecf1e321fe2a2129337eb4df6140f72838"
+    },
+    {
+      "path": "app/db/models/pattern_reaction_profile.py",
+      "role": "contract_source",
+      "sha256": "c05eb7ba4cf6537a2bacaaefea360d5786ad8c93561d458dc5e251c8bdea66ab"
+    },
+    {
+      "path": "app/db/models/pattern_reaction_snapshot.py",
+      "role": "contract_source",
+      "sha256": "46c49986aa77b2d13881e1145928c241efee978f2104c2d484fe3a3276f54f73"
+    },
+    {
+      "path": "app/db/models/pattern_statistics.py",
+      "role": "contract_source",
+      "sha256": "134120b1db2a162f656458854df9a5d8bd941e5b687107176cf1378027cda343"
+    },
+    {
+      "path": "app/db/models/provider_confidence_event.py",
+      "role": "contract_source",
+      "sha256": "0dd69229289d301dc3b55d891420c07199a20aa74a951705eddfd055f602e903"
+    },
+    {
+      "path": "app/db/models/provider_health_record.py",
+      "role": "contract_source",
+      "sha256": "f03647246053ae52c8e07b9786839af7e4dad21bb6b4e6f9d5954b2a9d8da11a"
+    },
+    {
+      "path": "app/db/models/provider_source_health_timeseries.py",
+      "role": "contract_source",
+      "sha256": "690b55a0f847d433a24883eaade1f8e9459b63978bf16e86313269d68b7cebee"
+    },
+    {
+      "path": "app/db/models/score_explanation.py",
+      "role": "contract_source",
+      "sha256": "010677e02819b981f166e31bd9ecf9e30a248ffa17cd4daadc55b92b10aebd9b"
+    },
+    {
+      "path": "app/db/models/scoring_factor.py",
+      "role": "contract_source",
+      "sha256": "b07e7822fffcfcbde75d774fd99421c0e0d5492c1967940781596de5d18ab71d"
+    },
+    {
+      "path": "app/db/models/signal.py",
+      "role": "contract_source",
+      "sha256": "6c937a0b06533fa6a5a368941a04581df5cace11bc7132cc84156e4947b81ab6"
+    },
+    {
+      "path": "app/db/models/signal_link.py",
+      "role": "contract_source",
+      "sha256": "6fa3a58d149c5e705b634f868cddace90c17392c63a48c150b6b64fca88c7e92"
+    },
+    {
+      "path": "app/db/models/source_health_record.py",
+      "role": "contract_source",
+      "sha256": "2909191a6a74895a5304dfcb6272b238612f747f3fb5141328a60d105ec2cb92"
+    },
+    {
+      "path": "app/db/models/source_health_snapshot.py",
+      "role": "contract_source",
+      "sha256": "93fd4ef2b93f6abfa7687e67b4355c2d42714ec2cb4b208c7e24de7411175217"
+    },
+    {
+      "path": "app/db/models/source_reputation_profile.py",
+      "role": "contract_source",
+      "sha256": "ef7b95327989a1756ba1ca986204232d86829b22478dd2ecfa92f229e1868e6b"
+    },
+    {
+      "path": "app/db/models/storage_artifact.py",
+      "role": "contract_source",
+      "sha256": "ce966173a25c90af03d67e7755dfff3e1bd6f3da4eb4e36456efb3d6e5e51f30"
+    },
+    {
+      "path": "app/db/models/storage_outbox_event.py",
+      "role": "contract_source",
+      "sha256": "c1bdaf09943a5414cd5658993c9262533dd2b1dbd8b6246a744aae4eadaa4f5c"
+    },
+    {
+      "path": "app/db/models/telegram.py",
+      "role": "contract_source",
+      "sha256": "f14db45329c18fa0211615f0077c0b5dfd7d0ffc26b24e4e83e34b1ca7437e5c"
+    },
+    {
+      "path": "app/db/models/time_utils.py",
+      "role": "contract_source",
+      "sha256": "30e980609c55dc1821237abb04296133ccfa0826aaa429d629959916b4fd5d72"
+    },
+    {
+      "path": "app/db/models/treasury.py",
+      "role": "contract_source",
+      "sha256": "519c8568eb5f43d0ca5950b11ef910c6109d3dc17bec0b1efae6e564f2f7a09d"
+    },
+    {
+      "path": "app/db/models/wallet.py",
+      "role": "contract_source",
+      "sha256": "a6ad159aae7859f30d6c2f7d89853895357fa2751e2a0ee82b2814f9da37bf31"
+    },
+    {
+      "path": "app/db/models/wallet_auth.py",
+      "role": "contract_source",
+      "sha256": "9b04ee09963258dc291d4e2b733e4e4f7cf1d84979e3d1df350745084e4a2815"
+    },
+    {
+      "path": "app/db/models/watched_entity.py",
+      "role": "contract_source",
+      "sha256": "fc8b621d579ab52e114398884712db6f379124e255277a65db4e83cfec90e1ca"
+    },
+    {
+      "path": "app/db/models/webhooks.py",
+      "role": "contract_source",
+      "sha256": "9f0f90984e3bab0e709d4fa998e2f786055c64bf168f60d281ed08a652bb0cc0"
+    },
+    {
+      "path": "app/db/repositories/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/db/repositories/audit_repository.py",
+      "role": "contract_source",
+      "sha256": "a051b265ac6dfd152edd9ac0ba5210b12630353a5a260bb00da1906fe6d6fcd9"
+    },
+    {
+      "path": "app/db/repositories/bastion_trace_repository.py",
+      "role": "contract_source",
+      "sha256": "916d71e764a6c9a5aec506bc32ce63a243fac6c9db2827c66197a19fa9988f1e"
+    },
+    {
+      "path": "app/db/repositories/citadel_repository.py",
+      "role": "contract_source",
+      "sha256": "e2467eb224602193b06cef6895604e2fc90d9570201890b9bff65943acc843a8"
+    },
+    {
+      "path": "app/db/repositories/delivery_repository.py",
+      "role": "contract_source",
+      "sha256": "d2aab70470fa34d207f95846aa24af6530c90720d9ea6562aac1dada7c834e37"
+    },
+    {
+      "path": "app/db/repositories/entity_repository.py",
+      "role": "contract_source",
+      "sha256": "8883f5266658b08162cdde37ec710a824c82039c4ab2ca022efb8ce9823f2d2c"
+    },
+    {
+      "path": "app/db/repositories/event_outbox_repository.py",
+      "role": "contract_source",
+      "sha256": "eb72e7dd5fae18b9384143e55959d49051dc337f954e866e533ce4a0aa2cf41d"
+    },
+    {
+      "path": "app/db/repositories/job_run_repository.py",
+      "role": "contract_source",
+      "sha256": "9dd5d4912567cfc78a7997eb1358476248b1b56e2894da60c5e404e2dfa76d37"
+    },
+    {
+      "path": "app/db/repositories/lnurl_success_action_repository.py",
+      "role": "contract_source",
+      "sha256": "9733f49a15bcf15148b7e8d179ea679583a855f22e5a9742c50a91d17de6d9d3"
+    },
+    {
+      "path": "app/db/repositories/news_repository.py",
+      "role": "contract_source",
+      "sha256": "c4f2354b3ae645abcd71473d3f5cb420d7b0995f6f1d84681a6def71048de879"
+    },
+    {
+      "path": "app/db/repositories/onchain_repository.py",
+      "role": "contract_source",
+      "sha256": "8f5047a88124f5a202e3dd19b879550e26588d5f994726fbd0aeeec321cdcd90"
+    },
+    {
+      "path": "app/db/repositories/policy_repository.py",
+      "role": "contract_source",
+      "sha256": "a0c80a5b3b98bd583465d2918806904b77cf9fbeec36815d6e119a578d74b19a"
+    },
+    {
+      "path": "app/db/repositories/provider_source_health_timeseries_repository.py",
+      "role": "contract_source",
+      "sha256": "d464c5990b8c641e565d4ce65df4d3c3e8a9d955db6f7e2b99ba3749f0d97e6b"
+    },
+    {
+      "path": "app/db/repositories/signal_repository.py",
+      "role": "contract_source",
+      "sha256": "586c39af8feb1f0252ca507e70add463626614cb920630387eecccd322d06189"
+    },
+    {
+      "path": "app/db/repositories/storage_artifact_repository.py",
+      "role": "contract_source",
+      "sha256": "2f492562d70805645c24c7a171489a7e5cd554e4e9913b34b1b2561d4b16233d"
+    },
+    {
+      "path": "app/db/repositories/storage_outbox_repository.py",
+      "role": "contract_source",
+      "sha256": "43cff15812ae79fa4e44457614824b5148bf9bba40510dedbdde36a8bd32afcf"
+    },
+    {
+      "path": "app/db/repositories/treasury_repository.py",
+      "role": "contract_source",
+      "sha256": "c2e89c63c3ba43f63f7647c31247dd2aa26dfcb5e70daa443cecee75a3607387"
+    },
+    {
+      "path": "app/db/repositories/user_repository.py",
+      "role": "contract_source",
+      "sha256": "aa269112244fc541d99e32b1d3192982367cdb83564f0e268421552d69c3c4c8"
+    },
+    {
+      "path": "app/db/repositories/wallet_device_repository.py",
+      "role": "contract_source",
+      "sha256": "f8d3ee288e28b963ce1249b36a6c53a1c26bf3a5fe0cc7db98512242444c8271"
+    },
+    {
+      "path": "app/db/repositories/wallet_repository.py",
+      "role": "contract_source",
+      "sha256": "07008333fadfdecf814a3f21f29c5cd9dada749eb765a5f42de7227b5df79ef5"
+    },
+    {
+      "path": "app/db/repositories/webhook_repository.py",
+      "role": "contract_source",
+      "sha256": "6153c16205b6fca12603f229f528493c4de6d05fc05e0f8c5e6e54227ecc4dc1"
+    },
+    {
+      "path": "app/db/session.py",
+      "role": "contract_source",
+      "sha256": "94c120eb271793c7f5e6b1b33c5b233c8e15aa6606c6d19b60073e3dddc6c461"
+    },
+    {
+      "path": "app/domain/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/domain/access/__init__.py",
+      "role": "contract_source",
+      "sha256": "687423d19227b692f89b8d721fad4ac182ae7b9172ab81315a27d1338159bf0c"
+    },
+    {
+      "path": "app/domain/access/context.py",
+      "role": "contract_source",
+      "sha256": "9716a138606440b53a1f7eb09cc93981e7b997c6a9db66ee5ba5dd00b44ac7aa"
+    },
+    {
+      "path": "app/domain/access/decisions.py",
+      "role": "contract_source",
+      "sha256": "b54b220a9d167935e6bd6cecb667a9e8717d4fee8210e831777d41e136fe6814"
+    },
+    {
+      "path": "app/domain/access/entitlements.py",
+      "role": "contract_source",
+      "sha256": "c932ff311e875dcc1d3dfc123bc668ad271393d670e7b4f40b7444fb2cd010fc"
+    },
+    {
+      "path": "app/domain/access/errors.py",
+      "role": "contract_source",
+      "sha256": "eb457ee39321a604bb1c4bb111f3fe26d418e78cfabe50e8759b41063987ecb1"
+    },
+    {
+      "path": "app/domain/access/integrity.py",
+      "role": "contract_source",
+      "sha256": "e09dfc2c4a274ec7eafcc0e9c3de8ece7140c2c77fda6424553d266034345498"
+    },
+    {
+      "path": "app/domain/access/metrics.py",
+      "role": "contract_source",
+      "sha256": "9aef9f20ce5deed1f9017df06562547162c7f40664fbd4dd498884a3700d10de"
+    },
+    {
+      "path": "app/domain/access/plans.py",
+      "role": "contract_source",
+      "sha256": "61369cf7f84ad538fbf3ec23d075fe2068ccc4ff444eed307e0a2e07cf724d4a"
+    },
+    {
+      "path": "app/domain/access/scopes.py",
+      "role": "contract_source",
+      "sha256": "01b9a73de7376b385ed36692fff7fe5488ae7573153a8d534fa16f9ec5549cb8"
+    },
+    {
+      "path": "app/domain/access/wallet_entitlements.py",
+      "role": "contract_source",
+      "sha256": "3978061fa232e7948f70c9096cd099e136d64e893527000d6bd525bfdbf1f858"
+    },
+    {
+      "path": "app/domain/intelligence/timeline.py",
+      "role": "contract_source",
+      "sha256": "7dfebb4f851bec3ed7d9448075df7d2359e52d654a8b8deab511618c9d6f84c6"
+    },
+    {
+      "path": "app/domain/lnurl/__init__.py",
+      "role": "contract_source",
+      "sha256": "43b3ac57743128b362032addc7b8748fda9c615bddafd0b69f818dd34aa601fa"
+    },
+    {
+      "path": "app/domain/lnurl/address.py",
+      "role": "contract_source",
+      "sha256": "140a901512eee2b06216cfd67c262adcb855f3a9b6e8515af465fd7c52871ddd"
+    },
+    {
+      "path": "app/domain/lnurl/addresses.py",
+      "role": "contract_source",
+      "sha256": "03a5f2150c3a113f78b6bb36015b0c98e4f8e881585adc1045f815d070182f87"
+    },
+    {
+      "path": "app/domain/lnurl/auth.py",
+      "role": "contract_source",
+      "sha256": "0ab304c10c260272a420840056af37c14f08804c1ac1459a72f264fa8910b11a"
+    },
+    {
+      "path": "app/domain/lnurl/constants.py",
+      "role": "contract_source",
+      "sha256": "0e764cd432710c7ac885320d755f79bd3dd86d0616379a0e4bd5771347392da3"
+    },
+    {
+      "path": "app/domain/lnurl/errors.py",
+      "role": "contract_source",
+      "sha256": "8c79ad0a63096e813b296500f5019eb012636175581e7d092ebc49a289ed4a0a"
+    },
+    {
+      "path": "app/domain/lnurl/lightning_address.py",
+      "role": "contract_source",
+      "sha256": "c8f5b3eec0ae6a4fa005ad499f1df50ed9e15a2ed247c30f8d46728c43abc764"
+    },
+    {
+      "path": "app/domain/lnurl/merchant_addresses.py",
+      "role": "contract_source",
+      "sha256": "70b593eba317a03b11623ad65fa46d53fe63fb0755edea97e2b93c286748d6e4"
+    },
+    {
+      "path": "app/domain/lnurl/pay.py",
+      "role": "contract_source",
+      "sha256": "833347860604f422be695fe1b448844623b37f4003167aa7f4bbe622d26cc1a8"
+    },
+    {
+      "path": "app/domain/lnurl/payer_data.py",
+      "role": "contract_source",
+      "sha256": "55517407701d7320a4ed41442281e9eed00f18fa8e4235e379a44fe8a8a4b874"
+    },
+    {
+      "path": "app/domain/lnurl/payment_proofs.py",
+      "role": "contract_source",
+      "sha256": "44450345ab6c4894d97ce3bbbbbcb85b2b57eff5ad6d570d209223f547210f98"
+    },
+    {
+      "path": "app/domain/lnurl/payments.py",
+      "role": "contract_source",
+      "sha256": "c9e207c6c95f8dc6297a421dff75415beef4746e407c1278ec056789e8896de8"
+    },
+    {
+      "path": "app/domain/lnurl/principals.py",
+      "role": "contract_source",
+      "sha256": "9f1355bba30c2789b99026a7bbb0feb77f93c0366e0c05cd35245cecedcc7ade"
+    },
+    {
+      "path": "app/domain/lnurl/security.py",
+      "role": "contract_source",
+      "sha256": "90a13f05bee6ae810f631bbda866e77419250e7869db14005e52afc622de9b9d"
+    },
+    {
+      "path": "app/domain/lnurl/success_action.py",
+      "role": "contract_source",
+      "sha256": "2eee0a36ffd575171ba1e18ef8ea9dd004cb51d58dea8ecedbe61127793f1aea"
+    },
+    {
+      "path": "app/domain/lnurl/success_actions.py",
+      "role": "contract_source",
+      "sha256": "955f6890d350fa85c38a69a7920191e8032c1c1ff690dc39cc24c94bf2b907fa"
+    },
+    {
+      "path": "app/domain/lnurl/tags.py",
+      "role": "contract_source",
+      "sha256": "3116c97c92a8c09f922c30096f3aa3b254aff06b9a614764940754b72649ade3"
+    },
+    {
+      "path": "app/domain/lnurl/verification.py",
+      "role": "contract_source",
+      "sha256": "8b4e1a502c64d05d8393a8a256b871d35a58e4f6f0888753e5b1ae8763b0ad65"
+    },
+    {
+      "path": "app/domain/lnurl/verify.py",
+      "role": "contract_source",
+      "sha256": "7f81ad04ee14ebd6e91a6f9b19b1cedd7ff3ec1fb8e1f622134305bdc01a9494"
+    },
+    {
+      "path": "app/domain/lnurl/withdraw.py",
+      "role": "contract_source",
+      "sha256": "ff84a4b32bed6344731047d288ef9a36d6100f549139dfd45691ecfebd16abed"
+    },
+    {
+      "path": "app/domain/lnurl/withdraw_risk.py",
+      "role": "contract_source",
+      "sha256": "cda83f5e7a7f8466a6fbb88367b8adb9f02b66eca0fc5e09c92eb1660e801aaf"
+    },
+    {
+      "path": "app/domain/news/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/domain/onchain/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/domain/payregister_lnurl/__init__.py",
+      "role": "contract_source",
+      "sha256": "5bc9bf95e76472821a96023f1175c073cdd1dbcedcf9d6e5d4ad99c6bb144725"
+    },
+    {
+      "path": "app/domain/payregister_lnurl/contexts.py",
+      "role": "contract_source",
+      "sha256": "152eb166a5307ab741e2ce1950f60d122566879e1ef734eef3ab07e4a5b798cb"
+    },
+    {
+      "path": "app/domain/payregister_lnurl/errors.py",
+      "role": "contract_source",
+      "sha256": "59423dc3bbfb7e145c36efcf4ba6835495cd9fcbf54b05bef0640ba0a9fbbbe6"
+    },
+    {
+      "path": "app/domain/payregister_lnurl/events.py",
+      "role": "contract_source",
+      "sha256": "d818ebe19d149028b7f0f3cf30ef71b63e024c398464aec887d8e59e55e9f3a3"
+    },
+    {
+      "path": "app/domain/payregister_lnurl/roles.py",
+      "role": "contract_source",
+      "sha256": "4fe3bb7a379f99ab5a1b9bac861885e8ad18a1f16cfd141aad1a3397b51500fd"
+    },
+    {
+      "path": "app/domain/payregister_lnurl/statuses.py",
+      "role": "contract_source",
+      "sha256": "b1ec0b92e38c2fc15bebfcd1c12145c7501ff5940c1294e7b2689797a2a558cf"
+    },
+    {
+      "path": "app/domain/script/__init__.py",
+      "role": "contract_source",
+      "sha256": "0f70d7950af161ce7486cc1c585069236092b447056d9ae8f18eabc841a23f96"
+    },
+    {
+      "path": "app/domain/script/models.py",
+      "role": "contract_source",
+      "sha256": "38a08127b9b5633918437f0bda82156ea16750c29cb0d3e6990cf41e4393d82f"
+    },
+    {
+      "path": "app/domain/signals/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/domain/utxo/__init__.py",
+      "role": "contract_source",
+      "sha256": "be37562f93eb0254ae5d62786dcc03ad177354a3316bdcfc57ee57eadade4c1d"
+    },
+    {
+      "path": "app/domain/utxo/models.py",
+      "role": "contract_source",
+      "sha256": "65b3adc0a5c8a5a94e6f5dfbe4aa314a05e3e64d8ff9ea69c68eba0115ff3ea5"
+    },
+    {
+      "path": "app/domain/wallet_auth/__init__.py",
+      "role": "contract_source",
+      "sha256": "c999d7fe6830acab620de21d1d910b3d7e738da43ab2736367774263cc302130"
+    },
+    {
+      "path": "app/domain/wallet_auth/actions.py",
+      "role": "contract_source",
+      "sha256": "9025271422e61e19cc8221eefc33f64beef3026fc106a31de20dbf1c81aa8095"
+    },
+    {
+      "path": "app/domain/wallet_auth/constants.py",
+      "role": "contract_source",
+      "sha256": "bc7778c69fbfe4acbd2083c14e76740d935cde9ae5bac4224dc04170f299540d"
+    },
+    {
+      "path": "app/domain/wallet_auth/devices.py",
+      "role": "contract_source",
+      "sha256": "4845f87d444b98a696601cee9368df0cceba98b967e29381968f63099b70933b"
+    },
+    {
+      "path": "app/domain/wallet_auth/errors.py",
+      "role": "contract_source",
+      "sha256": "890bb737b06229758c899b084822411b3fa5e4894d31986ed8ebeefd2ed11149"
+    },
+    {
+      "path": "app/domain/wallet_auth/hardware.py",
+      "role": "contract_source",
+      "sha256": "7a11d3397bcae9fefc58a513d9610b951a8acb9ad6e8d0d380e34918f49f71cd"
+    },
+    {
+      "path": "app/domain/wallet_auth/networks.py",
+      "role": "contract_source",
+      "sha256": "63cf20337b09fef7e2f2f793b1d07399606739e1d61e837da3278d499445ff7c"
+    },
+    {
+      "path": "app/domain/wallet_auth/principals.py",
+      "role": "contract_source",
+      "sha256": "ef45813adde0f595076d8ce0b0bf64905f51daa34634c6bb430759790ffd84fe"
+    },
+    {
+      "path": "app/domain/wallet_auth/proofs.py",
+      "role": "contract_source",
+      "sha256": "2782d5992d90674e4381fcde1320b4ed87f5b7df553cf8201cf1ced12fee7665"
+    },
+    {
+      "path": "app/domain/wallet_auth/quorum.py",
+      "role": "contract_source",
+      "sha256": "4bd8caf589d3056180c3708363480bc4616b838e5638448c422c040e24673c85"
+    },
+    {
+      "path": "app/domain/wallet_auth/recovery.py",
+      "role": "contract_source",
+      "sha256": "ea0a035a1df05cb5a37d5d6af542d0c894da2e870a473c4a3a9156d18f363579"
+    },
+    {
+      "path": "app/domain/wallet_auth/risks.py",
+      "role": "contract_source",
+      "sha256": "788ea90d690993a034ed3e4e8bbafe7269772b298149210bd57548035bb14eaa"
+    },
+    {
+      "path": "app/domain/wallet_auth/sessions.py",
+      "role": "contract_source",
+      "sha256": "e00cd9527ead686bbf4353f79e12f3d717eb7d1214851a086dc26fcd15543b86"
+    },
+    {
+      "path": "app/events/__init__.py",
+      "role": "contract_source",
+      "sha256": "172bd8a74c998d4d6fc5d2e4fec1210e3c761f363f519ac95a579571baaa2280"
+    },
+    {
+      "path": "app/events/documentation.py",
+      "role": "contract_source",
+      "sha256": "62a251e167ce5fc48d1859a8e1395ecfb55980e5e747f8885708506a8a02a09c"
+    },
+    {
+      "path": "app/events/event_bus.py",
+      "role": "contract_source",
+      "sha256": "4b7d14851ecd89079c09aa380b25b5cd899d0d2e2adc7639be1e8592b1a05838"
+    },
+    {
+      "path": "app/events/metadata.py",
+      "role": "contract_source",
+      "sha256": "dbba8fd43d9c376a650a4c4689d0063a7592553956e52ab52f1d37e66f9388c5"
+    },
+    {
+      "path": "app/events/payloads.py",
+      "role": "contract_source",
+      "sha256": "4cce45b3338c5304d0e558eaa1085d6fc3940e17c7fadfc193a44855a0c3f717"
+    },
+    {
+      "path": "app/events/publisher.py",
+      "role": "contract_source",
+      "sha256": "077c2c281f3fff3262f75c3f58f63da0a840fddd268cf0cea1b8294feb0ef5b9"
+    },
+    {
+      "path": "app/events/registry.py",
+      "role": "contract_source",
+      "sha256": "256e2fc1689d2c2f041c1621a1662ada05db2565521bb59de96212461b4c003b"
+    },
+    {
+      "path": "app/events/safety.py",
+      "role": "contract_source",
+      "sha256": "bc508923dce171dd58def062f17670d796ae7e69aa35fe4b9185ec8221459710"
+    },
+    {
+      "path": "app/events/serializer.py",
+      "role": "contract_source",
+      "sha256": "79084ba1b94ad2bef34d333fcbfb2d5362d2eae5a380e88991899f80f70ec879"
+    },
+    {
+      "path": "app/events/types.py",
+      "role": "contract_source",
+      "sha256": "68355e716b245d411b8e0be0e501277248f152cac031db16551efd57fa61c1ce"
+    },
+    {
+      "path": "app/integrations/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/integrations/bitcoin/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/integrations/bitcoin/provider.py",
+      "role": "contract_source",
+      "sha256": "a771a9be7bfdafb33e30f3c0c0231b562d95e030dc2b3eff60ae3247ff6be2fe"
+    },
+    {
+      "path": "app/integrations/rss/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/integrations/rss/client.py",
+      "role": "contract_source",
+      "sha256": "11ff62b1c14272439017ad1197f310f914a25c8ae15ff70f11d5669a11e0e285"
+    },
+    {
+      "path": "app/main.py",
+      "role": "contract_source",
+      "sha256": "e072220b1bbc92a263e327d953cd42fb4dbaaa318f96b97bb15b9ef676222005"
+    },
+    {
+      "path": "app/plugins/__init__.py",
+      "role": "contract_source",
+      "sha256": "c405e62cf77d53cd2f3661efa0a81fd289e9b020989c651a564884af7c16a0ab"
+    },
+    {
+      "path": "app/plugins/base.py",
+      "role": "contract_source",
+      "sha256": "baa0cbff541445fa52f6e5529d07ba8119ea55415a37c4e6ed073847c0c75ca9"
+    },
+    {
+      "path": "app/plugins/builtins/__init__.py",
+      "role": "contract_source",
+      "sha256": "47ce0c55e13d3a7ded00e18ff3d0a319b8381fa49863fd2e378462685464c33a"
+    },
+    {
+      "path": "app/plugins/builtins/dashboard_plugin.py",
+      "role": "contract_source",
+      "sha256": "eb7a7de2ff71cd23def14c721bed013a753d9f5bffc1e68ae7b154cfb8812214"
+    },
+    {
+      "path": "app/plugins/builtins/delivery_plugin.py",
+      "role": "contract_source",
+      "sha256": "3085273ecd2db12e8f941cadc536f8ec9281305700f1aa823edf0a38305756b3"
+    },
+    {
+      "path": "app/plugins/builtins/policy_plugin.py",
+      "role": "contract_source",
+      "sha256": "34fad14a3349d677c69258fbb774fff866a0976ee9c3e6fbad6869b60f363c87"
+    },
+    {
+      "path": "app/plugins/builtins/provider_plugin.py",
+      "role": "contract_source",
+      "sha256": "c8c0f8b25adb2eb32aea2e938d87e5af5092eaa460f5713e8853523f69053387"
+    },
+    {
+      "path": "app/plugins/builtins/scoring_plugin.py",
+      "role": "contract_source",
+      "sha256": "8d73edb851fa12ac2d8f33ecf799dabbde9c51cd7487dcc45e02c6dc6f62251e"
+    },
+    {
+      "path": "app/plugins/builtins/treasury_plugin.py",
+      "role": "contract_source",
+      "sha256": "a7714cf97ed9c29691f249a7b5edf1371c4b57eff34a35ac9f2bf5105cf6b1d9"
+    },
+    {
+      "path": "app/plugins/errors.py",
+      "role": "contract_source",
+      "sha256": "abad151d9062dc03792574f6919e80e45f1a90fac155528569f864dad3a0ff03"
+    },
+    {
+      "path": "app/plugins/loader.py",
+      "role": "contract_source",
+      "sha256": "03b3002626ca7767d5ac35762934ff18ad7b96b1c4f5f266af525c0b57921c03"
+    },
+    {
+      "path": "app/plugins/manifest.py",
+      "role": "contract_source",
+      "sha256": "cfaca71f99348c4133be0a0d7ae83c7b28aeab8065c913f95dbf24f6046bd00c"
+    },
+    {
+      "path": "app/plugins/permissions.py",
+      "role": "contract_source",
+      "sha256": "02e70e656b50dcaaf7a97864126a44d183078856f9207207e567043f3dcb0673"
+    },
+    {
+      "path": "app/plugins/registry.py",
+      "role": "contract_source",
+      "sha256": "cedc957187cbedeb8dc0418cee24a78ffdb228e7d4f189f19922bf23df65171e"
+    },
+    {
+      "path": "app/plugins/sandbox.py",
+      "role": "contract_source",
+      "sha256": "b0d85120f495d98175ace462156976dd275e3f49d84a83c98a91119634366c8d"
+    },
+    {
+      "path": "app/repositories/evidence_repository.py",
+      "role": "contract_source",
+      "sha256": "6877e33a7e0b6517b618a1b76734f80e89bf44a5b1e582f799bc9a8553421950"
+    },
+    {
+      "path": "app/repositories/intelligence_signal_repository.py",
+      "role": "contract_source",
+      "sha256": "eb20aeaddc052858c1bb3eb02e9bc2e855ea2504d72ef7bd59e6302e9b5d22f8"
+    },
+    {
+      "path": "app/schemas/__init__.py",
+      "role": "contract_source",
+      "sha256": "28a74e693029cb0e1f378829049a3f19b717fa37acff657c1408416ed21dc6cc"
+    },
+    {
+      "path": "app/schemas/access.py",
+      "role": "contract_source",
+      "sha256": "82e72dffb5e65237459dea2bc4b802d80ab9358e8a5622de07365efe612ebda3"
+    },
+    {
+      "path": "app/schemas/access_integrity.py",
+      "role": "contract_source",
+      "sha256": "7e90e2c1d5f40d4d103d0c2d8004a62e40a0143cef6f1ab3ad47c12c64af50d4"
+    },
+    {
+      "path": "app/schemas/access_intent.py",
+      "role": "contract_source",
+      "sha256": "faa86cb9e32784bc1e20fcde82287bd003511d2bec7f74b94dff7edbfb32be09"
+    },
+    {
+      "path": "app/schemas/admin.py",
+      "role": "contract_source",
+      "sha256": "32140b6871e5c617e46cf9f74c8f33b12933b42b9efe182ae40ad55063dc5615"
+    },
+    {
+      "path": "app/schemas/api_contracts.py",
+      "role": "contract_source",
+      "sha256": "085dd6541a824dbcac9a685bedf5174c8d0f3e0a8f61acaf7db4813fa452c139"
+    },
+    {
+      "path": "app/schemas/auth.py",
+      "role": "contract_source",
+      "sha256": "fa1f8d5de58ffec6e5dee5405d35fb24b0269a7422de291c7c236cd044d07444"
+    },
+    {
+      "path": "app/schemas/base.py",
+      "role": "contract_source",
+      "sha256": "b5d0efa5db9956bf13100c744f467c65463447a0d54782229e01e1c64df4421c"
+    },
+    {
+      "path": "app/schemas/bastion_trace.py",
+      "role": "contract_source",
+      "sha256": "75d3e717095716d79fa64a0538b3b26d7cf87843d9928b4877a3db1dcb1b193a"
+    },
+    {
+      "path": "app/schemas/citadel.py",
+      "role": "contract_source",
+      "sha256": "8cad9c955a1365c46dd7c7a534fe72d8e9e21125550257a6ee15db40fc183b25"
+    },
+    {
+      "path": "app/schemas/common.py",
+      "role": "contract_source",
+      "sha256": "7628e8355ed0fae030f38a4a98f039e6c57113ff11dec8e9d18acfc1bef40b44"
+    },
+    {
+      "path": "app/schemas/crypto_agility.py",
+      "role": "contract_source",
+      "sha256": "4ceaa8487c1df56d48a230338efc19a000c77bde42fcd5b5cf908001acea6182"
+    },
+    {
+      "path": "app/schemas/education.py",
+      "role": "contract_source",
+      "sha256": "305de74819c6cdb7551ab3c6fcad8a900d64c299ce219a25b472493dfa76af75"
+    },
+    {
+      "path": "app/schemas/entities.py",
+      "role": "contract_source",
+      "sha256": "6105404dec40c954aa999e91795ec7d01bf6f1aee84331fb35e554d0ee9cc337"
+    },
+    {
+      "path": "app/schemas/error.py",
+      "role": "contract_source",
+      "sha256": "878d0ea53d1f0757735e7580c1dda59149871e2c9f2a8665b838bd92c8857bc3"
+    },
+    {
+      "path": "app/schemas/factor_contributions.py",
+      "role": "contract_source",
+      "sha256": "279aa27d3bb79eadfb3d73ad1e7a535b0c57a518d3160da554baa1d8706669a4"
+    },
+    {
+      "path": "app/schemas/fees.py",
+      "role": "contract_source",
+      "sha256": "090181ee51a7bc0bff9100857887be67bcddefe2b0212439652d7036c5023133"
+    },
+    {
+      "path": "app/schemas/hardware_wallet.py",
+      "role": "contract_source",
+      "sha256": "87bc1b818f5cc1c92cedc30b07756e1776f3f04bce51cc598936c44b505d43b6"
+    },
+    {
+      "path": "app/schemas/health.py",
+      "role": "contract_source",
+      "sha256": "5c4149006309f70290e322594cf43e58120ae30fd6155c63f95bf8265bdfd77a"
+    },
+    {
+      "path": "app/schemas/historical_similarity.py",
+      "role": "contract_source",
+      "sha256": "edfd89234436a145417e0078cf10994944cf161d620b897daf5a96770280b965"
+    },
+    {
+      "path": "app/schemas/intelligence/candle_attribution.py",
+      "role": "contract_source",
+      "sha256": "c6398617e9e0585cedcfd444cd0ef24b7e98434aaa2f7cc3b0c141924be59b84"
+    },
+    {
+      "path": "app/schemas/intelligence/historical_similarity.py",
+      "role": "contract_source",
+      "sha256": "782a4469740e4d450c4f4d1c0be89dba35a12f5ae3422441c676b6b05fcdbd4b"
+    },
+    {
+      "path": "app/schemas/intelligence/impact_confidence.py",
+      "role": "contract_source",
+      "sha256": "7c7509509d79aa09c882147d420abfc6c9248e7cb722bb6feb48c10cb48ec128"
+    },
+    {
+      "path": "app/schemas/intelligence/narrative_heatmap.py",
+      "role": "contract_source",
+      "sha256": "8eb8add52e576ca963b5c37a4f97524b9280e1b1ccc3ed85c9bf3239c5b3df4b"
+    },
+    {
+      "path": "app/schemas/intelligence_operator.py",
+      "role": "contract_source",
+      "sha256": "5cfac174d9ac3022c3152cbed2864c6b556d2cd0b6d89c25d910627b83dec372"
+    },
+    {
+      "path": "app/schemas/intelligence_signals.py",
+      "role": "contract_source",
+      "sha256": "a58063ed0c48812cd0b0acf9a539a9c63bee4c1fa1656800638fe9fa4ffa240b"
+    },
+    {
+      "path": "app/schemas/intelligence_timeline.py",
+      "role": "contract_source",
+      "sha256": "e0188cf2fd55149b01e8ab3852bf867991657a73be13aee3c13040bb14495604"
+    },
+    {
+      "path": "app/schemas/lnurl.py",
+      "role": "contract_source",
+      "sha256": "be516dfd8d630731ebd376380065580ffac46ed0c250c41a85dfe4a5eb349f71"
+    },
+    {
+      "path": "app/schemas/lnurl_receipt.py",
+      "role": "contract_source",
+      "sha256": "4e144cad4e1c704b154f80d15bbf52469147e6ebf88552b47a12009d8e63539a"
+    },
+    {
+      "path": "app/schemas/lnurl_success_action.py",
+      "role": "contract_source",
+      "sha256": "b5aee7d20d0f6da175cf7ca0f504e77ea10610fe1269e7c6cc5050a5d038dc3c"
+    },
+    {
+      "path": "app/schemas/market_data.py",
+      "role": "contract_source",
+      "sha256": "9c14aa69ebec2a7eb2e30dc40e50f664005b17b898939c295a34fa2a8056f8d4"
+    },
+    {
+      "path": "app/schemas/market_time_machine_web.py",
+      "role": "contract_source",
+      "sha256": "d1832ea3402351c4e5a379886bd9d8657e729709bdb90d545415aed79ef8e1a7"
+    },
+    {
+      "path": "app/schemas/merchant_lightning_address.py",
+      "role": "contract_source",
+      "sha256": "3336316604e7cd9b53aa7944822078604166a27af8819a9f08a675cdd9ac0ad6"
+    },
+    {
+      "path": "app/schemas/news.py",
+      "role": "contract_source",
+      "sha256": "957cf9de78689730a17e34ded080e96e6b427c8127d8e04613aeacbb2921db9b"
+    },
+    {
+      "path": "app/schemas/news_scoring.py",
+      "role": "contract_source",
+      "sha256": "caaa12461f02ecc749bcb4b8ffa288614e8fc81f8eaf336428c83367d7823213"
+    },
+    {
+      "path": "app/schemas/observability.py",
+      "role": "contract_source",
+      "sha256": "6716196d8f13553dd14d61c182aa54b478c24de6e0b3fb2233dc5c9414959651"
+    },
+    {
+      "path": "app/schemas/offline_access.py",
+      "role": "contract_source",
+      "sha256": "64071c5823f6e69f56dabddea94ad3881e61378553469384eb1ec8d07f1dc814"
+    },
+    {
+      "path": "app/schemas/onchain.py",
+      "role": "contract_source",
+      "sha256": "0df8c12c080367ab6582fe933be06b537f7de77140c7d18e2bfef65bee2ebe77"
+    },
+    {
+      "path": "app/schemas/operations.py",
+      "role": "contract_source",
+      "sha256": "2c88029678954488d437f096298389a1a9abb44bac12642cad89cc20db7ed97a"
+    },
+    {
+      "path": "app/schemas/payregister_lnurl.py",
+      "role": "contract_source",
+      "sha256": "71b71d8f65f1f7e4ff44f2d970780b8480866fd4fc7102b62b5f1a8c28dee97f"
+    },
+    {
+      "path": "app/schemas/policy.py",
+      "role": "contract_source",
+      "sha256": "d44aab6915afde26e5a30be77c90fd6cf1bd038cc9287e1d5eae34201e144e44"
+    },
+    {
+      "path": "app/schemas/privacy.py",
+      "role": "contract_source",
+      "sha256": "c1e0017205fb7062cd07036246ea0a06b1b245b0321df2f73befc26088c1df86"
+    },
+    {
+      "path": "app/schemas/public_site.py",
+      "role": "contract_source",
+      "sha256": "c56223ca8650f850aca94d7f4e04c67c4f8ea6e13cc475192885eda8f9171670"
+    },
+    {
+      "path": "app/schemas/recommendation.py",
+      "role": "contract_source",
+      "sha256": "a80bf8ec0635433aabd9ebf015a6392df24afe673bf53386abd96f5dad584960"
+    },
+    {
+      "path": "app/schemas/script.py",
+      "role": "contract_source",
+      "sha256": "59ecf663cdaf5f1c4fe75182fa1cd4c3d67be9e9ee121230ad75cacf5dd3bd18"
+    },
+    {
+      "path": "app/schemas/sentiment.py",
+      "role": "contract_source",
+      "sha256": "82c722b903d083408eb4f974873ef98d602d34d1548fc3d2ffb1012e4d270538"
+    },
+    {
+      "path": "app/schemas/signal.py",
+      "role": "contract_source",
+      "sha256": "f3bd8310bb9294b0f916f048c46cce308c6ac99e161f1f20efcd74e1b839c8af"
+    },
+    {
+      "path": "app/schemas/storage_artifact.py",
+      "role": "contract_source",
+      "sha256": "4671f1bb13e5ec1c63afd10e130b46977b1760d41b4e7cb019a9ac71e3ea575b"
+    },
+    {
+      "path": "app/schemas/treasury.py",
+      "role": "contract_source",
+      "sha256": "ab60bd70d73140a695c5af1e22ab83a53c221251dcde7ddb710287badc8ba392"
+    },
+    {
+      "path": "app/schemas/user.py",
+      "role": "contract_source",
+      "sha256": "df3ec370a4b7aef27cb94edf515511bec9418dd7f84fc33156c140dd173aa266"
+    },
+    {
+      "path": "app/schemas/utxo.py",
+      "role": "contract_source",
+      "sha256": "cb12ed78a6fe3cf3344ccd3c1cd06af73b7c4cc438a88ce83e761be91015032a"
+    },
+    {
+      "path": "app/schemas/wallet.py",
+      "role": "contract_source",
+      "sha256": "ec0019aba08f346d58682838f3f0eab25a74a7f72951b87c14d3b8a5a653d8d9"
+    },
+    {
+      "path": "app/schemas/wallet_auth.py",
+      "role": "contract_source",
+      "sha256": "7c73830960bd74cc50dee86ec3be32e6d58e7c99f023fede6e223fc8ec966a6f"
+    },
+    {
+      "path": "app/schemas/webhooks.py",
+      "role": "contract_source",
+      "sha256": "6a4f713ad58d85c53824f05f5e89dfafabe369b2828e28d6b61a7dc8b93f8248"
+    },
+    {
+      "path": "app/schemas/websocket.py",
+      "role": "contract_source",
+      "sha256": "e10ec9ad30206d0cd945375a86946bc0762ee135376367d5762e11fcbef3d666"
+    },
+    {
+      "path": "app/services/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/access/__init__.py",
+      "role": "contract_source",
+      "sha256": "242fffcfd45413d2f6b05fb65a91ad92fc8be92ff67e03c1f3c83b51f3fe4ca5"
+    },
+    {
+      "path": "app/services/access/access_integrity.py",
+      "role": "contract_source",
+      "sha256": "26147722350fcf843d8bbb203b3a01244b3cd8e871251228e121cadd5982018b"
+    },
+    {
+      "path": "app/services/access/audit_chain.py",
+      "role": "contract_source",
+      "sha256": "99cf3adcac4fe4ad32854b68f4f45ed12b29dfe4125f4303116c12d6a3368afd"
+    },
+    {
+      "path": "app/services/access/certificate_issuer.py",
+      "role": "contract_source",
+      "sha256": "2525577751e505cb60236b4d7f659ddd26056401945c1a8d3344a856993ab9b3"
+    },
+    {
+      "path": "app/services/access/challenge_service.py",
+      "role": "contract_source",
+      "sha256": "04ea02166604390bf722cac8833e1dd8f83c3b1d6357b5c7f6ad61c91912bf46"
+    },
+    {
+      "path": "app/services/access/child_api_keys.py",
+      "role": "contract_source",
+      "sha256": "182aca2f02e89a344cc6f242346178d5c629bce4bbc54c5f2c1fcca59613c82f"
+    },
+    {
+      "path": "app/services/access/crypto/__init__.py",
+      "role": "contract_source",
+      "sha256": "2b10c85117909ea610ba9c38c0abfb467969d39344e196893911024aaaa9d42c"
+    },
+    {
+      "path": "app/services/access/crypto/algorithms.py",
+      "role": "contract_source",
+      "sha256": "41ee0c90aafdae3ea865ab0617ebe626330e3fb449bbae9b83231425ef5d3c98"
+    },
+    {
+      "path": "app/services/access/crypto/crypto_agility.py",
+      "role": "contract_source",
+      "sha256": "5bd53bb7419b2e6cdfd2facf6c9280651ddaa25196a1796be4ec94284d66832d"
+    },
+    {
+      "path": "app/services/access/crypto/exceptions.py",
+      "role": "contract_source",
+      "sha256": "a6ff8cba0ddf8d5ae87a376b2fb18f94ad570db288836015515da99dfdc58099"
+    },
+    {
+      "path": "app/services/access/crypto/hashing.py",
+      "role": "contract_source",
+      "sha256": "59785b97da6d84bf1c7f6a4c753a9b757eac719d87e206de63777f6f916bb2a1"
+    },
+    {
+      "path": "app/services/access/crypto/issuer_envelope.py",
+      "role": "contract_source",
+      "sha256": "2cecf46041a1bac57ccb38a66bd8b162f48bd47abba5202b515a05709e476ecd"
+    },
+    {
+      "path": "app/services/access/crypto/key_loading.py",
+      "role": "contract_source",
+      "sha256": "9c9151700a8c6ef32ff6d1d901c05e3149aba4d9996c21796e80a557940792fb"
+    },
+    {
+      "path": "app/services/access/crypto/key_registry.py",
+      "role": "contract_source",
+      "sha256": "c203303e4665066de1abc9b5570bd3394b2160b55053bd499873e36cf604100b"
+    },
+    {
+      "path": "app/services/access/crypto/migration_policy.py",
+      "role": "contract_source",
+      "sha256": "0a0d646e0eb8bac66b12e84a8a68e5f338f1e64450899e309ceeb090747dad05"
+    },
+    {
+      "path": "app/services/access/crypto/signatures.py",
+      "role": "contract_source",
+      "sha256": "e420eeb07e7ff5a19638414984a1e3f47fb90f19ebf21dcfb70c158a8da5a6ec"
+    },
+    {
+      "path": "app/services/access/delegated_passes.py",
+      "role": "contract_source",
+      "sha256": "8d4cc1eddc0fff2ea9750a16a8de4952c4778f6df83c3c1435620f9ecc6971d9"
+    },
+    {
+      "path": "app/services/access/entitlement_service.py",
+      "role": "contract_source",
+      "sha256": "f83ba1f11aa632021de8ac1e6f53a8b306ca9e0a2cf2fb901924378ff725c268"
+    },
+    {
+      "path": "app/services/access/human_intent.py",
+      "role": "contract_source",
+      "sha256": "bb8e1faa02ac6784d4af8c4da455326ff097880f2e7da4e44710bf9159ea03fc"
+    },
+    {
+      "path": "app/services/access/key_constraints.py",
+      "role": "contract_source",
+      "sha256": "d55c00c3b1d42734c88214e54559ff905e5dc37f98719e79a0292a19ec0738a4"
+    },
+    {
+      "path": "app/services/access/key_redaction.py",
+      "role": "contract_source",
+      "sha256": "c8298132911ecb9bf672589fe21f57ade471d6d680ab3a6650b8761162af93de"
+    },
+    {
+      "path": "app/services/access/lockdown_service.py",
+      "role": "contract_source",
+      "sha256": "3ffe7f12ab24ef94626c20b19a7409da423a8091643ff23bf8fabe317d6161c3"
+    },
+    {
+      "path": "app/services/access/metric_catalog.py",
+      "role": "contract_source",
+      "sha256": "f72336a21e68a6a3379e1a969d8a5d69d1d76c8ac79d74b4c5e687cc30a44d2a"
+    },
+    {
+      "path": "app/services/access/metric_costs.py",
+      "role": "contract_source",
+      "sha256": "f55cb437b02a77df2019aed60aaff8394940197cabdb7bd901fe470303996695"
+    },
+    {
+      "path": "app/services/access/observability.py",
+      "role": "contract_source",
+      "sha256": "ba8925f694375da9dd6ee8625e4ad57978a78628561a06646a613c6a6c36cda8"
+    },
+    {
+      "path": "app/services/access/observability_labels.py",
+      "role": "contract_source",
+      "sha256": "8ca4629a1b5bd3e06be40ca2d05316a25ba96fd472ff4442a8dbef5f85c45213"
+    },
+    {
+      "path": "app/services/access/offline_pack_verifier.py",
+      "role": "contract_source",
+      "sha256": "a2bf5e7dba2ef253e0e2b9c899ab9cfaed1794ba14280ec9d55e25913631057a"
+    },
+    {
+      "path": "app/services/access/offline_policy.py",
+      "role": "contract_source",
+      "sha256": "ca91d59ac9677b0db5881a45d2b19219c2ccb81a912b28909bc800045e4c9cb5"
+    },
+    {
+      "path": "app/services/access/offline_validity_pack.py",
+      "role": "contract_source",
+      "sha256": "a31576b1df25d8878e6bbf2c3ca3467ddc78a3d0c6174365e3ff536e75840a4c"
+    },
+    {
+      "path": "app/services/access/pass_generator.py",
+      "role": "contract_source",
+      "sha256": "93b32982b495b1bea46e98c430d5ba42a9c9a32c816f58ba66492f2a8181cb78"
+    },
+    {
+      "path": "app/services/access/payment_intent_service.py",
+      "role": "contract_source",
+      "sha256": "64ef9ffe15a7bc4957a1dde32fcb345c8b5208523bd3c61a83b5634076ab4c4b"
+    },
+    {
+      "path": "app/services/access/payments/__init__.py",
+      "role": "contract_source",
+      "sha256": "cea25d1bd19e34474e5d2e7d8d7e02ca691a444abe0b852239761c2878ffd68c"
+    },
+    {
+      "path": "app/services/access/payments/base.py",
+      "role": "contract_source",
+      "sha256": "14d41d1c62ebdd25259b931c888ee6ac3b2b954c9ad2f14f75977d70f2384a4d"
+    },
+    {
+      "path": "app/services/access/payments/btcpay.py",
+      "role": "contract_source",
+      "sha256": "96c564d98eec0e5c05d378d256b0b243a94e08e40d96b5d67256166d4b09b4a4"
+    },
+    {
+      "path": "app/services/access/payments/manual.py",
+      "role": "contract_source",
+      "sha256": "50a1153bda3ca9feafe524dfbf26f8a20b23a472157b36ef683e0a34e1587312"
+    },
+    {
+      "path": "app/services/access/payments/redaction.py",
+      "role": "contract_source",
+      "sha256": "e8e91a6ababb43214f3ef1e92aa99b4c598bb0a6ad083d7a06ff95c662338bc4"
+    },
+    {
+      "path": "app/services/access/plan_entitlements.py",
+      "role": "contract_source",
+      "sha256": "4c82415a2241c5003239079a09f354eae0bd57653171dbf97f50b3cd8e36d150"
+    },
+    {
+      "path": "app/services/access/policy_context.py",
+      "role": "contract_source",
+      "sha256": "7ee3800b94328270053095e53a3374dafa9c825a043e0ce2859c7d6952985e79"
+    },
+    {
+      "path": "app/services/access/policy_engine.py",
+      "role": "contract_source",
+      "sha256": "0000086c6d3ee032d2f4920a3754364af2abfbc5237af2c3242782c1985efa7a"
+    },
+    {
+      "path": "app/services/access/policy_reasons.py",
+      "role": "contract_source",
+      "sha256": "07c85c0dad29468b5f78ebd8f72eb8aae7800baa99f0622db4d96228380ebfdc"
+    },
+    {
+      "path": "app/services/access/pop/__init__.py",
+      "role": "contract_source",
+      "sha256": "5f57ead9cf5eb7c6b1e15e878b0f2128b44bab99b8ad61894c28f8ec642553d9"
+    },
+    {
+      "path": "app/services/access/pop/canonical_request.py",
+      "role": "contract_source",
+      "sha256": "627042a851bb7026f8abce4fff8624d5379073d80fca7cb5cedf05079a70b361"
+    },
+    {
+      "path": "app/services/access/principal_certificate_bridge.py",
+      "role": "contract_source",
+      "sha256": "4e81b6e3726f1f5e7d868f4900dd2e05f821c613c0734fd7b05d8201f20cd121"
+    },
+    {
+      "path": "app/services/access/recovery_policy.py",
+      "role": "contract_source",
+      "sha256": "4ff3685958d1ec033cca65e51fcd68cd45c827dd2de59404474eaaf0ac416adb"
+    },
+    {
+      "path": "app/services/access/recovery_quorum.py",
+      "role": "contract_source",
+      "sha256": "48012a10c016ef41d6063d018e9eef869fb824f3163cb16fa952f88862800ede"
+    },
+    {
+      "path": "app/services/access/recovery_seed.py",
+      "role": "contract_source",
+      "sha256": "30c5847216c75325440fadbd5f4bf26aab0e9cdfec885397501eb5f37adf948a"
+    },
+    {
+      "path": "app/services/access/recovery_service.py",
+      "role": "contract_source",
+      "sha256": "424c286d6802efd7c2bc2ceaa78a9e3d50f0820fac585d724240ab0fb715016b"
+    },
+    {
+      "path": "app/services/access/request_verifier.py",
+      "role": "contract_source",
+      "sha256": "5a2c5b302be0cf9576c5cab5d5d1d42eee0cc364e4606a9ba427e77faba0cb3f"
+    },
+    {
+      "path": "app/services/access/revocation_registry.py",
+      "role": "contract_source",
+      "sha256": "34791ed8d4bd5aa01202c09546c505801fc0e74152a2555a13bfa4669b28b0c2"
+    },
+    {
+      "path": "app/services/access/session_service.py",
+      "role": "contract_source",
+      "sha256": "a79ce9f128dd1a136f6e2590d4f1125e7a824d212a00a1083f7fa5af5723b7d3"
+    },
+    {
+      "path": "app/services/access/wallet_entitlement_service.py",
+      "role": "contract_source",
+      "sha256": "a450c55286eeef0319e0a7a553f5c41bf9cba95d320bf2b3128a3ea1de6bc978"
+    },
+    {
+      "path": "app/services/admin/audit_service.py",
+      "role": "contract_source",
+      "sha256": "9cf1752907969a60e33afc53b212b9865eea3d126544953f8c48a4ac3c0eadeb"
+    },
+    {
+      "path": "app/services/admin/job_service.py",
+      "role": "contract_source",
+      "sha256": "6621ee5858bb8d0df3c1466263fd20ec7b4506c86e443875aa6e757c564d5b51"
+    },
+    {
+      "path": "app/services/agentic/recommendation_service.py",
+      "role": "contract_source",
+      "sha256": "5d3b1ce3d2de95250f0e654fc244771d761e830bfcab82d1b30e2f29bf3e0169"
+    },
+    {
+      "path": "app/services/alerts/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/alerts/signal_engine.py",
+      "role": "contract_source",
+      "sha256": "c4646adc379832ca57e4a84014d6f03d5f8fed35a375fe059f3fc8ce78e2d475"
+    },
+    {
+      "path": "app/services/analytics/fee_service.py",
+      "role": "contract_source",
+      "sha256": "55db9c800d78965f7b3c35e42cd5b48a31995d4ddade9c6ae5472c7c6b577c8b"
+    },
+    {
+      "path": "app/services/auth/auth_service.py",
+      "role": "contract_source",
+      "sha256": "b76ab54ff0032a67ed2fef132c7d515be4e09ee7cdc4185608e40401a51d007c"
+    },
+    {
+      "path": "app/services/bastion_trace/__init__.py",
+      "role": "contract_source",
+      "sha256": "30c51a9dd019ced932bf4ae1d7c6f86fffca19fd41425b9bf850ff109e48085f"
+    },
+    {
+      "path": "app/services/bastion_trace/address_reuse.py",
+      "role": "contract_source",
+      "sha256": "7eec1789d4193cbdb58c941c0355203b80346707148a8aa9e4a865d2afee9f0d"
+    },
+    {
+      "path": "app/services/bastion_trace/batch_screening.py",
+      "role": "contract_source",
+      "sha256": "f66ef3a21d2e00fc78b85710d9e03a394ecd34b239f3cac331ca71aef3811b33"
+    },
+    {
+      "path": "app/services/bastion_trace/business_events.py",
+      "role": "contract_source",
+      "sha256": "0396bd95542697971dd24f59bca438d4e87e9e6f21bb92552ac5aa852b5a9721"
+    },
+    {
+      "path": "app/services/bastion_trace/business_exports.py",
+      "role": "contract_source",
+      "sha256": "76abeca7fefe6dea373341117ab6b94e542908f40503401592d640afde6a38ef"
+    },
+    {
+      "path": "app/services/bastion_trace/business_policy_profiles.py",
+      "role": "contract_source",
+      "sha256": "272b24aab4c2ba4177374aa60ea526497af9f41e7fdc047850789c7b963caa42"
+    },
+    {
+      "path": "app/services/bastion_trace/business_proof_packet.py",
+      "role": "contract_source",
+      "sha256": "0100bf12618ad6ade6d99f64f87a76cd00f26c0f55d547e531e8628fed630301"
+    },
+    {
+      "path": "app/services/bastion_trace/business_tier.py",
+      "role": "contract_source",
+      "sha256": "8426ca24ebe2cee64aa4efe97612dc31d80df0ec20933dd3ae95b094444145d5"
+    },
+    {
+      "path": "app/services/bastion_trace/confidence.py",
+      "role": "contract_source",
+      "sha256": "3e61734445fd835e4c22121aec7c3303d79e932da51349f75c29670a66067113"
+    },
+    {
+      "path": "app/services/bastion_trace/consolidation_risk.py",
+      "role": "contract_source",
+      "sha256": "793f81b5b78379ca7dc4a12fb486e013c7e6a7b59fee68141e14562ca4cdb36d"
+    },
+    {
+      "path": "app/services/bastion_trace/context_sensitivity.py",
+      "role": "contract_source",
+      "sha256": "92ceb1d3168284fa422133fb92aad78de32d3a7bb094f2581fd40cfedc71f235"
+    },
+    {
+      "path": "app/services/bastion_trace/counterparty_lens.py",
+      "role": "contract_source",
+      "sha256": "293e3a6d25150866779a1d7d9f74f6786520a7231e0885458142e74f928a17b7"
+    },
+    {
+      "path": "app/services/bastion_trace/destination_review.py",
+      "role": "contract_source",
+      "sha256": "aebd9ff4bd4004ff60e672b8b58eff82d5562e61f8f232c2c5bd497572e8e3b7"
+    },
+    {
+      "path": "app/services/bastion_trace/dust_radar.py",
+      "role": "contract_source",
+      "sha256": "3ebd1597391a3dfb18de086c052a4f6faf1da103d3bf514a3a8df128a1161911"
+    },
+    {
+      "path": "app/services/bastion_trace/enterprise_proof_packet.py",
+      "role": "contract_source",
+      "sha256": "4485b0ef74a235b35ca62fb39666eb77731d062096a845c2e1ddda3879e2f72b"
+    },
+    {
+      "path": "app/services/bastion_trace/enterprise_rbac.py",
+      "role": "contract_source",
+      "sha256": "a08f2cbed27b2428b5916bb73a3fef3d6774bc340ff89d3663c75a17a735ed73"
+    },
+    {
+      "path": "app/services/bastion_trace/enterprise_tier.py",
+      "role": "contract_source",
+      "sha256": "5ffe78c056fe29d50a6db2d0266a6d5a9c4769e591bc0fe2fd10e65a638853cf"
+    },
+    {
+      "path": "app/services/bastion_trace/evidence_builder.py",
+      "role": "contract_source",
+      "sha256": "2f3a50ad734251c68d83c7103a6e609c48cb5e9a2e2e23a3888c0fa4237037f8"
+    },
+    {
+      "path": "app/services/bastion_trace/evidence_governance.py",
+      "role": "contract_source",
+      "sha256": "836b4ce56bbc990002d60decdcd91a3283a6df881a5d6cb1eee2b8aa06878b6f"
+    },
+    {
+      "path": "app/services/bastion_trace/evidence_independence.py",
+      "role": "contract_source",
+      "sha256": "61b4c2de9d63f0feadf36893811e4ed2c8315c52440ff8917134c893874848c0"
+    },
+    {
+      "path": "app/services/bastion_trace/false_positive_guard.py",
+      "role": "contract_source",
+      "sha256": "7c4a3e99fd12dbc023bdd99ad8bfe550f58f4b462c85b1dafdef59ad47952d76"
+    },
+    {
+      "path": "app/services/bastion_trace/immutable_audit_log.py",
+      "role": "contract_source",
+      "sha256": "3c7c01adbf0af250278292d6e0a5b2bf4f6e12962a2a742587bbdb23c09f619a"
+    },
+    {
+      "path": "app/services/bastion_trace/integrations/__init__.py",
+      "role": "contract_source",
+      "sha256": "6c23d7133d099dfaedd94e540ec4b52fca3de27d7dd667182f6a6f76f9131164"
+    },
+    {
+      "path": "app/services/bastion_trace/integrations/citadel_bridge.py",
+      "role": "contract_source",
+      "sha256": "714574848a3710c722f0685e3498d8126261738af6a2ec864539cfcf583b11e6"
+    },
+    {
+      "path": "app/services/bastion_trace/integrations/evidence_bridge.py",
+      "role": "contract_source",
+      "sha256": "70790fd12866b1adf331a871ee427faf315086c9af8989f08c5f8720e404c5cc"
+    },
+    {
+      "path": "app/services/bastion_trace/integrations/operations_bridge.py",
+      "role": "contract_source",
+      "sha256": "d66ba663e17f98babddfede1b4493bfb8d8b03570b54b2c832a9ec46c9748e52"
+    },
+    {
+      "path": "app/services/bastion_trace/integrations/policy_bridge.py",
+      "role": "contract_source",
+      "sha256": "3c87ebee780cb55a19d1afdd24125a2ffc2d97161cfa52fbff36bf178bb162a0"
+    },
+    {
+      "path": "app/services/bastion_trace/integrations/register_bridge.py",
+      "role": "contract_source",
+      "sha256": "d4fe285e657e6067e9c483767c95c45e2f7124388ba1f67dcdb0ac8134900a08"
+    },
+    {
+      "path": "app/services/bastion_trace/integrations/treasury_bridge.py",
+      "role": "contract_source",
+      "sha256": "5cb17c06eb4a99d3a72077cc68f66acf363d81a5aeb8541767e9147b241ab912"
+    },
+    {
+      "path": "app/services/bastion_trace/legal_hold.py",
+      "role": "contract_source",
+      "sha256": "ece58ea055d2c5065bcfba3ce1d303457a1dc9766ed6c3a1ad9a0d6d3b4a5c1c"
+    },
+    {
+      "path": "app/services/bastion_trace/lite_explainer.py",
+      "role": "contract_source",
+      "sha256": "0a8e3d7de65fe9671231c610ccdb2509bc89fedec749e6c33326475fc224fb42"
+    },
+    {
+      "path": "app/services/bastion_trace/lite_report.py",
+      "role": "contract_source",
+      "sha256": "84e032e1f562729a5b15d47f8c12ac702201f8807adfeea2386d7904066aff77"
+    },
+    {
+      "path": "app/services/bastion_trace/operator_notes.py",
+      "role": "contract_source",
+      "sha256": "19519ba40eeadf580f44be0569e5733edd3bb21c0110bc321bfae05ebf57c3ed"
+    },
+    {
+      "path": "app/services/bastion_trace/origin_classifier.py",
+      "role": "contract_source",
+      "sha256": "19c541b60a35760c17c6540bcb73b148a44629118d9fefac80b20beb2000468e"
+    },
+    {
+      "path": "app/services/bastion_trace/origin_passport.py",
+      "role": "contract_source",
+      "sha256": "84457cef50d932071a232e936a51daceee0a744a528d5606e39a8fc07ac88cbf"
+    },
+    {
+      "path": "app/services/bastion_trace/payment_context_risk.py",
+      "role": "contract_source",
+      "sha256": "a6f8015a536f3b9a8d88aafa2f00fac22018acc30003874e78708f059358bc0b"
+    },
+    {
+      "path": "app/services/bastion_trace/payment_intent_preview.py",
+      "role": "contract_source",
+      "sha256": "b42b78899151f2f09b09605d286c68a5564448f423f76c4b9dfc6ba51dfb0443"
+    },
+    {
+      "path": "app/services/bastion_trace/privacy_guidance.py",
+      "role": "contract_source",
+      "sha256": "2ad57cd47d1ed0ae81676b195a4932802f5dda7bc4c543b8329b416e42958ad9"
+    },
+    {
+      "path": "app/services/bastion_trace/privacy_shield.py",
+      "role": "contract_source",
+      "sha256": "a27db368130e37ea02f0d9ea38000302f418467804c269f925317ecd63c91c85"
+    },
+    {
+      "path": "app/services/bastion_trace/provider_disagreement.py",
+      "role": "contract_source",
+      "sha256": "453529c057850349a7a6fe7da23140db09e5cecb3eaffebc459f8295cedf27bb"
+    },
+    {
+      "path": "app/services/bastion_trace/public_safety.py",
+      "role": "contract_source",
+      "sha256": "5f23e9cbcd4e6d6ccb8021e4a813e58e60a1b60b29e319410c6ea633b3faf8da"
+    },
+    {
+      "path": "app/services/bastion_trace/reason_codes.py",
+      "role": "contract_source",
+      "sha256": "b84f7a419a4470cc29e9714f47771ecc038b69f181d2ccc827de225b554d92dc"
+    },
+    {
+      "path": "app/services/bastion_trace/retention_policy.py",
+      "role": "contract_source",
+      "sha256": "7051c084bfcd19b9f027ee5c0478998a1b719acd65ef3972c168e89c57b217c9"
+    },
+    {
+      "path": "app/services/bastion_trace/review_desk.py",
+      "role": "contract_source",
+      "sha256": "75c1d25429e4c99bfa0d6816c8bb44ce41ed361dbc9fa654f4ef8ec4e4f07a8b"
+    },
+    {
+      "path": "app/services/bastion_trace/risk_source_registry.py",
+      "role": "contract_source",
+      "sha256": "dc5071c50f8d1d0ce59656ca07fc44989470e5231be5fb8dd1760047b3512e29"
+    },
+    {
+      "path": "app/services/bastion_trace/safe_to_send.py",
+      "role": "contract_source",
+      "sha256": "bc78e296ec44a0bbe34503da39d3e2a3d3bc14ded556a4c311961a7b0cddd4ec"
+    },
+    {
+      "path": "app/services/bastion_trace/scoring.py",
+      "role": "contract_source",
+      "sha256": "1616ccfa8596aeb77e1e5bc0268067fea38bce3b8c773596964a47f73a7e62b1"
+    },
+    {
+      "path": "app/services/bastion_trace/siem_hooks.py",
+      "role": "contract_source",
+      "sha256": "9797ac404485d1beaf8906c84b17059fc39ebd9f24afd44ebf7b3a1ceb51cde8"
+    },
+    {
+      "path": "app/services/bastion_trace/source_freshness.py",
+      "role": "contract_source",
+      "sha256": "a1dee496c3381aa823e00c1e14f473b15354dc5288ff0c2ac613d6e164eeb02b"
+    },
+    {
+      "path": "app/services/bastion_trace/sso_placeholder.py",
+      "role": "contract_source",
+      "sha256": "ea5a3991e43fe6c2f2af108b50c13952629ebbe54b9d463fb865c1f5309e710b"
+    },
+    {
+      "path": "app/services/bastion_trace/telegram_commands.py",
+      "role": "contract_source",
+      "sha256": "d4d833f6d2cbc316ea9c8a01ca4a705c5c51f871a714d8812a9c9234521f957a"
+    },
+    {
+      "path": "app/services/bastion_trace/toxic_change.py",
+      "role": "contract_source",
+      "sha256": "134671e6d93b077f461d324c243872d16a32f8b7ae8816955c94dc1ff4e57fc8"
+    },
+    {
+      "path": "app/services/bastion_trace/trace_alerts.py",
+      "role": "contract_source",
+      "sha256": "7871b4d2309a20ea94e6f60309dd0f63cd8d070c08f8be610889afd54dacae76"
+    },
+    {
+      "path": "app/services/bastion_trace/trace_dna.py",
+      "role": "contract_source",
+      "sha256": "d7873242a6ee5d7eb5a8fa47214d5403776a47fc9655af3a7e71847af1bd8f54"
+    },
+    {
+      "path": "app/services/bastion_trace/trace_metrics.py",
+      "role": "contract_source",
+      "sha256": "d15fc90ec818d0540c560a262327e1f78866800d81bda30bfcbf1564ade9e5ca"
+    },
+    {
+      "path": "app/services/bastion_trace/trace_runtime_events.py",
+      "role": "contract_source",
+      "sha256": "7f7726db610e17c6f84d6cf79cb5b46d02d9da898788f2f49dbb5b0559b105ee"
+    },
+    {
+      "path": "app/services/bastion_trace/trace_service.py",
+      "role": "contract_source",
+      "sha256": "4892f179ff9d7e16658225c4c15729c54e1c67889e4a2c1aa8443fcf65287dd2"
+    },
+    {
+      "path": "app/services/bastion_trace/trace_status.py",
+      "role": "contract_source",
+      "sha256": "b6df905f50f6fd03d1c4fd5348422096938d18a0556e02fb57729a23a2af69e6"
+    },
+    {
+      "path": "app/services/bastion_trace/utxo_hygiene.py",
+      "role": "contract_source",
+      "sha256": "4d973a563b76005eb72e413eb3b28549f58ba7498144daa0660f35ff3f18ab49"
+    },
+    {
+      "path": "app/services/blockchain/__init__.py",
+      "role": "contract_source",
+      "sha256": "f2aa92647c749c3e9c46bb2cbbc8175a6e95eaf70312a46a5d0b82fcf3b23682"
+    },
+    {
+      "path": "app/services/blockchain/chain_state_service.py",
+      "role": "contract_source",
+      "sha256": "44da74e9a7b0d29dcea782faa4ac8928430957e37bdae65f67a8f36c169fd79e"
+    },
+    {
+      "path": "app/services/citadel/__init__.py",
+      "role": "contract_source",
+      "sha256": "cbfb6a6e0ddb921e658f61c9c3c25c744125d6a602cc22026434e3998c207835"
+    },
+    {
+      "path": "app/services/citadel/citadel_assessment_service.py",
+      "role": "contract_source",
+      "sha256": "590823d1c60b1c316550d8f3aae71f7451f0d96845c01cb8ed1f6cd58699dbd8"
+    },
+    {
+      "path": "app/services/citadel/disaster_simulation_service.py",
+      "role": "contract_source",
+      "sha256": "0081612caca6b41d8d15135eb18f53c64ba430df1ba766cb57ff7582b7cc927b"
+    },
+    {
+      "path": "app/services/citadel/inheritance_verification_service.py",
+      "role": "contract_source",
+      "sha256": "58ee3b9bd5fd09614094743a94207cd55740d15890cdd1898acef35a1ccc30a8"
+    },
+    {
+      "path": "app/services/citadel/policy_maturity_service.py",
+      "role": "contract_source",
+      "sha256": "14abb12f744793e638b9ec2769c67578b81c1526ec026c9b9d5138c546eb59c8"
+    },
+    {
+      "path": "app/services/citadel/recovery_artifact_service.py",
+      "role": "contract_source",
+      "sha256": "4d916d8823e2e73964810325b747e53afc4771249fd25db13dbbb18ac8604b9c"
+    },
+    {
+      "path": "app/services/citadel/recovery_readiness_engine.py",
+      "role": "contract_source",
+      "sha256": "b46e3d3890fa14d938c5354bb7eeb2bbe871a8fab8db80cab5c1e8a818ca750a"
+    },
+    {
+      "path": "app/services/citadel/repair_plan_service.py",
+      "role": "contract_source",
+      "sha256": "7ac8996b9c33a23059e1678a77fb868594d0129ccec223dc3d412c4fba1e2426"
+    },
+    {
+      "path": "app/services/citadel/sovereignty_graph_service.py",
+      "role": "contract_source",
+      "sha256": "67da8cae224b18343879d7d3715cac3a896fe4cc50e949b48ca7505c556e03ce"
+    },
+    {
+      "path": "app/services/delivery/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/delivery/publish_service.py",
+      "role": "contract_source",
+      "sha256": "2833dfc24576b2ec214646fa8f110eebb2586fb0778b65196b2b6cbab5475286"
+    },
+    {
+      "path": "app/services/delivery/telegram_delivery.py",
+      "role": "contract_source",
+      "sha256": "c00a02f1ba2229d3417bc40066694799e78cf9c2f4692b5def5790145a8a044d"
+    },
+    {
+      "path": "app/services/education/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/education/education_service.py",
+      "role": "contract_source",
+      "sha256": "04bee666839a2f8941d35519cca350fa454b4cdd369c43422cb06aa473a9e181"
+    },
+    {
+      "path": "app/services/events/__init__.py",
+      "role": "contract_source",
+      "sha256": "c2263ba5a656e6cac00020d17886f4b95f4d3947bd2c4d8c1c0cb87083b35306"
+    },
+    {
+      "path": "app/services/events/domain_event_publisher.py",
+      "role": "contract_source",
+      "sha256": "797a290737373c2df4e2c5d67b65ada1fa92aba7a26ca6077b09977952540170"
+    },
+    {
+      "path": "app/services/events/event_bus_service.py",
+      "role": "contract_source",
+      "sha256": "4a32d986e5878a01c1b4935a0af9ae49363a0a53df1fa6ac33e8327cd97e3bd8"
+    },
+    {
+      "path": "app/services/events/event_serializer.py",
+      "role": "contract_source",
+      "sha256": "cabef059ebbe4397cd322b3f12910bdc32006f328d309aad196c1133adc6b668"
+    },
+    {
+      "path": "app/services/events/outbox_service.py",
+      "role": "contract_source",
+      "sha256": "ed5ae3bd4b19c4335f7e1020b0ef578fa649db19ff300af09cf58df2637f8aa5"
+    },
+    {
+      "path": "app/services/events/webhook_delivery_log_service.py",
+      "role": "contract_source",
+      "sha256": "dbb6bd7574e2eed178715c5af4dc1623848e3283fe5bbb9d5c8686e0a310d8fe"
+    },
+    {
+      "path": "app/services/events/webhook_dispatcher.py",
+      "role": "contract_source",
+      "sha256": "dc167df152ca670a8b6d9bdbfc9154b5fb123c35fed49a1429fc9ea687012e0c"
+    },
+    {
+      "path": "app/services/events/webhook_service.py",
+      "role": "contract_source",
+      "sha256": "7d0695d06523b8d233c9b238bc63bbf8e9fe09575294890cd3e407021896f85f"
+    },
+    {
+      "path": "app/services/events/webhook_signature.py",
+      "role": "contract_source",
+      "sha256": "df8d0b1ef295d9e610c2ef7c1c4083edb0dce35bc8e14d88d5f022771c191d91"
+    },
+    {
+      "path": "app/services/events/websocket_broker.py",
+      "role": "contract_source",
+      "sha256": "ff41670f3f73768dd67fd436945afd2340fbc22d8c7a265a337a173906360873"
+    },
+    {
+      "path": "app/services/events/websocket_contracts.py",
+      "role": "contract_source",
+      "sha256": "164f66a81c80364b9d949223ef7cc48d32937379b461ec792474819138fe5133"
+    },
+    {
+      "path": "app/services/events/websocket_filters.py",
+      "role": "contract_source",
+      "sha256": "a04c0d23b475e1179ab02ae91973db6f3e868e0d45193df6574827d4ddca5045"
+    },
+    {
+      "path": "app/services/events/websocket_registry.py",
+      "role": "contract_source",
+      "sha256": "c3f38a048bb904102b6b234451218ce619bb7efbaa022c64fed48d367aafe860"
+    },
+    {
+      "path": "app/services/events/websocket_serialization.py",
+      "role": "contract_source",
+      "sha256": "4ad43ea4355f21a817f7e7acd6c47e42116c4969f6222b6e42b7f21975c75520"
+    },
+    {
+      "path": "app/services/explainability/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/explainability/contract.py",
+      "role": "contract_source",
+      "sha256": "9759faf7888b78f0973fc2dc7a9da642f9a411ab1f353b48edfa4fb00b08e7d0"
+    },
+    {
+      "path": "app/services/explainability/signal_explainability_service.py",
+      "role": "contract_source",
+      "sha256": "cc96af73e9c656dda9b1dc87f236f756636f9f200899302167c17e0c48541fee"
+    },
+    {
+      "path": "app/services/health_timeseries/__init__.py",
+      "role": "contract_source",
+      "sha256": "eaffd761dc3803320ae332f9aff0fb02f75bb97176485e80f772ec8e12edbdc9"
+    },
+    {
+      "path": "app/services/health_timeseries/service.py",
+      "role": "contract_source",
+      "sha256": "2470128e9463000940016fcb9a04f675c568479f769f164bfa40a1d0c1fa2284"
+    },
+    {
+      "path": "app/services/horizons/signal_horizon_service.py",
+      "role": "contract_source",
+      "sha256": "1e8fd075160e081bb5a4402796bdcaf5b3cee5646b712aea649f8969bca919e6"
+    },
+    {
+      "path": "app/services/ingestion/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/ingestion/news_ingestion.py",
+      "role": "contract_source",
+      "sha256": "d21ac5bc401a0f7e5605e04506e4a7b42a184b0e5bdda17ae2c278bc4c3f2c07"
+    },
+    {
+      "path": "app/services/ingestion/onchain_ingestion.py",
+      "role": "contract_source",
+      "sha256": "d862dd0902a09325ea1f0325ffddc259b3c342658d3f8c9c70ca4c4589512443"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/__init__.py",
+      "role": "contract_source",
+      "sha256": "6fe5b41338502e831dc7dc7e8ba9c059e190e3668ff6bfc745189c3bbe4392ef"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/candidate_builder.py",
+      "role": "contract_source",
+      "sha256": "cd35a3f2aeaaf3d8f1e2d181e1bdda783bbc7b32793b440dd4a4019e1ce36761"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/candidate_finder.py",
+      "role": "contract_source",
+      "sha256": "946317d438c85b46eecb40ee90f7d1aa70e4b3ae32e2b528cec678de0b2ff122"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/confidence.py",
+      "role": "contract_source",
+      "sha256": "76d007a69f054b5c43abab8d30369181a63092f8f02dada457388ca2adb52509"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/context.py",
+      "role": "contract_source",
+      "sha256": "bca72fe6a5a2267112b4c959ae5524e088f81a064ca16b9a544d1fd8d3ece6d5"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/engine.py",
+      "role": "contract_source",
+      "sha256": "df47275846c77ce9ebab3294046e255d7419897e16f8d7c19dd01767d25c81b9"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/enums.py",
+      "role": "contract_source",
+      "sha256": "f5321c5ce3a71a1a4d746845eb8ee3b42eeeecfa006364ecf5f888d7c982d3f0"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/explanation.py",
+      "role": "contract_source",
+      "sha256": "afe48c2ac265734cd1009b1a80ad98866b7b77cabf5dd95df8b5ccad22f15246"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/explanations.py",
+      "role": "contract_source",
+      "sha256": "9a54ccdbdf87fcba7b1ff8aaf1b3fa8e4072ecb8e77ec9678bfcd0afb6a19f2a"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/limitations.py",
+      "role": "contract_source",
+      "sha256": "c8803f176fb9307f5a62566d7e5d2ba9f1760b41023490b8672b8c1eccc9915c"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/metrics.py",
+      "role": "contract_source",
+      "sha256": "dfc6026b18772e065192ae760485f5907d20658848a5733af99d8623f864398f"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/ranking.py",
+      "role": "contract_source",
+      "sha256": "c73fed1335ecb93e8887b4237c3ca2262f3da86778fb2e3e4831ddf587e9ffb5"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/schemas.py",
+      "role": "contract_source",
+      "sha256": "056fa628d38004b4dec3764a65eafd82205bc4dff63006118cb55db850050b57"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution/scoring.py",
+      "role": "contract_source",
+      "sha256": "529fb48eb6b81cd2118a4e39543642254d0da7ebbfd47e29769c09c61e75584f"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution_engine.py",
+      "role": "contract_source",
+      "sha256": "5b1d8f77ac63b15fb74e6ca4062cfdfae08aabea1ea9f04ea6bdc83eaabe1386"
+    },
+    {
+      "path": "app/services/intelligence/candle_attribution_ranking.py",
+      "role": "contract_source",
+      "sha256": "732a9819be605fdfe5c5a586ec0ea46022c757fe45b2969e4ce67a7f41a4325c"
+    },
+    {
+      "path": "app/services/intelligence/confidence/confidence_bands.py",
+      "role": "contract_source",
+      "sha256": "bb2c19944f71c23eb2adacebac6e252bb82a3c859d9b4dbe0d377ff34f2e03cf"
+    },
+    {
+      "path": "app/services/intelligence/confidence/confidence_contributions.py",
+      "role": "contract_source",
+      "sha256": "7b7907dd028ba19f5353da43b261d004d5c78e9c79c290cba8b512042b645f81"
+    },
+    {
+      "path": "app/services/intelligence/confidence/delayed_reaction_detector.py",
+      "role": "contract_source",
+      "sha256": "d477c2f4ccf06646b4e4748d6c8be3f7438b25b0e231db25d0a57afc5a3d109f"
+    },
+    {
+      "path": "app/services/intelligence/confidence/false_signal_detector.py",
+      "role": "contract_source",
+      "sha256": "f63cc1f8599bd45bad5a24064606469b9ddc1cf8a78b542a6f21f117a7d3c909"
+    },
+    {
+      "path": "app/services/intelligence/confidence/freshness_weighting.py",
+      "role": "contract_source",
+      "sha256": "a8b23da060d7d23e9562b42bf0f7108511b1cfe2fc84bfea5396f6a4aeca39f8"
+    },
+    {
+      "path": "app/services/intelligence/confidence/impact_confidence_engine.py",
+      "role": "contract_source",
+      "sha256": "094b73c6a834af0e3a2444c985e0287a0ddaffd75ed02bacf4e4e0f7070ca669"
+    },
+    {
+      "path": "app/services/intelligence/confidence/uncertainty_rules.py",
+      "role": "contract_source",
+      "sha256": "354baf3db6e22620c36aaecb617e22aafcc244d85dcd47b10165053e4cabb20d"
+    },
+    {
+      "path": "app/services/intelligence/event_clustering_service.py",
+      "role": "contract_source",
+      "sha256": "ef6463a43144d5e702c8592c146014430d3bf82cf78fa9d868525ddf72b98624"
+    },
+    {
+      "path": "app/services/intelligence/evidence_metrics.py",
+      "role": "contract_source",
+      "sha256": "59706b852a019518e93a8da378d153a8cce6fca79467c70210f4871017b4e8ee"
+    },
+    {
+      "path": "app/services/intelligence/evidence_packet_builder.py",
+      "role": "contract_source",
+      "sha256": "db5e2089f9566000e019919ededd0884c57749746b31d337a015ee9f2698ca15"
+    },
+    {
+      "path": "app/services/intelligence/evidence_replay_service.py",
+      "role": "contract_source",
+      "sha256": "554e5e29703a30eb8b1d568754b87a19df0125b76bfc988dcfec545684e88f00"
+    },
+    {
+      "path": "app/services/intelligence/historical_confidence_calibrator.py",
+      "role": "contract_source",
+      "sha256": "de7807272d6b5434d7150737a482f7895dc878ffcbe7d7bbe5bebc10c905938a"
+    },
+    {
+      "path": "app/services/intelligence/historical_profile_builder.py",
+      "role": "contract_source",
+      "sha256": "b651568709cc7bc8d8f8e695e4bbcf54350b74a2312d68a6e70a706569c33d5e"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity/__init__.py",
+      "role": "contract_source",
+      "sha256": "a8236751001d38d5f0dafac3de6c95f8c25bc5c94cd2ec25b9626f3b82cc02a0"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity/historical_similarity_service.py",
+      "role": "contract_source",
+      "sha256": "b929013ad3c4bf449c4dae855164c21229e5661bbb6c42f3166a7182d8ae32cc"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity/pattern_matcher.py",
+      "role": "contract_source",
+      "sha256": "5059cd075d5396fbee6876a6e30f991c7349abdb956fb2b1cf05b21a8c5184ce"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity/similarity_explainer.py",
+      "role": "contract_source",
+      "sha256": "760930ca342782b6f7a34e1deb83bcb834faf5f499ab803c777e89305419983e"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity/similarity_scoring.py",
+      "role": "contract_source",
+      "sha256": "377cd160677baf588130c8d5449718fb6c94cc9ec71d841eeea990cf97ca1c07"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity_engine.py",
+      "role": "contract_source",
+      "sha256": "a28e82a50b68d4ba8abb0f2a249f88ba658b23a1ba0437a5339b5e52065fc580"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity_foundation.py",
+      "role": "contract_source",
+      "sha256": "ad92310b95b3d3355bf7183db0a40f8ea83270fbef470c5ad4582f6a71dc42b2"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity_metrics.py",
+      "role": "contract_source",
+      "sha256": "d9666995ce725a60769d13fb74b3dc7a4da35a103e45743668f798e68694c1fd"
+    },
+    {
+      "path": "app/services/intelligence/historical_similarity_service.py",
+      "role": "contract_source",
+      "sha256": "2543480542a2520e7a6ea56a1368ff14b8965614c1c6dd10956c3d550f966c1a"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/__init__.py",
+      "role": "contract_source",
+      "sha256": "f77672900f778f17c790ce9d9c9792d3d6f5aa05c48e8ed930e29b3dce7b9b72"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/engine.py",
+      "role": "contract_source",
+      "sha256": "87535de28f1be0e349db84c30b9c40e268b005ce97e5deff52eecdf43e7ce9c9"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/evidence.py",
+      "role": "contract_source",
+      "sha256": "ef7a2114738dd483c7e9793774ae46dd92c05f2e90dfc0731aa8183038d4a3ca"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/fingerprint_builder.py",
+      "role": "contract_source",
+      "sha256": "dee6f9d685e1f23fa9469cb7b252cf3fc661b77ae624f2d89d85db816ed5ee70"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/pattern_matcher.py",
+      "role": "contract_source",
+      "sha256": "d566bf45b258799ea108f5fe0d926b11f28be3b17e5710d7537120e547bf26b8"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/review.py",
+      "role": "contract_source",
+      "sha256": "48c7e397e2839c4980d19cc0e289b877f32662c9fa6c3f551affeb6e5c27292e"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/safety.py",
+      "role": "contract_source",
+      "sha256": "eec0ac08902108f443f5e74c4bdfec853d741f34c948986817ebce14a4ccded5"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/statistics.py",
+      "role": "contract_source",
+      "sha256": "238a41ef1a447172041bd844031220c7c4bddd2ee60f9bc02993132ff51c36ae"
+    },
+    {
+      "path": "app/services/intelligence/market_memory/types.py",
+      "role": "contract_source",
+      "sha256": "e986857d07507e4e09043e9554196e247f5ea810f14f1e6d2565f6bcb319d069"
+    },
+    {
+      "path": "app/services/intelligence/market_memory_service.py",
+      "role": "contract_source",
+      "sha256": "92110454624952a9f75e71914065e69cb62777dcfc174f1878bb1cf9d14ee29a"
+    },
+    {
+      "path": "app/services/intelligence/narrative_heatmap.py",
+      "role": "contract_source",
+      "sha256": "34f4614028bef18872fccf2195fcbe1f32095782f277a7d81af0ed11c5be3f1d"
+    },
+    {
+      "path": "app/services/intelligence/narrative_heatmap_metrics.py",
+      "role": "contract_source",
+      "sha256": "13c0f1d6a12b2a0b1bf42a2b754c3e21fe06fcd7fe6d9bb4e035680e0bf85744"
+    },
+    {
+      "path": "app/services/intelligence/narrative_memory_service.py",
+      "role": "contract_source",
+      "sha256": "c18f3a3fa74a5884ef106ba92c34de974c452eafc00284f271afbc8dfcdf2904"
+    },
+    {
+      "path": "app/services/intelligence/narrative_types.py",
+      "role": "contract_source",
+      "sha256": "e49d00ea7eb52d5121d43914f96822fc659562f13f52e4e4d6dc84800ff5f632"
+    },
+    {
+      "path": "app/services/intelligence/news_impact_engine.py",
+      "role": "contract_source",
+      "sha256": "f5049cd4c72b97da2447dc095694f3a06e95e1d2347062a05a72aa50432bde3f"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/article_normalizer.py",
+      "role": "contract_source",
+      "sha256": "3bd4053bf4a33084488baab33f789267c286823177e55d99e990f7e8091938c5"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/dedup_precheck.py",
+      "role": "contract_source",
+      "sha256": "4fb2a94989e8121efe92e94541ab1cb572238ac4d6be22f26e29fba241eb7b8b"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/exceptions.py",
+      "role": "contract_source",
+      "sha256": "589b7bd1324bec97fed312f4c26c9ef8c23967b63bf4c4a9e7f5991ec09ebd98"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/feed_parser.py",
+      "role": "contract_source",
+      "sha256": "241ae3d118a078a9e597019f3d5a9b733ea6a2e332c520b425cbd5cd99a48594"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/fetch_policies.py",
+      "role": "contract_source",
+      "sha256": "53793e603d639ee7acf31e3595f1eac5e3821f791b3218d9862c3749fc43d1e9"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/fetch_result.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/html_cleaner.py",
+      "role": "contract_source",
+      "sha256": "f6a8f2dea0b76783d737821e8571b9fb225792892952be25ea93d6d63983c24e"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/ingestion_service.py",
+      "role": "contract_source",
+      "sha256": "768be0f19ab5ade2edf8ce22dca33218561c2e0706cff0a98412ccab7094e19c"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/metrics.py",
+      "role": "contract_source",
+      "sha256": "1a2ffbb2a2fbac684f6e9fe7e1fb2730c4923e2a99813fc25d65134e3d1dcac4"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/retry_policy.py",
+      "role": "contract_source",
+      "sha256": "d51cd985a7606dfb5fde3cb1813a4beba094e83bca71f7d1aacd9cf085b2d2e2"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/rss_client.py",
+      "role": "contract_source",
+      "sha256": "1c4adf6ee04f3e914559ecd37fcf71bcb47e2aaf3e78a4b2a615c93ca75f2c4c"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/source_fetcher.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/intelligence/news_ingestion/url_canonicalizer.py",
+      "role": "contract_source",
+      "sha256": "c12c9e87f4ea28a1479d25a3f17e504943bffd28d58925b4233f85d5ae41a1cc"
+    },
+    {
+      "path": "app/services/intelligence/news_price_impact_service.py",
+      "role": "contract_source",
+      "sha256": "d6a7fb825995e8956b1120ba35be47d73c2ca926ba61ef7e23fcacbf8d071a8a"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/confidence_engine.py",
+      "role": "contract_source",
+      "sha256": "c6bfbb505c65edfc63a1df68fea87feb09c69ed9c9c0901d888bfcb968d6a10b"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/constants.py",
+      "role": "contract_source",
+      "sha256": "69c523240b3bc41bc97c830a0a5574fb3d23cfb7d4a110668cc1e99782781023"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/explanation_builder.py",
+      "role": "contract_source",
+      "sha256": "3dfb8c10e4f684142bd2a727edf7f4a235ec74ac1e0758d01e62eadceb5f4cd4"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/factor_engine.py",
+      "role": "contract_source",
+      "sha256": "2423c47cbfbd35adf8e11590f151643f5e0496a8759bb828fa87cd8df63f0a78"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/factor_models.py",
+      "role": "contract_source",
+      "sha256": "23022e4724ec8797425a948b50d84d31c02b5015bc0bc9c97fafc751ea867e50"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/keyword_engine.py",
+      "role": "contract_source",
+      "sha256": "a7b3dc6a6952763671c8ead40adc5851b776eecfb73221258e514b957ba51756"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/keyword_profiles.py",
+      "role": "contract_source",
+      "sha256": "a242a1024dbf1a7378493b8da60008f683c7af1adebfc982b37cdbb7a32d756a"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/keyword_registry.py",
+      "role": "contract_source",
+      "sha256": "ccf9db77a27c78883c66a7cdefb83edbbc7a8e89f7a71a41a7731dccc627da4c"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/models.py",
+      "role": "contract_source",
+      "sha256": "316b8b2aeb43ad35fc8e4fe79523bc7a7f24a2d01250debbd711ab4be14c73bc"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/reason_engine.py",
+      "role": "contract_source",
+      "sha256": "3b61c9d48449422b7c10d210d56c4a6f1910a39d69c103f0ef4364ef4dd7a7ed"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/schemas.py",
+      "role": "contract_source",
+      "sha256": "6ff2ec40cb079b6114feafce5a3f109bf38009a37559c44fa5ea211840030b3e"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/scoring_engine.py",
+      "role": "contract_source",
+      "sha256": "0b51a6a91ef6bb82472bea097c132d0090e9ca058967a79e8d61c4979889fe7a"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/scoring_explainer.py",
+      "role": "contract_source",
+      "sha256": "bf5509caa72974642484a09b1b10cca99b191c9998f9331efbf58c79e5b52041"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/scoring_rules.py",
+      "role": "contract_source",
+      "sha256": "e712cd17de0e9fde573aec24aed9d3f5fa799c97104b1e70844aad7e044be86c"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/scoring_service.py",
+      "role": "contract_source",
+      "sha256": "012fd029388f2869e7808cbce5c7d7eba36153a3bd2ec94a5eee21be33417a97"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/sentiment_engine.py",
+      "role": "contract_source",
+      "sha256": "00a0ee109c634f149d5dcf195c6cafd2d6ba767c7ac8f5c24ae37986b0890817"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring/types.py",
+      "role": "contract_source",
+      "sha256": "9cf63eba4c80587da971f94154c819f8a89b477fb9b5666ca978d85d99a01c15"
+    },
+    {
+      "path": "app/services/intelligence/news_scoring_service.py",
+      "role": "contract_source",
+      "sha256": "6aa565fe1e16421eaeb319c9831867399acc38c0c4447678c78113b54dc65263"
+    },
+    {
+      "path": "app/services/intelligence/operator_review_service.py",
+      "role": "contract_source",
+      "sha256": "04a1399a9c719946c3ff46d49e80df0e2bf60d0e29fa616cfb53bcb0c93f2293"
+    },
+    {
+      "path": "app/services/intelligence/pattern_classification_service.py",
+      "role": "contract_source",
+      "sha256": "4aac43069c8b7de4fae4ddcd55bba4eba14073ecbab72ddd8a35c4c40679eaaf"
+    },
+    {
+      "path": "app/services/intelligence/pattern_confidence_service.py",
+      "role": "contract_source",
+      "sha256": "59d2e74554f578dfd2ff45fc891f358389b6e9ba0016aa99378a86954dbc03f4"
+    },
+    {
+      "path": "app/services/intelligence/pattern_library.py",
+      "role": "contract_source",
+      "sha256": "377b2793de36a7d4b9097c692ef46ec907419d4051296448ef27ef2978d2da3c"
+    },
+    {
+      "path": "app/services/intelligence/publishing_policy_service.py",
+      "role": "contract_source",
+      "sha256": "f13686ad650e6c53ed1c453cd183ed7779ab1cba9b92ec0535f5a3bf078bb8af"
+    },
+    {
+      "path": "app/services/intelligence/sentiment/categories.py",
+      "role": "contract_source",
+      "sha256": "83b7b5117e229e04585be8b8136b5a178b37cd34bccd491d0916e9ac2f517f19"
+    },
+    {
+      "path": "app/services/intelligence/sentiment/classifier.py",
+      "role": "contract_source",
+      "sha256": "b90e44f046e5d66da95d50a7c8d4385e732342258bfa3ea805170db4131b30e1"
+    },
+    {
+      "path": "app/services/intelligence/sentiment/keyword_rules.py",
+      "role": "contract_source",
+      "sha256": "53c4ef3e63a3f8b6600540779cb1fac0cd9999ff89ad071165ae25ee9504c4d0"
+    },
+    {
+      "path": "app/services/intelligence/signal_candidate_service.py",
+      "role": "contract_source",
+      "sha256": "840a0954292d71b65b414e6e430bc793d0bedc9c811bbfacb2266edca0a44886"
+    },
+    {
+      "path": "app/services/intelligence/signal_delivery_log_service.py",
+      "role": "contract_source",
+      "sha256": "0bfce791ed7d4c3f5416f40ff39cadbe6b94e228dc04adf3a44d4ed66d152f74"
+    },
+    {
+      "path": "app/services/intelligence/signal_governance_metrics.py",
+      "role": "contract_source",
+      "sha256": "cbbf27e295f9462cabf93f15719ca6a7f9009b61ba62810441c417916f4bd84c"
+    },
+    {
+      "path": "app/services/intelligence/signal_governance_service.py",
+      "role": "contract_source",
+      "sha256": "fa470cc935e3f9aa2adf25035e23f2269b47623707b8c860f383760f1d86416f"
+    },
+    {
+      "path": "app/services/intelligence/temporal_correlation.py",
+      "role": "contract_source",
+      "sha256": "caf2b638d75872967a9db34a2766eb62e11b396b81c1a639363e6b33c76c1ca8"
+    },
+    {
+      "path": "app/services/intelligence/timeline_deduplication.py",
+      "role": "contract_source",
+      "sha256": "7aabacee2ceaee47afd8eac4a2e73a3184fab7344490ab9de566b33d48ecba00"
+    },
+    {
+      "path": "app/services/intelligence/timeline_hashing.py",
+      "role": "contract_source",
+      "sha256": "02e6bdd9aa3cdac3bf1def0adb0e0a840cdfdace2fb90257eba3a5fca09873ea"
+    },
+    {
+      "path": "app/services/intelligence/timeline_normalizer.py",
+      "role": "contract_source",
+      "sha256": "944bff143db69d8ef57bc5cfc345bb706792460d7e7e3720012eaf0fa9e82380"
+    },
+    {
+      "path": "app/services/intelligence/timeline_service.py",
+      "role": "contract_source",
+      "sha256": "d4ca8aec797413ad5536da8cb3c2671830e5eb4b3b76bb8082442fee08b24c92"
+    },
+    {
+      "path": "app/services/lnurl/__init__.py",
+      "role": "contract_source",
+      "sha256": "1474f14ee56b9e1b9e59a3e477b988383ee31f34fc3fdcd67954e912c2ee7e16"
+    },
+    {
+      "path": "app/services/lnurl/activation_service.py",
+      "role": "contract_source",
+      "sha256": "28f0da702d9f90453220e2742b1e34d3971504fa4b39326226c09b78126048a2"
+    },
+    {
+      "path": "app/services/lnurl/audit.py",
+      "role": "contract_source",
+      "sha256": "99bc78f3ea8e51fce578f473272d320c3b5ba2b3ad91167a575f74b8e1c387a2"
+    },
+    {
+      "path": "app/services/lnurl/auth_callback_verifier.py",
+      "role": "contract_source",
+      "sha256": "3aec92607810b8138470fcb14a309da680a9375879ee0c8c72167ac02044aa13"
+    },
+    {
+      "path": "app/services/lnurl/auth_challenge_service.py",
+      "role": "contract_source",
+      "sha256": "0ec5e6cc72606827569907897c39377a2efe9ba85d737c60f7503b3d9ac58892"
+    },
+    {
+      "path": "app/services/lnurl/auth_session_bridge.py",
+      "role": "contract_source",
+      "sha256": "38eeb836dbc04af900497c21301415c7b9c7cc9c4c0b2b3c487f380382fc4c21"
+    },
+    {
+      "path": "app/services/lnurl/auth_step_up.py",
+      "role": "contract_source",
+      "sha256": "61634580fe8af317b6defc685a6cc28d3c89822a47c0ac99dffca64b01c30164"
+    },
+    {
+      "path": "app/services/lnurl/bolt11.py",
+      "role": "contract_source",
+      "sha256": "41ef67152a9902f7af029e931aa145a516e3cebdef8b0bf584f02529fe24e3d4"
+    },
+    {
+      "path": "app/services/lnurl/comment_allowed.py",
+      "role": "contract_source",
+      "sha256": "8f77a7e3439641587b9c450e6ce6099bc95fa78c48dc703978e8e4406e290ef2"
+    },
+    {
+      "path": "app/services/lnurl/encoding.py",
+      "role": "contract_source",
+      "sha256": "896667f0b67323dc00631acdb06db8e2d338238594ace0ab017b8c42d9da47e9"
+    },
+    {
+      "path": "app/services/lnurl/entitlement_binding_service.py",
+      "role": "contract_source",
+      "sha256": "cc1ecd37595cd28f83e7d37aa4220c733c3fc6de3044176232e139b2ab635f9f"
+    },
+    {
+      "path": "app/services/lnurl/errors.py",
+      "role": "contract_source",
+      "sha256": "dfd4069fe6a456a2dc4ec081042ae27c003f1e1be4ebb5348563b97b2f33bd3e"
+    },
+    {
+      "path": "app/services/lnurl/integrity_signals.py",
+      "role": "contract_source",
+      "sha256": "92460961c508f7bd44e6cb6350c95183637fce6b8b228e0a90c0862838e7aab6"
+    },
+    {
+      "path": "app/services/lnurl/k1_registry.py",
+      "role": "contract_source",
+      "sha256": "81aba150198f5e50cdf7d0dd3709912d6945499eb84cbf6a427903460cd8a4fe"
+    },
+    {
+      "path": "app/services/lnurl/lightning_address_domain_policy.py",
+      "role": "contract_source",
+      "sha256": "95399a758b875abf40d3f5097c4feca8e5929865154c5d35561ee87092d6d3bc"
+    },
+    {
+      "path": "app/services/lnurl/lightning_address_repository.py",
+      "role": "contract_source",
+      "sha256": "b2b1e120298618a22cef2910f41f1c2443ca669e30d5601c16329e2eb6d0a6b6"
+    },
+    {
+      "path": "app/services/lnurl/lightning_address_service.py",
+      "role": "contract_source",
+      "sha256": "ea187647054c88c3ac11b28ce3c0001aced8c7936db9e3b6003e25013003bc9c"
+    },
+    {
+      "path": "app/services/lnurl/merchant_address_audit.py",
+      "role": "contract_source",
+      "sha256": "8a609490d77a57f64d95ff1c284f5152af0ac56609cb7587ee2ce16b01a877a1"
+    },
+    {
+      "path": "app/services/lnurl/merchant_address_policy.py",
+      "role": "contract_source",
+      "sha256": "047133dae75df4191f6ea64ffff7d4c0046c6b34bc843a147f92ecc64d762072"
+    },
+    {
+      "path": "app/services/lnurl/merchant_address_resolver.py",
+      "role": "contract_source",
+      "sha256": "2f0246ed006167a4cb9eba2ac03409a7f7efe7e033a99431b6f56d0cdc34cce5"
+    },
+    {
+      "path": "app/services/lnurl/merchant_address_service.py",
+      "role": "contract_source",
+      "sha256": "e6adb23de4995eb39864d652abf8277e0758d9f801aae28abe1d848e861b905d"
+    },
+    {
+      "path": "app/services/lnurl/merchant_domain_service.py",
+      "role": "contract_source",
+      "sha256": "5f628ced2a37f71a3906858ad103fb80af1d566020c8b76fe42e1ccc820bd5fc"
+    },
+    {
+      "path": "app/services/lnurl/merchant_domain_verification.py",
+      "role": "contract_source",
+      "sha256": "4dcb41dfc7b65c5ec3e6fe48657e528071b14642cf8614d4a85769cbbbcb0754"
+    },
+    {
+      "path": "app/services/lnurl/merchant_metadata.py",
+      "role": "contract_source",
+      "sha256": "6c7f35938af2f536451250589cfc1c1326ff719c15bea6d69aa97ded9b0f3bf8"
+    },
+    {
+      "path": "app/services/lnurl/metrics.py",
+      "role": "contract_source",
+      "sha256": "c597b125972381d43551ead72a7252b9b326210f994d93e46b80068fca889e69"
+    },
+    {
+      "path": "app/services/lnurl/models.py",
+      "role": "contract_source",
+      "sha256": "72eab32c8dd78188ca1b2bace8da867bb795e1048461cc3f4264558fd251736a"
+    },
+    {
+      "path": "app/services/lnurl/pay/__init__.py",
+      "role": "contract_source",
+      "sha256": "f75c7d78516e5009775ae36d3f6eff15e46344dc131096a57ce43ac6de0dd57d"
+    },
+    {
+      "path": "app/services/lnurl/pay/callback_urls.py",
+      "role": "contract_source",
+      "sha256": "7cce940cc4c9965ac10f9304249513a120f9c76c9c35c8b3c646b4f12c639d95"
+    },
+    {
+      "path": "app/services/lnurl/pay/errors.py",
+      "role": "contract_source",
+      "sha256": "d9237f77a9b39d80f60875ec6c8fbda380f5982749bcee9b0e40f07d5b50de28"
+    },
+    {
+      "path": "app/services/lnurl/pay/metadata_provider.py",
+      "role": "contract_source",
+      "sha256": "b56c9e3e4e30147f5d860d6b2099559d87bacbf78884f443861f65db0da874f0"
+    },
+    {
+      "path": "app/services/lnurl/pay/pricing.py",
+      "role": "contract_source",
+      "sha256": "4c9df35c282a39c93abfb1bf26a903acf5c98a39265eb9e638da9bc7163a4204"
+    },
+    {
+      "path": "app/services/lnurl/pay/subscription_request_service.py",
+      "role": "contract_source",
+      "sha256": "d64f518766f1dfb4b66910cc91ba3bf2713055377fe796532fe1688ae052c637"
+    },
+    {
+      "path": "app/services/lnurl/pay_callback_service.py",
+      "role": "contract_source",
+      "sha256": "001303fa04d0e68140ad7f44f78647000498b35ad035862c8f1c76977947bf46"
+    },
+    {
+      "path": "app/services/lnurl/pay_metadata.py",
+      "role": "contract_source",
+      "sha256": "c75164e56318cdef57c878d1a7cad8b106cf6f744ca338841caebbd18727928d"
+    },
+    {
+      "path": "app/services/lnurl/payer_data.py",
+      "role": "contract_source",
+      "sha256": "9ad897a302045bb0ffcacf49fbc45197aac3ebd91d5ce543cd7b14e37d1f7f61"
+    },
+    {
+      "path": "app/services/lnurl/payer_data_auth.py",
+      "role": "contract_source",
+      "sha256": "34313a4a30493140d6061ece7c38a04626f871bca80a44f066c463de488974db"
+    },
+    {
+      "path": "app/services/lnurl/payment_proof.py",
+      "role": "contract_source",
+      "sha256": "c4701d84a4fb671153f6546d3bc212f04d433cb95353326d8fcb6561c203b05f"
+    },
+    {
+      "path": "app/services/lnurl/policy_hooks.py",
+      "role": "contract_source",
+      "sha256": "73d99b1a0bf4e015066533b5d2ac5ce57b2ab607c9e97b73589b80033edb29f3"
+    },
+    {
+      "path": "app/services/lnurl/principal_service.py",
+      "role": "contract_source",
+      "sha256": "1f1825b764d174b0663f555700d5989f76a94112e79657f5a8fbd2f26a5fd77f"
+    },
+    {
+      "path": "app/services/lnurl/product_addresses.py",
+      "role": "contract_source",
+      "sha256": "8b21b32e9417f7867c3da70f4967a67adf661b5729fba7bd3e07390734371a45"
+    },
+    {
+      "path": "app/services/lnurl/receipt_packet.py",
+      "role": "contract_source",
+      "sha256": "b27796bb70683375ca80194290dd8aa46e0fd320d0b87682d3a112c6e2cfc3de"
+    },
+    {
+      "path": "app/services/lnurl/redaction.py",
+      "role": "contract_source",
+      "sha256": "48fd7f34b721a1f808856dea46853452743cbc2f9fe9a5685531166d0d3e5332"
+    },
+    {
+      "path": "app/services/lnurl/refund_accounting.py",
+      "role": "contract_source",
+      "sha256": "ecedf231258f9490a406bbb3a3e6571679602da0c2b5064fd0d5d199aa5e7a8d"
+    },
+    {
+      "path": "app/services/lnurl/replay_protection.py",
+      "role": "contract_source",
+      "sha256": "1ed9809b0174294241242246842d06021312093c068282c177a62ea9f49a8f83"
+    },
+    {
+      "path": "app/services/lnurl/repositories/__init__.py",
+      "role": "contract_source",
+      "sha256": "3e23c1f6b6515042d71ecc6a23d2770025084404d9eb1d97c67039ac9f6af5a3"
+    },
+    {
+      "path": "app/services/lnurl/repositories/withdraw_requests.py",
+      "role": "contract_source",
+      "sha256": "a612d8da13a902562de844619b38d939d13038f6943851988823d36d6eee35c7"
+    },
+    {
+      "path": "app/services/lnurl/revocation_adapter.py",
+      "role": "contract_source",
+      "sha256": "5e1e0c7e83e6729b758599b843c1d5f42d155c3b3f9b065f3c4370d7afb7882c"
+    },
+    {
+      "path": "app/services/lnurl/success_action.py",
+      "role": "contract_source",
+      "sha256": "e3f20a3fbf15b4f6cca5f5930b6cd7eb85d2d3a31dd8a8ad3f844e8de06132a3"
+    },
+    {
+      "path": "app/services/lnurl/success_action_templates.py",
+      "role": "contract_source",
+      "sha256": "7e8a9bdbd144fc1e09339bad8154dbbf1c839c24caa6cf30d8e9582328b72879"
+    },
+    {
+      "path": "app/services/lnurl/url_safety.py",
+      "role": "contract_source",
+      "sha256": "7b61b43f6527afdf8b13cd95735da5b3902cc27fb8eff42b31164fa09a556390"
+    },
+    {
+      "path": "app/services/lnurl/verification_policy.py",
+      "role": "contract_source",
+      "sha256": "2c36edc0258e28f87d794db674fb4bb108601a2e5c04dd0e06fe90fbb1b37c29"
+    },
+    {
+      "path": "app/services/lnurl/verification_sources.py",
+      "role": "contract_source",
+      "sha256": "c7521b604c19f5c6b49e8f9b666742a795caef826d4c6571074d2081a6f50a71"
+    },
+    {
+      "path": "app/services/lnurl/verify.py",
+      "role": "contract_source",
+      "sha256": "687fe633647663a7c55a24c737af7f64ca2c233ea95e8071f2c7e12090b44452"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_callback_verifier.py",
+      "role": "contract_source",
+      "sha256": "4aeb7994da87e653491f5a47e0205c5dbd04ef1539e338368a857a8fa657d3eb"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_cooldown.py",
+      "role": "contract_source",
+      "sha256": "a9b5197156fc6dddfffbf5d8009c8ad7855671e7bc6aaf3d3ee3a828b95e32f8"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_executor.py",
+      "role": "contract_source",
+      "sha256": "dd7d229442f3e1298a0f6fd6af379f27d10ee58ac7b1dec13ef2e4b37d05e4cd"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_invoice_validator.py",
+      "role": "contract_source",
+      "sha256": "f6ee5a42b2ca30e20249583883cf3129b761e7b59746ce151a11f3dec87c339f"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_limits.py",
+      "role": "contract_source",
+      "sha256": "06fb33bad9cedbf4538c0765e13502df07c522ca4c0bfe3334ff912fd7a9ff80"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_policy.py",
+      "role": "contract_source",
+      "sha256": "5347744892b961ec01cbe50bc1da9a9febaaeabae0f643486a4d4148862ffe42"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_reconciliation.py",
+      "role": "contract_source",
+      "sha256": "8e5d5d7bd16a16547c059b2e2cb20503817601098a92b32218e4c70becef0de2"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_request_service.py",
+      "role": "contract_source",
+      "sha256": "9b229c6aa2a03ee9c0d55fa77725fc39f3bfa3a96699a535397f34cece929064"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_risk.py",
+      "role": "contract_source",
+      "sha256": "9b813143d20f50729de8f0fb63a12ecc70b98c80396616d74d1c7f0d5f1f8c97"
+    },
+    {
+      "path": "app/services/lnurl/withdraw_velocity.py",
+      "role": "contract_source",
+      "sha256": "b30c7cd3cb740bed48e869a7c1bedec53bcc55987cd1164448d8712bca7d0a22"
+    },
+    {
+      "path": "app/services/market/aggregation.py",
+      "role": "contract_source",
+      "sha256": "09f5aabeb8f24362cc5c3bcf7624033ec113134a77d63b0aa6ea47319e6cf689"
+    },
+    {
+      "path": "app/services/market/candle_builder.py",
+      "role": "contract_source",
+      "sha256": "71ac00c2e12ac5dd45aa9ba4d66d51437bac1d4aacaff80d914d43c74e2c47e7"
+    },
+    {
+      "path": "app/services/market/candle_confidence.py",
+      "role": "contract_source",
+      "sha256": "c084ff78a8b8cebef6163bbef461662ef35821977e2697171b9ac2a480d243db"
+    },
+    {
+      "path": "app/services/market/candles/aggregator.py",
+      "role": "contract_source",
+      "sha256": "f2d97ddd1c974f726afdae6b3d15f3f78122a4462394577a97c2d622f6d30274"
+    },
+    {
+      "path": "app/services/market/candles/builder.py",
+      "role": "contract_source",
+      "sha256": "09e1a55464019de709e4a79643046706d6ea094ffb77b3a287ffeb316195df15"
+    },
+    {
+      "path": "app/services/market/candles/integrity.py",
+      "role": "contract_source",
+      "sha256": "dc398104a5d126092c6dc0c5d57740e6e58ed8b814482502de1319ba1eb2c9de"
+    },
+    {
+      "path": "app/services/market/candles/provider_confidence.py",
+      "role": "contract_source",
+      "sha256": "8616acf51dc587ef04ed6db5d631b72c6f8f94ad7167f84ef2129eac438b2579"
+    },
+    {
+      "path": "app/services/market/candles/rebuild.py",
+      "role": "contract_source",
+      "sha256": "0b3025c446aa3034c767eac822f4a2d96ed6fcaea99d58701c154eb6704ec1f6"
+    },
+    {
+      "path": "app/services/market/candles/timeframes.py",
+      "role": "contract_source",
+      "sha256": "4b6d4646d07911920dd01b5b1b382ceccb554bb347db246eb17431066e2aa294"
+    },
+    {
+      "path": "app/services/market/collector.py",
+      "role": "contract_source",
+      "sha256": "38c52fb422aa31fe0f9da17948915eaab5e45f4ca5afb8eeb06dc49faa800be4"
+    },
+    {
+      "path": "app/services/market/confidence.py",
+      "role": "contract_source",
+      "sha256": "64dc13d1662c8b0a4286cb6cba4c1c1e68cc0e472e58d7f7a2d7f6ccffbb499f"
+    },
+    {
+      "path": "app/services/market/context.py",
+      "role": "contract_source",
+      "sha256": "0d6189b28bec3bdaf11d578111e64e812e5bb6c424b0d9f9b4cb80078587732d"
+    },
+    {
+      "path": "app/services/market/exceptions.py",
+      "role": "contract_source",
+      "sha256": "45f11f0dd184171f8791df7610a39a987f2a728a2bc50e704e814d097de6344a"
+    },
+    {
+      "path": "app/services/market/health.py",
+      "role": "contract_source",
+      "sha256": "0cb77d2d883502c5b5b8fe6b7ae6f132574e5b503a9cde7e3a76fc88b3897e14"
+    },
+    {
+      "path": "app/services/market/market_regime.py",
+      "role": "contract_source",
+      "sha256": "887a4b03fe1b5b42a7dcf9a32bf470b4615f5e656fe795e1251bdb9e9729eb98"
+    },
+    {
+      "path": "app/services/market/providers/base.py",
+      "role": "contract_source",
+      "sha256": "c68e076c495367a277d83d192106a5fe4ea99b846ca3f994de245fc242106ab4"
+    },
+    {
+      "path": "app/services/market/providers/binance.py",
+      "role": "contract_source",
+      "sha256": "4cffd1ee88dd9209139dcf2b837b777536e58f75f7c4af6c72f78a92063a479a"
+    },
+    {
+      "path": "app/services/market/providers/bitstamp.py",
+      "role": "contract_source",
+      "sha256": "7d69528536c6b7c38430331d74a50f08ba20d1f3d5746333731e36be99026849"
+    },
+    {
+      "path": "app/services/market/providers/coinbase.py",
+      "role": "contract_source",
+      "sha256": "fd133c38a0342f4c37a7b5833ff933ea74f4543827a053a408da257725d95366"
+    },
+    {
+      "path": "app/services/market/providers/kraken.py",
+      "role": "contract_source",
+      "sha256": "72d5235f46759e5e5719c1d65f9927cb929dacb4116346e421eda074a84511aa"
+    },
+    {
+      "path": "app/services/market/schemas.py",
+      "role": "contract_source",
+      "sha256": "649bc5b60d1162294373c07764c508a0397ae86b93dbb958c3f075edf0ea22e0"
+    },
+    {
+      "path": "app/services/market/timeseries_repository.py",
+      "role": "contract_source",
+      "sha256": "26f9856390284a3a4e6e5da80f2d460f8ce219645ee135ec42dc061e7ff1a724"
+    },
+    {
+      "path": "app/services/market_data/aggregation.py",
+      "role": "contract_source",
+      "sha256": "5dc906004aedeebadbbe550f226665bdc8aed72fb7c48f9f19e16a4479ffaa63"
+    },
+    {
+      "path": "app/services/market_data/base.py",
+      "role": "contract_source",
+      "sha256": "c0973824d19aeba763da53b9e21cd112bd646328d4b44084af7f12c4649743df"
+    },
+    {
+      "path": "app/services/market_data/confidence.py",
+      "role": "contract_source",
+      "sha256": "7684644d02c94949c2041050c1f2b3d699219a609c2cd218d1d600afabdf3058"
+    },
+    {
+      "path": "app/services/market_data/market_data_service.py",
+      "role": "contract_source",
+      "sha256": "1776975d01780341db0e931cc34f751d2f34bc0d6f8fa8ad54fff702520dd17d"
+    },
+    {
+      "path": "app/services/market_data/metrics.py",
+      "role": "contract_source",
+      "sha256": "3712295ec09ce0876d8dfffadda7bd7706caf38fcf8ef5ea6ccecc35d8c8b383"
+    },
+    {
+      "path": "app/services/market_data/normalization.py",
+      "role": "contract_source",
+      "sha256": "72f7c8e9e132e04f97254a7aebe5e5ffe78e447b0796df8d3a040b8c7f2eaa75"
+    },
+    {
+      "path": "app/services/market_data/provider_health.py",
+      "role": "contract_source",
+      "sha256": "c9e5095e76a99fd72fef007c8260bd6eed47ed3eadd1bc779a6a259f4695b4d6"
+    },
+    {
+      "path": "app/services/market_data/provider_models.py",
+      "role": "contract_source",
+      "sha256": "b8138f91a51488a5e22b9ec51297be4e059b37a3cb87318d6bad0baa76f1f71a"
+    },
+    {
+      "path": "app/services/market_data/provider_registry.py",
+      "role": "contract_source",
+      "sha256": "e49f19d3f93f8dd7590572c6580d7c11acb86c2211e31735d50c05a1c5899c6a"
+    },
+    {
+      "path": "app/services/market_data/providers/__init__.py",
+      "role": "contract_source",
+      "sha256": "ce5e6ffee1657a0f745df9a7115749fa27652bc2c8f3d849d90fce8934a5c7a7"
+    },
+    {
+      "path": "app/services/market_data/providers/binance_provider.py",
+      "role": "contract_source",
+      "sha256": "3f54f1856f6e568e23eb2a9cc3a08a9e8acb96c82cd0e0ea77c417b8d6cab5b7"
+    },
+    {
+      "path": "app/services/market_data/providers/bitstamp_provider.py",
+      "role": "contract_source",
+      "sha256": "d7f9f442cacdf15ec770ea5bc97ecc2a6c9dc59161198b45acaec6624e390de3"
+    },
+    {
+      "path": "app/services/market_data/providers/coinbase_provider.py",
+      "role": "contract_source",
+      "sha256": "8cc3d8a066e4d24a0e6133629abe104fe6e40577249a10eeb758e12a6942175c"
+    },
+    {
+      "path": "app/services/market_data/providers/kraken_provider.py",
+      "role": "contract_source",
+      "sha256": "c9b053e159b902217b1785083524fa6065f9f8e6c7b53b490fcd8e49d9b17b7f"
+    },
+    {
+      "path": "app/services/market_intelligence/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/market_intelligence/domain/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/market_intelligence/domain/constants.py",
+      "role": "contract_source",
+      "sha256": "6f67526ae6853d22d358eb0500585ad28f172a27f35ed42943b8a5256ee8f06a"
+    },
+    {
+      "path": "app/services/market_intelligence/domain/enums.py",
+      "role": "contract_source",
+      "sha256": "350065a9eef03d36f761e815819fa249d857b65b247c44e1628707970fb9cf5f"
+    },
+    {
+      "path": "app/services/market_intelligence/repositories/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/market_intelligence/repositories/news_articles.py",
+      "role": "contract_source",
+      "sha256": "573047782f9f79c1c67611288f54b583eaf1385fdd5a1082b3fb4496d85cd851"
+    },
+    {
+      "path": "app/services/market_intelligence/repositories/news_events.py",
+      "role": "contract_source",
+      "sha256": "573047782f9f79c1c67611288f54b583eaf1385fdd5a1082b3fb4496d85cd851"
+    },
+    {
+      "path": "app/services/market_intelligence/repositories/news_sources.py",
+      "role": "contract_source",
+      "sha256": "573047782f9f79c1c67611288f54b583eaf1385fdd5a1082b3fb4496d85cd851"
+    },
+    {
+      "path": "app/services/market_intelligence/repositories/source_health.py",
+      "role": "contract_source",
+      "sha256": "573047782f9f79c1c67611288f54b583eaf1385fdd5a1082b3fb4496d85cd851"
+    },
+    {
+      "path": "app/services/market_intelligence/repositories/source_reputation.py",
+      "role": "contract_source",
+      "sha256": "573047782f9f79c1c67611288f54b583eaf1385fdd5a1082b3fb4496d85cd851"
+    },
+    {
+      "path": "app/services/market_intelligence/schemas/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/market_intelligence/schemas/news_article.py",
+      "role": "contract_source",
+      "sha256": "71774fbf32c9ca9655d57512c9d61dd422704f37ed366f480f463390d12b3d75"
+    },
+    {
+      "path": "app/services/market_intelligence/schemas/news_event.py",
+      "role": "contract_source",
+      "sha256": "7b36fa6499c170be7184119da9d7e827cf85209100a084588704d48dc0d6c3fc"
+    },
+    {
+      "path": "app/services/market_intelligence/schemas/news_source.py",
+      "role": "contract_source",
+      "sha256": "cbfc81abb92b54a4f2f3c83d9db8ade380a8116b8e66bb1040e4243c67f227bf"
+    },
+    {
+      "path": "app/services/market_intelligence/schemas/source_health.py",
+      "role": "contract_source",
+      "sha256": "d092d73f8c9428b2c76040a8dfd3e0c3705f85c68de0ad66407781aeff098ddc"
+    },
+    {
+      "path": "app/services/market_intelligence/schemas/source_reputation.py",
+      "role": "contract_source",
+      "sha256": "427dcad2c60d3c06769da85953814f3e5dc3d072a9487bf9f2d56ab871da776e"
+    },
+    {
+      "path": "app/services/market_intelligence/services/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/market_intelligence/services/news_article_service.py",
+      "role": "contract_source",
+      "sha256": "25839ac4f3be0883a0d20684ddcca4b3d9cf71a9a6a910d9f1b47e85e33e528f"
+    },
+    {
+      "path": "app/services/market_intelligence/services/news_event_service.py",
+      "role": "contract_source",
+      "sha256": "f05d67b6a598d1003f93848f1ff738365abaa61d5fe73dfa08b30f8d088fc915"
+    },
+    {
+      "path": "app/services/market_intelligence/services/news_source_service.py",
+      "role": "contract_source",
+      "sha256": "cd47946f9e9b1ea7dfe57d7ccecc0efe2e7df6f964213a3215c639539c0ac29b"
+    },
+    {
+      "path": "app/services/market_intelligence/services/source_health_service.py",
+      "role": "contract_source",
+      "sha256": "6d1d97e0f3729a2df15aa961b4eff96442fa7aa5d4b78cfee725ad3b80784bc2"
+    },
+    {
+      "path": "app/services/market_intelligence/services/source_reputation_service.py",
+      "role": "contract_source",
+      "sha256": "ebb7c8555bfc48cf43ca34bdefe16de4e454cf1f4b6c8e4c1e7ce554cb4dde62"
+    },
+    {
+      "path": "app/services/market_intelligence/source_registry.py",
+      "role": "contract_source",
+      "sha256": "0aaf2cc8c292c4384cc8244288b91c7be08567d7c1a916a572e76e95ca18b9ca"
+    },
+    {
+      "path": "app/services/market_intelligence/source_registry_metrics.py",
+      "role": "contract_source",
+      "sha256": "23e29be4fe04d3fabcdeb59f616c387a2c9d8bd1d468b5fcc77ade85e7cddbf4"
+    },
+    {
+      "path": "app/services/market_intelligence/utils/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/market_intelligence/utils/hashing.py",
+      "role": "contract_source",
+      "sha256": "fc63c0ca9c30af1bb4b8f4f6e42b589a2a83c426973207d5ce0d664089f29e7e"
+    },
+    {
+      "path": "app/services/market_intelligence/validation/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/market_intelligence/validation/normalization.py",
+      "role": "contract_source",
+      "sha256": "975972895f1bcf161ae2b83082de59c226ee037e2ee3f2ca61c51ccf9b3e8a46"
+    },
+    {
+      "path": "app/services/market_intelligence/validation/urls.py",
+      "role": "contract_source",
+      "sha256": "1fb4f7075eb92bd2ddec19063cbfc08860c1e0ab7fb13c1f27e68a6cbd6c639a"
+    },
+    {
+      "path": "app/services/market_time_machine/__init__.py",
+      "role": "contract_source",
+      "sha256": "408d1e687e518d7154622a3201a425e909b91711bbc62573a0b5e07945eb35a8"
+    },
+    {
+      "path": "app/services/market_time_machine/analytics_service.py",
+      "role": "contract_source",
+      "sha256": "388289fc156678f4209c57309cbacdc2b90395816d146463e03fc69093e0d04c"
+    },
+    {
+      "path": "app/services/market_time_machine/errors.py",
+      "role": "contract_source",
+      "sha256": "049466382465153a8cc79b56f0ca7d74c74380acb92abe108a638f00cc98ef90"
+    },
+    {
+      "path": "app/services/market_time_machine/queries.py",
+      "role": "contract_source",
+      "sha256": "5fb57a805c375a9194e177123bb390f5939dc3529a229f4a9e08ed2b1a2b1173"
+    },
+    {
+      "path": "app/services/market_time_machine/schemas.py",
+      "role": "contract_source",
+      "sha256": "acd0cb401ae225e317e3581d9e8135d5dd276680028a88ba2bce770aa673296a"
+    },
+    {
+      "path": "app/services/mempool/__init__.py",
+      "role": "contract_source",
+      "sha256": "34baed59cd6731a7260dcbb6e4df647fe12808bad837baa359b265c200eabec1"
+    },
+    {
+      "path": "app/services/mempool/fee_market_model.py",
+      "role": "contract_source",
+      "sha256": "5d61e26b7a3edac099a37d95be08e4684e803e1b5f916b305cf17760bc2711d5"
+    },
+    {
+      "path": "app/services/mempool/mempool_analyzer_service.py",
+      "role": "contract_source",
+      "sha256": "0ee0024a57cbc001431483f41bf8c6edc0c271e0218ad245a4bea727aab91525"
+    },
+    {
+      "path": "app/services/news/deduplication/canonicalization.py",
+      "role": "contract_source",
+      "sha256": "f999f57c2fe673d5895dcf4fa650d48da61a4be139c4c262b7e7fccb25f69e25"
+    },
+    {
+      "path": "app/services/news/deduplication/clustering.py",
+      "role": "contract_source",
+      "sha256": "5af2332161334432dc9816b757118439cf4540c184b27fc29994453def61e2b4"
+    },
+    {
+      "path": "app/services/news/deduplication/constants.py",
+      "role": "contract_source",
+      "sha256": "3c5830f0f86eb67b76e7190a8513c9a376436355dc0033c478f932d8eb591097"
+    },
+    {
+      "path": "app/services/news/deduplication/deduplication_engine.py",
+      "role": "contract_source",
+      "sha256": "dfba1d718073e31209d433946c4c0803493e1d6d83f6ca095e964ccdaff0262c"
+    },
+    {
+      "path": "app/services/news/deduplication/hashing.py",
+      "role": "contract_source",
+      "sha256": "c242d2be7031f4961c7bc8333f9372995c8e797947d99c4fc92e2b3cde4ec0fc"
+    },
+    {
+      "path": "app/services/news/deduplication/metrics.py",
+      "role": "contract_source",
+      "sha256": "0185b5b15bee749a17cc791cf9d8951dcbb49dd43366fcbd124e1ea7fbf70ce1"
+    },
+    {
+      "path": "app/services/news/deduplication/schemas.py",
+      "role": "contract_source",
+      "sha256": "ab96bf55b0d2aeb805c931027027bd0fc4e2dfa1f3005e90e7c6a43e2e6fcda7"
+    },
+    {
+      "path": "app/services/news/deduplication/similarity.py",
+      "role": "contract_source",
+      "sha256": "35d445007f3e2b64bc24ee6793c538d939ee4a38c23179859424cc4207e882b9"
+    },
+    {
+      "path": "app/services/news/provider_confidence_service.py",
+      "role": "contract_source",
+      "sha256": "52d277b49451dc80d5fe40b72984ce9c9eec1cbbc1dc6a8879fa79d6748a1ed3"
+    },
+    {
+      "path": "app/services/news/source_health_service.py",
+      "role": "contract_source",
+      "sha256": "24a336ae8342868262d69db0bb45262287d13a7e4342b1aaa0ba96d9a3ebea64"
+    },
+    {
+      "path": "app/services/news_scoring/__init__.py",
+      "role": "contract_source",
+      "sha256": "9d0d15cd150adbd2458da687a35c30105ec8ac53cd000649cb44e2a59faa1444"
+    },
+    {
+      "path": "app/services/news_scoring/local_sentiment_engine.py",
+      "role": "contract_source",
+      "sha256": "6b029c2e3b5abf4e244ddd24adb6a6598733c7d22bffddb315e846607d0c02fe"
+    },
+    {
+      "path": "app/services/news_scoring/scoring_service.py",
+      "role": "contract_source",
+      "sha256": "70e7513c24e41041532aa8f1af902e90dd5bcb696a0ca368c4343559afaaeb7c"
+    },
+    {
+      "path": "app/services/observability/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/observability/disaster_recovery_service.py",
+      "role": "contract_source",
+      "sha256": "36f52456331822a2836885731b38f80c0383b48b1e3735b7e6b18fabf91da480"
+    },
+    {
+      "path": "app/services/observability/operational_health_service.py",
+      "role": "contract_source",
+      "sha256": "bbcede148e867e4a71a24803cad345e8592feb0b49d75a1e8fc09df86a21da0b"
+    },
+    {
+      "path": "app/services/observability/operations_control_service.py",
+      "role": "contract_source",
+      "sha256": "aba47cca7d025308f1cc45e475f4b2ecb2171cdcd5dfd3f8b24f944f8fd4f0de"
+    },
+    {
+      "path": "app/services/observability/operations_service.py",
+      "role": "contract_source",
+      "sha256": "13a6c298733b7a5d49f55f83e53db9b65ef61f291b3461c3cb010ef68db264ef"
+    },
+    {
+      "path": "app/services/observability/provider_health_service.py",
+      "role": "contract_source",
+      "sha256": "3e7a1b19559fd09fb4661f9bfc008567f0a2067db2f2f698dcbe663b24976c11"
+    },
+    {
+      "path": "app/services/observability/recovery_service.py",
+      "role": "contract_source",
+      "sha256": "0abc1d2b6fc11d3147f60dbac7b27526408f35f00fd041565a6ce4182633c665"
+    },
+    {
+      "path": "app/services/observability/runtime_status_service.py",
+      "role": "contract_source",
+      "sha256": "fe7d6e2ce88c9748d67610bd6560227c5f5ca1963a29c9ea9812cecb7ba30cf0"
+    },
+    {
+      "path": "app/services/payregister/__init__.py",
+      "role": "contract_source",
+      "sha256": "db1110e4dab10855ef1aa5511544f2ea283be6376cf26f4625f0370a2e0b6c5d"
+    },
+    {
+      "path": "app/services/payregister/context_integrity.py",
+      "role": "contract_source",
+      "sha256": "cebd8a0438982bef3010118f61351854135b29be8d1e1a86ff3ccdb910f171e7"
+    },
+    {
+      "path": "app/services/payregister/lnurl/__init__.py",
+      "role": "contract_source",
+      "sha256": "7a2305292e47060526da4cc8ce2c6cdcc2a33358c65ab5b9c98f6aa024b6e06f"
+    },
+    {
+      "path": "app/services/payregister/lnurl/callback.py",
+      "role": "contract_source",
+      "sha256": "84e173bbdc341162d6202780d8cacac49bcf37d4cff1de402d8f0dd77ab72030"
+    },
+    {
+      "path": "app/services/payregister/lnurl/errors.py",
+      "role": "contract_source",
+      "sha256": "46b801c76aac2537035d7401ed1f2a68bae22727cff2c60ea6a387f9619d408c"
+    },
+    {
+      "path": "app/services/payregister/lnurl/metadata.py",
+      "role": "contract_source",
+      "sha256": "4a653a55f657a3ace58503ce09daab10b2977e568c105e742a0e017468ffc703"
+    },
+    {
+      "path": "app/services/payregister/lnurl/nfc_payload.py",
+      "role": "contract_source",
+      "sha256": "22a107eb5d79da00a3ad94cc400feb7106e78cd1cbed0899db7b95ede2667f67"
+    },
+    {
+      "path": "app/services/payregister/lnurl/payment_context.py",
+      "role": "contract_source",
+      "sha256": "1f181bf7fbf18c082b93f112a5d0f9f6eaf870f5cc32fea0449a834b7c44fc91"
+    },
+    {
+      "path": "app/services/payregister/lnurl/policy.py",
+      "role": "contract_source",
+      "sha256": "ad3590daee97027f7010086dc621f7c0d111d8beac4669f83c97239eb5ee5ef2"
+    },
+    {
+      "path": "app/services/payregister/lnurl/qr_payload.py",
+      "role": "contract_source",
+      "sha256": "db9e408b7183b98b8f6d66b0288ef48226bb5cac1304b2545a28e5bdf231ecd1"
+    },
+    {
+      "path": "app/services/payregister/lnurl/receipt.py",
+      "role": "contract_source",
+      "sha256": "886222159f2efd0f9827b4d989efb8b1ddbcf2126e97973a290939921fa3516a"
+    },
+    {
+      "path": "app/services/payregister/lnurl/settlement.py",
+      "role": "contract_source",
+      "sha256": "40f956baf865d0a9d82672258dd25fb002b24540b0973490999adc33e56ea7e5"
+    },
+    {
+      "path": "app/services/payregister/lnurl/static_endpoint.py",
+      "role": "contract_source",
+      "sha256": "6f912aacf3607cf2b3d1ed228853c63c9cc8012eb2abaaf30fc0d1f1e71e333a"
+    },
+    {
+      "path": "app/services/payregister/lnurl_context.py",
+      "role": "contract_source",
+      "sha256": "e9465e84dc23d769e704a1feb852c829f9cea6e173dea3913855449907d9a191"
+    },
+    {
+      "path": "app/services/payregister/receipt_service.py",
+      "role": "contract_source",
+      "sha256": "80f07c032fc74bd0bfc1a5ffae9cfb0137bd00f70810b37c27de61b92eeb2edb"
+    },
+    {
+      "path": "app/services/payregister/role_binding_service.py",
+      "role": "contract_source",
+      "sha256": "b9b786331c699d39741bf7ed44351b6d6b946668ae71d205206bb59b7656812a"
+    },
+    {
+      "path": "app/services/payregister/shift_service.py",
+      "role": "contract_source",
+      "sha256": "c0922ddf390c76ae357fa55cb3b0fabcb8a2828c4a71f81576a46995fd2bc309"
+    },
+    {
+      "path": "app/services/policy/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/policy/policy_service.py",
+      "role": "contract_source",
+      "sha256": "74ec3dca3e39eaa7eb37fa54b9af2424574d6a08fabcfe66f4caaa5376ce27c9"
+    },
+    {
+      "path": "app/services/privacy/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/privacy/privacy_service.py",
+      "role": "contract_source",
+      "sha256": "a5493eeb1d754b1573a8d72946b7310dc8e7f699c9a8db6a6d6469046c07b58d"
+    },
+    {
+      "path": "app/services/public_site/__init__.py",
+      "role": "contract_source",
+      "sha256": "ee45be96b0c9c1aadae9373295dc0e0841cb777683aa78bf977f4a89fd8f953c"
+    },
+    {
+      "path": "app/services/public_site/feature_catalog.py",
+      "role": "contract_source",
+      "sha256": "d466fae261ca325b13cf36bd095c3be129c7a1153dc86f5679ed513e0bc8df70"
+    },
+    {
+      "path": "app/services/public_site/landing_service.py",
+      "role": "contract_source",
+      "sha256": "789e849c929b50f5e62cbb5db11df136cfb999f007c6f624850e1c47b0e65cb2"
+    },
+    {
+      "path": "app/services/public_site/public_safety.py",
+      "role": "contract_source",
+      "sha256": "5fccb0315af1f9326237b002b4e1c5b020a95f34f5d80cd328d7759f802755f3"
+    },
+    {
+      "path": "app/services/public_site/public_stats_service.py",
+      "role": "contract_source",
+      "sha256": "ccff6b8a455903d63ee6873326a811962d29b7463a392eb9c30c59552b3ba6a5"
+    },
+    {
+      "path": "app/services/public_site/public_trace_presenter.py",
+      "role": "contract_source",
+      "sha256": "641dc806e4b4a03812b89c1ad397f01cc6f27eb6c398cf626ea0a913d66c58bb"
+    },
+    {
+      "path": "app/services/public_site/roadmap_service.py",
+      "role": "contract_source",
+      "sha256": "a929057daad7168ae8c4f955d8af026db182d58e91c737ff5419b06b8219c2a8"
+    },
+    {
+      "path": "app/services/public_site/status_service.py",
+      "role": "contract_source",
+      "sha256": "0c84209915769837cf5a68dbff4e3ade586d3de0d37afa789c8b95e2db7a9379"
+    },
+    {
+      "path": "app/services/reputation/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/reputation/entity_provenance_service.py",
+      "role": "contract_source",
+      "sha256": "f2a923cc3432621b635085aabd6ea6f9c8e1bc3946167c0e6376f911254e27f0"
+    },
+    {
+      "path": "app/services/reputation/source_reputation_service.py",
+      "role": "contract_source",
+      "sha256": "0db158e832821c8cb9b15cc2a4b4ae4bf544ba7b07b9e3e455f9d32b42819db9"
+    },
+    {
+      "path": "app/services/scoring/__init__.py",
+      "role": "contract_source",
+      "sha256": "d325ab86ba9fabc158c28b0a7a7cc03f066c04e5185674b4afd22ef80b0916e7"
+    },
+    {
+      "path": "app/services/scoring/news_scoring.py",
+      "role": "contract_source",
+      "sha256": "da84b6b9d4d65ebdd28d7fc25e3acce4214a8df22344ec58f326e175f3917228"
+    },
+    {
+      "path": "app/services/scoring/onchain_scoring.py",
+      "role": "contract_source",
+      "sha256": "4decf75fb89063c72b7017ad0ef7bfbfe21be37cb6bfe5559419d7b12af7ee27"
+    },
+    {
+      "path": "app/services/script/__init__.py",
+      "role": "contract_source",
+      "sha256": "6c7a715fbff3a44b87505d43543cafd508587d16cb5cea95f1d1def79f3ebbf2"
+    },
+    {
+      "path": "app/services/script/descriptor_awareness_service.py",
+      "role": "contract_source",
+      "sha256": "0200da2b81e6263c82386331a0dabd469a03cf72d429787509af294c160af2c8"
+    },
+    {
+      "path": "app/services/script/script_analyzer_service.py",
+      "role": "contract_source",
+      "sha256": "830f4e6ba0993bfa2577eddda4fb87604e36c87d1163d3cb4c9895f2bc410628"
+    },
+    {
+      "path": "app/services/storage_artifacts/__init__.py",
+      "role": "contract_source",
+      "sha256": "dceb093f22960e022b832e783f8246348245457d86302000ecb7770fb199b5b2"
+    },
+    {
+      "path": "app/services/storage_artifacts/service.py",
+      "role": "contract_source",
+      "sha256": "b81007b91fbff46486ec4f6f8d242bb919ccc2d35e1faaeeddb9d5ad174b0ff8"
+    },
+    {
+      "path": "app/services/treasury/treasury_service.py",
+      "role": "contract_source",
+      "sha256": "afb45aabce52f1dbe453c6aefb99ecb1e3dfd205ecb7a5f196eb2ac8ee9719c8"
+    },
+    {
+      "path": "app/services/usage/__init__.py",
+      "role": "contract_source",
+      "sha256": "30a35b112eb9b6e76c62574a7d610760a430ed9b941f8e9dad0fe94cea5d4766"
+    },
+    {
+      "path": "app/services/usage/metric_usage_aggregates.py",
+      "role": "contract_source",
+      "sha256": "8f0895bdd88b55b4fc209a3cf8fbc85250f7c25e16d809dbb215d0e31ed99451"
+    },
+    {
+      "path": "app/services/usage/metric_usage_models.py",
+      "role": "contract_source",
+      "sha256": "a2ae75088f2fb44932c76757164a822e78c8525e8fff87a800954ac2a3172793"
+    },
+    {
+      "path": "app/services/usage/metric_usage_queries.py",
+      "role": "contract_source",
+      "sha256": "a516b984d33777315729f4c2c439f0a5b1bee0093e746dd25a287aa3a8f3d2a3"
+    },
+    {
+      "path": "app/services/usage/metric_usage_repository.py",
+      "role": "contract_source",
+      "sha256": "b8d80636a00064a65c1d3462f1b2581b91e6fa2f3a5d1df4deefb819ee7a303e"
+    },
+    {
+      "path": "app/services/usage/metric_usage_safety.py",
+      "role": "contract_source",
+      "sha256": "f818f3696e1551453ec67358dd1d88addb59b21b052a97157274b47e461c5555"
+    },
+    {
+      "path": "app/services/usage/metric_usage_service.py",
+      "role": "contract_source",
+      "sha256": "e8ba9fe5d7c5526a1bbedcede766c0e87d5c7a1b5adb237a58c3b9eccbb3192d"
+    },
+    {
+      "path": "app/services/utxo/__init__.py",
+      "role": "contract_source",
+      "sha256": "aaf2482582696172dc4c94ace0a906cd65224d7801fb86fc6566d591d8965095"
+    },
+    {
+      "path": "app/services/utxo/fee_exposure_service.py",
+      "role": "contract_source",
+      "sha256": "83ca0e7609be7aee770dafe3e333f6efae1a9a6a17772726174ebeb0c1793d20"
+    },
+    {
+      "path": "app/services/utxo/utxo_analyzer_service.py",
+      "role": "contract_source",
+      "sha256": "9d22453b6dc1daee425b1598dace37e656a8c0e73f0a30f25aa7dbee4f4f7ad4"
+    },
+    {
+      "path": "app/services/utxo/wallet_structure_analyzer.py",
+      "role": "contract_source",
+      "sha256": "673513c75616927d2d335296d89a463b2debb27b1d3eb0a9260b16688c20b63e"
+    },
+    {
+      "path": "app/services/wallet/health_service.py",
+      "role": "contract_source",
+      "sha256": "dd70d4a5c011abd355afbcd335e6a5d882e01e47136ab7ec488eabc3da33c28e"
+    },
+    {
+      "path": "app/services/wallet_auth/__init__.py",
+      "role": "contract_source",
+      "sha256": "7dac43af2d654cee8e562cf2aa552c44375f2b718c86023b54fb55cd483990d4"
+    },
+    {
+      "path": "app/services/wallet_auth/audit.py",
+      "role": "contract_source",
+      "sha256": "af8d30eab82a23717c49fbadecb2122a2761ef1bae95357b52a942103123f69e"
+    },
+    {
+      "path": "app/services/wallet_auth/auth_intent.py",
+      "role": "contract_source",
+      "sha256": "03fb36dbbff21e1d79867ec6b2caa013b55da9b595df5f32591c8e6faa0f0eac"
+    },
+    {
+      "path": "app/services/wallet_auth/challenge_service.py",
+      "role": "contract_source",
+      "sha256": "2d88bbd26f809e983eb2b2ec888e7652ccb400dd0420d1434f11030ee466a10f"
+    },
+    {
+      "path": "app/services/wallet_auth/compatibility_loader.py",
+      "role": "contract_source",
+      "sha256": "8af75edc8f18d08708a5743f4b90285b5da2a0666174cbbdb7d43f9a3fe00811"
+    },
+    {
+      "path": "app/services/wallet_auth/compatibility_validation.py",
+      "role": "contract_source",
+      "sha256": "d6b053207db2e97a16b2df5904adaae4e25c454cde84bacd09258cfa31992d92"
+    },
+    {
+      "path": "app/services/wallet_auth/device_binding_service.py",
+      "role": "contract_source",
+      "sha256": "94217c66c703c53604351fda54c0f76c834ca622b2227b77ae3dec5dc54c43d3"
+    },
+    {
+      "path": "app/services/wallet_auth/device_key_validation.py",
+      "role": "contract_source",
+      "sha256": "7c321c47c5c033b80a07ea8ff4647d306dfff2e5477b237c391b538ec5cfeeba"
+    },
+    {
+      "path": "app/services/wallet_auth/hardware_assurance.py",
+      "role": "contract_source",
+      "sha256": "0078e1319b2b3083ecece3a081e1a91b7725b2b9b5eab49af75d961b1dd6bc70"
+    },
+    {
+      "path": "app/services/wallet_auth/hardware_evidence.py",
+      "role": "contract_source",
+      "sha256": "035899b54f81dab3416680410f550da66ec8688d35de943f9c86a815827e1d10"
+    },
+    {
+      "path": "app/services/wallet_auth/hardware_wallet.py",
+      "role": "contract_source",
+      "sha256": "c0e94c7aa5b11082275becc7da2bced79d6accf08cfd059edaf44a2428690354"
+    },
+    {
+      "path": "app/services/wallet_auth/human_intent.py",
+      "role": "contract_source",
+      "sha256": "7558177103446c3cdaccb7cb5697beb244af1a6d8997b060de8eba9b43918676"
+    },
+    {
+      "path": "app/services/wallet_auth/integrity_signals.py",
+      "role": "contract_source",
+      "sha256": "1a26c41645302b56a4252eb4cda392410696077e1c9355a135010352d326011b"
+    },
+    {
+      "path": "app/services/wallet_auth/lnurl_recovery_factor.py",
+      "role": "contract_source",
+      "sha256": "a674aaef88612882cc53125996cbe6affa2f0569a568f1c72645e75c29280f2c"
+    },
+    {
+      "path": "app/services/wallet_auth/metrics.py",
+      "role": "contract_source",
+      "sha256": "41b61c306fb1cc9347380f73f1bea5143a3da5d0b5327d7397e7a94d068e17aa"
+    },
+    {
+      "path": "app/services/wallet_auth/offline_validity_pack_bridge.py",
+      "role": "contract_source",
+      "sha256": "8049e0ba635913197e4a5644f1e065bd3919edbd41a254a1bd8046f18630c756"
+    },
+    {
+      "path": "app/services/wallet_auth/principal_repository.py",
+      "role": "contract_source",
+      "sha256": "68accb5272c47a1a990fc5dc627eb224db6b861ea566a25d7186cfea58825d98"
+    },
+    {
+      "path": "app/services/wallet_auth/principal_service.py",
+      "role": "contract_source",
+      "sha256": "b65cf77fc0dd478f4c758ab080f3b6656f107f40d63d3f19ca4747d37cbc25a1"
+    },
+    {
+      "path": "app/services/wallet_auth/principal_types.py",
+      "role": "contract_source",
+      "sha256": "6207c87baf411e2b8bf4755c1608e3dfd17caa4808309586d6432d8437188e2c"
+    },
+    {
+      "path": "app/services/wallet_auth/privacy_commitments.py",
+      "role": "contract_source",
+      "sha256": "71926f338731158ef6e0ad10f2e3467e501c195c606c82f2eaee22a6989e44a2"
+    },
+    {
+      "path": "app/services/wallet_auth/proof_verifier.py",
+      "role": "contract_source",
+      "sha256": "2899fcfadcbfd9f925cc8b27e3099c232cd376a42d591106678f5396f0d924ed"
+    },
+    {
+      "path": "app/services/wallet_auth/quorum_policies.py",
+      "role": "contract_source",
+      "sha256": "14d736c81eddf871c94fef2b4b72948e6245c9b58e683ad1297d1c1ad4a6102e"
+    },
+    {
+      "path": "app/services/wallet_auth/quorum_service.py",
+      "role": "contract_source",
+      "sha256": "6d5da1f63bbdd2ed62d58d678d1d7bc7e603290a3a327a03a4c959c8114ab528"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/__init__.py",
+      "role": "contract_source",
+      "sha256": "d2a06d38f374b21e83fdf0cb102a3ae73d352511c7b89cf3a9c7e6092c15a4df"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/capsule.py",
+      "role": "contract_source",
+      "sha256": "d5b4e089331b78ebbcfe7e00bb22a5676f0e327ab2db56a21a3896b8eb8d36b9"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/cooldown.py",
+      "role": "contract_source",
+      "sha256": "d15ccd01483f769d68627384eef9525124b8fbef2ad71a187770efb3b0d363b0"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/errors.py",
+      "role": "contract_source",
+      "sha256": "891bd55ff9eaafcd1f4e80fb1a47e81d240d5b5f50111e4865afa662fbe5f0e1"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/factor_registry.py",
+      "role": "contract_source",
+      "sha256": "ac790f6a994bc21f7cc4eb54b8cb18a5b4dee64512e0589d3c8d94e1c3956d3a"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/factor_verifier.py",
+      "role": "contract_source",
+      "sha256": "6b67d896b74875336cda2e2bb56b3a8be95123c262aabf104966e2be51a408d6"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/metrics.py",
+      "role": "contract_source",
+      "sha256": "c9d76840482eb2ff313a0e625af3088c299a9ae475747e4e19807b28404640e7"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/models.py",
+      "role": "contract_source",
+      "sha256": "e2d7f7f21203f8010f07712d9411539fd57966f2c62bdf4d1f1c5ce366809c1e"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/policy.py",
+      "role": "contract_source",
+      "sha256": "6037eee345a1e673cd58fcc1be90c9faf70f3452588b927e2bdd4eb811b0d5da"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/redaction.py",
+      "role": "contract_source",
+      "sha256": "7605b02663c1b59386834ddcf7208b162f601d4675a899acaa61d7995c8af40f"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/risk.py",
+      "role": "contract_source",
+      "sha256": "64ade51b18b34125cb10cd2678381694b8e4ea9e6733fb623d33521ab046f8b2"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/state_machine.py",
+      "role": "contract_source",
+      "sha256": "b137cae0326920d9bd89fa93ac6e2155ae2041223fb2941f17cdc939d980f148"
+    },
+    {
+      "path": "app/services/wallet_auth/recovery/verifiers.py",
+      "role": "contract_source",
+      "sha256": "1bdad55062def7d61582ed8de1c41781c4d0cccc94d7e39e4eebf16cd1e64b8c"
+    },
+    {
+      "path": "app/services/wallet_auth/repositories/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/services/wallet_auth/repositories/challenges.py",
+      "role": "contract_source",
+      "sha256": "1177d6a9b0ae43c05a3b416430174cdc36c3a4f28c9a1fe8a5a63491c2db1a72"
+    },
+    {
+      "path": "app/services/wallet_auth/request_verifier.py",
+      "role": "contract_source",
+      "sha256": "978d0236b5b00a2c71f48ed794b9cb4947ab3fb9c589522420fe7787715dfef1"
+    },
+    {
+      "path": "app/services/wallet_auth/session_service.py",
+      "role": "contract_source",
+      "sha256": "1af19eb8e6536cdff5c98658daa85b1518b323c654d815686c98d070f73c8296"
+    },
+    {
+      "path": "app/services/wallet_auth/step_up_policy.py",
+      "role": "contract_source",
+      "sha256": "1072adb7b286ed53c0bd453a303fab84f6c7bc0e67441842d9728c12efc7a5aa"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/__init__.py",
+      "role": "contract_source",
+      "sha256": "0f41b90759594a4749f401e77ae4556b5b07cd4300ffb836bce51c7579361755"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/canonicalization.py",
+      "role": "contract_source",
+      "sha256": "e298c2c5c849e5d9c3609d8d509db6c1e07c90215d264f255f90286621377dce"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/checkpoint_builder.py",
+      "role": "contract_source",
+      "sha256": "fcb643af04a558321d7cfb4784fe17cef97431ba58376241ae5684ae3ac4cad0"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/checkpoint_signer.py",
+      "role": "contract_source",
+      "sha256": "25de1322353a963749599994ccf6255fd1f2caf0f976a4e93442e7a577441a26"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/checkpoint_types.py",
+      "role": "contract_source",
+      "sha256": "685eacb116c917648cbdfd47a684be0e11e78010ef574ee3b169646e245580c3"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/checkpoint_verifier.py",
+      "role": "contract_source",
+      "sha256": "ea8babb49f4b5b2ff9addf6fc88e03256839dbdc4e6f76fcfbed742cdcf24797"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/errors.py",
+      "role": "contract_source",
+      "sha256": "0847e7cba9967e1807bc875222092318439efd3866225b589772008791df63d3"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/merkle.py",
+      "role": "contract_source",
+      "sha256": "3cde926537cafb5046ba4d4dab75571bb314f415bd08b130b76122b3b6ee0977"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/metrics.py",
+      "role": "contract_source",
+      "sha256": "5aa6aa5ac912da550b536fe7776cb75cbb5132925de79ae3749b918f2738dfa2"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/models.py",
+      "role": "contract_source",
+      "sha256": "622d80972cb2059ce7cf85b50945f01f0a031ffba5ddb28305a847f1be043f0d"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/privacy.py",
+      "role": "contract_source",
+      "sha256": "27f0de3c2d7b7a3a6fba67931babd670fbf0e01f2a75c708b283d4e6fc080fd4"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/producers.py",
+      "role": "contract_source",
+      "sha256": "e1be947c2d943fc8c782d18fec6b3315768e892ff6060e41992d6eb4650c356c"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/publication.py",
+      "role": "contract_source",
+      "sha256": "d7db7c739e940d65204dd37f41035fd7760343625020e6d25aac160f6550adad"
+    },
+    {
+      "path": "app/services/wallet_auth/transparency/repositories.py",
+      "role": "contract_source",
+      "sha256": "9474ba8cd2a9b6122518ec5029d5507a851f4d6f4a54769b36809cd9255f969f"
+    },
+    {
+      "path": "app/services/wallet_auth/types.py",
+      "role": "contract_source",
+      "sha256": "95bf4e2bc51fc859d09e1e5353f2210d1d863ad94d5d1f0c6eb8bdadd8e7a600"
+    },
+    {
+      "path": "app/services/wallet_auth/verifiers/__init__.py",
+      "role": "contract_source",
+      "sha256": "9f738a43eaa1f8792427cf5d73f54a3ce31e2e0d6f0130cedfa8d759d50eaa1a"
+    },
+    {
+      "path": "app/services/wallet_auth/verifiers/base.py",
+      "role": "contract_source",
+      "sha256": "b0e6115238fefa917a521504409849f46aa0043fc9c06188baf59d3fd3134559"
+    },
+    {
+      "path": "app/services/wallet_auth/verifiers/bip322.py",
+      "role": "contract_source",
+      "sha256": "c122af8a8d3c5773640ca883f3d9f4bdb8467b99a256e649de3f7cd6bb5b53df"
+    },
+    {
+      "path": "app/services/wallet_auth/verifiers/bip322_backend.py",
+      "role": "contract_source",
+      "sha256": "59ab040d49a19103c0fadc5401ca9fd9ac76d5fde017e69eeae5e3b63572035d"
+    },
+    {
+      "path": "app/services/wallet_auth/verifiers/bip322_codec.py",
+      "role": "contract_source",
+      "sha256": "c0dafb192379f78c5356270f23f4531a0b1c0d824a2428b49f4ae6f29a8f66ff"
+    },
+    {
+      "path": "app/services/wallet_auth/verifiers/bip322_transactions.py",
+      "role": "contract_source",
+      "sha256": "0993b9f8fbd6b7e74765f1537fc690d52e295cef42c33ce1a37bcb53de514089"
+    },
+    {
+      "path": "app/services/wallet_auth/verifiers/legacy_message.py",
+      "role": "contract_source",
+      "sha256": "adb8d959b07a1fcd2cf4ee6cc0f6df79e884abcaf76c8651bfa8f99c280a619d"
+    },
+    {
+      "path": "app/services/wallet_auth/wallet_compatibility.py",
+      "role": "contract_source",
+      "sha256": "51fe90d58017ebb5f7529b1e14da32362d6b01a8e3ae1d288aee712596b22a39"
+    },
+    {
+      "path": "app/storage/__init__.py",
+      "role": "contract_source",
+      "sha256": "f3c7774608251b2aa1e2f2ed45249818ba3614d0ec8a4f3675da7cc14afc06eb"
+    },
+    {
+      "path": "app/storage/analytics_store/__init__.py",
+      "role": "contract_source",
+      "sha256": "ce39904f739411baf79f15b6327d8673e5fa3a359ddf0cef659852eb413ad4ce"
+    },
+    {
+      "path": "app/storage/analytics_store/base.py",
+      "role": "contract_source",
+      "sha256": "e5256ffa131034eae6d3378fcc8e04c51dc76c77a56a13e9116aacf39753803a"
+    },
+    {
+      "path": "app/storage/analytics_store/clickhouse.py",
+      "role": "contract_source",
+      "sha256": "a14b46f28e44c04327f0002d460028ac8f81900d1b87036994b5ac90d65567e7"
+    },
+    {
+      "path": "app/storage/analytics_store/clickhouse_schema.py",
+      "role": "contract_source",
+      "sha256": "b559852de0beff6393ca9b62a5a71b97da3a0c5e66b8c01d76b7ca2c7e513fd9"
+    },
+    {
+      "path": "app/storage/analytics_store/disabled.py",
+      "role": "contract_source",
+      "sha256": "34af832074e9d0fe0e7ae3cd0bc7e04c203ec9722c855ebf373d437cda2bb679"
+    },
+    {
+      "path": "app/storage/analytics_store/errors.py",
+      "role": "contract_source",
+      "sha256": "694e8eb49b511cb3eb89d0504b0cb69dd7d1163882838558dd54687a6067b5ce"
+    },
+    {
+      "path": "app/storage/analytics_store/health.py",
+      "role": "contract_source",
+      "sha256": "6b77b368d9430634d4e4f04cc4970c40fefba58c118aa26b50d8d0302fb687b9"
+    },
+    {
+      "path": "app/storage/analytics_store/schemas.py",
+      "role": "contract_source",
+      "sha256": "b03469e83bb982c6ff903ac28e1777194de895fe45896bf76ddff44b2ec51939"
+    },
+    {
+      "path": "app/storage/constants.py",
+      "role": "contract_source",
+      "sha256": "00d34173c087552394d85694dfefdc979d0439ad4b234839ec4d3c8d45fada26"
+    },
+    {
+      "path": "app/storage/errors.py",
+      "role": "contract_source",
+      "sha256": "c48a2c41ea0e24bdf8c8192bf50b5f74f607b5f64580a41f3b8aa64d0915448b"
+    },
+    {
+      "path": "app/storage/evidence/__init__.py",
+      "role": "contract_source",
+      "sha256": "78c10a2f1250a66fc8fe5ff28b6683d3a34f5bdd2253bd1a99c68866c7cebd31"
+    },
+    {
+      "path": "app/storage/evidence/checks.py",
+      "role": "contract_source",
+      "sha256": "171f5a6814ac85f488b8e6a4a4e3beda3a58d5864f0405a9250d7ef8942f833a"
+    },
+    {
+      "path": "app/storage/evidence/generator.py",
+      "role": "contract_source",
+      "sha256": "f23a8d5cf488205f05f757b225ca65bcb8d2fd37a37f0a905de0b496c0ef67ae"
+    },
+    {
+      "path": "app/storage/evidence/models.py",
+      "role": "contract_source",
+      "sha256": "a63a6ba78267661cc76a40f2ec9cdcda8e8f02a3738ee95d5c59e52df0ea7d10"
+    },
+    {
+      "path": "app/storage/evidence/writer.py",
+      "role": "contract_source",
+      "sha256": "e4e7e12ed3f5fbeda03bb83c9b28ffcc26c30c732af0cbe733aee37ad7b3ae4f"
+    },
+    {
+      "path": "app/storage/health.py",
+      "role": "contract_source",
+      "sha256": "0d3826251342d97cb34df030c280da67bb4f6b688daaa8eacfcdfb9f298c8294"
+    },
+    {
+      "path": "app/storage/health_checks.py",
+      "role": "contract_source",
+      "sha256": "e01ad5211ad4bfacfb332eee25ab399c7891dcb5d560246ee8663737c3d808ba"
+    },
+    {
+      "path": "app/storage/interfaces.py",
+      "role": "contract_source",
+      "sha256": "07e0975abaedc9bc62517e13513ad58a775ec1a6e58e89bcb03b70ecbba4f1d8"
+    },
+    {
+      "path": "app/storage/object_store/__init__.py",
+      "role": "contract_source",
+      "sha256": "c2d64516af3e7609e483b8fd2095e0b9355a2b33cc525b800335f9e06ac3aab3"
+    },
+    {
+      "path": "app/storage/object_store/checksums.py",
+      "role": "contract_source",
+      "sha256": "72447b865a5d660b8708e7179bbe5fae759cc0f2ea6ef731cb2b9c65a776d6ff"
+    },
+    {
+      "path": "app/storage/object_store/client.py",
+      "role": "contract_source",
+      "sha256": "a4de073dc990600166124bd8ba18cfc8f69f5ca3926760964b703e63ee481222"
+    },
+    {
+      "path": "app/storage/object_store/errors.py",
+      "role": "contract_source",
+      "sha256": "cb3578b6fcaa0b483c4e692fc53945daea55f935e10d1e45c18ed736fb56f8bd"
+    },
+    {
+      "path": "app/storage/object_store/local_store.py",
+      "role": "contract_source",
+      "sha256": "bb0099f534824a6f60d9789b3fa1926e1fba830cc21d0fb7b872ea0fd1bd1654"
+    },
+    {
+      "path": "app/storage/object_store/minio_store.py",
+      "role": "contract_source",
+      "sha256": "9f6bb6cf9e09954dd02ad4f97915e43fc38c603b66a69b4b23552fd00688b28c"
+    },
+    {
+      "path": "app/storage/object_store/schemas.py",
+      "role": "contract_source",
+      "sha256": "e88cc165392e572821f21cb4f12a340a6142dba131a596478f27f77887710788"
+    },
+    {
+      "path": "app/storage/outbox/__init__.py",
+      "role": "contract_source",
+      "sha256": "2c6c44a432a61bc3f066fb32dc3ef01e55489d6a67b03791d040ec629eb8d839"
+    },
+    {
+      "path": "app/storage/outbox/enums.py",
+      "role": "contract_source",
+      "sha256": "d07f32f1895ee67e112b1d3f00c1e72242f4a8b10c3e5095a083f880e877881b"
+    },
+    {
+      "path": "app/storage/outbox/errors.py",
+      "role": "contract_source",
+      "sha256": "115157e81069f52a2a297e446f502c5df532e672d5b95c57307066f29e04f0c2"
+    },
+    {
+      "path": "app/storage/outbox/schemas.py",
+      "role": "contract_source",
+      "sha256": "4c7b1d7fb5012ccc2607aff83c792e51a6d9b5f5890c15039805848bfd0a3018"
+    },
+    {
+      "path": "app/storage/outbox/service.py",
+      "role": "contract_source",
+      "sha256": "7677dadf2efc850655c0b46922effe61b747d816cfa6aea92838abe10900ba9f"
+    },
+    {
+      "path": "app/storage/profiles.py",
+      "role": "contract_source",
+      "sha256": "f6bc29ed688f050a329c238e6bf1465c964d4db47bfc8a32c328c7acc2a70270"
+    },
+    {
+      "path": "app/storage/projections/__init__.py",
+      "role": "contract_source",
+      "sha256": "09189ef5ab3c0a7c12c92479a7ff65b09a171669c8843d8d86bec4ef0d02d528"
+    },
+    {
+      "path": "app/storage/projections/clickhouse_projector.py",
+      "role": "contract_source",
+      "sha256": "f08d700d34602c9448f648cd966d569ed22024771ba0460c2764b4f7b1b34a9d"
+    },
+    {
+      "path": "app/storage/projections/schemas.py",
+      "role": "contract_source",
+      "sha256": "d8d60d6ae53c323df9d6cd85cf3a09fd710e94db4c609c60cae1125bd09e7b9a"
+    },
+    {
+      "path": "app/storage/redis_boundaries.py",
+      "role": "contract_source",
+      "sha256": "402148e1106d57f8c679616eb7d815dece200bc7249c7862b6cf951224091a86"
+    },
+    {
+      "path": "app/storage/registry.py",
+      "role": "contract_source",
+      "sha256": "b1cc1b56b551ab17e62e7ef98724b1299bb956ae494716a8eaf787c4895d41d5"
+    },
+    {
+      "path": "app/storage/schemas.py",
+      "role": "contract_source",
+      "sha256": "c1e8d5bb97dee8d1d6c04e0fa1b946171b9ac553d2eb49c919d4f38f1bdb8f57"
+    },
+    {
+      "path": "app/storage/timeseries/__init__.py",
+      "role": "contract_source",
+      "sha256": "ceeb9f0c2ba3abb099f162b3ff2e331a02513a0b53c07b3293b3c94b8ba24f56"
+    },
+    {
+      "path": "app/storage/timeseries/config.py",
+      "role": "contract_source",
+      "sha256": "c612150f4ecba510431399d1107c99d33f4c86fd5a9fc0d61d8f9cee7ac01b9f"
+    },
+    {
+      "path": "app/storage/timeseries/errors.py",
+      "role": "contract_source",
+      "sha256": "0c2ddd4fdeb36f83fd4884bbba5d7a654d04b8bf5cf30b19148f34f94aec1d75"
+    },
+    {
+      "path": "app/storage/timeseries/health.py",
+      "role": "contract_source",
+      "sha256": "676a91d406bd857a5836e87994a9afd6de8c45053fe3d784ffb8e7ea020b324a"
+    },
+    {
+      "path": "app/storage/timeseries/hypertables.py",
+      "role": "contract_source",
+      "sha256": "3b6fe5a39624c3dde4190456eb11f88a149c85135865222072328bc29e68940c"
+    },
+    {
+      "path": "app/storage/timeseries/operations.py",
+      "role": "contract_source",
+      "sha256": "b2a26c5d55b13c8e33f044643729afad54a9a4d1a1d6f0350459e6ad66ccc4cc"
+    },
+    {
+      "path": "app/storage/timeseries/repositories.py",
+      "role": "contract_source",
+      "sha256": "f452c2b7c120005a7f23992c2a54a6b43d7219651e99296639999ba234446211"
+    },
+    {
+      "path": "app/tasks/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/tasks/audit_tasks.py",
+      "role": "contract_source",
+      "sha256": "bcff326c8a9ace5638cf1396b3d55e649b47c0e05b07b0e74f82dd282f3e7742"
+    },
+    {
+      "path": "app/tasks/candle_attribution_tasks.py",
+      "role": "contract_source",
+      "sha256": "7610bc00ca2c0399cff4a157851098fe910329d3f442e336437080ad33616cd8"
+    },
+    {
+      "path": "app/tasks/celery_app.py",
+      "role": "contract_source",
+      "sha256": "eb0ae19a697b009645f2d7f2b4e6630eef76e24896b8dc3a964900f422fbb70d"
+    },
+    {
+      "path": "app/tasks/delivery_tasks.py",
+      "role": "contract_source",
+      "sha256": "ac2a7c7aeb65f8c8a2b28329e16d53d6d0fc128a883f7bce0f9f1f6981895cbd"
+    },
+    {
+      "path": "app/tasks/digest_tasks.py",
+      "role": "contract_source",
+      "sha256": "c8ba72e23cd7b021ac5118d55dbf9ef75c8af5f3fa2bc6b3405c49e09de482c2"
+    },
+    {
+      "path": "app/tasks/intelligence/build_timeline_events.py",
+      "role": "contract_source",
+      "sha256": "792bc272d7bb59502531f106af17ca7219fa00715f23ca6b9f0528f697b8f656"
+    },
+    {
+      "path": "app/tasks/maintenance_tasks.py",
+      "role": "contract_source",
+      "sha256": "e1850e996d52a103be10abd578270953118ffeb29dbe72eb13f3d650bef37989"
+    },
+    {
+      "path": "app/tasks/market/candles.py",
+      "role": "contract_source",
+      "sha256": "935b2df8ae084f2685d1fd1bc2cb897e5835d045c4d3c1c06234455573fd29ce"
+    },
+    {
+      "path": "app/tasks/market_build_tasks.py",
+      "role": "contract_source",
+      "sha256": "158d28fc5b345396c70ed456888ad6f7aaa0a3d9d99fdb322e4ccb3d0a621cff"
+    },
+    {
+      "path": "app/tasks/market_candles_tasks.py",
+      "role": "contract_source",
+      "sha256": "4b10955fefdce093b008f3f8303b843c1232aaf7c110a1fe93d30c754dad4614"
+    },
+    {
+      "path": "app/tasks/market_collect_btc_price.py",
+      "role": "contract_source",
+      "sha256": "47af3da1637972b0d1e6486c2134c038e0d7ecf2a8c6f920db25f238dd874ae1"
+    },
+    {
+      "path": "app/tasks/market_collectors.py",
+      "role": "contract_source",
+      "sha256": "a6f435d6aac589faf2c8cc2973e982148cec7ba39e655783c8ca3a4a49917756"
+    },
+    {
+      "path": "app/tasks/news_event_tasks.py",
+      "role": "contract_source",
+      "sha256": "fc7c8975440e3bb06cbb9e94c4019b0b8ae38cb6f03a122a19e557fbcad3ac22"
+    },
+    {
+      "path": "app/tasks/news_health_tasks.py",
+      "role": "contract_source",
+      "sha256": "3150c28a1558a437b93a38eab5e6dfbb1deadc13f1f7525656e84fdfe9e46033"
+    },
+    {
+      "path": "app/tasks/news_price_impact_tasks.py",
+      "role": "contract_source",
+      "sha256": "63cfbb9049130f3d9346f21b490e032a2e03b5ffd3b55961214f53eb787f3719"
+    },
+    {
+      "path": "app/tasks/news_scoring_tasks.py",
+      "role": "contract_source",
+      "sha256": "15c340b74bcc31a899b73bc61bb5004c98f384375ca9210dfbc3231d3e8595de"
+    },
+    {
+      "path": "app/tasks/news_tasks.py",
+      "role": "contract_source",
+      "sha256": "734ed8ea805c991801182747b1e286043ede07dd82062800a905d8b94d37452e"
+    },
+    {
+      "path": "app/tasks/observability_tasks.py",
+      "role": "contract_source",
+      "sha256": "9683b51e8ff46a21762fcd7e4d3863b792239b6e6be787afa9377f99dc0ae468"
+    },
+    {
+      "path": "app/tasks/onchain_tasks.py",
+      "role": "contract_source",
+      "sha256": "4d0f6bc3926b52c97d2b4ed5e522b988790f92e0eb5924b793bb385a636212df"
+    },
+    {
+      "path": "app/tasks/outbox_tasks.py",
+      "role": "contract_source",
+      "sha256": "a5cdd378a190e2479c1534a7823349a2680d4dc0fd1438422ac155eaa3871297"
+    },
+    {
+      "path": "app/tasks/policy_tasks.py",
+      "role": "contract_source",
+      "sha256": "3dd0a0b40bd02b9c8906756171ed54f1a71341ddefdd1fd5e63719d441e77b86"
+    },
+    {
+      "path": "app/tasks/privacy_tasks.py",
+      "role": "contract_source",
+      "sha256": "073349be617d401723485df76a59e5a23d83971f70fdcfd8b36889d1832b1f8b"
+    },
+    {
+      "path": "app/tasks/reputation_tasks.py",
+      "role": "contract_source",
+      "sha256": "9f1355b95f7087942b2fc23830dd2e657d9f1d6581fe2c3a727c5499471d27e6"
+    },
+    {
+      "path": "app/tasks/signal_tasks.py",
+      "role": "contract_source",
+      "sha256": "3cee2b9695ebf5ee2e2b30c052817c3e5a933369cde26a08abb46983ba948d36"
+    },
+    {
+      "path": "app/tasks/storage_outbox_tasks.py",
+      "role": "contract_source",
+      "sha256": "06c7b63051b4a0a23b20327569dcf1877781e11f9ff795fe90bbc277416abb2e"
+    },
+    {
+      "path": "app/tasks/treasury_tasks.py",
+      "role": "contract_source",
+      "sha256": "6986e23ebf1f7f0b14e80df2768fbe0c0e4028cd3255dbe2dc92d29c42f345dc"
+    },
+    {
+      "path": "app/tasks/wallet_tasks.py",
+      "role": "contract_source",
+      "sha256": "a61d9ab1a12a0126547ca132aa340a521c81b6a411a35c5a33888ace1df40698"
+    },
+    {
+      "path": "app/web/__init__.py",
+      "role": "contract_source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app/web/market_time_machine_service.py",
+      "role": "contract_source",
+      "sha256": "8dd143a6868d80698022610384c2308ce5aa366d5430daebca26b29f5b160ae8"
+    },
+    {
+      "path": "app/web/metrics.py",
+      "role": "contract_source",
+      "sha256": "305d6c84128d2e0a05b9f92612dc6284d3b2be22711ab3580c3e5b54a6d30054"
+    },
+    {
+      "path": "app/web/routes.py",
+      "role": "contract_source",
+      "sha256": "c05a94748f76f65ca3ba671d5b67d8d9485d2ea8aff7cb507d323431c8b7f512"
+    },
+    {
+      "path": "app/web/routes_market.py",
+      "role": "contract_source",
+      "sha256": "ae60a9f392bd7b588b0c710f1227e2874b4d2a1ab8c7093446731a71ab15b93f"
+    },
+    {
+      "path": "app/web/view_models/market.py",
+      "role": "contract_source",
+      "sha256": "6b874e29dd59ca4d4a815735830a829eae76137986f07b7bfd8d7a0d3f7c002f"
+    },
+    {
+      "path": "registry:http-operation-selection",
+      "role": "contract_registry",
+      "sha256": "95844522c31364bd545fea5137cfb603cc27a8a524aa259907188d8620c1f2a8"
+    },
+    {
+      "path": "frontend/bastion_ui/transport/operation_compiler.py",
+      "role": "generator",
+      "sha256": "28667439d7b9415a4b47c1ef6db4928fb749a1f15a00242569a7794bbf438944"
+    },
+    {
+      "path": "frontend/bastion_ui/transport/operation_emitter.py",
+      "role": "generator",
+      "sha256": "b4b3b0becdd5076c4d239b0bf9df3771300ed1b47e0b40afe3712e7d3f4c5e4e"
+    },
+    {
+      "path": "frontend/bastion_ui/transport/schema_compiler.py",
+      "role": "generator",
+      "sha256": "404ad02a61764f576819fa6326446d43b23cb52e9ac41a94f678ca73c1cae43b"
+    },
+    {
+      "path": "frontend/bastion_ui/transport/source_emitter.py",
+      "role": "generator",
+      "sha256": "8e74e247d7ee8dba77139026a5eeea0650f270d8ce2dc221dec7587902166ffd"
+    },
+    {
+      "path": "scripts/analyze_http_generation_preflight.py",
+      "role": "generator",
+      "sha256": "0ee61a87e727304b59c47bf395332abe83ab36af933dd49535705cbc8850cc07"
+    },
+    {
+      "path": "scripts/generate_frontend_migration_audit.py",
+      "role": "generator",
+      "sha256": "19406c00a0437a3101f0e863306e44b0b02be065a9dfc716df1435c5623150f7"
+    },
+    {
+      "path": "scripts/generate_http_transport.py",
+      "role": "generator",
+      "sha256": "9bf8268c615da43998890782384007f89f1638a4693a7590e98d722159bc9fbf"
+    },
+    {
+      "path": "scripts/stage1_fingerprints.py",
+      "role": "generator",
+      "sha256": "4c025f821bba4f08e6f981a348f3a1e3c5cbb4739f03f182788f8604ddef7fb0"
+    }
+  ],
+  "source_revision": "818acbe761a20b84940ba9493076c09a78bbc22e"
+}

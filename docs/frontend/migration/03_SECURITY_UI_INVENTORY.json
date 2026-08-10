@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {"route": "/", "classification": "PUBLIC", "guard": "none", "future_owner": "Public shell"},
+    {"route": "/access", "classification": "ACCESS_AWARE", "guard": "informational", "future_owner": "Prompt 16/25"},
+    {"route": "/access/security-posture", "classification": "PROTECTED", "guard": "Feature67", "operation_id": "get_me_api_v1_access_me_get", "security_profile": "access-session:get_me_api_v1_access_me_get", "future_owner": "Prompt 16/25"},
+    {"route": "/console", "classification": "UNKNOWN", "guard": "legacy-unmigrated", "future_owner": "Prompt 19/25"}
+  ],
+  "anti_patterns": [
+    {"id": "P3-SEC-0001", "pattern": "legacy wallet/access state retains generic payloads", "disposition": "DEFERRED", "future_owner": "Prompts 16-18", "risk": "must not become Feature67 authority"},
+    {"id": "P3-SEC-0002", "pattern": "console routes lack canonical Feature67 requirements", "disposition": "DEFERRED", "future_owner": "Prompt 19/25", "risk": "unknown requirements fail closed when registered"}
+  ]
+}

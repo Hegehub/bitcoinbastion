@@ -21,6 +21,8 @@ sys.path.insert(0, str(ROOT))
 from app.main import app  # noqa: E402
 from app.api.v1.ws import router as ws_router  # noqa: E402
 from app.core.config import get_settings  # noqa: E402
+from app.services.events.websocket_registry import WEBSOCKET_CONTRACTS  # noqa: E402
+from scripts.stage1_fingerprints import manifest as stage1_manifest  # noqa: E402
 
 OUT = ROOT / "docs/frontend/migration"
 METHODS = ("delete", "get", "head", "options", "patch", "post", "put", "trace")
@@ -81,7 +83,7 @@ def ref(v: Any) -> str:
         c = v["content"]
         return ref(c.get("application/json", next(iter(c.values()), {})))
     if v.get("type") == "array":
-        return f"list[{ref(v.get('items',{})) or 'unknown'}]"
+        return f"list[{ref(v.get('items', {})) or 'unknown'}]"
     return v.get("title") or v.get("type", "")
 
 
@@ -102,7 +104,9 @@ def prompt_for(path: str) -> int:
     if "evidence" in p:
         return 15 if any(x in p for x in ("replay", "verify", "lineage", "export")) else 14
     if any(x in p for x in ("market", "signal", "news", "intelligence", "timeline")):
-        return 10 if any(x in p for x in ("timeline", "evidence", "narrative", "attribution")) else 9
+        return (
+            10 if any(x in p for x in ("timeline", "evidence", "narrative", "attribution")) else 9
+        )
     if any(
         x in p
         for x in (
@@ -118,10 +122,19 @@ def prompt_for(path: str) -> int:
     ):
         return 9 if any(x in p for x in ("incident", "slo", "job")) else 8
     mapping = [
-        ("policy", 19), ("audit", 19), ("treasury", 19),
-        ("entit", 20), ("watch", 20), ("fees", 20), ("onchain", 20),
-        ("wallet", 20), ("citadel", 20), ("privacy", 23),
-        ("plugin", 21), ("webhook", 21), ("explorer", 21),
+        ("policy", 19),
+        ("audit", 19),
+        ("treasury", 19),
+        ("entit", 20),
+        ("watch", 20),
+        ("fees", 20),
+        ("onchain", 20),
+        ("wallet", 20),
+        ("citadel", 20),
+        ("privacy", 23),
+        ("plugin", 21),
+        ("webhook", 21),
+        ("explorer", 21),
     ]
     for key, n in mapping:
         if key in p:
@@ -133,8 +146,10 @@ def disposition(method: str, path: str) -> tuple[str, str, str]:
     p = path.lower()
     deferred = DEFERRED_HTTP.get((method, path))
     if deferred:
-        return "DEFERRED_WITH_REASON", deferred["reason_code"], (
-            "Access" if "/access/" in p else "Core"
+        return (
+            "DEFERRED_WITH_REASON",
+            deferred["reason_code"],
+            ("Access" if "/access/" in p else "Core"),
         )
     if any(x in p for x in SEPARATE_MARKERS):
         return (
@@ -192,17 +207,34 @@ def frontend_literals() -> tuple[list[str], dict[str, list[str]]]:
     return sorted(found), found
 
 
-def has_untyped_schema(value: object, schemas: dict[str, Any], visited: set[str] | None = None) -> bool:
+def has_untyped_schema(
+    value: object, schemas: dict[str, Any], visited: set[str] | None = None
+) -> bool:
     """Detect backend `Any` schema fragments without inventing a frontend type."""
     seen = visited or set()
     if isinstance(value, dict):
         meaningful = {
-            "$ref", "type", "anyOf", "oneOf", "allOf", "enum", "const",
-            "properties", "additionalProperties",
+            "$ref",
+            "type",
+            "anyOf",
+            "oneOf",
+            "allOf",
+            "enum",
+            "const",
+            "properties",
+            "additionalProperties",
         }
-        if value and not meaningful.intersection(value) and set(value) <= {
-            "title", "description", "default", "examples",
-        }:
+        if (
+            value
+            and not meaningful.intersection(value)
+            and set(value)
+            <= {
+                "title",
+                "description",
+                "default",
+                "examples",
+            }
+        ):
             return True
         if not value:
             return True
@@ -227,6 +259,7 @@ def main() -> None:
     spec = app.openapi()
     schemas = spec.get("components", {}).get("schemas", {})
     head = git("rev-parse", "HEAD")
+    fingerprints = stage1_manifest()
     # Bind generated artifacts to the source revision rather than wall-clock time.
     # This preserves an auditable UTC timestamp while making regeneration at the
     # same HEAD byte-for-byte deterministic.
@@ -249,12 +282,15 @@ def main() -> None:
             req = ref(body)
             responses = op.get("responses", {})
             success_status = next((code for code in sorted(responses) if code.startswith("2")), "")
-            response = "NoContent" if success_status == "204" else ref(responses.get(success_status, {}))
+            response = (
+                "NoContent" if success_status == "204" else ref(responses.get(success_status, {}))
+            )
             success_content = responses.get(success_status, {}).get("content", {})
             active_ui = disp in ("UI_REQUIRED", "UI_OPTIONAL")
             legacy_html = "text/html" in success_content and disp in {"UI_REQUIRED", "UI_OPTIONAL"}
             schema_authority_missing = active_ui and (
-                bool(body) and has_untyped_schema(body, schemas)
+                bool(body)
+                and has_untyped_schema(body, schemas)
                 or has_untyped_schema(responses.get(success_status, {}), schemas)
             )
             protected = bool(op.get("security"))
@@ -300,20 +336,38 @@ def main() -> None:
                 or schema_authority_missing
                 else "AUTHORITATIVE_NOW"
             )
-            blocker_id = deferred["blocker_id"] if deferred else (
-                "P1B0-B01+B02" if unresolved_protected and unresolved_mutation else
-                "P1B0-B01" if unresolved_protected else
-                "P1B0-B02" if unresolved_mutation else
-                "P1B0-B03-HTML" if legacy_html else
-                "P1B0-B03-SCHEMA" if schema_authority_missing else
-                "P1B-B01" if transport_contract_blocked else None
+            blocker_id = (
+                deferred["blocker_id"]
+                if deferred
+                else (
+                    "P1B0-B01+B02"
+                    if unresolved_protected and unresolved_mutation
+                    else "P1B0-B01"
+                    if unresolved_protected
+                    else "P1B0-B02"
+                    if unresolved_mutation
+                    else "P1B0-B03-HTML"
+                    if legacy_html
+                    else "P1B0-B03-SCHEMA"
+                    if schema_authority_missing
+                    else "P1B-B01"
+                    if transport_contract_blocked
+                    else None
+                )
             )
             future_owner = (
-                deferred["future_owner"] if deferred else (
-                    f"Prompt {prompt_for(path)}/25" if contract_authority_deferred else
-                    "Prompt 25/25" if legacy_html else
-                    "Prompt 1B/25" if schema_authority_missing else
-                    "Prompt 1B/25" if transport_contract_blocked else None
+                deferred["future_owner"]
+                if deferred
+                else (
+                    f"Prompt {prompt_for(path)}/25"
+                    if contract_authority_deferred
+                    else "Prompt 25/25"
+                    if legacy_html
+                    else "Prompt 1B/25"
+                    if schema_authority_missing
+                    else "Prompt 1B/25"
+                    if transport_contract_blocked
+                    else None
                 )
             )
             reentry = (
@@ -333,7 +387,7 @@ def main() -> None:
             )
             ops.append(
                 {
-                    "matrix_id": f"HTTP-{len(ops)+1:04d}",
+                    "matrix_id": f"HTTP-{len(ops) + 1:04d}",
                     "method": method.upper(),
                     "path": path,
                     "operation_id": oid,
@@ -368,9 +422,13 @@ def main() -> None:
                     "authority_future_owner": future_owner,
                     "authority_reentry_condition": reentry,
                     "deferred_contract_kind": (
-                        "protected_mutation" if unresolved_protected and unresolved_mutation else
-                        "protected" if unresolved_protected else
-                        "mutation" if unresolved_mutation else None
+                        "protected_mutation"
+                        if unresolved_protected and unresolved_mutation
+                        else "protected"
+                        if unresolved_protected
+                        else "mutation"
+                        if unresolved_mutation
+                        else None
                     ),
                     "typed_client_owner": (
                         f"bastion_ui.transport.generated_http:{oid}" if generated_owner else "none"
@@ -391,7 +449,11 @@ def main() -> None:
                     "implementation_prompt": (
                         prompt_for(path)
                         if disp in ("UI_REQUIRED", "UI_OPTIONAL", "SEPARATE_PRODUCT")
-                        else (int(deferred["future_owner"].split()[1].split("/")[0]) if deferred else None)
+                        else (
+                            int(deferred["future_owner"].split()[1].split("/")[0])
+                            if deferred
+                            else None
+                        )
                     ),
                     "coverage_state": (
                         coverage
@@ -403,23 +465,25 @@ def main() -> None:
             )
     # Starlette registrations are runtime truth; OpenAPI omits WS.
     ws = []
+    ws_contracts = {contract.route: contract for contract in WEBSOCKET_CONTRACTS}
     for route in sorted(ws_router.routes, key=lambda r: getattr(r, "path", "")):
         if route.__class__.__name__ == "APIWebSocketRoute":
             path = f"{get_settings().api_prefix}{route.path}"
             disp = "UI_REQUIRED" if path != "/api/v1/ws/events" else "UI_OPTIONAL"
+            contract = ws_contracts[path]
             ws.append(
                 {
-                    "matrix_id": f"WS-{len(ws)+1:03d}",
+                    "matrix_id": f"WS-{len(ws) + 1:03d}",
                     "channel": path,
                     "operation_id": route.name,
                     "backend_owner": "websockets/events",
-                    "message_schema": "system/error/event JSON from websocket_serialization and broker",
-                    "authority_status": "DEFERRED_AUTHORITY",
-                    "authority_blocker_id": f"P1R2-B{len(ws)+5:02d}",
-                    "authority_future_owner": "Prompt 4/25",
-                    "authority_reentry_condition": "authoritative backward-compatible envelope and payload version contracts with unknown-version tests",
-                    "wire_version_authority": "unavailable",
-                    "auth_contract": "no OpenAPI security metadata; runtime origin/Proof-of-Access review required",
+                    "message_schema": "WireFrame discriminated union from websocket_contracts",
+                    "authority_status": "AUTHORITATIVE_NOW",
+                    "authority_blocker_id": contract.blocker_id,
+                    "authority_future_owner": "Prompt 4/25 (resolved)",
+                    "authority_reentry_condition": "none; version changes follow documented compatibility policy",
+                    "wire_version_authority": str(contract.wire_version),
+                    "auth_contract": contract.security_profile,
                     "reconnect_fallback": "bounded exponential backoff, heartbeat 10–120s, visible stale state, HTTP fallback required; replay currently unavailable",
                     "disposition": disp,
                     "reason": "Live user-visible domain updates; generic event stream optional when specialized channels exist.",
@@ -429,10 +493,10 @@ def main() -> None:
                         else "Core"
                     ),
                     "frontend_surface": "assigned domain screen",
-                    "coverage_state": "NOT_STARTED",
+                    "coverage_state": "CLIENT_ONLY",
                     "implementation_prompt": 4,
                     "privacy_policy": "limit_payload=true; no session/secret material persisted",
-                    "contract_test": "backend tests only; frontend subscriber not found",
+                    "contract_test": "tests/contract/test_websocket_versioned_contracts.py",
                     "browser_e2e": "not verified",
                     "rollback_disable": "disable subscription and retain visible polling/unavailable state",
                 }
@@ -440,6 +504,8 @@ def main() -> None:
     norm = {
         "metadata": {
             "head": head,
+            "contract_source_fingerprint": fingerprints["contract_source_fingerprint"],
+            "generator_fingerprint": fingerprints["generator_fingerprint"],
             "branch": git("branch", "--show-current"),
             "generated_at_utc": stamp,
             "profile": "current environment / app.core.config defaults",
@@ -525,7 +591,8 @@ def main() -> None:
             for op in ops
             if op["authority_status"] == "DEFERRED_AUTHORITY"
         ],
-        "deferred_websocket_protocols": ws,
+        "authoritative_websocket_contracts": ws,
+        "deferred_websocket_protocols": [],
     }
     (OUT / "01_HTTP_CLIENT_OWNERSHIP_INPUT.json").write_text(
         json.dumps(ownership, indent=2, sort_keys=True) + "\n"

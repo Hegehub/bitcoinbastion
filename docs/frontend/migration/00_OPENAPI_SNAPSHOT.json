@@ -21,8 +21,10 @@
   "metadata": {
     "branch": "work",
     "command": "python scripts/generate_frontend_migration_audit.py",
-    "generated_at_utc": "2026-08-09T18:07:09+00:00",
-    "head": "0ff0049114b864079ed7aabbc3272c82b5d9b106",
+    "contract_source_fingerprint": "6bd8ca2f70d64392449a5d12d847b6835bd8692e811a938eb7d189cbb543f5b6",
+    "generated_at_utc": "2026-08-10T16:11:31+00:00",
+    "generator_fingerprint": "9f06cedaa5fa0755e6fd6b0993b1ade81efddbe4a074200639d1953db2da5ae2",
+    "head": "818acbe761a20b84940ba9493076c09a78bbc22e",
     "profile": "current environment / app.core.config defaults",
     "python": "Python 3.12.13"
   },

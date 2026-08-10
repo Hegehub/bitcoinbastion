@@ -9,19 +9,18 @@ validators are owned by `scripts/generate_http_transport.py`.
 | P1B0-B01 security projection | RESOLVED | Active protected bindings carry an Access security identity and exclude Bastion security headers from ordinary request DTOs. |
 | P1B0-B02 mutation authority | RESOLVED | No unresolved mutation is in the active generation set; deferred mutations retain blocker/owner/re-entry metadata. |
 | P1B0-B03 schema/emission | RESOLVED | 286 schemas and 194 operations generate, import, typecheck and resolve exactly one owner/Feature-53 entry. |
-| P1R2-B05 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
-| P1R2-B06 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
-| P1R2-B07 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
-| P1R2-B08 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
-| P1R2-B09 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
-| P1R2-B10 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
-| P1R2-B11 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
-| P1R2-B12 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
-| P1R2-B13 | DEFERRED_TO_PROMPT_4 | WebSocket wire-version authority unavailable. |
+| P1R2-B05 | RESOLVED | `/api/v1/ws/events`, backend `WireFrame` v1, strict registry and tests. |
+| P1R2-B06 | RESOLVED | `/api/v1/ws/signals`, backend `WireFrame` v1, strict registry and tests. |
+| P1R2-B07 | RESOLVED | `/api/v1/ws/news`, backend `WireFrame` v1, strict registry and tests. |
+| P1R2-B08 | RESOLVED | `/api/v1/ws/onchain`, backend `WireFrame` v1, strict registry and tests. |
+| P1R2-B09 | RESOLVED | `/api/v1/ws/market`, backend `WireFrame` v1, strict registry and tests. |
+| P1R2-B10 | RESOLVED | `/api/v1/ws/trace`, backend `WireFrame` v1, strict registry and tests. |
+| P1R2-B11 | RESOLVED | `/api/v1/ws/treasury`, backend `WireFrame` v1, strict registry and tests. |
+| P1R2-B12 | RESOLVED | `/api/v1/ws/provider-health`, backend `WireFrame` v1 and verified harness. |
+| P1R2-B13 | RESOLVED | `/api/v1/ws/intelligence-timeline`, backend `WireFrame` v1, strict registry and tests. |
 
-Deferred WebSocket entries are registry facts only. Prompts 2 and 3 must not open or
-consume them. Prompt 4 must establish version, compatibility and message authority
-before implementing lifecycle behavior.
+Prompt 4 established backend-owned version, compatibility, message authority and one
+canonical frontend owner. Detailed domain screens remain owned by later prompts.
 
 ## Prompt-2 input contract
 

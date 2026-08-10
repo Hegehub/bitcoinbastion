@@ -29,4 +29,4 @@ def test_full_generation_preflight_is_fail_closed_and_complete() -> None:
     assert report["blockers"] == []
     assert report["html_operations"] == []
     assert len(report["deferred_no_content_operations"]) == 4
-    assert report["websocket_authority"].startswith("DEFERRED_TO_PROMPT_4")
+    assert report["websocket_authority"].startswith("AUTHORITATIVE_PROMPT_4")

@@ -2,13 +2,16 @@
   "allowed_legacy_generated_files": [
     "generated_foundation.py"
   ],
+  "contract_source_fingerprint": "6bd8ca2f70d64392449a5d12d847b6835bd8692e811a938eb7d189cbb543f5b6",
+  "dirty_stage1_inputs": [],
   "files": {
-    "generated_http.py": "cea44c0f556e1717f927af3ee609ed99b9bc0772cc732223f5169e1cb66c0ce6",
+    "generated_http.py": "6a3d287ecf1a4ce89c73e347c05923671d8f8c8a4761ba58af32f8cb62b7e7c8",
     "generated_schemas.py": "dcad9a47f30acf31cceec48d3c23da4cdba8d9a16e793fa95990834ac802744b"
   },
   "generation_version": "1b1.v1",
+  "generator_fingerprint": "9f06cedaa5fa0755e6fd6b0993b1ade81efddbe4a074200639d1953db2da5ae2",
   "openapi_sha256": "e1b56601a41b084da399a419edaecd94e421b45d0a70c9ef6aff617c47061fff",
   "operation_count": 194,
   "schema_count": 286,
-  "source_revision": "0ff0049114b864079ed7aabbc3272c82b5d9b106"
+  "source_revision": "818acbe761a20b84940ba9493076c09a78bbc22e"
 }

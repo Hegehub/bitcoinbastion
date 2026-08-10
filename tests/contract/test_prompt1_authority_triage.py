@@ -27,24 +27,22 @@ def test_authority_triage_fails_closed_and_assigns_exactly_one_http_owner() -> N
         assert row["authority_future_owner"]
         assert row["authority_reentry_condition"]
 
-    # Prompt 1B discovered that the prior descriptor names were only planned
-    # owners: no strict error DTO or reviewed security metadata had been generated.
-    assert ownership["authoritative_http_operations"] == []
-    candidates = ownership["blocked_http_candidates"]
-    assert len(candidates) == 186
-    assert len({row["matrix_id"] for row in candidates}) == 186
-    assert all(row["blocker_id"] == "P1B-B01" for row in candidates)
-    assert not any(row["path"].startswith("/api/v1/auth/") for row in candidates)
+    authoritative = ownership["authoritative_http_operations"]
+    assert len(authoritative) == 194
+    assert ownership["blocked_http_candidates"] == []
+    assert len({row["owner"] for row in authoritative}) == 194
+    assert not any(row["path"].startswith("/api/v1/auth/") for row in authoritative)
 
 
-def test_websocket_versions_are_not_invented_and_are_owned_by_prompt_4() -> None:
+def test_websocket_versions_are_backend_authoritative_and_owned_by_prompt_4() -> None:
     ownership = json.loads(OWNERSHIP.read_text())
-    websockets = ownership["deferred_websocket_protocols"]
+    websockets = ownership["authoritative_websocket_contracts"]
 
     assert len(websockets) == 9
-    assert [row["authority_blocker_id"] for row in websockets] == [
+    assert sorted(row["authority_blocker_id"] for row in websockets) == [
         f"P1R2-B{number:02d}" for number in range(5, 14)
     ]
-    assert all(row["authority_status"] == "DEFERRED_AUTHORITY" for row in websockets)
-    assert all(row["authority_future_owner"] == "Prompt 4/25" for row in websockets)
-    assert all(row["wire_version_authority"] == "unavailable" for row in websockets)
+    assert all(row["authority_status"] == "AUTHORITATIVE_NOW" for row in websockets)
+    assert all(row["authority_future_owner"] == "Prompt 4/25 (resolved)" for row in websockets)
+    assert all(row["wire_version_authority"] == "1" for row in websockets)
+    assert ownership["deferred_websocket_protocols"] == []

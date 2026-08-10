@@ -44,6 +44,8 @@ PUBLIC_ROUTES: tuple[str, ...] = (
     "/status",
     "/roadmap",
     "/security",
+    "/access/security-posture",
+    "/websocket-lab",
     "/docs",
     "/check",
     "/trace",

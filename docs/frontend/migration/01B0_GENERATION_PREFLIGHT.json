@@ -6698,5 +6698,5 @@
     }
   ],
   "unproven_schema_capabilities": [],
-  "websocket_authority": "DEFERRED_TO_PROMPT_4; wire versions must not be invented"
+  "websocket_authority": "AUTHORITATIVE_PROMPT_4; backend WireFrame v1 registry owns nine routes"
 }

@@ -1,0 +1,11 @@
+{
+  "feature_67": "IMPLEMENTED_VERIFIED",
+  "protected_harness": {
+    "matrix_id": "HTTP-0019",
+    "operation_id": "get_me_api_v1_access_me_get",
+    "route": "/access/security-posture",
+    "denied_path": "IMPLEMENTED_VERIFIED",
+    "allowed_path": "NOT_VERIFIABLE_IN_CURRENT_ENVIRONMENT"
+  },
+  "future_journeys": {"Prompt 16": "NOT_STARTED", "Prompt 17": "NOT_STARTED", "Prompt 18": "NOT_STARTED"}
+}
