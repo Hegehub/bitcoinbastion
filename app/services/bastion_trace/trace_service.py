@@ -118,7 +118,9 @@ class TraceService:
             idempotency_key=f"trace.report.created:trace_report:{saved.id}:created",
         )
 
-    def analyze_address(self, address: str) -> TraceReportSchema:
+    def analyze_address(
+        self, address: str, *, idempotency_key_hash: str | None = None
+    ) -> TraceReportSchema:
         TRACE_REQUESTS.labels(tier="core", operation="analyze_address", status="attempt").inc()
         normalized = self._validate_public_address(address)
         scoring = score_trace(
@@ -168,6 +170,7 @@ class TraceService:
             operator_guidance=guidance,
         )
         report = TraceReport(
+            idempotency_key_hash=idempotency_key_hash,
             address=normalized,
             chain="bitcoin",
             trace_score=scoring.final_score,

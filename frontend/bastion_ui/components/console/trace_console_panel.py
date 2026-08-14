@@ -8,6 +8,7 @@ from bastion_ui.components.console.degraded_state_banner import degraded_state_b
 from bastion_ui.components.console.module_status_card import module_status_card
 from bastion_ui.components.ui.badge import badge
 from bastion_ui.components.ui.card import card
+from bastion_ui.topology import path_for
 
 TRACE_CONSOLE_SAFETY_COPY = (
     "Advisory-only. Not legal verification. Not Bitcoin consensus proof. No custody. "
@@ -44,15 +45,15 @@ def trace_console_panel() -> rx.Component:
             ),
             card(
                 rx.text("Report lookup by report_id is read-only and accepts report ids only."),
-                rx.link("Open public Trace entry", href="/trace"),
-                rx.link("Address check shortcut", href="/check"),
+                rx.link("Open public Trace entry", href=path_for("trace")),
+                rx.link("Address check shortcut", href=path_for("check")),
                 rx.link(
                     "Trace reports use /trace/{report_id} when a report id is available",
-                    href="/trace",
+                    href=path_for("trace"),
                 ),
                 rx.link(
                     "Proof Packets use /trace/{report_id}/proof-packet when available",
-                    href="/trace",
+                    href=path_for("trace"),
                 ),
                 title="Report lookup and shortcuts",
                 variant="console",

@@ -4,6 +4,7 @@ import reflex as rx
 
 from bastion_ui.components.ui.badge import badge
 from bastion_ui.components.ui.card import card
+from bastion_ui.topology import path_for
 
 
 def time_machine_teaser() -> rx.Component:
@@ -13,7 +14,10 @@ def time_machine_teaser() -> rx.Component:
             "Timeline, candle drilldowns, replay, narratives, and historical "
             "similarity are pending."
         ),
-        rx.link("Legacy Market Time Machine remains available", href="/market/time-machine"),
+        rx.link(
+            "Legacy Market Time Machine remains available",
+            href=path_for("market.time_machine"),
+        ),
         title="Time Machine",
         subtitle="Pending migration; no completed-state claim is made here.",
         badge=badge("Pending Prompt 12/22", "warning"),

@@ -15,6 +15,7 @@ from bastion_ui.components.market.time_machine_teaser import time_machine_teaser
 from bastion_ui.components.ui.alert import alert
 from bastion_ui.components.ui.button import button
 from bastion_ui.security.market_safety import MARKET_NO_CUSTODY_COPY, MARKET_SAFETY_COPY
+from bastion_ui.topology import path_for
 
 
 def market_intelligence_dashboard() -> rx.Component:
@@ -37,7 +38,7 @@ def market_intelligence_dashboard() -> rx.Component:
                 data_freshness_panel(),
                 time_machine_teaser(),
             ),
-            rx.link("Open developer API docs", href="/developers"),
+            rx.link("Open developer API docs", href=path_for("developers")),
             align="start",
             spacing="5",
             width="100%",

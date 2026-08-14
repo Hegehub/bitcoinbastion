@@ -14,9 +14,10 @@ def address_check_form() -> rx.Component:
         rx.vstack(
             address_input(),
             rx.button(
-                "Check address",
+                rx.cond(TraceState.loading, "Submitting…", "Submit Trace"),
                 on_click=TraceState.submit_address_check,
                 disabled=TraceState.loading,
+                aria_label="Submit public Bitcoin address for advisory Trace analysis",
             ),
             rx.button("Reset", on_click=TraceState.reset_result, variant="soft"),
             align="start",

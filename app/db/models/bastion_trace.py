@@ -11,6 +11,7 @@ class TraceReport(Base):
     __tablename__ = "trace_reports"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    idempotency_key_hash: Mapped[str | None] = mapped_column(String(64), unique=True, nullable=True)
     address: Mapped[str] = mapped_column(String(128), index=True)
     chain: Mapped[str] = mapped_column(String(32), default="bitcoin")
     trace_score: Mapped[float] = mapped_column(Float, default=0.0)

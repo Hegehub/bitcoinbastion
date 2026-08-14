@@ -9,6 +9,7 @@ dependencies = [
     "pydantic",
     "pydantic-settings",
     "python-dotenv",
+    "cryptography>=44,<47",
     "segno>=1.6.1,<2",
     "websockets>=17.0.1",
 ]

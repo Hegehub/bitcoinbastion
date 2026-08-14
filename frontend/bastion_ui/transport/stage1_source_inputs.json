@@ -1,6 +1,6 @@
 {
-  "contract_source_fingerprint": "6bd8ca2f70d64392449a5d12d847b6835bd8692e811a938eb7d189cbb543f5b6",
-  "generator_fingerprint": "9f06cedaa5fa0755e6fd6b0993b1ade81efddbe4a074200639d1953db2da5ae2",
+  "contract_source_fingerprint": "10148b9d574d18b38f73a6ab767b499a30cac9020d31db5aa7fb797f8243fef1",
+  "generator_fingerprint": "94a166036cc661878ee2534e0339e9c10206e8c668870417f24d1195001760af",
   "inputs": [
     {
       "path": "app/__init__.py",
@@ -40,7 +40,7 @@
     {
       "path": "app/api/openapi.py",
       "role": "contract_source",
-      "sha256": "cf4eefefe8655ceba0d564936383b712182af580dce165a8a5c84d049d0fe568"
+      "sha256": "bba01dde2540cda667cda8049ace4c3ffb947e7712b0c7a97c5235d5a439df48"
     },
     {
       "path": "app/api/response_envelope.py",
@@ -135,12 +135,22 @@
     {
       "path": "app/api/v1/market_data.py",
       "role": "contract_source",
-      "sha256": "2d5830978339ef9444b99326084e21afad834b9ac8eea79bec451fb680fe3862"
+      "sha256": "5aff20308e5c3cd3826ba2aa3b759a38340f9dd9ae4799e1c3c1984b522e48c0"
+    },
+    {
+      "path": "app/api/v1/market_history.py",
+      "role": "contract_source",
+      "sha256": "0e10a08aef270e32ddf561cc1c3439d1288e296c0ca10a66e263fb00eb1f5200"
     },
     {
       "path": "app/api/v1/market_intelligence.py",
       "role": "contract_source",
       "sha256": "20ce4000b72af63d16614b1a3af1c0728ebecd26ef8e53b87cbc48f6252598d0"
+    },
+    {
+      "path": "app/api/v1/market_similarity.py",
+      "role": "contract_source",
+      "sha256": "37c75fa5b5650b530ddc896a6043f30632e381d934b38dc372d8e4f2f7ad0e75"
     },
     {
       "path": "app/api/v1/market_time_machine.py",
@@ -170,7 +180,7 @@
     {
       "path": "app/api/v1/operations.py",
       "role": "contract_source",
-      "sha256": "53e0c02b90b949c38d60926f7f15639ed48b6c5e268a35cbd525a6a7d5dc1728"
+      "sha256": "10f05a7f50da50677958f948953704bc6d6dc1c13d73bf3060cf894275911efa"
     },
     {
       "path": "app/api/v1/operator_signals.py",
@@ -215,7 +225,7 @@
     {
       "path": "app/api/v1/trace.py",
       "role": "contract_source",
-      "sha256": "d085a64ea2afe920afdd34d837e721f4137a99b430000b09dff68b1c2f3aa309"
+      "sha256": "778019eec5806264237e6c974c9d48d806613e6a145d223067da111338991729"
     },
     {
       "path": "app/api/v1/treasury.py",
@@ -320,7 +330,7 @@
     {
       "path": "app/core/config.py",
       "role": "contract_source",
-      "sha256": "1a67f6a9f06db6b1b7b3013554a3b1c0fd61edac08bcef939924d90c14674ca4"
+      "sha256": "562ae87788ac1df6e3c68bdbfc3eb62b7257a6596bd347f0247df6d726e99f31"
     },
     {
       "path": "app/core/enums.py",
@@ -733,6 +743,16 @@
       "sha256": "339eadfd72cc252501dedc937634e0aeb727ad4762de1ade0c5b41800ba30638"
     },
     {
+      "path": "app/db/migrations/versions/20260811_0072_operations_reliability.py",
+      "role": "contract_source",
+      "sha256": "6cb10ef2f699d5de8cc489e8e28eb3cd383f46ab9772ec66167a8c92806b0975"
+    },
+    {
+      "path": "app/db/migrations/versions/20260812_0073_trace_submit_idempotency.py",
+      "role": "contract_source",
+      "sha256": "0d486f38a6fa8568abda2ebc7718c16a6ae87d5aba1d59d616ad2d4f19bdf628"
+    },
+    {
       "path": "app/db/migrations/versions/9ecab5c090cf_align_models_schema_truth.py",
       "role": "contract_source",
       "sha256": "18f16ba437e9ef153d9a8c599c628ad18c3b83fea4b8b3a2dbe8a98958e53c31"
@@ -745,7 +765,7 @@
     {
       "path": "app/db/models/__init__.py",
       "role": "contract_source",
-      "sha256": "e168ba534725b46558c6c0f4c72e3af087c1b30e097cfa4b8be12a6c8a058b19"
+      "sha256": "286320e398f3f61c710cc5cb8df6837b9122d21f9a3132a937df7776a3454142"
     },
     {
       "path": "app/db/models/access.py",
@@ -775,7 +795,7 @@
     {
       "path": "app/db/models/bastion_trace.py",
       "role": "contract_source",
-      "sha256": "f4ea4c3640fa97096a36763cdfb893985f5ecdd6e0bc16719bdd983edc42ad7d"
+      "sha256": "ce9c7f911c29d8050a06d8df08cae50794642a956ac0271416d8721a83f6c421"
     },
     {
       "path": "app/db/models/btc_candle.py",
@@ -1073,6 +1093,11 @@
       "sha256": "04087ab8fe646bf719962e2294977bf35f9141dd4c264414050d49a807b36bb6"
     },
     {
+      "path": "app/db/models/operations_reliability.py",
+      "role": "contract_source",
+      "sha256": "2cafbc7ed03534773ab5eaea78592f2c79cbc9e50f603c30f31315e3811f452a"
+    },
+    {
       "path": "app/db/models/pattern_embedding_placeholder.py",
       "role": "contract_source",
       "sha256": "a549c9e855bd37380d2970d11aa93a2a9ba7112a12dcf651998ff33ddd67b707"
@@ -1205,7 +1230,7 @@
     {
       "path": "app/db/repositories/bastion_trace_repository.py",
       "role": "contract_source",
-      "sha256": "916d71e764a6c9a5aec506bc32ce63a243fac6c9db2827c66197a19fa9988f1e"
+      "sha256": "9836fc961ec91b5d85c258195ed7cd0ea26d4357b634594301b4c4d2c53b3497"
     },
     {
       "path": "app/db/repositories/citadel_repository.py",
@@ -1468,6 +1493,11 @@
       "sha256": "cda83f5e7a7f8466a6fbb88367b8adb9f02b66eca0fc5e09c92eb1660e801aaf"
     },
     {
+      "path": "app/domain/market_similarity_interval.py",
+      "role": "contract_source",
+      "sha256": "15fdb2c75c46bc40f287f18906f3eada77103837c29154d72b0601e5c0d0a4f1"
+    },
+    {
       "path": "app/domain/news/__init__.py",
       "role": "contract_source",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -1675,7 +1705,7 @@
     {
       "path": "app/main.py",
       "role": "contract_source",
-      "sha256": "e072220b1bbc92a263e327d953cd42fb4dbaaa318f96b97bb15b9ef676222005"
+      "sha256": "5aa7a3383cccee050f10d52c51847be03ff3c45262dee8cdafb09daf3a8f6083"
     },
     {
       "path": "app/plugins/__init__.py",
@@ -1805,7 +1835,7 @@
     {
       "path": "app/schemas/bastion_trace.py",
       "role": "contract_source",
-      "sha256": "75d3e717095716d79fa64a0538b3b26d7cf87843d9928b4877a3db1dcb1b193a"
+      "sha256": "824e7626b449b661823d791e31479e5cf2953fd308e9fce25c66af75e2b30c4a"
     },
     {
       "path": "app/schemas/citadel.py",
@@ -1915,7 +1945,17 @@
     {
       "path": "app/schemas/market_data.py",
       "role": "contract_source",
-      "sha256": "9c14aa69ebec2a7eb2e30dc40e50f664005b17b898939c295a34fa2a8056f8d4"
+      "sha256": "09b0f9d70e1ab5dd4e2dc68d6434f9612afbd7ec4e243877659ca71d9f43be88"
+    },
+    {
+      "path": "app/schemas/market_history.py",
+      "role": "contract_source",
+      "sha256": "cfcfaf15339f168b690018e629d23d3e26b55eb1298f2ad3aab6925b321b1dd6"
+    },
+    {
+      "path": "app/schemas/market_similarity.py",
+      "role": "contract_source",
+      "sha256": "8add260646e254cd3cff8832ea30e3b1b666c02a3358bd7902141b9db4e0936d"
     },
     {
       "path": "app/schemas/market_time_machine_web.py",
@@ -1956,6 +1996,11 @@
       "path": "app/schemas/operations.py",
       "role": "contract_source",
       "sha256": "2c88029678954488d437f096298389a1a9abb44bac12642cad89cc20db7ed97a"
+    },
+    {
+      "path": "app/schemas/operations_reliability.py",
+      "role": "contract_source",
+      "sha256": "b3489e79c68fdbda43344f9d40bddf20d01d3e61f571e55239791460066a87b8"
     },
     {
       "path": "app/schemas/payregister_lnurl.py",
@@ -2615,7 +2660,7 @@
     {
       "path": "app/services/bastion_trace/trace_service.py",
       "role": "contract_source",
-      "sha256": "4892f179ff9d7e16658225c4c15729c54e1c67889e4a2c1aa8443fcf65287dd2"
+      "sha256": "dfd4ef4d822d4d4f691228e9655338893d7a7b261e07876fd163601df3002622"
     },
     {
       "path": "app/services/bastion_trace/trace_status.py",
@@ -3013,6 +3058,11 @@
       "sha256": "2543480542a2520e7a6ea56a1368ff14b8965614c1c6dd10956c3d550f966c1a"
     },
     {
+      "path": "app/services/intelligence/market_history_service.py",
+      "role": "contract_source",
+      "sha256": "54f1750c6ed36d63c3a7793e240801b7f7d91e861576253682ed3e9a791ccaf2"
+    },
+    {
       "path": "app/services/intelligence/market_memory/__init__.py",
       "role": "contract_source",
       "sha256": "f77672900f778f17c790ce9d9c9792d3d6f5aa05c48e8ed930e29b3dce7b9b72"
@@ -3061,6 +3111,11 @@
       "path": "app/services/intelligence/market_memory_service.py",
       "role": "contract_source",
       "sha256": "92110454624952a9f75e71914065e69cb62777dcfc174f1878bb1cf9d14ee29a"
+    },
+    {
+      "path": "app/services/intelligence/market_similarity_read_service.py",
+      "role": "contract_source",
+      "sha256": "e4dc00a9f326912fc7ed412599e50ce3461b629b946ca11e87c1137335e03888"
     },
     {
       "path": "app/services/intelligence/narrative_heatmap.py",
@@ -4108,6 +4163,11 @@
       "sha256": "aba47cca7d025308f1cc45e475f4b2ecb2171cdcd5dfd3f8b24f944f8fd4f0de"
     },
     {
+      "path": "app/services/observability/operations_reliability_service.py",
+      "role": "contract_source",
+      "sha256": "49203389c39c0264e73b0295e5bbd0b3de8dddc3239e36c1177ab1edf6023e54"
+    },
+    {
       "path": "app/services/observability/operations_service.py",
       "role": "contract_source",
       "sha256": "13a6c298733b7a5d49f55f83e53db9b65ef61f291b3461c3cb010ef68db264ef"
@@ -5110,7 +5170,7 @@
     {
       "path": "registry:http-operation-selection",
       "role": "contract_registry",
-      "sha256": "95844522c31364bd545fea5137cfb603cc27a8a524aa259907188d8620c1f2a8"
+      "sha256": "fa1a4bb6171fb54e32664d1d13ddac7e9e95897e33f861dc901cd194cb9bc5a3"
     },
     {
       "path": "frontend/bastion_ui/transport/operation_compiler.py",
@@ -5120,12 +5180,12 @@
     {
       "path": "frontend/bastion_ui/transport/operation_emitter.py",
       "role": "generator",
-      "sha256": "b4b3b0becdd5076c4d239b0bf9df3771300ed1b47e0b40afe3712e7d3f4c5e4e"
+      "sha256": "6f757aa7c71a088c551f7cbd8d7c1dde3c84373acee9c66e91616c7021cb45a1"
     },
     {
       "path": "frontend/bastion_ui/transport/schema_compiler.py",
       "role": "generator",
-      "sha256": "404ad02a61764f576819fa6326446d43b23cb52e9ac41a94f678ca73c1cae43b"
+      "sha256": "5e003addb78a13ee9ac996d7f92b107c14a504d138998ab7646126fc7246ae1c"
     },
     {
       "path": "frontend/bastion_ui/transport/source_emitter.py",
@@ -5140,7 +5200,7 @@
     {
       "path": "scripts/generate_frontend_migration_audit.py",
       "role": "generator",
-      "sha256": "19406c00a0437a3101f0e863306e44b0b02be065a9dfc716df1435c5623150f7"
+      "sha256": "040d5c4f532dde2ddfa454c68e5e0c55dde9a1165153bb167a593a864307a498"
     },
     {
       "path": "scripts/generate_http_transport.py",
@@ -5153,5 +5213,5 @@
       "sha256": "4c025f821bba4f08e6f981a348f3a1e3c5cbb4739f03f182788f8604ddef7fb0"
     }
   ],
-  "source_revision": "818acbe761a20b84940ba9493076c09a78bbc22e"
+  "source_revision": "8f51ff96f1820f59a4dcb853e623ecd822b9bbfe"
 }

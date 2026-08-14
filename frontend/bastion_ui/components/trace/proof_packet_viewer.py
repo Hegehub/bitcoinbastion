@@ -7,9 +7,11 @@ import reflex as rx
 from bastion_ui.components.trace.trace_safety_banner import trace_safety_banner
 from bastion_ui.components.ui.card import card
 from bastion_ui.state.trace_report_state import TraceReportState
+from bastion_ui.topology import dynamic_route_parts
 
 
 def proof_packet_viewer() -> rx.Component:
+    report_prefix, report_suffix = dynamic_route_parts("trace.report", "report_id")
     return cast(
         rx.Component,
         rx.vstack(
@@ -22,7 +24,10 @@ def proof_packet_viewer() -> rx.Component:
                     "only if the backend provides them."
                 ),
                 rx.text("No example fingerprints are displayed as real proof data."),
-                rx.link("Back to Trace report", href="/trace/" + TraceReportState.trace_report_id),
+                rx.link(
+                    "Back to Trace report",
+                    href=report_prefix + TraceReportState.trace_report_id + report_suffix,
+                ),
                 title="Proof packet",
                 variant="evidence",
             ),

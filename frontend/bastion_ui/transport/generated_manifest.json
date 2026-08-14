@@ -2,16 +2,16 @@
   "allowed_legacy_generated_files": [
     "generated_foundation.py"
   ],
-  "contract_source_fingerprint": "6bd8ca2f70d64392449a5d12d847b6835bd8692e811a938eb7d189cbb543f5b6",
+  "contract_source_fingerprint": "10148b9d574d18b38f73a6ab767b499a30cac9020d31db5aa7fb797f8243fef1",
   "dirty_stage1_inputs": [],
   "files": {
-    "generated_http.py": "6a3d287ecf1a4ce89c73e347c05923671d8f8c8a4761ba58af32f8cb62b7e7c8",
-    "generated_schemas.py": "dcad9a47f30acf31cceec48d3c23da4cdba8d9a16e793fa95990834ac802744b"
+    "generated_http.py": "08ca6d689fbb37134be6f0ff9d75e84d8ae1658d286857fc6a885c7b8dd74b6d",
+    "generated_schemas.py": "a4ec56c302a947daca983741e4781ff1c650be9925dea8917766b4b800905d26"
   },
   "generation_version": "1b1.v1",
-  "generator_fingerprint": "9f06cedaa5fa0755e6fd6b0993b1ade81efddbe4a074200639d1953db2da5ae2",
-  "openapi_sha256": "e1b56601a41b084da399a419edaecd94e421b45d0a70c9ef6aff617c47061fff",
-  "operation_count": 194,
-  "schema_count": 286,
-  "source_revision": "818acbe761a20b84940ba9493076c09a78bbc22e"
+  "generator_fingerprint": "94a166036cc661878ee2534e0339e9c10206e8c668870417f24d1195001760af",
+  "openapi_sha256": "deb69576409dc198daef0d636bd4ba88b123696608762c9d2a088f39e2899f1f",
+  "operation_count": 206,
+  "schema_count": 325,
+  "source_revision": "8f51ff96f1820f59a4dcb853e623ecd822b9bbfe"
 }

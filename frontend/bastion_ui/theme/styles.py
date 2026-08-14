@@ -1,90 +1,82 @@
 from __future__ import annotations
 
-from bastion_ui.theme.tokens import (
-    BASTION_BG,
-    BASTION_BG_SOFT,
-    BASTION_BORDER,
-    BASTION_DANGER,
-    BASTION_GRAPHITE,
-    BASTION_TEXT,
-    BASTION_TEXT_MUTED,
-    BITCOIN_ORANGE,
-)
+from bastion_ui.theme.materials import material_style
+from bastion_ui.theme.tokens import COLOR, MOTION, RADIUS, SHADOW, SPACE, MaterialLevel
 
 PAGE = {
-    "background": BASTION_BG,
-    "color": BASTION_TEXT,
+    "background": COLOR["background"],
+    "color": COLOR["text"],
     "min_height": "100vh",
+    "font_family": "Inter, ui-sans-serif, system-ui, sans-serif",
 }
-
-CARD = {
-    "background": BASTION_GRAPHITE,
-    "border": f"1px solid {BASTION_BORDER}",
-    "border_radius": "16px",
-    "padding": "24px",
-}
-
+CARD = {**material_style(MaterialLevel.MATTE), "border_radius": RADIUS["lg"], "padding": SPACE[6]}
 PANEL = {
-    **CARD,
-    "box_shadow": "0 18px 50px rgba(0, 0, 0, 0.35)",
+    **material_style(MaterialLevel.GLASS_ELEVATED),
+    "border_radius": RADIUS["lg"],
+    "padding": SPACE[6],
 }
-
 CONSOLE_PANEL = {
-    **PANEL,
-    "background": BASTION_BG_SOFT,
+    **material_style(MaterialLevel.MATTE),
+    "border_radius": RADIUS["md"],
+    "padding": SPACE[5],
 }
-
 SAFETY_CARD = {
-    "background": BASTION_BG_SOFT,
-    "border": "1px solid #F59E0B",
-    "border_radius": "16px",
-    "padding": "16px",
+    **material_style(MaterialLevel.SOLID),
+    "border": f"1px solid {COLOR['warning']}",
+    "border_radius": RADIUS["lg"],
+    "padding": SPACE[4],
 }
-
-SECTION = {
-    "padding": "48px 0",
-    "width": "100%",
-}
-
+SECTION = {"padding": f"{SPACE[12]} 0", "width": "100%"}
 FOCUS_RING = {
-    "_focus_visible": {"outline": f"3px solid {BITCOIN_ORANGE}", "outline_offset": "2px"},
+    "_focus_visible": {
+        "outline": f"3px solid {COLOR['focus']}",
+        "outline_offset": "3px",
+        "box_shadow": "none",
+    }
 }
-
-BUTTON_PRIMARY = {
-    "background": BITCOIN_ORANGE,
-    "color": "#111827",
-    "border": f"1px solid {BITCOIN_ORANGE}",
-    "border_radius": "12px",
+BUTTON_BASE = {
+    "border_radius": RADIUS["md"],
     "font_weight": "700",
+    "transition": (
+        f"background {MOTION['fast']} {MOTION['ease_out']}, "
+        f"transform {MOTION['fast']} {MOTION['ease_out']}"
+    ),
+    "_active": {"transform": "translateY(1px)"},
 }
-
+BUTTON_PRIMARY = {
+    **BUTTON_BASE,
+    "background": COLOR["brand"],
+    "color": COLOR["background"],
+    "border": f"1px solid {COLOR['brand']}",
+    "_hover": {"background": COLOR["brand_hover"]},
+}
 BUTTON_SECONDARY = {
-    "background": "transparent",
-    "color": BASTION_TEXT,
-    "border": f"1px solid {BASTION_BORDER}",
-    "border_radius": "12px",
+    **BUTTON_BASE,
+    "background": COLOR["matte"],
+    "color": COLOR["text"],
+    "border": f"1px solid {COLOR['border']}",
+    "_hover": {"border_color": COLOR["brand"]},
 }
-
 BUTTON_GHOST = {
+    **BUTTON_BASE,
     "background": "transparent",
-    "color": BASTION_TEXT_MUTED,
+    "color": COLOR["text_secondary"],
     "border": "1px solid transparent",
-    "border_radius": "12px",
+    "_hover": {"background": COLOR["matte"]},
 }
-
 BADGE = {
-    "background": "transparent",
-    "border_radius": "999px",
-    "padding": "4px 10px",
+    "background": COLOR["matte"],
+    "border_radius": RADIUS["pill"],
+    "padding": f"{SPACE[1]} {SPACE[3]}",
     "font_weight": "600",
 }
-
 INPUT = {
-    "background": BASTION_BG_SOFT,
-    "color": BASTION_TEXT,
-    "border": f"1px solid {BASTION_BORDER}",
-    "border_radius": "12px",
+    "background": COLOR["matte"],
+    "color": COLOR["text"],
+    "border": f"1px solid {COLOR['border']}",
+    "border_radius": RADIUS["md"],
     "width": "100%",
+    **FOCUS_RING,
 }
-
-ERROR_TEXT = {"color": BASTION_DANGER}
+ERROR_TEXT = {"color": COLOR["error"]}
+GLASS_NAV = {**material_style(MaterialLevel.GLASS_SUBTLE), "box_shadow": SHADOW["low"]}

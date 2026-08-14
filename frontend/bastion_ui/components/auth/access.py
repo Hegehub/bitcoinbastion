@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import base64
 import io
+from urllib.parse import quote
 
 import reflex as rx
 import segno
@@ -10,6 +11,7 @@ import segno
 from bastion_ui.components.layout.grid import responsive_grid
 from bastion_ui.components.ui.card import card
 from bastion_ui.config import get_config
+from bastion_ui.topology import path_for
 
 
 def wallet_security_warning() -> rx.Component:
@@ -37,7 +39,7 @@ def wallet_auth_method_selector() -> rx.Component:
     return responsive_grid(
         card(
             rx.text("Use LNURL-auth from a compatible Lightning wallet."),
-            rx.link("Sign in with Lightning", href="/wallet-auth/lnurl", role="button")
+            rx.link("Sign in with Lightning", href=path_for("wallet_auth.lnurl"), role="button")
             if config.lnurl_auth_enabled
             else rx.text("LNURL-auth unavailable in this deployment"),
             title="Lightning Wallet",
@@ -47,7 +49,9 @@ def wallet_auth_method_selector() -> rx.Component:
             rx.text(
                 "Prove wallet control with BIP-322. Compatibility signing appears only when backend policy allows it."
             ),
-            rx.link("Sign in with Bitcoin Wallet", href="/wallet-auth/bitcoin", role="button")
+            rx.link(
+                "Sign in with Bitcoin Wallet", href=path_for("wallet_auth.bitcoin"), role="button"
+            )
             if config.wallet_auth_enabled
             else rx.text("Bitcoin Wallet Auth unavailable in this deployment"),
             title="Bitcoin Wallet",
@@ -113,7 +117,7 @@ def session_status() -> rx.Component:
         rx.text(
             "Session states: active · expiring · expired · revoked · frozen · lockdown · recovery_only"
         ),
-        rx.link("Re-authenticate", href="/wallet-auth", role="button"),
+        rx.link("Re-authenticate", href=path_for("wallet_auth"), role="button"),
         title="Device-bound PoP Session",
         subtitle="Wallet or LNURL proof alone does not unlock protected data.",
     )
@@ -132,7 +136,11 @@ def device_list() -> rx.Component:
 
 def subscription_plan_card(name: str, code: str, description: str) -> rx.Component:
     action = (
-        rx.link("Choose plan", href=f"/access/checkout?plan={code}", role="button")
+        rx.link(
+            "Choose plan",
+            href=path_for("access.checkout") + "?plan=" + quote(code, safe=""),
+            role="button",
+        )
         if get_config().lnurl_pay_enabled
         else rx.text("LNURL-pay unavailable in this deployment")
     )

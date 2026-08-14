@@ -2,11 +2,20 @@ from __future__ import annotations
 
 from typing import Any
 
+import httpx
+
 from bastion_ui.services.api_client import BastionApiClient
 from bastion_ui.services.errors import BastionApiError, BastionFrontendError
 from bastion_ui.services.models import ApiResult, TraceLiteResult
+from bastion_ui.transport.foundation import HttpTransport
+from bastion_ui.transport.generated_http import (
+    SubmitTraceApiV1TraceSubmitPostRequest,
+    submit_trace_api_v1_trace_submit_post,
+)
+from bastion_ui.transport.generated_schemas import TraceSubjectType, TraceSubmitRequest
 
 TRACE_LITE_ENDPOINT = "/api/v1/trace/lite/{address}"
+TRACE_SUBMIT_ENDPOINT = "/api/v1/trace/submit"
 
 
 def normalize_trace_lite_payload(address: str, payload: Any) -> TraceLiteResult:
@@ -68,6 +77,19 @@ class TraceApiClient:
     async def get_trace_lite(self, address: str) -> TraceLiteResult:
         payload = await self.api_client.get(TRACE_LITE_ENDPOINT.format(address=address))
         return normalize_trace_lite_payload(address, payload)
+
+    async def submit_trace(self, address: str, idempotency_key: str) -> Any:
+        request = SubmitTraceApiV1TraceSubmitPostRequest(
+            Idempotency_Key=idempotency_key,
+            body=TraceSubmitRequest(
+                subject_type=TraceSubjectType(root="BITCOIN_ADDRESS"),
+                subject=address,
+                network="bitcoin-mainnet",
+            ),
+        )
+        async with httpx.AsyncClient(base_url=self.api_client.base_url) as client:
+            response = await submit_trace_api_v1_trace_submit_post(HttpTransport(client), request)
+        return response.root.data.model_dump(mode="json")
 
     async def get_public_trace_summary(self, report_id: str) -> ApiResult:
         return await self._safe_get(f"/api/v1/public/trace/{report_id}/summary")

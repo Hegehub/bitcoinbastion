@@ -33,6 +33,11 @@ class BastionTraceRepository:
             select(TraceReport).where(TraceReport.id == report_id)
         ).scalar_one_or_none()
 
+    def get_report_by_idempotency_hash(self, key_hash: str) -> TraceReport | None:
+        return self.db.execute(
+            select(TraceReport).where(TraceReport.idempotency_key_hash == key_hash)
+        ).scalar_one_or_none()
+
     def list_evidence(self, report_id: int) -> list[TraceEvidence]:
         return list(
             self.db.execute(

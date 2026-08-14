@@ -8,6 +8,7 @@ from bastion_ui.components.console.degraded_state_banner import degraded_state_b
 from bastion_ui.components.console.module_status_card import module_status_card
 from bastion_ui.components.ui.badge import badge
 from bastion_ui.components.ui.card import card
+from bastion_ui.topology import path_for
 
 EVIDENCE_CONSOLE_BASELINE_COPY = (
     "Evidence Console baseline view. Backend evidence listing endpoint is not available yet. "
@@ -50,8 +51,8 @@ def evidence_console_panel() -> rx.Component:
                 variant="console",
             ),
             card(
-                rx.link("Open Evidence overview", href="/evidence"),
-                rx.link("Open Trace to choose a report", href="/trace"),
+                rx.link("Open Evidence overview", href=path_for("evidence")),
+                rx.link("Open Trace to choose a report", href=path_for("trace")),
                 rx.text(
                     "Proof Packet links are report-specific and remain unavailable "
                     "until a report id is present."

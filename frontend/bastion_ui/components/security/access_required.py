@@ -4,6 +4,8 @@ from typing import cast
 
 import reflex as rx
 
+from bastion_ui.topology import path_for
+
 
 def access_required_shell(heading: str | rx.Var[str], detail: str | rx.Var[str]) -> rx.Component:
     return cast(
@@ -12,7 +14,11 @@ def access_required_shell(heading: str | rx.Var[str], detail: str | rx.Var[str])
             rx.vstack(
                 rx.heading(heading, size="5", id="security-denial-heading"),
                 rx.text(detail, id="security-denial-detail"),
-                rx.link("Review Proof-of-Access options", href="/access", id="security-recovery"),
+                rx.link(
+                    "Review Proof-of-Access options",
+                    href=path_for("access"),
+                    id="security-recovery",
+                ),
                 align="start",
             ),
             role="alert",

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 INVALID_REPORT_ID_MESSAGE = "Invalid Trace report id. Open a report from a trusted Trace link."
@@ -21,5 +22,7 @@ def validate_report_id(value: str) -> ReportIdValidationResult:
     if any(marker in lowered for marker in SUSPICIOUS_REPORT_ID_MARKERS):
         return ReportIdValidationResult(False, error=INVALID_REPORT_ID_MESSAGE)
     if len(normalized) > 128:
+        return ReportIdValidationResult(False, error=INVALID_REPORT_ID_MESSAGE)
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", normalized):
         return ReportIdValidationResult(False, error=INVALID_REPORT_ID_MESSAGE)
     return ReportIdValidationResult(True, report_id=normalized)

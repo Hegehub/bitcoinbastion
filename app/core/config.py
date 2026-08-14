@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
+from decimal import Decimal
 from typing import Literal
 
 from pydantic import AliasChoices, Field, field_validator, model_validator
@@ -173,6 +174,15 @@ class Settings(BaseSettings):
     app_name: str = Field(default="Bitcoin Bastion", alias="APP_NAME")
     environment: str = Field(default="dev", alias="ENVIRONMENT")
     api_prefix: str = Field(default="/api/v1", alias="API_PREFIX")
+    operations_job_success_slo_enabled: bool = Field(
+        default=True, alias="OPERATIONS_JOB_SUCCESS_SLO_ENABLED"
+    )
+    operations_job_success_slo_target: Decimal = Field(
+        default=Decimal("0.99"), ge=0, le=1, alias="OPERATIONS_JOB_SUCCESS_SLO_TARGET"
+    )
+    operations_job_success_slo_window_hours: int = Field(
+        default=24, ge=1, le=8760, alias="OPERATIONS_JOB_SUCCESS_SLO_WINDOW_HOURS"
+    )
 
     cors_allow_origins: list[str] = Field(
         default_factory=lambda: ["http://localhost:3000"], alias="CORS_ALLOW_ORIGINS"
@@ -364,20 +374,30 @@ class Settings(BaseSettings):
 
     access_server_pepper: str = Field(default="", alias="ACCESS_SERVER_PEPPER")
     access_allow_manual_grants: bool = Field(default=False, alias="ACCESS_ALLOW_MANUAL_GRANTS")
-    access_default_payment_provider: str = Field(default="manual", alias="ACCESS_DEFAULT_PAYMENT_PROVIDER")
+    access_default_payment_provider: str = Field(
+        default="manual", alias="ACCESS_DEFAULT_PAYMENT_PROVIDER"
+    )
     access_payment_intent_ttl_seconds: int = Field(
         default=900, ge=60, alias="ACCESS_PAYMENT_INTENT_TTL_SECONDS"
     )
-    access_challenge_ttl_seconds: int = Field(default=300, ge=30, alias="ACCESS_CHALLENGE_TTL_SECONDS")
+    access_challenge_ttl_seconds: int = Field(
+        default=300, ge=30, alias="ACCESS_CHALLENGE_TTL_SECONDS"
+    )
     access_session_ttl_seconds: int = Field(default=900, ge=60, alias="ACCESS_SESSION_TTL_SECONDS")
-    access_request_max_skew_seconds: int = Field(default=300, ge=1, alias="ACCESS_REQUEST_MAX_SKEW_SECONDS")
-    access_request_signature_required: bool = Field(default=True, alias="ACCESS_REQUEST_SIGNATURE_REQUIRED")
+    access_request_max_skew_seconds: int = Field(
+        default=300, ge=1, alias="ACCESS_REQUEST_MAX_SKEW_SECONDS"
+    )
+    access_request_signature_required: bool = Field(
+        default=True, alias="ACCESS_REQUEST_SIGNATURE_REQUIRED"
+    )
     access_btcpay_enabled: bool = Field(default=False, alias="ACCESS_BTCPAY_ENABLED")
     access_btcpay_base_url: str = Field(default="", alias="ACCESS_BTCPAY_BASE_URL")
     access_btcpay_api_key: str = Field(default="", alias="ACCESS_BTCPAY_API_KEY")
     access_btcpay_store_id: str = Field(default="", alias="ACCESS_BTCPAY_STORE_ID")
     access_btcpay_webhook_secret: str = Field(default="", alias="ACCESS_BTCPAY_WEBHOOK_SECRET")
-    access_btcpay_default_currency: str = Field(default="BTC", alias="ACCESS_BTCPAY_DEFAULT_CURRENCY")
+    access_btcpay_default_currency: str = Field(
+        default="BTC", alias="ACCESS_BTCPAY_DEFAULT_CURRENCY"
+    )
     access_btcpay_checkout_expiry_minutes: int = Field(
         default=30, ge=1, alias="ACCESS_BTCPAY_CHECKOUT_EXPIRY_MINUTES"
     )
@@ -388,16 +408,31 @@ class Settings(BaseSettings):
         default=300, ge=1, alias="ACCESS_BTCPAY_WEBHOOK_TOLERANCE_SECONDS"
     )
     access_recovery_enabled: bool = Field(default=True, alias="ACCESS_RECOVERY_ENABLED")
-    access_recovery_cooldown_seconds: int = Field(default=900, ge=60, alias="ACCESS_RECOVERY_COOLDOWN_SECONDS")
-    access_recovery_max_attempts_per_hour: int = Field(default=5, ge=1, alias="ACCESS_RECOVERY_MAX_ATTEMPTS_PER_HOUR")
-    access_recovery_require_quorum_for_pro: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_PRO")
-    access_recovery_require_quorum_for_business: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_BUSINESS")
-    access_recovery_require_quorum_for_enterprise: bool = Field(default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_ENTERPRISE")
-    access_recovery_reject_bitcoin_seed_inputs: bool = Field(default=True, alias="ACCESS_RECOVERY_REJECT_BITCOIN_SEED_INPUTS")
+    access_recovery_cooldown_seconds: int = Field(
+        default=900, ge=60, alias="ACCESS_RECOVERY_COOLDOWN_SECONDS"
+    )
+    access_recovery_max_attempts_per_hour: int = Field(
+        default=5, ge=1, alias="ACCESS_RECOVERY_MAX_ATTEMPTS_PER_HOUR"
+    )
+    access_recovery_require_quorum_for_pro: bool = Field(
+        default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_PRO"
+    )
+    access_recovery_require_quorum_for_business: bool = Field(
+        default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_BUSINESS"
+    )
+    access_recovery_require_quorum_for_enterprise: bool = Field(
+        default=True, alias="ACCESS_RECOVERY_REQUIRE_QUORUM_FOR_ENTERPRISE"
+    )
+    access_recovery_reject_bitcoin_seed_inputs: bool = Field(
+        default=True, alias="ACCESS_RECOVERY_REJECT_BITCOIN_SEED_INPUTS"
+    )
 
     @model_validator(mode="after")
     def _validate_btcpay_access_config(self) -> "Settings":
-        if self.access_btcpay_enabled and self.environment.strip().lower() in PRODUCTION_ENVIRONMENTS:
+        if (
+            self.access_btcpay_enabled
+            and self.environment.strip().lower() in PRODUCTION_ENVIRONMENTS
+        ):
             missing = [
                 name
                 for name, value in {
@@ -409,7 +444,9 @@ class Settings(BaseSettings):
                 if not value
             ]
             if missing:
-                raise ValueError("BTCPay Access provider enabled in production with missing required configuration")
+                raise ValueError(
+                    "BTCPay Access provider enabled in production with missing required configuration"
+                )
         return self
 
     news_fetch_interval_seconds: int = Field(default=300, alias="NEWS_FETCH_INTERVAL_SECONDS")

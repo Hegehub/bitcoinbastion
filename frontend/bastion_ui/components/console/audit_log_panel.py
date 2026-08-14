@@ -8,6 +8,7 @@ from bastion_ui.components.console.degraded_state_banner import degraded_state_b
 from bastion_ui.components.console.module_status_card import module_status_card
 from bastion_ui.components.ui.badge import badge
 from bastion_ui.components.ui.card import card
+from bastion_ui.topology import path_for
 
 AUDIT_BASELINE_COPY = (
     "Audit Console baseline view. Immutable audit storage is not claimed by this Reflex module."
@@ -50,7 +51,7 @@ def audit_log_panel() -> rx.Component:
                 rx.text(
                     "Frontend migration audit status is documented in migration progress files."
                 ),
-                rx.link("Open migration baseline", href="/docs"),
+                rx.link("Open migration baseline", href=path_for("docs")),
                 title="Migration audit references",
                 variant="console",
             ),

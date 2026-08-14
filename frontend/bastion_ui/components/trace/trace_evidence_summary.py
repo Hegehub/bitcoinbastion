@@ -10,9 +10,7 @@ def trace_evidence_summary() -> rx.Component:
     return card(
         rx.text(TraceReportState.evidence_label),
         rx.text("Evidence may be incomplete, source-dependent, stale, or unavailable."),
-        rx.link(
-            "Open proof packet", href="/trace/" + TraceReportState.trace_report_id + "/proof-packet"
-        ),
+        rx.text("Evidence references are pointers only; they do not imply verification."),
         title="Evidence summary",
         variant="evidence",
     )

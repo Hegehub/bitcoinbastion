@@ -151,6 +151,9 @@ class AlertSummaryOut(BaseModel):
     degraded_components: list[DegradedComponentOut] | None = Field(default=None)
     warning: int | None = Field(default=None)
 
+class AttributionRelation(RootModel[Literal['ASSOCIATED', 'CORRELATION_CANDIDATE']]):
+    pass
+
 class AuditLogOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     action: str
@@ -161,6 +164,21 @@ class AuditLogOut(BaseModel):
     id: int
     resource_id: str
     resource_type: str
+
+class BTCMarketOverviewEnvelope(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: BTCMarketOverviewOut
+
+class BTCMarketOverviewOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    limitations: list[str]
+    observed_at: datetime | None
+    pair: str
+    price_usd: str | None
+    provider_confidence: str | None
+    provider_count: int
+    source: str
+    symbol: str
 
 class BackgroundJobHealthOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -190,6 +208,16 @@ class BatchTraceRequest(BaseModel):
     batch_label: str | None = Field(default=None)
     business_context: BusinessContextType | None = Field(default=None)
     policy_profile_id: str | None = Field(default=None)
+
+class BrowserSafeMarketSourceOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    category: str
+    display_name: str
+    homepage_url: str | None = Field(default=None)
+    limitations: list[str] | None = Field(default=None)
+    observed_at: datetime | None = Field(default=None)
+    source_id: str
+    source_type: MarketSourceType
 
 class BusinessContextType(RootModel[Literal['RETAIL', 'MERCHANT', 'TREASURY', 'OTC', 'DONATION', 'CONSULTING', 'UNKNOWN']]):
     pass
@@ -401,6 +429,9 @@ class CitadelSimulationOut(BaseModel):
     survivability_score: Decimal
     synthetic_component: bool | None = Field(default=None)
     synthetic_reason: str | None = Field(default=None)
+
+class DataSufficiency(RootModel[Literal['AVAILABLE', 'INSUFFICIENT']]):
+    pass
 
 class DegradedComponentOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -635,6 +666,55 @@ class HumanIntentVerificationResult(BaseModel):
     valid: bool
     verified_at: datetime | None = Field(default=None)
 
+class IncidentDetailOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    affected_target: str
+    detector_id: str
+    history: list[IncidentTransitionOut]
+    incident_id: str
+    kind: str
+    limitations: str
+    opened_at: datetime
+    resolved_at: datetime | None
+    severity: IncidentSeverity
+    source: str
+    status: IncidentStatus
+    summary: str
+    updated_at: datetime
+
+class IncidentOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    affected_target: str
+    detector_id: str
+    incident_id: str
+    kind: str
+    limitations: str
+    opened_at: datetime
+    resolved_at: datetime | None
+    severity: IncidentSeverity
+    source: str
+    status: IncidentStatus
+    summary: str
+    updated_at: datetime
+
+class IncidentSeverity(RootModel[Literal['MAJOR', 'CRITICAL']]):
+    pass
+
+class IncidentStatus(RootModel[Literal['OPEN', 'RESOLVED']]):
+    pass
+
+class IncidentTransitionOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    observed_at: datetime
+    severity: IncidentSeverity
+    source: str
+    status: IncidentStatus
+    summary: str
+    transition: IncidentTransitionType
+
+class IncidentTransitionType(RootModel[Literal['OPENED', 'UPDATED', 'RESOLVED']]):
+    pass
+
 class IntelligenceHealthOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     degraded_state: bool
@@ -758,6 +838,86 @@ class LNURLPayDiscoveryResponse(BaseModel):
     payerData: dict[str, JsonValue] | None = Field(default=None)
     tag: str | None = Field(default=None)
 
+class MarketAttributionOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    attribution_id: int
+    confidence_ratio: Decimal
+    evidence_links: list[MarketEvidenceLink] | None = Field(default=None)
+    explanation: str
+    factor_event_id: int | None
+    limitations: list[str]
+    relation: AttributionRelation
+    subject_candle_id: int
+
+class MarketEvidenceLink(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    evidence_id: int
+    label: str
+    linked_at: datetime
+    relation: MarketEvidenceRelation
+    verification_status: Literal['NOT_REQUESTED', 'INTEGRITY_RECORD_AVAILABLE']
+
+class MarketEvidenceRelation(RootModel[Literal['RELATED_EVIDENCE', 'SOURCE_MATERIAL']]):
+    pass
+
+class MarketNarrativeOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    body_plain_text: str
+    confidence_ratio: Decimal
+    generated_at: datetime
+    limitations: list[str]
+    narrative_id: int
+    origin: NarrativeOrigin
+    slug: str
+    title: str
+
+class MarketReplayCaptureOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    capture_id: UUID
+    captured_at: datetime
+    effective_at: datetime
+    event: MarketTimelineEventOut
+    historical: Literal[True] | None = Field(default=None)
+    integrity: ReplayIntegrityOut
+    limitations: list[str] | None = Field(default=None)
+    schema_version: Literal['market-replay.capture.v1'] | None = Field(default=None)
+
+class MarketSimilarityMatchOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    candidate_event_id: int
+    candidate_occurred_at: datetime
+    candidate_title: str
+    dimensions: list[SimilarityDimensionOut]
+    limitations: list[str]
+    method: SimilarityMethod | None = Field(default=None)
+    method_version: Literal['historical-event-similarity.v1'] | None = Field(default=None)
+    rank: int
+    reference_event_id: int
+    replay_event_id: int
+    result_id: int
+    score_meaning: Literal['HIGHER_IS_MORE_SIMILAR_NOT_PREDICTIVE'] | None = Field(default=None)
+    score_ratio: Decimal
+
+class MarketSimilarityReportOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    generated_at: datetime
+    interpretation: Literal['RETROSPECTIVE_COMPARISON_NOT_FORECAST'] | None = Field(default=None)
+    method: SimilarityMethod | None = Field(default=None)
+    method_version: Literal['historical-event-similarity.v1'] | None = Field(default=None)
+    provenance: Literal['LIVE'] | None = Field(default=None)
+    reference_event_id: int
+    results: list[MarketSimilarityMatchOut]
+    uncertainty: SimilarityUncertaintyOut
+
+class MarketSourceRef(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    display_name: str
+    source_id: str
+    source_type: MarketSourceType
+
+class MarketSourceType(RootModel[Literal['INTERNAL', 'NEWS', 'SIGNAL', 'PROVIDER', 'MARKET_DATA', 'UNKNOWN']]):
+    pass
+
 class MarketTimeMachineAnalyticsResponse(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     generated_at: datetime
@@ -780,6 +940,29 @@ class MarketTimeMachineRuntimeMode(RootModel[Literal['live', 'degraded', 'disabl
 
 class MarketTimeMachineSourceStore(RootModel[Literal['clickhouse', 'postgres_fallback', 'none']]):
     pass
+
+class MarketTimelineEventOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    event_id: int
+    evidence_links: list[MarketEvidenceLink] | None = Field(default=None)
+    kind: TimelineKind
+    limitations: list[str] | None = Field(default=None)
+    observed_at: datetime
+    occurred_at: datetime
+    producer_type: str
+    related_candle_id: int | None = Field(default=None)
+    related_signal_id: int | None = Field(default=None)
+    sequence: int
+    source: MarketSourceRef
+    summary: str
+    title: str
+
+class MarketTimelinePageOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    items: list[MarketTimelineEventOut]
+    limit: int
+    next_before_sequence: int | None = Field(default=None)
+    ordering: Literal['occurred_at_desc,event_id_desc'] | None = Field(default=None)
 
 class MerchantLightningAddressCreate(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -821,6 +1004,9 @@ class MetricsStatusOut(BaseModel):
     endpoint: str | None = Field(default=None)
     prometheus_enabled: bool | None = Field(default=None)
     registered_metrics: list[str] | None = Field(default=None)
+
+class NarrativeOrigin(RootModel[Literal['STORED_BACKEND_RECORD']]):
+    pass
 
 class NewsArticleOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -941,6 +1127,25 @@ class OperationsRunbookOut(BaseModel):
     path: str
     slug: str
     title: str
+
+class OperationsSLOOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    comparison: SLOComparison
+    current: str | None
+    error_budget_consumed: str | None = Field(default=None)
+    error_budget_remaining: str | None = Field(default=None)
+    indicator_id: str
+    limitations: str
+    observed_at: datetime
+    sample_count: int
+    service: str
+    slo_id: str
+    source: str
+    status: SLOStatus
+    target: str
+    title: str
+    unit: SLOUnit
+    window_seconds: int
 
 class OperationsSnapshotOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -1500,6 +1705,12 @@ class RecoveryStatusResponse(BaseModel):
     threshold: int
     verified_factor_count: int
 
+class ReplayIntegrityOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    algorithm: Literal['sha256'] | None = Field(default=None)
+    content_digest: str
+    meaning: Literal['CONTENT_EQUALITY_ONLY'] | None = Field(default=None)
+
 class ResponseEnvelopeCitadelAssessmentOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     data: CitadelAssessmentOut
@@ -1690,6 +1901,11 @@ class ResponseEnvelopeTraceSourceStatus(BaseModel):
     data: TraceSourceStatus
     success: bool | None = Field(default=None)
 
+class ResponseEnvelopeTraceSubmissionResult(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: TraceSubmissionResult
+    success: bool | None = Field(default=None)
+
 class ResponseEnvelopeTraceWatchlistEntry(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     data: TraceWatchlistEntry
@@ -1840,6 +2056,15 @@ class RuntimeStatusOut(BaseModel):
     telegram_health: TelegramHealthOut | None = Field(default=None)
     telegram_state: str
 
+class SLOComparison(RootModel[Literal['AT_LEAST', 'AT_MOST']]):
+    pass
+
+class SLOStatus(RootModel[Literal['WITHIN_TARGET', 'BREACHED', 'INSUFFICIENT_DATA', 'UNAVAILABLE']]):
+    pass
+
+class SLOUnit(RootModel[Literal['ratio']]):
+    pass
+
 class SignalExplanationOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     confidence_reasoning: str
@@ -1871,6 +2096,44 @@ class SignalRecommendationOut(BaseModel):
     generated_by: str
     recommendations: list[RecommendationItemOut]
     signal_id: int
+
+class SimilarityDimensionOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    dimension: Literal['PATTERN', 'SENTIMENT', 'IMPACT', 'VOLATILITY']
+    score_ratio: Decimal
+
+class SimilarityIntervalSubject(RootModel[Literal['HISTORICAL_CANDIDATE_SIMILARITY_SCORE_DISTRIBUTION']]):
+    pass
+
+class SimilarityIntervalType(RootModel[Literal['EMPIRICAL_QUANTILE_INTERVAL']]):
+    pass
+
+class SimilarityMethod(RootModel[Literal['WEIGHTED_EVENT_CONTEXT_V1']]):
+    pass
+
+class SimilarityStatisticalIntervalOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    cohort: Literal['ELIGIBLE_PERSISTED_MATCHES_BOUNDED_500_AT_REQUEST_BOUNDARY']
+    interval_type: SimilarityIntervalType
+    limitations: list[str]
+    lower: Decimal
+    lower_quantile: Decimal
+    method_id: Literal['EMPIRICAL_SIMILARITY_SCORE_QUANTILES']
+    method_version: Literal['empirical-similarity-quantiles.v1']
+    sample_count: int
+    subject: SimilarityIntervalSubject
+    unit: Literal['SIMILARITY_RATIO'] | None = Field(default=None)
+    upper: Decimal
+    upper_quantile: Decimal
+
+class SimilarityUncertaintyOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    confidence_ratio: Decimal | None = Field(default=None)
+    coverage_dimension_count: int
+    interval: SimilarityStatisticalIntervalOut | None = Field(default=None)
+    limitations: list[str] | None = Field(default=None)
+    sample_count: int
+    sufficiency: DataSufficiency
 
 class SourceReputationProfileOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -1951,6 +2214,9 @@ class TelegramHealthOut(BaseModel):
     last_publish_success: datetime | None = Field(default=None)
     pending_queue_size: int | None = Field(default=None)
 
+class TimelineKind(RootModel[Literal['NEWS', 'SIGNAL', 'MARKET', 'NARRATIVE', 'PROVIDER', 'OTHER']]):
+    pass
+
 class TraceBand(RootModel[Literal['LOW', 'MEDIUM', 'HIGH', 'CRITICAL', 'UNKNOWN']]):
     pass
 
@@ -2016,6 +2282,8 @@ class TraceReport(BaseModel):
     reason_codes: list[str] | None = Field(default=None)
     score_breakdown: TraceScoreBreakdown | None = Field(default=None)
     source_quality: TraceSourceQuality | None = Field(default=None)
+    status: str | None = Field(default=None)
+    summary: str | None = Field(default=None)
     trace_band: TraceBand | None = Field(default=None)
     trace_dna: TraceDNA | None = Field(default=None)
     trace_score: Decimal | None = Field(default=None)
@@ -2054,6 +2322,24 @@ class TraceSourceStatus(BaseModel):
     source_name: str
     source_type: str
     trust_level: str
+
+class TraceSubjectType(RootModel[Literal['BITCOIN_ADDRESS']]):
+    pass
+
+class TraceSubmissionResult(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    idempotency_replayed: bool | None = Field(default=None)
+    network: str | None = Field(default=None)
+    normalized_subject: str
+    report_id: int
+    status: str | None = Field(default=None)
+    trace_id: int
+
+class TraceSubmitRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    network: str | None = Field(default=None)
+    subject: str
+    subject_type: TraceSubjectType
 
 class TraceWatchlistCreate(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -2344,11 +2630,15 @@ AccessPaymentIntentStatusResponse.model_rebuild()
 AccessSessionCreate.model_rebuild()
 AccessSessionResponse.model_rebuild()
 AlertSummaryOut.model_rebuild()
+AttributionRelation.model_rebuild()
 AuditLogOut.model_rebuild()
+BTCMarketOverviewEnvelope.model_rebuild()
+BTCMarketOverviewOut.model_rebuild()
 BackgroundJobHealthOut.model_rebuild()
 BastionTraceRegisterAdvisoryRequest.model_rebuild()
 BastionTraceTreasuryCheckRequest.model_rebuild()
 BatchTraceRequest.model_rebuild()
+BrowserSafeMarketSourceOut.model_rebuild()
 BusinessContextType.model_rebuild()
 ChainStateOut.model_rebuild()
 ChildApiKeyCreate.model_rebuild()
@@ -2365,6 +2655,7 @@ CitadelPolicyChecksOut.model_rebuild()
 CitadelRepairPlanOut.model_rebuild()
 CitadelSimulationIn.model_rebuild()
 CitadelSimulationOut.model_rebuild()
+DataSufficiency.model_rebuild()
 DegradedComponentOut.model_rebuild()
 DelegatedPassCreate.model_rebuild()
 DelegatedPassCreateResponse.model_rebuild()
@@ -2392,6 +2683,12 @@ HumanIntentResponse.model_rebuild()
 HumanIntentRiskLevel.model_rebuild()
 HumanIntentSignatureRequest.model_rebuild()
 HumanIntentVerificationResult.model_rebuild()
+IncidentDetailOut.model_rebuild()
+IncidentOut.model_rebuild()
+IncidentSeverity.model_rebuild()
+IncidentStatus.model_rebuild()
+IncidentTransitionOut.model_rebuild()
+IncidentTransitionType.model_rebuild()
 IntelligenceHealthOut.model_rebuild()
 JobRetryRequest.model_rebuild()
 JobRetryResponse.model_rebuild()
@@ -2409,14 +2706,26 @@ LNURLApiWithdrawRequest.model_rebuild()
 LNURLAuthAction.model_rebuild()
 LNURLErrorResponse.model_rebuild()
 LNURLPayDiscoveryResponse.model_rebuild()
+MarketAttributionOut.model_rebuild()
+MarketEvidenceLink.model_rebuild()
+MarketEvidenceRelation.model_rebuild()
+MarketNarrativeOut.model_rebuild()
+MarketReplayCaptureOut.model_rebuild()
+MarketSimilarityMatchOut.model_rebuild()
+MarketSimilarityReportOut.model_rebuild()
+MarketSourceRef.model_rebuild()
+MarketSourceType.model_rebuild()
 MarketTimeMachineAnalyticsResponse.model_rebuild()
 MarketTimeMachineQueryWindow.model_rebuild()
 MarketTimeMachineRuntimeMode.model_rebuild()
 MarketTimeMachineSourceStore.model_rebuild()
+MarketTimelineEventOut.model_rebuild()
+MarketTimelinePageOut.model_rebuild()
 MerchantLightningAddressCreate.model_rebuild()
 MerchantLightningDomainCreate.model_rebuild()
 MetricUsageSummaryOut.model_rebuild()
 MetricsStatusOut.model_rebuild()
+NarrativeOrigin.model_rebuild()
 NewsArticleOut.model_rebuild()
 OnchainChainStateOut.model_rebuild()
 OnchainEventOut.model_rebuild()
@@ -2427,6 +2736,7 @@ OperationsDrillOut.model_rebuild()
 OperationsHealthOut.model_rebuild()
 OperationsMetricsSummaryOut.model_rebuild()
 OperationsRunbookOut.model_rebuild()
+OperationsSLOOut.model_rebuild()
 OperationsSnapshotOut.model_rebuild()
 OperationsStatusOut.model_rebuild()
 OperatorActionRequest.model_rebuild()
@@ -2493,6 +2803,7 @@ RecoverySetupResponse.model_rebuild()
 RecoveryStartRequest.model_rebuild()
 RecoveryStartResponse.model_rebuild()
 RecoveryStatusResponse.model_rebuild()
+ReplayIntegrityOut.model_rebuild()
 ResponseEnvelopeCitadelAssessmentOut.model_rebuild()
 ResponseEnvelopeCitadelDependencyGraphOut.model_rebuild()
 ResponseEnvelopeCitadelInheritanceOut.model_rebuild()
@@ -2531,6 +2842,7 @@ ResponseEnvelopeSignalExplanationOut.model_rebuild()
 ResponseEnvelopeSignalRecommendationOut.model_rebuild()
 ResponseEnvelopeTraceReport.model_rebuild()
 ResponseEnvelopeTraceSourceStatus.model_rebuild()
+ResponseEnvelopeTraceSubmissionResult.model_rebuild()
 ResponseEnvelopeTraceWatchlistEntry.model_rebuild()
 ResponseEnvelopeTreasuryApprovalOut.model_rebuild()
 ResponseEnvelopeTreasuryRejectOut.model_rebuild()
@@ -2557,9 +2869,18 @@ ResponseEnvelopeListStr.model_rebuild()
 RuntimeDegradedModeOut.model_rebuild()
 RuntimeSeverityOut.model_rebuild()
 RuntimeStatusOut.model_rebuild()
+SLOComparison.model_rebuild()
+SLOStatus.model_rebuild()
+SLOUnit.model_rebuild()
 SignalExplanationOut.model_rebuild()
 SignalOut.model_rebuild()
 SignalRecommendationOut.model_rebuild()
+SimilarityDimensionOut.model_rebuild()
+SimilarityIntervalSubject.model_rebuild()
+SimilarityIntervalType.model_rebuild()
+SimilarityMethod.model_rebuild()
+SimilarityStatisticalIntervalOut.model_rebuild()
+SimilarityUncertaintyOut.model_rebuild()
 SourceReputationProfileOut.model_rebuild()
 StorageDegradedMode.model_rebuild()
 StorageRole.model_rebuild()
@@ -2570,6 +2891,7 @@ StorageStoreStatus.model_rebuild()
 SubscriptionEntitlementResponse.model_rebuild()
 SystemHealthOut.model_rebuild()
 TelegramHealthOut.model_rebuild()
+TimelineKind.model_rebuild()
 TraceBand.model_rebuild()
 TraceConfidenceLedgerEntry.model_rebuild()
 TraceDNA.model_rebuild()
@@ -2580,6 +2902,9 @@ TraceReport.model_rebuild()
 TraceScoreBreakdown.model_rebuild()
 TraceSourceQuality.model_rebuild()
 TraceSourceStatus.model_rebuild()
+TraceSubjectType.model_rebuild()
+TraceSubmissionResult.model_rebuild()
+TraceSubmitRequest.model_rebuild()
 TraceWatchlistCreate.model_rebuild()
 TraceWatchlistEntry.model_rebuild()
 TreasuryApprovalActionIn.model_rebuild()

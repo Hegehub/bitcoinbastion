@@ -348,3 +348,4 @@ from .impact_confidence_breakdown import ImpactConfidenceBreakdown
 
 from .scoring_factor import ScoringFactor
 from .score_explanation import ScoreExplanation
+from app.db.models.operations_reliability import OperationsIncident, OperationsIncidentTransition

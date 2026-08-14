@@ -11,6 +11,7 @@ from bastion_ui.components.console.signal_summary_card import signal_summary_car
 from bastion_ui.components.layout.grid import responsive_grid
 from bastion_ui.components.ui.badge import badge
 from bastion_ui.components.ui.card import card
+from bastion_ui.topology import path_for
 
 MARKET_INTELLIGENCE_SAFETY_COPY = (
     "Market intelligence is advisory-only. This is not financial advice. "
@@ -41,7 +42,7 @@ def market_intelligence_panel() -> rx.Component:
             ),
             card(
                 rx.text("Evidence-linked market events are pending backend DTO support."),
-                rx.link("Open Market Evidence", href="/market/evidence"),
+                rx.link("Open Market Evidence", href=path_for("market.evidence")),
                 title="Evidence-linked events",
                 variant="console",
             ),

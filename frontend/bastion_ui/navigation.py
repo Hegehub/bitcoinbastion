@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import os
+import re
 from dataclasses import dataclass
 from typing import Literal
+
+from bastion_ui.feature_flags import FeatureFlagId, RolloutState, resolve_flags
+from bastion_ui.topology import ROUTES, RouteRecord, breadcrumbs
 
 NavStatus = Literal["active", "preview", "coming_soon", "legacy", "hidden"]
 
@@ -40,6 +45,43 @@ class CommandAction:
     status: NavStatus = "active"
     requires_input: bool = False
     safety_note: str | None = None
+
+
+# Desktop and mobile consumers share this one registry. Detail, workflow,
+# protocol and development routes remain registered without becoming nav items.
+def navigation_for(flags: dict[FeatureFlagId, RolloutState]) -> tuple[RouteRecord, ...]:
+    return tuple(
+        sorted(
+            (
+                route
+                for route in ROUTES
+                if route.nav_visible and flags[route.feature_flag_id] is not RolloutState.OFF
+            ),
+            key=lambda route: route.nav_order,
+        )
+    )
+
+
+CANONICAL_NAVIGATION = navigation_for(
+    resolve_flags(environment=os.getenv("BB_ENVIRONMENT", "production"))
+)
+MOBILE_NAVIGATION: tuple[RouteRecord, ...] = tuple(
+    route for route in CANONICAL_NAVIGATION if route.mobile_eligible
+)
+
+
+def active_route_id(path: str) -> str | None:
+    """Resolve exact/static or segment-safe dynamic identity without prefix matching."""
+    for route in ROUTES:
+        pattern = re.escape(route.path)
+        pattern = re.sub(r"\\\[[^]]+\\\]", r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", pattern)
+        if re.fullmatch(pattern, path):
+            return route.id
+    return None
+
+
+def breadcrumb_items(route_id: str) -> tuple[tuple[str, str], ...]:
+    return tuple((route.title, route.path) for route in breadcrumbs(route_id))
 
 
 PUBLIC_NAV_ITEMS: tuple[NavItem, ...] = (

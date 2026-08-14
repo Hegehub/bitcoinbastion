@@ -1,13 +1,13 @@
 {
   "counts": {
-    "api_v1_operations": 337,
-    "api_v1_paths": 319,
+    "api_v1_operations": 348,
+    "api_v1_paths": 330,
     "duplicate_operation_ids": [
       "market_time_machine_market_time_machine_get"
     ],
-    "operations": 369,
-    "paths": 351,
-    "schemas": 286,
+    "operations": 380,
+    "paths": 362,
+    "schemas": 325,
     "security_schemes": [
       "BastionHumanIntentSignature",
       "BastionPoPSession",
@@ -21,10 +21,10 @@
   "metadata": {
     "branch": "work",
     "command": "python scripts/generate_frontend_migration_audit.py",
-    "contract_source_fingerprint": "6bd8ca2f70d64392449a5d12d847b6835bd8692e811a938eb7d189cbb543f5b6",
-    "generated_at_utc": "2026-08-10T16:11:31+00:00",
-    "generator_fingerprint": "9f06cedaa5fa0755e6fd6b0993b1ade81efddbe4a074200639d1953db2da5ae2",
-    "head": "818acbe761a20b84940ba9493076c09a78bbc22e",
+    "contract_source_fingerprint": "10148b9d574d18b38f73a6ab767b499a30cac9020d31db5aa7fb797f8243fef1",
+    "generated_at_utc": "2026-08-12T19:10:51+00:00",
+    "generator_fingerprint": "94a166036cc661878ee2534e0339e9c10206e8c668870417f24d1195001760af",
+    "head": "8f51ff96f1820f59a4dcb853e623ecd822b9bbfe",
     "profile": "current environment / app.core.config defaults",
     "python": "Python 3.12.13"
   },
@@ -756,6 +756,14 @@
           "title": "AlertSummaryOut",
           "type": "object"
         },
+        "AttributionRelation": {
+          "enum": [
+            "ASSOCIATED",
+            "CORRELATION_CANDIDATE"
+          ],
+          "title": "AttributionRelation",
+          "type": "string"
+        },
         "AuditLogOut": {
           "properties": {
             "action": {
@@ -810,6 +818,93 @@
             "created_at"
           ],
           "title": "AuditLogOut",
+          "type": "object"
+        },
+        "BTCMarketOverviewEnvelope": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/BTCMarketOverviewOut"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "BTCMarketOverviewEnvelope",
+          "type": "object"
+        },
+        "BTCMarketOverviewOut": {
+          "properties": {
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "observed_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Observed At"
+            },
+            "pair": {
+              "title": "Pair",
+              "type": "string"
+            },
+            "price_usd": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Price Usd"
+            },
+            "provider_confidence": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Provider Confidence"
+            },
+            "provider_count": {
+              "title": "Provider Count",
+              "type": "integer"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
+            "symbol": {
+              "title": "Symbol",
+              "type": "string"
+            }
+          },
+          "required": [
+            "symbol",
+            "pair",
+            "price_usd",
+            "observed_at",
+            "provider_count",
+            "provider_confidence",
+            "source",
+            "limitations"
+          ],
+          "title": "BTCMarketOverviewOut",
           "type": "object"
         },
         "BackgroundJobHealthOut": {
@@ -974,6 +1069,67 @@
             "addresses"
           ],
           "title": "BatchTraceRequest",
+          "type": "object"
+        },
+        "BrowserSafeMarketSourceOut": {
+          "additionalProperties": false,
+          "properties": {
+            "category": {
+              "title": "Category",
+              "type": "string"
+            },
+            "display_name": {
+              "title": "Display Name",
+              "type": "string"
+            },
+            "homepage_url": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Homepage Url"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "observed_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Observed At"
+            },
+            "source_id": {
+              "title": "Source Id",
+              "type": "string"
+            },
+            "source_type": {
+              "$ref": "#/components/schemas/MarketSourceType"
+            }
+          },
+          "required": [
+            "source_id",
+            "display_name",
+            "source_type",
+            "category"
+          ],
+          "title": "BrowserSafeMarketSourceOut",
           "type": "object"
         },
         "BusinessContextType": {
@@ -2100,6 +2256,14 @@
           ],
           "title": "CitadelSimulationOut",
           "type": "object"
+        },
+        "DataSufficiency": {
+          "enum": [
+            "AVAILABLE",
+            "INSUFFICIENT"
+          ],
+          "title": "DataSufficiency",
+          "type": "string"
         },
         "DegradedComponentOut": {
           "properties": {
@@ -3319,6 +3483,227 @@
           "title": "HumanIntentVerificationResult",
           "type": "object"
         },
+        "IncidentDetailOut": {
+          "properties": {
+            "affected_target": {
+              "title": "Affected Target",
+              "type": "string"
+            },
+            "detector_id": {
+              "title": "Detector Id",
+              "type": "string"
+            },
+            "history": {
+              "items": {
+                "$ref": "#/components/schemas/IncidentTransitionOut"
+              },
+              "title": "History",
+              "type": "array"
+            },
+            "incident_id": {
+              "title": "Incident Id",
+              "type": "string"
+            },
+            "kind": {
+              "title": "Kind",
+              "type": "string"
+            },
+            "limitations": {
+              "title": "Limitations",
+              "type": "string"
+            },
+            "opened_at": {
+              "format": "date-time",
+              "title": "Opened At",
+              "type": "string"
+            },
+            "resolved_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Resolved At"
+            },
+            "severity": {
+              "$ref": "#/components/schemas/IncidentSeverity"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
+            "status": {
+              "$ref": "#/components/schemas/IncidentStatus"
+            },
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "updated_at": {
+              "format": "date-time",
+              "title": "Updated At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "incident_id",
+            "detector_id",
+            "kind",
+            "status",
+            "severity",
+            "affected_target",
+            "summary",
+            "source",
+            "limitations",
+            "opened_at",
+            "updated_at",
+            "resolved_at",
+            "history"
+          ],
+          "title": "IncidentDetailOut",
+          "type": "object"
+        },
+        "IncidentOut": {
+          "properties": {
+            "affected_target": {
+              "title": "Affected Target",
+              "type": "string"
+            },
+            "detector_id": {
+              "title": "Detector Id",
+              "type": "string"
+            },
+            "incident_id": {
+              "title": "Incident Id",
+              "type": "string"
+            },
+            "kind": {
+              "title": "Kind",
+              "type": "string"
+            },
+            "limitations": {
+              "title": "Limitations",
+              "type": "string"
+            },
+            "opened_at": {
+              "format": "date-time",
+              "title": "Opened At",
+              "type": "string"
+            },
+            "resolved_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Resolved At"
+            },
+            "severity": {
+              "$ref": "#/components/schemas/IncidentSeverity"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
+            "status": {
+              "$ref": "#/components/schemas/IncidentStatus"
+            },
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "updated_at": {
+              "format": "date-time",
+              "title": "Updated At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "incident_id",
+            "detector_id",
+            "kind",
+            "status",
+            "severity",
+            "affected_target",
+            "summary",
+            "source",
+            "limitations",
+            "opened_at",
+            "updated_at",
+            "resolved_at"
+          ],
+          "title": "IncidentOut",
+          "type": "object"
+        },
+        "IncidentSeverity": {
+          "enum": [
+            "MAJOR",
+            "CRITICAL"
+          ],
+          "title": "IncidentSeverity",
+          "type": "string"
+        },
+        "IncidentStatus": {
+          "enum": [
+            "OPEN",
+            "RESOLVED"
+          ],
+          "title": "IncidentStatus",
+          "type": "string"
+        },
+        "IncidentTransitionOut": {
+          "properties": {
+            "observed_at": {
+              "format": "date-time",
+              "title": "Observed At",
+              "type": "string"
+            },
+            "severity": {
+              "$ref": "#/components/schemas/IncidentSeverity"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
+            "status": {
+              "$ref": "#/components/schemas/IncidentStatus"
+            },
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "transition": {
+              "$ref": "#/components/schemas/IncidentTransitionType"
+            }
+          },
+          "required": [
+            "transition",
+            "status",
+            "severity",
+            "observed_at",
+            "source",
+            "summary"
+          ],
+          "title": "IncidentTransitionOut",
+          "type": "object"
+        },
+        "IncidentTransitionType": {
+          "enum": [
+            "OPENED",
+            "UPDATED",
+            "RESOLVED"
+          ],
+          "title": "IncidentTransitionType",
+          "type": "string"
+        },
         "IntelligenceHealthOut": {
           "properties": {
             "degraded_state": {
@@ -3992,6 +4377,400 @@
           "title": "LNURLPayDiscoveryResponse",
           "type": "object"
         },
+        "MarketAttributionOut": {
+          "additionalProperties": false,
+          "properties": {
+            "attribution_id": {
+              "title": "Attribution Id",
+              "type": "integer"
+            },
+            "confidence_ratio": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Confidence Ratio",
+              "type": "number"
+            },
+            "evidence_links": {
+              "default": [],
+              "items": {
+                "$ref": "#/components/schemas/MarketEvidenceLink"
+              },
+              "title": "Evidence Links",
+              "type": "array"
+            },
+            "explanation": {
+              "maxLength": 2000,
+              "title": "Explanation",
+              "type": "string"
+            },
+            "factor_event_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Factor Event Id"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "relation": {
+              "$ref": "#/components/schemas/AttributionRelation"
+            },
+            "subject_candle_id": {
+              "title": "Subject Candle Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "attribution_id",
+            "subject_candle_id",
+            "factor_event_id",
+            "relation",
+            "confidence_ratio",
+            "explanation",
+            "limitations"
+          ],
+          "title": "MarketAttributionOut",
+          "type": "object"
+        },
+        "MarketEvidenceLink": {
+          "additionalProperties": false,
+          "properties": {
+            "evidence_id": {
+              "title": "Evidence Id",
+              "type": "integer"
+            },
+            "label": {
+              "title": "Label",
+              "type": "string"
+            },
+            "linked_at": {
+              "format": "date-time",
+              "title": "Linked At",
+              "type": "string"
+            },
+            "relation": {
+              "$ref": "#/components/schemas/MarketEvidenceRelation"
+            },
+            "verification_status": {
+              "enum": [
+                "NOT_REQUESTED",
+                "INTEGRITY_RECORD_AVAILABLE"
+              ],
+              "title": "Verification Status",
+              "type": "string"
+            }
+          },
+          "required": [
+            "evidence_id",
+            "relation",
+            "label",
+            "linked_at",
+            "verification_status"
+          ],
+          "title": "MarketEvidenceLink",
+          "type": "object"
+        },
+        "MarketEvidenceRelation": {
+          "enum": [
+            "RELATED_EVIDENCE",
+            "SOURCE_MATERIAL"
+          ],
+          "title": "MarketEvidenceRelation",
+          "type": "string"
+        },
+        "MarketNarrativeOut": {
+          "additionalProperties": false,
+          "properties": {
+            "body_plain_text": {
+              "maxLength": 2000,
+              "title": "Body Plain Text",
+              "type": "string"
+            },
+            "confidence_ratio": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Confidence Ratio",
+              "type": "number"
+            },
+            "generated_at": {
+              "format": "date-time",
+              "title": "Generated At",
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "narrative_id": {
+              "title": "Narrative Id",
+              "type": "integer"
+            },
+            "origin": {
+              "$ref": "#/components/schemas/NarrativeOrigin"
+            },
+            "slug": {
+              "title": "Slug",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            }
+          },
+          "required": [
+            "narrative_id",
+            "slug",
+            "title",
+            "body_plain_text",
+            "origin",
+            "generated_at",
+            "confidence_ratio",
+            "limitations"
+          ],
+          "title": "MarketNarrativeOut",
+          "type": "object"
+        },
+        "MarketReplayCaptureOut": {
+          "additionalProperties": false,
+          "properties": {
+            "capture_id": {
+              "format": "uuid",
+              "title": "Capture Id",
+              "type": "string"
+            },
+            "captured_at": {
+              "format": "date-time",
+              "title": "Captured At",
+              "type": "string"
+            },
+            "effective_at": {
+              "format": "date-time",
+              "title": "Effective At",
+              "type": "string"
+            },
+            "event": {
+              "$ref": "#/components/schemas/MarketTimelineEventOut"
+            },
+            "historical": {
+              "const": true,
+              "default": true,
+              "title": "Historical",
+              "type": "boolean"
+            },
+            "integrity": {
+              "$ref": "#/components/schemas/ReplayIntegrityOut"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "schema_version": {
+              "const": "market-replay.capture.v1",
+              "default": "market-replay.capture.v1",
+              "title": "Schema Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "capture_id",
+            "captured_at",
+            "effective_at",
+            "event",
+            "integrity"
+          ],
+          "title": "MarketReplayCaptureOut",
+          "type": "object"
+        },
+        "MarketSimilarityMatchOut": {
+          "additionalProperties": false,
+          "properties": {
+            "candidate_event_id": {
+              "title": "Candidate Event Id",
+              "type": "integer"
+            },
+            "candidate_occurred_at": {
+              "format": "date-time",
+              "title": "Candidate Occurred At",
+              "type": "string"
+            },
+            "candidate_title": {
+              "title": "Candidate Title",
+              "type": "string"
+            },
+            "dimensions": {
+              "items": {
+                "$ref": "#/components/schemas/SimilarityDimensionOut"
+              },
+              "title": "Dimensions",
+              "type": "array"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "method": {
+              "$ref": "#/components/schemas/SimilarityMethod",
+              "default": "WEIGHTED_EVENT_CONTEXT_V1"
+            },
+            "method_version": {
+              "const": "historical-event-similarity.v1",
+              "default": "historical-event-similarity.v1",
+              "title": "Method Version",
+              "type": "string"
+            },
+            "rank": {
+              "minimum": 1.0,
+              "title": "Rank",
+              "type": "integer"
+            },
+            "reference_event_id": {
+              "title": "Reference Event Id",
+              "type": "integer"
+            },
+            "replay_event_id": {
+              "title": "Replay Event Id",
+              "type": "integer"
+            },
+            "result_id": {
+              "title": "Result Id",
+              "type": "integer"
+            },
+            "score_meaning": {
+              "const": "HIGHER_IS_MORE_SIMILAR_NOT_PREDICTIVE",
+              "default": "HIGHER_IS_MORE_SIMILAR_NOT_PREDICTIVE",
+              "title": "Score Meaning",
+              "type": "string"
+            },
+            "score_ratio": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Ratio",
+              "type": "number"
+            }
+          },
+          "required": [
+            "result_id",
+            "rank",
+            "reference_event_id",
+            "candidate_event_id",
+            "candidate_title",
+            "candidate_occurred_at",
+            "replay_event_id",
+            "score_ratio",
+            "dimensions",
+            "limitations"
+          ],
+          "title": "MarketSimilarityMatchOut",
+          "type": "object"
+        },
+        "MarketSimilarityReportOut": {
+          "additionalProperties": false,
+          "properties": {
+            "generated_at": {
+              "format": "date-time",
+              "title": "Generated At",
+              "type": "string"
+            },
+            "interpretation": {
+              "const": "RETROSPECTIVE_COMPARISON_NOT_FORECAST",
+              "default": "RETROSPECTIVE_COMPARISON_NOT_FORECAST",
+              "title": "Interpretation",
+              "type": "string"
+            },
+            "method": {
+              "$ref": "#/components/schemas/SimilarityMethod",
+              "default": "WEIGHTED_EVENT_CONTEXT_V1"
+            },
+            "method_version": {
+              "const": "historical-event-similarity.v1",
+              "default": "historical-event-similarity.v1",
+              "title": "Method Version",
+              "type": "string"
+            },
+            "provenance": {
+              "const": "LIVE",
+              "default": "LIVE",
+              "title": "Provenance",
+              "type": "string"
+            },
+            "reference_event_id": {
+              "title": "Reference Event Id",
+              "type": "integer"
+            },
+            "results": {
+              "items": {
+                "$ref": "#/components/schemas/MarketSimilarityMatchOut"
+              },
+              "title": "Results",
+              "type": "array"
+            },
+            "uncertainty": {
+              "$ref": "#/components/schemas/SimilarityUncertaintyOut"
+            }
+          },
+          "required": [
+            "reference_event_id",
+            "results",
+            "uncertainty",
+            "generated_at"
+          ],
+          "title": "MarketSimilarityReportOut",
+          "type": "object"
+        },
+        "MarketSourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "display_name": {
+              "title": "Display Name",
+              "type": "string"
+            },
+            "source_id": {
+              "title": "Source Id",
+              "type": "string"
+            },
+            "source_type": {
+              "$ref": "#/components/schemas/MarketSourceType"
+            }
+          },
+          "required": [
+            "source_id",
+            "display_name",
+            "source_type"
+          ],
+          "title": "MarketSourceRef",
+          "type": "object"
+        },
+        "MarketSourceType": {
+          "enum": [
+            "INTERNAL",
+            "NEWS",
+            "SIGNAL",
+            "PROVIDER",
+            "MARKET_DATA",
+            "UNKNOWN"
+          ],
+          "title": "MarketSourceType",
+          "type": "string"
+        },
         "MarketTimeMachineAnalyticsResponse": {
           "properties": {
             "generated_at": {
@@ -4094,6 +4873,138 @@
           ],
           "title": "MarketTimeMachineSourceStore",
           "type": "string"
+        },
+        "MarketTimelineEventOut": {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "title": "Event Id",
+              "type": "integer"
+            },
+            "evidence_links": {
+              "default": [],
+              "items": {
+                "$ref": "#/components/schemas/MarketEvidenceLink"
+              },
+              "title": "Evidence Links",
+              "type": "array"
+            },
+            "kind": {
+              "$ref": "#/components/schemas/TimelineKind"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "observed_at": {
+              "format": "date-time",
+              "title": "Observed At",
+              "type": "string"
+            },
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "producer_type": {
+              "title": "Producer Type",
+              "type": "string"
+            },
+            "related_candle_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Related Candle Id"
+            },
+            "related_signal_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Related Signal Id"
+            },
+            "sequence": {
+              "title": "Sequence",
+              "type": "integer"
+            },
+            "source": {
+              "$ref": "#/components/schemas/MarketSourceRef"
+            },
+            "summary": {
+              "maxLength": 2000,
+              "title": "Summary",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            }
+          },
+          "required": [
+            "event_id",
+            "sequence",
+            "kind",
+            "producer_type",
+            "occurred_at",
+            "observed_at",
+            "source",
+            "title",
+            "summary"
+          ],
+          "title": "MarketTimelineEventOut",
+          "type": "object"
+        },
+        "MarketTimelinePageOut": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/MarketTimelineEventOut"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "limit": {
+              "title": "Limit",
+              "type": "integer"
+            },
+            "next_before_sequence": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next Before Sequence"
+            },
+            "ordering": {
+              "const": "occurred_at_desc,event_id_desc",
+              "default": "occurred_at_desc,event_id_desc",
+              "title": "Ordering",
+              "type": "string"
+            }
+          },
+          "required": [
+            "items",
+            "limit"
+          ],
+          "title": "MarketTimelinePageOut",
+          "type": "object"
         },
         "MerchantLightningAddressCreate": {
           "properties": {
@@ -4305,6 +5216,13 @@
           },
           "title": "MetricsStatusOut",
           "type": "object"
+        },
+        "NarrativeOrigin": {
+          "enum": [
+            "STORED_BACKEND_RECORD"
+          ],
+          "title": "NarrativeOrigin",
+          "type": "string"
         },
         "NewsArticleOut": {
           "properties": {
@@ -4924,6 +5842,115 @@
             "path"
           ],
           "title": "OperationsRunbookOut",
+          "type": "object"
+        },
+        "OperationsSLOOut": {
+          "properties": {
+            "comparison": {
+              "$ref": "#/components/schemas/SLOComparison"
+            },
+            "current": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Current"
+            },
+            "error_budget_consumed": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Error Budget Consumed"
+            },
+            "error_budget_remaining": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Error Budget Remaining"
+            },
+            "indicator_id": {
+              "title": "Indicator Id",
+              "type": "string"
+            },
+            "limitations": {
+              "title": "Limitations",
+              "type": "string"
+            },
+            "observed_at": {
+              "format": "date-time",
+              "title": "Observed At",
+              "type": "string"
+            },
+            "sample_count": {
+              "title": "Sample Count",
+              "type": "integer"
+            },
+            "service": {
+              "title": "Service",
+              "type": "string"
+            },
+            "slo_id": {
+              "title": "Slo Id",
+              "type": "string"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
+            "status": {
+              "$ref": "#/components/schemas/SLOStatus"
+            },
+            "target": {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "title": "Target",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            },
+            "unit": {
+              "$ref": "#/components/schemas/SLOUnit"
+            },
+            "window_seconds": {
+              "title": "Window Seconds",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "slo_id",
+            "title",
+            "service",
+            "indicator_id",
+            "target",
+            "current",
+            "unit",
+            "comparison",
+            "window_seconds",
+            "status",
+            "sample_count",
+            "observed_at",
+            "source",
+            "limitations"
+          ],
+          "title": "OperationsSLOOut",
           "type": "object"
         },
         "OperationsSnapshotOut": {
@@ -7733,6 +8760,33 @@
           "title": "RecoveryStatusResponse",
           "type": "object"
         },
+        "ReplayIntegrityOut": {
+          "additionalProperties": false,
+          "properties": {
+            "algorithm": {
+              "const": "sha256",
+              "default": "sha256",
+              "title": "Algorithm",
+              "type": "string"
+            },
+            "content_digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Content Digest",
+              "type": "string"
+            },
+            "meaning": {
+              "const": "CONTENT_EQUALITY_ONLY",
+              "default": "CONTENT_EQUALITY_ONLY",
+              "title": "Meaning",
+              "type": "string"
+            }
+          },
+          "required": [
+            "content_digest"
+          ],
+          "title": "ReplayIntegrityOut",
+          "type": "object"
+        },
         "ResponseEnvelope_CitadelAssessmentOut_": {
           "properties": {
             "data": {
@@ -8379,6 +9433,23 @@
           "title": "ResponseEnvelope[TraceSourceStatus]",
           "type": "object"
         },
+        "ResponseEnvelope_TraceSubmissionResult_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/TraceSubmissionResult"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[TraceSubmissionResult]",
+          "type": "object"
+        },
         "ResponseEnvelope_TraceWatchlistEntry_": {
           "properties": {
             "data": {
@@ -9006,6 +10077,31 @@
           "title": "RuntimeStatusOut",
           "type": "object"
         },
+        "SLOComparison": {
+          "enum": [
+            "AT_LEAST",
+            "AT_MOST"
+          ],
+          "title": "SLOComparison",
+          "type": "string"
+        },
+        "SLOStatus": {
+          "enum": [
+            "WITHIN_TARGET",
+            "BREACHED",
+            "INSUFFICIENT_DATA",
+            "UNAVAILABLE"
+          ],
+          "title": "SLOStatus",
+          "type": "string"
+        },
+        "SLOUnit": {
+          "enum": [
+            "ratio"
+          ],
+          "title": "SLOUnit",
+          "type": "string"
+        },
         "SignalExplanationOut": {
           "properties": {
             "confidence_reasoning": {
@@ -9162,6 +10258,195 @@
             "recommendations"
           ],
           "title": "SignalRecommendationOut",
+          "type": "object"
+        },
+        "SimilarityDimensionOut": {
+          "additionalProperties": false,
+          "properties": {
+            "dimension": {
+              "enum": [
+                "PATTERN",
+                "SENTIMENT",
+                "IMPACT",
+                "VOLATILITY"
+              ],
+              "title": "Dimension",
+              "type": "string"
+            },
+            "score_ratio": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Ratio",
+              "type": "number"
+            }
+          },
+          "required": [
+            "dimension",
+            "score_ratio"
+          ],
+          "title": "SimilarityDimensionOut",
+          "type": "object"
+        },
+        "SimilarityIntervalSubject": {
+          "enum": [
+            "HISTORICAL_CANDIDATE_SIMILARITY_SCORE_DISTRIBUTION"
+          ],
+          "title": "SimilarityIntervalSubject",
+          "type": "string"
+        },
+        "SimilarityIntervalType": {
+          "enum": [
+            "EMPIRICAL_QUANTILE_INTERVAL"
+          ],
+          "title": "SimilarityIntervalType",
+          "type": "string"
+        },
+        "SimilarityMethod": {
+          "enum": [
+            "WEIGHTED_EVENT_CONTEXT_V1"
+          ],
+          "title": "SimilarityMethod",
+          "type": "string"
+        },
+        "SimilarityStatisticalIntervalOut": {
+          "additionalProperties": false,
+          "properties": {
+            "cohort": {
+              "const": "ELIGIBLE_PERSISTED_MATCHES_BOUNDED_500_AT_REQUEST_BOUNDARY",
+              "title": "Cohort",
+              "type": "string"
+            },
+            "interval_type": {
+              "$ref": "#/components/schemas/SimilarityIntervalType"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "lower": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Lower",
+              "type": "number"
+            },
+            "lower_quantile": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Lower Quantile",
+              "type": "number"
+            },
+            "method_id": {
+              "const": "EMPIRICAL_SIMILARITY_SCORE_QUANTILES",
+              "title": "Method Id",
+              "type": "string"
+            },
+            "method_version": {
+              "const": "empirical-similarity-quantiles.v1",
+              "title": "Method Version",
+              "type": "string"
+            },
+            "sample_count": {
+              "minimum": 5.0,
+              "title": "Sample Count",
+              "type": "integer"
+            },
+            "subject": {
+              "$ref": "#/components/schemas/SimilarityIntervalSubject"
+            },
+            "unit": {
+              "const": "SIMILARITY_RATIO",
+              "default": "SIMILARITY_RATIO",
+              "title": "Unit",
+              "type": "string"
+            },
+            "upper": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Upper",
+              "type": "number"
+            },
+            "upper_quantile": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Upper Quantile",
+              "type": "number"
+            }
+          },
+          "required": [
+            "subject",
+            "lower",
+            "upper",
+            "interval_type",
+            "lower_quantile",
+            "upper_quantile",
+            "method_id",
+            "method_version",
+            "sample_count",
+            "cohort",
+            "limitations"
+          ],
+          "title": "SimilarityStatisticalIntervalOut",
+          "type": "object"
+        },
+        "SimilarityUncertaintyOut": {
+          "additionalProperties": false,
+          "description": "Non-statistical support metadata; it is not a probability or interval.",
+          "properties": {
+            "confidence_ratio": {
+              "anyOf": [
+                {
+                  "maximum": 1.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Confidence Ratio"
+            },
+            "coverage_dimension_count": {
+              "maximum": 4.0,
+              "minimum": 0.0,
+              "title": "Coverage Dimension Count",
+              "type": "integer"
+            },
+            "interval": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SimilarityStatisticalIntervalOut"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "sample_count": {
+              "minimum": 0.0,
+              "title": "Sample Count",
+              "type": "integer"
+            },
+            "sufficiency": {
+              "$ref": "#/components/schemas/DataSufficiency"
+            }
+          },
+          "required": [
+            "sufficiency",
+            "sample_count",
+            "coverage_dimension_count"
+          ],
+          "title": "SimilarityUncertaintyOut",
           "type": "object"
         },
         "SourceReputationProfileOut": {
@@ -9565,6 +10850,18 @@
           "title": "TelegramHealthOut",
           "type": "object"
         },
+        "TimelineKind": {
+          "enum": [
+            "NEWS",
+            "SIGNAL",
+            "MARKET",
+            "NARRATIVE",
+            "PROVIDER",
+            "OTHER"
+          ],
+          "title": "TimelineKind",
+          "type": "string"
+        },
         "TraceBand": {
           "enum": [
             "LOW",
@@ -9891,6 +11188,16 @@
               "$ref": "#/components/schemas/TraceSourceQuality",
               "default": "UNKNOWN"
             },
+            "status": {
+              "default": "COMPLETE",
+              "title": "Status",
+              "type": "string"
+            },
+            "summary": {
+              "default": "",
+              "title": "Summary",
+              "type": "string"
+            },
             "trace_band": {
               "$ref": "#/components/schemas/TraceBand",
               "default": "UNKNOWN"
@@ -10087,6 +11394,76 @@
             "enabled"
           ],
           "title": "TraceSourceStatus",
+          "type": "object"
+        },
+        "TraceSubjectType": {
+          "enum": [
+            "BITCOIN_ADDRESS"
+          ],
+          "title": "TraceSubjectType",
+          "type": "string"
+        },
+        "TraceSubmissionResult": {
+          "properties": {
+            "idempotency_replayed": {
+              "default": false,
+              "title": "Idempotency Replayed",
+              "type": "boolean"
+            },
+            "network": {
+              "default": "bitcoin-mainnet",
+              "title": "Network",
+              "type": "string"
+            },
+            "normalized_subject": {
+              "title": "Normalized Subject",
+              "type": "string"
+            },
+            "report_id": {
+              "title": "Report Id",
+              "type": "integer"
+            },
+            "status": {
+              "default": "COMPLETE",
+              "title": "Status",
+              "type": "string"
+            },
+            "trace_id": {
+              "title": "Trace Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "trace_id",
+            "report_id",
+            "normalized_subject"
+          ],
+          "title": "TraceSubmissionResult",
+          "type": "object"
+        },
+        "TraceSubmitRequest": {
+          "properties": {
+            "network": {
+              "default": "bitcoin-mainnet",
+              "pattern": "^bitcoin-mainnet$",
+              "title": "Network",
+              "type": "string"
+            },
+            "subject": {
+              "maxLength": 128,
+              "minLength": 14,
+              "title": "Subject",
+              "type": "string"
+            },
+            "subject_type": {
+              "$ref": "#/components/schemas/TraceSubjectType"
+            }
+          },
+          "required": [
+            "subject_type",
+            "subject"
+          ],
+          "title": "TraceSubmitRequest",
           "type": "object"
         },
         "TraceWatchlistCreate": {
@@ -19425,6 +20802,278 @@
           ]
         }
       },
+      "/api/v1/market/history/attributions": {
+        "get": {
+          "operationId": "market_history_attributions",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "limit",
+              "required": false,
+              "schema": {
+                "default": 50,
+                "maximum": 200,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/MarketAttributionOut"
+                    },
+                    "title": "Response Market History Attributions",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Attributions",
+          "tags": [
+            "market-history"
+          ]
+        }
+      },
+      "/api/v1/market/history/narratives": {
+        "get": {
+          "operationId": "market_history_narratives",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "limit",
+              "required": false,
+              "schema": {
+                "default": 50,
+                "maximum": 200,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/MarketNarrativeOut"
+                    },
+                    "title": "Response Market History Narratives",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Narratives",
+          "tags": [
+            "market-history"
+          ]
+        }
+      },
+      "/api/v1/market/history/replay/event/{event_id}": {
+        "get": {
+          "operationId": "market_history_replay_event",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "event_id",
+              "required": true,
+              "schema": {
+                "title": "Event Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MarketReplayCaptureOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Replay Event",
+          "tags": [
+            "market-history"
+          ]
+        }
+      },
+      "/api/v1/market/history/sources": {
+        "get": {
+          "operationId": "market_history_sources",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "limit",
+              "required": false,
+              "schema": {
+                "default": 50,
+                "maximum": 200,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/BrowserSafeMarketSourceOut"
+                    },
+                    "title": "Response Market History Sources",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Sources",
+          "tags": [
+            "market-history"
+          ]
+        }
+      },
+      "/api/v1/market/history/timeline": {
+        "get": {
+          "operationId": "market_history_timeline",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "limit",
+              "required": false,
+              "schema": {
+                "default": 50,
+                "maximum": 200,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "before_sequence",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Before Sequence"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MarketTimelinePageOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Timeline",
+          "tags": [
+            "market-history"
+          ]
+        }
+      },
+      "/api/v1/market/overview": {
+        "get": {
+          "operationId": "market_current_overview",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BTCMarketOverviewEnvelope"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Market Overview",
+          "tags": [
+            "market-data"
+          ]
+        }
+      },
       "/api/v1/market/providers/health": {
         "get": {
           "operationId": "providers_health_api_v1_market_providers_health_get",
@@ -19446,6 +21095,115 @@
           "tags": [
             "market"
           ]
+        }
+      },
+      "/api/v1/market/similarity/{event_id}": {
+        "get": {
+          "operationId": "market_similarity_report",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "event_id",
+              "required": true,
+              "schema": {
+                "title": "Event Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "limit",
+              "required": false,
+              "schema": {
+                "default": 10,
+                "maximum": 50,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              }
+            },
+            {
+              "description": "Short-lived Proof-of-Possession session token. Never an Access Pass bearer token.",
+              "in": "header",
+              "name": "X-Bastion-Session",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "Timestamp used in the signed request digest and freshness check.",
+              "in": "header",
+              "name": "X-Bastion-Timestamp",
+              "required": false,
+              "schema": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            {
+              "description": "Unique per-session nonce used to prevent replay.",
+              "in": "header",
+              "name": "X-Bastion-Nonce",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "SHA-256 hash of the canonical request body.",
+              "in": "header",
+              "name": "X-Bastion-Body-Hash",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "Signature over SHA256(method || path || body_hash || timestamp || nonce).",
+              "in": "header",
+              "name": "X-Bastion-Signature",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MarketSimilarityReportOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            },
+            {
+              "BastionProofOfAccessSignature": []
+            }
+          ],
+          "summary": "Market Similarity Report",
+          "tags": [
+            "market-similarity"
+          ],
+          "x-proof-of-access-required": true
         }
       },
       "/api/v1/metrics/provider-health/history": {
@@ -21804,6 +23562,185 @@
           "x-proof-of-access-required": true
         }
       },
+      "/api/v1/operations/incidents": {
+        "get": {
+          "operationId": "operations_list_incidents",
+          "parameters": [
+            {
+              "description": "Short-lived Proof-of-Possession session token. Never an Access Pass bearer token.",
+              "in": "header",
+              "name": "X-Bastion-Session",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "Timestamp used in the signed request digest and freshness check.",
+              "in": "header",
+              "name": "X-Bastion-Timestamp",
+              "required": false,
+              "schema": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            {
+              "description": "Unique per-session nonce used to prevent replay.",
+              "in": "header",
+              "name": "X-Bastion-Nonce",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "SHA-256 hash of the canonical request body.",
+              "in": "header",
+              "name": "X-Bastion-Body-Hash",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "Signature over SHA256(method || path || body_hash || timestamp || nonce).",
+              "in": "header",
+              "name": "X-Bastion-Signature",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/IncidentOut"
+                    },
+                    "title": "Response Operations List Incidents",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            },
+            {
+              "BastionProofOfAccessSignature": []
+            }
+          ],
+          "summary": "Incidents",
+          "tags": [
+            "operations"
+          ],
+          "x-proof-of-access-required": true
+        }
+      },
+      "/api/v1/operations/incidents/{incident_id}": {
+        "get": {
+          "operationId": "operations_get_incident",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "incident_id",
+              "required": true,
+              "schema": {
+                "title": "Incident Id",
+                "type": "string"
+              }
+            },
+            {
+              "description": "Short-lived Proof-of-Possession session token. Never an Access Pass bearer token.",
+              "in": "header",
+              "name": "X-Bastion-Session",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "Timestamp used in the signed request digest and freshness check.",
+              "in": "header",
+              "name": "X-Bastion-Timestamp",
+              "required": false,
+              "schema": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            {
+              "description": "Unique per-session nonce used to prevent replay.",
+              "in": "header",
+              "name": "X-Bastion-Nonce",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "SHA-256 hash of the canonical request body.",
+              "in": "header",
+              "name": "X-Bastion-Body-Hash",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "Signature over SHA256(method || path || body_hash || timestamp || nonce).",
+              "in": "header",
+              "name": "X-Bastion-Signature",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IncidentDetailOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            },
+            {
+              "BastionProofOfAccessSignature": []
+            }
+          ],
+          "summary": "Incident Detail",
+          "tags": [
+            "operations"
+          ],
+          "x-proof-of-access-required": true
+        }
+      },
       "/api/v1/operations/jobs": {
         "get": {
           "operationId": "jobs_api_v1_operations_jobs_get",
@@ -22356,6 +24293,88 @@
             }
           ],
           "summary": "Runbooks",
+          "tags": [
+            "operations"
+          ],
+          "x-proof-of-access-required": true
+        }
+      },
+      "/api/v1/operations/slo": {
+        "get": {
+          "operationId": "operations_list_slo",
+          "parameters": [
+            {
+              "description": "Short-lived Proof-of-Possession session token. Never an Access Pass bearer token.",
+              "in": "header",
+              "name": "X-Bastion-Session",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "Timestamp used in the signed request digest and freshness check.",
+              "in": "header",
+              "name": "X-Bastion-Timestamp",
+              "required": false,
+              "schema": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            {
+              "description": "Unique per-session nonce used to prevent replay.",
+              "in": "header",
+              "name": "X-Bastion-Nonce",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "SHA-256 hash of the canonical request body.",
+              "in": "header",
+              "name": "X-Bastion-Body-Hash",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "description": "Signature over SHA256(method || path || body_hash || timestamp || nonce).",
+              "in": "header",
+              "name": "X-Bastion-Signature",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/OperationsSLOOut"
+                    },
+                    "title": "Response Operations List Slo",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            },
+            {
+              "BastionProofOfAccessSignature": []
+            }
+          ],
+          "summary": "Operations Slo",
           "tags": [
             "operations"
           ],
@@ -27461,6 +29480,59 @@
             }
           },
           "summary": "Trace Status",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/submit": {
+        "post": {
+          "description": "Synchronously create an advisory report with durable retry identity.\n\nFeature 21 is a public-address workflow, so current canonical policy requires\nneither PoP nor Human Intent. The mutation is nevertheless audited by the\ndomain event and requires an idempotency key.",
+          "operationId": "submit_trace_api_v1_trace_submit_post",
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TraceSubmitRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "201": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_TraceSubmissionResult_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Submit Trace",
           "tags": [
             "trace"
           ]

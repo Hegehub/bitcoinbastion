@@ -24,7 +24,7 @@ def trace_public_flow() -> rx.Component:
             rx.cond(TraceState.loading, trace_loading_state()),
             rx.cond(TraceState.error != "", trace_error_state(TraceState.error)),
             rx.cond(
-                TraceState.result != {},
+                TraceState.trace_lite_report_id != "",
                 trace_lite_result_card(),
                 trace_empty_state(),
             ),

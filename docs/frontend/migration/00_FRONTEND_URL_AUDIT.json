@@ -1,5 +1,5 @@
 {
-  "literal_count": 223,
+  "literal_count": 235,
   "matched": [
     "/api/v1/access/api-keys",
     "/api/v1/access/api-keys/{param}",
@@ -112,7 +112,14 @@
     "/api/v1/market/btc/providers",
     "/api/v1/market/btc/providers/health",
     "/api/v1/market/health",
+    "/api/v1/market/history/attributions",
+    "/api/v1/market/history/narratives",
+    "/api/v1/market/history/replay/event/{param}",
+    "/api/v1/market/history/sources",
+    "/api/v1/market/history/timeline",
+    "/api/v1/market/overview",
     "/api/v1/market/providers/health",
+    "/api/v1/market/similarity/{param}",
     "/api/v1/news/articles/{param}/duplicates",
     "/api/v1/news/by-sentiment/{param}",
     "/api/v1/news/clusters",
@@ -146,6 +153,10 @@
     "/api/v1/news/{param}/scores",
     "/api/v1/onchain/events",
     "/api/v1/onchain/state",
+    "/api/v1/operations/incidents",
+    "/api/v1/operations/incidents/{param}",
+    "/api/v1/operations/jobs",
+    "/api/v1/operations/slo",
     "/api/v1/operations/status",
     "/api/v1/public/features",
     "/api/v1/public/landing",
@@ -184,6 +195,7 @@
     "/api/v1/trace/sources",
     "/api/v1/trace/sources/{param}",
     "/api/v1/trace/status",
+    "/api/v1/trace/submit",
     "/api/v1/trace/watchlist",
     "/api/v1/wallet-auth/challenges",
     "/api/v1/wallet-auth/devices",
@@ -210,7 +222,7 @@
     "/v1/lnurl/pay/subscriptions",
     "/v1/lnurl/withdraw/requests"
   ],
-  "matched_count": 208,
+  "matched_count": 220,
   "sources": {
     "/api/v1/access/api-keys": [
       "frontend/bastion_ui/transport/generated_http.py"
@@ -566,8 +578,29 @@
       "frontend/bastion_ui/services/market_client.py",
       "frontend/bastion_ui/transport/generated_http.py"
     ],
+    "/api/v1/market/history/attributions": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/history/narratives": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/history/replay/event/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/history/sources": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/history/timeline": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/overview": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
     "/api/v1/market/providers/health": [
       "frontend/bastion_ui/services/market_client.py",
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/market/similarity/{param}": [
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/news/articles/{param}/duplicates": [
@@ -672,6 +705,18 @@
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/onchain/state": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/operations/incidents": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/operations/incidents/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/operations/jobs": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/operations/slo": [
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/operations/status": [
@@ -844,6 +889,10 @@
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/status": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/submit": [
+      "frontend/bastion_ui/services/trace_client.py",
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/watchlist": [

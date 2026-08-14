@@ -11,6 +11,7 @@ from bastion_ui.components.console.time_machine_timeline import time_machine_tim
 from bastion_ui.components.layout.grid import responsive_grid
 from bastion_ui.components.ui.badge import badge
 from bastion_ui.components.ui.card import card
+from bastion_ui.topology import path_for
 
 TIME_MACHINE_SAFETY_COPY = (
     "Historical similarity is not prediction. This view explains context and evidence, "
@@ -47,7 +48,7 @@ def time_machine_panel() -> rx.Component:
                     "Evidence packet and narrative context links appear only when "
                     "backend DTOs provide ids."
                 ),
-                rx.link("Open public Time Machine route", href="/market/time-machine"),
+                rx.link("Open public Time Machine route", href=path_for("market.time_machine")),
                 title="Evidence and narrative context",
                 variant="console",
             ),

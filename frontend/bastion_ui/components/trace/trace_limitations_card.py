@@ -4,6 +4,7 @@ import reflex as rx
 
 from bastion_ui.components.layout.grid import two_column_grid
 from bastion_ui.components.ui.card import card
+from bastion_ui.state.trace_report_state import TraceReportState
 
 TRACE_CAN_PROVIDE = (
     "source-based context",
@@ -46,6 +47,7 @@ def trace_limitations_card() -> rx.Component:
             ),
         ),
         rx.vstack(*[rx.text(item) for item in TRACE_REPORT_LIMITATIONS], align="start"),
+        rx.text(TraceReportState.limitations_label, role="status"),
         title="Trace limitations",
         variant="safety",
     )
