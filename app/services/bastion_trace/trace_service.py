@@ -71,6 +71,7 @@ from app.services.bastion_trace.trace_metrics import (
 from app.services.bastion_trace.trace_runtime_events import create_event, get_event, list_events
 from app.services.bastion_trace.trace_alerts import create_alert, list_alerts
 from app.services.bastion_trace.trace_status import make_status
+from app.services.bastion_trace.graph.report_projection import TraceReportGraphProjectionService
 from app.services.events.domain_event_publisher import publish_domain_event
 
 _LIMITATIONS = [
@@ -214,7 +215,7 @@ class TraceService:
         self.repo.save_counterparty_lens(saved.id, lens.model_dump(mode="json"))
         self._publish_trace_report_created(saved, breakdown, scoring)
 
-        return TraceReportSchema(
+        report_schema = TraceReportSchema(
             id=saved.id,
             address=normalized,
             trace_score=scoring.final_score,
@@ -235,6 +236,9 @@ class TraceService:
             no_custody=True,
             created_at=saved.created_at,
         )
+        projector = TraceReportGraphProjectionService()
+        graph = projector.build_graph_for_report(report_schema)
+        return projector.project_compatible_report(report_schema, graph)
 
     def get_origin_passport(self, report_id: int) -> dict[str, object] | None:
         report = self.repo.get_report(report_id)

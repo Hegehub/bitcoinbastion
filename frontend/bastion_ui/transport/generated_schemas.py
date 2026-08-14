@@ -1891,6 +1891,31 @@ class ResponseEnvelopeSignalRecommendationOut(BaseModel):
     data: SignalRecommendationOut
     success: bool | None = Field(default=None)
 
+class ResponseEnvelopeTraceGraphHistoryDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: TraceGraphHistoryDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeTraceGraphMetadataDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: TraceGraphMetadataDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeTraceGraphObjectDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: TraceGraphObjectDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeTraceGraphRelationshipDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: TraceGraphRelationshipDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeTraceGraphSnapshotDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: TraceGraphSnapshotDTO
+    success: bool | None = Field(default=None)
+
 class ResponseEnvelopeTraceReport(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     data: TraceReport
@@ -2263,6 +2288,94 @@ class TraceFactorContribution(BaseModel):
 class TraceFreshness(RootModel[Literal['FRESH', 'RECENT', 'STALE', 'UNKNOWN']]):
     pass
 
+class TraceGraphApiVersion(RootModel[Literal['trace-graph-api-v1']]):
+    pass
+
+class TraceGraphError(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    code: TraceGraphErrorCode
+    message: str
+
+class TraceGraphErrorCode(RootModel[Literal['GRAPH_NOT_FOUND', 'GRAPH_VALIDATION_FAILED']]):
+    pass
+
+class TraceGraphEvidenceReferenceDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    reference: str
+    source_name: str
+    source_type: str
+
+class TraceGraphHistoryDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    entries: list[TraceGraphHistoryEntryDTO]
+    graph_id: str
+
+class TraceGraphHistoryEntryDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    analysis_version: str
+    api_version: TraceGraphApiVersion
+    builder_version: str
+    created_at: datetime
+    graph_id: str
+    graph_version: str
+    limitations: list[str] | None = Field(default=None)
+    provenance_summary: list[str] | None = Field(default=None)
+    schema_version: str
+    snapshot_id: str
+    snapshot_version: TraceSnapshotVersion
+
+class TraceGraphMetadataDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    analysis_version: str
+    api_version: TraceGraphApiVersion
+    builder_version: str
+    chain: str
+    created_at: datetime
+    graph_hash: str
+    graph_id: str
+    graph_version: str
+    limitations: list[str] | None = Field(default=None)
+    schema_version: str
+    snapshot_version: TraceSnapshotVersion
+
+class TraceGraphObjectDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    id: str
+    kind: str
+    label: str
+    limitations: list[str] | None = Field(default=None)
+    provenance: TraceGraphProvenanceDTO
+
+class TraceGraphProvenanceDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    evidence: list[TraceGraphEvidenceReferenceDTO] | None = Field(default=None)
+    limitations: list[str] | None = Field(default=None)
+    observations: list[str] | None = Field(default=None)
+    producer: str
+    stage: str
+
+class TraceGraphRelationshipDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    confidence: Decimal | None = Field(default=None)
+    direction: str
+    id: str
+    limitations: list[str] | None = Field(default=None)
+    originating_observation_id: str
+    provenance: TraceGraphProvenanceDTO
+    relationship_type: str
+    source_id: str
+    target_id: str
+
+class TraceGraphSnapshotDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    graph_id: str
+    metadata: TraceGraphMetadataDTO
+    object_ids: list[str]
+    observation_ids: list[str]
+    relationship_ids: list[str]
+    report_fact_ids: list[str]
+    snapshot_id: str
+
 class TraceReport(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     address: str
@@ -2302,6 +2415,9 @@ class TraceScoreBreakdown(BaseModel):
     reason_codes: list[str] | None = Field(default=None)
     source_quality: TraceSourceQuality
     trace_dna: TraceDNA
+
+class TraceSnapshotVersion(RootModel[Literal['trace-snapshot-v1']]):
+    pass
 
 class TraceSourceQuality(RootModel[Literal['HIGH', 'MEDIUM', 'LOW', 'MIXED', 'UNKNOWN']]):
     pass
@@ -2840,6 +2956,11 @@ ResponseEnvelopeRecoveryCheckOut.model_rebuild()
 ResponseEnvelopeRecoveryReadinessOut.model_rebuild()
 ResponseEnvelopeSignalExplanationOut.model_rebuild()
 ResponseEnvelopeSignalRecommendationOut.model_rebuild()
+ResponseEnvelopeTraceGraphHistoryDTO.model_rebuild()
+ResponseEnvelopeTraceGraphMetadataDTO.model_rebuild()
+ResponseEnvelopeTraceGraphObjectDTO.model_rebuild()
+ResponseEnvelopeTraceGraphRelationshipDTO.model_rebuild()
+ResponseEnvelopeTraceGraphSnapshotDTO.model_rebuild()
 ResponseEnvelopeTraceReport.model_rebuild()
 ResponseEnvelopeTraceSourceStatus.model_rebuild()
 ResponseEnvelopeTraceSubmissionResult.model_rebuild()
@@ -2898,8 +3019,20 @@ TraceDNA.model_rebuild()
 TraceEvidence.model_rebuild()
 TraceFactorContribution.model_rebuild()
 TraceFreshness.model_rebuild()
+TraceGraphApiVersion.model_rebuild()
+TraceGraphError.model_rebuild()
+TraceGraphErrorCode.model_rebuild()
+TraceGraphEvidenceReferenceDTO.model_rebuild()
+TraceGraphHistoryDTO.model_rebuild()
+TraceGraphHistoryEntryDTO.model_rebuild()
+TraceGraphMetadataDTO.model_rebuild()
+TraceGraphObjectDTO.model_rebuild()
+TraceGraphProvenanceDTO.model_rebuild()
+TraceGraphRelationshipDTO.model_rebuild()
+TraceGraphSnapshotDTO.model_rebuild()
 TraceReport.model_rebuild()
 TraceScoreBreakdown.model_rebuild()
+TraceSnapshotVersion.model_rebuild()
 TraceSourceQuality.model_rebuild()
 TraceSourceStatus.model_rebuild()
 TraceSubjectType.model_rebuild()
