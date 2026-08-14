@@ -5253,6 +5253,133 @@ WEBTIMELINEDTOWEBTIMELINEGET_OPERATION = NormalizedOperation(
 async def web_timeline_dto_web_timeline_get(transport: HttpTransport, request: WebTimelineDtoWebTimelineGetRequest) -> WebTimelineDtoWebTimelineGetSuccess:
     return await transport.invoke(WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, path_parameters={}, query_parameters={'filter': serialize_query_value(request.filter), 'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'sort': serialize_query_value(request.sort), 'window': serialize_query_value(request.window)}, body=None, request_headers={})
 
+class GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+
+class GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetSuccess(RootModel[ResponseEnvelopeTraceGraphMetadataDTO]):
+    pass
+
+GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetError = SafeTransportError
+
+GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0381', operation_id='get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/metadata', backend_tag='trace-graph',
+    product='Trace', disposition='UI_OPTIONAL',
+    success_status=200, response_type=GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetSuccess, security=GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get(transport: HttpTransport, request: GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetRequest) -> GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+
+class GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetSuccess(RootModel[ResponseEnvelopeTraceGraphSnapshotDTO]):
+    pass
+
+GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetError = SafeTransportError
+
+GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0382', operation_id='get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/snapshot', backend_tag='trace-graph',
+    product='Trace', disposition='UI_OPTIONAL',
+    success_status=200, response_type=GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetSuccess, security=GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get(transport: HttpTransport, request: GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetRequest) -> GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+
+class GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetSuccess(RootModel[ResponseEnvelopeTraceGraphHistoryDTO]):
+    pass
+
+GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetError = SafeTransportError
+
+GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0383', operation_id='get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/history', backend_tag='trace-graph',
+    product='Trace', disposition='UI_OPTIONAL',
+    success_status=200, response_type=GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetSuccess, security=GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get(transport: HttpTransport, request: GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetRequest) -> GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    object_id: str
+
+class GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetSuccess(RootModel[ResponseEnvelopeTraceGraphObjectDTO]):
+    pass
+
+GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetError = SafeTransportError
+
+GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0384', operation_id='get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/objects/{object_id}', backend_tag='trace-graph',
+    product='Trace', disposition='UI_OPTIONAL',
+    success_status=200, response_type=GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetSuccess, security=GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get(transport: HttpTransport, request: GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetRequest) -> GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_OPERATION, path_parameters={'report_id': str(request.report_id), 'object_id': str(request.object_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    relationship_id: str
+
+class GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetSuccess(RootModel[ResponseEnvelopeTraceGraphRelationshipDTO]):
+    pass
+
+GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetError = SafeTransportError
+
+GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0385', operation_id='get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/relationships/{relationship_id}', backend_tag='trace-graph',
+    product='Trace', disposition='UI_OPTIONAL',
+    success_status=200, response_type=GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetSuccess, security=GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get(transport: HttpTransport, request: GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetRequest) -> GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_OPERATION, path_parameters={'report_id': str(request.report_id), 'relationship_id': str(request.relationship_id)}, query_parameters={}, body=None, request_headers={})
+
 SOURCE_HEAD = '8f51ff96f1820f59a4dcb853e623ecd822b9bbfe'
 
 OWNERSHIP = {
@@ -5462,6 +5589,11 @@ OWNERSHIP = {
     'web_evidence_dto_web_evidence__packet_id__get': ('HTTP-0374', 'bastion_ui.transport.generated_http', 'web_evidence_dto_web_evidence__packet_id__get'),
     'web_market_time_machine_dto_web_market_time_machine_get': ('HTTP-0375', 'bastion_ui.transport.generated_http', 'web_market_time_machine_dto_web_market_time_machine_get'),
     'web_timeline_dto_web_timeline_get': ('HTTP-0380', 'bastion_ui.transport.generated_http', 'web_timeline_dto_web_timeline_get'),
+    'get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get': ('HTTP-0381', 'bastion_ui.transport.generated_http', 'get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get'),
+    'get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get': ('HTTP-0382', 'bastion_ui.transport.generated_http', 'get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get'),
+    'get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get': ('HTTP-0383', 'bastion_ui.transport.generated_http', 'get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get'),
+    'get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get': ('HTTP-0384', 'bastion_ui.transport.generated_http', 'get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get'),
+    'get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get': ('HTTP-0385', 'bastion_ui.transport.generated_http', 'get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get'),
 }
 
 FEATURE_53 = (
@@ -5671,4 +5803,9 @@ FEATURE_53 = (
     ContractRegistryEntry(registry_id='http:web_evidence_dto_web_evidence__packet_id__get', source_head=SOURCE_HEAD, operation=WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_OPERATION, request_schema='WebEvidenceDtoWebEvidencePacketIdGetRequest', success_schema='WebEvidenceDtoWebEvidencePacketIdGetSuccess', error_schema='WebEvidenceDtoWebEvidencePacketIdGetError'),
     ContractRegistryEntry(registry_id='http:web_market_time_machine_dto_web_market_time_machine_get', source_head=SOURCE_HEAD, operation=WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_OPERATION, request_schema='WebMarketTimeMachineDtoWebMarketTimeMachineGetRequest', success_schema='WebMarketTimeMachineDtoWebMarketTimeMachineGetSuccess', error_schema='WebMarketTimeMachineDtoWebMarketTimeMachineGetError'),
     ContractRegistryEntry(registry_id='http:web_timeline_dto_web_timeline_get', source_head=SOURCE_HEAD, operation=WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, request_schema='WebTimelineDtoWebTimelineGetRequest', success_schema='WebTimelineDtoWebTimelineGetSuccess', error_schema='WebTimelineDtoWebTimelineGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_OPERATION, request_schema='GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetRequest', success_schema='GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetSuccess', error_schema='GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_OPERATION, request_schema='GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetRequest', success_schema='GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetSuccess', error_schema='GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_OPERATION, request_schema='GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetRequest', success_schema='GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetSuccess', error_schema='GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_OPERATION, request_schema='GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetRequest', success_schema='GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetSuccess', error_schema='GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_OPERATION, request_schema='GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetRequest', success_schema='GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetSuccess', error_schema='GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetError'),
 )

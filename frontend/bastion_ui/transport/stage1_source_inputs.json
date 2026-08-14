@@ -1,5 +1,5 @@
 {
-  "contract_source_fingerprint": "10148b9d574d18b38f73a6ab767b499a30cac9020d31db5aa7fb797f8243fef1",
+  "contract_source_fingerprint": "86a88f5e69c1708e786bc60f8b670c169dbca4ca1873ab9afd1e74a63098e77e",
   "generator_fingerprint": "94a166036cc661878ee2534e0339e9c10206e8c668870417f24d1195001760af",
   "inputs": [
     {
@@ -225,7 +225,7 @@
     {
       "path": "app/api/v1/trace.py",
       "role": "contract_source",
-      "sha256": "778019eec5806264237e6c974c9d48d806613e6a145d223067da111338991729"
+      "sha256": "9b76f1e00650984114abc02edd93925879392601c8fea3de189addff904d6f95"
     },
     {
       "path": "app/api/v1/treasury.py",
@@ -2048,6 +2048,11 @@
       "sha256": "4671f1bb13e5ec1c63afd10e130b46977b1760d41b4e7cb019a9ac71e3ea575b"
     },
     {
+      "path": "app/schemas/trace_graph.py",
+      "role": "contract_source",
+      "sha256": "1a7cbe0ac7837d55c9d2137024557558fe611da1c5d469096129af78523f2302"
+    },
+    {
       "path": "app/schemas/treasury.py",
       "role": "contract_source",
       "sha256": "ab60bd70d73140a695c5af1e22ab83a53c221251dcde7ddb710287badc8ba392"
@@ -2483,6 +2488,31 @@
       "sha256": "7c4a3e99fd12dbc023bdd99ad8bfe550f58f4b462c85b1dafdef59ad47952d76"
     },
     {
+      "path": "app/services/bastion_trace/graph/__init__.py",
+      "role": "contract_source",
+      "sha256": "dcf5c27e5640d79c3cd18911c922c8ed295d851aa26cf840a19fa8d44504af42"
+    },
+    {
+      "path": "app/services/bastion_trace/graph/api_projection.py",
+      "role": "contract_source",
+      "sha256": "bc4f89143f55606f329e9658dc49d02deac47d26f113a4e970455e2cb54015ba"
+    },
+    {
+      "path": "app/services/bastion_trace/graph/builder.py",
+      "role": "contract_source",
+      "sha256": "77324725a977740368200e393ea666ce90fdc2296f1bdd0843d7fa055edc06ea"
+    },
+    {
+      "path": "app/services/bastion_trace/graph/domain.py",
+      "role": "contract_source",
+      "sha256": "81ff5b86fb3c7d9d4d4777c76997ec7510f06c6c3daebda0c8d78c08c6811948"
+    },
+    {
+      "path": "app/services/bastion_trace/graph/report_projection.py",
+      "role": "contract_source",
+      "sha256": "d812f66113f4c29d615c3c58f4ae500a94ba5c405cf2a3ee9c1b48794d14338c"
+    },
+    {
       "path": "app/services/bastion_trace/immutable_audit_log.py",
       "role": "contract_source",
       "sha256": "3c7c01adbf0af250278292d6e0a5b2bf4f6e12962a2a742587bbdb23c09f619a"
@@ -2660,7 +2690,7 @@
     {
       "path": "app/services/bastion_trace/trace_service.py",
       "role": "contract_source",
-      "sha256": "dfd4ef4d822d4d4f691228e9655338893d7a7b261e07876fd163601df3002622"
+      "sha256": "9af781f32c01111e1e55e25994b9f6476f2444850b4a898f83f9fe59f7a48838"
     },
     {
       "path": "app/services/bastion_trace/trace_status.py",
@@ -5170,7 +5200,7 @@
     {
       "path": "registry:http-operation-selection",
       "role": "contract_registry",
-      "sha256": "fa1a4bb6171fb54e32664d1d13ddac7e9e95897e33f861dc901cd194cb9bc5a3"
+      "sha256": "cc2e079eed5a0ad36c65dce53a62c98c10ca3428bfb411f840bbc7106e3cb313"
     },
     {
       "path": "frontend/bastion_ui/transport/operation_compiler.py",

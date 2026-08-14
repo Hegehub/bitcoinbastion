@@ -35,6 +35,16 @@ from app.schemas.bastion_trace import (
     TraceWatchlistCreate,
     TraceWatchlistEntry,
 )
+from app.schemas.trace_graph import (
+    TraceGraphDTO,
+    TraceGraphHistoryDTO,
+    TraceGraphMetadataDTO,
+    TraceGraphObjectDTO,
+    TraceGraphRelationshipDTO,
+    TraceGraphSnapshotDTO,
+    TraceGraphError,
+)
+from app.services.bastion_trace.graph.api_projection import TraceGraphApiProjectionService
 from app.services.bastion_trace.trace_service import TraceService
 
 router = APIRouter(prefix="/trace", tags=["trace"])
@@ -127,6 +137,83 @@ def get_report(report_id: int, db: Session = Depends(db_session)) -> ResponseEnv
             created_at=item.created_at,
         )
     )
+
+
+def _graph_projection_or_404(report_id: int, db: Session) -> TraceGraphDTO:
+    repo = BastionTraceRepository(db)
+    report = repo.get_report(report_id)
+    if report is None:
+        raise HTTPException(status_code=404, detail="Trace graph not found")
+    return TraceGraphApiProjectionService().graph_for_report_model(report)
+
+
+@router.get(
+    "/report/{report_id}/graph/metadata",
+    response_model=ResponseEnvelope[TraceGraphMetadataDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_metadata(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphMetadataDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    return ResponseEnvelope(data=graph.metadata)
+
+
+@router.get(
+    "/report/{report_id}/graph/snapshot",
+    response_model=ResponseEnvelope[TraceGraphSnapshotDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_snapshot(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphSnapshotDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    return ResponseEnvelope(data=graph.snapshot)
+
+
+@router.get(
+    "/report/{report_id}/graph/history",
+    response_model=ResponseEnvelope[TraceGraphHistoryDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_history(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphHistoryDTO]:
+    repo = BastionTraceRepository(db)
+    report = repo.get_report(report_id)
+    if report is None:
+        raise HTTPException(status_code=404, detail="Trace graph not found")
+    return ResponseEnvelope(data=TraceGraphApiProjectionService().history_for_report_model(report))
+
+
+@router.get(
+    "/report/{report_id}/graph/objects/{object_id}",
+    response_model=ResponseEnvelope[TraceGraphObjectDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_object(
+    report_id: int, object_id: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphObjectDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    for item in graph.objects:
+        if item.id == object_id:
+            return ResponseEnvelope(data=item)
+    raise HTTPException(status_code=404, detail="Trace graph object not found")
+
+
+@router.get(
+    "/report/{report_id}/graph/relationships/{relationship_id}",
+    response_model=ResponseEnvelope[TraceGraphRelationshipDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_relationship(
+    report_id: int, relationship_id: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphRelationshipDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    for item in graph.relationships:
+        if item.id == relationship_id:
+            return ResponseEnvelope(data=item)
+    raise HTTPException(status_code=404, detail="Trace graph relationship not found")
 
 
 @router.get("/report/{report_id}/evidence", response_model=ResponseEnvelope[list[TraceEvidence]])
