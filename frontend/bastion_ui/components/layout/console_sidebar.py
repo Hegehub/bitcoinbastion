@@ -4,14 +4,9 @@ from typing import cast
 
 import reflex as rx
 
-from bastion_ui.navigation import CONSOLE_NAV_ITEMS, NavItem
-
-
-def _console_status(item: NavItem) -> rx.Component:
-    return cast(
-        rx.Component,
-        rx.badge(item.status.replace("_", " "), color_scheme="orange"),
-    )
+from bastion_ui.navigation import CANONICAL_NAVIGATION
+from bastion_ui.state.navigation_state import NavigationState
+from bastion_ui.topology import RouteClass, path_for
 
 
 def console_sidebar() -> rx.Component:
@@ -21,10 +16,14 @@ def console_sidebar() -> rx.Component:
             rx.heading("Console", size="4"),
             *[
                 rx.link(
-                    rx.hstack(rx.text(item.label), _console_status(item), spacing="2"),
-                    href=item.route,
+                    rx.text(item.title),
+                    href=path_for(item.id),
+                    aria_current=rx.cond(
+                        NavigationState.current_path == path_for(item.id), "page", None
+                    ),
                 )
-                for item in CONSOLE_NAV_ITEMS
+                for item in CANONICAL_NAVIGATION
+                if item.route_class is RouteClass.OPERATOR_ONLY
             ],
             align="start",
             spacing="3",

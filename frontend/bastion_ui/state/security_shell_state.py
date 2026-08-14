@@ -29,6 +29,14 @@ class SecurityShellState(rx.State):
     def protected_visible(self) -> bool:
         return bool(self.posture and self.posture.session.value == "ACTIVE")
 
+    @rx.var
+    def operator_visible(self) -> bool:
+        return bool(
+            self.posture
+            and self.posture.session.value == "ACTIVE"
+            and "operator" in self.posture.capabilities
+        )
+
     async def refresh_posture(self) -> None:
         self.request_generation += 1
         token = self.request_generation

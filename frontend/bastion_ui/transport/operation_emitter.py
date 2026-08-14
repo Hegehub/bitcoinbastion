@@ -110,15 +110,20 @@ def emit_operations(plan: OperationModulePlan) -> str:
         )
         path_items = [p for p in operation.parameters if p.location == "path"]
         query_items = [p for p in operation.parameters if p.location == "query"]
+        header_items = [p for p in operation.parameters if p.location == "header"]
         path_expr = "{" + ", ".join(f"{p.name!r}: str(request.{field_symbol(p.name)})" for p in path_items) + "}"
         query_expr = "{" + ", ".join(
             f"{p.name!r}: serialize_query_value(request.{field_symbol(p.name)})"
             for p in query_items
         ) + "}"
         body_expr = "request.body.model_dump(mode='json')" if operation.request_body is not None else "None"
+        header_expr = "{" + ", ".join(
+            f"{p.name!r}: str(request.{field_symbol(p.name)})"
+            for p in header_items
+        ) + "}"
         lines.extend(
             [
-                f"    return await transport.invoke({descriptor}, path_parameters={path_expr}, query_parameters={query_expr}, body={body_expr})",
+                f"    return await transport.invoke({descriptor}, path_parameters={path_expr}, query_parameters={query_expr}, body={body_expr}, request_headers={header_expr})",
                 "",
             ]
         )

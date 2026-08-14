@@ -6,10 +6,11 @@ State, authorization policy, and signing keys do not belong here.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Literal, TypeVar
+from typing import Literal, Protocol, TypeVar
 from urllib.parse import quote
 from uuid import UUID
 
@@ -139,12 +140,37 @@ class SafeTransportError(Exception):
         return f"{self.code} ({self.status or 'network'}): {self.safe_message}"
 
 
+SECURITY_PROVIDER_FACTORY: Callable[[], RequestSecurityProvider] | None = None
+
+
+class RequestSecurityProvider(Protocol):
+    """Injected non-persistent PoP signer boundary for protected requests."""
+
+    def headers_for(
+        self,
+        *,
+        method: str,
+        path: str,
+        query_parameters: dict[str, str | int | float | bool | None],
+        body: bytes,
+    ) -> dict[str, str]: ...
+
+
 class HttpTransport:
     """One callable engine; secrets/signing providers remain injected boundaries."""
 
-    def __init__(self, client: httpx.AsyncClient, *, timeout_seconds: float = 10.0) -> None:
+    def __init__(
+        self,
+        client: httpx.AsyncClient,
+        *,
+        timeout_seconds: float = 10.0,
+        security_provider: RequestSecurityProvider | None = None,
+    ) -> None:
         self._client = client
         self._timeout = timeout_seconds
+        self._security_provider = security_provider or (
+            SECURITY_PROVIDER_FACTORY() if SECURITY_PROVIDER_FACTORY is not None else None
+        )
 
     async def invoke(
         self,
@@ -153,23 +179,63 @@ class HttpTransport:
         path_parameters: dict[str, str] | None = None,
         query_parameters: dict[str, str | int | float | bool | None] | None = None,
         body: JsonValue | None = None,
+        request_headers: dict[str, str] | None = None,
     ) -> ResponseT:
-        if not operation.security.public:
+        path = operation.path
+        for name, value in sorted((path_parameters or {}).items()):
+            path = path.replace("{" + name + "}", quote(value, safe=""))
+        query: dict[str, str | int | float | bool | None] = {
+            key: value for key, value in (query_parameters or {}).items() if value is not None
+        }
+        encoded_body = (
+            b""
+            if body is None
+            else __import__("json")
+            .dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+            .encode()
+        )
+        if not operation.security.public and self._security_provider is None:
             raise SafeTransportError(
                 None,
                 "security_provider_required",
                 False,
                 "Protected transport boundary required",
             )
+        provider = self._security_provider
+        supplied_headers = request_headers or {}
+        protected_header_names = {
+            "authorization",
+            "bastion-request-timestamp",
+            "bastion-request-nonce",
+            "bastion-request-body-hash",
+            "bastion-request-signature",
+        }
+        if any(
+            name.lower().startswith("x-bastion-")
+            or name.lower() in protected_header_names
+            for name in supplied_headers
+        ):
+            raise SafeTransportError(None, "reserved_security_header", False, "Reserved header")
+        headers = (
+            {}
+            if operation.security.public or provider is None
+            else provider.headers_for(
+                method=operation.method,
+                path=path,
+                query_parameters=query,
+                body=encoded_body,
+            )
+        )
+        if body is not None:
+            headers = {"content-type": "application/json", **headers}
+        headers = {**supplied_headers, **headers}
         try:
-            path = operation.path
-            for name, value in sorted((path_parameters or {}).items()):
-                path = path.replace("{" + name + "}", quote(value, safe=""))
             response = await self._client.request(
                 operation.method,
                 path,
-                params=query_parameters,
-                json=body,
+                params=query,
+                content=encoded_body or None,
+                headers=headers,
                 timeout=self._timeout,
             )
         except httpx.TimeoutException as exc:

@@ -1,6 +1,9 @@
+import hashlib
 import json
+import re
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
 from app.api.access_dependencies import (
@@ -27,12 +30,59 @@ from app.schemas.bastion_trace import (
     TraceReport,
     TraceSourceQuality,
     TraceSourceStatus,
+    TraceSubmitRequest,
+    TraceSubmissionResult,
     TraceWatchlistCreate,
     TraceWatchlistEntry,
 )
 from app.services.bastion_trace.trace_service import TraceService
 
 router = APIRouter(prefix="/trace", tags=["trace"])
+_IDEMPOTENCY_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{16,128}$")
+
+
+@router.post("/submit", response_model=ResponseEnvelope[TraceSubmissionResult], status_code=201)
+def submit_trace(
+    payload: TraceSubmitRequest,
+    idempotency_key: Annotated[str, Header(alias="Idempotency-Key")],
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[TraceSubmissionResult]:
+    """Synchronously create an advisory report with durable retry identity.
+
+    Feature 21 is a public-address workflow, so current canonical policy requires
+    neither PoP nor Human Intent. The mutation is nevertheless audited by the
+    domain event and requires an idempotency key.
+    """
+    if not _IDEMPOTENCY_PATTERN.fullmatch(idempotency_key):
+        raise HTTPException(status_code=400, detail="Invalid Idempotency-Key")
+    key_hash = hashlib.sha256(idempotency_key.encode()).hexdigest()
+    repo = BastionTraceRepository(db)
+    existing = repo.get_report_by_idempotency_hash(key_hash)
+    if existing is not None:
+        if existing.address != payload.subject.strip():
+            raise HTTPException(status_code=409, detail="Idempotency key conflicts with request")
+        return ResponseEnvelope(
+            data=TraceSubmissionResult(
+                trace_id=existing.id,
+                report_id=existing.id,
+                normalized_subject=existing.address,
+                idempotency_replayed=True,
+            )
+        )
+    try:
+        report = TraceService(repo).analyze_address(
+            payload.subject, idempotency_key_hash=key_hash
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="Unsupported public Bitcoin address") from exc
+    assert report.id is not None
+    return ResponseEnvelope(
+        data=TraceSubmissionResult(
+            trace_id=report.id,
+            report_id=report.id,
+            normalized_subject=report.address,
+        )
+    )
 
 
 @router.get("/address/{address}", response_model=ResponseEnvelope[TraceReport])
@@ -56,6 +106,7 @@ def get_report(report_id: int, db: Session = Depends(db_session)) -> ResponseEnv
         data=TraceReport(
             id=item.id,
             address=item.address,
+            summary=item.summary,
             chain=item.chain,
             trace_score=item.trace_score,
             trace_band=TraceBand(item.trace_band),

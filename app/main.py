@@ -25,6 +25,8 @@ from app.api.v1.health import router as health_router
 from app.api.v1.news import router as news_router
 from app.api.v1.market_intelligence import router as market_intelligence_router
 from app.api.v1.market_data import router as market_data_router
+from app.api.v1.market_history import router as market_history_router
+from app.api.v1.market_similarity import router as market_similarity_router
 from app.api.v1.market import router as market_router
 from app.api.v1.lnurl_activation import router as lnurl_activation_router
 from app.api.v1.lnurl import router as lnurl_router
@@ -85,6 +87,8 @@ app.include_router(business_lightning_router, prefix=settings.api_prefix)
 app.include_router(news_router, prefix=settings.api_prefix)
 app.include_router(market_intelligence_router, prefix=settings.api_prefix)
 app.include_router(market_data_router, prefix=settings.api_prefix)
+app.include_router(market_history_router, prefix=settings.api_prefix)
+app.include_router(market_similarity_router, prefix=settings.api_prefix)
 app.include_router(market_router, prefix=settings.api_prefix)
 app.include_router(lnurl_activation_router, prefix=settings.api_prefix)
 app.include_router(payregister_lnurl_router, prefix=settings.api_prefix)

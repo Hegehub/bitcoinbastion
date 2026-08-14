@@ -18,6 +18,7 @@ class WebSocketLabState(rx.State):
     connection_status: str = ConnectionStatus.DISCONNECTED.value
     safe_error: str = ""
     request_generation: int = 0
+    _transport: WebSocketTransport | None = None
 
     @rx.var
     def stream(self) -> str:
@@ -45,6 +46,7 @@ class WebSocketLabState(rx.State):
         self.connection_status = ConnectionStatus.CONNECTING.value
         self.safe_error = ""
         transport = WebSocketTransport()
+        self._transport = transport
         base = get_config().api_base_url.replace("https://", "wss://").replace("http://", "ws://")
         try:
             frame = await transport.receive_first(
@@ -68,8 +70,11 @@ class WebSocketLabState(rx.State):
                     "The provider-health stream is unavailable. Demo data was not substituted."
                 )
 
-    def disconnect(self) -> None:
+    async def disconnect(self) -> None:
         self.request_generation += 1
+        if self._transport is not None:
+            await self._transport.close()
+            self._transport = None
         self.connection_status = ConnectionStatus.DISCONNECTED.value
 
     def demo_unsupported_version(self) -> None:

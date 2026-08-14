@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import asyncio
 from collections import deque
 from enum import StrEnum
+from typing import Any
 
 from pydantic import ValidationError
 from websockets.asyncio.client import connect
@@ -29,6 +31,7 @@ class WebSocketTransport:
         self.maximum_reconnects = maximum_reconnects
         self._recent_ids: deque[str] = deque(maxlen=recent_id_limit)
         self._connection_active = False
+        self._socket: Any | None = None
 
     def begin_connect(self) -> None:
         if self._connection_active:
@@ -74,10 +77,22 @@ class WebSocketTransport:
 
     async def receive_first(self, uri: str) -> Frame | None:
         self.begin_connect()
-        async with connect(uri) as socket:
-            frame = self.decode(await socket.recv())
+        try:
+            socket = await connect(uri)
+            self._socket = socket
+            frame = self.decode(await asyncio.wait_for(socket.recv(), timeout=5.0))
             self.connected()
             return frame
+        except Exception:
+            await self.close()
+            raise
+
+    async def close(self) -> None:
+        """Close the owned socket before disabling reconnect eligibility."""
+        socket, self._socket = self._socket, None
+        if socket is not None:
+            await socket.close()
+        self.disconnect()
 
     def visibility_changed(self, *, visible: bool) -> None:
         if not visible:

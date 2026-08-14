@@ -89,6 +89,10 @@ def ref(v: Any) -> str:
 
 def prompt_for(path: str) -> int:
     p = path.lower()
+    if "/market/similarity" in p:
+        return 11
+    if "/market/history" in p:
+        return 10
     if "payregister" in p:
         return 22
     if "lnurl" in p or "business-lightning" in p:
@@ -268,6 +272,25 @@ def main() -> None:
     ids = []
     generated_http_path = ROOT / "frontend/bastion_ui/transport/generated_http.py"
     generated_http = generated_http_path.read_text() if generated_http_path.exists() else ""
+    authoritative_protected_operations = {
+        "operations_list_incidents",
+        "operations_get_incident",
+        "operations_list_slo",
+        "market_current_overview",
+        "jobs_api_v1_operations_jobs_get",
+        "market_history_attributions",
+        "market_history_narratives",
+        "market_history_replay_event",
+        "market_history_sources",
+        "market_history_timeline",
+        "market_similarity_report",
+    }
+    # Prompt-12 reviewed mutation authority: public Feature-21 submit is a
+    # synchronous, server-validated mutation with a required durable
+    # Idempotency-Key. It intentionally requires neither PoP nor Human Intent.
+    authoritative_mutation_operations = {
+        "submit_trace_api_v1_trace_submit_post",
+    }
     for path, item in sorted(spec["paths"].items()):
         for method in METHODS:
             if method not in item:
@@ -298,8 +321,14 @@ def main() -> None:
             if generated_owner:
                 coverage = "CLIENT_ONLY"
             deferred = DEFERRED_HTTP.get((method, path))
-            unresolved_mutation = active_ui and method.upper() in {"POST", "PUT", "PATCH", "DELETE"}
-            unresolved_protected = active_ui and protected
+            unresolved_mutation = (
+                active_ui
+                and method.upper() in {"POST", "PUT", "PATCH", "DELETE"}
+                and oid not in authoritative_mutation_operations
+            )
+            unresolved_protected = (
+                active_ui and protected and oid not in authoritative_protected_operations
+            )
             contract_authority_deferred = unresolved_mutation or unresolved_protected
             if contract_authority_deferred:
                 disp = "DEFERRED_WITH_REASON"
@@ -326,6 +355,8 @@ def main() -> None:
                 and not legacy_html
                 and not schema_authority_missing
                 and not generated_owner
+                and oid not in authoritative_protected_operations
+                and oid not in authoritative_mutation_operations
             )
             authority = (
                 "DEFERRED_AUTHORITY"

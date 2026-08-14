@@ -8,7 +8,7 @@ from bastion_ui.transport.foundation import (
     SecurityMetadata,
 )
 
-SOURCE_HEAD = "c827464af469c1727f47324d585c1250c65a50dc"
+SOURCE_HEAD = "8f51ff96f1820f59a4dcb853e623ecd822b9bbfe"
 
 HEALTH_API_V1_HEALTH_GET_SECURITY = SecurityMetadata(
     identity="reviewed-public:health_api_v1_health_get",

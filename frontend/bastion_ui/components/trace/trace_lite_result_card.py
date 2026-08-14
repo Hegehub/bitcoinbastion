@@ -26,10 +26,7 @@ def trace_lite_result_card() -> rx.Component:
         rx.text(TraceState.summary),
         rx.text(TraceState.limitations_label),
         rx.text(TraceState.warnings_label),
-        rx.cond(
-            TraceState.trace_lite_report_id != "",
-            rx.text("Full report route coming in next migration step."),
-        ),
+        rx.cond(TraceState.trace_lite_report_id != "", rx.text("Opening authoritative report.")),
         title="Trace Lite result",
         variant="evidence",
     )

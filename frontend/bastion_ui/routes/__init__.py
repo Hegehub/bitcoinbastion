@@ -31,6 +31,12 @@ from bastion_ui.routes.home import home_page
 from bastion_ui.routes.lnurl import lnurl_auth_page, lnurl_pay_page, lnurl_payment_status_page
 from bastion_ui.routes.manifesto import manifesto_page
 from bastion_ui.routes.operations import operations_page
+from bastion_ui.routes.operations_health import operations_health_page
+from bastion_ui.routes.operations_incidents import operations_incidents_page
+from bastion_ui.routes.operations_jobs import operations_jobs_page
+from bastion_ui.routes.operations_providers import operations_providers_page
+from bastion_ui.routes.operations_slo import operations_slo_page
+from bastion_ui.routes.operations_storage import operations_storage_page
 from bastion_ui.routes.platform import platform_page
 from bastion_ui.routes.roadmap import roadmap_page
 from bastion_ui.routes.security import security_page
@@ -111,6 +117,12 @@ PUBLIC_ROUTE_SPECS: tuple[PublicRouteSpec, ...] = (
     PublicRouteSpec("/trace", "Bastion Trace", trace_page),
     PublicRouteSpec("/developers", "Developers", developers_page),
     PublicRouteSpec("/operations", "Operations", operations_page),
+    PublicRouteSpec("/operations/health", "Operations Health", operations_health_page),
+    PublicRouteSpec("/operations/providers", "Operations Providers", operations_providers_page),
+    PublicRouteSpec("/operations/storage", "Operations Storage", operations_storage_page),
+    PublicRouteSpec("/operations/incidents", "Operations Incidents", operations_incidents_page),
+    PublicRouteSpec("/operations/jobs", "Operations Jobs", operations_jobs_page),
+    PublicRouteSpec("/operations/slo", "Operations SLO", operations_slo_page),
     PublicRouteSpec("/manifesto", "Manifesto", manifesto_page),
     PublicRouteSpec("/evidence", "Evidence", evidence_page),
     PublicRouteSpec("/status", "Status", status_page),

@@ -1,4 +1,23 @@
-from bastion_ui.domain.operations.adapters import adapt_intelligence_health
-from bastion_ui.domain.operations.models import IntelligenceHealthViewModel
+from bastion_ui.domain.operations.adapters import (
+    adapt_health,
+    adapt_intelligence_health,
+    adapt_providers,
+    adapt_storage,
+)
+from bastion_ui.domain.operations.models import (
+    HealthViewModel,
+    IntelligenceHealthViewModel,
+    ProvidersViewModel,
+    StorageViewModel,
+)
 
-__all__ = ("IntelligenceHealthViewModel", "adapt_intelligence_health")
+__all__ = (
+    "HealthViewModel",
+    "IntelligenceHealthViewModel",
+    "ProvidersViewModel",
+    "StorageViewModel",
+    "adapt_health",
+    "adapt_intelligence_health",
+    "adapt_providers",
+    "adapt_storage",
+)

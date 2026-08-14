@@ -39,7 +39,7 @@ LISTCHILDAPIKEYSAPIV1ACCESSAPIKEYSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_child_api_keys_api_v1_access_api_keys_get(transport: HttpTransport, request: ListChildApiKeysApiV1AccessApiKeysGetRequest) -> ListChildApiKeysApiV1AccessApiKeysGetSuccess:
-    return await transport.invoke(LISTCHILDAPIKEYSAPIV1ACCESSAPIKEYSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTCHILDAPIKEYSAPIV1ACCESSAPIKEYSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetChildApiKeyApiV1AccessApiKeysKeyIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -64,7 +64,7 @@ GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_child_api_key_api_v1_access_api_keys__key_id__get(transport: HttpTransport, request: GetChildApiKeyApiV1AccessApiKeysKeyIdGetRequest) -> GetChildApiKeyApiV1AccessApiKeysKeyIdGetSuccess:
-    return await transport.invoke(GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_OPERATION, path_parameters={'key_id': str(request.key_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_OPERATION, path_parameters={'key_id': str(request.key_id)}, query_parameters={}, body=None, request_headers={})
 
 class ListDelegatedPassesApiV1AccessDelegatedPassesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -89,7 +89,7 @@ LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_OPERATION = NormalizedOperation
     response_media_type='application/json',
 )
 async def list_delegated_passes_api_v1_access_delegated_passes_get(transport: HttpTransport, request: ListDelegatedPassesApiV1AccessDelegatedPassesGetRequest) -> ListDelegatedPassesApiV1AccessDelegatedPassesGetSuccess:
-    return await transport.invoke(LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -114,7 +114,7 @@ GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_OPERATION = Normali
     response_media_type='application/json',
 )
 async def get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get(transport: HttpTransport, request: GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetRequest) -> GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetSuccess:
-    return await transport.invoke(GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_OPERATION, path_parameters={'delegated_pass_id': str(request.delegated_pass_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_OPERATION, path_parameters={'delegated_pass_id': str(request.delegated_pass_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetHumanIntentApiV1AccessIntentsIntentIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -139,7 +139,7 @@ GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_human_intent_api_v1_access_intents__intent_id__get(transport: HttpTransport, request: GetHumanIntentApiV1AccessIntentsIntentIdGetRequest) -> GetHumanIntentApiV1AccessIntentsIntentIdGetSuccess:
-    return await transport.invoke(GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION, path_parameters={'intent_id': str(request.intent_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION, path_parameters={'intent_id': str(request.intent_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetMeApiV1AccessMeGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -164,7 +164,7 @@ GETMEAPIV1ACCESSMEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_me_api_v1_access_me_get(transport: HttpTransport, request: GetMeApiV1AccessMeGetRequest) -> GetMeApiV1AccessMeGetSuccess:
-    return await transport.invoke(GETMEAPIV1ACCESSMEGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETMEAPIV1ACCESSMEGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetMyEntitlementsApiV1AccessMeEntitlementsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -189,7 +189,7 @@ GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_my_entitlements_api_v1_access_me_entitlements_get(transport: HttpTransport, request: GetMyEntitlementsApiV1AccessMeEntitlementsGetRequest) -> GetMyEntitlementsApiV1AccessMeEntitlementsGetSuccess:
-    return await transport.invoke(GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetMyLimitsApiV1AccessMeLimitsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -214,7 +214,7 @@ GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_my_limits_api_v1_access_me_limits_get(transport: HttpTransport, request: GetMyLimitsApiV1AccessMeLimitsGetRequest) -> GetMyLimitsApiV1AccessMeLimitsGetSuccess:
-    return await transport.invoke(GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -239,7 +239,7 @@ GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_OPERATION = No
     response_media_type='application/json',
 )
 async def get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get(transport: HttpTransport, request: GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetRequest) -> GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetSuccess:
-    return await transport.invoke(GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_OPERATION, path_parameters={'payment_intent_id': str(request.payment_intent_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_OPERATION, path_parameters={'payment_intent_id': str(request.payment_intent_id)}, query_parameters={}, body=None, request_headers={})
 
 class RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -264,7 +264,7 @@ RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_OPERATION = Normaliz
     response_media_type='application/json',
 )
 async def recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get(transport: HttpTransport, request: RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetRequest) -> RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetSuccess:
-    return await transport.invoke(RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_OPERATION, path_parameters={'recovery_attempt_id': str(request.recovery_attempt_id)}, query_parameters={}, body=None)
+    return await transport.invoke(RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_OPERATION, path_parameters={'recovery_attempt_id': str(request.recovery_attempt_id)}, query_parameters={}, body=None, request_headers={})
 
 class ListAddressesApiV1BusinessLightningAddressesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -289,7 +289,7 @@ LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_addresses_api_v1_business_lightning_addresses_get(transport: HttpTransport, request: ListAddressesApiV1BusinessLightningAddressesGetRequest) -> ListAddressesApiV1BusinessLightningAddressesGetSuccess:
-    return await transport.invoke(LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetAddressApiV1BusinessLightningAddressesAddressIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -314,7 +314,7 @@ GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_OPERATION = NormalizedOper
     response_media_type='application/json',
 )
 async def get_address_api_v1_business_lightning_addresses__address_id__get(transport: HttpTransport, request: GetAddressApiV1BusinessLightningAddressesAddressIdGetRequest) -> GetAddressApiV1BusinessLightningAddressesAddressIdGetSuccess:
-    return await transport.invoke(GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_OPERATION, path_parameters={'address_id': str(request.address_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_OPERATION, path_parameters={'address_id': str(request.address_id)}, query_parameters={}, body=None, request_headers={})
 
 class ListDomainsApiV1BusinessLightningDomainsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -339,7 +339,7 @@ LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_domains_api_v1_business_lightning_domains_get(transport: HttpTransport, request: ListDomainsApiV1BusinessLightningDomainsGetRequest) -> ListDomainsApiV1BusinessLightningDomainsGetSuccess:
-    return await transport.invoke(LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetDomainApiV1BusinessLightningDomainsDomainIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -364,7 +364,7 @@ GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_OPERATION = NormalizedOperatio
     response_media_type='application/json',
 )
 async def get_domain_api_v1_business_lightning_domains__domain_id__get(transport: HttpTransport, request: GetDomainApiV1BusinessLightningDomainsDomainIdGetRequest) -> GetDomainApiV1BusinessLightningDomainsDomainIdGetSuccess:
-    return await transport.invoke(GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_OPERATION, path_parameters={'domain_id': str(request.domain_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_OPERATION, path_parameters={'domain_id': str(request.domain_id)}, query_parameters={}, body=None, request_headers={})
 
 class CitadelAssessmentApiV1CitadelAssessmentGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -392,7 +392,7 @@ CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def citadel_assessment_api_v1_citadel_assessment_get(transport: HttpTransport, request: CitadelAssessmentApiV1CitadelAssessmentGetRequest) -> CitadelAssessmentApiV1CitadelAssessmentGetSuccess:
-    return await transport.invoke(CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_OPERATION, path_parameters={}, query_parameters={'owner_type': serialize_query_value(request.owner_type), 'owner_id': serialize_query_value(request.owner_id), 'force_refresh': serialize_query_value(request.force_refresh), 'max_age_hours': serialize_query_value(request.max_age_hours)}, body=None)
+    return await transport.invoke(CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_OPERATION, path_parameters={}, query_parameters={'owner_type': serialize_query_value(request.owner_type), 'owner_id': serialize_query_value(request.owner_id), 'force_refresh': serialize_query_value(request.force_refresh), 'max_age_hours': serialize_query_value(request.max_age_hours)}, body=None, request_headers={})
 
 class CitadelDependenciesApiV1CitadelDependenciesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -417,7 +417,7 @@ CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def citadel_dependencies_api_v1_citadel_dependencies_get(transport: HttpTransport, request: CitadelDependenciesApiV1CitadelDependenciesGetRequest) -> CitadelDependenciesApiV1CitadelDependenciesGetSuccess:
-    return await transport.invoke(CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None)
+    return await transport.invoke(CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None, request_headers={})
 
 class CitadelInheritanceApiV1CitadelInheritanceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -442,7 +442,7 @@ CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def citadel_inheritance_api_v1_citadel_inheritance_get(transport: HttpTransport, request: CitadelInheritanceApiV1CitadelInheritanceGetRequest) -> CitadelInheritanceApiV1CitadelInheritanceGetSuccess:
-    return await transport.invoke(CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None)
+    return await transport.invoke(CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None, request_headers={})
 
 class CitadelOverviewApiV1CitadelOverviewGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -470,7 +470,7 @@ CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def citadel_overview_api_v1_citadel_overview_get(transport: HttpTransport, request: CitadelOverviewApiV1CitadelOverviewGetRequest) -> CitadelOverviewApiV1CitadelOverviewGetSuccess:
-    return await transport.invoke(CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_OPERATION, path_parameters={}, query_parameters={'owner_type': serialize_query_value(request.owner_type), 'owner_id': serialize_query_value(request.owner_id), 'force_refresh': serialize_query_value(request.force_refresh), 'max_age_hours': serialize_query_value(request.max_age_hours)}, body=None)
+    return await transport.invoke(CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_OPERATION, path_parameters={}, query_parameters={'owner_type': serialize_query_value(request.owner_type), 'owner_id': serialize_query_value(request.owner_id), 'force_refresh': serialize_query_value(request.force_refresh), 'max_age_hours': serialize_query_value(request.max_age_hours)}, body=None, request_headers={})
 
 class CitadelPolicyChecksApiV1CitadelPolicyChecksGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -495,7 +495,7 @@ CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def citadel_policy_checks_api_v1_citadel_policy_checks_get(transport: HttpTransport, request: CitadelPolicyChecksApiV1CitadelPolicyChecksGetRequest) -> CitadelPolicyChecksApiV1CitadelPolicyChecksGetSuccess:
-    return await transport.invoke(CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None)
+    return await transport.invoke(CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None, request_headers={})
 
 class CitadelRecoveryApiV1CitadelRecoveryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -520,7 +520,7 @@ CITADELRECOVERYAPIV1CITADELRECOVERYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def citadel_recovery_api_v1_citadel_recovery_get(transport: HttpTransport, request: CitadelRecoveryApiV1CitadelRecoveryGetRequest) -> CitadelRecoveryApiV1CitadelRecoveryGetSuccess:
-    return await transport.invoke(CITADELRECOVERYAPIV1CITADELRECOVERYGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None)
+    return await transport.invoke(CITADELRECOVERYAPIV1CITADELRECOVERYGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None, request_headers={})
 
 class CitadelRepairPlanApiV1CitadelRepairPlanGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -545,7 +545,7 @@ CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def citadel_repair_plan_api_v1_citadel_repair_plan_get(transport: HttpTransport, request: CitadelRepairPlanApiV1CitadelRepairPlanGetRequest) -> CitadelRepairPlanApiV1CitadelRepairPlanGetSuccess:
-    return await transport.invoke(CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None)
+    return await transport.invoke(CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None, request_headers={})
 
 class ListSimulationsApiV1CitadelSimulationsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -570,7 +570,7 @@ LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_simulations_api_v1_citadel_simulations_get(transport: HttpTransport, request: ListSimulationsApiV1CitadelSimulationsGetRequest) -> ListSimulationsApiV1CitadelSimulationsGetSuccess:
-    return await transport.invoke(LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None)
+    return await transport.invoke(LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_OPERATION, path_parameters={}, query_parameters={'owner_id': serialize_query_value(request.owner_id)}, body=None, request_headers={})
 
 class ListSnippetsApiV1EducationSnippetsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -595,7 +595,7 @@ LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_snippets_api_v1_education_snippets_get(transport: HttpTransport, request: ListSnippetsApiV1EducationSnippetsGetRequest) -> ListSnippetsApiV1EducationSnippetsGetSuccess:
-    return await transport.invoke(LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class ListEntitiesApiV1EntitiesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -624,7 +624,7 @@ LISTENTITIESAPIV1ENTITIESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_entities_api_v1_entities_get(transport: HttpTransport, request: ListEntitiesApiV1EntitiesGetRequest) -> ListEntitiesApiV1EntitiesGetSuccess:
-    return await transport.invoke(LISTENTITIESAPIV1ENTITIESGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset), 'q': serialize_query_value(request.q), 'entity_type': serialize_query_value(request.entity_type), 'min_confidence': serialize_query_value(request.min_confidence)}, body=None)
+    return await transport.invoke(LISTENTITIESAPIV1ENTITIESGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset), 'q': serialize_query_value(request.q), 'entity_type': serialize_query_value(request.entity_type), 'min_confidence': serialize_query_value(request.min_confidence)}, body=None, request_headers={})
 
 class GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -650,7 +650,7 @@ GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_OPERATION = Normalize
     response_media_type='application/json',
 )
 async def get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get(transport: HttpTransport, request: GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetRequest) -> GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetSuccess:
-    return await transport.invoke(GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class ListEvidencePacketsApiV1EvidencePacketsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -675,7 +675,7 @@ LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_evidence_packets_api_v1_evidence_packets_get(transport: HttpTransport, request: ListEvidencePacketsApiV1EvidencePacketsGetRequest) -> ListEvidencePacketsApiV1EvidencePacketsGetSuccess:
-    return await transport.invoke(LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetEvidencePacketApiV1EvidencePacketsPacketIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -701,7 +701,7 @@ GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_OPERATION = NormalizedOperation
     response_media_type='application/json',
 )
 async def get_evidence_packet_api_v1_evidence_packets__packet_id__get(transport: HttpTransport, request: GetEvidencePacketApiV1EvidencePacketsPacketIdGetRequest) -> GetEvidencePacketApiV1EvidencePacketsPacketIdGetSuccess:
-    return await transport.invoke(GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_OPERATION, path_parameters={'packet_id': str(request.packet_id)}, query_parameters={'format': serialize_query_value(request.format)}, body=None)
+    return await transport.invoke(GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_OPERATION, path_parameters={'packet_id': str(request.packet_id)}, query_parameters={'format': serialize_query_value(request.format)}, body=None, request_headers={})
 
 class GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -726,7 +726,7 @@ GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_OPERA
     response_media_type='application/json',
 )
 async def get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get(transport: HttpTransport, request: GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetRequest) -> GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetSuccess:
-    return await transport.invoke(GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_OPERATION, path_parameters={'packet_id': str(request.packet_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_OPERATION, path_parameters={'packet_id': str(request.packet_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -751,7 +751,7 @@ GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_OPERATION = Nor
     response_media_type='application/json',
 )
 async def get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get(transport: HttpTransport, request: GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetRequest) -> GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetSuccess:
-    return await transport.invoke(GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_OPERATION, path_parameters={'packet_id': str(request.packet_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_OPERATION, path_parameters={'packet_id': str(request.packet_id)}, query_parameters={}, body=None, request_headers={})
 
 class ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -778,7 +778,7 @@ REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_OPERATION = NormalizedOpe
     response_media_type='application/json',
 )
 async def replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get(transport: HttpTransport, request: ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetRequest) -> ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetSuccess:
-    return await transport.invoke(REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_OPERATION, path_parameters={'entity_type': str(request.entity_type), 'entity_id': str(request.entity_id)}, query_parameters={'format': serialize_query_value(request.format)}, body=None)
+    return await transport.invoke(REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_OPERATION, path_parameters={'entity_type': str(request.entity_type), 'entity_id': str(request.entity_id)}, query_parameters={'format': serialize_query_value(request.format)}, body=None, request_headers={})
 
 class ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -804,7 +804,7 @@ REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_OPERATI
     response_media_type='application/json',
 )
 async def replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get(transport: HttpTransport, request: ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetRequest) -> ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetSuccess:
-    return await transport.invoke(REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_OPERATION, path_parameters={'entity_type': str(request.entity_type), 'entity_id': str(request.entity_id)}, query_parameters={}, body=None)
+    return await transport.invoke(REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_OPERATION, path_parameters={'entity_type': str(request.entity_type), 'entity_id': str(request.entity_id)}, query_parameters={}, body=None, request_headers={})
 
 class ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -830,7 +830,7 @@ REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_OPERATION
     response_media_type='application/json',
 )
 async def replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get(transport: HttpTransport, request: ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetRequest) -> ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetSuccess:
-    return await transport.invoke(REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_OPERATION, path_parameters={'entity_type': str(request.entity_type), 'entity_id': str(request.entity_id)}, query_parameters={}, body=None)
+    return await transport.invoke(REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_OPERATION, path_parameters={'entity_type': str(request.entity_type), 'entity_id': str(request.entity_id)}, query_parameters={}, body=None, request_headers={})
 
 class HealthApiV1HealthGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -855,7 +855,7 @@ HEALTHAPIV1HEALTHGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def health_api_v1_health_get(transport: HttpTransport, request: HealthApiV1HealthGetRequest) -> HealthApiV1HealthGetSuccess:
-    return await transport.invoke(HEALTHAPIV1HEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(HEALTHAPIV1HEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class DegradedApiV1HealthDegradedGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -880,7 +880,7 @@ DEGRADEDAPIV1HEALTHDEGRADEDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def degraded_api_v1_health_degraded_get(transport: HttpTransport, request: DegradedApiV1HealthDegradedGetRequest) -> DegradedApiV1HealthDegradedGetSuccess:
-    return await transport.invoke(DEGRADEDAPIV1HEALTHDEGRADEDGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(DEGRADEDAPIV1HEALTHDEGRADEDGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class JobsApiV1HealthJobsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -905,7 +905,7 @@ JOBSAPIV1HEALTHJOBSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def jobs_api_v1_health_jobs_get(transport: HttpTransport, request: JobsApiV1HealthJobsGetRequest) -> JobsApiV1HealthJobsGetSuccess:
-    return await transport.invoke(JOBSAPIV1HEALTHJOBSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(JOBSAPIV1HEALTHJOBSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class LivenessApiV1HealthLiveGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -930,7 +930,7 @@ LIVENESSAPIV1HEALTHLIVEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def liveness_api_v1_health_live_get(transport: HttpTransport, request: LivenessApiV1HealthLiveGetRequest) -> LivenessApiV1HealthLiveGetSuccess:
-    return await transport.invoke(LIVENESSAPIV1HEALTHLIVEGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LIVENESSAPIV1HEALTHLIVEGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class ProvidersApiV1HealthProvidersGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -955,7 +955,7 @@ PROVIDERSAPIV1HEALTHPROVIDERSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def providers_api_v1_health_providers_get(transport: HttpTransport, request: ProvidersApiV1HealthProvidersGetRequest) -> ProvidersApiV1HealthProvidersGetSuccess:
-    return await transport.invoke(PROVIDERSAPIV1HEALTHPROVIDERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(PROVIDERSAPIV1HEALTHPROVIDERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class ReadinessApiV1HealthReadyGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -980,7 +980,7 @@ READINESSAPIV1HEALTHREADYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def readiness_api_v1_health_ready_get(transport: HttpTransport, request: ReadinessApiV1HealthReadyGetRequest) -> ReadinessApiV1HealthReadyGetSuccess:
-    return await transport.invoke(READINESSAPIV1HEALTHREADYGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(READINESSAPIV1HEALTHREADYGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class RuntimeApiV1HealthRuntimeGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1005,7 +1005,7 @@ RUNTIMEAPIV1HEALTHRUNTIMEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def runtime_api_v1_health_runtime_get(transport: HttpTransport, request: RuntimeApiV1HealthRuntimeGetRequest) -> RuntimeApiV1HealthRuntimeGetSuccess:
-    return await transport.invoke(RUNTIMEAPIV1HEALTHRUNTIMEGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(RUNTIMEAPIV1HEALTHRUNTIMEGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class SystemHealthApiV1HealthSystemGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1030,7 +1030,7 @@ SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def system_health_api_v1_health_system_get(transport: HttpTransport, request: SystemHealthApiV1HealthSystemGetRequest) -> SystemHealthApiV1HealthSystemGetSuccess:
-    return await transport.invoke(SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1055,7 +1055,7 @@ GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get(transport: HttpTransport, request: GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetRequest) -> GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetSuccess:
-    return await transport.invoke(GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1081,7 +1081,7 @@ GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_OPERATION = N
     response_media_type='application/json',
 )
 async def get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get(transport: HttpTransport, request: GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetRequest) -> GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetSuccess:
-    return await transport.invoke(GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1107,7 +1107,7 @@ GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_OPERATION = Nor
     response_media_type='application/json',
 )
 async def get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get(transport: HttpTransport, request: GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetRequest) -> GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetSuccess:
-    return await transport.invoke(GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1132,7 +1132,7 @@ GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_OPERATION = Normalize
     response_media_type='application/json',
 )
 async def get_candle_context_api_v1_intelligence_candles__candle_id__context_get(transport: HttpTransport, request: GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetRequest) -> GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetSuccess:
-    return await transport.invoke(GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1157,7 +1157,7 @@ GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_OPERATION =
     response_media_type='application/json',
 )
 async def get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get(transport: HttpTransport, request: GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetRequest) -> GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetSuccess:
-    return await transport.invoke(GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1182,7 +1182,7 @@ GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_OPERATI
     response_media_type='application/json',
 )
 async def get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get(transport: HttpTransport, request: GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetRequest) -> GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetSuccess:
-    return await transport.invoke(GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None, request_headers={})
 
 class ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1207,7 +1207,7 @@ EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_OPERATION = NormalizedOp
     response_media_type='application/json',
 )
 async def explain_candle_api_v1_intelligence_candles__candle_id__explain_get(transport: HttpTransport, request: ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetRequest) -> ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetSuccess:
-    return await transport.invoke(EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None)
+    return await transport.invoke(EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1233,7 +1233,7 @@ GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get(transport: HttpTransport, request: GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetRequest) -> GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetSuccess:
-    return await transport.invoke(GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1259,7 +1259,7 @@ GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_OPERAT
     response_media_type='application/json',
 )
 async def get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get(transport: HttpTransport, request: GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetRequest) -> GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetSuccess:
-    return await transport.invoke(GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1285,7 +1285,7 @@ GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_OPERATION = Norma
     response_media_type='application/json',
 )
 async def get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get(transport: HttpTransport, request: GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetRequest) -> GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetSuccess:
-    return await transport.invoke(GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1310,7 +1310,7 @@ GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_OPERATION = Normaliz
     response_media_type='application/json',
 )
 async def get_event_market_memory_api_v1_intelligence_events__event_id__memory_get(transport: HttpTransport, request: GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetRequest) -> GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetSuccess:
-    return await transport.invoke(GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1336,7 +1336,7 @@ GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_OPERATIO
     response_media_type='application/json',
 )
 async def get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get(transport: HttpTransport, request: GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetRequest) -> GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetSuccess:
-    return await transport.invoke(GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1362,7 +1362,7 @@ GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_OPERATION
     response_media_type='application/json',
 )
 async def get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get(transport: HttpTransport, request: GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetRequest) -> GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetSuccess:
-    return await transport.invoke(GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1387,7 +1387,7 @@ GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_OPERATION 
     response_media_type='application/json',
 )
 async def get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get(transport: HttpTransport, request: GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetRequest) -> GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetSuccess:
-    return await transport.invoke(GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1412,7 +1412,7 @@ GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_OPERATION = Nor
     response_media_type='application/json',
 )
 async def get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get(transport: HttpTransport, request: GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetRequest) -> GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetSuccess:
-    return await transport.invoke(GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class ListNarrativesApiV1IntelligenceNarrativesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1437,7 +1437,7 @@ LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_narratives_api_v1_intelligence_narratives_get(transport: HttpTransport, request: ListNarrativesApiV1IntelligenceNarrativesGetRequest) -> ListNarrativesApiV1IntelligenceNarrativesGetSuccess:
-    return await transport.invoke(LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1462,7 +1462,7 @@ GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_OPERATION = Normali
     response_media_type='application/json',
 )
 async def get_active_narrative_memory_api_v1_intelligence_narratives_active_get(transport: HttpTransport, request: GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetRequest) -> GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetSuccess:
-    return await transport.invoke(GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1487,7 +1487,7 @@ GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_OPERATION = Normali
     response_media_type='application/json',
 )
 async def get_narrative_dominance_api_v1_intelligence_narratives_dominance_get(transport: HttpTransport, request: GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetRequest) -> GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetSuccess:
-    return await transport.invoke(GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1512,7 +1512,7 @@ GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_OPERATION = Normaliz
     response_media_type='application/json',
 )
 async def get_dominant_narratives_api_v1_intelligence_narratives_dominant_get(transport: HttpTransport, request: GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetRequest) -> GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetSuccess:
-    return await transport.invoke(GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1537,7 +1537,7 @@ GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_OPERATION = Normaliz
     response_media_type='application/json',
 )
 async def get_emerging_narratives_api_v1_intelligence_narratives_emerging_get(transport: HttpTransport, request: GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetRequest) -> GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetSuccess:
-    return await transport.invoke(GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1562,7 +1562,7 @@ GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_OPERATION = Normalized
     response_media_type='application/json',
 )
 async def get_falling_narratives_api_v1_intelligence_narratives_falling_get(transport: HttpTransport, request: GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetRequest) -> GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetSuccess:
-    return await transport.invoke(GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1587,7 +1587,7 @@ GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get(transport: HttpTransport, request: GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetRequest) -> GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetSuccess:
-    return await transport.invoke(GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_OPERATION, path_parameters={}, query_parameters={'window': serialize_query_value(request.window)}, body=None)
+    return await transport.invoke(GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_OPERATION, path_parameters={}, query_parameters={'window': serialize_query_value(request.window)}, body=None, request_headers={})
 
 class GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1613,7 +1613,7 @@ GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def get_narrative_history_api_v1_intelligence_narratives_history_get(transport: HttpTransport, request: GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetRequest) -> GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetSuccess:
-    return await transport.invoke(GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_OPERATION, path_parameters={}, query_parameters={'period': serialize_query_value(request.period), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_OPERATION, path_parameters={}, query_parameters={'period': serialize_query_value(request.period), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1638,7 +1638,7 @@ GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_OPERATION = NormalizedOpe
     response_media_type='application/json',
 )
 async def get_narrative_memory_api_v1_intelligence_narratives_memory_get(transport: HttpTransport, request: GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetRequest) -> GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetSuccess:
-    return await transport.invoke(GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1663,7 +1663,7 @@ GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_OPERATION = NormalizedOp
     response_media_type='application/json',
 )
 async def get_rising_narratives_api_v1_intelligence_narratives_rising_get(transport: HttpTransport, request: GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetRequest) -> GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetSuccess:
-    return await transport.invoke(GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1688,7 +1688,7 @@ GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_OPERATION = Normali
     response_media_type='application/json',
 )
 async def get_narrative_rotations_api_v1_intelligence_narratives_rotations_get(transport: HttpTransport, request: GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetRequest) -> GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetSuccess:
-    return await transport.invoke(GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetTopNarrativesApiV1IntelligenceNarrativesTopGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1713,7 +1713,7 @@ GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_OPERATION = NormalizedOperatio
     response_media_type='application/json',
 )
 async def get_top_narratives_api_v1_intelligence_narratives_top_get(transport: HttpTransport, request: GetTopNarrativesApiV1IntelligenceNarrativesTopGetRequest) -> GetTopNarrativesApiV1IntelligenceNarrativesTopGetSuccess:
-    return await transport.invoke(GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetNarrativeApiV1IntelligenceNarrativesSlugGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1738,7 +1738,7 @@ GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_narrative_api_v1_intelligence_narratives__slug__get(transport: HttpTransport, request: GetNarrativeApiV1IntelligenceNarrativesSlugGetRequest) -> GetNarrativeApiV1IntelligenceNarrativesSlugGetSuccess:
-    return await transport.invoke(GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_OPERATION, path_parameters={'slug': str(request.slug)}, query_parameters={}, body=None)
+    return await transport.invoke(GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_OPERATION, path_parameters={'slug': str(request.slug)}, query_parameters={}, body=None, request_headers={})
 
 class ListMarketPatternsApiV1IntelligencePatternsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1763,7 +1763,7 @@ LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_market_patterns_api_v1_intelligence_patterns_get(transport: HttpTransport, request: ListMarketPatternsApiV1IntelligencePatternsGetRequest) -> ListMarketPatternsApiV1IntelligencePatternsGetSuccess:
-    return await transport.invoke(LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetMarketPatternApiV1IntelligencePatternsPatternIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1788,7 +1788,7 @@ GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_OPERATION = NormalizedOper
     response_media_type='application/json',
 )
 async def get_market_pattern_api_v1_intelligence_patterns__pattern_id__get(transport: HttpTransport, request: GetMarketPatternApiV1IntelligencePatternsPatternIdGetRequest) -> GetMarketPatternApiV1IntelligencePatternsPatternIdGetSuccess:
-    return await transport.invoke(GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1813,7 +1813,7 @@ GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_OPERATION = 
     response_media_type='application/json',
 )
 async def get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get(transport: HttpTransport, request: GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetRequest) -> GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetSuccess:
-    return await transport.invoke(GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1839,7 +1839,7 @@ GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_OPER
     response_media_type='application/json',
 )
 async def get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get(transport: HttpTransport, request: GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetRequest) -> GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetSuccess:
-    return await transport.invoke(GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1864,7 +1864,7 @@ GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILE
     response_media_type='application/json',
 )
 async def get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get(transport: HttpTransport, request: GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetRequest) -> GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetSuccess:
-    return await transport.invoke(GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILEGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILEGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1889,7 +1889,7 @@ GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_OPERAT
     response_media_type='application/json',
 )
 async def get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get(transport: HttpTransport, request: GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetRequest) -> GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetSuccess:
-    return await transport.invoke(GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_OPERATION, path_parameters={'pattern_id': str(request.pattern_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1914,7 +1914,7 @@ GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_OPERATION
     response_media_type='application/json',
 )
 async def get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get(transport: HttpTransport, request: GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetRequest) -> GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetSuccess:
-    return await transport.invoke(GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1940,7 +1940,7 @@ GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_OPERATION = N
     response_media_type='application/json',
 )
 async def get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get(transport: HttpTransport, request: GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetRequest) -> GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetSuccess:
-    return await transport.invoke(GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1966,7 +1966,7 @@ GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_OPERAT
     response_media_type='application/json',
 )
 async def get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get(transport: HttpTransport, request: GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetRequest) -> GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetSuccess:
-    return await transport.invoke(GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -1992,7 +1992,7 @@ GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_OPERATION = Norm
     response_media_type='application/json',
 )
 async def get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get(transport: HttpTransport, request: GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetRequest) -> GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetSuccess:
-    return await transport.invoke(GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2018,7 +2018,7 @@ GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_OPERATION = Normali
     response_media_type='application/json',
 )
 async def get_event_similarity_api_v1_intelligence_similarity_event__event_id__get(transport: HttpTransport, request: GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetRequest) -> GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetSuccess:
-    return await transport.invoke(GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2044,7 +2044,7 @@ GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_OPERATION = 
     response_media_type='application/json',
 )
 async def get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get(transport: HttpTransport, request: GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetRequest) -> GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetSuccess:
-    return await transport.invoke(GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2070,7 +2070,7 @@ GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_OPERATION = Normalize
     response_media_type='application/json',
 )
 async def get_news_similarity_api_v1_intelligence_similarity_news__event_id__get(transport: HttpTransport, request: GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetRequest) -> GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetSuccess:
-    return await transport.invoke(GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2096,7 +2096,7 @@ GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_OPERATION
     response_media_type='application/json',
 )
 async def get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get(transport: HttpTransport, request: GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetRequest) -> GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetSuccess:
-    return await transport.invoke(GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2122,7 +2122,7 @@ GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_OPERATION = 
     response_media_type='application/json',
 )
 async def get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get(transport: HttpTransport, request: GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetRequest) -> GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetSuccess:
-    return await transport.invoke(GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2148,7 +2148,7 @@ GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_OPERA
     response_media_type='application/json',
 )
 async def get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get(transport: HttpTransport, request: GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetRequest) -> GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetSuccess:
-    return await transport.invoke(GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetTimelineApiV1IntelligenceTimelineGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2174,7 +2174,7 @@ GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_timeline_api_v1_intelligence_timeline_get(transport: HttpTransport, request: GetTimelineApiV1IntelligenceTimelineGetRequest) -> GetTimelineApiV1IntelligenceTimelineGetSuccess:
-    return await transport.invoke(GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_OPERATION, path_parameters={}, query_parameters={'event_type': serialize_query_value(request.event_type), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_OPERATION, path_parameters={}, query_parameters={'event_type': serialize_query_value(request.event_type), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2199,7 +2199,7 @@ GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_OPERATION = Normali
     response_media_type='application/json',
 )
 async def get_context_api_v1_intelligence_timeline_context__timeline_event_id__get(transport: HttpTransport, request: GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetRequest) -> GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetSuccess:
-    return await transport.invoke(GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_OPERATION, path_parameters={'timeline_event_id': str(request.timeline_event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_OPERATION, path_parameters={'timeline_event_id': str(request.timeline_event_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetTimelineDayApiV1IntelligenceTimelineDayGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2226,7 +2226,7 @@ GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_timeline_day_api_v1_intelligence_timeline_day_get(transport: HttpTransport, request: GetTimelineDayApiV1IntelligenceTimelineDayGetRequest) -> GetTimelineDayApiV1IntelligenceTimelineDayGetSuccess:
-    return await transport.invoke(GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_OPERATION, path_parameters={}, query_parameters={'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'filter': serialize_query_value(request.filter)}, body=None)
+    return await transport.invoke(GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_OPERATION, path_parameters={}, query_parameters={'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'filter': serialize_query_value(request.filter)}, body=None, request_headers={})
 
 class GetTimelineHourApiV1IntelligenceTimelineHourGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2253,7 +2253,7 @@ GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_timeline_hour_api_v1_intelligence_timeline_hour_get(transport: HttpTransport, request: GetTimelineHourApiV1IntelligenceTimelineHourGetRequest) -> GetTimelineHourApiV1IntelligenceTimelineHourGetSuccess:
-    return await transport.invoke(GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_OPERATION, path_parameters={}, query_parameters={'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'filter': serialize_query_value(request.filter)}, body=None)
+    return await transport.invoke(GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_OPERATION, path_parameters={}, query_parameters={'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'filter': serialize_query_value(request.filter)}, body=None, request_headers={})
 
 class GetLatestApiV1IntelligenceTimelineLatestGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2278,7 +2278,7 @@ GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_latest_api_v1_intelligence_timeline_latest_get(transport: HttpTransport, request: GetLatestApiV1IntelligenceTimelineLatestGetRequest) -> GetLatestApiV1IntelligenceTimelineLatestGetSuccess:
-    return await transport.invoke(GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2303,7 +2303,7 @@ CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_OPERATION = Norma
     response_media_type='application/json',
 )
 async def current_narratives_api_v1_intelligence_timeline_narratives_current_get(transport: HttpTransport, request: CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetRequest) -> CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetSuccess:
-    return await transport.invoke(CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2328,7 +2328,7 @@ HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_O
     response_media_type='application/json',
 )
 async def high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get(transport: HttpTransport, request: HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetRequest) -> HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetSuccess:
-    return await transport.invoke(HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2353,7 +2353,7 @@ RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_OPERATION = Norma
     response_media_type='application/json',
 )
 async def recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get(transport: HttpTransport, request: RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetRequest) -> RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetSuccess:
-    return await transport.invoke(RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class GetWindowApiV1IntelligenceTimelineWindowGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2380,7 +2380,7 @@ GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_window_api_v1_intelligence_timeline_window_get(transport: HttpTransport, request: GetWindowApiV1IntelligenceTimelineWindowGetRequest) -> GetWindowApiV1IntelligenceTimelineWindowGetSuccess:
-    return await transport.invoke(GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_OPERATION, path_parameters={}, query_parameters={'start': serialize_query_value(request.start), 'end': serialize_query_value(request.end), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_OPERATION, path_parameters={}, query_parameters={'start': serialize_query_value(request.start), 'end': serialize_query_value(request.end), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class CandleAttributionApiV1MarketTimeMachineCandleAttributionGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2409,7 +2409,7 @@ CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_OPERATION = Normaliz
     response_media_type='application/json',
 )
 async def candle_attribution_api_v1_market_time_machine_candle_attribution_get(transport: HttpTransport, request: CandleAttributionApiV1MarketTimeMachineCandleAttributionGetRequest) -> CandleAttributionApiV1MarketTimeMachineCandleAttributionGetSuccess:
-    return await transport.invoke(CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'interval': serialize_query_value(request.interval), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'interval': serialize_query_value(request.interval), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class MarketEventsApiV1MarketTimeMachineEventsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2438,7 +2438,7 @@ MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def market_events_api_v1_market_time_machine_events_get(transport: HttpTransport, request: MarketEventsApiV1MarketTimeMachineEventsGetRequest) -> MarketEventsApiV1MarketTimeMachineEventsGetSuccess:
-    return await transport.invoke(MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'limit': serialize_query_value(request.limit), 'event_type': serialize_query_value(request.event_type)}, body=None)
+    return await transport.invoke(MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'limit': serialize_query_value(request.limit), 'event_type': serialize_query_value(request.event_type)}, body=None, request_headers={})
 
 class NewsImpactApiV1MarketTimeMachineNewsImpactGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2467,7 +2467,7 @@ NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def news_impact_api_v1_market_time_machine_news_impact_get(transport: HttpTransport, request: NewsImpactApiV1MarketTimeMachineNewsImpactGetRequest) -> NewsImpactApiV1MarketTimeMachineNewsImpactGetSuccess:
-    return await transport.invoke(NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'source': serialize_query_value(request.source), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'source': serialize_query_value(request.source), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2495,7 +2495,7 @@ PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_OPERATION = Norm
     response_media_type='application/json',
 )
 async def provider_degradation_api_v1_market_time_machine_provider_degradation_get(transport: HttpTransport, request: ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetRequest) -> ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetSuccess:
-    return await transport.invoke(PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'provider': serialize_query_value(request.provider), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'provider': serialize_query_value(request.provider), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2524,7 +2524,7 @@ REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_OPERATION = NormalizedOp
     response_media_type='application/json',
 )
 async def reaction_windows_api_v1_market_time_machine_reaction_windows_get(transport: HttpTransport, request: ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetRequest) -> ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetSuccess:
-    return await transport.invoke(REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'source': serialize_query_value(request.source), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'source': serialize_query_value(request.source), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2553,7 +2553,7 @@ REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_OPERATION = Normaliz
     response_media_type='application/json',
 )
 async def regime_transitions_api_v1_market_time_machine_regime_transitions_get(transport: HttpTransport, request: RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetRequest) -> RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetSuccess:
-    return await transport.invoke(REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'regime': serialize_query_value(request.regime), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'regime': serialize_query_value(request.regime), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2582,7 +2582,7 @@ SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_OPERATION = Normaliz
     response_media_type='application/json',
 )
 async def signal_reliability_api_v1_market_time_machine_signal_reliability_get(transport: HttpTransport, request: SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetRequest) -> SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetSuccess:
-    return await transport.invoke(SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'min_confidence': serialize_query_value(request.min_confidence), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_OPERATION, path_parameters={}, query_parameters={'from_ts': serialize_query_value(request.from_ts), 'to_ts': serialize_query_value(request.to_ts), 'asset': serialize_query_value(request.asset), 'min_confidence': serialize_query_value(request.min_confidence), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class BtcCandlesApiV1MarketBtcCandlesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2610,7 +2610,7 @@ BTCCANDLESAPIV1MARKETBTCCANDLESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def btc_candles_api_v1_market_btc_candles_get(transport: HttpTransport, request: BtcCandlesApiV1MarketBtcCandlesGetRequest) -> BtcCandlesApiV1MarketBtcCandlesGetSuccess:
-    return await transport.invoke(BTCCANDLESAPIV1MARKETBTCCANDLESGET_OPERATION, path_parameters={}, query_parameters={'timeframe': serialize_query_value(request.timeframe), 'start': serialize_query_value(request.start), 'end': serialize_query_value(request.end), 'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(BTCCANDLESAPIV1MARKETBTCCANDLESGET_OPERATION, path_parameters={}, query_parameters={'timeframe': serialize_query_value(request.timeframe), 'start': serialize_query_value(request.start), 'end': serialize_query_value(request.end), 'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2635,7 +2635,7 @@ BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_OPERATION = NormalizedOperatio
     response_media_type='application/json',
 )
 async def btc_candles_latest_any_api_v1_market_btc_candles_latest_get(transport: HttpTransport, request: BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetRequest) -> BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetSuccess:
-    return await transport.invoke(BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_OPERATION, path_parameters={}, query_parameters={'timeframe': serialize_query_value(request.timeframe)}, body=None)
+    return await transport.invoke(BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_OPERATION, path_parameters={}, query_parameters={'timeframe': serialize_query_value(request.timeframe)}, body=None, request_headers={})
 
 class BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2660,7 +2660,7 @@ BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def btc_candle_by_id_api_v1_market_btc_candles__candle_id__get(transport: HttpTransport, request: BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetRequest) -> BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetSuccess:
-    return await transport.invoke(BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None)
+    return await transport.invoke(BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None, request_headers={})
 
 class BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2685,7 +2685,7 @@ BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_OPERATION = Normalized
     response_media_type='application/json',
 )
 async def btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get(transport: HttpTransport, request: BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetRequest) -> BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetSuccess:
-    return await transport.invoke(BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None)
+    return await transport.invoke(BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None, request_headers={})
 
 class BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2710,7 +2710,7 @@ BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_OPERATION = NormalizedOp
     response_media_type='application/json',
 )
 async def btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get(transport: HttpTransport, request: BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetRequest) -> BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetSuccess:
-    return await transport.invoke(BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_OPERATION, path_parameters={'timeframe': str(request.timeframe)}, query_parameters={}, body=None)
+    return await transport.invoke(BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_OPERATION, path_parameters={'timeframe': str(request.timeframe)}, query_parameters={}, body=None, request_headers={})
 
 class BtcContextApiV1MarketBtcContextGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2735,7 +2735,7 @@ BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def btc_context_api_v1_market_btc_context_get(transport: HttpTransport, request: BtcContextApiV1MarketBtcContextGetRequest) -> BtcContextApiV1MarketBtcContextGetSuccess:
-    return await transport.invoke(BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class BtcPriceApiV1MarketBtcPriceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2760,7 +2760,7 @@ BTCPRICEAPIV1MARKETBTCPRICEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def btc_price_api_v1_market_btc_price_get(transport: HttpTransport, request: BtcPriceApiV1MarketBtcPriceGetRequest) -> BtcPriceApiV1MarketBtcPriceGetSuccess:
-    return await transport.invoke(BTCPRICEAPIV1MARKETBTCPRICEGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(BTCPRICEAPIV1MARKETBTCPRICEGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class BtcPriceHistoryApiV1MarketBtcPriceHistoryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2785,7 +2785,7 @@ BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def btc_price_history_api_v1_market_btc_price_history_get(transport: HttpTransport, request: BtcPriceHistoryApiV1MarketBtcPriceHistoryGetRequest) -> BtcPriceHistoryApiV1MarketBtcPriceHistoryGetSuccess:
-    return await transport.invoke(BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class BtcProvidersApiV1MarketBtcProvidersGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2810,7 +2810,7 @@ BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def btc_providers_api_v1_market_btc_providers_get(transport: HttpTransport, request: BtcProvidersApiV1MarketBtcProvidersGetRequest) -> BtcProvidersApiV1MarketBtcProvidersGetSuccess:
-    return await transport.invoke(BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class BtcProvidersHealthApiV1MarketBtcProvidersHealthGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2835,7 +2835,7 @@ BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_OPERATION = NormalizedOperati
     response_media_type='application/json',
 )
 async def btc_providers_health_api_v1_market_btc_providers_health_get(transport: HttpTransport, request: BtcProvidersHealthApiV1MarketBtcProvidersHealthGetRequest) -> BtcProvidersHealthApiV1MarketBtcProvidersHealthGetSuccess:
-    return await transport.invoke(BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class MarketHealthApiV1MarketHealthGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2860,7 +2860,158 @@ MARKETHEALTHAPIV1MARKETHEALTHGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def market_health_api_v1_market_health_get(transport: HttpTransport, request: MarketHealthApiV1MarketHealthGetRequest) -> MarketHealthApiV1MarketHealthGetSuccess:
-    return await transport.invoke(MARKETHEALTHAPIV1MARKETHEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(MARKETHEALTHAPIV1MARKETHEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
+
+class MarketHistoryAttributionsRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    limit: int | None = None
+
+class MarketHistoryAttributionsSuccess(RootModel[list[MarketAttributionOut]]):
+    pass
+
+MarketHistoryAttributionsError = SafeTransportError
+
+MARKETHISTORYATTRIBUTIONS_SECURITY = SecurityMetadata(
+    identity='public:market_history_attributions', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='market_history_attributions', review_owner='Stage 1B0-R7',
+)
+MARKETHISTORYATTRIBUTIONS_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0160', operation_id='market_history_attributions',
+    method='GET', path='/api/v1/market/history/attributions', backend_tag='market-history',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=MarketHistoryAttributionsSuccess, security=MARKETHISTORYATTRIBUTIONS_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:market_history_attributions',
+    response_media_type='application/json',
+)
+async def market_history_attributions(transport: HttpTransport, request: MarketHistoryAttributionsRequest) -> MarketHistoryAttributionsSuccess:
+    return await transport.invoke(MARKETHISTORYATTRIBUTIONS_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
+
+class MarketHistoryNarrativesRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    limit: int | None = None
+
+class MarketHistoryNarrativesSuccess(RootModel[list[MarketNarrativeOut]]):
+    pass
+
+MarketHistoryNarrativesError = SafeTransportError
+
+MARKETHISTORYNARRATIVES_SECURITY = SecurityMetadata(
+    identity='public:market_history_narratives', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='market_history_narratives', review_owner='Stage 1B0-R7',
+)
+MARKETHISTORYNARRATIVES_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0161', operation_id='market_history_narratives',
+    method='GET', path='/api/v1/market/history/narratives', backend_tag='market-history',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=MarketHistoryNarrativesSuccess, security=MARKETHISTORYNARRATIVES_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:market_history_narratives',
+    response_media_type='application/json',
+)
+async def market_history_narratives(transport: HttpTransport, request: MarketHistoryNarrativesRequest) -> MarketHistoryNarrativesSuccess:
+    return await transport.invoke(MARKETHISTORYNARRATIVES_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
+
+class MarketHistoryReplayEventRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    event_id: int
+
+class MarketHistoryReplayEventSuccess(RootModel[MarketReplayCaptureOut]):
+    pass
+
+MarketHistoryReplayEventError = SafeTransportError
+
+MARKETHISTORYREPLAYEVENT_SECURITY = SecurityMetadata(
+    identity='public:market_history_replay_event', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='market_history_replay_event', review_owner='Stage 1B0-R7',
+)
+MARKETHISTORYREPLAYEVENT_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0162', operation_id='market_history_replay_event',
+    method='GET', path='/api/v1/market/history/replay/event/{event_id}', backend_tag='market-history',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=MarketHistoryReplayEventSuccess, security=MARKETHISTORYREPLAYEVENT_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:market_history_replay_event',
+    response_media_type='application/json',
+)
+async def market_history_replay_event(transport: HttpTransport, request: MarketHistoryReplayEventRequest) -> MarketHistoryReplayEventSuccess:
+    return await transport.invoke(MARKETHISTORYREPLAYEVENT_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
+
+class MarketHistorySourcesRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    limit: int | None = None
+
+class MarketHistorySourcesSuccess(RootModel[list[BrowserSafeMarketSourceOut]]):
+    pass
+
+MarketHistorySourcesError = SafeTransportError
+
+MARKETHISTORYSOURCES_SECURITY = SecurityMetadata(
+    identity='public:market_history_sources', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='market_history_sources', review_owner='Stage 1B0-R7',
+)
+MARKETHISTORYSOURCES_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0163', operation_id='market_history_sources',
+    method='GET', path='/api/v1/market/history/sources', backend_tag='market-history',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=MarketHistorySourcesSuccess, security=MARKETHISTORYSOURCES_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:market_history_sources',
+    response_media_type='application/json',
+)
+async def market_history_sources(transport: HttpTransport, request: MarketHistorySourcesRequest) -> MarketHistorySourcesSuccess:
+    return await transport.invoke(MARKETHISTORYSOURCES_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
+
+class MarketHistoryTimelineRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    limit: int | None = None
+    before_sequence: int | None | None = None
+
+class MarketHistoryTimelineSuccess(RootModel[MarketTimelinePageOut]):
+    pass
+
+MarketHistoryTimelineError = SafeTransportError
+
+MARKETHISTORYTIMELINE_SECURITY = SecurityMetadata(
+    identity='public:market_history_timeline', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='market_history_timeline', review_owner='Stage 1B0-R7',
+)
+MARKETHISTORYTIMELINE_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0164', operation_id='market_history_timeline',
+    method='GET', path='/api/v1/market/history/timeline', backend_tag='market-history',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=MarketHistoryTimelineSuccess, security=MARKETHISTORYTIMELINE_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:market_history_timeline',
+    response_media_type='application/json',
+)
+async def market_history_timeline(transport: HttpTransport, request: MarketHistoryTimelineRequest) -> MarketHistoryTimelineSuccess:
+    return await transport.invoke(MARKETHISTORYTIMELINE_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'before_sequence': serialize_query_value(request.before_sequence)}, body=None, request_headers={})
+
+class MarketCurrentOverviewRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    pass
+
+class MarketCurrentOverviewSuccess(RootModel[BTCMarketOverviewEnvelope]):
+    pass
+
+MarketCurrentOverviewError = SafeTransportError
+
+MARKETCURRENTOVERVIEW_SECURITY = SecurityMetadata(
+    identity='public:market_current_overview', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='market_current_overview', review_owner='Stage 1B0-R7',
+)
+MARKETCURRENTOVERVIEW_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0165', operation_id='market_current_overview',
+    method='GET', path='/api/v1/market/overview', backend_tag='market-data',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=MarketCurrentOverviewSuccess, security=MARKETCURRENTOVERVIEW_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:market_current_overview',
+    response_media_type='application/json',
+)
+async def market_current_overview(transport: HttpTransport, request: MarketCurrentOverviewRequest) -> MarketCurrentOverviewSuccess:
+    return await transport.invoke(MARKETCURRENTOVERVIEW_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class ProvidersHealthApiV1MarketProvidersHealthGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2877,7 +3028,7 @@ PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='providers_health_api_v1_market_providers_health_get', review_owner='Stage 1B0-R7',
 )
 PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0160', operation_id='providers_health_api_v1_market_providers_health_get',
+    matrix_id='HTTP-0166', operation_id='providers_health_api_v1_market_providers_health_get',
     method='GET', path='/api/v1/market/providers/health', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ProvidersHealthApiV1MarketProvidersHealthGetSuccess, security=PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_SECURITY,
@@ -2885,7 +3036,33 @@ PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def providers_health_api_v1_market_providers_health_get(transport: HttpTransport, request: ProvidersHealthApiV1MarketProvidersHealthGetRequest) -> ProvidersHealthApiV1MarketProvidersHealthGetSuccess:
-    return await transport.invoke(PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
+
+class MarketSimilarityReportRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    event_id: int
+    limit: int | None = None
+
+class MarketSimilarityReportSuccess(RootModel[MarketSimilarityReportOut]):
+    pass
+
+MarketSimilarityReportError = SafeTransportError
+
+MARKETSIMILARITYREPORT_SECURITY = SecurityMetadata(
+    identity='access-session:market_similarity_report', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='market_similarity_report', review_owner='Stage 1B0-R7',
+)
+MARKETSIMILARITYREPORT_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0167', operation_id='market_similarity_report',
+    method='GET', path='/api/v1/market/similarity/{event_id}', backend_tag='market-similarity',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=MarketSimilarityReportSuccess, security=MARKETSIMILARITYREPORT_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:market_similarity_report',
+    response_media_type='application/json',
+)
+async def market_similarity_report(transport: HttpTransport, request: MarketSimilarityReportRequest) -> MarketSimilarityReportSuccess:
+    return await transport.invoke(MARKETSIMILARITYREPORT_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2902,7 +3079,7 @@ ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_SECURITY = SecurityMeta
     source_symbol='article_duplicates_api_v1_news_articles__article_id__duplicates_get', review_owner='Stage 1B0-R7',
 )
 ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0167', operation_id='article_duplicates_api_v1_news_articles__article_id__duplicates_get',
+    matrix_id='HTTP-0174', operation_id='article_duplicates_api_v1_news_articles__article_id__duplicates_get',
     method='GET', path='/api/v1/news/articles/{article_id}/duplicates', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetSuccess, security=ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_SECURITY,
@@ -2910,7 +3087,7 @@ ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def article_duplicates_api_v1_news_articles__article_id__duplicates_get(transport: HttpTransport, request: ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetRequest) -> ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetSuccess:
-    return await transport.invoke(ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None)
+    return await transport.invoke(ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None, request_headers={})
 
 class BySentimentApiV1NewsBySentimentLabelGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2928,7 +3105,7 @@ BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_SECURITY = SecurityMetadata(
     source_symbol='by_sentiment_api_v1_news_by_sentiment__label__get', review_owner='Stage 1B0-R7',
 )
 BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0168', operation_id='by_sentiment_api_v1_news_by_sentiment__label__get',
+    matrix_id='HTTP-0175', operation_id='by_sentiment_api_v1_news_by_sentiment__label__get',
     method='GET', path='/api/v1/news/by-sentiment/{label}', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BySentimentApiV1NewsBySentimentLabelGetSuccess, security=BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_SECURITY,
@@ -2936,7 +3113,7 @@ BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def by_sentiment_api_v1_news_by_sentiment__label__get(transport: HttpTransport, request: BySentimentApiV1NewsBySentimentLabelGetRequest) -> BySentimentApiV1NewsBySentimentLabelGetSuccess:
-    return await transport.invoke(BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_OPERATION, path_parameters={'label': str(request.label)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_OPERATION, path_parameters={'label': str(request.label)}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class ListClustersApiV1NewsClustersGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2953,7 +3130,7 @@ LISTCLUSTERSAPIV1NEWSCLUSTERSGET_SECURITY = SecurityMetadata(
     source_symbol='list_clusters_api_v1_news_clusters_get', review_owner='Stage 1B0-R7',
 )
 LISTCLUSTERSAPIV1NEWSCLUSTERSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0169', operation_id='list_clusters_api_v1_news_clusters_get',
+    matrix_id='HTTP-0176', operation_id='list_clusters_api_v1_news_clusters_get',
     method='GET', path='/api/v1/news/clusters', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListClustersApiV1NewsClustersGetSuccess, security=LISTCLUSTERSAPIV1NEWSCLUSTERSGET_SECURITY,
@@ -2961,7 +3138,7 @@ LISTCLUSTERSAPIV1NEWSCLUSTERSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_clusters_api_v1_news_clusters_get(transport: HttpTransport, request: ListClustersApiV1NewsClustersGetRequest) -> ListClustersApiV1NewsClustersGetSuccess:
-    return await transport.invoke(LISTCLUSTERSAPIV1NEWSCLUSTERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTCLUSTERSAPIV1NEWSCLUSTERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetClusterApiV1NewsClustersClusterIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -2978,7 +3155,7 @@ GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_cluster_api_v1_news_clusters__cluster_id__get', review_owner='Stage 1B0-R7',
 )
 GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0170', operation_id='get_cluster_api_v1_news_clusters__cluster_id__get',
+    matrix_id='HTTP-0177', operation_id='get_cluster_api_v1_news_clusters__cluster_id__get',
     method='GET', path='/api/v1/news/clusters/{cluster_id}', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetClusterApiV1NewsClustersClusterIdGetSuccess, security=GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_SECURITY,
@@ -2986,7 +3163,7 @@ GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_cluster_api_v1_news_clusters__cluster_id__get(transport: HttpTransport, request: GetClusterApiV1NewsClustersClusterIdGetRequest) -> GetClusterApiV1NewsClustersClusterIdGetSuccess:
-    return await transport.invoke(GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_OPERATION, path_parameters={'cluster_id': str(request.cluster_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_OPERATION, path_parameters={'cluster_id': str(request.cluster_id)}, query_parameters={}, body=None, request_headers={})
 
 class ListEventsApiV1NewsEventsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3003,7 +3180,7 @@ LISTEVENTSAPIV1NEWSEVENTSGET_SECURITY = SecurityMetadata(
     source_symbol='list_events_api_v1_news_events_get', review_owner='Stage 1B0-R7',
 )
 LISTEVENTSAPIV1NEWSEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0171', operation_id='list_events_api_v1_news_events_get',
+    matrix_id='HTTP-0178', operation_id='list_events_api_v1_news_events_get',
     method='GET', path='/api/v1/news/events', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListEventsApiV1NewsEventsGetSuccess, security=LISTEVENTSAPIV1NEWSEVENTSGET_SECURITY,
@@ -3011,7 +3188,7 @@ LISTEVENTSAPIV1NEWSEVENTSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_events_api_v1_news_events_get(transport: HttpTransport, request: ListEventsApiV1NewsEventsGetRequest) -> ListEventsApiV1NewsEventsGetSuccess:
-    return await transport.invoke(LISTEVENTSAPIV1NEWSEVENTSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTEVENTSAPIV1NEWSEVENTSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class HighImpactEventsApiV1NewsEventsHighImpactGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3028,7 +3205,7 @@ HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='high_impact_events_api_v1_news_events_high_impact_get', review_owner='Stage 1B0-R7',
 )
 HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0172', operation_id='high_impact_events_api_v1_news_events_high_impact_get',
+    matrix_id='HTTP-0179', operation_id='high_impact_events_api_v1_news_events_high_impact_get',
     method='GET', path='/api/v1/news/events/high-impact', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=HighImpactEventsApiV1NewsEventsHighImpactGetSuccess, security=HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_SECURITY,
@@ -3036,7 +3213,7 @@ HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def high_impact_events_api_v1_news_events_high_impact_get(transport: HttpTransport, request: HighImpactEventsApiV1NewsEventsHighImpactGetRequest) -> HighImpactEventsApiV1NewsEventsHighImpactGetSuccess:
-    return await transport.invoke(HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class RegulatoryEventsApiV1NewsEventsRegulatoryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3053,7 +3230,7 @@ REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_SECURITY = SecurityMetadata(
     source_symbol='regulatory_events_api_v1_news_events_regulatory_get', review_owner='Stage 1B0-R7',
 )
 REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0173', operation_id='regulatory_events_api_v1_news_events_regulatory_get',
+    matrix_id='HTTP-0180', operation_id='regulatory_events_api_v1_news_events_regulatory_get',
     method='GET', path='/api/v1/news/events/regulatory', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=RegulatoryEventsApiV1NewsEventsRegulatoryGetSuccess, security=REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_SECURITY,
@@ -3061,7 +3238,7 @@ REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def regulatory_events_api_v1_news_events_regulatory_get(transport: HttpTransport, request: RegulatoryEventsApiV1NewsEventsRegulatoryGetRequest) -> RegulatoryEventsApiV1NewsEventsRegulatoryGetSuccess:
-    return await transport.invoke(REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class SecurityEventsApiV1NewsEventsSecurityGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3078,7 +3255,7 @@ SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_SECURITY = SecurityMetadata(
     source_symbol='security_events_api_v1_news_events_security_get', review_owner='Stage 1B0-R7',
 )
 SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0174', operation_id='security_events_api_v1_news_events_security_get',
+    matrix_id='HTTP-0181', operation_id='security_events_api_v1_news_events_security_get',
     method='GET', path='/api/v1/news/events/security', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SecurityEventsApiV1NewsEventsSecurityGetSuccess, security=SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_SECURITY,
@@ -3086,7 +3263,7 @@ SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def security_events_api_v1_news_events_security_get(transport: HttpTransport, request: SecurityEventsApiV1NewsEventsSecurityGetRequest) -> SecurityEventsApiV1NewsEventsSecurityGetSuccess:
-    return await transport.invoke(SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetEventApiV1NewsEventsEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3103,7 +3280,7 @@ GETEVENTAPIV1NEWSEVENTSEVENTIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_event_api_v1_news_events__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETEVENTAPIV1NEWSEVENTSEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0175', operation_id='get_event_api_v1_news_events__event_id__get',
+    matrix_id='HTTP-0182', operation_id='get_event_api_v1_news_events__event_id__get',
     method='GET', path='/api/v1/news/events/{event_id}', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventApiV1NewsEventsEventIdGetSuccess, security=GETEVENTAPIV1NEWSEVENTSEVENTIDGET_SECURITY,
@@ -3111,7 +3288,7 @@ GETEVENTAPIV1NEWSEVENTSEVENTIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_event_api_v1_news_events__event_id__get(transport: HttpTransport, request: GetEventApiV1NewsEventsEventIdGetRequest) -> GetEventApiV1NewsEventsEventIdGetSuccess:
-    return await transport.invoke(GETEVENTAPIV1NEWSEVENTSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETEVENTAPIV1NEWSEVENTSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetEventArticlesApiV1NewsEventsEventIdArticlesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3128,7 +3305,7 @@ GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_SECURITY = SecurityMetadata(
     source_symbol='get_event_articles_api_v1_news_events__event_id__articles_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0176', operation_id='get_event_articles_api_v1_news_events__event_id__articles_get',
+    matrix_id='HTTP-0183', operation_id='get_event_articles_api_v1_news_events__event_id__articles_get',
     method='GET', path='/api/v1/news/events/{event_id}/articles', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventArticlesApiV1NewsEventsEventIdArticlesGetSuccess, security=GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_SECURITY,
@@ -3136,7 +3313,7 @@ GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_OPERATION = NormalizedOperatio
     response_media_type='application/json',
 )
 async def get_event_articles_api_v1_news_events__event_id__articles_get(transport: HttpTransport, request: GetEventArticlesApiV1NewsEventsEventIdArticlesGetRequest) -> GetEventArticlesApiV1NewsEventsEventIdArticlesGetSuccess:
-    return await transport.invoke(GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetEventImpactApiV1NewsEventsEventIdImpactGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3153,7 +3330,7 @@ GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='get_event_impact_api_v1_news_events__event_id__impact_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0177', operation_id='get_event_impact_api_v1_news_events__event_id__impact_get',
+    matrix_id='HTTP-0184', operation_id='get_event_impact_api_v1_news_events__event_id__impact_get',
     method='GET', path='/api/v1/news/events/{event_id}/impact', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventImpactApiV1NewsEventsEventIdImpactGetSuccess, security=GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_SECURITY,
@@ -3161,7 +3338,7 @@ GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_event_impact_api_v1_news_events__event_id__impact_get(transport: HttpTransport, request: GetEventImpactApiV1NewsEventsEventIdImpactGetRequest) -> GetEventImpactApiV1NewsEventsEventIdImpactGetSuccess:
-    return await transport.invoke(GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetEventScoreApiV1NewsEventsEventIdScoreGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3178,7 +3355,7 @@ GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_SECURITY = SecurityMetadata(
     source_symbol='get_event_score_api_v1_news_events__event_id__score_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0178', operation_id='get_event_score_api_v1_news_events__event_id__score_get',
+    matrix_id='HTTP-0185', operation_id='get_event_score_api_v1_news_events__event_id__score_get',
     method='GET', path='/api/v1/news/events/{event_id}/score', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventScoreApiV1NewsEventsEventIdScoreGetSuccess, security=GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_SECURITY,
@@ -3186,7 +3363,7 @@ GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_event_score_api_v1_news_events__event_id__score_get(transport: HttpTransport, request: GetEventScoreApiV1NewsEventsEventIdScoreGetRequest) -> GetEventScoreApiV1NewsEventsEventIdScoreGetSuccess:
-    return await transport.invoke(GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
 
 class HighImpactNewsApiV1NewsHighImpactGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3203,7 +3380,7 @@ HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='high_impact_news_api_v1_news_high_impact_get', review_owner='Stage 1B0-R7',
 )
 HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0179', operation_id='high_impact_news_api_v1_news_high_impact_get',
+    matrix_id='HTTP-0186', operation_id='high_impact_news_api_v1_news_high_impact_get',
     method='GET', path='/api/v1/news/high-impact', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=HighImpactNewsApiV1NewsHighImpactGetSuccess, security=HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_SECURITY,
@@ -3211,7 +3388,7 @@ HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def high_impact_news_api_v1_news_high_impact_get(transport: HttpTransport, request: HighImpactNewsApiV1NewsHighImpactGetRequest) -> HighImpactNewsApiV1NewsHighImpactGetSuccess:
-    return await transport.invoke(HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class HighRelevanceApiV1NewsHighRelevanceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3228,7 +3405,7 @@ HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_SECURITY = SecurityMetadata(
     source_symbol='high_relevance_api_v1_news_high_relevance_get', review_owner='Stage 1B0-R7',
 )
 HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0180', operation_id='high_relevance_api_v1_news_high_relevance_get',
+    matrix_id='HTTP-0187', operation_id='high_relevance_api_v1_news_high_relevance_get',
     method='GET', path='/api/v1/news/high-relevance', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=HighRelevanceApiV1NewsHighRelevanceGetSuccess, security=HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_SECURITY,
@@ -3236,7 +3413,7 @@ HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def high_relevance_api_v1_news_high_relevance_get(transport: HttpTransport, request: HighRelevanceApiV1NewsHighRelevanceGetRequest) -> HighRelevanceApiV1NewsHighRelevanceGetSuccess:
-    return await transport.invoke(HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class LatestNewsApiV1NewsLatestGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3254,7 +3431,7 @@ LATESTNEWSAPIV1NEWSLATESTGET_SECURITY = SecurityMetadata(
     source_symbol='latest_news_api_v1_news_latest_get', review_owner='Stage 1B0-R7',
 )
 LATESTNEWSAPIV1NEWSLATESTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0181', operation_id='latest_news_api_v1_news_latest_get',
+    matrix_id='HTTP-0188', operation_id='latest_news_api_v1_news_latest_get',
     method='GET', path='/api/v1/news/latest', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LatestNewsApiV1NewsLatestGetSuccess, security=LATESTNEWSAPIV1NEWSLATESTGET_SECURITY,
@@ -3262,7 +3439,7 @@ LATESTNEWSAPIV1NEWSLATESTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def latest_news_api_v1_news_latest_get(transport: HttpTransport, request: LatestNewsApiV1NewsLatestGetRequest) -> LatestNewsApiV1NewsLatestGetSuccess:
-    return await transport.invoke(LATESTNEWSAPIV1NEWSLATESTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset)}, body=None)
+    return await transport.invoke(LATESTNEWSAPIV1NEWSLATESTGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset)}, body=None, request_headers={})
 
 class RegulatoryNewsApiV1NewsRegulatoryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3279,7 +3456,7 @@ REGULATORYNEWSAPIV1NEWSREGULATORYGET_SECURITY = SecurityMetadata(
     source_symbol='regulatory_news_api_v1_news_regulatory_get', review_owner='Stage 1B0-R7',
 )
 REGULATORYNEWSAPIV1NEWSREGULATORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0182', operation_id='regulatory_news_api_v1_news_regulatory_get',
+    matrix_id='HTTP-0189', operation_id='regulatory_news_api_v1_news_regulatory_get',
     method='GET', path='/api/v1/news/regulatory', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=RegulatoryNewsApiV1NewsRegulatoryGetSuccess, security=REGULATORYNEWSAPIV1NEWSREGULATORYGET_SECURITY,
@@ -3287,7 +3464,7 @@ REGULATORYNEWSAPIV1NEWSREGULATORYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def regulatory_news_api_v1_news_regulatory_get(transport: HttpTransport, request: RegulatoryNewsApiV1NewsRegulatoryGetRequest) -> RegulatoryNewsApiV1NewsRegulatoryGetSuccess:
-    return await transport.invoke(REGULATORYNEWSAPIV1NEWSREGULATORYGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(REGULATORYNEWSAPIV1NEWSREGULATORYGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class SecurityNewsApiV1NewsSecurityGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3304,7 +3481,7 @@ SECURITYNEWSAPIV1NEWSSECURITYGET_SECURITY = SecurityMetadata(
     source_symbol='security_news_api_v1_news_security_get', review_owner='Stage 1B0-R7',
 )
 SECURITYNEWSAPIV1NEWSSECURITYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0183', operation_id='security_news_api_v1_news_security_get',
+    matrix_id='HTTP-0190', operation_id='security_news_api_v1_news_security_get',
     method='GET', path='/api/v1/news/security', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SecurityNewsApiV1NewsSecurityGetSuccess, security=SECURITYNEWSAPIV1NEWSSECURITYGET_SECURITY,
@@ -3312,7 +3489,7 @@ SECURITYNEWSAPIV1NEWSSECURITYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def security_news_api_v1_news_security_get(transport: HttpTransport, request: SecurityNewsApiV1NewsSecurityGetRequest) -> SecurityNewsApiV1NewsSecurityGetSuccess:
-    return await transport.invoke(SECURITYNEWSAPIV1NEWSSECURITYGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None)
+    return await transport.invoke(SECURITYNEWSAPIV1NEWSSECURITYGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit)}, body=None, request_headers={})
 
 class ListSourcesApiV1NewsSourcesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3329,7 +3506,7 @@ LISTSOURCESAPIV1NEWSSOURCESGET_SECURITY = SecurityMetadata(
     source_symbol='list_sources_api_v1_news_sources_get', review_owner='Stage 1B0-R7',
 )
 LISTSOURCESAPIV1NEWSSOURCESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0184', operation_id='list_sources_api_v1_news_sources_get',
+    matrix_id='HTTP-0191', operation_id='list_sources_api_v1_news_sources_get',
     method='GET', path='/api/v1/news/sources', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListSourcesApiV1NewsSourcesGetSuccess, security=LISTSOURCESAPIV1NEWSSOURCESGET_SECURITY,
@@ -3337,7 +3514,7 @@ LISTSOURCESAPIV1NEWSSOURCESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_sources_api_v1_news_sources_get(transport: HttpTransport, request: ListSourcesApiV1NewsSourcesGetRequest) -> ListSourcesApiV1NewsSourcesGetSuccess:
-    return await transport.invoke(LISTSOURCESAPIV1NEWSSOURCESGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTSOURCESAPIV1NEWSSOURCESGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class CategoriesApiV1NewsSourcesCategoriesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3354,7 +3531,7 @@ CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_SECURITY = SecurityMetadata(
     source_symbol='categories_api_v1_news_sources_categories_get', review_owner='Stage 1B0-R7',
 )
 CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0185', operation_id='categories_api_v1_news_sources_categories_get',
+    matrix_id='HTTP-0192', operation_id='categories_api_v1_news_sources_categories_get',
     method='GET', path='/api/v1/news/sources/categories', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CategoriesApiV1NewsSourcesCategoriesGetSuccess, security=CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_SECURITY,
@@ -3362,7 +3539,7 @@ CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def categories_api_v1_news_sources_categories_get(transport: HttpTransport, request: CategoriesApiV1NewsSourcesCategoriesGetRequest) -> CategoriesApiV1NewsSourcesCategoriesGetSuccess:
-    return await transport.invoke(CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class SourcesHealthApiV1NewsSourcesHealthGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3379,7 +3556,7 @@ SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='sources_health_api_v1_news_sources_health_get', review_owner='Stage 1B0-R7',
 )
 SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0186', operation_id='sources_health_api_v1_news_sources_health_get',
+    matrix_id='HTTP-0193', operation_id='sources_health_api_v1_news_sources_health_get',
     method='GET', path='/api/v1/news/sources/health', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SourcesHealthApiV1NewsSourcesHealthGetSuccess, security=SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_SECURITY,
@@ -3387,7 +3564,7 @@ SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def sources_health_api_v1_news_sources_health_get(transport: HttpTransport, request: SourcesHealthApiV1NewsSourcesHealthGetRequest) -> SourcesHealthApiV1NewsSourcesHealthGetSuccess:
-    return await transport.invoke(SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class ListSourceReputationApiV1NewsSourcesReputationGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3405,7 +3582,7 @@ LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_SECURITY = SecurityMetadata(
     source_symbol='list_source_reputation_api_v1_news_sources_reputation_get', review_owner='Stage 1B0-R7',
 )
 LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0187', operation_id='list_source_reputation_api_v1_news_sources_reputation_get',
+    matrix_id='HTTP-0194', operation_id='list_source_reputation_api_v1_news_sources_reputation_get',
     method='GET', path='/api/v1/news/sources/reputation', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListSourceReputationApiV1NewsSourcesReputationGetSuccess, security=LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_SECURITY,
@@ -3413,7 +3590,7 @@ LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_OPERATION = NormalizedOperatio
     response_media_type='application/json',
 )
 async def list_source_reputation_api_v1_news_sources_reputation_get(transport: HttpTransport, request: ListSourceReputationApiV1NewsSourcesReputationGetRequest) -> ListSourceReputationApiV1NewsSourcesReputationGetSuccess:
-    return await transport.invoke(LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset)}, body=None)
+    return await transport.invoke(LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset)}, body=None, request_headers={})
 
 class TiersApiV1NewsSourcesTiersGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3430,7 +3607,7 @@ TIERSAPIV1NEWSSOURCESTIERSGET_SECURITY = SecurityMetadata(
     source_symbol='tiers_api_v1_news_sources_tiers_get', review_owner='Stage 1B0-R7',
 )
 TIERSAPIV1NEWSSOURCESTIERSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0189', operation_id='tiers_api_v1_news_sources_tiers_get',
+    matrix_id='HTTP-0196', operation_id='tiers_api_v1_news_sources_tiers_get',
     method='GET', path='/api/v1/news/sources/tiers', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TiersApiV1NewsSourcesTiersGetSuccess, security=TIERSAPIV1NEWSSOURCESTIERSGET_SECURITY,
@@ -3438,7 +3615,7 @@ TIERSAPIV1NEWSSOURCESTIERSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def tiers_api_v1_news_sources_tiers_get(transport: HttpTransport, request: TiersApiV1NewsSourcesTiersGetRequest) -> TiersApiV1NewsSourcesTiersGetSuccess:
-    return await transport.invoke(TIERSAPIV1NEWSSOURCESTIERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(TIERSAPIV1NEWSSOURCESTIERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetSourceApiV1NewsSourcesSourceIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3455,7 +3632,7 @@ GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_source_api_v1_news_sources__source_id__get', review_owner='Stage 1B0-R7',
 )
 GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0190', operation_id='get_source_api_v1_news_sources__source_id__get',
+    matrix_id='HTTP-0197', operation_id='get_source_api_v1_news_sources__source_id__get',
     method='GET', path='/api/v1/news/sources/{source_id}', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSourceApiV1NewsSourcesSourceIdGetSuccess, security=GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_SECURITY,
@@ -3463,7 +3640,7 @@ GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_source_api_v1_news_sources__source_id__get(transport: HttpTransport, request: GetSourceApiV1NewsSourcesSourceIdGetRequest) -> GetSourceApiV1NewsSourcesSourceIdGetSuccess:
-    return await transport.invoke(GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_OPERATION, path_parameters={'source_id': str(request.source_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_OPERATION, path_parameters={'source_id': str(request.source_id)}, query_parameters={}, body=None, request_headers={})
 
 class SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3480,7 +3657,7 @@ SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_SECURITY = Sec
     source_symbol='source_confidence_events_api_v1_news_sources__source_id__confidence_events_get', review_owner='Stage 1B0-R7',
 )
 SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0191', operation_id='source_confidence_events_api_v1_news_sources__source_id__confidence_events_get',
+    matrix_id='HTTP-0198', operation_id='source_confidence_events_api_v1_news_sources__source_id__confidence_events_get',
     method='GET', path='/api/v1/news/sources/{source_id}/confidence-events', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetSuccess, security=SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_SECURITY,
@@ -3488,7 +3665,7 @@ SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_OPERATION = No
     response_media_type='application/json',
 )
 async def source_confidence_events_api_v1_news_sources__source_id__confidence_events_get(transport: HttpTransport, request: SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetRequest) -> SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetSuccess:
-    return await transport.invoke(SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_OPERATION, path_parameters={'source_id': str(request.source_id)}, query_parameters={}, body=None)
+    return await transport.invoke(SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_OPERATION, path_parameters={'source_id': str(request.source_id)}, query_parameters={}, body=None, request_headers={})
 
 class SourceHealthApiV1NewsSourcesSourceIdHealthGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3505,7 +3682,7 @@ SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='source_health_api_v1_news_sources__source_id__health_get', review_owner='Stage 1B0-R7',
 )
 SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0192', operation_id='source_health_api_v1_news_sources__source_id__health_get',
+    matrix_id='HTTP-0199', operation_id='source_health_api_v1_news_sources__source_id__health_get',
     method='GET', path='/api/v1/news/sources/{source_id}/health', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SourceHealthApiV1NewsSourcesSourceIdHealthGetSuccess, security=SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_SECURITY,
@@ -3513,7 +3690,7 @@ SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def source_health_api_v1_news_sources__source_id__health_get(transport: HttpTransport, request: SourceHealthApiV1NewsSourcesSourceIdHealthGetRequest) -> SourceHealthApiV1NewsSourcesSourceIdHealthGetSuccess:
-    return await transport.invoke(SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_OPERATION, path_parameters={'source_id': str(request.source_id)}, query_parameters={}, body=None)
+    return await transport.invoke(SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_OPERATION, path_parameters={'source_id': str(request.source_id)}, query_parameters={}, body=None, request_headers={})
 
 class SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3530,7 +3707,7 @@ SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_SECURITY = SecurityMetadata(
     source_symbol='source_snapshots_api_v1_news_sources__source_id__snapshots_get', review_owner='Stage 1B0-R7',
 )
 SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0193', operation_id='source_snapshots_api_v1_news_sources__source_id__snapshots_get',
+    matrix_id='HTTP-0200', operation_id='source_snapshots_api_v1_news_sources__source_id__snapshots_get',
     method='GET', path='/api/v1/news/sources/{source_id}/snapshots', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetSuccess, security=SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_SECURITY,
@@ -3538,7 +3715,7 @@ SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_OPERATION = NormalizedOperat
     response_media_type='application/json',
 )
 async def source_snapshots_api_v1_news_sources__source_id__snapshots_get(transport: HttpTransport, request: SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetRequest) -> SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetSuccess:
-    return await transport.invoke(SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_OPERATION, path_parameters={'source_id': str(request.source_id)}, query_parameters={}, body=None)
+    return await transport.invoke(SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_OPERATION, path_parameters={'source_id': str(request.source_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetArticleExplanationApiV1NewsArticleIdExplanationGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3555,7 +3732,7 @@ GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_SECURITY = SecurityMetadat
     source_symbol='get_article_explanation_api_v1_news__article_id__explanation_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0194', operation_id='get_article_explanation_api_v1_news__article_id__explanation_get',
+    matrix_id='HTTP-0201', operation_id='get_article_explanation_api_v1_news__article_id__explanation_get',
     method='GET', path='/api/v1/news/{article_id}/explanation', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleExplanationApiV1NewsArticleIdExplanationGetSuccess, security=GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_SECURITY,
@@ -3563,7 +3740,7 @@ GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_OPERATION = NormalizedOper
     response_media_type='application/json',
 )
 async def get_article_explanation_api_v1_news__article_id__explanation_get(transport: HttpTransport, request: GetArticleExplanationApiV1NewsArticleIdExplanationGetRequest) -> GetArticleExplanationApiV1NewsArticleIdExplanationGetSuccess:
-    return await transport.invoke(GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetArticleImpactApiV1NewsArticleIdImpactGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3580,7 +3757,7 @@ GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='get_article_impact_api_v1_news__article_id__impact_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0195', operation_id='get_article_impact_api_v1_news__article_id__impact_get',
+    matrix_id='HTTP-0202', operation_id='get_article_impact_api_v1_news__article_id__impact_get',
     method='GET', path='/api/v1/news/{article_id}/impact', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleImpactApiV1NewsArticleIdImpactGetSuccess, security=GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_SECURITY,
@@ -3588,7 +3765,7 @@ GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_article_impact_api_v1_news__article_id__impact_get(transport: HttpTransport, request: GetArticleImpactApiV1NewsArticleIdImpactGetRequest) -> GetArticleImpactApiV1NewsArticleIdImpactGetSuccess:
-    return await transport.invoke(GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetArticleNarrativesApiV1NewsArticleIdNarrativesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3605,7 +3782,7 @@ GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_SECURITY = SecurityMetadata(
     source_symbol='get_article_narratives_api_v1_news__article_id__narratives_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0196', operation_id='get_article_narratives_api_v1_news__article_id__narratives_get',
+    matrix_id='HTTP-0203', operation_id='get_article_narratives_api_v1_news__article_id__narratives_get',
     method='GET', path='/api/v1/news/{article_id}/narratives', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleNarrativesApiV1NewsArticleIdNarrativesGetSuccess, security=GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_SECURITY,
@@ -3613,7 +3790,7 @@ GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_OPERATION = NormalizedOperat
     response_media_type='application/json',
 )
 async def get_article_narratives_api_v1_news__article_id__narratives_get(transport: HttpTransport, request: GetArticleNarrativesApiV1NewsArticleIdNarrativesGetRequest) -> GetArticleNarrativesApiV1NewsArticleIdNarrativesGetSuccess:
-    return await transport.invoke(GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetArticleScoreApiV1NewsArticleIdScoreGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3630,7 +3807,7 @@ GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_SECURITY = SecurityMetadata(
     source_symbol='get_article_score_api_v1_news__article_id__score_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0197', operation_id='get_article_score_api_v1_news__article_id__score_get',
+    matrix_id='HTTP-0204', operation_id='get_article_score_api_v1_news__article_id__score_get',
     method='GET', path='/api/v1/news/{article_id}/score', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleScoreApiV1NewsArticleIdScoreGetSuccess, security=GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_SECURITY,
@@ -3638,7 +3815,7 @@ GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_article_score_api_v1_news__article_id__score_get(transport: HttpTransport, request: GetArticleScoreApiV1NewsArticleIdScoreGetRequest) -> GetArticleScoreApiV1NewsArticleIdScoreGetSuccess:
-    return await transport.invoke(GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetArticleScoresApiV1NewsArticleIdScoresGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3655,7 +3832,7 @@ GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_SECURITY = SecurityMetadata(
     source_symbol='get_article_scores_api_v1_news__article_id__scores_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0198', operation_id='get_article_scores_api_v1_news__article_id__scores_get',
+    matrix_id='HTTP-0205', operation_id='get_article_scores_api_v1_news__article_id__scores_get',
     method='GET', path='/api/v1/news/{article_id}/scores', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleScoresApiV1NewsArticleIdScoresGetSuccess, security=GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_SECURITY,
@@ -3663,7 +3840,7 @@ GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_article_scores_api_v1_news__article_id__scores_get(transport: HttpTransport, request: GetArticleScoresApiV1NewsArticleIdScoresGetRequest) -> GetArticleScoresApiV1NewsArticleIdScoresGetSuccess:
-    return await transport.invoke(GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_OPERATION, path_parameters={'article_id': str(request.article_id)}, query_parameters={}, body=None, request_headers={})
 
 class OnchainEventsApiV1OnchainEventsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3681,7 +3858,7 @@ ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_SECURITY = SecurityMetadata(
     source_symbol='onchain_events_api_v1_onchain_events_get', review_owner='Stage 1B0-R7',
 )
 ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0200', operation_id='onchain_events_api_v1_onchain_events_get',
+    matrix_id='HTTP-0207', operation_id='onchain_events_api_v1_onchain_events_get',
     method='GET', path='/api/v1/onchain/events', backend_tag='onchain',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=OnchainEventsApiV1OnchainEventsGetSuccess, security=ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_SECURITY,
@@ -3689,7 +3866,7 @@ ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def onchain_events_api_v1_onchain_events_get(transport: HttpTransport, request: OnchainEventsApiV1OnchainEventsGetRequest) -> OnchainEventsApiV1OnchainEventsGetSuccess:
-    return await transport.invoke(ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset)}, body=None)
+    return await transport.invoke(ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset)}, body=None, request_headers={})
 
 class OnchainStateApiV1OnchainStateGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3709,7 +3886,7 @@ ONCHAINSTATEAPIV1ONCHAINSTATEGET_SECURITY = SecurityMetadata(
     source_symbol='onchain_state_api_v1_onchain_state_get', review_owner='Stage 1B0-R7',
 )
 ONCHAINSTATEAPIV1ONCHAINSTATEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0201', operation_id='onchain_state_api_v1_onchain_state_get',
+    matrix_id='HTTP-0208', operation_id='onchain_state_api_v1_onchain_state_get',
     method='GET', path='/api/v1/onchain/state', backend_tag='onchain',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=OnchainStateApiV1OnchainStateGetSuccess, security=ONCHAINSTATEAPIV1ONCHAINSTATEGET_SECURITY,
@@ -3717,7 +3894,107 @@ ONCHAINSTATEAPIV1ONCHAINSTATEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def onchain_state_api_v1_onchain_state_get(transport: HttpTransport, request: OnchainStateApiV1OnchainStateGetRequest) -> OnchainStateApiV1OnchainStateGetSuccess:
-    return await transport.invoke(ONCHAINSTATEAPIV1ONCHAINSTATEGET_OPERATION, path_parameters={}, query_parameters={'tip_height': serialize_query_value(request.tip_height), 'observed_block_height': serialize_query_value(request.observed_block_height), 'headers_height': serialize_query_value(request.headers_height), 'provider_probe': serialize_query_value(request.provider_probe)}, body=None)
+    return await transport.invoke(ONCHAINSTATEAPIV1ONCHAINSTATEGET_OPERATION, path_parameters={}, query_parameters={'tip_height': serialize_query_value(request.tip_height), 'observed_block_height': serialize_query_value(request.observed_block_height), 'headers_height': serialize_query_value(request.headers_height), 'provider_probe': serialize_query_value(request.provider_probe)}, body=None, request_headers={})
+
+class OperationsListIncidentsRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    pass
+
+class OperationsListIncidentsSuccess(RootModel[list[IncidentOut]]):
+    pass
+
+OperationsListIncidentsError = SafeTransportError
+
+OPERATIONSLISTINCIDENTS_SECURITY = SecurityMetadata(
+    identity='access-session:operations_list_incidents', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='operations_list_incidents', review_owner='Stage 1B0-R7',
+)
+OPERATIONSLISTINCIDENTS_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0211', operation_id='operations_list_incidents',
+    method='GET', path='/api/v1/operations/incidents', backend_tag='operations',
+    product='Operator Console', disposition='UI_REQUIRED',
+    success_status=200, response_type=OperationsListIncidentsSuccess, security=OPERATIONSLISTINCIDENTS_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:operations_list_incidents',
+    response_media_type='application/json',
+)
+async def operations_list_incidents(transport: HttpTransport, request: OperationsListIncidentsRequest) -> OperationsListIncidentsSuccess:
+    return await transport.invoke(OPERATIONSLISTINCIDENTS_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
+
+class OperationsGetIncidentRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    incident_id: str
+
+class OperationsGetIncidentSuccess(RootModel[IncidentDetailOut]):
+    pass
+
+OperationsGetIncidentError = SafeTransportError
+
+OPERATIONSGETINCIDENT_SECURITY = SecurityMetadata(
+    identity='access-session:operations_get_incident', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='operations_get_incident', review_owner='Stage 1B0-R7',
+)
+OPERATIONSGETINCIDENT_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0212', operation_id='operations_get_incident',
+    method='GET', path='/api/v1/operations/incidents/{incident_id}', backend_tag='operations',
+    product='Operator Console', disposition='UI_REQUIRED',
+    success_status=200, response_type=OperationsGetIncidentSuccess, security=OPERATIONSGETINCIDENT_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:operations_get_incident',
+    response_media_type='application/json',
+)
+async def operations_get_incident(transport: HttpTransport, request: OperationsGetIncidentRequest) -> OperationsGetIncidentSuccess:
+    return await transport.invoke(OPERATIONSGETINCIDENT_OPERATION, path_parameters={'incident_id': str(request.incident_id)}, query_parameters={}, body=None, request_headers={})
+
+class JobsApiV1OperationsJobsGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    pass
+
+class JobsApiV1OperationsJobsGetSuccess(RootModel[list[BackgroundJobHealthOut]]):
+    pass
+
+JobsApiV1OperationsJobsGetError = SafeTransportError
+
+JOBSAPIV1OPERATIONSJOBSGET_SECURITY = SecurityMetadata(
+    identity='access-session:jobs_api_v1_operations_jobs_get', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='jobs_api_v1_operations_jobs_get', review_owner='Stage 1B0-R7',
+)
+JOBSAPIV1OPERATIONSJOBSGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0213', operation_id='jobs_api_v1_operations_jobs_get',
+    method='GET', path='/api/v1/operations/jobs', backend_tag='operations',
+    product='Operator Console', disposition='UI_REQUIRED',
+    success_status=200, response_type=JobsApiV1OperationsJobsGetSuccess, security=JOBSAPIV1OPERATIONSJOBSGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:jobs_api_v1_operations_jobs_get',
+    response_media_type='application/json',
+)
+async def jobs_api_v1_operations_jobs_get(transport: HttpTransport, request: JobsApiV1OperationsJobsGetRequest) -> JobsApiV1OperationsJobsGetSuccess:
+    return await transport.invoke(JOBSAPIV1OPERATIONSJOBSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
+
+class OperationsListSloRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    pass
+
+class OperationsListSloSuccess(RootModel[list[OperationsSLOOut]]):
+    pass
+
+OperationsListSloError = SafeTransportError
+
+OPERATIONSLISTSLO_SECURITY = SecurityMetadata(
+    identity='access-session:operations_list_slo', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='operations_list_slo', review_owner='Stage 1B0-R7',
+)
+OPERATIONSLISTSLO_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0220', operation_id='operations_list_slo',
+    method='GET', path='/api/v1/operations/slo', backend_tag='operations',
+    product='Operator Console', disposition='UI_REQUIRED',
+    success_status=200, response_type=OperationsListSloSuccess, security=OPERATIONSLISTSLO_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:operations_list_slo',
+    response_media_type='application/json',
+)
+async def operations_list_slo(transport: HttpTransport, request: OperationsListSloRequest) -> OperationsListSloSuccess:
+    return await transport.invoke(OPERATIONSLISTSLO_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class PublicFeaturesApiV1PublicFeaturesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3734,7 +4011,7 @@ PUBLICFEATURESAPIV1PUBLICFEATURESGET_SECURITY = SecurityMetadata(
     source_symbol='public_features_api_v1_public_features_get', review_owner='Stage 1B0-R7',
 )
 PUBLICFEATURESAPIV1PUBLICFEATURESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0246', operation_id='public_features_api_v1_public_features_get',
+    matrix_id='HTTP-0256', operation_id='public_features_api_v1_public_features_get',
     method='GET', path='/api/v1/public/features', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicFeaturesApiV1PublicFeaturesGetSuccess, security=PUBLICFEATURESAPIV1PUBLICFEATURESGET_SECURITY,
@@ -3742,7 +4019,7 @@ PUBLICFEATURESAPIV1PUBLICFEATURESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def public_features_api_v1_public_features_get(transport: HttpTransport, request: PublicFeaturesApiV1PublicFeaturesGetRequest) -> PublicFeaturesApiV1PublicFeaturesGetSuccess:
-    return await transport.invoke(PUBLICFEATURESAPIV1PUBLICFEATURESGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(PUBLICFEATURESAPIV1PUBLICFEATURESGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class PublicLandingApiV1PublicLandingGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3759,7 +4036,7 @@ PUBLICLANDINGAPIV1PUBLICLANDINGGET_SECURITY = SecurityMetadata(
     source_symbol='public_landing_api_v1_public_landing_get', review_owner='Stage 1B0-R7',
 )
 PUBLICLANDINGAPIV1PUBLICLANDINGGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0247', operation_id='public_landing_api_v1_public_landing_get',
+    matrix_id='HTTP-0257', operation_id='public_landing_api_v1_public_landing_get',
     method='GET', path='/api/v1/public/landing', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicLandingApiV1PublicLandingGetSuccess, security=PUBLICLANDINGAPIV1PUBLICLANDINGGET_SECURITY,
@@ -3767,7 +4044,7 @@ PUBLICLANDINGAPIV1PUBLICLANDINGGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def public_landing_api_v1_public_landing_get(transport: HttpTransport, request: PublicLandingApiV1PublicLandingGetRequest) -> PublicLandingApiV1PublicLandingGetSuccess:
-    return await transport.invoke(PUBLICLANDINGAPIV1PUBLICLANDINGGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(PUBLICLANDINGAPIV1PUBLICLANDINGGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class PublicRoadmapApiV1PublicRoadmapGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3784,7 +4061,7 @@ PUBLICROADMAPAPIV1PUBLICROADMAPGET_SECURITY = SecurityMetadata(
     source_symbol='public_roadmap_api_v1_public_roadmap_get', review_owner='Stage 1B0-R7',
 )
 PUBLICROADMAPAPIV1PUBLICROADMAPGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0248', operation_id='public_roadmap_api_v1_public_roadmap_get',
+    matrix_id='HTTP-0258', operation_id='public_roadmap_api_v1_public_roadmap_get',
     method='GET', path='/api/v1/public/roadmap', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicRoadmapApiV1PublicRoadmapGetSuccess, security=PUBLICROADMAPAPIV1PUBLICROADMAPGET_SECURITY,
@@ -3792,7 +4069,7 @@ PUBLICROADMAPAPIV1PUBLICROADMAPGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def public_roadmap_api_v1_public_roadmap_get(transport: HttpTransport, request: PublicRoadmapApiV1PublicRoadmapGetRequest) -> PublicRoadmapApiV1PublicRoadmapGetSuccess:
-    return await transport.invoke(PUBLICROADMAPAPIV1PUBLICROADMAPGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(PUBLICROADMAPAPIV1PUBLICROADMAPGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class PublicStatsApiV1PublicStatsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3809,7 +4086,7 @@ PUBLICSTATSAPIV1PUBLICSTATSGET_SECURITY = SecurityMetadata(
     source_symbol='public_stats_api_v1_public_stats_get', review_owner='Stage 1B0-R7',
 )
 PUBLICSTATSAPIV1PUBLICSTATSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0249', operation_id='public_stats_api_v1_public_stats_get',
+    matrix_id='HTTP-0259', operation_id='public_stats_api_v1_public_stats_get',
     method='GET', path='/api/v1/public/stats', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicStatsApiV1PublicStatsGetSuccess, security=PUBLICSTATSAPIV1PUBLICSTATSGET_SECURITY,
@@ -3817,7 +4094,7 @@ PUBLICSTATSAPIV1PUBLICSTATSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def public_stats_api_v1_public_stats_get(transport: HttpTransport, request: PublicStatsApiV1PublicStatsGetRequest) -> PublicStatsApiV1PublicStatsGetSuccess:
-    return await transport.invoke(PUBLICSTATSAPIV1PUBLICSTATSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(PUBLICSTATSAPIV1PUBLICSTATSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class PublicStatusApiV1PublicStatusGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3834,7 +4111,7 @@ PUBLICSTATUSAPIV1PUBLICSTATUSGET_SECURITY = SecurityMetadata(
     source_symbol='public_status_api_v1_public_status_get', review_owner='Stage 1B0-R7',
 )
 PUBLICSTATUSAPIV1PUBLICSTATUSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0250', operation_id='public_status_api_v1_public_status_get',
+    matrix_id='HTTP-0260', operation_id='public_status_api_v1_public_status_get',
     method='GET', path='/api/v1/public/status', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicStatusApiV1PublicStatusGetSuccess, security=PUBLICSTATUSAPIV1PUBLICSTATUSGET_SECURITY,
@@ -3842,7 +4119,7 @@ PUBLICSTATUSAPIV1PUBLICSTATUSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def public_status_api_v1_public_status_get(transport: HttpTransport, request: PublicStatusApiV1PublicStatusGetRequest) -> PublicStatusApiV1PublicStatusGetSuccess:
-    return await transport.invoke(PUBLICSTATUSAPIV1PUBLICSTATUSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(PUBLICSTATUSAPIV1PUBLICSTATUSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3859,7 +4136,7 @@ PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_SECURITY = SecurityMetadata
     source_symbol='public_trace_summary_api_v1_public_trace__report_id__summary_get', review_owner='Stage 1B0-R7',
 )
 PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0251', operation_id='public_trace_summary_api_v1_public_trace__report_id__summary_get',
+    matrix_id='HTTP-0261', operation_id='public_trace_summary_api_v1_public_trace__report_id__summary_get',
     method='GET', path='/api/v1/public/trace/{report_id}/summary', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetSuccess, security=PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_SECURITY,
@@ -3867,7 +4144,7 @@ PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_OPERATION = NormalizedOpera
     response_media_type='application/json',
 )
 async def public_trace_summary_api_v1_public_trace__report_id__summary_get(transport: HttpTransport, request: PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetRequest) -> PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetSuccess:
-    return await transport.invoke(PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class LatestSignalsApiV1SignalsLatestGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3884,7 +4161,7 @@ LATESTSIGNALSAPIV1SIGNALSLATESTGET_SECURITY = SecurityMetadata(
     source_symbol='latest_signals_api_v1_signals_latest_get', review_owner='Stage 1B0-R7',
 )
 LATESTSIGNALSAPIV1SIGNALSLATESTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0252', operation_id='latest_signals_api_v1_signals_latest_get',
+    matrix_id='HTTP-0262', operation_id='latest_signals_api_v1_signals_latest_get',
     method='GET', path='/api/v1/signals/latest', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LatestSignalsApiV1SignalsLatestGetSuccess, security=LATESTSIGNALSAPIV1SIGNALSLATESTGET_SECURITY,
@@ -3892,7 +4169,7 @@ LATESTSIGNALSAPIV1SIGNALSLATESTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def latest_signals_api_v1_signals_latest_get(transport: HttpTransport, request: LatestSignalsApiV1SignalsLatestGetRequest) -> LatestSignalsApiV1SignalsLatestGetSuccess:
-    return await transport.invoke(LATESTSIGNALSAPIV1SIGNALSLATESTGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LATESTSIGNALSAPIV1SIGNALSLATESTGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3909,7 +4186,7 @@ NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_SECURITY = SecurityMetada
     source_symbol='news_market_impact_signals_api_v1_signals_news_market_impact_get', review_owner='Stage 1B0-R7',
 )
 NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0253', operation_id='news_market_impact_signals_api_v1_signals_news_market_impact_get',
+    matrix_id='HTTP-0263', operation_id='news_market_impact_signals_api_v1_signals_news_market_impact_get',
     method='GET', path='/api/v1/signals/news-market-impact', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetSuccess, security=NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_SECURITY,
@@ -3917,7 +4194,7 @@ NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_OPERATION = NormalizedOpe
     response_media_type='application/json',
 )
 async def news_market_impact_signals_api_v1_signals_news_market_impact_get(transport: HttpTransport, request: NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetRequest) -> NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetSuccess:
-    return await transport.invoke(NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class TopSignalsApiV1SignalsTopGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3936,7 +4213,7 @@ TOPSIGNALSAPIV1SIGNALSTOPGET_SECURITY = SecurityMetadata(
     source_symbol='top_signals_api_v1_signals_top_get', review_owner='Stage 1B0-R7',
 )
 TOPSIGNALSAPIV1SIGNALSTOPGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0254', operation_id='top_signals_api_v1_signals_top_get',
+    matrix_id='HTTP-0264', operation_id='top_signals_api_v1_signals_top_get',
     method='GET', path='/api/v1/signals/top', backend_tag='signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TopSignalsApiV1SignalsTopGetSuccess, security=TOPSIGNALSAPIV1SIGNALSTOPGET_SECURITY,
@@ -3944,7 +4221,7 @@ TOPSIGNALSAPIV1SIGNALSTOPGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def top_signals_api_v1_signals_top_get(transport: HttpTransport, request: TopSignalsApiV1SignalsTopGetRequest) -> TopSignalsApiV1SignalsTopGetSuccess:
-    return await transport.invoke(TOPSIGNALSAPIV1SIGNALSTOPGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset), 'horizon': serialize_query_value(request.horizon)}, body=None)
+    return await transport.invoke(TOPSIGNALSAPIV1SIGNALSTOPGET_OPERATION, path_parameters={}, query_parameters={'limit': serialize_query_value(request.limit), 'offset': serialize_query_value(request.offset), 'horizon': serialize_query_value(request.horizon)}, body=None, request_headers={})
 
 class GetSignalApiV1SignalsSignalIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3961,7 +4238,7 @@ GETSIGNALAPIV1SIGNALSSIGNALIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_signal_api_v1_signals__signal_id__get', review_owner='Stage 1B0-R7',
 )
 GETSIGNALAPIV1SIGNALSSIGNALIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0255', operation_id='get_signal_api_v1_signals__signal_id__get',
+    matrix_id='HTTP-0265', operation_id='get_signal_api_v1_signals__signal_id__get',
     method='GET', path='/api/v1/signals/{signal_id}', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSignalApiV1SignalsSignalIdGetSuccess, security=GETSIGNALAPIV1SIGNALSSIGNALIDGET_SECURITY,
@@ -3969,7 +4246,7 @@ GETSIGNALAPIV1SIGNALSSIGNALIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_signal_api_v1_signals__signal_id__get(transport: HttpTransport, request: GetSignalApiV1SignalsSignalIdGetRequest) -> GetSignalApiV1SignalsSignalIdGetSuccess:
-    return await transport.invoke(GETSIGNALAPIV1SIGNALSSIGNALIDGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETSIGNALAPIV1SIGNALSSIGNALIDGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -3986,7 +4263,7 @@ GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_SECURITY = SecurityMeta
     source_symbol='get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get', review_owner='Stage 1B0-R7',
 )
 GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0256', operation_id='get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get',
+    matrix_id='HTTP-0266', operation_id='get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get',
     method='GET', path='/api/v1/signals/{signal_id}/delivery-logs', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetSuccess, security=GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_SECURITY,
@@ -3994,7 +4271,7 @@ GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get(transport: HttpTransport, request: GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetRequest) -> GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetSuccess:
-    return await transport.invoke(GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4011,7 +4288,7 @@ GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_SECURITY = SecurityMetadata(
     source_symbol='get_signal_evidence_api_v1_signals__signal_id__evidence_get', review_owner='Stage 1B0-R7',
 )
 GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0257', operation_id='get_signal_evidence_api_v1_signals__signal_id__evidence_get',
+    matrix_id='HTTP-0267', operation_id='get_signal_evidence_api_v1_signals__signal_id__evidence_get',
     method='GET', path='/api/v1/signals/{signal_id}/evidence', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetSuccess, security=GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_SECURITY,
@@ -4019,7 +4296,7 @@ GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_OPERATION = NormalizedOperation
     response_media_type='application/json',
 )
 async def get_signal_evidence_api_v1_signals__signal_id__evidence_get(transport: HttpTransport, request: GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetRequest) -> GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetSuccess:
-    return await transport.invoke(GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None, request_headers={})
 
 class SignalExplanationApiV1SignalsSignalIdExplanationGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4036,7 +4313,7 @@ SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_SECURITY = SecurityMetadata(
     source_symbol='signal_explanation_api_v1_signals__signal_id__explanation_get', review_owner='Stage 1B0-R7',
 )
 SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0258', operation_id='signal_explanation_api_v1_signals__signal_id__explanation_get',
+    matrix_id='HTTP-0268', operation_id='signal_explanation_api_v1_signals__signal_id__explanation_get',
     method='GET', path='/api/v1/signals/{signal_id}/explanation', backend_tag='signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SignalExplanationApiV1SignalsSignalIdExplanationGetSuccess, security=SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_SECURITY,
@@ -4044,7 +4321,7 @@ SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_OPERATION = NormalizedOperat
     response_media_type='application/json',
 )
 async def signal_explanation_api_v1_signals__signal_id__explanation_get(transport: HttpTransport, request: SignalExplanationApiV1SignalsSignalIdExplanationGetRequest) -> SignalExplanationApiV1SignalsSignalIdExplanationGetSuccess:
-    return await transport.invoke(SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None)
+    return await transport.invoke(SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None, request_headers={})
 
 class SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4061,7 +4338,7 @@ SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_SECURITY = SecurityM
     source_symbol='signal_recommendations_api_v1_signals__signal_id__recommendations_get', review_owner='Stage 1B0-R7',
 )
 SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0259', operation_id='signal_recommendations_api_v1_signals__signal_id__recommendations_get',
+    matrix_id='HTTP-0269', operation_id='signal_recommendations_api_v1_signals__signal_id__recommendations_get',
     method='GET', path='/api/v1/signals/{signal_id}/recommendations', backend_tag='signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetSuccess, security=SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_SECURITY,
@@ -4069,7 +4346,7 @@ SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_OPERATION = Normaliz
     response_media_type='application/json',
 )
 async def signal_recommendations_api_v1_signals__signal_id__recommendations_get(transport: HttpTransport, request: SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetRequest) -> SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetSuccess:
-    return await transport.invoke(SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None)
+    return await transport.invoke(SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_OPERATION, path_parameters={'signal_id': str(request.signal_id)}, query_parameters={}, body=None, request_headers={})
 
 class StorageStatusApiV1StorageStatusGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4086,7 +4363,7 @@ STORAGESTATUSAPIV1STORAGESTATUSGET_SECURITY = SecurityMetadata(
     source_symbol='storage_status_api_v1_storage_status_get', review_owner='Stage 1B0-R7',
 )
 STORAGESTATUSAPIV1STORAGESTATUSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0260', operation_id='storage_status_api_v1_storage_status_get',
+    matrix_id='HTTP-0270', operation_id='storage_status_api_v1_storage_status_get',
     method='GET', path='/api/v1/storage/status', backend_tag='storage',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=StorageStatusApiV1StorageStatusGetSuccess, security=STORAGESTATUSAPIV1STORAGESTATUSGET_SECURITY,
@@ -4094,7 +4371,7 @@ STORAGESTATUSAPIV1STORAGESTATUSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def storage_status_api_v1_storage_status_get(transport: HttpTransport, request: StorageStatusApiV1StorageStatusGetRequest) -> StorageStatusApiV1StorageStatusGetSuccess:
-    return await transport.invoke(STORAGESTATUSAPIV1STORAGESTATUSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(STORAGESTATUSAPIV1STORAGESTATUSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class TimescaleOperationsStatusApiV1StorageTimescaleStatusGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4111,7 +4388,7 @@ TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_SECURITY = SecurityMetad
     source_symbol='timescale_operations_status_api_v1_storage_timescale_status_get', review_owner='Stage 1B0-R7',
 )
 TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0261', operation_id='timescale_operations_status_api_v1_storage_timescale_status_get',
+    matrix_id='HTTP-0271', operation_id='timescale_operations_status_api_v1_storage_timescale_status_get',
     method='GET', path='/api/v1/storage/timescale/status', backend_tag='storage',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=TimescaleOperationsStatusApiV1StorageTimescaleStatusGetSuccess, security=TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_SECURITY,
@@ -4119,7 +4396,7 @@ TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_OPERATION = NormalizedOp
     response_media_type='application/json',
 )
 async def timescale_operations_status_api_v1_storage_timescale_status_get(transport: HttpTransport, request: TimescaleOperationsStatusApiV1StorageTimescaleStatusGetRequest) -> TimescaleOperationsStatusApiV1StorageTimescaleStatusGetSuccess:
-    return await transport.invoke(TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class AnalyzeAddressApiV1TraceAddressAddressGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4136,7 +4413,7 @@ ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_SECURITY = SecurityMetadata(
     source_symbol='analyze_address_api_v1_trace_address__address__get', review_owner='Stage 1B0-R7',
 )
 ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0262', operation_id='analyze_address_api_v1_trace_address__address__get',
+    matrix_id='HTTP-0272', operation_id='analyze_address_api_v1_trace_address__address__get',
     method='GET', path='/api/v1/trace/address/{address}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=AnalyzeAddressApiV1TraceAddressAddressGetSuccess, security=ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_SECURITY,
@@ -4144,7 +4421,7 @@ ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def analyze_address_api_v1_trace_address__address__get(transport: HttpTransport, request: AnalyzeAddressApiV1TraceAddressAddressGetRequest) -> AnalyzeAddressApiV1TraceAddressAddressGetSuccess:
-    return await transport.invoke(ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_OPERATION, path_parameters={'address': str(request.address)}, query_parameters={}, body=None)
+    return await transport.invoke(ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_OPERATION, path_parameters={'address': str(request.address)}, query_parameters={}, body=None, request_headers={})
 
 class TraceAlertsApiV1TraceAlertsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4161,7 +4438,7 @@ TRACEALERTSAPIV1TRACEALERTSGET_SECURITY = SecurityMetadata(
     source_symbol='trace_alerts_api_v1_trace_alerts_get', review_owner='Stage 1B0-R7',
 )
 TRACEALERTSAPIV1TRACEALERTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0263', operation_id='trace_alerts_api_v1_trace_alerts_get',
+    matrix_id='HTTP-0273', operation_id='trace_alerts_api_v1_trace_alerts_get',
     method='GET', path='/api/v1/trace/alerts', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceAlertsApiV1TraceAlertsGetSuccess, security=TRACEALERTSAPIV1TRACEALERTSGET_SECURITY,
@@ -4169,7 +4446,7 @@ TRACEALERTSAPIV1TRACEALERTSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def trace_alerts_api_v1_trace_alerts_get(transport: HttpTransport, request: TraceAlertsApiV1TraceAlertsGetRequest) -> TraceAlertsApiV1TraceAlertsGetSuccess:
-    return await transport.invoke(TRACEALERTSAPIV1TRACEALERTSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(TRACEALERTSAPIV1TRACEALERTSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class TraceEventsApiV1TraceEventsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4186,7 +4463,7 @@ TRACEEVENTSAPIV1TRACEEVENTSGET_SECURITY = SecurityMetadata(
     source_symbol='trace_events_api_v1_trace_events_get', review_owner='Stage 1B0-R7',
 )
 TRACEEVENTSAPIV1TRACEEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0276', operation_id='trace_events_api_v1_trace_events_get',
+    matrix_id='HTTP-0286', operation_id='trace_events_api_v1_trace_events_get',
     method='GET', path='/api/v1/trace/events', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceEventsApiV1TraceEventsGetSuccess, security=TRACEEVENTSAPIV1TRACEEVENTSGET_SECURITY,
@@ -4194,7 +4471,7 @@ TRACEEVENTSAPIV1TRACEEVENTSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def trace_events_api_v1_trace_events_get(transport: HttpTransport, request: TraceEventsApiV1TraceEventsGetRequest) -> TraceEventsApiV1TraceEventsGetSuccess:
-    return await transport.invoke(TRACEEVENTSAPIV1TRACEEVENTSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(TRACEEVENTSAPIV1TRACEEVENTSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class TraceEventApiV1TraceEventsEventIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4211,7 +4488,7 @@ TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_SECURITY = SecurityMetadata(
     source_symbol='trace_event_api_v1_trace_events__event_id__get', review_owner='Stage 1B0-R7',
 )
 TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0277', operation_id='trace_event_api_v1_trace_events__event_id__get',
+    matrix_id='HTTP-0287', operation_id='trace_event_api_v1_trace_events__event_id__get',
     method='GET', path='/api/v1/trace/events/{event_id}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceEventApiV1TraceEventsEventIdGetSuccess, security=TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_SECURITY,
@@ -4219,7 +4496,7 @@ TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def trace_event_api_v1_trace_events__event_id__get(transport: HttpTransport, request: TraceEventApiV1TraceEventsEventIdGetRequest) -> TraceEventApiV1TraceEventsEventIdGetSuccess:
-    return await transport.invoke(TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None)
+    return await transport.invoke(TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_OPERATION, path_parameters={'event_id': str(request.event_id)}, query_parameters={}, body=None, request_headers={})
 
 class LiteAddressCheckApiV1TraceLiteAddressGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4236,7 +4513,7 @@ LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_SECURITY = SecurityMetadata(
     source_symbol='lite_address_check_api_v1_trace_lite__address__get', review_owner='Stage 1B0-R7',
 )
 LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0278', operation_id='lite_address_check_api_v1_trace_lite__address__get',
+    matrix_id='HTTP-0288', operation_id='lite_address_check_api_v1_trace_lite__address__get',
     method='GET', path='/api/v1/trace/lite/{address}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LiteAddressCheckApiV1TraceLiteAddressGetSuccess, security=LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_SECURITY,
@@ -4244,7 +4521,7 @@ LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def lite_address_check_api_v1_trace_lite__address__get(transport: HttpTransport, request: LiteAddressCheckApiV1TraceLiteAddressGetRequest) -> LiteAddressCheckApiV1TraceLiteAddressGetSuccess:
-    return await transport.invoke(LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_OPERATION, path_parameters={'address': str(request.address)}, query_parameters={}, body=None)
+    return await transport.invoke(LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_OPERATION, path_parameters={'address': str(request.address)}, query_parameters={}, body=None, request_headers={})
 
 class GetReportApiV1TraceReportReportIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4261,7 +4538,7 @@ GETREPORTAPIV1TRACEREPORTREPORTIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_report_api_v1_trace_report__report_id__get', review_owner='Stage 1B0-R7',
 )
 GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0282', operation_id='get_report_api_v1_trace_report__report_id__get',
+    matrix_id='HTTP-0292', operation_id='get_report_api_v1_trace_report__report_id__get',
     method='GET', path='/api/v1/trace/report/{report_id}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetReportApiV1TraceReportReportIdGetSuccess, security=GETREPORTAPIV1TRACEREPORTREPORTIDGET_SECURITY,
@@ -4269,7 +4546,7 @@ GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_report_api_v1_trace_report__report_id__get(transport: HttpTransport, request: GetReportApiV1TraceReportReportIdGetRequest) -> GetReportApiV1TraceReportReportIdGetSuccess:
-    return await transport.invoke(GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4286,7 +4563,7 @@ TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_SECURITY 
     source_symbol='trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get', review_owner='Stage 1B0-R7',
 )
 TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0283', operation_id='trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get',
+    matrix_id='HTTP-0293', operation_id='trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get',
     method='GET', path='/api/v1/trace/report/{report_id}/citadel-contribution', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetSuccess, security=TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_SECURITY,
@@ -4294,7 +4571,7 @@ TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_OPERATION
     response_media_type='application/json',
 )
 async def trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get(transport: HttpTransport, request: TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetRequest) -> TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetSuccess:
-    return await transport.invoke(TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4311,7 +4588,7 @@ GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_SECURITY = Securi
     source_symbol='get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get', review_owner='Stage 1B0-R7',
 )
 GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0284', operation_id='get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get',
+    matrix_id='HTTP-0294', operation_id='get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get',
     method='GET', path='/api/v1/trace/report/{report_id}/counterparty-lens', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetSuccess, security=GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_SECURITY,
@@ -4319,7 +4596,7 @@ GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_OPERATION = Norma
     response_media_type='application/json',
 )
 async def get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get(transport: HttpTransport, request: GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetRequest) -> GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetSuccess:
-    return await transport.invoke(GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetDustRadarApiV1TraceReportReportIdDustRadarGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4336,7 +4613,7 @@ GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_SECURITY = SecurityMetadata(
     source_symbol='get_dust_radar_api_v1_trace_report__report_id__dust_radar_get', review_owner='Stage 1B0-R7',
 )
 GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0285', operation_id='get_dust_radar_api_v1_trace_report__report_id__dust_radar_get',
+    matrix_id='HTTP-0295', operation_id='get_dust_radar_api_v1_trace_report__report_id__dust_radar_get',
     method='GET', path='/api/v1/trace/report/{report_id}/dust-radar', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetDustRadarApiV1TraceReportReportIdDustRadarGetSuccess, security=GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_SECURITY,
@@ -4344,7 +4621,7 @@ GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_OPERATION = NormalizedOperation
     response_media_type='application/json',
 )
 async def get_dust_radar_api_v1_trace_report__report_id__dust_radar_get(transport: HttpTransport, request: GetDustRadarApiV1TraceReportReportIdDustRadarGetRequest) -> GetDustRadarApiV1TraceReportReportIdDustRadarGetSuccess:
-    return await transport.invoke(GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class ListEvidenceApiV1TraceReportReportIdEvidenceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4361,7 +4638,7 @@ LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_SECURITY = SecurityMetadata(
     source_symbol='list_evidence_api_v1_trace_report__report_id__evidence_get', review_owner='Stage 1B0-R7',
 )
 LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0286', operation_id='list_evidence_api_v1_trace_report__report_id__evidence_get',
+    matrix_id='HTTP-0296', operation_id='list_evidence_api_v1_trace_report__report_id__evidence_get',
     method='GET', path='/api/v1/trace/report/{report_id}/evidence', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListEvidenceApiV1TraceReportReportIdEvidenceGetSuccess, security=LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_SECURITY,
@@ -4369,7 +4646,7 @@ LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_evidence_api_v1_trace_report__report_id__evidence_get(transport: HttpTransport, request: ListEvidenceApiV1TraceReportReportIdEvidenceGetRequest) -> ListEvidenceApiV1TraceReportReportIdEvidenceGetSuccess:
-    return await transport.invoke(LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4386,7 +4663,7 @@ TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_SECURITY = SecurityMeta
     source_symbol='trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get', review_owner='Stage 1B0-R7',
 )
 TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0287', operation_id='trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get',
+    matrix_id='HTTP-0297', operation_id='trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get',
     method='GET', path='/api/v1/trace/report/{report_id}/evidence-refs', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetSuccess, security=TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_SECURITY,
@@ -4394,7 +4671,7 @@ TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get(transport: HttpTransport, request: TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetRequest) -> TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetSuccess:
-    return await transport.invoke(TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetOriginPassportApiV1TraceReportReportIdOriginPassportGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4411,7 +4688,7 @@ GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_SECURITY = SecurityMe
     source_symbol='get_origin_passport_api_v1_trace_report__report_id__origin_passport_get', review_owner='Stage 1B0-R7',
 )
 GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0288', operation_id='get_origin_passport_api_v1_trace_report__report_id__origin_passport_get',
+    matrix_id='HTTP-0298', operation_id='get_origin_passport_api_v1_trace_report__report_id__origin_passport_get',
     method='GET', path='/api/v1/trace/report/{report_id}/origin-passport', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetOriginPassportApiV1TraceReportReportIdOriginPassportGetSuccess, security=GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_SECURITY,
@@ -4419,7 +4696,7 @@ GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_OPERATION = Normalize
     response_media_type='application/json',
 )
 async def get_origin_passport_api_v1_trace_report__report_id__origin_passport_get(transport: HttpTransport, request: GetOriginPassportApiV1TraceReportReportIdOriginPassportGetRequest) -> GetOriginPassportApiV1TraceReportReportIdOriginPassportGetSuccess:
-    return await transport.invoke(GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4436,7 +4713,7 @@ TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_SECURITY = SecurityMetada
     source_symbol='trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get', review_owner='Stage 1B0-R7',
 )
 TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0289', operation_id='trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get',
+    matrix_id='HTTP-0299', operation_id='trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get',
     method='GET', path='/api/v1/trace/report/{report_id}/policy-facts', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetSuccess, security=TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_SECURITY,
@@ -4444,7 +4721,7 @@ TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_OPERATION = NormalizedOpe
     response_media_type='application/json',
 )
 async def trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get(transport: HttpTransport, request: TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetRequest) -> TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetSuccess:
-    return await transport.invoke(TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4461,7 +4738,7 @@ GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_SECURITY = SecurityMeta
     source_symbol='get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get', review_owner='Stage 1B0-R7',
 )
 GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0290', operation_id='get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get',
+    matrix_id='HTTP-0300', operation_id='get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get',
     method='GET', path='/api/v1/trace/report/{report_id}/privacy-shield', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetSuccess, security=GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_SECURITY,
@@ -4469,7 +4746,7 @@ GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get(transport: HttpTransport, request: GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetRequest) -> GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetSuccess:
-    return await transport.invoke(GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetProofPacketApiV1TraceReportReportIdProofPacketGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4486,7 +4763,7 @@ GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_SECURITY = SecurityMetadata
     source_symbol='get_proof_packet_api_v1_trace_report__report_id__proof_packet_get', review_owner='Stage 1B0-R7',
 )
 GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0291', operation_id='get_proof_packet_api_v1_trace_report__report_id__proof_packet_get',
+    matrix_id='HTTP-0301', operation_id='get_proof_packet_api_v1_trace_report__report_id__proof_packet_get',
     method='GET', path='/api/v1/trace/report/{report_id}/proof-packet', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess, security=GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_SECURITY,
@@ -4494,7 +4771,7 @@ GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION = NormalizedOpera
     response_media_type='application/json',
 )
 async def get_proof_packet_api_v1_trace_report__report_id__proof_packet_get(transport: HttpTransport, request: GetProofPacketApiV1TraceReportReportIdProofPacketGetRequest) -> GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess:
-    return await transport.invoke(GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4511,7 +4788,7 @@ GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_SECURITY 
     source_symbol='get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get', review_owner='Stage 1B0-R7',
 )
 GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0292', operation_id='get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get',
+    matrix_id='HTTP-0302', operation_id='get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get',
     method='GET', path='/api/v1/trace/report/{report_id}/provider-disagreement', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetSuccess, security=GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_SECURITY,
@@ -4519,7 +4796,7 @@ GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_OPERATION
     response_media_type='application/json',
 )
 async def get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get(transport: HttpTransport, request: GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetRequest) -> GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetSuccess:
-    return await transport.invoke(GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4536,7 +4813,7 @@ GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_SECURITY = SecurityMeta
     source_symbol='get_source_summary_api_v1_trace_report__report_id__source_summary_get', review_owner='Stage 1B0-R7',
 )
 GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0293', operation_id='get_source_summary_api_v1_trace_report__report_id__source_summary_get',
+    matrix_id='HTTP-0303', operation_id='get_source_summary_api_v1_trace_report__report_id__source_summary_get',
     method='GET', path='/api/v1/trace/report/{report_id}/source-summary', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetSuccess, security=GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_SECURITY,
@@ -4544,7 +4821,7 @@ GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_OPERATION = NormalizedO
     response_media_type='application/json',
 )
 async def get_source_summary_api_v1_trace_report__report_id__source_summary_get(transport: HttpTransport, request: GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetRequest) -> GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetSuccess:
-    return await transport.invoke(GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4561,7 +4838,7 @@ GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_SECURITY = SecurityMetadata
     source_symbol='get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get', review_owner='Stage 1B0-R7',
 )
 GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0294', operation_id='get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get',
+    matrix_id='HTTP-0304', operation_id='get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get',
     method='GET', path='/api/v1/trace/report/{report_id}/utxo-hygiene', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetSuccess, security=GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_SECURITY,
@@ -4569,7 +4846,7 @@ GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_OPERATION = NormalizedOpera
     response_media_type='application/json',
 )
 async def get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get(transport: HttpTransport, request: GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetRequest) -> GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetSuccess:
-    return await transport.invoke(GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None)
+    return await transport.invoke(GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class ListSourcesApiV1TraceSourcesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4586,7 +4863,7 @@ LISTSOURCESAPIV1TRACESOURCESGET_SECURITY = SecurityMetadata(
     source_symbol='list_sources_api_v1_trace_sources_get', review_owner='Stage 1B0-R7',
 )
 LISTSOURCESAPIV1TRACESOURCESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0295', operation_id='list_sources_api_v1_trace_sources_get',
+    matrix_id='HTTP-0305', operation_id='list_sources_api_v1_trace_sources_get',
     method='GET', path='/api/v1/trace/sources', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListSourcesApiV1TraceSourcesGetSuccess, security=LISTSOURCESAPIV1TRACESOURCESGET_SECURITY,
@@ -4594,7 +4871,7 @@ LISTSOURCESAPIV1TRACESOURCESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_sources_api_v1_trace_sources_get(transport: HttpTransport, request: ListSourcesApiV1TraceSourcesGetRequest) -> ListSourcesApiV1TraceSourcesGetSuccess:
-    return await transport.invoke(LISTSOURCESAPIV1TRACESOURCESGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTSOURCESAPIV1TRACESOURCESGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class GetSourceApiV1TraceSourcesSourceNameGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4611,7 +4888,7 @@ GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_SECURITY = SecurityMetadata(
     source_symbol='get_source_api_v1_trace_sources__source_name__get', review_owner='Stage 1B0-R7',
 )
 GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0296', operation_id='get_source_api_v1_trace_sources__source_name__get',
+    matrix_id='HTTP-0306', operation_id='get_source_api_v1_trace_sources__source_name__get',
     method='GET', path='/api/v1/trace/sources/{source_name}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSourceApiV1TraceSourcesSourceNameGetSuccess, security=GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_SECURITY,
@@ -4619,7 +4896,7 @@ GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def get_source_api_v1_trace_sources__source_name__get(transport: HttpTransport, request: GetSourceApiV1TraceSourcesSourceNameGetRequest) -> GetSourceApiV1TraceSourcesSourceNameGetSuccess:
-    return await transport.invoke(GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_OPERATION, path_parameters={'source_name': str(request.source_name)}, query_parameters={}, body=None)
+    return await transport.invoke(GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_OPERATION, path_parameters={'source_name': str(request.source_name)}, query_parameters={}, body=None, request_headers={})
 
 class TraceStatusApiV1TraceStatusGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4636,7 +4913,7 @@ TRACESTATUSAPIV1TRACESTATUSGET_SECURITY = SecurityMetadata(
     source_symbol='trace_status_api_v1_trace_status_get', review_owner='Stage 1B0-R7',
 )
 TRACESTATUSAPIV1TRACESTATUSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0297', operation_id='trace_status_api_v1_trace_status_get',
+    matrix_id='HTTP-0307', operation_id='trace_status_api_v1_trace_status_get',
     method='GET', path='/api/v1/trace/status', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceStatusApiV1TraceStatusGetSuccess, security=TRACESTATUSAPIV1TRACESTATUSGET_SECURITY,
@@ -4644,7 +4921,33 @@ TRACESTATUSAPIV1TRACESTATUSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def trace_status_api_v1_trace_status_get(transport: HttpTransport, request: TraceStatusApiV1TraceStatusGetRequest) -> TraceStatusApiV1TraceStatusGetSuccess:
-    return await transport.invoke(TRACESTATUSAPIV1TRACESTATUSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(TRACESTATUSAPIV1TRACESTATUSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
+
+class SubmitTraceApiV1TraceSubmitPostRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    Idempotency_Key: str
+    body: TraceSubmitRequest
+
+class SubmitTraceApiV1TraceSubmitPostSuccess(RootModel[ResponseEnvelopeTraceSubmissionResult]):
+    pass
+
+SubmitTraceApiV1TraceSubmitPostError = SafeTransportError
+
+SUBMITTRACEAPIV1TRACESUBMITPOST_SECURITY = SecurityMetadata(
+    identity='public:submit_trace_api_v1_trace_submit_post', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='submit_trace_api_v1_trace_submit_post', review_owner='Stage 1B0-R7',
+)
+SUBMITTRACEAPIV1TRACESUBMITPOST_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0308', operation_id='submit_trace_api_v1_trace_submit_post',
+    method='POST', path='/api/v1/trace/submit', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=201, response_type=SubmitTraceApiV1TraceSubmitPostSuccess, security=SUBMITTRACEAPIV1TRACESUBMITPOST_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:submit_trace_api_v1_trace_submit_post',
+    response_media_type='application/json',
+)
+async def submit_trace_api_v1_trace_submit_post(transport: HttpTransport, request: SubmitTraceApiV1TraceSubmitPostRequest) -> SubmitTraceApiV1TraceSubmitPostSuccess:
+    return await transport.invoke(SUBMITTRACEAPIV1TRACESUBMITPOST_OPERATION, path_parameters={}, query_parameters={}, body=request.body.model_dump(mode='json'), request_headers={'Idempotency-Key': str(request.Idempotency_Key)})
 
 class ListWatchlistApiV1TraceWatchlistGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4661,7 +4964,7 @@ LISTWATCHLISTAPIV1TRACEWATCHLISTGET_SECURITY = SecurityMetadata(
     source_symbol='list_watchlist_api_v1_trace_watchlist_get', review_owner='Stage 1B0-R7',
 )
 LISTWATCHLISTAPIV1TRACEWATCHLISTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0299', operation_id='list_watchlist_api_v1_trace_watchlist_get',
+    matrix_id='HTTP-0310', operation_id='list_watchlist_api_v1_trace_watchlist_get',
     method='GET', path='/api/v1/trace/watchlist', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListWatchlistApiV1TraceWatchlistGetSuccess, security=LISTWATCHLISTAPIV1TRACEWATCHLISTGET_SECURITY,
@@ -4669,7 +4972,7 @@ LISTWATCHLISTAPIV1TRACEWATCHLISTGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def list_watchlist_api_v1_trace_watchlist_get(transport: HttpTransport, request: ListWatchlistApiV1TraceWatchlistGetRequest) -> ListWatchlistApiV1TraceWatchlistGetSuccess:
-    return await transport.invoke(LISTWATCHLISTAPIV1TRACEWATCHLISTGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LISTWATCHLISTAPIV1TRACEWATCHLISTGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class DependenciesHealthDependenciesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4686,7 +4989,7 @@ DEPENDENCIESHEALTHDEPENDENCIESGET_SECURITY = SecurityMetadata(
     source_symbol='dependencies_health_dependencies_get', review_owner='Stage 1B0-R7',
 )
 DEPENDENCIESHEALTHDEPENDENCIESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0341', operation_id='dependencies_health_dependencies_get',
+    matrix_id='HTTP-0352', operation_id='dependencies_health_dependencies_get',
     method='GET', path='/health/dependencies', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=DependenciesHealthDependenciesGetSuccess, security=DEPENDENCIESHEALTHDEPENDENCIESGET_SECURITY,
@@ -4694,7 +4997,7 @@ DEPENDENCIESHEALTHDEPENDENCIESGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def dependencies_health_dependencies_get(transport: HttpTransport, request: DependenciesHealthDependenciesGetRequest) -> DependenciesHealthDependenciesGetSuccess:
-    return await transport.invoke(DEPENDENCIESHEALTHDEPENDENCIESGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(DEPENDENCIESHEALTHDEPENDENCIESGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class IntelligenceHealthIntelligenceGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4711,7 +5014,7 @@ INTELLIGENCEHEALTHINTELLIGENCEGET_SECURITY = SecurityMetadata(
     source_symbol='intelligence_health_intelligence_get', review_owner='Stage 1B0-R7',
 )
 INTELLIGENCEHEALTHINTELLIGENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0342', operation_id='intelligence_health_intelligence_get',
+    matrix_id='HTTP-0353', operation_id='intelligence_health_intelligence_get',
     method='GET', path='/health/intelligence', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=IntelligenceHealthIntelligenceGetSuccess, security=INTELLIGENCEHEALTHINTELLIGENCEGET_SECURITY,
@@ -4719,7 +5022,7 @@ INTELLIGENCEHEALTHINTELLIGENCEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def intelligence_health_intelligence_get(transport: HttpTransport, request: IntelligenceHealthIntelligenceGetRequest) -> IntelligenceHealthIntelligenceGetSuccess:
-    return await transport.invoke(INTELLIGENCEHEALTHINTELLIGENCEGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(INTELLIGENCEHEALTHINTELLIGENCEGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class LiveHealthLiveGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4736,7 +5039,7 @@ LIVEHEALTHLIVEGET_SECURITY = SecurityMetadata(
     source_symbol='live_health_live_get', review_owner='Stage 1B0-R7',
 )
 LIVEHEALTHLIVEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0343', operation_id='live_health_live_get',
+    matrix_id='HTTP-0354', operation_id='live_health_live_get',
     method='GET', path='/health/live', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LiveHealthLiveGetSuccess, security=LIVEHEALTHLIVEGET_SECURITY,
@@ -4744,7 +5047,7 @@ LIVEHEALTHLIVEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def live_health_live_get(transport: HttpTransport, request: LiveHealthLiveGetRequest) -> LiveHealthLiveGetSuccess:
-    return await transport.invoke(LIVEHEALTHLIVEGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(LIVEHEALTHLIVEGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class OperationsHealthOperationsGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4761,7 +5064,7 @@ OPERATIONSHEALTHOPERATIONSGET_SECURITY = SecurityMetadata(
     source_symbol='operations_health_operations_get', review_owner='Stage 1B0-R7',
 )
 OPERATIONSHEALTHOPERATIONSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0344', operation_id='operations_health_operations_get',
+    matrix_id='HTTP-0355', operation_id='operations_health_operations_get',
     method='GET', path='/health/operations', backend_tag='root-health',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=OperationsHealthOperationsGetSuccess, security=OPERATIONSHEALTHOPERATIONSGET_SECURITY,
@@ -4769,7 +5072,7 @@ OPERATIONSHEALTHOPERATIONSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def operations_health_operations_get(transport: HttpTransport, request: OperationsHealthOperationsGetRequest) -> OperationsHealthOperationsGetSuccess:
-    return await transport.invoke(OPERATIONSHEALTHOPERATIONSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(OPERATIONSHEALTHOPERATIONSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class ProvidersHealthProvidersGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4786,7 +5089,7 @@ PROVIDERSHEALTHPROVIDERSGET_SECURITY = SecurityMetadata(
     source_symbol='providers_health_providers_get', review_owner='Stage 1B0-R7',
 )
 PROVIDERSHEALTHPROVIDERSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0345', operation_id='providers_health_providers_get',
+    matrix_id='HTTP-0356', operation_id='providers_health_providers_get',
     method='GET', path='/health/providers', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ProvidersHealthProvidersGetSuccess, security=PROVIDERSHEALTHPROVIDERSGET_SECURITY,
@@ -4794,7 +5097,7 @@ PROVIDERSHEALTHPROVIDERSGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def providers_health_providers_get(transport: HttpTransport, request: ProvidersHealthProvidersGetRequest) -> ProvidersHealthProvidersGetSuccess:
-    return await transport.invoke(PROVIDERSHEALTHPROVIDERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(PROVIDERSHEALTHPROVIDERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class ReadyHealthReadyGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4811,7 +5114,7 @@ READYHEALTHREADYGET_SECURITY = SecurityMetadata(
     source_symbol='ready_health_ready_get', review_owner='Stage 1B0-R7',
 )
 READYHEALTHREADYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0346', operation_id='ready_health_ready_get',
+    matrix_id='HTTP-0357', operation_id='ready_health_ready_get',
     method='GET', path='/health/ready', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ReadyHealthReadyGetSuccess, security=READYHEALTHREADYGET_SECURITY,
@@ -4819,7 +5122,7 @@ READYHEALTHREADYGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def ready_health_ready_get(transport: HttpTransport, request: ReadyHealthReadyGetRequest) -> ReadyHealthReadyGetSuccess:
-    return await transport.invoke(READYHEALTHREADYGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(READYHEALTHREADYGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class StartupHealthStartupGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4836,7 +5139,7 @@ STARTUPHEALTHSTARTUPGET_SECURITY = SecurityMetadata(
     source_symbol='startup_health_startup_get', review_owner='Stage 1B0-R7',
 )
 STARTUPHEALTHSTARTUPGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0347', operation_id='startup_health_startup_get',
+    matrix_id='HTTP-0358', operation_id='startup_health_startup_get',
     method='GET', path='/health/startup', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=StartupHealthStartupGetSuccess, security=STARTUPHEALTHSTARTUPGET_SECURITY,
@@ -4844,7 +5147,7 @@ STARTUPHEALTHSTARTUPGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def startup_health_startup_get(transport: HttpTransport, request: StartupHealthStartupGetRequest) -> StartupHealthStartupGetSuccess:
-    return await transport.invoke(STARTUPHEALTHSTARTUPGET_OPERATION, path_parameters={}, query_parameters={}, body=None)
+    return await transport.invoke(STARTUPHEALTHSTARTUPGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
 
 class WebCandleDtoWebCandleCandleIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4861,7 +5164,7 @@ WEBCANDLEDTOWEBCANDLECANDLEIDGET_SECURITY = SecurityMetadata(
     source_symbol='web_candle_dto_web_candle__candle_id__get', review_owner='Stage 1B0-R7',
 )
 WEBCANDLEDTOWEBCANDLECANDLEIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0362', operation_id='web_candle_dto_web_candle__candle_id__get',
+    matrix_id='HTTP-0373', operation_id='web_candle_dto_web_candle__candle_id__get',
     method='GET', path='/web/candle/{candle_id}', backend_tag='market-intelligence-web',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=WebCandleDtoWebCandleCandleIdGetSuccess, security=WEBCANDLEDTOWEBCANDLECANDLEIDGET_SECURITY,
@@ -4869,7 +5172,7 @@ WEBCANDLEDTOWEBCANDLECANDLEIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def web_candle_dto_web_candle__candle_id__get(transport: HttpTransport, request: WebCandleDtoWebCandleCandleIdGetRequest) -> WebCandleDtoWebCandleCandleIdGetSuccess:
-    return await transport.invoke(WEBCANDLEDTOWEBCANDLECANDLEIDGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None)
+    return await transport.invoke(WEBCANDLEDTOWEBCANDLECANDLEIDGET_OPERATION, path_parameters={'candle_id': str(request.candle_id)}, query_parameters={}, body=None, request_headers={})
 
 class WebEvidenceDtoWebEvidencePacketIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4886,7 +5189,7 @@ WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_SECURITY = SecurityMetadata(
     source_symbol='web_evidence_dto_web_evidence__packet_id__get', review_owner='Stage 1B0-R7',
 )
 WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0363', operation_id='web_evidence_dto_web_evidence__packet_id__get',
+    matrix_id='HTTP-0374', operation_id='web_evidence_dto_web_evidence__packet_id__get',
     method='GET', path='/web/evidence/{packet_id}', backend_tag='market-intelligence-web',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=WebEvidenceDtoWebEvidencePacketIdGetSuccess, security=WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_SECURITY,
@@ -4894,7 +5197,7 @@ WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def web_evidence_dto_web_evidence__packet_id__get(transport: HttpTransport, request: WebEvidenceDtoWebEvidencePacketIdGetRequest) -> WebEvidenceDtoWebEvidencePacketIdGetSuccess:
-    return await transport.invoke(WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_OPERATION, path_parameters={'packet_id': str(request.packet_id)}, query_parameters={}, body=None)
+    return await transport.invoke(WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_OPERATION, path_parameters={'packet_id': str(request.packet_id)}, query_parameters={}, body=None, request_headers={})
 
 class WebMarketTimeMachineDtoWebMarketTimeMachineGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4911,7 +5214,7 @@ WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_SECURITY = SecurityMetadata(
     source_symbol='web_market_time_machine_dto_web_market_time_machine_get', review_owner='Stage 1B0-R7',
 )
 WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0364', operation_id='web_market_time_machine_dto_web_market_time_machine_get',
+    matrix_id='HTTP-0375', operation_id='web_market_time_machine_dto_web_market_time_machine_get',
     method='GET', path='/web/market-time-machine', backend_tag='market-intelligence-web',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=WebMarketTimeMachineDtoWebMarketTimeMachineGetSuccess, security=WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_SECURITY,
@@ -4919,7 +5222,7 @@ WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def web_market_time_machine_dto_web_market_time_machine_get(transport: HttpTransport, request: WebMarketTimeMachineDtoWebMarketTimeMachineGetRequest) -> WebMarketTimeMachineDtoWebMarketTimeMachineGetSuccess:
-    return await transport.invoke(WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_OPERATION, path_parameters={}, query_parameters={'timeframe': serialize_query_value(request.timeframe)}, body=None)
+    return await transport.invoke(WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_OPERATION, path_parameters={}, query_parameters={'timeframe': serialize_query_value(request.timeframe)}, body=None, request_headers={})
 
 class WebTimelineDtoWebTimelineGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4940,7 +5243,7 @@ WEBTIMELINEDTOWEBTIMELINEGET_SECURITY = SecurityMetadata(
     source_symbol='web_timeline_dto_web_timeline_get', review_owner='Stage 1B0-R7',
 )
 WEBTIMELINEDTOWEBTIMELINEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0369', operation_id='web_timeline_dto_web_timeline_get',
+    matrix_id='HTTP-0380', operation_id='web_timeline_dto_web_timeline_get',
     method='GET', path='/web/timeline', backend_tag='market-intelligence-web',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=WebTimelineDtoWebTimelineGetSuccess, security=WEBTIMELINEDTOWEBTIMELINEGET_SECURITY,
@@ -4948,9 +5251,9 @@ WEBTIMELINEDTOWEBTIMELINEGET_OPERATION = NormalizedOperation(
     response_media_type='application/json',
 )
 async def web_timeline_dto_web_timeline_get(transport: HttpTransport, request: WebTimelineDtoWebTimelineGetRequest) -> WebTimelineDtoWebTimelineGetSuccess:
-    return await transport.invoke(WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, path_parameters={}, query_parameters={'filter': serialize_query_value(request.filter), 'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'sort': serialize_query_value(request.sort), 'window': serialize_query_value(request.window)}, body=None)
+    return await transport.invoke(WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, path_parameters={}, query_parameters={'filter': serialize_query_value(request.filter), 'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'sort': serialize_query_value(request.sort), 'window': serialize_query_value(request.window)}, body=None, request_headers={})
 
-SOURCE_HEAD = '818acbe761a20b84940ba9493076c09a78bbc22e'
+SOURCE_HEAD = '8f51ff96f1820f59a4dcb853e623ecd822b9bbfe'
 
 OWNERSHIP = {
     'list_child_api_keys_api_v1_access_api_keys_get': ('HTTP-0002', 'bastion_ui.transport.generated_http', 'list_child_api_keys_api_v1_access_api_keys_get'),
@@ -5064,89 +5367,101 @@ OWNERSHIP = {
     'btc_providers_api_v1_market_btc_providers_get': ('HTTP-0157', 'bastion_ui.transport.generated_http', 'btc_providers_api_v1_market_btc_providers_get'),
     'btc_providers_health_api_v1_market_btc_providers_health_get': ('HTTP-0158', 'bastion_ui.transport.generated_http', 'btc_providers_health_api_v1_market_btc_providers_health_get'),
     'market_health_api_v1_market_health_get': ('HTTP-0159', 'bastion_ui.transport.generated_http', 'market_health_api_v1_market_health_get'),
-    'providers_health_api_v1_market_providers_health_get': ('HTTP-0160', 'bastion_ui.transport.generated_http', 'providers_health_api_v1_market_providers_health_get'),
-    'article_duplicates_api_v1_news_articles__article_id__duplicates_get': ('HTTP-0167', 'bastion_ui.transport.generated_http', 'article_duplicates_api_v1_news_articles__article_id__duplicates_get'),
-    'by_sentiment_api_v1_news_by_sentiment__label__get': ('HTTP-0168', 'bastion_ui.transport.generated_http', 'by_sentiment_api_v1_news_by_sentiment__label__get'),
-    'list_clusters_api_v1_news_clusters_get': ('HTTP-0169', 'bastion_ui.transport.generated_http', 'list_clusters_api_v1_news_clusters_get'),
-    'get_cluster_api_v1_news_clusters__cluster_id__get': ('HTTP-0170', 'bastion_ui.transport.generated_http', 'get_cluster_api_v1_news_clusters__cluster_id__get'),
-    'list_events_api_v1_news_events_get': ('HTTP-0171', 'bastion_ui.transport.generated_http', 'list_events_api_v1_news_events_get'),
-    'high_impact_events_api_v1_news_events_high_impact_get': ('HTTP-0172', 'bastion_ui.transport.generated_http', 'high_impact_events_api_v1_news_events_high_impact_get'),
-    'regulatory_events_api_v1_news_events_regulatory_get': ('HTTP-0173', 'bastion_ui.transport.generated_http', 'regulatory_events_api_v1_news_events_regulatory_get'),
-    'security_events_api_v1_news_events_security_get': ('HTTP-0174', 'bastion_ui.transport.generated_http', 'security_events_api_v1_news_events_security_get'),
-    'get_event_api_v1_news_events__event_id__get': ('HTTP-0175', 'bastion_ui.transport.generated_http', 'get_event_api_v1_news_events__event_id__get'),
-    'get_event_articles_api_v1_news_events__event_id__articles_get': ('HTTP-0176', 'bastion_ui.transport.generated_http', 'get_event_articles_api_v1_news_events__event_id__articles_get'),
-    'get_event_impact_api_v1_news_events__event_id__impact_get': ('HTTP-0177', 'bastion_ui.transport.generated_http', 'get_event_impact_api_v1_news_events__event_id__impact_get'),
-    'get_event_score_api_v1_news_events__event_id__score_get': ('HTTP-0178', 'bastion_ui.transport.generated_http', 'get_event_score_api_v1_news_events__event_id__score_get'),
-    'high_impact_news_api_v1_news_high_impact_get': ('HTTP-0179', 'bastion_ui.transport.generated_http', 'high_impact_news_api_v1_news_high_impact_get'),
-    'high_relevance_api_v1_news_high_relevance_get': ('HTTP-0180', 'bastion_ui.transport.generated_http', 'high_relevance_api_v1_news_high_relevance_get'),
-    'latest_news_api_v1_news_latest_get': ('HTTP-0181', 'bastion_ui.transport.generated_http', 'latest_news_api_v1_news_latest_get'),
-    'regulatory_news_api_v1_news_regulatory_get': ('HTTP-0182', 'bastion_ui.transport.generated_http', 'regulatory_news_api_v1_news_regulatory_get'),
-    'security_news_api_v1_news_security_get': ('HTTP-0183', 'bastion_ui.transport.generated_http', 'security_news_api_v1_news_security_get'),
-    'list_sources_api_v1_news_sources_get': ('HTTP-0184', 'bastion_ui.transport.generated_http', 'list_sources_api_v1_news_sources_get'),
-    'categories_api_v1_news_sources_categories_get': ('HTTP-0185', 'bastion_ui.transport.generated_http', 'categories_api_v1_news_sources_categories_get'),
-    'sources_health_api_v1_news_sources_health_get': ('HTTP-0186', 'bastion_ui.transport.generated_http', 'sources_health_api_v1_news_sources_health_get'),
-    'list_source_reputation_api_v1_news_sources_reputation_get': ('HTTP-0187', 'bastion_ui.transport.generated_http', 'list_source_reputation_api_v1_news_sources_reputation_get'),
-    'tiers_api_v1_news_sources_tiers_get': ('HTTP-0189', 'bastion_ui.transport.generated_http', 'tiers_api_v1_news_sources_tiers_get'),
-    'get_source_api_v1_news_sources__source_id__get': ('HTTP-0190', 'bastion_ui.transport.generated_http', 'get_source_api_v1_news_sources__source_id__get'),
-    'source_confidence_events_api_v1_news_sources__source_id__confidence_events_get': ('HTTP-0191', 'bastion_ui.transport.generated_http', 'source_confidence_events_api_v1_news_sources__source_id__confidence_events_get'),
-    'source_health_api_v1_news_sources__source_id__health_get': ('HTTP-0192', 'bastion_ui.transport.generated_http', 'source_health_api_v1_news_sources__source_id__health_get'),
-    'source_snapshots_api_v1_news_sources__source_id__snapshots_get': ('HTTP-0193', 'bastion_ui.transport.generated_http', 'source_snapshots_api_v1_news_sources__source_id__snapshots_get'),
-    'get_article_explanation_api_v1_news__article_id__explanation_get': ('HTTP-0194', 'bastion_ui.transport.generated_http', 'get_article_explanation_api_v1_news__article_id__explanation_get'),
-    'get_article_impact_api_v1_news__article_id__impact_get': ('HTTP-0195', 'bastion_ui.transport.generated_http', 'get_article_impact_api_v1_news__article_id__impact_get'),
-    'get_article_narratives_api_v1_news__article_id__narratives_get': ('HTTP-0196', 'bastion_ui.transport.generated_http', 'get_article_narratives_api_v1_news__article_id__narratives_get'),
-    'get_article_score_api_v1_news__article_id__score_get': ('HTTP-0197', 'bastion_ui.transport.generated_http', 'get_article_score_api_v1_news__article_id__score_get'),
-    'get_article_scores_api_v1_news__article_id__scores_get': ('HTTP-0198', 'bastion_ui.transport.generated_http', 'get_article_scores_api_v1_news__article_id__scores_get'),
-    'onchain_events_api_v1_onchain_events_get': ('HTTP-0200', 'bastion_ui.transport.generated_http', 'onchain_events_api_v1_onchain_events_get'),
-    'onchain_state_api_v1_onchain_state_get': ('HTTP-0201', 'bastion_ui.transport.generated_http', 'onchain_state_api_v1_onchain_state_get'),
-    'public_features_api_v1_public_features_get': ('HTTP-0246', 'bastion_ui.transport.generated_http', 'public_features_api_v1_public_features_get'),
-    'public_landing_api_v1_public_landing_get': ('HTTP-0247', 'bastion_ui.transport.generated_http', 'public_landing_api_v1_public_landing_get'),
-    'public_roadmap_api_v1_public_roadmap_get': ('HTTP-0248', 'bastion_ui.transport.generated_http', 'public_roadmap_api_v1_public_roadmap_get'),
-    'public_stats_api_v1_public_stats_get': ('HTTP-0249', 'bastion_ui.transport.generated_http', 'public_stats_api_v1_public_stats_get'),
-    'public_status_api_v1_public_status_get': ('HTTP-0250', 'bastion_ui.transport.generated_http', 'public_status_api_v1_public_status_get'),
-    'public_trace_summary_api_v1_public_trace__report_id__summary_get': ('HTTP-0251', 'bastion_ui.transport.generated_http', 'public_trace_summary_api_v1_public_trace__report_id__summary_get'),
-    'latest_signals_api_v1_signals_latest_get': ('HTTP-0252', 'bastion_ui.transport.generated_http', 'latest_signals_api_v1_signals_latest_get'),
-    'news_market_impact_signals_api_v1_signals_news_market_impact_get': ('HTTP-0253', 'bastion_ui.transport.generated_http', 'news_market_impact_signals_api_v1_signals_news_market_impact_get'),
-    'top_signals_api_v1_signals_top_get': ('HTTP-0254', 'bastion_ui.transport.generated_http', 'top_signals_api_v1_signals_top_get'),
-    'get_signal_api_v1_signals__signal_id__get': ('HTTP-0255', 'bastion_ui.transport.generated_http', 'get_signal_api_v1_signals__signal_id__get'),
-    'get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get': ('HTTP-0256', 'bastion_ui.transport.generated_http', 'get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get'),
-    'get_signal_evidence_api_v1_signals__signal_id__evidence_get': ('HTTP-0257', 'bastion_ui.transport.generated_http', 'get_signal_evidence_api_v1_signals__signal_id__evidence_get'),
-    'signal_explanation_api_v1_signals__signal_id__explanation_get': ('HTTP-0258', 'bastion_ui.transport.generated_http', 'signal_explanation_api_v1_signals__signal_id__explanation_get'),
-    'signal_recommendations_api_v1_signals__signal_id__recommendations_get': ('HTTP-0259', 'bastion_ui.transport.generated_http', 'signal_recommendations_api_v1_signals__signal_id__recommendations_get'),
-    'storage_status_api_v1_storage_status_get': ('HTTP-0260', 'bastion_ui.transport.generated_http', 'storage_status_api_v1_storage_status_get'),
-    'timescale_operations_status_api_v1_storage_timescale_status_get': ('HTTP-0261', 'bastion_ui.transport.generated_http', 'timescale_operations_status_api_v1_storage_timescale_status_get'),
-    'analyze_address_api_v1_trace_address__address__get': ('HTTP-0262', 'bastion_ui.transport.generated_http', 'analyze_address_api_v1_trace_address__address__get'),
-    'trace_alerts_api_v1_trace_alerts_get': ('HTTP-0263', 'bastion_ui.transport.generated_http', 'trace_alerts_api_v1_trace_alerts_get'),
-    'trace_events_api_v1_trace_events_get': ('HTTP-0276', 'bastion_ui.transport.generated_http', 'trace_events_api_v1_trace_events_get'),
-    'trace_event_api_v1_trace_events__event_id__get': ('HTTP-0277', 'bastion_ui.transport.generated_http', 'trace_event_api_v1_trace_events__event_id__get'),
-    'lite_address_check_api_v1_trace_lite__address__get': ('HTTP-0278', 'bastion_ui.transport.generated_http', 'lite_address_check_api_v1_trace_lite__address__get'),
-    'get_report_api_v1_trace_report__report_id__get': ('HTTP-0282', 'bastion_ui.transport.generated_http', 'get_report_api_v1_trace_report__report_id__get'),
-    'trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get': ('HTTP-0283', 'bastion_ui.transport.generated_http', 'trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get'),
-    'get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get': ('HTTP-0284', 'bastion_ui.transport.generated_http', 'get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get'),
-    'get_dust_radar_api_v1_trace_report__report_id__dust_radar_get': ('HTTP-0285', 'bastion_ui.transport.generated_http', 'get_dust_radar_api_v1_trace_report__report_id__dust_radar_get'),
-    'list_evidence_api_v1_trace_report__report_id__evidence_get': ('HTTP-0286', 'bastion_ui.transport.generated_http', 'list_evidence_api_v1_trace_report__report_id__evidence_get'),
-    'trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get': ('HTTP-0287', 'bastion_ui.transport.generated_http', 'trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get'),
-    'get_origin_passport_api_v1_trace_report__report_id__origin_passport_get': ('HTTP-0288', 'bastion_ui.transport.generated_http', 'get_origin_passport_api_v1_trace_report__report_id__origin_passport_get'),
-    'trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get': ('HTTP-0289', 'bastion_ui.transport.generated_http', 'trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get'),
-    'get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get': ('HTTP-0290', 'bastion_ui.transport.generated_http', 'get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get'),
-    'get_proof_packet_api_v1_trace_report__report_id__proof_packet_get': ('HTTP-0291', 'bastion_ui.transport.generated_http', 'get_proof_packet_api_v1_trace_report__report_id__proof_packet_get'),
-    'get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get': ('HTTP-0292', 'bastion_ui.transport.generated_http', 'get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get'),
-    'get_source_summary_api_v1_trace_report__report_id__source_summary_get': ('HTTP-0293', 'bastion_ui.transport.generated_http', 'get_source_summary_api_v1_trace_report__report_id__source_summary_get'),
-    'get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get': ('HTTP-0294', 'bastion_ui.transport.generated_http', 'get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get'),
-    'list_sources_api_v1_trace_sources_get': ('HTTP-0295', 'bastion_ui.transport.generated_http', 'list_sources_api_v1_trace_sources_get'),
-    'get_source_api_v1_trace_sources__source_name__get': ('HTTP-0296', 'bastion_ui.transport.generated_http', 'get_source_api_v1_trace_sources__source_name__get'),
-    'trace_status_api_v1_trace_status_get': ('HTTP-0297', 'bastion_ui.transport.generated_http', 'trace_status_api_v1_trace_status_get'),
-    'list_watchlist_api_v1_trace_watchlist_get': ('HTTP-0299', 'bastion_ui.transport.generated_http', 'list_watchlist_api_v1_trace_watchlist_get'),
-    'dependencies_health_dependencies_get': ('HTTP-0341', 'bastion_ui.transport.generated_http', 'dependencies_health_dependencies_get'),
-    'intelligence_health_intelligence_get': ('HTTP-0342', 'bastion_ui.transport.generated_http', 'intelligence_health_intelligence_get'),
-    'live_health_live_get': ('HTTP-0343', 'bastion_ui.transport.generated_http', 'live_health_live_get'),
-    'operations_health_operations_get': ('HTTP-0344', 'bastion_ui.transport.generated_http', 'operations_health_operations_get'),
-    'providers_health_providers_get': ('HTTP-0345', 'bastion_ui.transport.generated_http', 'providers_health_providers_get'),
-    'ready_health_ready_get': ('HTTP-0346', 'bastion_ui.transport.generated_http', 'ready_health_ready_get'),
-    'startup_health_startup_get': ('HTTP-0347', 'bastion_ui.transport.generated_http', 'startup_health_startup_get'),
-    'web_candle_dto_web_candle__candle_id__get': ('HTTP-0362', 'bastion_ui.transport.generated_http', 'web_candle_dto_web_candle__candle_id__get'),
-    'web_evidence_dto_web_evidence__packet_id__get': ('HTTP-0363', 'bastion_ui.transport.generated_http', 'web_evidence_dto_web_evidence__packet_id__get'),
-    'web_market_time_machine_dto_web_market_time_machine_get': ('HTTP-0364', 'bastion_ui.transport.generated_http', 'web_market_time_machine_dto_web_market_time_machine_get'),
-    'web_timeline_dto_web_timeline_get': ('HTTP-0369', 'bastion_ui.transport.generated_http', 'web_timeline_dto_web_timeline_get'),
+    'market_history_attributions': ('HTTP-0160', 'bastion_ui.transport.generated_http', 'market_history_attributions'),
+    'market_history_narratives': ('HTTP-0161', 'bastion_ui.transport.generated_http', 'market_history_narratives'),
+    'market_history_replay_event': ('HTTP-0162', 'bastion_ui.transport.generated_http', 'market_history_replay_event'),
+    'market_history_sources': ('HTTP-0163', 'bastion_ui.transport.generated_http', 'market_history_sources'),
+    'market_history_timeline': ('HTTP-0164', 'bastion_ui.transport.generated_http', 'market_history_timeline'),
+    'market_current_overview': ('HTTP-0165', 'bastion_ui.transport.generated_http', 'market_current_overview'),
+    'providers_health_api_v1_market_providers_health_get': ('HTTP-0166', 'bastion_ui.transport.generated_http', 'providers_health_api_v1_market_providers_health_get'),
+    'market_similarity_report': ('HTTP-0167', 'bastion_ui.transport.generated_http', 'market_similarity_report'),
+    'article_duplicates_api_v1_news_articles__article_id__duplicates_get': ('HTTP-0174', 'bastion_ui.transport.generated_http', 'article_duplicates_api_v1_news_articles__article_id__duplicates_get'),
+    'by_sentiment_api_v1_news_by_sentiment__label__get': ('HTTP-0175', 'bastion_ui.transport.generated_http', 'by_sentiment_api_v1_news_by_sentiment__label__get'),
+    'list_clusters_api_v1_news_clusters_get': ('HTTP-0176', 'bastion_ui.transport.generated_http', 'list_clusters_api_v1_news_clusters_get'),
+    'get_cluster_api_v1_news_clusters__cluster_id__get': ('HTTP-0177', 'bastion_ui.transport.generated_http', 'get_cluster_api_v1_news_clusters__cluster_id__get'),
+    'list_events_api_v1_news_events_get': ('HTTP-0178', 'bastion_ui.transport.generated_http', 'list_events_api_v1_news_events_get'),
+    'high_impact_events_api_v1_news_events_high_impact_get': ('HTTP-0179', 'bastion_ui.transport.generated_http', 'high_impact_events_api_v1_news_events_high_impact_get'),
+    'regulatory_events_api_v1_news_events_regulatory_get': ('HTTP-0180', 'bastion_ui.transport.generated_http', 'regulatory_events_api_v1_news_events_regulatory_get'),
+    'security_events_api_v1_news_events_security_get': ('HTTP-0181', 'bastion_ui.transport.generated_http', 'security_events_api_v1_news_events_security_get'),
+    'get_event_api_v1_news_events__event_id__get': ('HTTP-0182', 'bastion_ui.transport.generated_http', 'get_event_api_v1_news_events__event_id__get'),
+    'get_event_articles_api_v1_news_events__event_id__articles_get': ('HTTP-0183', 'bastion_ui.transport.generated_http', 'get_event_articles_api_v1_news_events__event_id__articles_get'),
+    'get_event_impact_api_v1_news_events__event_id__impact_get': ('HTTP-0184', 'bastion_ui.transport.generated_http', 'get_event_impact_api_v1_news_events__event_id__impact_get'),
+    'get_event_score_api_v1_news_events__event_id__score_get': ('HTTP-0185', 'bastion_ui.transport.generated_http', 'get_event_score_api_v1_news_events__event_id__score_get'),
+    'high_impact_news_api_v1_news_high_impact_get': ('HTTP-0186', 'bastion_ui.transport.generated_http', 'high_impact_news_api_v1_news_high_impact_get'),
+    'high_relevance_api_v1_news_high_relevance_get': ('HTTP-0187', 'bastion_ui.transport.generated_http', 'high_relevance_api_v1_news_high_relevance_get'),
+    'latest_news_api_v1_news_latest_get': ('HTTP-0188', 'bastion_ui.transport.generated_http', 'latest_news_api_v1_news_latest_get'),
+    'regulatory_news_api_v1_news_regulatory_get': ('HTTP-0189', 'bastion_ui.transport.generated_http', 'regulatory_news_api_v1_news_regulatory_get'),
+    'security_news_api_v1_news_security_get': ('HTTP-0190', 'bastion_ui.transport.generated_http', 'security_news_api_v1_news_security_get'),
+    'list_sources_api_v1_news_sources_get': ('HTTP-0191', 'bastion_ui.transport.generated_http', 'list_sources_api_v1_news_sources_get'),
+    'categories_api_v1_news_sources_categories_get': ('HTTP-0192', 'bastion_ui.transport.generated_http', 'categories_api_v1_news_sources_categories_get'),
+    'sources_health_api_v1_news_sources_health_get': ('HTTP-0193', 'bastion_ui.transport.generated_http', 'sources_health_api_v1_news_sources_health_get'),
+    'list_source_reputation_api_v1_news_sources_reputation_get': ('HTTP-0194', 'bastion_ui.transport.generated_http', 'list_source_reputation_api_v1_news_sources_reputation_get'),
+    'tiers_api_v1_news_sources_tiers_get': ('HTTP-0196', 'bastion_ui.transport.generated_http', 'tiers_api_v1_news_sources_tiers_get'),
+    'get_source_api_v1_news_sources__source_id__get': ('HTTP-0197', 'bastion_ui.transport.generated_http', 'get_source_api_v1_news_sources__source_id__get'),
+    'source_confidence_events_api_v1_news_sources__source_id__confidence_events_get': ('HTTP-0198', 'bastion_ui.transport.generated_http', 'source_confidence_events_api_v1_news_sources__source_id__confidence_events_get'),
+    'source_health_api_v1_news_sources__source_id__health_get': ('HTTP-0199', 'bastion_ui.transport.generated_http', 'source_health_api_v1_news_sources__source_id__health_get'),
+    'source_snapshots_api_v1_news_sources__source_id__snapshots_get': ('HTTP-0200', 'bastion_ui.transport.generated_http', 'source_snapshots_api_v1_news_sources__source_id__snapshots_get'),
+    'get_article_explanation_api_v1_news__article_id__explanation_get': ('HTTP-0201', 'bastion_ui.transport.generated_http', 'get_article_explanation_api_v1_news__article_id__explanation_get'),
+    'get_article_impact_api_v1_news__article_id__impact_get': ('HTTP-0202', 'bastion_ui.transport.generated_http', 'get_article_impact_api_v1_news__article_id__impact_get'),
+    'get_article_narratives_api_v1_news__article_id__narratives_get': ('HTTP-0203', 'bastion_ui.transport.generated_http', 'get_article_narratives_api_v1_news__article_id__narratives_get'),
+    'get_article_score_api_v1_news__article_id__score_get': ('HTTP-0204', 'bastion_ui.transport.generated_http', 'get_article_score_api_v1_news__article_id__score_get'),
+    'get_article_scores_api_v1_news__article_id__scores_get': ('HTTP-0205', 'bastion_ui.transport.generated_http', 'get_article_scores_api_v1_news__article_id__scores_get'),
+    'onchain_events_api_v1_onchain_events_get': ('HTTP-0207', 'bastion_ui.transport.generated_http', 'onchain_events_api_v1_onchain_events_get'),
+    'onchain_state_api_v1_onchain_state_get': ('HTTP-0208', 'bastion_ui.transport.generated_http', 'onchain_state_api_v1_onchain_state_get'),
+    'operations_list_incidents': ('HTTP-0211', 'bastion_ui.transport.generated_http', 'operations_list_incidents'),
+    'operations_get_incident': ('HTTP-0212', 'bastion_ui.transport.generated_http', 'operations_get_incident'),
+    'jobs_api_v1_operations_jobs_get': ('HTTP-0213', 'bastion_ui.transport.generated_http', 'jobs_api_v1_operations_jobs_get'),
+    'operations_list_slo': ('HTTP-0220', 'bastion_ui.transport.generated_http', 'operations_list_slo'),
+    'public_features_api_v1_public_features_get': ('HTTP-0256', 'bastion_ui.transport.generated_http', 'public_features_api_v1_public_features_get'),
+    'public_landing_api_v1_public_landing_get': ('HTTP-0257', 'bastion_ui.transport.generated_http', 'public_landing_api_v1_public_landing_get'),
+    'public_roadmap_api_v1_public_roadmap_get': ('HTTP-0258', 'bastion_ui.transport.generated_http', 'public_roadmap_api_v1_public_roadmap_get'),
+    'public_stats_api_v1_public_stats_get': ('HTTP-0259', 'bastion_ui.transport.generated_http', 'public_stats_api_v1_public_stats_get'),
+    'public_status_api_v1_public_status_get': ('HTTP-0260', 'bastion_ui.transport.generated_http', 'public_status_api_v1_public_status_get'),
+    'public_trace_summary_api_v1_public_trace__report_id__summary_get': ('HTTP-0261', 'bastion_ui.transport.generated_http', 'public_trace_summary_api_v1_public_trace__report_id__summary_get'),
+    'latest_signals_api_v1_signals_latest_get': ('HTTP-0262', 'bastion_ui.transport.generated_http', 'latest_signals_api_v1_signals_latest_get'),
+    'news_market_impact_signals_api_v1_signals_news_market_impact_get': ('HTTP-0263', 'bastion_ui.transport.generated_http', 'news_market_impact_signals_api_v1_signals_news_market_impact_get'),
+    'top_signals_api_v1_signals_top_get': ('HTTP-0264', 'bastion_ui.transport.generated_http', 'top_signals_api_v1_signals_top_get'),
+    'get_signal_api_v1_signals__signal_id__get': ('HTTP-0265', 'bastion_ui.transport.generated_http', 'get_signal_api_v1_signals__signal_id__get'),
+    'get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get': ('HTTP-0266', 'bastion_ui.transport.generated_http', 'get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get'),
+    'get_signal_evidence_api_v1_signals__signal_id__evidence_get': ('HTTP-0267', 'bastion_ui.transport.generated_http', 'get_signal_evidence_api_v1_signals__signal_id__evidence_get'),
+    'signal_explanation_api_v1_signals__signal_id__explanation_get': ('HTTP-0268', 'bastion_ui.transport.generated_http', 'signal_explanation_api_v1_signals__signal_id__explanation_get'),
+    'signal_recommendations_api_v1_signals__signal_id__recommendations_get': ('HTTP-0269', 'bastion_ui.transport.generated_http', 'signal_recommendations_api_v1_signals__signal_id__recommendations_get'),
+    'storage_status_api_v1_storage_status_get': ('HTTP-0270', 'bastion_ui.transport.generated_http', 'storage_status_api_v1_storage_status_get'),
+    'timescale_operations_status_api_v1_storage_timescale_status_get': ('HTTP-0271', 'bastion_ui.transport.generated_http', 'timescale_operations_status_api_v1_storage_timescale_status_get'),
+    'analyze_address_api_v1_trace_address__address__get': ('HTTP-0272', 'bastion_ui.transport.generated_http', 'analyze_address_api_v1_trace_address__address__get'),
+    'trace_alerts_api_v1_trace_alerts_get': ('HTTP-0273', 'bastion_ui.transport.generated_http', 'trace_alerts_api_v1_trace_alerts_get'),
+    'trace_events_api_v1_trace_events_get': ('HTTP-0286', 'bastion_ui.transport.generated_http', 'trace_events_api_v1_trace_events_get'),
+    'trace_event_api_v1_trace_events__event_id__get': ('HTTP-0287', 'bastion_ui.transport.generated_http', 'trace_event_api_v1_trace_events__event_id__get'),
+    'lite_address_check_api_v1_trace_lite__address__get': ('HTTP-0288', 'bastion_ui.transport.generated_http', 'lite_address_check_api_v1_trace_lite__address__get'),
+    'get_report_api_v1_trace_report__report_id__get': ('HTTP-0292', 'bastion_ui.transport.generated_http', 'get_report_api_v1_trace_report__report_id__get'),
+    'trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get': ('HTTP-0293', 'bastion_ui.transport.generated_http', 'trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get'),
+    'get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get': ('HTTP-0294', 'bastion_ui.transport.generated_http', 'get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get'),
+    'get_dust_radar_api_v1_trace_report__report_id__dust_radar_get': ('HTTP-0295', 'bastion_ui.transport.generated_http', 'get_dust_radar_api_v1_trace_report__report_id__dust_radar_get'),
+    'list_evidence_api_v1_trace_report__report_id__evidence_get': ('HTTP-0296', 'bastion_ui.transport.generated_http', 'list_evidence_api_v1_trace_report__report_id__evidence_get'),
+    'trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get': ('HTTP-0297', 'bastion_ui.transport.generated_http', 'trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get'),
+    'get_origin_passport_api_v1_trace_report__report_id__origin_passport_get': ('HTTP-0298', 'bastion_ui.transport.generated_http', 'get_origin_passport_api_v1_trace_report__report_id__origin_passport_get'),
+    'trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get': ('HTTP-0299', 'bastion_ui.transport.generated_http', 'trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get'),
+    'get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get': ('HTTP-0300', 'bastion_ui.transport.generated_http', 'get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get'),
+    'get_proof_packet_api_v1_trace_report__report_id__proof_packet_get': ('HTTP-0301', 'bastion_ui.transport.generated_http', 'get_proof_packet_api_v1_trace_report__report_id__proof_packet_get'),
+    'get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get': ('HTTP-0302', 'bastion_ui.transport.generated_http', 'get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get'),
+    'get_source_summary_api_v1_trace_report__report_id__source_summary_get': ('HTTP-0303', 'bastion_ui.transport.generated_http', 'get_source_summary_api_v1_trace_report__report_id__source_summary_get'),
+    'get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get': ('HTTP-0304', 'bastion_ui.transport.generated_http', 'get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get'),
+    'list_sources_api_v1_trace_sources_get': ('HTTP-0305', 'bastion_ui.transport.generated_http', 'list_sources_api_v1_trace_sources_get'),
+    'get_source_api_v1_trace_sources__source_name__get': ('HTTP-0306', 'bastion_ui.transport.generated_http', 'get_source_api_v1_trace_sources__source_name__get'),
+    'trace_status_api_v1_trace_status_get': ('HTTP-0307', 'bastion_ui.transport.generated_http', 'trace_status_api_v1_trace_status_get'),
+    'submit_trace_api_v1_trace_submit_post': ('HTTP-0308', 'bastion_ui.transport.generated_http', 'submit_trace_api_v1_trace_submit_post'),
+    'list_watchlist_api_v1_trace_watchlist_get': ('HTTP-0310', 'bastion_ui.transport.generated_http', 'list_watchlist_api_v1_trace_watchlist_get'),
+    'dependencies_health_dependencies_get': ('HTTP-0352', 'bastion_ui.transport.generated_http', 'dependencies_health_dependencies_get'),
+    'intelligence_health_intelligence_get': ('HTTP-0353', 'bastion_ui.transport.generated_http', 'intelligence_health_intelligence_get'),
+    'live_health_live_get': ('HTTP-0354', 'bastion_ui.transport.generated_http', 'live_health_live_get'),
+    'operations_health_operations_get': ('HTTP-0355', 'bastion_ui.transport.generated_http', 'operations_health_operations_get'),
+    'providers_health_providers_get': ('HTTP-0356', 'bastion_ui.transport.generated_http', 'providers_health_providers_get'),
+    'ready_health_ready_get': ('HTTP-0357', 'bastion_ui.transport.generated_http', 'ready_health_ready_get'),
+    'startup_health_startup_get': ('HTTP-0358', 'bastion_ui.transport.generated_http', 'startup_health_startup_get'),
+    'web_candle_dto_web_candle__candle_id__get': ('HTTP-0373', 'bastion_ui.transport.generated_http', 'web_candle_dto_web_candle__candle_id__get'),
+    'web_evidence_dto_web_evidence__packet_id__get': ('HTTP-0374', 'bastion_ui.transport.generated_http', 'web_evidence_dto_web_evidence__packet_id__get'),
+    'web_market_time_machine_dto_web_market_time_machine_get': ('HTTP-0375', 'bastion_ui.transport.generated_http', 'web_market_time_machine_dto_web_market_time_machine_get'),
+    'web_timeline_dto_web_timeline_get': ('HTTP-0380', 'bastion_ui.transport.generated_http', 'web_timeline_dto_web_timeline_get'),
 }
 
 FEATURE_53 = (
@@ -5261,7 +5576,14 @@ FEATURE_53 = (
     ContractRegistryEntry(registry_id='http:btc_providers_api_v1_market_btc_providers_get', source_head=SOURCE_HEAD, operation=BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_OPERATION, request_schema='BtcProvidersApiV1MarketBtcProvidersGetRequest', success_schema='BtcProvidersApiV1MarketBtcProvidersGetSuccess', error_schema='BtcProvidersApiV1MarketBtcProvidersGetError'),
     ContractRegistryEntry(registry_id='http:btc_providers_health_api_v1_market_btc_providers_health_get', source_head=SOURCE_HEAD, operation=BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_OPERATION, request_schema='BtcProvidersHealthApiV1MarketBtcProvidersHealthGetRequest', success_schema='BtcProvidersHealthApiV1MarketBtcProvidersHealthGetSuccess', error_schema='BtcProvidersHealthApiV1MarketBtcProvidersHealthGetError'),
     ContractRegistryEntry(registry_id='http:market_health_api_v1_market_health_get', source_head=SOURCE_HEAD, operation=MARKETHEALTHAPIV1MARKETHEALTHGET_OPERATION, request_schema='MarketHealthApiV1MarketHealthGetRequest', success_schema='MarketHealthApiV1MarketHealthGetSuccess', error_schema='MarketHealthApiV1MarketHealthGetError'),
+    ContractRegistryEntry(registry_id='http:market_history_attributions', source_head=SOURCE_HEAD, operation=MARKETHISTORYATTRIBUTIONS_OPERATION, request_schema='MarketHistoryAttributionsRequest', success_schema='MarketHistoryAttributionsSuccess', error_schema='MarketHistoryAttributionsError'),
+    ContractRegistryEntry(registry_id='http:market_history_narratives', source_head=SOURCE_HEAD, operation=MARKETHISTORYNARRATIVES_OPERATION, request_schema='MarketHistoryNarrativesRequest', success_schema='MarketHistoryNarrativesSuccess', error_schema='MarketHistoryNarrativesError'),
+    ContractRegistryEntry(registry_id='http:market_history_replay_event', source_head=SOURCE_HEAD, operation=MARKETHISTORYREPLAYEVENT_OPERATION, request_schema='MarketHistoryReplayEventRequest', success_schema='MarketHistoryReplayEventSuccess', error_schema='MarketHistoryReplayEventError'),
+    ContractRegistryEntry(registry_id='http:market_history_sources', source_head=SOURCE_HEAD, operation=MARKETHISTORYSOURCES_OPERATION, request_schema='MarketHistorySourcesRequest', success_schema='MarketHistorySourcesSuccess', error_schema='MarketHistorySourcesError'),
+    ContractRegistryEntry(registry_id='http:market_history_timeline', source_head=SOURCE_HEAD, operation=MARKETHISTORYTIMELINE_OPERATION, request_schema='MarketHistoryTimelineRequest', success_schema='MarketHistoryTimelineSuccess', error_schema='MarketHistoryTimelineError'),
+    ContractRegistryEntry(registry_id='http:market_current_overview', source_head=SOURCE_HEAD, operation=MARKETCURRENTOVERVIEW_OPERATION, request_schema='MarketCurrentOverviewRequest', success_schema='MarketCurrentOverviewSuccess', error_schema='MarketCurrentOverviewError'),
     ContractRegistryEntry(registry_id='http:providers_health_api_v1_market_providers_health_get', source_head=SOURCE_HEAD, operation=PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_OPERATION, request_schema='ProvidersHealthApiV1MarketProvidersHealthGetRequest', success_schema='ProvidersHealthApiV1MarketProvidersHealthGetSuccess', error_schema='ProvidersHealthApiV1MarketProvidersHealthGetError'),
+    ContractRegistryEntry(registry_id='http:market_similarity_report', source_head=SOURCE_HEAD, operation=MARKETSIMILARITYREPORT_OPERATION, request_schema='MarketSimilarityReportRequest', success_schema='MarketSimilarityReportSuccess', error_schema='MarketSimilarityReportError'),
     ContractRegistryEntry(registry_id='http:article_duplicates_api_v1_news_articles__article_id__duplicates_get', source_head=SOURCE_HEAD, operation=ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_OPERATION, request_schema='ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetRequest', success_schema='ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetSuccess', error_schema='ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetError'),
     ContractRegistryEntry(registry_id='http:by_sentiment_api_v1_news_by_sentiment__label__get', source_head=SOURCE_HEAD, operation=BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_OPERATION, request_schema='BySentimentApiV1NewsBySentimentLabelGetRequest', success_schema='BySentimentApiV1NewsBySentimentLabelGetSuccess', error_schema='BySentimentApiV1NewsBySentimentLabelGetError'),
     ContractRegistryEntry(registry_id='http:list_clusters_api_v1_news_clusters_get', source_head=SOURCE_HEAD, operation=LISTCLUSTERSAPIV1NEWSCLUSTERSGET_OPERATION, request_schema='ListClustersApiV1NewsClustersGetRequest', success_schema='ListClustersApiV1NewsClustersGetSuccess', error_schema='ListClustersApiV1NewsClustersGetError'),
@@ -5295,6 +5617,10 @@ FEATURE_53 = (
     ContractRegistryEntry(registry_id='http:get_article_scores_api_v1_news__article_id__scores_get', source_head=SOURCE_HEAD, operation=GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_OPERATION, request_schema='GetArticleScoresApiV1NewsArticleIdScoresGetRequest', success_schema='GetArticleScoresApiV1NewsArticleIdScoresGetSuccess', error_schema='GetArticleScoresApiV1NewsArticleIdScoresGetError'),
     ContractRegistryEntry(registry_id='http:onchain_events_api_v1_onchain_events_get', source_head=SOURCE_HEAD, operation=ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_OPERATION, request_schema='OnchainEventsApiV1OnchainEventsGetRequest', success_schema='OnchainEventsApiV1OnchainEventsGetSuccess', error_schema='OnchainEventsApiV1OnchainEventsGetError'),
     ContractRegistryEntry(registry_id='http:onchain_state_api_v1_onchain_state_get', source_head=SOURCE_HEAD, operation=ONCHAINSTATEAPIV1ONCHAINSTATEGET_OPERATION, request_schema='OnchainStateApiV1OnchainStateGetRequest', success_schema='OnchainStateApiV1OnchainStateGetSuccess', error_schema='OnchainStateApiV1OnchainStateGetError'),
+    ContractRegistryEntry(registry_id='http:operations_list_incidents', source_head=SOURCE_HEAD, operation=OPERATIONSLISTINCIDENTS_OPERATION, request_schema='OperationsListIncidentsRequest', success_schema='OperationsListIncidentsSuccess', error_schema='OperationsListIncidentsError'),
+    ContractRegistryEntry(registry_id='http:operations_get_incident', source_head=SOURCE_HEAD, operation=OPERATIONSGETINCIDENT_OPERATION, request_schema='OperationsGetIncidentRequest', success_schema='OperationsGetIncidentSuccess', error_schema='OperationsGetIncidentError'),
+    ContractRegistryEntry(registry_id='http:jobs_api_v1_operations_jobs_get', source_head=SOURCE_HEAD, operation=JOBSAPIV1OPERATIONSJOBSGET_OPERATION, request_schema='JobsApiV1OperationsJobsGetRequest', success_schema='JobsApiV1OperationsJobsGetSuccess', error_schema='JobsApiV1OperationsJobsGetError'),
+    ContractRegistryEntry(registry_id='http:operations_list_slo', source_head=SOURCE_HEAD, operation=OPERATIONSLISTSLO_OPERATION, request_schema='OperationsListSloRequest', success_schema='OperationsListSloSuccess', error_schema='OperationsListSloError'),
     ContractRegistryEntry(registry_id='http:public_features_api_v1_public_features_get', source_head=SOURCE_HEAD, operation=PUBLICFEATURESAPIV1PUBLICFEATURESGET_OPERATION, request_schema='PublicFeaturesApiV1PublicFeaturesGetRequest', success_schema='PublicFeaturesApiV1PublicFeaturesGetSuccess', error_schema='PublicFeaturesApiV1PublicFeaturesGetError'),
     ContractRegistryEntry(registry_id='http:public_landing_api_v1_public_landing_get', source_head=SOURCE_HEAD, operation=PUBLICLANDINGAPIV1PUBLICLANDINGGET_OPERATION, request_schema='PublicLandingApiV1PublicLandingGetRequest', success_schema='PublicLandingApiV1PublicLandingGetSuccess', error_schema='PublicLandingApiV1PublicLandingGetError'),
     ContractRegistryEntry(registry_id='http:public_roadmap_api_v1_public_roadmap_get', source_head=SOURCE_HEAD, operation=PUBLICROADMAPAPIV1PUBLICROADMAPGET_OPERATION, request_schema='PublicRoadmapApiV1PublicRoadmapGetRequest', success_schema='PublicRoadmapApiV1PublicRoadmapGetSuccess', error_schema='PublicRoadmapApiV1PublicRoadmapGetError'),
@@ -5332,6 +5658,7 @@ FEATURE_53 = (
     ContractRegistryEntry(registry_id='http:list_sources_api_v1_trace_sources_get', source_head=SOURCE_HEAD, operation=LISTSOURCESAPIV1TRACESOURCESGET_OPERATION, request_schema='ListSourcesApiV1TraceSourcesGetRequest', success_schema='ListSourcesApiV1TraceSourcesGetSuccess', error_schema='ListSourcesApiV1TraceSourcesGetError'),
     ContractRegistryEntry(registry_id='http:get_source_api_v1_trace_sources__source_name__get', source_head=SOURCE_HEAD, operation=GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_OPERATION, request_schema='GetSourceApiV1TraceSourcesSourceNameGetRequest', success_schema='GetSourceApiV1TraceSourcesSourceNameGetSuccess', error_schema='GetSourceApiV1TraceSourcesSourceNameGetError'),
     ContractRegistryEntry(registry_id='http:trace_status_api_v1_trace_status_get', source_head=SOURCE_HEAD, operation=TRACESTATUSAPIV1TRACESTATUSGET_OPERATION, request_schema='TraceStatusApiV1TraceStatusGetRequest', success_schema='TraceStatusApiV1TraceStatusGetSuccess', error_schema='TraceStatusApiV1TraceStatusGetError'),
+    ContractRegistryEntry(registry_id='http:submit_trace_api_v1_trace_submit_post', source_head=SOURCE_HEAD, operation=SUBMITTRACEAPIV1TRACESUBMITPOST_OPERATION, request_schema='SubmitTraceApiV1TraceSubmitPostRequest', success_schema='SubmitTraceApiV1TraceSubmitPostSuccess', error_schema='SubmitTraceApiV1TraceSubmitPostError'),
     ContractRegistryEntry(registry_id='http:list_watchlist_api_v1_trace_watchlist_get', source_head=SOURCE_HEAD, operation=LISTWATCHLISTAPIV1TRACEWATCHLISTGET_OPERATION, request_schema='ListWatchlistApiV1TraceWatchlistGetRequest', success_schema='ListWatchlistApiV1TraceWatchlistGetSuccess', error_schema='ListWatchlistApiV1TraceWatchlistGetError'),
     ContractRegistryEntry(registry_id='http:dependencies_health_dependencies_get', source_head=SOURCE_HEAD, operation=DEPENDENCIESHEALTHDEPENDENCIESGET_OPERATION, request_schema='DependenciesHealthDependenciesGetRequest', success_schema='DependenciesHealthDependenciesGetSuccess', error_schema='DependenciesHealthDependenciesGetError'),
     ContractRegistryEntry(registry_id='http:intelligence_health_intelligence_get', source_head=SOURCE_HEAD, operation=INTELLIGENCEHEALTHINTELLIGENCEGET_OPERATION, request_schema='IntelligenceHealthIntelligenceGetRequest', success_schema='IntelligenceHealthIntelligenceGetSuccess', error_schema='IntelligenceHealthIntelligenceGetError'),

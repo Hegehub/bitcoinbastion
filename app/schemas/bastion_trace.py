@@ -113,6 +113,8 @@ class TraceScoreBreakdown(BaseModel):
 class TraceReport(BaseModel):
     id: int | None = None
     address: str
+    status: str = "COMPLETE"
+    summary: str = ""
     chain: str = "bitcoin"
     trace_score: float = 0
     trace_band: TraceBand = TraceBand.UNKNOWN
@@ -131,6 +133,25 @@ class TraceReport(BaseModel):
     not_consensus_proof: bool = True
     no_custody: bool = True
     created_at: datetime | None = None
+
+
+class TraceSubjectType(str, Enum):
+    BITCOIN_ADDRESS = "BITCOIN_ADDRESS"
+
+
+class TraceSubmitRequest(BaseModel):
+    subject_type: TraceSubjectType
+    subject: str = Field(min_length=14, max_length=128)
+    network: str = Field(default="bitcoin-mainnet", pattern="^bitcoin-mainnet$")
+
+
+class TraceSubmissionResult(BaseModel):
+    trace_id: int
+    report_id: int
+    status: str = "COMPLETE"
+    normalized_subject: str
+    network: str = "bitcoin-mainnet"
+    idempotency_replayed: bool = False
 
 
 class TraceEvidence(BaseModel):

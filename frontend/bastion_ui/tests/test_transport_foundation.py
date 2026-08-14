@@ -10,6 +10,12 @@ from bastion_ui.transport.generated_foundation import (
     HEALTH_API_V1_HEALTH_GET,
     PUBLIC_STATUS_API_V1_PUBLIC_STATUS_GET,
 )
+from bastion_ui.transport.generated_http import JOBSAPIV1OPERATIONSJOBSGET_OPERATION
+from bastion_ui.transport.generated_http import (
+    GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION,
+    MARKETSIMILARITYREPORT_OPERATION,
+    SUBMITTRACEAPIV1TRACESUBMITPOST_OPERATION,
+)
 
 
 def test_strict_dto_rejects_missing_unknown_and_coerced_fields() -> None:
@@ -39,6 +45,63 @@ async def test_callable_transport_validates_success() -> None:
     ) as client:
         result = await HttpTransport(client).invoke(HEALTH_API_V1_HEALTH_GET)
     assert result.status == "ok"
+
+
+@pytest.mark.asyncio
+async def test_protected_transport_fails_closed_without_pop_provider() -> None:
+    async with httpx.AsyncClient(base_url="http://test") as client:
+        with pytest.raises(SafeTransportError, match="security_provider_required"):
+            await HttpTransport(client).invoke(JOBSAPIV1OPERATIONSJOBSGET_OPERATION)
+
+
+@pytest.mark.asyncio
+async def test_protected_transport_uses_injected_pop_headers() -> None:
+    class Provider:
+        def headers_for(self, **_request: object) -> dict[str, str]:
+            return {"Authorization": "PoP ephemeral", "Bastion-Request-Nonce": "fresh"}
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        assert request.headers["Authorization"] == "PoP ephemeral"
+        assert request.headers["Bastion-Request-Nonce"] == "fresh"
+        return httpx.Response(200, json=[])
+
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(handler), base_url="http://test"
+    ) as client:
+        result = await HttpTransport(client, security_provider=Provider()).invoke(
+            JOBSAPIV1OPERATIONSJOBSGET_OPERATION
+        )
+    assert result.root == []
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "header",
+    [
+        "Authorization",
+        "X-Bastion-Session",
+        "Bastion-Request-Signature",
+        "Bastion-Request-Nonce",
+    ],
+)
+async def test_callers_cannot_override_security_headers(header: str) -> None:
+    class Provider:
+        def headers_for(self, **_request: object) -> dict[str, str]:
+            return {"Authorization": "PoP canonical"}
+
+    async with httpx.AsyncClient(base_url="http://test") as client:
+        with pytest.raises(SafeTransportError, match="reserved_security_header"):
+            await HttpTransport(client, security_provider=Provider()).invoke(
+                JOBSAPIV1OPERATIONSJOBSGET_OPERATION,
+                request_headers={header: "attacker-controlled"},
+            )
+
+
+def test_similarity_and_trace_security_classification_is_canonical() -> None:
+    assert MARKETSIMILARITYREPORT_OPERATION.security.public is False
+    assert MARKETSIMILARITYREPORT_OPERATION.security.access_required is True
+    assert SUBMITTRACEAPIV1TRACESUBMITPOST_OPERATION.security.public is True
+    assert GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION.security.public is True
 
 
 @pytest.mark.asyncio
@@ -103,6 +166,7 @@ def test_datetime_and_boolean_are_strict() -> None:
                 },
             }
         )
+
 
 @pytest.mark.asyncio
 async def test_no_content_is_typed_and_rejects_unexpected_body() -> None:

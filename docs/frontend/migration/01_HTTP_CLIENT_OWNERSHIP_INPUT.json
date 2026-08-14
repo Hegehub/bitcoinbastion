@@ -1670,6 +1670,96 @@
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
       "matrix_id": "HTTP-0160",
       "method": "GET",
+      "operation_id": "market_history_attributions",
+      "owner": "bastion_ui.transport.generated_http:market_history_attributions",
+      "path": "/api/v1/market/history/attributions",
+      "product": "Core",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "none observed in OpenAPI; runtime dependency review required",
+      "success_schema": "list[MarketAttributionOut]",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0161",
+      "method": "GET",
+      "operation_id": "market_history_narratives",
+      "owner": "bastion_ui.transport.generated_http:market_history_narratives",
+      "path": "/api/v1/market/history/narratives",
+      "product": "Core",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "none observed in OpenAPI; runtime dependency review required",
+      "success_schema": "list[MarketNarrativeOut]",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0162",
+      "method": "GET",
+      "operation_id": "market_history_replay_event",
+      "owner": "bastion_ui.transport.generated_http:market_history_replay_event",
+      "path": "/api/v1/market/history/replay/event/{event_id}",
+      "product": "Core",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "none observed in OpenAPI; runtime dependency review required",
+      "success_schema": "MarketReplayCaptureOut",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0163",
+      "method": "GET",
+      "operation_id": "market_history_sources",
+      "owner": "bastion_ui.transport.generated_http:market_history_sources",
+      "path": "/api/v1/market/history/sources",
+      "product": "Core",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "none observed in OpenAPI; runtime dependency review required",
+      "success_schema": "list[BrowserSafeMarketSourceOut]",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0164",
+      "method": "GET",
+      "operation_id": "market_history_timeline",
+      "owner": "bastion_ui.transport.generated_http:market_history_timeline",
+      "path": "/api/v1/market/history/timeline",
+      "product": "Core",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "none observed in OpenAPI; runtime dependency review required",
+      "success_schema": "MarketTimelinePageOut",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0165",
+      "method": "GET",
+      "operation_id": "market_current_overview",
+      "owner": "bastion_ui.transport.generated_http:market_current_overview",
+      "path": "/api/v1/market/overview",
+      "product": "Core",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "none observed in OpenAPI; runtime dependency review required",
+      "success_schema": "BTCMarketOverviewEnvelope",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0166",
+      "method": "GET",
       "operation_id": "providers_health_api_v1_market_providers_health_get",
       "owner": "bastion_ui.transport.generated_http:providers_health_api_v1_market_providers_health_get",
       "path": "/api/v1/market/providers/health",
@@ -1685,6 +1775,21 @@
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
       "matrix_id": "HTTP-0167",
       "method": "GET",
+      "operation_id": "market_similarity_report",
+      "owner": "bastion_ui.transport.generated_http:market_similarity_report",
+      "path": "/api/v1/market/similarity/{event_id}",
+      "product": "Core",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "derive from dependency/policy in Prompt 1; MUST NOT weaken Proof-of-Access",
+      "success_schema": "MarketSimilarityReportOut",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0174",
+      "method": "GET",
       "operation_id": "article_duplicates_api_v1_news_articles__article_id__duplicates_get",
       "owner": "bastion_ui.transport.generated_http:article_duplicates_api_v1_news_articles__article_id__duplicates_get",
       "path": "/api/v1/news/articles/{article_id}/duplicates",
@@ -1698,7 +1803,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0168",
+      "matrix_id": "HTTP-0175",
       "method": "GET",
       "operation_id": "by_sentiment_api_v1_news_by_sentiment__label__get",
       "owner": "bastion_ui.transport.generated_http:by_sentiment_api_v1_news_by_sentiment__label__get",
@@ -1713,7 +1818,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0169",
+      "matrix_id": "HTTP-0176",
       "method": "GET",
       "operation_id": "list_clusters_api_v1_news_clusters_get",
       "owner": "bastion_ui.transport.generated_http:list_clusters_api_v1_news_clusters_get",
@@ -1728,7 +1833,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0170",
+      "matrix_id": "HTTP-0177",
       "method": "GET",
       "operation_id": "get_cluster_api_v1_news_clusters__cluster_id__get",
       "owner": "bastion_ui.transport.generated_http:get_cluster_api_v1_news_clusters__cluster_id__get",
@@ -1743,7 +1848,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0171",
+      "matrix_id": "HTTP-0178",
       "method": "GET",
       "operation_id": "list_events_api_v1_news_events_get",
       "owner": "bastion_ui.transport.generated_http:list_events_api_v1_news_events_get",
@@ -1758,7 +1863,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0172",
+      "matrix_id": "HTTP-0179",
       "method": "GET",
       "operation_id": "high_impact_events_api_v1_news_events_high_impact_get",
       "owner": "bastion_ui.transport.generated_http:high_impact_events_api_v1_news_events_high_impact_get",
@@ -1773,7 +1878,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0173",
+      "matrix_id": "HTTP-0180",
       "method": "GET",
       "operation_id": "regulatory_events_api_v1_news_events_regulatory_get",
       "owner": "bastion_ui.transport.generated_http:regulatory_events_api_v1_news_events_regulatory_get",
@@ -1788,7 +1893,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0174",
+      "matrix_id": "HTTP-0181",
       "method": "GET",
       "operation_id": "security_events_api_v1_news_events_security_get",
       "owner": "bastion_ui.transport.generated_http:security_events_api_v1_news_events_security_get",
@@ -1803,7 +1908,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0175",
+      "matrix_id": "HTTP-0182",
       "method": "GET",
       "operation_id": "get_event_api_v1_news_events__event_id__get",
       "owner": "bastion_ui.transport.generated_http:get_event_api_v1_news_events__event_id__get",
@@ -1818,7 +1923,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0176",
+      "matrix_id": "HTTP-0183",
       "method": "GET",
       "operation_id": "get_event_articles_api_v1_news_events__event_id__articles_get",
       "owner": "bastion_ui.transport.generated_http:get_event_articles_api_v1_news_events__event_id__articles_get",
@@ -1833,7 +1938,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0177",
+      "matrix_id": "HTTP-0184",
       "method": "GET",
       "operation_id": "get_event_impact_api_v1_news_events__event_id__impact_get",
       "owner": "bastion_ui.transport.generated_http:get_event_impact_api_v1_news_events__event_id__impact_get",
@@ -1848,7 +1953,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0178",
+      "matrix_id": "HTTP-0185",
       "method": "GET",
       "operation_id": "get_event_score_api_v1_news_events__event_id__score_get",
       "owner": "bastion_ui.transport.generated_http:get_event_score_api_v1_news_events__event_id__score_get",
@@ -1863,7 +1968,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0179",
+      "matrix_id": "HTTP-0186",
       "method": "GET",
       "operation_id": "high_impact_news_api_v1_news_high_impact_get",
       "owner": "bastion_ui.transport.generated_http:high_impact_news_api_v1_news_high_impact_get",
@@ -1878,7 +1983,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0180",
+      "matrix_id": "HTTP-0187",
       "method": "GET",
       "operation_id": "high_relevance_api_v1_news_high_relevance_get",
       "owner": "bastion_ui.transport.generated_http:high_relevance_api_v1_news_high_relevance_get",
@@ -1893,7 +1998,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0181",
+      "matrix_id": "HTTP-0188",
       "method": "GET",
       "operation_id": "latest_news_api_v1_news_latest_get",
       "owner": "bastion_ui.transport.generated_http:latest_news_api_v1_news_latest_get",
@@ -1908,7 +2013,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0182",
+      "matrix_id": "HTTP-0189",
       "method": "GET",
       "operation_id": "regulatory_news_api_v1_news_regulatory_get",
       "owner": "bastion_ui.transport.generated_http:regulatory_news_api_v1_news_regulatory_get",
@@ -1923,7 +2028,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0183",
+      "matrix_id": "HTTP-0190",
       "method": "GET",
       "operation_id": "security_news_api_v1_news_security_get",
       "owner": "bastion_ui.transport.generated_http:security_news_api_v1_news_security_get",
@@ -1938,7 +2043,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0184",
+      "matrix_id": "HTTP-0191",
       "method": "GET",
       "operation_id": "list_sources_api_v1_news_sources_get",
       "owner": "bastion_ui.transport.generated_http:list_sources_api_v1_news_sources_get",
@@ -1953,7 +2058,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0185",
+      "matrix_id": "HTTP-0192",
       "method": "GET",
       "operation_id": "categories_api_v1_news_sources_categories_get",
       "owner": "bastion_ui.transport.generated_http:categories_api_v1_news_sources_categories_get",
@@ -1968,7 +2073,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0186",
+      "matrix_id": "HTTP-0193",
       "method": "GET",
       "operation_id": "sources_health_api_v1_news_sources_health_get",
       "owner": "bastion_ui.transport.generated_http:sources_health_api_v1_news_sources_health_get",
@@ -1983,7 +2088,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0187",
+      "matrix_id": "HTTP-0194",
       "method": "GET",
       "operation_id": "list_source_reputation_api_v1_news_sources_reputation_get",
       "owner": "bastion_ui.transport.generated_http:list_source_reputation_api_v1_news_sources_reputation_get",
@@ -1998,7 +2103,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0189",
+      "matrix_id": "HTTP-0196",
       "method": "GET",
       "operation_id": "tiers_api_v1_news_sources_tiers_get",
       "owner": "bastion_ui.transport.generated_http:tiers_api_v1_news_sources_tiers_get",
@@ -2013,7 +2118,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0190",
+      "matrix_id": "HTTP-0197",
       "method": "GET",
       "operation_id": "get_source_api_v1_news_sources__source_id__get",
       "owner": "bastion_ui.transport.generated_http:get_source_api_v1_news_sources__source_id__get",
@@ -2028,7 +2133,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0191",
+      "matrix_id": "HTTP-0198",
       "method": "GET",
       "operation_id": "source_confidence_events_api_v1_news_sources__source_id__confidence_events_get",
       "owner": "bastion_ui.transport.generated_http:source_confidence_events_api_v1_news_sources__source_id__confidence_events_get",
@@ -2043,7 +2148,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0192",
+      "matrix_id": "HTTP-0199",
       "method": "GET",
       "operation_id": "source_health_api_v1_news_sources__source_id__health_get",
       "owner": "bastion_ui.transport.generated_http:source_health_api_v1_news_sources__source_id__health_get",
@@ -2058,7 +2163,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0193",
+      "matrix_id": "HTTP-0200",
       "method": "GET",
       "operation_id": "source_snapshots_api_v1_news_sources__source_id__snapshots_get",
       "owner": "bastion_ui.transport.generated_http:source_snapshots_api_v1_news_sources__source_id__snapshots_get",
@@ -2073,7 +2178,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0194",
+      "matrix_id": "HTTP-0201",
       "method": "GET",
       "operation_id": "get_article_explanation_api_v1_news__article_id__explanation_get",
       "owner": "bastion_ui.transport.generated_http:get_article_explanation_api_v1_news__article_id__explanation_get",
@@ -2088,7 +2193,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0195",
+      "matrix_id": "HTTP-0202",
       "method": "GET",
       "operation_id": "get_article_impact_api_v1_news__article_id__impact_get",
       "owner": "bastion_ui.transport.generated_http:get_article_impact_api_v1_news__article_id__impact_get",
@@ -2103,7 +2208,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0196",
+      "matrix_id": "HTTP-0203",
       "method": "GET",
       "operation_id": "get_article_narratives_api_v1_news__article_id__narratives_get",
       "owner": "bastion_ui.transport.generated_http:get_article_narratives_api_v1_news__article_id__narratives_get",
@@ -2118,7 +2223,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0197",
+      "matrix_id": "HTTP-0204",
       "method": "GET",
       "operation_id": "get_article_score_api_v1_news__article_id__score_get",
       "owner": "bastion_ui.transport.generated_http:get_article_score_api_v1_news__article_id__score_get",
@@ -2133,7 +2238,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0198",
+      "matrix_id": "HTTP-0205",
       "method": "GET",
       "operation_id": "get_article_scores_api_v1_news__article_id__scores_get",
       "owner": "bastion_ui.transport.generated_http:get_article_scores_api_v1_news__article_id__scores_get",
@@ -2148,7 +2253,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0200",
+      "matrix_id": "HTTP-0207",
       "method": "GET",
       "operation_id": "onchain_events_api_v1_onchain_events_get",
       "owner": "bastion_ui.transport.generated_http:onchain_events_api_v1_onchain_events_get",
@@ -2163,7 +2268,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0201",
+      "matrix_id": "HTTP-0208",
       "method": "GET",
       "operation_id": "onchain_state_api_v1_onchain_state_get",
       "owner": "bastion_ui.transport.generated_http:onchain_state_api_v1_onchain_state_get",
@@ -2178,7 +2283,67 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0246",
+      "matrix_id": "HTTP-0211",
+      "method": "GET",
+      "operation_id": "operations_list_incidents",
+      "owner": "bastion_ui.transport.generated_http:operations_list_incidents",
+      "path": "/api/v1/operations/incidents",
+      "product": "Operator Console",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "derive from dependency/policy in Prompt 1; MUST NOT weaken Proof-of-Access",
+      "success_schema": "list[IncidentOut]",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0212",
+      "method": "GET",
+      "operation_id": "operations_get_incident",
+      "owner": "bastion_ui.transport.generated_http:operations_get_incident",
+      "path": "/api/v1/operations/incidents/{incident_id}",
+      "product": "Operator Console",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "derive from dependency/policy in Prompt 1; MUST NOT weaken Proof-of-Access",
+      "success_schema": "IncidentDetailOut",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0213",
+      "method": "GET",
+      "operation_id": "jobs_api_v1_operations_jobs_get",
+      "owner": "bastion_ui.transport.generated_http:jobs_api_v1_operations_jobs_get",
+      "path": "/api/v1/operations/jobs",
+      "product": "Operator Console",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "derive from dependency/policy in Prompt 1; MUST NOT weaken Proof-of-Access",
+      "success_schema": "list[BackgroundJobHealthOut]",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0220",
+      "method": "GET",
+      "operation_id": "operations_list_slo",
+      "owner": "bastion_ui.transport.generated_http:operations_list_slo",
+      "path": "/api/v1/operations/slo",
+      "product": "Operator Console",
+      "request_schema": "none",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "derive from dependency/policy in Prompt 1; MUST NOT weaken Proof-of-Access",
+      "success_schema": "list[OperationsSLOOut]",
+      "success_status": "200",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0256",
       "method": "GET",
       "operation_id": "public_features_api_v1_public_features_get",
       "owner": "bastion_ui.transport.generated_http:public_features_api_v1_public_features_get",
@@ -2193,7 +2358,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0247",
+      "matrix_id": "HTTP-0257",
       "method": "GET",
       "operation_id": "public_landing_api_v1_public_landing_get",
       "owner": "bastion_ui.transport.generated_http:public_landing_api_v1_public_landing_get",
@@ -2208,7 +2373,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0248",
+      "matrix_id": "HTTP-0258",
       "method": "GET",
       "operation_id": "public_roadmap_api_v1_public_roadmap_get",
       "owner": "bastion_ui.transport.generated_http:public_roadmap_api_v1_public_roadmap_get",
@@ -2223,7 +2388,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0249",
+      "matrix_id": "HTTP-0259",
       "method": "GET",
       "operation_id": "public_stats_api_v1_public_stats_get",
       "owner": "bastion_ui.transport.generated_http:public_stats_api_v1_public_stats_get",
@@ -2238,7 +2403,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0250",
+      "matrix_id": "HTTP-0260",
       "method": "GET",
       "operation_id": "public_status_api_v1_public_status_get",
       "owner": "bastion_ui.transport.generated_http:public_status_api_v1_public_status_get",
@@ -2253,7 +2418,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0251",
+      "matrix_id": "HTTP-0261",
       "method": "GET",
       "operation_id": "public_trace_summary_api_v1_public_trace__report_id__summary_get",
       "owner": "bastion_ui.transport.generated_http:public_trace_summary_api_v1_public_trace__report_id__summary_get",
@@ -2268,7 +2433,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0252",
+      "matrix_id": "HTTP-0262",
       "method": "GET",
       "operation_id": "latest_signals_api_v1_signals_latest_get",
       "owner": "bastion_ui.transport.generated_http:latest_signals_api_v1_signals_latest_get",
@@ -2283,7 +2448,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0253",
+      "matrix_id": "HTTP-0263",
       "method": "GET",
       "operation_id": "news_market_impact_signals_api_v1_signals_news_market_impact_get",
       "owner": "bastion_ui.transport.generated_http:news_market_impact_signals_api_v1_signals_news_market_impact_get",
@@ -2298,7 +2463,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0254",
+      "matrix_id": "HTTP-0264",
       "method": "GET",
       "operation_id": "top_signals_api_v1_signals_top_get",
       "owner": "bastion_ui.transport.generated_http:top_signals_api_v1_signals_top_get",
@@ -2313,7 +2478,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0255",
+      "matrix_id": "HTTP-0265",
       "method": "GET",
       "operation_id": "get_signal_api_v1_signals__signal_id__get",
       "owner": "bastion_ui.transport.generated_http:get_signal_api_v1_signals__signal_id__get",
@@ -2328,7 +2493,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0256",
+      "matrix_id": "HTTP-0266",
       "method": "GET",
       "operation_id": "get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get",
       "owner": "bastion_ui.transport.generated_http:get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get",
@@ -2343,7 +2508,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0257",
+      "matrix_id": "HTTP-0267",
       "method": "GET",
       "operation_id": "get_signal_evidence_api_v1_signals__signal_id__evidence_get",
       "owner": "bastion_ui.transport.generated_http:get_signal_evidence_api_v1_signals__signal_id__evidence_get",
@@ -2358,7 +2523,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0258",
+      "matrix_id": "HTTP-0268",
       "method": "GET",
       "operation_id": "signal_explanation_api_v1_signals__signal_id__explanation_get",
       "owner": "bastion_ui.transport.generated_http:signal_explanation_api_v1_signals__signal_id__explanation_get",
@@ -2373,7 +2538,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0259",
+      "matrix_id": "HTTP-0269",
       "method": "GET",
       "operation_id": "signal_recommendations_api_v1_signals__signal_id__recommendations_get",
       "owner": "bastion_ui.transport.generated_http:signal_recommendations_api_v1_signals__signal_id__recommendations_get",
@@ -2388,7 +2553,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0260",
+      "matrix_id": "HTTP-0270",
       "method": "GET",
       "operation_id": "storage_status_api_v1_storage_status_get",
       "owner": "bastion_ui.transport.generated_http:storage_status_api_v1_storage_status_get",
@@ -2403,7 +2568,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0261",
+      "matrix_id": "HTTP-0271",
       "method": "GET",
       "operation_id": "timescale_operations_status_api_v1_storage_timescale_status_get",
       "owner": "bastion_ui.transport.generated_http:timescale_operations_status_api_v1_storage_timescale_status_get",
@@ -2418,7 +2583,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0262",
+      "matrix_id": "HTTP-0272",
       "method": "GET",
       "operation_id": "analyze_address_api_v1_trace_address__address__get",
       "owner": "bastion_ui.transport.generated_http:analyze_address_api_v1_trace_address__address__get",
@@ -2433,7 +2598,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0263",
+      "matrix_id": "HTTP-0273",
       "method": "GET",
       "operation_id": "trace_alerts_api_v1_trace_alerts_get",
       "owner": "bastion_ui.transport.generated_http:trace_alerts_api_v1_trace_alerts_get",
@@ -2448,7 +2613,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0276",
+      "matrix_id": "HTTP-0286",
       "method": "GET",
       "operation_id": "trace_events_api_v1_trace_events_get",
       "owner": "bastion_ui.transport.generated_http:trace_events_api_v1_trace_events_get",
@@ -2463,7 +2628,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0277",
+      "matrix_id": "HTTP-0287",
       "method": "GET",
       "operation_id": "trace_event_api_v1_trace_events__event_id__get",
       "owner": "bastion_ui.transport.generated_http:trace_event_api_v1_trace_events__event_id__get",
@@ -2478,7 +2643,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0278",
+      "matrix_id": "HTTP-0288",
       "method": "GET",
       "operation_id": "lite_address_check_api_v1_trace_lite__address__get",
       "owner": "bastion_ui.transport.generated_http:lite_address_check_api_v1_trace_lite__address__get",
@@ -2493,7 +2658,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0282",
+      "matrix_id": "HTTP-0292",
       "method": "GET",
       "operation_id": "get_report_api_v1_trace_report__report_id__get",
       "owner": "bastion_ui.transport.generated_http:get_report_api_v1_trace_report__report_id__get",
@@ -2508,7 +2673,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0283",
+      "matrix_id": "HTTP-0293",
       "method": "GET",
       "operation_id": "trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get",
       "owner": "bastion_ui.transport.generated_http:trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get",
@@ -2523,7 +2688,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0284",
+      "matrix_id": "HTTP-0294",
       "method": "GET",
       "operation_id": "get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get",
       "owner": "bastion_ui.transport.generated_http:get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get",
@@ -2538,7 +2703,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0285",
+      "matrix_id": "HTTP-0295",
       "method": "GET",
       "operation_id": "get_dust_radar_api_v1_trace_report__report_id__dust_radar_get",
       "owner": "bastion_ui.transport.generated_http:get_dust_radar_api_v1_trace_report__report_id__dust_radar_get",
@@ -2553,7 +2718,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0286",
+      "matrix_id": "HTTP-0296",
       "method": "GET",
       "operation_id": "list_evidence_api_v1_trace_report__report_id__evidence_get",
       "owner": "bastion_ui.transport.generated_http:list_evidence_api_v1_trace_report__report_id__evidence_get",
@@ -2568,7 +2733,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0287",
+      "matrix_id": "HTTP-0297",
       "method": "GET",
       "operation_id": "trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get",
       "owner": "bastion_ui.transport.generated_http:trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get",
@@ -2583,7 +2748,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0288",
+      "matrix_id": "HTTP-0298",
       "method": "GET",
       "operation_id": "get_origin_passport_api_v1_trace_report__report_id__origin_passport_get",
       "owner": "bastion_ui.transport.generated_http:get_origin_passport_api_v1_trace_report__report_id__origin_passport_get",
@@ -2598,7 +2763,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0289",
+      "matrix_id": "HTTP-0299",
       "method": "GET",
       "operation_id": "trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get",
       "owner": "bastion_ui.transport.generated_http:trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get",
@@ -2613,7 +2778,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0290",
+      "matrix_id": "HTTP-0300",
       "method": "GET",
       "operation_id": "get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get",
       "owner": "bastion_ui.transport.generated_http:get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get",
@@ -2628,7 +2793,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0291",
+      "matrix_id": "HTTP-0301",
       "method": "GET",
       "operation_id": "get_proof_packet_api_v1_trace_report__report_id__proof_packet_get",
       "owner": "bastion_ui.transport.generated_http:get_proof_packet_api_v1_trace_report__report_id__proof_packet_get",
@@ -2643,7 +2808,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0292",
+      "matrix_id": "HTTP-0302",
       "method": "GET",
       "operation_id": "get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get",
       "owner": "bastion_ui.transport.generated_http:get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get",
@@ -2658,7 +2823,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0293",
+      "matrix_id": "HTTP-0303",
       "method": "GET",
       "operation_id": "get_source_summary_api_v1_trace_report__report_id__source_summary_get",
       "owner": "bastion_ui.transport.generated_http:get_source_summary_api_v1_trace_report__report_id__source_summary_get",
@@ -2673,7 +2838,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0294",
+      "matrix_id": "HTTP-0304",
       "method": "GET",
       "operation_id": "get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get",
       "owner": "bastion_ui.transport.generated_http:get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get",
@@ -2688,7 +2853,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0295",
+      "matrix_id": "HTTP-0305",
       "method": "GET",
       "operation_id": "list_sources_api_v1_trace_sources_get",
       "owner": "bastion_ui.transport.generated_http:list_sources_api_v1_trace_sources_get",
@@ -2703,7 +2868,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0296",
+      "matrix_id": "HTTP-0306",
       "method": "GET",
       "operation_id": "get_source_api_v1_trace_sources__source_name__get",
       "owner": "bastion_ui.transport.generated_http:get_source_api_v1_trace_sources__source_name__get",
@@ -2718,7 +2883,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0297",
+      "matrix_id": "HTTP-0307",
       "method": "GET",
       "operation_id": "trace_status_api_v1_trace_status_get",
       "owner": "bastion_ui.transport.generated_http:trace_status_api_v1_trace_status_get",
@@ -2733,7 +2898,22 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0299",
+      "matrix_id": "HTTP-0308",
+      "method": "POST",
+      "operation_id": "submit_trace_api_v1_trace_submit_post",
+      "owner": "bastion_ui.transport.generated_http:submit_trace_api_v1_trace_submit_post",
+      "path": "/api/v1/trace/submit",
+      "product": "Core",
+      "request_schema": "TraceSubmitRequest",
+      "retry_policy": "safe reads only; mutations require explicit idempotency contract",
+      "security": "none observed in OpenAPI; runtime dependency review required",
+      "success_schema": "ResponseEnvelope_TraceSubmissionResult_",
+      "success_status": "201",
+      "transport_engine": "frontend.bastion_ui.transport.generated_transport"
+    },
+    {
+      "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
+      "matrix_id": "HTTP-0310",
       "method": "GET",
       "operation_id": "list_watchlist_api_v1_trace_watchlist_get",
       "owner": "bastion_ui.transport.generated_http:list_watchlist_api_v1_trace_watchlist_get",
@@ -2748,7 +2928,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0341",
+      "matrix_id": "HTTP-0352",
       "method": "GET",
       "operation_id": "dependencies_health_dependencies_get",
       "owner": "bastion_ui.transport.generated_http:dependencies_health_dependencies_get",
@@ -2763,7 +2943,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0342",
+      "matrix_id": "HTTP-0353",
       "method": "GET",
       "operation_id": "intelligence_health_intelligence_get",
       "owner": "bastion_ui.transport.generated_http:intelligence_health_intelligence_get",
@@ -2778,7 +2958,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0343",
+      "matrix_id": "HTTP-0354",
       "method": "GET",
       "operation_id": "live_health_live_get",
       "owner": "bastion_ui.transport.generated_http:live_health_live_get",
@@ -2793,7 +2973,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0344",
+      "matrix_id": "HTTP-0355",
       "method": "GET",
       "operation_id": "operations_health_operations_get",
       "owner": "bastion_ui.transport.generated_http:operations_health_operations_get",
@@ -2808,7 +2988,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0345",
+      "matrix_id": "HTTP-0356",
       "method": "GET",
       "operation_id": "providers_health_providers_get",
       "owner": "bastion_ui.transport.generated_http:providers_health_providers_get",
@@ -2823,7 +3003,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0346",
+      "matrix_id": "HTTP-0357",
       "method": "GET",
       "operation_id": "ready_health_ready_get",
       "owner": "bastion_ui.transport.generated_http:ready_health_ready_get",
@@ -2838,7 +3018,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0347",
+      "matrix_id": "HTTP-0358",
       "method": "GET",
       "operation_id": "startup_health_startup_get",
       "owner": "bastion_ui.transport.generated_http:startup_health_startup_get",
@@ -2853,7 +3033,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0362",
+      "matrix_id": "HTTP-0373",
       "method": "GET",
       "operation_id": "web_candle_dto_web_candle__candle_id__get",
       "owner": "bastion_ui.transport.generated_http:web_candle_dto_web_candle__candle_id__get",
@@ -2868,7 +3048,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0363",
+      "matrix_id": "HTTP-0374",
       "method": "GET",
       "operation_id": "web_evidence_dto_web_evidence__packet_id__get",
       "owner": "bastion_ui.transport.generated_http:web_evidence_dto_web_evidence__packet_id__get",
@@ -2883,7 +3063,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0364",
+      "matrix_id": "HTTP-0375",
       "method": "GET",
       "operation_id": "web_market_time_machine_dto_web_market_time_machine_get",
       "owner": "bastion_ui.transport.generated_http:web_market_time_machine_dto_web_market_time_machine_get",
@@ -2898,7 +3078,7 @@
     },
     {
       "error_schema": "HTTP validation/error response; typed frontend normalization not verified",
-      "matrix_id": "HTTP-0369",
+      "matrix_id": "HTTP-0380",
       "method": "GET",
       "operation_id": "web_timeline_dto_web_timeline_get",
       "owner": "bastion_ui.transport.generated_http:web_timeline_dto_web_timeline_get",
@@ -3545,7 +3725,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0161",
+      "matrix_id": "HTTP-0168",
       "method": "GET",
       "operation_id": "provider_health_history_api_v1_metrics_provider_health_history_get",
       "path": "/api/v1/metrics/provider-health/history",
@@ -3555,7 +3735,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0162",
+      "matrix_id": "HTTP-0169",
       "method": "GET",
       "operation_id": "latest_provider_health_api_v1_metrics_provider_health_latest_get",
       "path": "/api/v1/metrics/provider-health/latest",
@@ -3565,7 +3745,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0163",
+      "matrix_id": "HTTP-0170",
       "method": "GET",
       "operation_id": "source_health_history_api_v1_metrics_source_health_history_get",
       "path": "/api/v1/metrics/source-health/history",
@@ -3575,7 +3755,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0164",
+      "matrix_id": "HTTP-0171",
       "method": "GET",
       "operation_id": "latest_source_health_api_v1_metrics_source_health_latest_get",
       "path": "/api/v1/metrics/source-health/latest",
@@ -3585,7 +3765,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0165",
+      "matrix_id": "HTTP-0172",
       "method": "GET",
       "operation_id": "metrics_status_api_v1_metrics_status_get",
       "path": "/api/v1/metrics/status",
@@ -3595,7 +3775,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0166",
+      "matrix_id": "HTTP-0173",
       "method": "GET",
       "operation_id": "metric_usage_summary_api_v1_metrics_usage_get",
       "path": "/api/v1/metrics/usage",
@@ -3605,7 +3785,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0188",
+      "matrix_id": "HTTP-0195",
       "method": "POST",
       "operation_id": "refresh_source_reputation_api_v1_news_sources_reputation_refresh_post",
       "path": "/api/v1/news/sources/reputation/refresh",
@@ -3615,7 +3795,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0199",
+      "matrix_id": "HTTP-0206",
       "method": "GET",
       "operation_id": "operations_snapshot_api_v1_observability_snapshot_get",
       "path": "/api/v1/observability/snapshot",
@@ -3625,7 +3805,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0202",
+      "matrix_id": "HTTP-0209",
       "method": "GET",
       "operation_id": "drills_api_v1_operations_drills_get",
       "path": "/api/v1/operations/drills",
@@ -3635,7 +3815,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0203",
+      "matrix_id": "HTTP-0210",
       "method": "GET",
       "operation_id": "health_api_v1_operations_health_get",
       "path": "/api/v1/operations/health",
@@ -3644,18 +3824,8 @@
     },
     {
       "blocker_id": "P1B0-B01",
-      "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0204",
-      "method": "GET",
-      "operation_id": "jobs_api_v1_operations_jobs_get",
-      "path": "/api/v1/operations/jobs",
-      "reason": "protected_security_contract_unresolved",
-      "reentry_condition": "backend owner supplies tested security and mutation semantics before UI generation"
-    },
-    {
-      "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0205",
+      "matrix_id": "HTTP-0214",
       "method": "GET",
       "operation_id": "liveness_api_v1_operations_liveness_get",
       "path": "/api/v1/operations/liveness",
@@ -3665,7 +3835,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0206",
+      "matrix_id": "HTTP-0215",
       "method": "GET",
       "operation_id": "metrics_api_v1_operations_metrics_get",
       "path": "/api/v1/operations/metrics",
@@ -3675,7 +3845,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0207",
+      "matrix_id": "HTTP-0216",
       "method": "GET",
       "operation_id": "metrics_summary_api_v1_operations_metrics_summary_get",
       "path": "/api/v1/operations/metrics-summary",
@@ -3685,7 +3855,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0208",
+      "matrix_id": "HTTP-0217",
       "method": "GET",
       "operation_id": "providers_api_v1_operations_providers_get",
       "path": "/api/v1/operations/providers",
@@ -3695,7 +3865,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0209",
+      "matrix_id": "HTTP-0218",
       "method": "GET",
       "operation_id": "readiness_api_v1_operations_readiness_get",
       "path": "/api/v1/operations/readiness",
@@ -3705,7 +3875,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0210",
+      "matrix_id": "HTTP-0219",
       "method": "GET",
       "operation_id": "runbooks_api_v1_operations_runbooks_get",
       "path": "/api/v1/operations/runbooks",
@@ -3715,7 +3885,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0211",
+      "matrix_id": "HTTP-0221",
       "method": "GET",
       "operation_id": "status_api_v1_operations_status_get",
       "path": "/api/v1/operations/status",
@@ -3725,7 +3895,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0212",
+      "matrix_id": "HTTP-0222",
       "method": "GET",
       "operation_id": "list_pending_signals_api_v1_operator_signals_pending_get",
       "path": "/api/v1/operator/signals/pending",
@@ -3735,7 +3905,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0213",
+      "matrix_id": "HTTP-0223",
       "method": "GET",
       "operation_id": "get_operator_signal_api_v1_operator_signals__signal_id__get",
       "path": "/api/v1/operator/signals/{signal_id}",
@@ -3745,7 +3915,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0214",
+      "matrix_id": "HTTP-0224",
       "method": "POST",
       "operation_id": "approve_signal_api_v1_operator_signals__signal_id__approve_post",
       "path": "/api/v1/operator/signals/{signal_id}/approve",
@@ -3755,7 +3925,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0215",
+      "matrix_id": "HTTP-0225",
       "method": "POST",
       "operation_id": "confidence_override_api_v1_operator_signals__signal_id__confidence_override_post",
       "path": "/api/v1/operator/signals/{signal_id}/confidence-override",
@@ -3765,7 +3935,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0216",
+      "matrix_id": "HTTP-0226",
       "method": "POST",
       "operation_id": "hold_signal_api_v1_operator_signals__signal_id__hold_post",
       "path": "/api/v1/operator/signals/{signal_id}/hold",
@@ -3775,7 +3945,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0217",
+      "matrix_id": "HTTP-0227",
       "method": "POST",
       "operation_id": "mark_false_positive_api_v1_operator_signals__signal_id__mark_false_positive_post",
       "path": "/api/v1/operator/signals/{signal_id}/mark-false-positive",
@@ -3785,7 +3955,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 14/25",
-      "matrix_id": "HTTP-0218",
+      "matrix_id": "HTTP-0228",
       "method": "POST",
       "operation_id": "needs_more_evidence_api_v1_operator_signals__signal_id__needs_more_evidence_post",
       "path": "/api/v1/operator/signals/{signal_id}/needs-more-evidence",
@@ -3795,7 +3965,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0219",
+      "matrix_id": "HTTP-0229",
       "method": "POST",
       "operation_id": "reject_signal_api_v1_operator_signals__signal_id__reject_post",
       "path": "/api/v1/operator/signals/{signal_id}/reject",
@@ -3805,7 +3975,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 21/25",
-      "matrix_id": "HTTP-0233",
+      "matrix_id": "HTTP-0243",
       "method": "GET",
       "operation_id": "list_plugins_api_v1_plugins_get",
       "path": "/api/v1/plugins",
@@ -3815,7 +3985,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 21/25",
-      "matrix_id": "HTTP-0234",
+      "matrix_id": "HTTP-0244",
       "method": "GET",
       "operation_id": "get_plugin_api_v1_plugins__plugin_id__get",
       "path": "/api/v1/plugins/{plugin_id}",
@@ -3825,7 +3995,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 21/25",
-      "matrix_id": "HTTP-0235",
+      "matrix_id": "HTTP-0245",
       "method": "POST",
       "operation_id": "disable_plugin_api_v1_plugins__plugin_id__disable_post",
       "path": "/api/v1/plugins/{plugin_id}/disable",
@@ -3835,7 +4005,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 21/25",
-      "matrix_id": "HTTP-0236",
+      "matrix_id": "HTTP-0246",
       "method": "POST",
       "operation_id": "dry_run_plugin_api_v1_plugins__plugin_id__dry_run_post",
       "path": "/api/v1/plugins/{plugin_id}/dry-run",
@@ -3845,7 +4015,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 21/25",
-      "matrix_id": "HTTP-0237",
+      "matrix_id": "HTTP-0247",
       "method": "POST",
       "operation_id": "enable_plugin_api_v1_plugins__plugin_id__enable_post",
       "path": "/api/v1/plugins/{plugin_id}/enable",
@@ -3855,7 +4025,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0238",
+      "matrix_id": "HTTP-0248",
       "method": "GET",
       "operation_id": "list_policy_catalog_api_v1_policy_catalog_get",
       "path": "/api/v1/policy/catalog",
@@ -3865,7 +4035,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0239",
+      "matrix_id": "HTTP-0249",
       "method": "POST",
       "operation_id": "upsert_policy_catalog_api_v1_policy_catalog_post",
       "path": "/api/v1/policy/catalog",
@@ -3875,7 +4045,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0240",
+      "matrix_id": "HTTP-0250",
       "method": "POST",
       "operation_id": "compare_policy_catalog_api_v1_policy_catalog_compare_post",
       "path": "/api/v1/policy/catalog/compare",
@@ -3885,7 +4055,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0241",
+      "matrix_id": "HTTP-0251",
       "method": "POST",
       "operation_id": "check_policy_api_v1_policy_check_post",
       "path": "/api/v1/policy/check",
@@ -3895,7 +4065,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0242",
+      "matrix_id": "HTTP-0252",
       "method": "GET",
       "operation_id": "list_policy_executions_api_v1_policy_executions_get",
       "path": "/api/v1/policy/executions",
@@ -3905,7 +4075,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0243",
+      "matrix_id": "HTTP-0253",
       "method": "GET",
       "operation_id": "policy_execution_summary_api_v1_policy_executions_summary_get",
       "path": "/api/v1/policy/executions/summary",
@@ -3915,7 +4085,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0244",
+      "matrix_id": "HTTP-0254",
       "method": "POST",
       "operation_id": "simulate_policy_api_v1_policy_simulate_post",
       "path": "/api/v1/policy/simulate",
@@ -3925,7 +4095,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 23/25",
-      "matrix_id": "HTTP-0245",
+      "matrix_id": "HTTP-0255",
       "method": "POST",
       "operation_id": "assess_privacy_api_v1_privacy_assess_post",
       "path": "/api/v1/privacy/assess",
@@ -3935,7 +4105,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0264",
+      "matrix_id": "HTTP-0274",
       "method": "POST",
       "operation_id": "business_batch_api_v1_trace_business_batch_post",
       "path": "/api/v1/trace/business/batch",
@@ -3945,7 +4115,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 13/25",
-      "matrix_id": "HTTP-0265",
+      "matrix_id": "HTTP-0275",
       "method": "GET",
       "operation_id": "business_events_api_v1_trace_business_events_get",
       "path": "/api/v1/trace/business/events",
@@ -3955,7 +4125,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0266",
+      "matrix_id": "HTTP-0276",
       "method": "GET",
       "operation_id": "business_policy_profiles_api_v1_trace_business_policy_profiles_get",
       "path": "/api/v1/trace/business/policy-profiles",
@@ -3965,7 +4135,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0267",
+      "matrix_id": "HTTP-0277",
       "method": "GET",
       "operation_id": "business_profile_api_v1_trace_business_profile_get",
       "path": "/api/v1/trace/business/profile",
@@ -3975,7 +4145,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0268",
+      "matrix_id": "HTTP-0278",
       "method": "POST",
       "operation_id": "destination_review_api_v1_trace_destination_review_post",
       "path": "/api/v1/trace/destination-review",
@@ -3985,7 +4155,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0269",
+      "matrix_id": "HTTP-0279",
       "method": "POST",
       "operation_id": "enterprise_evidence_access_api_v1_trace_enterprise_evidence_access_evaluate_post",
       "path": "/api/v1/trace/enterprise/evidence-access/evaluate",
@@ -3995,7 +4165,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0270",
+      "matrix_id": "HTTP-0280",
       "method": "GET",
       "operation_id": "enterprise_profile_api_v1_trace_enterprise_profile_get",
       "path": "/api/v1/trace/enterprise/profile",
@@ -4005,7 +4175,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0271",
+      "matrix_id": "HTTP-0281",
       "method": "POST",
       "operation_id": "enterprise_proof_packet_api_v1_trace_enterprise_proof_packet_post",
       "path": "/api/v1/trace/enterprise/proof-packet",
@@ -4015,7 +4185,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0272",
+      "matrix_id": "HTTP-0282",
       "method": "GET",
       "operation_id": "enterprise_default_policy_api_v1_trace_enterprise_rbac_default_policy_get",
       "path": "/api/v1/trace/enterprise/rbac/default-policy",
@@ -4025,7 +4195,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0273",
+      "matrix_id": "HTTP-0283",
       "method": "GET",
       "operation_id": "enterprise_permissions_api_v1_trace_enterprise_rbac_permissions_get",
       "path": "/api/v1/trace/enterprise/rbac/permissions",
@@ -4035,7 +4205,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0274",
+      "matrix_id": "HTTP-0284",
       "method": "GET",
       "operation_id": "enterprise_roles_api_v1_trace_enterprise_rbac_roles_get",
       "path": "/api/v1/trace/enterprise/rbac/roles",
@@ -4045,7 +4215,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0275",
+      "matrix_id": "HTTP-0285",
       "method": "GET",
       "operation_id": "enterprise_sso_api_v1_trace_enterprise_sso_get",
       "path": "/api/v1/trace/enterprise/sso",
@@ -4055,7 +4225,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0279",
+      "matrix_id": "HTTP-0289",
       "method": "POST",
       "operation_id": "payment_context_api_v1_trace_payment_context_post",
       "path": "/api/v1/trace/payment-context",
@@ -4065,7 +4235,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0280",
+      "matrix_id": "HTTP-0290",
       "method": "POST",
       "operation_id": "payment_intent_preview_api_v1_trace_payment_intent_preview_post",
       "path": "/api/v1/trace/payment-intent/preview",
@@ -4075,7 +4245,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0281",
+      "matrix_id": "HTTP-0291",
       "method": "POST",
       "operation_id": "trace_register_advisory_api_v1_trace_register_payment_advisory_post",
       "path": "/api/v1/trace/register/payment-advisory",
@@ -4085,7 +4255,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0298",
+      "matrix_id": "HTTP-0309",
       "method": "POST",
       "operation_id": "trace_treasury_check_api_v1_trace_treasury_destination_check_post",
       "path": "/api/v1/trace/treasury/destination-check",
@@ -4095,7 +4265,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 12/25",
-      "matrix_id": "HTTP-0300",
+      "matrix_id": "HTTP-0311",
       "method": "POST",
       "operation_id": "add_watchlist_api_v1_trace_watchlist_post",
       "path": "/api/v1/trace/watchlist",
@@ -4105,7 +4275,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0301",
+      "matrix_id": "HTTP-0312",
       "method": "GET",
       "operation_id": "list_requests_api_v1_treasury_requests_get",
       "path": "/api/v1/treasury/requests",
@@ -4115,7 +4285,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0302",
+      "matrix_id": "HTTP-0313",
       "method": "POST",
       "operation_id": "create_request_api_v1_treasury_requests_post",
       "path": "/api/v1/treasury/requests",
@@ -4125,7 +4295,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0303",
+      "matrix_id": "HTTP-0314",
       "method": "GET",
       "operation_id": "list_pending_approvals_api_v1_treasury_requests_pending_approvals_get",
       "path": "/api/v1/treasury/requests/pending-approvals",
@@ -4135,7 +4305,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0304",
+      "matrix_id": "HTTP-0315",
       "method": "POST",
       "operation_id": "approve_request_api_v1_treasury_requests__request_id__approve_post",
       "path": "/api/v1/treasury/requests/{request_id}/approve",
@@ -4145,7 +4315,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 19/25",
-      "matrix_id": "HTTP-0305",
+      "matrix_id": "HTTP-0316",
       "method": "POST",
       "operation_id": "reject_request_api_v1_treasury_requests__request_id__reject_post",
       "path": "/api/v1/treasury/requests/{request_id}/reject",
@@ -4155,7 +4325,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0306",
+      "matrix_id": "HTTP-0317",
       "method": "GET",
       "operation_id": "list_users_api_v1_users_get",
       "path": "/api/v1/users",
@@ -4165,7 +4335,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0307",
+      "matrix_id": "HTTP-0318",
       "method": "GET",
       "operation_id": "me_api_v1_users_me_get",
       "path": "/api/v1/users/me",
@@ -4175,7 +4345,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0325",
+      "matrix_id": "HTTP-0336",
       "method": "POST",
       "operation_id": "wallet_health_api_v1_wallet_health_post",
       "path": "/api/v1/wallet/health",
@@ -4185,7 +4355,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 20/25",
-      "matrix_id": "HTTP-0326",
+      "matrix_id": "HTTP-0337",
       "method": "GET",
       "operation_id": "list_profiles_api_v1_wallet_profiles_get",
       "path": "/api/v1/wallet/profiles",
@@ -4195,7 +4365,7 @@
     {
       "blocker_id": "P1B0-B01+B02",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0327",
+      "matrix_id": "HTTP-0338",
       "method": "POST",
       "operation_id": "generate_wallet_profile_health_report_api_v1_wallet_profiles__wallet_profile_id__health_post",
       "path": "/api/v1/wallet/profiles/{wallet_profile_id}/health",
@@ -4205,7 +4375,7 @@
     {
       "blocker_id": "P1B0-B01",
       "future_owner": "Prompt 8/25",
-      "matrix_id": "HTTP-0328",
+      "matrix_id": "HTTP-0339",
       "method": "GET",
       "operation_id": "list_wallet_profile_health_reports_api_v1_wallet_profiles__wallet_profile_id__health_reports_get",
       "path": "/api/v1/wallet/profiles/{wallet_profile_id}/health/reports",
@@ -4215,7 +4385,7 @@
     {
       "blocker_id": "P1B0-B03-HTML",
       "future_owner": "Prompt 25/25",
-      "matrix_id": "HTTP-0339",
+      "matrix_id": "HTTP-0350",
       "method": "GET",
       "operation_id": "candle_attribution_view_candles__candle_id__get",
       "path": "/candles/{candle_id}",
@@ -4225,7 +4395,7 @@
     {
       "blocker_id": "P1B0-B03-HTML",
       "future_owner": "Prompt 25/25",
-      "matrix_id": "HTTP-0340",
+      "matrix_id": "HTTP-0351",
       "method": "GET",
       "operation_id": "evidence_viewer_evidence__packet_id__get",
       "path": "/evidence/{packet_id}",
@@ -4235,7 +4405,7 @@
     {
       "blocker_id": "P1B0-B03-HTML",
       "future_owner": "Prompt 25/25",
-      "matrix_id": "HTTP-0348",
+      "matrix_id": "HTTP-0359",
       "method": "GET",
       "operation_id": "market_timeline_intelligence_timeline_get",
       "path": "/intelligence/timeline",
@@ -4245,7 +4415,7 @@
     {
       "blocker_id": "P1B0-B03-HTML",
       "future_owner": "Prompt 25/25",
-      "matrix_id": "HTTP-0349",
+      "matrix_id": "HTTP-0360",
       "method": "GET",
       "operation_id": "market_dashboard_market_get",
       "path": "/market",
@@ -4255,7 +4425,7 @@
     {
       "blocker_id": "P1R2-B01",
       "future_owner": "Prompt 25/25",
-      "matrix_id": "HTTP-0350",
+      "matrix_id": "HTTP-0361",
       "method": "GET",
       "operation_id": "market_time_machine_market_time_machine_get",
       "path": "/market-time-machine",
@@ -4265,7 +4435,7 @@
     {
       "blocker_id": "P1B0-B03-HTML",
       "future_owner": "Prompt 25/25",
-      "matrix_id": "HTTP-0351",
+      "matrix_id": "HTTP-0362",
       "method": "GET",
       "operation_id": "market_time_machine_market_time_machine_get",
       "path": "/market/time-machine",
@@ -4275,7 +4445,7 @@
     {
       "blocker_id": "P1B0-B03-HTML",
       "future_owner": "Prompt 25/25",
-      "matrix_id": "HTTP-0352",
+      "matrix_id": "HTTP-0363",
       "method": "GET",
       "operation_id": "market_section_market__section__get",
       "path": "/market/{section}",
@@ -4285,7 +4455,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0365",
+      "matrix_id": "HTTP-0376",
       "method": "POST",
       "operation_id": "record_candle_click_web_market_time_machine_candle_click_post",
       "path": "/web/market-time-machine/candle-click",
@@ -4295,7 +4465,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 14/25",
-      "matrix_id": "HTTP-0366",
+      "matrix_id": "HTTP-0377",
       "method": "POST",
       "operation_id": "record_evidence_view_web_market_time_machine_evidence_view_post",
       "path": "/web/market-time-machine/evidence-view",
@@ -4305,7 +4475,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0367",
+      "matrix_id": "HTTP-0378",
       "method": "POST",
       "operation_id": "record_marker_click_web_market_time_machine_marker_click_post",
       "path": "/web/market-time-machine/marker-click",
@@ -4315,7 +4485,7 @@
     {
       "blocker_id": "P1B0-B02",
       "future_owner": "Prompt 9/25",
-      "matrix_id": "HTTP-0368",
+      "matrix_id": "HTTP-0379",
       "method": "POST",
       "operation_id": "record_replay_open_web_market_time_machine_replay_open_post",
       "path": "/web/market-time-machine/replay-open",
@@ -4327,10 +4497,10 @@
   "metadata": {
     "branch": "work",
     "command": "python scripts/generate_frontend_migration_audit.py",
-    "contract_source_fingerprint": "6bd8ca2f70d64392449a5d12d847b6835bd8692e811a938eb7d189cbb543f5b6",
-    "generated_at_utc": "2026-08-10T16:11:31+00:00",
-    "generator_fingerprint": "9f06cedaa5fa0755e6fd6b0993b1ade81efddbe4a074200639d1953db2da5ae2",
-    "head": "818acbe761a20b84940ba9493076c09a78bbc22e",
+    "contract_source_fingerprint": "10148b9d574d18b38f73a6ab767b499a30cac9020d31db5aa7fb797f8243fef1",
+    "generated_at_utc": "2026-08-12T19:10:51+00:00",
+    "generator_fingerprint": "94a166036cc661878ee2534e0339e9c10206e8c668870417f24d1195001760af",
+    "head": "8f51ff96f1820f59a4dcb853e623ecd822b9bbfe",
     "profile": "current environment / app.core.config defaults",
     "python": "Python 3.12.13"
   }

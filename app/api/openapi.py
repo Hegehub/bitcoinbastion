@@ -113,6 +113,7 @@ def apply_openapi_defaults(app: FastAPI) -> None:
             "/api/v1/metrics/",
             "/api/v1/observability",
             "/api/v1/operations",
+            "/api/v1/market/similarity",
             "/api/v1/operator",
             "/api/v1/plugins",
             "/api/v1/policy",

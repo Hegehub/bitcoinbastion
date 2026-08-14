@@ -367,6 +367,15 @@
       "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
     },
     {
+      "active_canonical_owner": "generated registry lookup by method/path",
+      "classification": "COMPATIBILITY_WRAPPER",
+      "consumers": [
+        "frontend/bastion_ui/services/trace_client.py"
+      ],
+      "literal": "/api/v1/trace/submit",
+      "removal_condition": "Prompt 2 consumer migration proves generated DTO adapter parity"
+    },
+    {
       "active_canonical_owner": null,
       "classification": "STALE_RUNTIME_ABSENT",
       "consumers": [

@@ -24,3 +24,18 @@ class MarketHealthSnapshot(BaseModel):
     median_provider_latency_ms: float
     stale_provider_count: int
     generated_at: datetime
+
+
+class BTCMarketOverviewOut(BaseModel):
+    symbol: str
+    pair: str
+    price_usd: Decimal | None
+    observed_at: datetime | None
+    provider_count: int
+    provider_confidence: Decimal | None
+    source: str
+    limitations: list[str]
+
+
+class BTCMarketOverviewEnvelope(BaseModel):
+    data: BTCMarketOverviewOut
