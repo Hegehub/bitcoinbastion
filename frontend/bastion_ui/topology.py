@@ -352,10 +352,24 @@ _EXTRA = (
     ("market.sources", "/market/sources", "market_sources_page", "Market Sources", "Market"),
     ("trace.report", "/trace/[report_id]", "trace_report_page", "Trace Report", "Trace"),
     (
+        "trace.history",
+        "/trace/[report_id]/history/[snapshot_id]",
+        "trace_history_page",
+        "Historical Trace Topology",
+        "Trace",
+    ),
+    (
         "trace.proof_packet",
         "/trace/[report_id]/proof-packet",
         "trace_proof_packet_page",
         "Trace Proof Packet",
+        "Evidence",
+    ),
+    (
+        "trace.historical_proof_packet",
+        "/trace/[report_id]/history/[snapshot_id]/proof-packet",
+        "trace_proof_packet_page",
+        "Historical Trace Proof Packet",
         "Evidence",
     ),
     (
@@ -377,14 +391,23 @@ ROUTES: tuple[RouteRecord, ...] = tuple(_public_records()) + tuple(
         component=component,
         title=title,
         route_class=RouteClass.PROTECTED
-        if id_ == "market.similarity"
+        if id_ in {
+            "market.similarity",
+            "trace.proof_packet",
+            "trace.historical_proof_packet",
+        }
         else RouteClass.DEVELOPMENT_ONLY
         if id_.startswith("development")
         else RouteClass.OPERATOR_ONLY
         if id_.startswith("console")
         else RouteClass.ACCESS_AWARE,
         security_requirement_id="access.me"
-        if id_ == "market.similarity"
+        if id_
+        in {
+            "market.similarity",
+            "trace.proof_packet",
+            "trace.historical_proof_packet",
+        }
         else "operator"
         if id_.startswith("console")
         else "public",
@@ -431,6 +454,30 @@ ROUTES: tuple[RouteRecord, ...] = tuple(_public_records()) + tuple(
             if id_ == "market.narratives"
             else ("market_history_sources",)
             if id_ == "market.sources"
+            else (
+                "get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get",
+                "get_exact_trace_graph_snapshot",
+                "get_current_trace_disagreement",
+            )
+            if id_ == "trace.report"
+            else ("get_exact_trace_graph_snapshot", "get_historical_trace_disagreement")
+            if id_ == "trace.history"
+            else (
+                "get_current_trace_proof_packet",
+                "get_trace_evidence_lineage",
+                "replay_trace_evidence",
+                "verify_trace_evidence_identity",
+                "export_trace_evidence",
+            )
+            if id_ == "trace.proof_packet"
+            else (
+                "get_historical_trace_proof_packet",
+                "get_trace_evidence_lineage",
+                "replay_trace_evidence",
+                "verify_trace_evidence_identity",
+                "export_trace_evidence",
+            )
+            if id_ == "trace.historical_proof_packet"
             else ()
         ),
         future_prompt=12 if id_.startswith("trace") else 19 if id_.startswith("console") else 9,

@@ -18,20 +18,31 @@ from app.schemas.trace_graph import (
     TraceGraphRelationshipDTO,
     TraceGraphSnapshotDTO,
     TraceSnapshotVersion,
+    TraceTopologySourceStatus,
 )
 from app.services.bastion_trace.graph.builder import TraceGraphBuilder
 from app.services.bastion_trace.graph.domain import (
+    TraceAnalyticalObject,
     TraceGraph,
+    TraceObservation,
     TraceProvenance,
+    TraceRelationship,
     stable_trace_id,
 )
+from app.services.bastion_trace.graph.topology_adapter import BitcoinTopologyGraphAdapter
+from app.services.bitcoin_topology.engine import BitcoinTopologySnapshot
+from app.services.bastion_trace.privacy_policy import TracePrivacyPolicy
 
 BUILDER_VERSION = "trace-graph-builder-v1"
 SCHEMA_VERSION = "trace-graph-schema-v1"
 
 
 class TraceGraphApiProjectionService:
-    def graph_for_report_model(self, report: TraceReportModel) -> TraceGraphDTO:
+    def graph_for_report_model(
+        self,
+        report: TraceReportModel,
+        topology_snapshot: BitcoinTopologySnapshot | None = None,
+    ) -> TraceGraphDTO:
         schema = TraceReport(
             id=report.id,
             address=report.address,
@@ -53,12 +64,23 @@ class TraceGraphApiProjectionService:
         )
         builder = TraceGraphBuilder()
         builder.add_report_projection(schema)
+        if topology_snapshot is not None:
+            builder.add_topology_projection(BitcoinTopologyGraphAdapter().project(topology_snapshot))
         graph = builder.build()
         return self.to_dto(graph, report.created_at)
 
-    def history_for_report_model(self, report: TraceReportModel) -> TraceGraphHistoryDTO:
-        graph = self.graph_for_report_model(report)
-        entry = TraceGraphHistoryEntryDTO(
+    def history_for_report_model(
+        self,
+        report: TraceReportModel,
+        topology_snapshots: tuple[BitcoinTopologySnapshot, ...] = (),
+    ) -> TraceGraphHistoryDTO:
+        snapshots: tuple[BitcoinTopologySnapshot | None, ...] = topology_snapshots or (None,)
+        graphs = tuple(self.graph_for_report_model(report, snapshot) for snapshot in snapshots)
+        entries = [self._history_entry(graph) for graph in graphs]
+        return TraceGraphHistoryDTO(graph_id=graphs[-1].metadata.graph_id, entries=entries)
+
+    def _history_entry(self, graph: TraceGraphDTO) -> TraceGraphHistoryEntryDTO:
+        return TraceGraphHistoryEntryDTO(
             snapshot_id=graph.snapshot.snapshot_id,
             graph_id=graph.metadata.graph_id,
             graph_version=graph.metadata.graph_version,
@@ -72,8 +94,9 @@ class TraceGraphApiProjectionService:
                 {item.provenance.producer for item in graph.objects + graph.relationships}
             ),
             limitations=graph.metadata.limitations,
+            topology_source_status=graph.metadata.topology_source_status,
+            topology_snapshot_id=graph.metadata.topology_snapshot_id,
         )
-        return TraceGraphHistoryDTO(graph_id=graph.metadata.graph_id, entries=[entry])
 
     def to_dto(self, graph: TraceGraph, created_at: datetime | None) -> TraceGraphDTO:
         creation_time = created_at or datetime.now(UTC)
@@ -91,6 +114,15 @@ class TraceGraphApiProjectionService:
             graph_hash=graph.metadata.graph_hash,
             created_at=creation_time,
             limitations=list(graph.limitations),
+            topology_source_status=(
+                TraceTopologySourceStatus.AUTHORITATIVE
+                if graph.metadata.topology_snapshot_id is not None
+                else TraceTopologySourceStatus.TOPOLOGY_SOURCE_UNAVAILABLE
+            ),
+            topology_snapshot_id=graph.metadata.topology_snapshot_id,
+            topology_version=graph.metadata.topology_version,
+            topology_engine_version=graph.metadata.topology_engine_version,
+            topology_network=graph.metadata.topology_network,
         )
         snapshot = graph.snapshot()
         snapshot_dto = TraceGraphSnapshotDTO(
@@ -101,14 +133,16 @@ class TraceGraphApiProjectionService:
             relationship_ids=snapshot.relationship_ids,
             observation_ids=snapshot.observation_ids,
             report_fact_ids=snapshot.report_fact_ids,
+            topology_snapshot_id=snapshot.topology_snapshot_id,
         )
-        return TraceGraphDTO(
-            metadata=metadata,
-            objects=[self._object_to_dto(item) for item in graph.objects.values()],
-            relationships=[self._relationship_to_dto(item) for item in graph.relationships.values()],
-            observations=[self._observation_to_dto(item) for item in graph.observations.values()],
-            snapshot=snapshot_dto,
-        )
+        values = TracePrivacyPolicy().allowlisted("graph", {
+            "metadata": metadata,
+            "objects": [self._object_to_dto(item) for item in graph.objects.values()],
+            "relationships": [self._relationship_to_dto(item) for item in graph.relationships.values()],
+            "observations": [self._observation_to_dto(item) for item in graph.observations.values()],
+            "snapshot": snapshot_dto,
+        })
+        return TraceGraphDTO.model_validate(values)
 
     def _provenance_to_dto(self, provenance: TraceProvenance) -> TraceGraphProvenanceDTO:
         return TraceGraphProvenanceDTO(
@@ -124,9 +158,11 @@ class TraceGraphApiProjectionService:
                 for item in provenance.evidence
             ],
             limitations=list(provenance.limitations),
+            source_relationship_id=provenance.source_relationship_id,
+            topology_snapshot_id=provenance.topology_snapshot_id,
         )
 
-    def _object_to_dto(self, item) -> TraceGraphObjectDTO:
+    def _object_to_dto(self, item: TraceAnalyticalObject) -> TraceGraphObjectDTO:
         return TraceGraphObjectDTO(
             id=item.id,
             kind=item.kind.value,
@@ -135,7 +171,7 @@ class TraceGraphApiProjectionService:
             limitations=list(item.limitations),
         )
 
-    def _relationship_to_dto(self, item) -> TraceGraphRelationshipDTO:
+    def _relationship_to_dto(self, item: TraceRelationship) -> TraceGraphRelationshipDTO:
         return TraceGraphRelationshipDTO(
             id=item.id,
             source_id=item.source_id,
@@ -148,7 +184,7 @@ class TraceGraphApiProjectionService:
             limitations=list(item.limitations),
         )
 
-    def _observation_to_dto(self, item) -> TraceGraphObservationDTO:
+    def _observation_to_dto(self, item: TraceObservation) -> TraceGraphObservationDTO:
         return TraceGraphObservationDTO(
             id=item.id,
             kind=item.kind.value,

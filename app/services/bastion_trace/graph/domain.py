@@ -13,15 +13,18 @@ GRAPH_VERSION = "trace-graph-v1"
 class TraceObservationKind(str, Enum):
     RAW_SUBJECT = "raw_subject"
     DERIVED_FACT = "derived_fact"
+    BITCOIN_OBSERVATION_REFERENCE = "bitcoin_observation_reference"
 
 
 class TraceAnalyticalObjectKind(str, Enum):
     BITCOIN_ADDRESS = "bitcoin_address"
+    BITCOIN_TRANSACTION = "bitcoin_transaction"
     TRACE_REPORT = "trace_report"
 
 
 class TraceRelationshipType(str, Enum):
     ANALYZED_AS = "analyzed_as"
+    ADDRESS_PARTICIPATES_IN_TRANSACTION = "address_participates_in_transaction"
 
 
 class TraceRelationshipDirection(str, Enum):
@@ -42,6 +45,8 @@ class TraceProvenance:
     observations: tuple[str, ...] = ()
     evidence: tuple[TraceEvidenceReference, ...] = ()
     limitations: tuple[str, ...] = ()
+    source_relationship_id: str | None = None
+    topology_snapshot_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -105,6 +110,10 @@ class TraceGraphMetadata:
     analysis_version: str = "baseline-trace-v1"
     chain: str = "bitcoin"
     graph_hash: str = ""
+    topology_snapshot_id: str | None = None
+    topology_version: str | None = None
+    topology_engine_version: str | None = None
+    topology_network: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -130,6 +139,7 @@ class TraceSnapshot:
     observation_ids: tuple[str, ...]
     report_fact_ids: tuple[str, ...]
     limitations: tuple[str, ...]
+    topology_snapshot_id: str | None
 
     @classmethod
     def from_graph(cls, graph: TraceGraph) -> TraceSnapshot:
@@ -142,6 +152,7 @@ class TraceSnapshot:
             observation_ids=tuple(sorted(graph.observations)),
             report_fact_ids=tuple(sorted(graph.report_facts)),
             limitations=tuple(graph.limitations),
+            topology_snapshot_id=graph.metadata.topology_snapshot_id,
         )
 
 

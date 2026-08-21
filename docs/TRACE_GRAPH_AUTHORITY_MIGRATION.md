@@ -38,9 +38,11 @@ Feature-53 ownership remains registered for the Graph API operations in the fron
 
 ## Prompt-13 readiness audit
 
-The Graph ownership blocker is resolved: reports are now graph projections and Graph API ownership is explicit. However, the original analytical topology blocker is not fully eliminated. The remaining exact backend producer missing is an authoritative Bitcoin topology producer that emits transaction/address/counterparty observations suitable for non-report relationships. Current Trace can authoritatively emit only `ANALYZED_AS` relationships between a Bitcoin address analytical object and its report projection object.
-
-Therefore Prompt 13 can rely on graph ownership and projection architecture, but any Feature 23 topology requiring address-to-address, transaction-flow, clustering, or counterparty edges must still wait for that topology producer.
+T1-T4 now provide an authoritative non-report
+`ADDRESS_PARTICIPATES_IN_TRANSACTION` relationship from persisted Bitcoin source facts. The
+Topology Engine owns semantics and `BitcoinTopologyGraphAdapter` preserves those semantics in
+Graph. The original relationship-source blocker is eliminated for this supported family. See
+`TRACE_TOPOLOGY_GRAPH_INTEGRATION.md` for identity, snapshot, history, privacy, and rollback policy.
 
 ## Rollback
 

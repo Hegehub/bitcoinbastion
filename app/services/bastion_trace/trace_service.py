@@ -11,6 +11,7 @@ from app.db.models.bastion_trace import (
     TraceReport,
 )
 from app.db.repositories.bastion_trace_repository import BastionTraceRepository
+from app.db.repositories.onchain_repository import OnchainRepository
 from app.schemas.bastion_trace import (
     OriginPassport,
     PaymentContextRiskReport,
@@ -72,6 +73,10 @@ from app.services.bastion_trace.trace_runtime_events import create_event, get_ev
 from app.services.bastion_trace.trace_alerts import create_alert, list_alerts
 from app.services.bastion_trace.trace_status import make_status
 from app.services.bastion_trace.graph.report_projection import TraceReportGraphProjectionService
+from app.services.bastion_trace.claims.collector import TraceClaimCollector
+from app.services.bastion_trace.claims.persistence import TraceClaimRepository
+from app.services.bastion_trace.claims.producers import TraceClaimProductionContext
+from app.services.bitcoin_observations.producer import BitcoinObservationProducer
 from app.services.events.domain_event_publisher import publish_domain_event
 
 _LIMITATIONS = [
@@ -137,7 +142,7 @@ class TraceService:
         source_names = [s.source_name for s in sources]
         independence = EvidenceIndependenceService().calculate(source_names)
         disagreement = ProviderDisagreementService().detect_disagreement(
-            ["unknown"], [scoring.band.value]
+            [], []
         )
         passport: OriginPassport = build_origin_passport(normalized, [], disagreement, independence)
         privacy = PrivacyShieldService().build_privacy_shield(normalized, None, None)
@@ -186,6 +191,22 @@ class TraceService:
             evidence_refs_json=json.dumps([]),
         )
         saved = self.repo.save_report(report)
+        source_events = tuple(OnchainRepository(self.repo.db).for_address(normalized))
+        observations = tuple(
+            observation
+            for event in source_events
+            for observation in BitcoinObservationProducer().from_onchain_event(event).observations
+        )
+        claim_collection = TraceClaimCollector().collect(
+            TraceClaimProductionContext(
+                capture_id=f"trace_report:{saved.id}",
+                address=normalized,
+                evaluated_at=saved.created_at,
+                scoring=scoring,
+                observations=observations,
+            )
+        )
+        TraceClaimRepository(self.repo.db).add_claims(saved.id, claim_collection.claims)
         TRACE_REPORTS.labels(tier="core", status="created").inc()
         TRACE_SCORE_BAND.labels(tier="core", band=scoring.band.value).inc()
         TRACE_CONF.labels(tier="core").set(float(breakdown.confidence))

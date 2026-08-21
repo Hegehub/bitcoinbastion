@@ -7,6 +7,7 @@ from app.integrations.bitcoin.provider import BitcoinProvider
 from app.services.alerts.signal_engine import SignalEngine
 from app.services.events.domain_event_publisher import publish_domain_event
 from app.services.scoring.onchain_scoring import OnchainScoringService
+from app.services.bitcoin_observations.producer import BitcoinObservationProducer
 
 
 @dataclass
@@ -30,13 +31,18 @@ class OnchainIngestionService:
 
         for event in events:
             score = self.scoring.score(event)
-            model_event = self.onchain_repo.add_event(
+            observation_batch = BitcoinObservationProducer(self.onchain_repo).persist_chain_event(
                 event,
                 significance=score.significance,
                 confidence=score.confidence,
                 explainability=self._normalize_explainability(score.explainability),
                 tags=score.tags,
             )
+            if not observation_batch.observations:
+                continue
+            model_event = observation_batch.persisted_event
+            if model_event is None:
+                continue
             self._publish_onchain_event(model_event)
             signal = engine.from_onchain_event(model_event)
             signals.append(

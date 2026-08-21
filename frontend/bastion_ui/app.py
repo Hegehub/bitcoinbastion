@@ -59,6 +59,7 @@ from bastion_ui.routes.market_timeline import market_timeline_page
 from bastion_ui.routes.proof_packet import trace_proof_packet_page
 from bastion_ui.routes.system import feature_disabled_page, not_found_page
 from bastion_ui.routes.trace_report import trace_report_page
+from bastion_ui.routes.trace_history import trace_history_page
 from bastion_ui.state.security_shell_state import SecurityShellState
 from bastion_ui.topology import (
     ALIASES,
@@ -201,6 +202,7 @@ _COMPONENTS = {spec.page.__name__: spec.page for spec in PUBLIC_ROUTE_SPECS} | {
         market_narratives_page,
         market_sources_page,
         trace_report_page,
+        trace_history_page,
         trace_proof_packet_page,
         design_system_preview,
     )
@@ -262,5 +264,6 @@ app.add_page(not_found_page, route="/[[...splat]]", title="Page not found")
 # route="/market/sources"
 # route="/trace/[report_id]"
 # route="/trace/[report_id]/proof-packet"
+# route="/trace/[report_id]/history/[snapshot_id]/proof-packet"
 
 __all__ = ["app", "design_system_preview", "index"]

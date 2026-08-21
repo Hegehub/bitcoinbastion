@@ -20,6 +20,7 @@ from app.services.bastion_trace.graph.domain import (
     immutable_mapping,
     stable_trace_id,
 )
+from app.services.bastion_trace.graph.topology_adapter import TopologyGraphProjection
 
 GRAPH_RELATIONSHIP_PRODUCER_MISSING = "authoritative_topology_producer_missing"
 
@@ -84,6 +85,7 @@ class TraceGraphBuilder:
     def __init__(self, *, analysis_version: str = "baseline-trace-v1") -> None:
         self._analysis_version = analysis_version
         self._bundles: dict[str, TraceReportObservationBundle] = {}
+        self._topology_projection: TopologyGraphProjection | None = None
 
     def add_report_projection(self, report: TraceReport) -> None:
         address = report.address.strip()
@@ -95,6 +97,16 @@ class TraceGraphBuilder:
             str(report.trace_score),
         )
         self._bundles[bundle_id] = TraceReportObservationBundle(report=report)
+
+    def add_topology_projection(self, projection: TopologyGraphProjection) -> None:
+        """Aggregate an adapter-owned projection without reconstructing Bitcoin semantics."""
+        if (
+            self._topology_projection is not None
+            and self._topology_projection.topology_snapshot_id != projection.topology_snapshot_id
+        ):
+            msg = "a graph build may consume exactly one topology snapshot"
+            raise ValueError(msg)
+        self._topology_projection = projection
 
     def build(self) -> TraceGraph:
         state = self._collect_observations()
@@ -252,6 +264,12 @@ class TraceGraphBuilder:
                     limitations=item.limitations,
                 )
             limitations.add(GRAPH_RELATIONSHIP_PRODUCER_MISSING)
+        if self._topology_projection is not None:
+            observations.update(self._topology_projection.observation_references)
+            objects.update(self._topology_projection.objects)
+            limitations.update(self._topology_projection.limitations)
+            if self._topology_projection.relationships:
+                limitations.discard(GRAPH_RELATIONSHIP_PRODUCER_MISSING)
         return replace(
             state,
             observations=observations,
@@ -281,6 +299,8 @@ class TraceGraphBuilder:
                 confidence=item.report.confidence,
                 limitations=item.limitations,
             )
+        if self._topology_projection is not None:
+            relationships.update(self._topology_projection.relationships)
         return replace(state, relationships=relationships)
 
     def _link_evidence(self, state: TraceGraphPipelineState) -> TraceGraphPipelineState:
@@ -343,7 +363,10 @@ class TraceGraphBuilder:
                         relationship.id,
                     )
                 )
-            if relationship.relationship_type is not TraceRelationshipType.ANALYZED_AS:
+            if relationship.relationship_type not in {
+                TraceRelationshipType.ANALYZED_AS,
+                TraceRelationshipType.ADDRESS_PARTICIPATES_IN_TRANSACTION,
+            }:
                 failures.append(
                     TraceGraphValidationFailure(
                         TraceGraphStage.GRAPH_VALIDATION,
@@ -376,6 +399,26 @@ class TraceGraphBuilder:
             metadata=TraceGraphMetadata(
                 analysis_version=self._analysis_version,
                 graph_hash=graph_hash,
+                topology_snapshot_id=(
+                    self._topology_projection.topology_snapshot_id
+                    if self._topology_projection is not None
+                    else None
+                ),
+                topology_version=(
+                    self._topology_projection.topology_version
+                    if self._topology_projection is not None
+                    else None
+                ),
+                topology_engine_version=(
+                    self._topology_projection.topology_engine_version
+                    if self._topology_projection is not None
+                    else None
+                ),
+                topology_network=(
+                    self._topology_projection.network
+                    if self._topology_projection is not None
+                    else None
+                ),
             ),
             limitations=tuple(sorted(state.limitations)),
         )

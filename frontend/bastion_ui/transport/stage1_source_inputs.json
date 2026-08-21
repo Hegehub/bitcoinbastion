@@ -1,6 +1,6 @@
 {
-  "contract_source_fingerprint": "86a88f5e69c1708e786bc60f8b670c169dbca4ca1873ab9afd1e74a63098e77e",
-  "generator_fingerprint": "94a166036cc661878ee2534e0339e9c10206e8c668870417f24d1195001760af",
+  "contract_source_fingerprint": "771f8a9cd195ae5fb59eb71cd7e88905381b36adb7155df95eaacb726d562067",
+  "generator_fingerprint": "4816751a817b87a09e439ea1c4d3f0c81b328688cc36896cf72bda469697eab3",
   "inputs": [
     {
       "path": "app/__init__.py",
@@ -55,7 +55,7 @@
     {
       "path": "app/api/v1/access.py",
       "role": "contract_source",
-      "sha256": "f8249000960a7e2a3de963b90cb53015b86fb6bb04224dfcd03d16ec1aba4cdd"
+      "sha256": "dc0fe479418d2ac05447bec194b370f80020e72a9a2b5126947ca4b679005af0"
     },
     {
       "path": "app/api/v1/admin.py",
@@ -225,7 +225,7 @@
     {
       "path": "app/api/v1/trace.py",
       "role": "contract_source",
-      "sha256": "9b76f1e00650984114abc02edd93925879392601c8fea3de189addff904d6f95"
+      "sha256": "ac10b5b1e8b122f874cf17ff3a9dd7ea189ded0f32cd4f8406716022366de9dc"
     },
     {
       "path": "app/api/v1/treasury.py",
@@ -753,6 +753,26 @@
       "sha256": "0d486f38a6fa8568abda2ebc7718c16a6ae87d5aba1d59d616ad2d4f19bdf628"
     },
     {
+      "path": "app/db/migrations/versions/20260815_0074_trace_claims.py",
+      "role": "contract_source",
+      "sha256": "f34a03581784ef02fa1ceb4ad2176e82ac07978aa6e56a7db98cabe52d1b2b00"
+    },
+    {
+      "path": "app/db/migrations/versions/20260815_0075_trace_graph_snapshots.py",
+      "role": "contract_source",
+      "sha256": "4eb941d69f6466c96f955e8df538464aa8e901b691ad22cd4315c27662f1e2d4"
+    },
+    {
+      "path": "app/db/migrations/versions/20260820_0076_access_offers_checkout.py",
+      "role": "contract_source",
+      "sha256": "9d87e466d0f0d33f2ca7da94be1abdfe40546c770a5602c4d795f89a50083b04"
+    },
+    {
+      "path": "app/db/migrations/versions/20260820_0077_access_atomic_issuance.py",
+      "role": "contract_source",
+      "sha256": "185c18a6c56a1fb19c0ddd1979175863efea04b543c7f0b551f63260a7fdba5a"
+    },
+    {
       "path": "app/db/migrations/versions/9ecab5c090cf_align_models_schema_truth.py",
       "role": "contract_source",
       "sha256": "18f16ba437e9ef153d9a8c599c628ad18c3b83fea4b8b3a2dbe8a98958e53c31"
@@ -765,12 +785,12 @@
     {
       "path": "app/db/models/__init__.py",
       "role": "contract_source",
-      "sha256": "286320e398f3f61c710cc5cb8df6837b9122d21f9a3132a937df7776a3454142"
+      "sha256": "5767184e83d437c2073f306cb9c20f67cb04aa9fb297bc358707c750a3906fa3"
     },
     {
       "path": "app/db/models/access.py",
       "role": "contract_source",
-      "sha256": "b41db152d708ac1a1356ec973d504526dd297610b813b8d77822e1df48f42000"
+      "sha256": "a465d532de6d63e3c5a81df41b891498e845fa2b23feb622e463bdc2e3ebe67c"
     },
     {
       "path": "app/db/models/attribution_context_snapshot.py",
@@ -795,7 +815,7 @@
     {
       "path": "app/db/models/bastion_trace.py",
       "role": "contract_source",
-      "sha256": "ce9c7f911c29d8050a06d8df08cae50794642a956ac0271416d8721a83f6c421"
+      "sha256": "70536821a353c99d0b5695f2cb722b6b7541c4d1412befb8825d0f84fe158186"
     },
     {
       "path": "app/db/models/btc_candle.py",
@@ -1270,7 +1290,7 @@
     {
       "path": "app/db/repositories/onchain_repository.py",
       "role": "contract_source",
-      "sha256": "8f5047a88124f5a202e3dd19b879550e26588d5f994726fbd0aeeec321cdcd90"
+      "sha256": "d8c9c8bf79718cbe6fbdb830db22b78b5f6ce1d4ce5f13eabeeeafcb4f4d3b8c"
     },
     {
       "path": "app/db/repositories/policy_repository.py",
@@ -1803,6 +1823,11 @@
       "sha256": "82e72dffb5e65237459dea2bc4b802d80ab9358e8a5622de07365efe612ebda3"
     },
     {
+      "path": "app/schemas/access_checkout.py",
+      "role": "contract_source",
+      "sha256": "00def72648844943a710e6ddc5b8369d5b464f908440677df55d367a442d62bb"
+    },
+    {
       "path": "app/schemas/access_integrity.py",
       "role": "contract_source",
       "sha256": "7e90e2c1d5f40d4d103d0c2d8004a62e40a0143cef6f1ab3ad47c12c64af50d4"
@@ -2048,9 +2073,24 @@
       "sha256": "4671f1bb13e5ec1c63afd10e130b46977b1760d41b4e7cb019a9ac71e3ea575b"
     },
     {
+      "path": "app/schemas/trace_disagreement.py",
+      "role": "contract_source",
+      "sha256": "c74acced445e5ecd786a5d1827bc8ec728fb856452f85533222ac545bec13c8b"
+    },
+    {
+      "path": "app/schemas/trace_evidence_workflow.py",
+      "role": "contract_source",
+      "sha256": "900ea3c6b9a0b205344e1e75a0a9c689d9a85f0a8fe645977b2902e0fb349e3b"
+    },
+    {
       "path": "app/schemas/trace_graph.py",
       "role": "contract_source",
-      "sha256": "1a7cbe0ac7837d55c9d2137024557558fe611da1c5d469096129af78523f2302"
+      "sha256": "2f0da5465c334755a884c84e5dd4c9f48c0c2a6c38a8d411bb1403e40e80a167"
+    },
+    {
+      "path": "app/schemas/trace_proof_packet.py",
+      "role": "contract_source",
+      "sha256": "a1609b40cd4e9d7ea95d84bb29bd45036462eb1a38ae9460084babf0629ad91a"
     },
     {
       "path": "app/schemas/treasury.py",
@@ -2110,12 +2150,17 @@
     {
       "path": "app/services/access/certificate_issuer.py",
       "role": "contract_source",
-      "sha256": "2525577751e505cb60236b4d7f659ddd26056401945c1a8d3344a856993ab9b3"
+      "sha256": "375e589ddba4c7343b52e3342b3cb197334ef07845e66ca0188b2d547e11af75"
     },
     {
       "path": "app/services/access/challenge_service.py",
       "role": "contract_source",
       "sha256": "04ea02166604390bf722cac8833e1dd8f83c3b1d6357b5c7f6ad61c91912bf46"
+    },
+    {
+      "path": "app/services/access/checkout_service.py",
+      "role": "contract_source",
+      "sha256": "e977dfea7d23d7203c54a7cba34efcc560c63c556bfd71e38bac27c49e437329"
     },
     {
       "path": "app/services/access/child_api_keys.py",
@@ -2188,6 +2233,11 @@
       "sha256": "bb8e1faa02ac6784d4af8c4da455326ff097880f2e7da4e44710bf9159ea03fc"
     },
     {
+      "path": "app/services/access/issuance_service.py",
+      "role": "contract_source",
+      "sha256": "474f7fe45559f3f36eea577b6cecb111aeb68dc1afcf464835fb3f1c4fe0b35e"
+    },
+    {
       "path": "app/services/access/key_constraints.py",
       "role": "contract_source",
       "sha256": "d55c00c3b1d42734c88214e54559ff905e5dc37f98719e79a0292a19ec0738a4"
@@ -2221,6 +2271,11 @@
       "path": "app/services/access/observability_labels.py",
       "role": "contract_source",
       "sha256": "8ca4629a1b5bd3e06be40ca2d05316a25ba96fd472ff4442a8dbef5f85c45213"
+    },
+    {
+      "path": "app/services/access/offer_catalog.py",
+      "role": "contract_source",
+      "sha256": "684b2835f7d3748dddfd26fc9c8922dd8f340b928c57faed51f73398892b734c"
     },
     {
       "path": "app/services/access/offline_pack_verifier.py",
@@ -2423,6 +2478,31 @@
       "sha256": "8426ca24ebe2cee64aa4efe97612dc31d80df0ec20933dd3ae95b094444145d5"
     },
     {
+      "path": "app/services/bastion_trace/claims/__init__.py",
+      "role": "contract_source",
+      "sha256": "e9eb25cb08d6c2441f1ad378d55c80868603b5f7fd6ed06bfc5f344f84d5924f"
+    },
+    {
+      "path": "app/services/bastion_trace/claims/collector.py",
+      "role": "contract_source",
+      "sha256": "2b07be5d00acd9330704e65f475fcd0a9bf55e8fe25515d18fd274218cb6121b"
+    },
+    {
+      "path": "app/services/bastion_trace/claims/domain.py",
+      "role": "contract_source",
+      "sha256": "2354789fcafd97fb3497e5f6291aafb615ed92aab457023ba29f6c11b5ca7e4a"
+    },
+    {
+      "path": "app/services/bastion_trace/claims/persistence.py",
+      "role": "contract_source",
+      "sha256": "af895c8dea24966c8a7c658a6349af89ee817775ca8b3139211e9f1ce21c4a40"
+    },
+    {
+      "path": "app/services/bastion_trace/claims/producers.py",
+      "role": "contract_source",
+      "sha256": "4da1f1c058885156099db1182681ac4cbb9c636781e6bc6c9614fc025423a809"
+    },
+    {
       "path": "app/services/bastion_trace/confidence.py",
       "role": "contract_source",
       "sha256": "3e61734445fd835e4c22121aec7c3303d79e932da51349f75c29670a66067113"
@@ -2446,6 +2526,36 @@
       "path": "app/services/bastion_trace/destination_review.py",
       "role": "contract_source",
       "sha256": "aebd9ff4bd4004ff60e672b8b58eff82d5562e61f8f232c2c5bd497572e8e3b7"
+    },
+    {
+      "path": "app/services/bastion_trace/disagreement/__init__.py",
+      "role": "contract_source",
+      "sha256": "97819533eab53ab6f510c3437d0fa427adaafbe90add97e14dcd039b6163969d"
+    },
+    {
+      "path": "app/services/bastion_trace/disagreement/api_projection.py",
+      "role": "contract_source",
+      "sha256": "8230a7ccbd74783292604a733b9410f6872f9ccb7c2ef7840dea93f3f2c07355"
+    },
+    {
+      "path": "app/services/bastion_trace/disagreement/comparators.py",
+      "role": "contract_source",
+      "sha256": "9963a8e0ce2933b7b748e0470ab724eaaf25892e27ed7ea447008d0ebaea9269"
+    },
+    {
+      "path": "app/services/bastion_trace/disagreement/domain.py",
+      "role": "contract_source",
+      "sha256": "33b495e8f757dfc5eec8e985521569c3a21fa21bbfc9d9418f6387b516d641a6"
+    },
+    {
+      "path": "app/services/bastion_trace/disagreement/evaluator.py",
+      "role": "contract_source",
+      "sha256": "91a3e473eed7e2bdda5d6fc20e8674ddaa57f2e51268c40fcdd1d9ab829b8546"
+    },
+    {
+      "path": "app/services/bastion_trace/disagreement/history.py",
+      "role": "contract_source",
+      "sha256": "99b2e2d97b1b2f37c966b7be9a2ddb436651608746af2faf046c424d04fcbf70"
     },
     {
       "path": "app/services/bastion_trace/dust_radar.py",
@@ -2483,6 +2593,11 @@
       "sha256": "61b4c2de9d63f0feadf36893811e4ed2c8315c52440ff8917134c893874848c0"
     },
     {
+      "path": "app/services/bastion_trace/evidence_workflow.py",
+      "role": "contract_source",
+      "sha256": "00c3aaedd0d951332329779cf65703da3acbdf21207c23e0f0b68924f3e7e7fc"
+    },
+    {
       "path": "app/services/bastion_trace/false_positive_guard.py",
       "role": "contract_source",
       "sha256": "7c4a3e99fd12dbc023bdd99ad8bfe550f58f4b462c85b1dafdef59ad47952d76"
@@ -2495,22 +2610,32 @@
     {
       "path": "app/services/bastion_trace/graph/api_projection.py",
       "role": "contract_source",
-      "sha256": "bc4f89143f55606f329e9658dc49d02deac47d26f113a4e970455e2cb54015ba"
+      "sha256": "55f345016ee0b8d0f6b49a64c9f18a3e5920a20920c4d76dce63676b53367f76"
     },
     {
       "path": "app/services/bastion_trace/graph/builder.py",
       "role": "contract_source",
-      "sha256": "77324725a977740368200e393ea666ce90fdc2296f1bdd0843d7fa055edc06ea"
+      "sha256": "aedff51e99d972da4c69a22fcf4a022049d53e771e83c380f24f1b5e81756656"
     },
     {
       "path": "app/services/bastion_trace/graph/domain.py",
       "role": "contract_source",
-      "sha256": "81ff5b86fb3c7d9d4d4777c76997ec7510f06c6c3daebda0c8d78c08c6811948"
+      "sha256": "4ac8e31189459dff9c08ae4b06828988a79357f15a06780d6e5935c5da5523ff"
+    },
+    {
+      "path": "app/services/bastion_trace/graph/persistence.py",
+      "role": "contract_source",
+      "sha256": "1b58c99a09420d61189a79869aeb619a693d6863bbf239ef93b9ee0f88f27109"
     },
     {
       "path": "app/services/bastion_trace/graph/report_projection.py",
       "role": "contract_source",
       "sha256": "d812f66113f4c29d615c3c58f4ae500a94ba5c405cf2a3ee9c1b48794d14338c"
+    },
+    {
+      "path": "app/services/bastion_trace/graph/topology_adapter.py",
+      "role": "contract_source",
+      "sha256": "750a62464ff2954001df63749eee464796d750efa937bbeea8c02f8605094834"
     },
     {
       "path": "app/services/bastion_trace/immutable_audit_log.py",
@@ -2598,9 +2723,24 @@
       "sha256": "2ad57cd47d1ed0ae81676b195a4932802f5dda7bc4c543b8329b416e42958ad9"
     },
     {
+      "path": "app/services/bastion_trace/privacy_policy.py",
+      "role": "contract_source",
+      "sha256": "ae40d45f0595c1f792ca7d0ac3cc95f0e8c0a6552e2f8aa1ba7c5a2e6721392b"
+    },
+    {
       "path": "app/services/bastion_trace/privacy_shield.py",
       "role": "contract_source",
       "sha256": "a27db368130e37ea02f0d9ea38000302f418467804c269f925317ecd63c91c85"
+    },
+    {
+      "path": "app/services/bastion_trace/proof_packet.py",
+      "role": "contract_source",
+      "sha256": "b5b40d63e96cd1f022201a7cf0a163e8e008592e1db2312c2c56c3ed0199f413"
+    },
+    {
+      "path": "app/services/bastion_trace/proof_packet_projection.py",
+      "role": "contract_source",
+      "sha256": "ad4b2ae760bbbb3c61422c284e9888fbab7794ab575bfda4cb98f8574a2346bc"
     },
     {
       "path": "app/services/bastion_trace/provider_disagreement.py",
@@ -2690,7 +2830,7 @@
     {
       "path": "app/services/bastion_trace/trace_service.py",
       "role": "contract_source",
-      "sha256": "9af781f32c01111e1e55e25994b9f6476f2444850b4a898f83f9fe59f7a48838"
+      "sha256": "1625af190ac6baa2c1aef21a750e987710f04491c93ec468ccb27c96b41b6e28"
     },
     {
       "path": "app/services/bastion_trace/trace_status.py",
@@ -2701,6 +2841,46 @@
       "path": "app/services/bastion_trace/utxo_hygiene.py",
       "role": "contract_source",
       "sha256": "4d973a563b76005eb72e413eb3b28549f58ba7498144daa0660f35ff3f18ab49"
+    },
+    {
+      "path": "app/services/bitcoin_observations/__init__.py",
+      "role": "contract_source",
+      "sha256": "e56007138bdbb0ea592f590a2980c3b41a3daebcc1bdbd1e7f9eae4848203871"
+    },
+    {
+      "path": "app/services/bitcoin_observations/domain.py",
+      "role": "contract_source",
+      "sha256": "890d5ffcb82b98c1e47b984a5e7a5be7063e63a19090286c383c90ff505cbfc8"
+    },
+    {
+      "path": "app/services/bitcoin_observations/producer.py",
+      "role": "contract_source",
+      "sha256": "d688c6fa533418323c1dcc3ebb89054e8a18ed8f5f28270fe388e910454f0fb0"
+    },
+    {
+      "path": "app/services/bitcoin_topology/__init__.py",
+      "role": "contract_source",
+      "sha256": "38f5fcaa62dde1a3b7852c92be695b8f4df39b634135f5c6c028d1a6a8020e4b"
+    },
+    {
+      "path": "app/services/bitcoin_topology/domain.py",
+      "role": "contract_source",
+      "sha256": "a662f31ca447c891bad4409709ceed403c62b4a511a3bfb9d452f5ff790a2a79"
+    },
+    {
+      "path": "app/services/bitcoin_topology/engine.py",
+      "role": "contract_source",
+      "sha256": "a6ae4b029875b0426c2d5f64dc5a7b1110debe1d2d93f48afaf28c9a699db0f1"
+    },
+    {
+      "path": "app/services/bitcoin_topology/pipeline.py",
+      "role": "contract_source",
+      "sha256": "39b141cf802d54aa4ca91890bd6e968ebea270f120610706bea2fb8acf06b82d"
+    },
+    {
+      "path": "app/services/bitcoin_topology/relationship_producer.py",
+      "role": "contract_source",
+      "sha256": "b64fa2b56557bb65ae86051430f30ebf62fc79c3203dd023dace04c3b6b129cb"
     },
     {
       "path": "app/services/blockchain/__init__.py",
@@ -2895,7 +3075,7 @@
     {
       "path": "app/services/ingestion/onchain_ingestion.py",
       "role": "contract_source",
-      "sha256": "d862dd0902a09325ea1f0325ffddc259b3c342658d3f8c9c70ca4c4589512443"
+      "sha256": "7314da367769b60c1bc4329f0a88fd1d00b7057ff81a07c9198019a8f4d4f92a"
     },
     {
       "path": "app/services/intelligence/candle_attribution/__init__.py",
@@ -5200,12 +5380,12 @@
     {
       "path": "registry:http-operation-selection",
       "role": "contract_registry",
-      "sha256": "cc2e079eed5a0ad36c65dce53a62c98c10ca3428bfb411f840bbc7106e3cb313"
+      "sha256": "5e3fee4283017ea440bf82a9f2508e6dc62a83857640901297d4ca277a7506b1"
     },
     {
       "path": "frontend/bastion_ui/transport/operation_compiler.py",
       "role": "generator",
-      "sha256": "28667439d7b9415a4b47c1ef6db4928fb749a1f15a00242569a7794bbf438944"
+      "sha256": "d40e17ee9f5b988ee67da6c831550303b8ea4b1b89c22cb8fdcba141dca3a317"
     },
     {
       "path": "frontend/bastion_ui/transport/operation_emitter.py",
@@ -5215,7 +5395,7 @@
     {
       "path": "frontend/bastion_ui/transport/schema_compiler.py",
       "role": "generator",
-      "sha256": "5e003addb78a13ee9ac996d7f92b107c14a504d138998ab7646126fc7246ae1c"
+      "sha256": "41a4608babe4acdef7cbc637596bf0024e4ef22d27fdc3b0ed9cf296594f5078"
     },
     {
       "path": "frontend/bastion_ui/transport/source_emitter.py",
@@ -5230,7 +5410,7 @@
     {
       "path": "scripts/generate_frontend_migration_audit.py",
       "role": "generator",
-      "sha256": "040d5c4f532dde2ddfa454c68e5e0c55dde9a1165153bb167a593a864307a498"
+      "sha256": "3c5bd28a28c66f1112513628db1ad6e38545baa365041ef9827faec6d6723f24"
     },
     {
       "path": "scripts/generate_http_transport.py",
@@ -5243,5 +5423,5 @@
       "sha256": "4c025f821bba4f08e6f981a348f3a1e3c5cbb4739f03f182788f8604ddef7fb0"
     }
   ],
-  "source_revision": "8f51ff96f1820f59a4dcb853e623ecd822b9bbfe"
+  "source_revision": "baf70f4d65bf1dd04732cde7275dda49fbda1403"
 }

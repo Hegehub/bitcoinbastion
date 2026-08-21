@@ -26,7 +26,12 @@ def app_shell(
         rx.box(
             ambient_geometry(),
             global_command_shortcut(),
-            rx.link("Skip to main content", href="#main-content", style=SKIP_LINK_STYLE),
+            rx.link(
+                "Skip to main content",
+                href="#main-content",
+                class_name="bb-skip-link",
+                style=SKIP_LINK_STYLE,
+            ),
             header or rx.fragment(),
             rx.hstack(
                 complementary or rx.fragment(),

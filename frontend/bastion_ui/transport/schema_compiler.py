@@ -107,18 +107,18 @@ class OpenAPISchemaCompiler:
                 raise SchemaCompileError(f"{location}: unresolved component {name}")
             return ReferenceSchema("reference", name)
 
-        any_of = schema.get("anyOf")
-        if isinstance(any_of, list):
-            if not any_of:
-                raise SchemaCompileError(f"{location}: empty anyOf")
+        union_branches = schema.get("anyOf") or schema.get("oneOf")
+        if isinstance(union_branches, list):
+            if not union_branches:
+                raise SchemaCompileError(f"{location}: empty union")
             return UnionSchema(
                 "union",
                 tuple(
                     self.compile(
-                        self._schema(branch, f"{location}.anyOf[{index}]"),
-                        location=f"{location}.anyOf[{index}]",
+                        self._schema(branch, f"{location}.union[{index}]"),
+                        location=f"{location}.union[{index}]",
                     )
-                    for index, branch in enumerate(any_of)
+                    for index, branch in enumerate(union_branches)
                 ),
             )
 

@@ -1,8 +1,5 @@
 {
-  "blockers": [
-    "navigation:platform",
-    "navigation:operations"
-  ],
+  "blockers": [],
   "env": {
     "BB_API_BASE_URL": true,
     "BB_REQUEST_TIMEOUT_SECONDS": true
@@ -17,8 +14,9 @@
   "navigation": {
     "no_products": true,
     "no_self_host": true,
-    "operations": false,
-    "platform": false
+    "operations": true,
+    "platform": true,
+    "registry_derived": true
   },
   "reflex_core_files": {
     "frontend/.env.example": true,
@@ -55,5 +53,5 @@
     "Not legal verification": true,
     "Public Bitcoin addresses only": true
   },
-  "status": "blocked"
+  "status": "implemented"
 }

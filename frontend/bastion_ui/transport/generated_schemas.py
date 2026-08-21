@@ -51,6 +51,13 @@ class AccessChallengeResponse(BaseModel):
     expires_at: datetime
     status: str
 
+class AccessIssueRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    challenge_id: str
+    checkout_id: str
+    idempotency_key: str
+    signature: str
+
 class AccessLimitsResponse(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     limits: dict[str, JsonValue]
@@ -90,6 +97,20 @@ class AccessMeResponse(BaseModel):
     plan_code: str
     recovery_status_summary: dict[str, JsonValue]
     session_expires_at: datetime
+
+class AccessOfferOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    amount_sats: int
+    availability: OfferAvailability
+    capability: str
+    duration_days: int
+    limitations: list[str]
+    offer_id: str
+    plan_code: PlanCode
+    price_unit: str
+    revision_id: str
+    scopes: list[str]
+    terms_version: str
 
 class AccessPaymentIntentCreate(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -231,6 +252,34 @@ class ChainStateOut(BaseModel):
     observed_block_height: int
     reorg_risk_score: Decimal
     tip_height: int
+
+class CheckoutCreateRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    idempotency_key: str
+    offer_id: str
+    payment_method: str | None = Field(default=None)
+
+class CheckoutOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    amount_sats: int
+    capability: str
+    checkout_id: str
+    created_at: datetime
+    duration_days: int
+    eligibility_reason: EligibilityReason
+    expires_at: datetime
+    issuance_eligible: bool
+    offer_id: str
+    offer_revision_id: str
+    payment_intent_id: int | None
+    plan_code: PlanCode
+    price_unit: str
+    scopes: list[str]
+    status: CheckoutStatus
+    terms_version: str
+
+class CheckoutStatus(RootModel[Literal['awaiting_payment', 'eligible', 'expired', 'cancelled', 'failed', 'issued']]):
+    pass
 
 class ChildApiKeyCreate(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -500,6 +549,9 @@ class EducationSnippetOut(BaseModel):
     summary: str
     title: str
 
+class EligibilityReason(RootModel[Literal['payment_pending', 'payment_settled', 'checkout_expired', 'terminal_state']]):
+    pass
+
 class EnterpriseRole(RootModel[Literal['OWNER', 'ADMIN', 'ANALYST', 'REVIEWER', 'AUDITOR', 'READ_ONLY']]):
     pass
 
@@ -530,12 +582,57 @@ class EvidenceEdgeOut(BaseModel):
     to_node_key: str
     weight: Decimal
 
+class EvidenceLineageCompleteness(RootModel[Literal['complete', 'partial', 'truncated', 'unavailable']]):
+    pass
+
+class EvidenceLineageEdgeDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    direction: str | None = Field(default=None)
+    id: str
+    relation: EvidenceLineageRelation
+    source_id: str
+    target_id: str
+
+class EvidenceLineageNodeDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    captured_at: datetime | None = Field(default=None)
+    id: str
+    kind: EvidenceLineageNodeKind
+    label: str
+    limitations: list[str] | None = Field(default=None)
+    producer: str | None = Field(default=None)
+    producer_version: str | None = Field(default=None)
+
+class EvidenceLineageNodeKind(RootModel[Literal['source_reference', 'evidence', 'topology_relationship', 'claim', 'graph_snapshot', 'report_capture', 'proof_packet']]):
+    pass
+
+class EvidenceLineagePathDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    edge_ids: list[str]
+    node_ids: list[str]
+    path_id: str
+
+class EvidenceLineageRelation(RootModel[Literal['produced_from', 'supports', 'captured_in', 'included_in', 'referenced_by']]):
+    pass
+
 class EvidenceNodeOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     label: str
     node_key: str
     node_type: str
     weight: Decimal
+
+class EvidenceReplayEligibility(RootModel[Literal['replayable', 'not_replayable', 'input_unavailable', 'version_unavailable', 'unsupported_legacy']]):
+    pass
+
+class EvidenceReplayStatus(RootModel[Literal['match', 'mismatch', 'not_replayable', 'input_unavailable', 'version_unavailable', 'execution_failed']]):
+    pass
+
+class EvidenceVerificationScope(RootModel[Literal['evidence_identity_integrity']]):
+    pass
+
+class EvidenceVerificationStatus(RootModel[Literal['verified', 'failed', 'not_run', 'unavailable', 'unsupported']]):
+    pass
 
 class ExplainabilityOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -723,6 +820,34 @@ class IntelligenceHealthOut(BaseModel):
     operational_limitations: list[str] | None = Field(default=None)
     provider_confidence: Decimal
     status: str
+
+class IssuanceChallengeCreateRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    checkout_id: str
+    device_public_key: str
+
+class IssuanceChallengeOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    algorithm: str
+    canonical_payload: str
+    challenge_id: str
+    checkout_id: str
+    expires_at: datetime
+    protocol_version: str
+
+class IssuedAccessOut(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    capability: str
+    certificate_fingerprint: str
+    checkout_id: str
+    device_key_fingerprint: str
+    expires_at: datetime
+    grant_id: str
+    issued_at: datetime
+    offer_revision_id: str
+    scopes: list[str]
+    status: str
+    terms_version: str
 
 class JobRetryRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -1018,6 +1143,9 @@ class NewsArticleOut(BaseModel):
     title: str
     urgency_score: Decimal
     url: str
+
+class OfferAvailability(RootModel[Literal['active', 'inactive']]):
+    pass
 
 class OnchainChainStateOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -1881,6 +2009,36 @@ class ResponseEnvelopeRecoveryReadinessOut(BaseModel):
     data: RecoveryReadinessOut
     success: bool | None = Field(default=None)
 
+class ResponseEnvelopeSafeEvidenceExportDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: SafeEvidenceExportDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeSafeEvidenceLineageDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: SafeEvidenceLineageDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeSafeEvidenceReplayDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: SafeEvidenceReplayDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeSafeEvidenceVerificationDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: SafeEvidenceVerificationDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeSafeTraceDisagreementCollectionDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: SafeTraceDisagreementCollectionDTO
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeSafeTraceProofPacketDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: SafeTraceProofPacketDTO
+    success: bool | None = Field(default=None)
+
 class ResponseEnvelopeSignalExplanationOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     data: SignalExplanationOut
@@ -1889,6 +2047,11 @@ class ResponseEnvelopeSignalExplanationOut(BaseModel):
 class ResponseEnvelopeSignalRecommendationOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     data: SignalRecommendationOut
+    success: bool | None = Field(default=None)
+
+class ResponseEnvelopeTraceGraphDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    data: TraceGraphDTO
     success: bool | None = Field(default=None)
 
 class ResponseEnvelopeTraceGraphHistoryDTO(BaseModel):
@@ -2090,6 +2253,159 @@ class SLOStatus(RootModel[Literal['WITHIN_TARGET', 'BREACHED', 'INSUFFICIENT_DAT
 class SLOUnit(RootModel[Literal['ratio']]):
     pass
 
+class SafeBitcoinNetworkClaimValueDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    kind: Literal['bitcoin_network']
+    network: str
+
+class SafeEvidenceExportDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    content: str
+    content_digest: str
+    evidence_id: str
+    export_id: str
+    filename: str
+    graph_snapshot_id: str
+    integrity_status: str
+    limitations: list[str] | None = Field(default=None)
+    media_type: str
+    proof_packet_id: str
+    schema_version: str
+
+class SafeEvidenceLineageDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    completeness: EvidenceLineageCompleteness
+    edges: list[EvidenceLineageEdgeDTO]
+    evidence: SafeTraceEvidenceDTO
+    graph_snapshot_id: str
+    historical: bool
+    limitations: list[str] | None = Field(default=None)
+    nodes: list[EvidenceLineageNodeDTO]
+    paths: list[EvidenceLineagePathDTO]
+    proof_packet_id: str
+
+class SafeEvidenceReplayDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    comparison_scope: str
+    eligibility: EvidenceReplayEligibility
+    evidence_id: str
+    graph_snapshot_id: str
+    immutable_input_ids: list[str]
+    limitations: list[str] | None = Field(default=None)
+    method_id: str
+    method_version: str
+    original_identity: str
+    replay_id: str
+    replayed_at: datetime
+    reproduced_identity: str | None
+    status: EvidenceReplayStatus
+
+class SafeEvidenceVerificationDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    evidence_id: str
+    graph_snapshot_id: str
+    limitations: list[str] | None = Field(default=None)
+    proposition: str
+    scope: EvidenceVerificationScope
+    status: EvidenceVerificationStatus
+    verification_id: str
+    verified_at: datetime
+    verifier_id: str
+    verifier_version: str
+
+class SafeRiskBandClaimValueDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    band: str
+    kind: Literal['risk_band']
+
+class SafeTraceClaimDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    confidence: Decimal | None
+    evaluated_at: datetime
+    id: str
+    limitations: list[str]
+    predicate: str
+    producer: str
+    producer_version: str
+    provenance: SafeTraceClaimProvenanceDTO
+    source: str
+    subject: SafeTraceClaimSubjectDTO
+    value: SafeRiskBandClaimValueDTO | SafeBitcoinNetworkClaimValueDTO
+
+class SafeTraceClaimProvenanceDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    input_references: list[str]
+    limitations: list[str]
+
+class SafeTraceClaimSubjectDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    kind: str
+    object_id: str
+    public_value: str
+
+class SafeTraceDisagreementCollectionDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    evaluations: list[SafeTraceDisagreementDTO]
+    graph_snapshot_id: str
+
+class SafeTraceDisagreementCoverageDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    eligible_claim_count: int
+    eligible_producer_count: int
+    failed_producer_count: int
+    insufficient_producer_count: int
+    unavailable_producer_count: int
+
+class SafeTraceDisagreementDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    claims: list[SafeTraceClaimDTO]
+    coverage: SafeTraceDisagreementCoverageDTO
+    evaluation_id: str
+    evaluator_version: str
+    graph_snapshot_id: str
+    limitations: list[str]
+    predicate: str | None
+    resolution_status: str
+    status: str
+    subject: SafeTraceClaimSubjectDTO | None
+
+class SafeTraceEvidenceDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    captured_at: datetime
+    evidence_id: str
+    integrity_status: TraceEvidenceIntegrityStatus
+    kind: TraceEvidenceKind
+    limitations: list[str] | None = Field(default=None)
+    linked_claim_ids: list[str] | None = Field(default=None)
+    linked_relationship_ids: list[str] | None = Field(default=None)
+    producer: str
+    reference: str
+    source_category: str
+    verification_status: TraceEvidenceVerificationStatus
+
+class SafeTraceProofPacketDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    advisory_only: bool | None = Field(default=None)
+    assembler_version: str
+    captured_at: datetime
+    claim_capture_id: str
+    claims: list[SafeTraceClaimDTO]
+    disagreements: list[SafeTraceDisagreementDTO]
+    evidence: list[SafeTraceEvidenceDTO]
+    graph_snapshot_id: str
+    historical: bool
+    integrity_status: TraceEvidenceIntegrityStatus
+    limitations: list[str] | None = Field(default=None)
+    not_bitcoin_consensus_proof: bool | None = Field(default=None)
+    not_legal_verification: bool | None = Field(default=None)
+    packet_digest: str
+    packet_id: str
+    packet_schema_version: str
+    subject: str
+    topology: TraceProofPacketTopologyReferenceDTO
+    trace_id: int
+    verification_status: TraceEvidenceVerificationStatus
+
 class SignalExplanationOut(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     confidence_reasoning: str
@@ -2276,6 +2592,15 @@ class TraceEvidence(BaseModel):
     source_name: str
     source_type: str
 
+class TraceEvidenceIntegrityStatus(RootModel[Literal['not_checked', 'content_integrity_checked']]):
+    pass
+
+class TraceEvidenceKind(RootModel[Literal['topology_relationship_support', 'claim_input_reference', 'report_evidence_reference']]):
+    pass
+
+class TraceEvidenceVerificationStatus(RootModel[Literal['not_verified', 'verification_unavailable']]):
+    pass
+
 class TraceFactorContribution(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     contribution: Decimal
@@ -2290,6 +2615,14 @@ class TraceFreshness(RootModel[Literal['FRESH', 'RECENT', 'STALE', 'UNKNOWN']]):
 
 class TraceGraphApiVersion(RootModel[Literal['trace-graph-api-v1']]):
     pass
+
+class TraceGraphDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    metadata: TraceGraphMetadataDTO
+    objects: list[TraceGraphObjectDTO]
+    observations: list[TraceGraphObservationDTO]
+    relationships: list[TraceGraphRelationshipDTO]
+    snapshot: TraceGraphSnapshotDTO
 
 class TraceGraphError(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -2323,6 +2656,8 @@ class TraceGraphHistoryEntryDTO(BaseModel):
     schema_version: str
     snapshot_id: str
     snapshot_version: TraceSnapshotVersion
+    topology_snapshot_id: str | None = Field(default=None)
+    topology_source_status: TraceTopologySourceStatus
 
 class TraceGraphMetadataDTO(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -2337,6 +2672,11 @@ class TraceGraphMetadataDTO(BaseModel):
     limitations: list[str] | None = Field(default=None)
     schema_version: str
     snapshot_version: TraceSnapshotVersion
+    topology_engine_version: str | None = Field(default=None)
+    topology_network: str | None = Field(default=None)
+    topology_snapshot_id: str | None = Field(default=None)
+    topology_source_status: TraceTopologySourceStatus
+    topology_version: str | None = Field(default=None)
 
 class TraceGraphObjectDTO(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -2346,13 +2686,24 @@ class TraceGraphObjectDTO(BaseModel):
     limitations: list[str] | None = Field(default=None)
     provenance: TraceGraphProvenanceDTO
 
+class TraceGraphObservationDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    id: str
+    kind: str
+    limitations: list[str] | None = Field(default=None)
+    provenance: TraceGraphProvenanceDTO
+    subject: str
+    value: str
+
 class TraceGraphProvenanceDTO(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     evidence: list[TraceGraphEvidenceReferenceDTO] | None = Field(default=None)
     limitations: list[str] | None = Field(default=None)
     observations: list[str] | None = Field(default=None)
     producer: str
+    source_relationship_id: str | None = Field(default=None)
     stage: str
+    topology_snapshot_id: str | None = Field(default=None)
 
 class TraceGraphRelationshipDTO(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -2375,6 +2726,14 @@ class TraceGraphSnapshotDTO(BaseModel):
     relationship_ids: list[str]
     report_fact_ids: list[str]
     snapshot_id: str
+    topology_snapshot_id: str | None = Field(default=None)
+
+class TraceProofPacketTopologyReferenceDTO(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    graph_snapshot_id: str
+    node_ids: list[str]
+    relationship_ids: list[str]
+    topology_snapshot_id: str | None
 
 class TraceReport(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -2456,6 +2815,9 @@ class TraceSubmitRequest(BaseModel):
     network: str | None = Field(default=None)
     subject: str
     subject_type: TraceSubjectType
+
+class TraceTopologySourceStatus(RootModel[Literal['authoritative', 'topology_source_unavailable']]):
+    pass
 
 class TraceWatchlistCreate(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
@@ -2735,11 +3097,13 @@ AccessCertificateIssueRequest.model_rebuild()
 AccessCertificateIssueResponse.model_rebuild()
 AccessChallengeCreate.model_rebuild()
 AccessChallengeResponse.model_rebuild()
+AccessIssueRequest.model_rebuild()
 AccessLimitsResponse.model_rebuild()
 AccessLockdownRequest.model_rebuild()
 AccessLockdownResponse.model_rebuild()
 AccessLockdownScope.model_rebuild()
 AccessMeResponse.model_rebuild()
+AccessOfferOut.model_rebuild()
 AccessPaymentIntentCreate.model_rebuild()
 AccessPaymentIntentResponse.model_rebuild()
 AccessPaymentIntentStatusResponse.model_rebuild()
@@ -2757,6 +3121,9 @@ BatchTraceRequest.model_rebuild()
 BrowserSafeMarketSourceOut.model_rebuild()
 BusinessContextType.model_rebuild()
 ChainStateOut.model_rebuild()
+CheckoutCreateRequest.model_rebuild()
+CheckoutOut.model_rebuild()
+CheckoutStatus.model_rebuild()
 ChildApiKeyCreate.model_rebuild()
 ChildApiKeyCreateResponse.model_rebuild()
 ChildApiKeyPublic.model_rebuild()
@@ -2779,11 +3146,22 @@ DelegatedPassPublic.model_rebuild()
 DeliveryStatsOut.model_rebuild()
 DependencyHealthOut.model_rebuild()
 EducationSnippetOut.model_rebuild()
+EligibilityReason.model_rebuild()
 EnterpriseRole.model_rebuild()
 EntityOut.model_rebuild()
 EvidenceAccessRequest.model_rebuild()
 EvidenceEdgeOut.model_rebuild()
+EvidenceLineageCompleteness.model_rebuild()
+EvidenceLineageEdgeDTO.model_rebuild()
+EvidenceLineageNodeDTO.model_rebuild()
+EvidenceLineageNodeKind.model_rebuild()
+EvidenceLineagePathDTO.model_rebuild()
+EvidenceLineageRelation.model_rebuild()
 EvidenceNodeOut.model_rebuild()
+EvidenceReplayEligibility.model_rebuild()
+EvidenceReplayStatus.model_rebuild()
+EvidenceVerificationScope.model_rebuild()
+EvidenceVerificationStatus.model_rebuild()
 ExplainabilityOut.model_rebuild()
 FeeRecommendationRequest.model_rebuild()
 FeeRecommendationResponse.model_rebuild()
@@ -2806,6 +3184,9 @@ IncidentStatus.model_rebuild()
 IncidentTransitionOut.model_rebuild()
 IncidentTransitionType.model_rebuild()
 IntelligenceHealthOut.model_rebuild()
+IssuanceChallengeCreateRequest.model_rebuild()
+IssuanceChallengeOut.model_rebuild()
+IssuedAccessOut.model_rebuild()
 JobRetryRequest.model_rebuild()
 JobRetryResponse.model_rebuild()
 JobRunOut.model_rebuild()
@@ -2843,6 +3224,7 @@ MetricUsageSummaryOut.model_rebuild()
 MetricsStatusOut.model_rebuild()
 NarrativeOrigin.model_rebuild()
 NewsArticleOut.model_rebuild()
+OfferAvailability.model_rebuild()
 OnchainChainStateOut.model_rebuild()
 OnchainEventOut.model_rebuild()
 OperationalEvidencePacketOut.model_rebuild()
@@ -2954,8 +3336,15 @@ ResponseEnvelopePublicStatusResponse.model_rebuild()
 ResponseEnvelopePublicTraceSummary.model_rebuild()
 ResponseEnvelopeRecoveryCheckOut.model_rebuild()
 ResponseEnvelopeRecoveryReadinessOut.model_rebuild()
+ResponseEnvelopeSafeEvidenceExportDTO.model_rebuild()
+ResponseEnvelopeSafeEvidenceLineageDTO.model_rebuild()
+ResponseEnvelopeSafeEvidenceReplayDTO.model_rebuild()
+ResponseEnvelopeSafeEvidenceVerificationDTO.model_rebuild()
+ResponseEnvelopeSafeTraceDisagreementCollectionDTO.model_rebuild()
+ResponseEnvelopeSafeTraceProofPacketDTO.model_rebuild()
 ResponseEnvelopeSignalExplanationOut.model_rebuild()
 ResponseEnvelopeSignalRecommendationOut.model_rebuild()
+ResponseEnvelopeTraceGraphDTO.model_rebuild()
 ResponseEnvelopeTraceGraphHistoryDTO.model_rebuild()
 ResponseEnvelopeTraceGraphMetadataDTO.model_rebuild()
 ResponseEnvelopeTraceGraphObjectDTO.model_rebuild()
@@ -2993,6 +3382,20 @@ RuntimeStatusOut.model_rebuild()
 SLOComparison.model_rebuild()
 SLOStatus.model_rebuild()
 SLOUnit.model_rebuild()
+SafeBitcoinNetworkClaimValueDTO.model_rebuild()
+SafeEvidenceExportDTO.model_rebuild()
+SafeEvidenceLineageDTO.model_rebuild()
+SafeEvidenceReplayDTO.model_rebuild()
+SafeEvidenceVerificationDTO.model_rebuild()
+SafeRiskBandClaimValueDTO.model_rebuild()
+SafeTraceClaimDTO.model_rebuild()
+SafeTraceClaimProvenanceDTO.model_rebuild()
+SafeTraceClaimSubjectDTO.model_rebuild()
+SafeTraceDisagreementCollectionDTO.model_rebuild()
+SafeTraceDisagreementCoverageDTO.model_rebuild()
+SafeTraceDisagreementDTO.model_rebuild()
+SafeTraceEvidenceDTO.model_rebuild()
+SafeTraceProofPacketDTO.model_rebuild()
 SignalExplanationOut.model_rebuild()
 SignalOut.model_rebuild()
 SignalRecommendationOut.model_rebuild()
@@ -3017,9 +3420,13 @@ TraceBand.model_rebuild()
 TraceConfidenceLedgerEntry.model_rebuild()
 TraceDNA.model_rebuild()
 TraceEvidence.model_rebuild()
+TraceEvidenceIntegrityStatus.model_rebuild()
+TraceEvidenceKind.model_rebuild()
+TraceEvidenceVerificationStatus.model_rebuild()
 TraceFactorContribution.model_rebuild()
 TraceFreshness.model_rebuild()
 TraceGraphApiVersion.model_rebuild()
+TraceGraphDTO.model_rebuild()
 TraceGraphError.model_rebuild()
 TraceGraphErrorCode.model_rebuild()
 TraceGraphEvidenceReferenceDTO.model_rebuild()
@@ -3027,9 +3434,11 @@ TraceGraphHistoryDTO.model_rebuild()
 TraceGraphHistoryEntryDTO.model_rebuild()
 TraceGraphMetadataDTO.model_rebuild()
 TraceGraphObjectDTO.model_rebuild()
+TraceGraphObservationDTO.model_rebuild()
 TraceGraphProvenanceDTO.model_rebuild()
 TraceGraphRelationshipDTO.model_rebuild()
 TraceGraphSnapshotDTO.model_rebuild()
+TraceProofPacketTopologyReferenceDTO.model_rebuild()
 TraceReport.model_rebuild()
 TraceScoreBreakdown.model_rebuild()
 TraceSnapshotVersion.model_rebuild()
@@ -3038,6 +3447,7 @@ TraceSourceStatus.model_rebuild()
 TraceSubjectType.model_rebuild()
 TraceSubmissionResult.model_rebuild()
 TraceSubmitRequest.model_rebuild()
+TraceTopologySourceStatus.model_rebuild()
 TraceWatchlistCreate.model_rebuild()
 TraceWatchlistEntry.model_rebuild()
 TreasuryApprovalActionIn.model_rebuild()

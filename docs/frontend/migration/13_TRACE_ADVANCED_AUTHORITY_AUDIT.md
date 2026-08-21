@@ -1,7 +1,301 @@
 # Prompt 13 advanced Trace authority audit
 
-Status: **BLOCKED — authority is insufficient for an implementation that does not
-invent forensic meaning in the browser.**
+## D3R remediation result and new request-to-render blocker (2026-08-15)
+
+The two D3 infrastructure blockers documented below are repaired. GS1 persistence now
+stores strict, digest-protected immutable Graph payloads with report, topology, and
+Claim-capture linkage; exact reads reject missing and cross-report identities. A
+centralized default-deny Trace Privacy Policy now owns Graph, Claim, Disagreement,
+source, and provenance projection. Historical disagreement reads validate the exact
+Graph Snapshot before evaluating its immutable report-captured Claims. Stage-1's schema
+compiler now supports the strict discriminated Claim-value union, and generated output
+is deterministic.
+
+Repository inspection then proved a new, deeper request-to-render blocker. The frozen
+scope claims that an existing Prompt-13 topology/history UI is available for minimal
+adapter updates, but current frontend truth has no Trace Graph topology component,
+Historical Trace ViewModel, Graph/history State, snapshot route/deep-link, node/edge
+inspector, or stable-identity marker surface. The Trace report page contains only the
+Prompt-12 report panels, and its disagreement panel is a static baseline placeholder.
+Building the complete topology renderer, inspectors, accessible alternative, keyboard
+navigation, mobile layout, history routing, stale-response lifecycle, and browser
+harness would be a new frontend foundation—not integration with an established frozen
+Prompt-13 UI.
+
+The exact new stop condition is:
+
+`D3R_PROMPT13_TOPOLOGY_UI_FOUNDATION_MISSING — persisted exact Graph/history and safe
+typed disagreement contracts now exist, but the repository contains no production
+Trace Graph topology/history request-to-render foundation to receive them; the frozen
+"existing Prompt-13 topology UI" prerequisite is absent.`
+
+Affected remaining gates are D3R-A70–A84, A94–A97, A106–A109, A113–A116. Backend
+snapshot/privacy/history gates are covered by focused tests; no frontend calculation or
+unsafe raw-dictionary fallback was introduced. The smallest safe remediation is an
+explicitly authorized Prompt-13 frontend foundation stage that creates typed Feature-54
+Graph/Claim/Disagreement ViewModels, isolated current/historical State, exact snapshot
+routing, an accessible topology renderer, and its real-browser harness.
+
+## D3 preflight: historical disagreement linkage blocker (2026-08-15)
+
+D1 and D2 remain valid: production Claim producers emit independently attributable
+`BITCOIN_NETWORK` Claims, and the backend evaluator deterministically distinguishes
+agreement, disagreement, insufficient coverage, and non-comparability. D3 cannot yet
+truthfully expose the required historical request-to-DOM contract because its stated
+snapshot and privacy prerequisites are not present in repository truth.
+
+| Required authority | Current implementation | Exact gap | Smallest safe remediation |
+| --- | --- | --- | --- |
+| Persisted immutable Graph Snapshot | `BitcoinTopologyPipeline.history_for_events` rebuilds prefix snapshots from the currently loaded `OnchainEvent` rows; `TraceGraphApiProjectionService` then derives Graph/snapshot IDs from those in-memory projections | No Graph Snapshot model, migration, repository, immutable payload, or restart-stable exact-read operation exists | Add append-only Graph Snapshot persistence with a strict versioned payload, source Topology Snapshot linkage, idempotent semantic key, and exact Trace/snapshot read |
+| Historical disagreement correlation | `TraceHistoricalDisagreementService` groups immutable Claims by `report_id` and evaluates them, while Graph history entries have no persisted capture row | A report capture cannot be associated with an exact immutable Graph Snapshot identity without timestamp approximation or current-state substitution | Persist a typed Graph Snapshot → Claim capture/evaluation-boundary reference and pin producer/evaluator versions |
+| Browser privacy authority | Existing Trace evidence governance provides endpoint-specific evidence access decisions, not a centralized Trace Graph/Claim/Disagreement field policy | There is no default-deny classification/projection authority from which a strict safe Claim or Disagreement DTO can be derived | Establish a centralized backend Trace Privacy Policy with explicit ALLOW/DENY/REDACT mappings and unknown-field DENY before adding the D3 API |
+
+The current Graph routes expose only a projection of the current snapshot and a
+transient history index. There is no operation accepting `(report_id, snapshot_id)`
+and returning that exact persisted snapshot. Consequently, adding a historical
+disagreement route now would necessarily fetch report-current Claims, approximate by
+time, or imply persistence that does not exist; each is explicitly forbidden.
+
+This is the D3-specific strict stop condition:
+
+`D3_HISTORICAL_DISAGREEMENT_LINKAGE_MISSING — D2 historical results are scoped to a
+report Claim capture, but no persisted immutable Graph Snapshot identity/state exists
+to bind that capture to an exact historical Graph; centralized default-deny Trace
+privacy projection authority is also absent.`
+
+Affected gates include D3-A06–A13, D3-A24–A31, D3-A44–A46, D3-A74–A90, and the
+original Prompt-13 immutable-history/privacy gates. D1/D2, T1–T4, and current Graph
+projection are not reopened. No API, generated transport, State, or UI was added:
+making disagreement unavailable is safer than introducing current-state fallback,
+frontend evaluation, or an unreviewed privacy allowlist.
+
+Independent rollback is documentation-only: remove this D3 preflight section. Such a
+rollback must not add a disagreement endpoint, reconstruct historical state, or expose
+internal Claim fields. The durable remediation can be rolled back independently by
+disabling exact history selection while retaining stored immutable snapshots and by
+keeping the privacy projection default-deny; it must never fall back to current Graph
+or restore denied fields.
+
+> **D2 supersession:** the internal typed Disagreement Domain now evaluates the
+> D1 `BITCOIN_NETWORK` Claim pair as agreement, disagreement, insufficient, or
+> not comparable. Resolution remains explicitly unavailable (R1). D3 still owns
+> privacy-safe API and Prompt-13 integration.
+
+> **D1 supersession:** `DISAGREEMENT_COMPARABLE_CLAIM_SOURCE_MISSING` is closed by
+> the production Claim foundation documented in `TRACE_CLAIM_FOUNDATION.md`.
+> Address syntax and T1 observation-source metadata now independently produce
+> attributable `BITCOIN_NETWORK` Claims for the same Bitcoin-address subject.
+> Disagreement evaluation remains intentionally deferred to D2.
+
+## Prompt-13R3 comparable-claim producer audit (2026-08-15)
+
+Prompt-13R3 explicitly authorized new snapshot persistence, a Claim/Disagreement
+Domain, and a centralized privacy policy. Before creating those models, the required
+producer inventory found a deeper strict-stop condition: current production Trace
+analysis never emits multiple comparable authoritative claims.
+
+### Producer inventory result
+
+| Candidate output | Comparable claims? | Classification | Reason |
+| --- | --- | --- | --- |
+| Baseline Trace score/band | No | `SINGLE_METHOD_OUTPUT` | One deterministic baseline scorer emits one band for one report |
+| Risk source registry | No | `SOURCE_CONFIGURATION_ONLY` | Registry rows describe configured sources; they do not carry source-specific claims |
+| Bitcoin observations | No | `SAME_FACT_OBSERVATIONS` | T1 emits factual address/transaction observations, not competing classifications |
+| Bitcoin topology relationship | No | `SINGLE_AUTHORITATIVE_RELATIONSHIP` | T2 emits one reproducible relation from observations; no producer disputes it |
+| Provider operational availability | No | `OPERATIONAL_PROVIDER_FAILURE` | Failure/missingness is explicitly not analytical disagreement |
+| Existing disagreement call | No | `PLACEHOLDER_SINGLE_VALUE` | Production passes one hard-coded `"unknown"` origin and one baseline risk band |
+
+`TraceService.analyze_address` calls `detect_disagreement(["unknown"],
+[scoring.band.value])`. There is no provider claim producer before this call and no
+second comparable value. `ProviderDisagreementService` can compare caller-supplied
+string arrays in isolation, but production never supplies source-associated claims.
+Its conflict branches are therefore utility behavior, not an authoritative current
+analytical disagreement source.
+
+The exact Prompt-13R3 stop code is:
+
+`DISAGREEMENT_COMPARABLE_CLAIM_SOURCE_MISSING — production Trace emits one baseline
+risk-band result and one hard-coded unknown origin label; no current producer emits
+multiple source-associated claims for the same typed subject and predicate.`
+
+Creating Claim records from the existing string-list helper would invent claim IDs,
+subjects, source association, observation times, provenance, and historical capture
+membership. Creating synthetic conflicting claims solely for API/UI acceptance would
+violate the no-fabrication rule.
+
+### Smallest safe remediation
+
+Add an analytical producer that obtains at least two genuinely comparable,
+source-associated claims for a supported current predicate (for example, the existing
+risk-band or origin-category predicate), with stable subject, source identity,
+evaluation time, provenance, confidence where owned, and limitations. That producer
+must feed the Claim/Disagreement Domain at report/snapshot creation time. Provider
+failure and missing data must remain separate states.
+
+Snapshot persistence and privacy policy can be built independently, but completing
+them cannot satisfy Prompt-13R3-A20 through A35, the typed disagreement UI, or the
+mandatory producer→DOM lineage. Because the final acceptance requires all applicable
+Prompt-13 features in this same run, partial persistence/privacy work would leave the
+same non-resumable UI state and was not introduced speculatively.
+
+T1-T4 current topology, the real non-report Bitcoin relationship, Graph projection,
+current typed Graph API, and Prompt-12 remain regression-green. The old topology
+producer blocker remains closed.
+
+---
+
+## Prompt-13R2 persistence and producer audit (2026-08-15)
+
+Prompt-13R2 authorized implementation of exact historical reads, typed disagreement,
+and browser-safe privacy projection. Preflight found that each missing transport
+contract is blocked by a deeper upstream authority gap rather than serializer work.
+No frontend or API contract was added.
+
+| Gap | Current producer/storage | Current API | Deeper missing boundary | Required authority |
+| --- | --- | --- | --- | --- |
+| Exact historical Graph read | History is recomputed from mutable `OnchainEvent` rows; no Topology or Graph snapshot model/table stores immutable payloads | History index and current snapshot reads | History IDs identify ephemeral rebuild results, not persisted immutable Graph state | Canonical immutable snapshot repository/model and migration storing safe content or immutable source references |
+| Disagreement | Producer receives parallel `list[str]` values and returns aggregate conflict metadata; persistence stores `model_dump()` JSON | Generic `dict[str, object]` | Producer discards claim-to-provider association and owns no typed alternatives, observed times, stable subjects, or canonical resolution | Upstream typed claim observations and a producer that retains claim/source identity |
+| Privacy safe projection | `PrivacyShieldReport` is persisted as generic JSON | Generic `dict[str, object]` | No repository policy classifies Graph, disagreement, provenance, or privacy fields as browser-safe/internal/redactable | Product-owned field classification and versioned default-deny safe projection policy |
+
+### Exact historical persistence evidence
+
+`BitcoinTopologyPipeline.history_for_events` deterministically rebuilds every
+history prefix in memory. `TraceGraphApiProjectionService.history_for_report_model`
+then derives IDs from those transient Graph hashes. No database model, repository,
+or migration persists a Topology Snapshot, Graph Snapshot, immutable payload, or
+immutable source-reference set. Because `OnchainEvent` rows include mutable fields,
+an exact read implemented today would rerun T1-T4 against today's rows and could
+return different content under the same conceptual historical position.
+
+The exact stop code is:
+
+`FEATURE26_IMMUTABLE_GRAPH_PAYLOAD_NOT_PERSISTED — history IDs are transient
+content-derived projections; persistence stores neither immutable Graph payloads
+nor immutable source references sufficient for an exact selected-snapshot read.`
+
+Smallest safe remediation: introduce a canonical append-only snapshot persistence
+model through the repository migration mechanism. It must correlate report ID,
+Graph snapshot ID, Topology snapshot ID, capture time, versions, integrity digest,
+and either a strict immutable safe Graph payload or immutable source references
+whose reconstruction semantics are explicitly versioned. History indexing and
+exact reads must query that repository rather than rebuild all prefixes.
+
+### Disagreement producer evidence
+
+`ProviderDisagreementService.detect_disagreement` receives only origin-label and
+risk-band string lists. It can detect aggregate conflict, but it has no claim ID,
+provider-to-claim mapping, observed time, stable Graph subject, or resolved claim.
+The first semantic loss occurs before persistence/API serialization. Wrapping the
+existing aggregate in new alternative DTOs would fabricate provider attribution
+and claim semantics.
+
+The exact stop code is:
+
+`TRACE_DISAGREEMENT_PRODUCER_SEMANTICS_INCOMPLETE — the producer owns aggregate
+conflict metadata only and receives no typed source-associated claim alternatives.`
+
+Smallest safe remediation: define typed source claims at the analytical producer
+input, preserve those claims in the disagreement result and persistence model,
+and only then project an explicit browser-safe disagreement DTO. Resolution must
+remain absent unless a backend producer genuinely owns it.
+
+### Privacy policy evidence
+
+The repository has privacy helper output but no authoritative cross-domain policy
+classifying Graph nodes, relationships, observation references, provenance,
+disagreement claims, and privacy fields into browser-safe, internal-only, secret,
+or redactable categories. Creating an allowlist without that product authority
+would silently decide security semantics in this implementation prompt.
+
+The exact stop code is:
+
+`TRACE_PRIVACY_POLICY_AUTHORITY_MISSING — no canonical field-classification policy
+defines which Trace Graph, historical, disagreement, provenance, and privacy fields
+may cross the browser boundary.`
+
+Smallest safe remediation: establish a versioned backend privacy policy and tests
+for every exposed field, then implement an explicit constructor-based allowlist.
+Unknown fields must remain denied, original redacted values must never enter the
+DTO, and synthetic canaries must be absent at HTTP serialization.
+
+Because these are valid Prompt-13R2 stop conditions, implementing routes, generated
+contracts, Feature-54 adapters, State, or browser UI now would require fabricating
+immutable persistence, disagreement claim semantics, or privacy policy. The T1-T4
+current-topology chain remains healthy and is not reopened.
+
+---
+
+Status: **BLOCKED ON RETRY — T1-T4 topology authority is present, but the current
+transport does not provide a selectable historical Graph capture and the advanced
+disagreement/privacy endpoints remain type-erased.**
+
+## Prompt-13 retry preflight (2026-08-15)
+
+The T1-T4 regression chain now passes and produces the real, directed, non-report
+`ADDRESS_PARTICIPATES_IN_TRANSACTION` relationship through Observation,
+Relationship, Topology Snapshot, Graph Snapshot, and the typed current Graph API.
+The old `FEATURE23_ANALYTICAL_RELATIONSHIP_SOURCE_MISSING` blocker is therefore
+closed and must not be reused.
+
+UI implementation still cannot begin truthfully because three independently
+required read boundaries are incomplete:
+
+1. `GET /trace/report/{report_id}/graph/history` returns typed history metadata,
+   but there is no operation that accepts a stable topology/Graph snapshot ID and
+   returns that exact historical Graph. The current snapshot endpoint always
+   rebuilds the latest topology from all matching `OnchainEvent` rows. A browser
+   cannot deep-link, refresh, or render capture A after capture B without either
+   reconstructing history or silently loading current data.
+2. `GET /trace/report/{report_id}/provider-disagreement` still declares a generic
+   dictionary response and does not expose typed alternatives, provider identity,
+   observation time, or an authoritative resolution. A frontend adapter would
+   have to interpret arbitrary keys or manufacture the comparison model.
+3. `GET /trace/report/{report_id}/privacy-shield` still declares a generic
+   dictionary response. There is no versioned browser-safe allowlist DTO carrying
+   redaction posture and allowed actions, so absence of internal fields cannot be
+   proven by construction through generated transport, State, and DOM.
+
+Feature 25 also remains not applicable to animation: current topology node DTOs
+do not own per-node freshness. Prompt 13 may render nodes statically, but must not
+reuse report freshness as node freshness or claim the canonical node-pulse feature.
+
+The retry stop code is:
+
+`FEATURE26_HISTORICAL_CAPTURE_READ_REGRESSION — history lists snapshot identities,
+but no typed operation can retrieve the exact immutable Graph for a selected
+snapshot; disagreement and privacy safe-read contracts are also not UI-ready.`
+
+### Recovered feature status
+
+| Feature | Canonical name | Backend authority now available | Prompt-13 UI responsibility | Retry disposition |
+| --- | --- | --- | --- | --- |
+| 23 | Graph focus, pin and isolate | Current typed Graph contains authoritative Bitcoin address/transaction nodes and directed non-report relationships | Presentation-only focus, pin, isolate, inspectors, and accessible equivalent | `READY_AFTER_SHARED_BLOCKERS` |
+| 24 | Semantic graph edge types | Typed Graph relationship identity, source, target, direction, taxonomy, provenance, and limitations | Render exact backend semantics; never merge or strengthen edges | `READY_AFTER_SHARED_BLOCKERS` |
+| 25 | Node pulse driven by freshness | No per-node freshness authority | Static node rendering only; pulse is not applicable | `NOT_APPLICABLE_UNTIL_NODE_FRESHNESS_EXISTS` |
+| 26 | Graph time travel | Typed history index and snapshot correlation exist, but selected capture retrieval does not | Deep-link and render an exact immutable selected capture | `BLOCKED_MISSING_CAPTURE_READ_OPERATION` |
+
+### Retry authority matrix
+
+| UI concept | Current operation | DTO authority | Frontend-safe status |
+| --- | --- | --- | --- |
+| Current node/edge topology | Graph snapshot/object/relationship reads | Strict generated Graph DTOs | Ready |
+| Historical index | Graph history read | Strict history entries | Ready as an index only |
+| Selected historical topology | None | None | Blocked; frontend reconstruction forbidden |
+| Disagreement | Provider-disagreement read | `dict[str, object]` | Blocked by type erasure |
+| Privacy | Privacy-shield read | `dict[str, object]` | Blocked; no default-deny browser DTO |
+
+No topology route, Reflex State, renderer, fixtures, or browser evidence is added
+by this retry audit. That preserves semantic-inference, historical-reconstruction,
+disagreement-calculation, and browser-private-field counts at zero.
+
+---
+
+The material below records the original pre-T1 audit and is retained as historical
+context. Its Feature-23 topology-source conclusion is superseded by the retry
+preflight above.
+
+Status at original audit: **BLOCKED — authority was insufficient for an
+implementation that did not invent forensic meaning in the browser.**
 
 Prompt-13R stop code:
 

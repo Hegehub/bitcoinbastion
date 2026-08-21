@@ -1,13 +1,13 @@
 {
   "counts": {
-    "api_v1_operations": 348,
-    "api_v1_paths": 330,
+    "api_v1_operations": 368,
+    "api_v1_paths": 350,
     "duplicate_operation_ids": [
       "market_time_machine_market_time_machine_get"
     ],
-    "operations": 380,
-    "paths": 362,
-    "schemas": 325,
+    "operations": 400,
+    "paths": 382,
+    "schemas": 390,
     "security_schemes": [
       "BastionHumanIntentSignature",
       "BastionPoPSession",
@@ -21,10 +21,10 @@
   "metadata": {
     "branch": "work",
     "command": "python scripts/generate_frontend_migration_audit.py",
-    "contract_source_fingerprint": "10148b9d574d18b38f73a6ab767b499a30cac9020d31db5aa7fb797f8243fef1",
-    "generated_at_utc": "2026-08-12T19:10:51+00:00",
-    "generator_fingerprint": "94a166036cc661878ee2534e0339e9c10206e8c668870417f24d1195001760af",
-    "head": "8f51ff96f1820f59a4dcb853e623ecd822b9bbfe",
+    "contract_source_fingerprint": "771f8a9cd195ae5fb59eb71cd7e88905381b36adb7155df95eaacb726d562067",
+    "generated_at_utc": "2026-08-21T15:35:34+00:00",
+    "generator_fingerprint": "4816751a817b87a09e439ea1c4d3f0c81b328688cc36896cf72bda469697eab3",
+    "head": "baf70f4d65bf1dd04732cde7275dda49fbda1403",
     "profile": "current environment / app.core.config defaults",
     "python": "Python 3.12.13"
   },
@@ -229,6 +229,37 @@
           "title": "AccessChallengeResponse",
           "type": "object"
         },
+        "AccessIssueRequest": {
+          "additionalProperties": false,
+          "properties": {
+            "challenge_id": {
+              "title": "Challenge Id",
+              "type": "string"
+            },
+            "checkout_id": {
+              "title": "Checkout Id",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "maxLength": 128,
+              "minLength": 16,
+              "title": "Idempotency Key",
+              "type": "string"
+            },
+            "signature": {
+              "title": "Signature",
+              "type": "string"
+            }
+          },
+          "required": [
+            "checkout_id",
+            "challenge_id",
+            "signature",
+            "idempotency_key"
+          ],
+          "title": "AccessIssueRequest",
+          "type": "object"
+        },
         "AccessLimitsResponse": {
           "properties": {
             "limits": {
@@ -422,6 +453,76 @@
             "recovery_status_summary"
           ],
           "title": "AccessMeResponse",
+          "type": "object"
+        },
+        "AccessOfferOut": {
+          "additionalProperties": false,
+          "properties": {
+            "amount_sats": {
+              "minimum": 0.0,
+              "title": "Amount Sats",
+              "type": "integer"
+            },
+            "availability": {
+              "$ref": "#/components/schemas/OfferAvailability"
+            },
+            "capability": {
+              "title": "Capability",
+              "type": "string"
+            },
+            "duration_days": {
+              "exclusiveMinimum": 0.0,
+              "title": "Duration Days",
+              "type": "integer"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "offer_id": {
+              "title": "Offer Id",
+              "type": "string"
+            },
+            "plan_code": {
+              "$ref": "#/components/schemas/PlanCode"
+            },
+            "price_unit": {
+              "title": "Price Unit",
+              "type": "string"
+            },
+            "revision_id": {
+              "title": "Revision Id",
+              "type": "string"
+            },
+            "scopes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Scopes",
+              "type": "array"
+            },
+            "terms_version": {
+              "title": "Terms Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "offer_id",
+            "revision_id",
+            "plan_code",
+            "capability",
+            "scopes",
+            "amount_sats",
+            "price_unit",
+            "duration_days",
+            "terms_version",
+            "availability",
+            "limitations"
+          ],
+          "title": "AccessOfferOut",
           "type": "object"
         },
         "AccessPaymentIntentCreate": {
@@ -1187,6 +1288,142 @@
           ],
           "title": "ChainStateOut",
           "type": "object"
+        },
+        "CheckoutCreateRequest": {
+          "additionalProperties": false,
+          "properties": {
+            "idempotency_key": {
+              "maxLength": 128,
+              "minLength": 16,
+              "title": "Idempotency Key",
+              "type": "string"
+            },
+            "offer_id": {
+              "title": "Offer Id",
+              "type": "string"
+            },
+            "payment_method": {
+              "default": "manual",
+              "title": "Payment Method",
+              "type": "string"
+            }
+          },
+          "required": [
+            "offer_id",
+            "idempotency_key"
+          ],
+          "title": "CheckoutCreateRequest",
+          "type": "object"
+        },
+        "CheckoutOut": {
+          "additionalProperties": false,
+          "properties": {
+            "amount_sats": {
+              "title": "Amount Sats",
+              "type": "integer"
+            },
+            "capability": {
+              "title": "Capability",
+              "type": "string"
+            },
+            "checkout_id": {
+              "title": "Checkout Id",
+              "type": "string"
+            },
+            "created_at": {
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
+            },
+            "duration_days": {
+              "title": "Duration Days",
+              "type": "integer"
+            },
+            "eligibility_reason": {
+              "$ref": "#/components/schemas/EligibilityReason"
+            },
+            "expires_at": {
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
+            },
+            "issuance_eligible": {
+              "title": "Issuance Eligible",
+              "type": "boolean"
+            },
+            "offer_id": {
+              "title": "Offer Id",
+              "type": "string"
+            },
+            "offer_revision_id": {
+              "title": "Offer Revision Id",
+              "type": "string"
+            },
+            "payment_intent_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Payment Intent Id"
+            },
+            "plan_code": {
+              "$ref": "#/components/schemas/PlanCode"
+            },
+            "price_unit": {
+              "title": "Price Unit",
+              "type": "string"
+            },
+            "scopes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Scopes",
+              "type": "array"
+            },
+            "status": {
+              "$ref": "#/components/schemas/CheckoutStatus"
+            },
+            "terms_version": {
+              "title": "Terms Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "checkout_id",
+            "offer_id",
+            "offer_revision_id",
+            "plan_code",
+            "capability",
+            "scopes",
+            "amount_sats",
+            "price_unit",
+            "duration_days",
+            "terms_version",
+            "status",
+            "issuance_eligible",
+            "eligibility_reason",
+            "payment_intent_id",
+            "created_at",
+            "expires_at"
+          ],
+          "title": "CheckoutOut",
+          "type": "object"
+        },
+        "CheckoutStatus": {
+          "enum": [
+            "awaiting_payment",
+            "eligible",
+            "expired",
+            "cancelled",
+            "failed",
+            "issued"
+          ],
+          "title": "CheckoutStatus",
+          "type": "string"
         },
         "ChildApiKeyCreate": {
           "additionalProperties": false,
@@ -2616,6 +2853,16 @@
           "title": "EducationSnippetOut",
           "type": "object"
         },
+        "EligibilityReason": {
+          "enum": [
+            "payment_pending",
+            "payment_settled",
+            "checkout_expired",
+            "terminal_state"
+          ],
+          "title": "EligibilityReason",
+          "type": "string"
+        },
         "EnterpriseRole": {
           "enum": [
             "OWNER",
@@ -2743,6 +2990,168 @@
           "title": "EvidenceEdgeOut",
           "type": "object"
         },
+        "EvidenceLineageCompleteness": {
+          "enum": [
+            "complete",
+            "partial",
+            "truncated",
+            "unavailable"
+          ],
+          "title": "EvidenceLineageCompleteness",
+          "type": "string"
+        },
+        "EvidenceLineageEdgeDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "direction": {
+              "default": "directed",
+              "title": "Direction",
+              "type": "string"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "relation": {
+              "$ref": "#/components/schemas/EvidenceLineageRelation"
+            },
+            "source_id": {
+              "title": "Source Id",
+              "type": "string"
+            },
+            "target_id": {
+              "title": "Target Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "source_id",
+            "target_id",
+            "relation"
+          ],
+          "title": "EvidenceLineageEdgeDTO",
+          "type": "object"
+        },
+        "EvidenceLineageNodeDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "captured_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Captured At"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "kind": {
+              "$ref": "#/components/schemas/EvidenceLineageNodeKind"
+            },
+            "label": {
+              "title": "Label",
+              "type": "string"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "producer": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Producer"
+            },
+            "producer_version": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Producer Version"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "label"
+          ],
+          "title": "EvidenceLineageNodeDTO",
+          "type": "object"
+        },
+        "EvidenceLineageNodeKind": {
+          "enum": [
+            "source_reference",
+            "evidence",
+            "topology_relationship",
+            "claim",
+            "graph_snapshot",
+            "report_capture",
+            "proof_packet"
+          ],
+          "title": "EvidenceLineageNodeKind",
+          "type": "string"
+        },
+        "EvidenceLineagePathDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "edge_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Edge Ids",
+              "type": "array"
+            },
+            "node_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Node Ids",
+              "type": "array"
+            },
+            "path_id": {
+              "title": "Path Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "path_id",
+            "node_ids",
+            "edge_ids"
+          ],
+          "title": "EvidenceLineagePathDTO",
+          "type": "object"
+        },
+        "EvidenceLineageRelation": {
+          "enum": [
+            "produced_from",
+            "supports",
+            "captured_in",
+            "included_in",
+            "referenced_by"
+          ],
+          "title": "EvidenceLineageRelation",
+          "type": "string"
+        },
         "EvidenceNodeOut": {
           "properties": {
             "label": {
@@ -2770,6 +3179,47 @@
           ],
           "title": "EvidenceNodeOut",
           "type": "object"
+        },
+        "EvidenceReplayEligibility": {
+          "enum": [
+            "replayable",
+            "not_replayable",
+            "input_unavailable",
+            "version_unavailable",
+            "unsupported_legacy"
+          ],
+          "title": "EvidenceReplayEligibility",
+          "type": "string"
+        },
+        "EvidenceReplayStatus": {
+          "enum": [
+            "match",
+            "mismatch",
+            "not_replayable",
+            "input_unavailable",
+            "version_unavailable",
+            "execution_failed"
+          ],
+          "title": "EvidenceReplayStatus",
+          "type": "string"
+        },
+        "EvidenceVerificationScope": {
+          "enum": [
+            "evidence_identity_integrity"
+          ],
+          "title": "EvidenceVerificationScope",
+          "type": "string"
+        },
+        "EvidenceVerificationStatus": {
+          "enum": [
+            "verified",
+            "failed",
+            "not_run",
+            "unavailable",
+            "unsupported"
+          ],
+          "title": "EvidenceVerificationStatus",
+          "type": "string"
         },
         "ExplainabilityOut": {
           "additionalProperties": true,
@@ -3756,6 +4206,134 @@
             "degraded_state"
           ],
           "title": "IntelligenceHealthOut",
+          "type": "object"
+        },
+        "IssuanceChallengeCreateRequest": {
+          "additionalProperties": false,
+          "properties": {
+            "checkout_id": {
+              "title": "Checkout Id",
+              "type": "string"
+            },
+            "device_public_key": {
+              "title": "Device Public Key",
+              "type": "string"
+            }
+          },
+          "required": [
+            "checkout_id",
+            "device_public_key"
+          ],
+          "title": "IssuanceChallengeCreateRequest",
+          "type": "object"
+        },
+        "IssuanceChallengeOut": {
+          "additionalProperties": false,
+          "properties": {
+            "algorithm": {
+              "title": "Algorithm",
+              "type": "string"
+            },
+            "canonical_payload": {
+              "title": "Canonical Payload",
+              "type": "string"
+            },
+            "challenge_id": {
+              "title": "Challenge Id",
+              "type": "string"
+            },
+            "checkout_id": {
+              "title": "Checkout Id",
+              "type": "string"
+            },
+            "expires_at": {
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
+            },
+            "protocol_version": {
+              "title": "Protocol Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "challenge_id",
+            "checkout_id",
+            "canonical_payload",
+            "protocol_version",
+            "algorithm",
+            "expires_at"
+          ],
+          "title": "IssuanceChallengeOut",
+          "type": "object"
+        },
+        "IssuedAccessOut": {
+          "additionalProperties": false,
+          "properties": {
+            "capability": {
+              "title": "Capability",
+              "type": "string"
+            },
+            "certificate_fingerprint": {
+              "title": "Certificate Fingerprint",
+              "type": "string"
+            },
+            "checkout_id": {
+              "title": "Checkout Id",
+              "type": "string"
+            },
+            "device_key_fingerprint": {
+              "title": "Device Key Fingerprint",
+              "type": "string"
+            },
+            "expires_at": {
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
+            },
+            "grant_id": {
+              "title": "Grant Id",
+              "type": "string"
+            },
+            "issued_at": {
+              "format": "date-time",
+              "title": "Issued At",
+              "type": "string"
+            },
+            "offer_revision_id": {
+              "title": "Offer Revision Id",
+              "type": "string"
+            },
+            "scopes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Scopes",
+              "type": "array"
+            },
+            "status": {
+              "title": "Status",
+              "type": "string"
+            },
+            "terms_version": {
+              "title": "Terms Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "grant_id",
+            "checkout_id",
+            "offer_revision_id",
+            "certificate_fingerprint",
+            "device_key_fingerprint",
+            "capability",
+            "scopes",
+            "terms_version",
+            "status",
+            "issued_at",
+            "expires_at"
+          ],
+          "title": "IssuedAccessOut",
           "type": "object"
         },
         "JobRetryRequest": {
@@ -5271,6 +5849,14 @@
           ],
           "title": "NewsArticleOut",
           "type": "object"
+        },
+        "OfferAvailability": {
+          "enum": [
+            "active",
+            "inactive"
+          ],
+          "title": "OfferAvailability",
+          "type": "string"
         },
         "OnchainChainStateOut": {
           "properties": {
@@ -9365,6 +9951,108 @@
           "title": "ResponseEnvelope[RecoveryReadinessOut]",
           "type": "object"
         },
+        "ResponseEnvelope_SafeEvidenceExportDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/SafeEvidenceExportDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[SafeEvidenceExportDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_SafeEvidenceLineageDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/SafeEvidenceLineageDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[SafeEvidenceLineageDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_SafeEvidenceReplayDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/SafeEvidenceReplayDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[SafeEvidenceReplayDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_SafeEvidenceVerificationDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/SafeEvidenceVerificationDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[SafeEvidenceVerificationDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_SafeTraceDisagreementCollectionDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/SafeTraceDisagreementCollectionDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[SafeTraceDisagreementCollectionDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_SafeTraceProofPacketDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/SafeTraceProofPacketDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[SafeTraceProofPacketDTO]",
+          "type": "object"
+        },
         "ResponseEnvelope_SignalExplanationOut_": {
           "properties": {
             "data": {
@@ -9397,6 +10085,108 @@
             "data"
           ],
           "title": "ResponseEnvelope[SignalRecommendationOut]",
+          "type": "object"
+        },
+        "ResponseEnvelope_TraceGraphDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/TraceGraphDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[TraceGraphDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_TraceGraphHistoryDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/TraceGraphHistoryDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[TraceGraphHistoryDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_TraceGraphMetadataDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/TraceGraphMetadataDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[TraceGraphMetadataDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_TraceGraphObjectDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/TraceGraphObjectDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[TraceGraphObjectDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_TraceGraphRelationshipDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/TraceGraphRelationshipDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[TraceGraphRelationshipDTO]",
+          "type": "object"
+        },
+        "ResponseEnvelope_TraceGraphSnapshotDTO_": {
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/TraceGraphSnapshotDTO"
+            },
+            "success": {
+              "default": true,
+              "title": "Success",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "ResponseEnvelope[TraceGraphSnapshotDTO]",
           "type": "object"
         },
         "ResponseEnvelope_TraceReport_": {
@@ -10101,6 +10891,782 @@
           ],
           "title": "SLOUnit",
           "type": "string"
+        },
+        "SafeBitcoinNetworkClaimValueDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "bitcoin_network",
+              "title": "Kind",
+              "type": "string"
+            },
+            "network": {
+              "title": "Network",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "network"
+          ],
+          "title": "SafeBitcoinNetworkClaimValueDTO",
+          "type": "object"
+        },
+        "SafeEvidenceExportDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "content": {
+              "title": "Content",
+              "type": "string"
+            },
+            "content_digest": {
+              "title": "Content Digest",
+              "type": "string"
+            },
+            "evidence_id": {
+              "title": "Evidence Id",
+              "type": "string"
+            },
+            "export_id": {
+              "title": "Export Id",
+              "type": "string"
+            },
+            "filename": {
+              "title": "Filename",
+              "type": "string"
+            },
+            "graph_snapshot_id": {
+              "title": "Graph Snapshot Id",
+              "type": "string"
+            },
+            "integrity_status": {
+              "title": "Integrity Status",
+              "type": "string"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "media_type": {
+              "title": "Media Type",
+              "type": "string"
+            },
+            "proof_packet_id": {
+              "title": "Proof Packet Id",
+              "type": "string"
+            },
+            "schema_version": {
+              "title": "Schema Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "export_id",
+            "evidence_id",
+            "graph_snapshot_id",
+            "proof_packet_id",
+            "schema_version",
+            "media_type",
+            "filename",
+            "content",
+            "content_digest",
+            "integrity_status"
+          ],
+          "title": "SafeEvidenceExportDTO",
+          "type": "object"
+        },
+        "SafeEvidenceLineageDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "completeness": {
+              "$ref": "#/components/schemas/EvidenceLineageCompleteness"
+            },
+            "edges": {
+              "items": {
+                "$ref": "#/components/schemas/EvidenceLineageEdgeDTO"
+              },
+              "title": "Edges",
+              "type": "array"
+            },
+            "evidence": {
+              "$ref": "#/components/schemas/SafeTraceEvidenceDTO"
+            },
+            "graph_snapshot_id": {
+              "title": "Graph Snapshot Id",
+              "type": "string"
+            },
+            "historical": {
+              "title": "Historical",
+              "type": "boolean"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "nodes": {
+              "items": {
+                "$ref": "#/components/schemas/EvidenceLineageNodeDTO"
+              },
+              "title": "Nodes",
+              "type": "array"
+            },
+            "paths": {
+              "items": {
+                "$ref": "#/components/schemas/EvidenceLineagePathDTO"
+              },
+              "title": "Paths",
+              "type": "array"
+            },
+            "proof_packet_id": {
+              "title": "Proof Packet Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "evidence",
+            "graph_snapshot_id",
+            "proof_packet_id",
+            "historical",
+            "completeness",
+            "nodes",
+            "edges",
+            "paths"
+          ],
+          "title": "SafeEvidenceLineageDTO",
+          "type": "object"
+        },
+        "SafeEvidenceReplayDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "comparison_scope": {
+              "title": "Comparison Scope",
+              "type": "string"
+            },
+            "eligibility": {
+              "$ref": "#/components/schemas/EvidenceReplayEligibility"
+            },
+            "evidence_id": {
+              "title": "Evidence Id",
+              "type": "string"
+            },
+            "graph_snapshot_id": {
+              "title": "Graph Snapshot Id",
+              "type": "string"
+            },
+            "immutable_input_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Immutable Input Ids",
+              "type": "array"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "method_id": {
+              "title": "Method Id",
+              "type": "string"
+            },
+            "method_version": {
+              "title": "Method Version",
+              "type": "string"
+            },
+            "original_identity": {
+              "title": "Original Identity",
+              "type": "string"
+            },
+            "replay_id": {
+              "title": "Replay Id",
+              "type": "string"
+            },
+            "replayed_at": {
+              "format": "date-time",
+              "title": "Replayed At",
+              "type": "string"
+            },
+            "reproduced_identity": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Reproduced Identity"
+            },
+            "status": {
+              "$ref": "#/components/schemas/EvidenceReplayStatus"
+            }
+          },
+          "required": [
+            "replay_id",
+            "evidence_id",
+            "graph_snapshot_id",
+            "eligibility",
+            "status",
+            "immutable_input_ids",
+            "method_id",
+            "method_version",
+            "original_identity",
+            "reproduced_identity",
+            "comparison_scope",
+            "replayed_at"
+          ],
+          "title": "SafeEvidenceReplayDTO",
+          "type": "object"
+        },
+        "SafeEvidenceVerificationDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "evidence_id": {
+              "title": "Evidence Id",
+              "type": "string"
+            },
+            "graph_snapshot_id": {
+              "title": "Graph Snapshot Id",
+              "type": "string"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "proposition": {
+              "title": "Proposition",
+              "type": "string"
+            },
+            "scope": {
+              "$ref": "#/components/schemas/EvidenceVerificationScope"
+            },
+            "status": {
+              "$ref": "#/components/schemas/EvidenceVerificationStatus"
+            },
+            "verification_id": {
+              "title": "Verification Id",
+              "type": "string"
+            },
+            "verified_at": {
+              "format": "date-time",
+              "title": "Verified At",
+              "type": "string"
+            },
+            "verifier_id": {
+              "title": "Verifier Id",
+              "type": "string"
+            },
+            "verifier_version": {
+              "title": "Verifier Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "verification_id",
+            "evidence_id",
+            "graph_snapshot_id",
+            "verifier_id",
+            "verifier_version",
+            "scope",
+            "status",
+            "verified_at",
+            "proposition"
+          ],
+          "title": "SafeEvidenceVerificationDTO",
+          "type": "object"
+        },
+        "SafeRiskBandClaimValueDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "band": {
+              "title": "Band",
+              "type": "string"
+            },
+            "kind": {
+              "const": "risk_band",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "band"
+          ],
+          "title": "SafeRiskBandClaimValueDTO",
+          "type": "object"
+        },
+        "SafeTraceClaimDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "confidence": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Confidence"
+            },
+            "evaluated_at": {
+              "format": "date-time",
+              "title": "Evaluated At",
+              "type": "string"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "predicate": {
+              "title": "Predicate",
+              "type": "string"
+            },
+            "producer": {
+              "title": "Producer",
+              "type": "string"
+            },
+            "producer_version": {
+              "title": "Producer Version",
+              "type": "string"
+            },
+            "provenance": {
+              "$ref": "#/components/schemas/SafeTraceClaimProvenanceDTO"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
+            "subject": {
+              "$ref": "#/components/schemas/SafeTraceClaimSubjectDTO"
+            },
+            "value": {
+              "discriminator": {
+                "mapping": {
+                  "bitcoin_network": "#/components/schemas/SafeBitcoinNetworkClaimValueDTO",
+                  "risk_band": "#/components/schemas/SafeRiskBandClaimValueDTO"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/SafeRiskBandClaimValueDTO"
+                },
+                {
+                  "$ref": "#/components/schemas/SafeBitcoinNetworkClaimValueDTO"
+                }
+              ],
+              "title": "Value"
+            }
+          },
+          "required": [
+            "id",
+            "subject",
+            "predicate",
+            "value",
+            "producer",
+            "source",
+            "producer_version",
+            "evaluated_at",
+            "confidence",
+            "provenance",
+            "limitations"
+          ],
+          "title": "SafeTraceClaimDTO",
+          "type": "object"
+        },
+        "SafeTraceClaimProvenanceDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "input_references": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Input References",
+              "type": "array"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            }
+          },
+          "required": [
+            "input_references",
+            "limitations"
+          ],
+          "title": "SafeTraceClaimProvenanceDTO",
+          "type": "object"
+        },
+        "SafeTraceClaimSubjectDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "title": "Kind",
+              "type": "string"
+            },
+            "object_id": {
+              "title": "Object Id",
+              "type": "string"
+            },
+            "public_value": {
+              "title": "Public Value",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "object_id",
+            "public_value"
+          ],
+          "title": "SafeTraceClaimSubjectDTO",
+          "type": "object"
+        },
+        "SafeTraceDisagreementCollectionDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "evaluations": {
+              "items": {
+                "$ref": "#/components/schemas/SafeTraceDisagreementDTO"
+              },
+              "title": "Evaluations",
+              "type": "array"
+            },
+            "graph_snapshot_id": {
+              "title": "Graph Snapshot Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "graph_snapshot_id",
+            "evaluations"
+          ],
+          "title": "SafeTraceDisagreementCollectionDTO",
+          "type": "object"
+        },
+        "SafeTraceDisagreementCoverageDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "eligible_claim_count": {
+              "title": "Eligible Claim Count",
+              "type": "integer"
+            },
+            "eligible_producer_count": {
+              "title": "Eligible Producer Count",
+              "type": "integer"
+            },
+            "failed_producer_count": {
+              "title": "Failed Producer Count",
+              "type": "integer"
+            },
+            "insufficient_producer_count": {
+              "title": "Insufficient Producer Count",
+              "type": "integer"
+            },
+            "unavailable_producer_count": {
+              "title": "Unavailable Producer Count",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "eligible_claim_count",
+            "eligible_producer_count",
+            "unavailable_producer_count",
+            "insufficient_producer_count",
+            "failed_producer_count"
+          ],
+          "title": "SafeTraceDisagreementCoverageDTO",
+          "type": "object"
+        },
+        "SafeTraceDisagreementDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "claims": {
+              "items": {
+                "$ref": "#/components/schemas/SafeTraceClaimDTO"
+              },
+              "title": "Claims",
+              "type": "array"
+            },
+            "coverage": {
+              "$ref": "#/components/schemas/SafeTraceDisagreementCoverageDTO"
+            },
+            "evaluation_id": {
+              "title": "Evaluation Id",
+              "type": "string"
+            },
+            "evaluator_version": {
+              "title": "Evaluator Version",
+              "type": "string"
+            },
+            "graph_snapshot_id": {
+              "title": "Graph Snapshot Id",
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "predicate": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Predicate"
+            },
+            "resolution_status": {
+              "title": "Resolution Status",
+              "type": "string"
+            },
+            "status": {
+              "title": "Status",
+              "type": "string"
+            },
+            "subject": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SafeTraceClaimSubjectDTO"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "evaluation_id",
+            "status",
+            "resolution_status",
+            "subject",
+            "predicate",
+            "claims",
+            "coverage",
+            "evaluator_version",
+            "graph_snapshot_id",
+            "limitations"
+          ],
+          "title": "SafeTraceDisagreementDTO",
+          "type": "object"
+        },
+        "SafeTraceEvidenceDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "captured_at": {
+              "format": "date-time",
+              "title": "Captured At",
+              "type": "string"
+            },
+            "evidence_id": {
+              "title": "Evidence Id",
+              "type": "string"
+            },
+            "integrity_status": {
+              "$ref": "#/components/schemas/TraceEvidenceIntegrityStatus"
+            },
+            "kind": {
+              "$ref": "#/components/schemas/TraceEvidenceKind"
+            },
+            "limitations": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "linked_claim_ids": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Linked Claim Ids",
+              "type": "array"
+            },
+            "linked_relationship_ids": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Linked Relationship Ids",
+              "type": "array"
+            },
+            "producer": {
+              "title": "Producer",
+              "type": "string"
+            },
+            "reference": {
+              "title": "Reference",
+              "type": "string"
+            },
+            "source_category": {
+              "title": "Source Category",
+              "type": "string"
+            },
+            "verification_status": {
+              "$ref": "#/components/schemas/TraceEvidenceVerificationStatus"
+            }
+          },
+          "required": [
+            "evidence_id",
+            "kind",
+            "reference",
+            "producer",
+            "source_category",
+            "captured_at",
+            "integrity_status",
+            "verification_status"
+          ],
+          "title": "SafeTraceEvidenceDTO",
+          "type": "object"
+        },
+        "SafeTraceProofPacketDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "advisory_only": {
+              "default": true,
+              "title": "Advisory Only",
+              "type": "boolean"
+            },
+            "assembler_version": {
+              "title": "Assembler Version",
+              "type": "string"
+            },
+            "captured_at": {
+              "format": "date-time",
+              "title": "Captured At",
+              "type": "string"
+            },
+            "claim_capture_id": {
+              "title": "Claim Capture Id",
+              "type": "string"
+            },
+            "claims": {
+              "items": {
+                "$ref": "#/components/schemas/SafeTraceClaimDTO"
+              },
+              "title": "Claims",
+              "type": "array"
+            },
+            "disagreements": {
+              "items": {
+                "$ref": "#/components/schemas/SafeTraceDisagreementDTO"
+              },
+              "title": "Disagreements",
+              "type": "array"
+            },
+            "evidence": {
+              "items": {
+                "$ref": "#/components/schemas/SafeTraceEvidenceDTO"
+              },
+              "title": "Evidence",
+              "type": "array"
+            },
+            "graph_snapshot_id": {
+              "title": "Graph Snapshot Id",
+              "type": "string"
+            },
+            "historical": {
+              "title": "Historical",
+              "type": "boolean"
+            },
+            "integrity_status": {
+              "$ref": "#/components/schemas/TraceEvidenceIntegrityStatus"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "not_bitcoin_consensus_proof": {
+              "default": true,
+              "title": "Not Bitcoin Consensus Proof",
+              "type": "boolean"
+            },
+            "not_legal_verification": {
+              "default": true,
+              "title": "Not Legal Verification",
+              "type": "boolean"
+            },
+            "packet_digest": {
+              "title": "Packet Digest",
+              "type": "string"
+            },
+            "packet_id": {
+              "title": "Packet Id",
+              "type": "string"
+            },
+            "packet_schema_version": {
+              "title": "Packet Schema Version",
+              "type": "string"
+            },
+            "subject": {
+              "title": "Subject",
+              "type": "string"
+            },
+            "topology": {
+              "$ref": "#/components/schemas/TraceProofPacketTopologyReferenceDTO"
+            },
+            "trace_id": {
+              "title": "Trace Id",
+              "type": "integer"
+            },
+            "verification_status": {
+              "$ref": "#/components/schemas/TraceEvidenceVerificationStatus"
+            }
+          },
+          "required": [
+            "packet_id",
+            "packet_schema_version",
+            "assembler_version",
+            "trace_id",
+            "graph_snapshot_id",
+            "claim_capture_id",
+            "subject",
+            "captured_at",
+            "historical",
+            "topology",
+            "claims",
+            "disagreements",
+            "evidence",
+            "packet_digest",
+            "integrity_status",
+            "verification_status"
+          ],
+          "title": "SafeTraceProofPacketDTO",
+          "type": "object"
         },
         "SignalExplanationOut": {
           "properties": {
@@ -11026,6 +12592,31 @@
           "title": "TraceEvidence",
           "type": "object"
         },
+        "TraceEvidenceIntegrityStatus": {
+          "enum": [
+            "not_checked",
+            "content_integrity_checked"
+          ],
+          "title": "TraceEvidenceIntegrityStatus",
+          "type": "string"
+        },
+        "TraceEvidenceKind": {
+          "enum": [
+            "topology_relationship_support",
+            "claim_input_reference",
+            "report_evidence_reference"
+          ],
+          "title": "TraceEvidenceKind",
+          "type": "string"
+        },
+        "TraceEvidenceVerificationStatus": {
+          "enum": [
+            "not_verified",
+            "verification_unavailable"
+          ],
+          "title": "TraceEvidenceVerificationStatus",
+          "type": "string"
+        },
         "TraceFactorContribution": {
           "properties": {
             "contribution": {
@@ -11073,6 +12664,627 @@
           ],
           "title": "TraceFreshness",
           "type": "string"
+        },
+        "TraceGraphApiVersion": {
+          "enum": [
+            "trace-graph-api-v1"
+          ],
+          "title": "TraceGraphApiVersion",
+          "type": "string"
+        },
+        "TraceGraphDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "metadata": {
+              "$ref": "#/components/schemas/TraceGraphMetadataDTO"
+            },
+            "objects": {
+              "items": {
+                "$ref": "#/components/schemas/TraceGraphObjectDTO"
+              },
+              "title": "Objects",
+              "type": "array"
+            },
+            "observations": {
+              "items": {
+                "$ref": "#/components/schemas/TraceGraphObservationDTO"
+              },
+              "title": "Observations",
+              "type": "array"
+            },
+            "relationships": {
+              "items": {
+                "$ref": "#/components/schemas/TraceGraphRelationshipDTO"
+              },
+              "title": "Relationships",
+              "type": "array"
+            },
+            "snapshot": {
+              "$ref": "#/components/schemas/TraceGraphSnapshotDTO"
+            }
+          },
+          "required": [
+            "metadata",
+            "objects",
+            "relationships",
+            "observations",
+            "snapshot"
+          ],
+          "title": "TraceGraphDTO",
+          "type": "object"
+        },
+        "TraceGraphError": {
+          "additionalProperties": false,
+          "properties": {
+            "code": {
+              "$ref": "#/components/schemas/TraceGraphErrorCode"
+            },
+            "message": {
+              "title": "Message",
+              "type": "string"
+            }
+          },
+          "required": [
+            "code",
+            "message"
+          ],
+          "title": "TraceGraphError",
+          "type": "object"
+        },
+        "TraceGraphErrorCode": {
+          "enum": [
+            "GRAPH_NOT_FOUND",
+            "GRAPH_VALIDATION_FAILED"
+          ],
+          "title": "TraceGraphErrorCode",
+          "type": "string"
+        },
+        "TraceGraphEvidenceReferenceDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "reference": {
+              "title": "Reference",
+              "type": "string"
+            },
+            "source_name": {
+              "title": "Source Name",
+              "type": "string"
+            },
+            "source_type": {
+              "title": "Source Type",
+              "type": "string"
+            }
+          },
+          "required": [
+            "reference",
+            "source_name",
+            "source_type"
+          ],
+          "title": "TraceGraphEvidenceReferenceDTO",
+          "type": "object"
+        },
+        "TraceGraphHistoryDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "entries": {
+              "items": {
+                "$ref": "#/components/schemas/TraceGraphHistoryEntryDTO"
+              },
+              "title": "Entries",
+              "type": "array"
+            },
+            "graph_id": {
+              "title": "Graph Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "graph_id",
+            "entries"
+          ],
+          "title": "TraceGraphHistoryDTO",
+          "type": "object"
+        },
+        "TraceGraphHistoryEntryDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "analysis_version": {
+              "title": "Analysis Version",
+              "type": "string"
+            },
+            "api_version": {
+              "$ref": "#/components/schemas/TraceGraphApiVersion"
+            },
+            "builder_version": {
+              "title": "Builder Version",
+              "type": "string"
+            },
+            "created_at": {
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
+            },
+            "graph_id": {
+              "title": "Graph Id",
+              "type": "string"
+            },
+            "graph_version": {
+              "title": "Graph Version",
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "provenance_summary": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Provenance Summary",
+              "type": "array"
+            },
+            "schema_version": {
+              "title": "Schema Version",
+              "type": "string"
+            },
+            "snapshot_id": {
+              "title": "Snapshot Id",
+              "type": "string"
+            },
+            "snapshot_version": {
+              "$ref": "#/components/schemas/TraceSnapshotVersion"
+            },
+            "topology_snapshot_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topology Snapshot Id"
+            },
+            "topology_source_status": {
+              "$ref": "#/components/schemas/TraceTopologySourceStatus"
+            }
+          },
+          "required": [
+            "snapshot_id",
+            "graph_id",
+            "graph_version",
+            "snapshot_version",
+            "api_version",
+            "schema_version",
+            "builder_version",
+            "analysis_version",
+            "created_at",
+            "topology_source_status"
+          ],
+          "title": "TraceGraphHistoryEntryDTO",
+          "type": "object"
+        },
+        "TraceGraphMetadataDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "analysis_version": {
+              "title": "Analysis Version",
+              "type": "string"
+            },
+            "api_version": {
+              "$ref": "#/components/schemas/TraceGraphApiVersion"
+            },
+            "builder_version": {
+              "title": "Builder Version",
+              "type": "string"
+            },
+            "chain": {
+              "title": "Chain",
+              "type": "string"
+            },
+            "created_at": {
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
+            },
+            "graph_hash": {
+              "title": "Graph Hash",
+              "type": "string"
+            },
+            "graph_id": {
+              "title": "Graph Id",
+              "type": "string"
+            },
+            "graph_version": {
+              "title": "Graph Version",
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "schema_version": {
+              "title": "Schema Version",
+              "type": "string"
+            },
+            "snapshot_version": {
+              "$ref": "#/components/schemas/TraceSnapshotVersion"
+            },
+            "topology_engine_version": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topology Engine Version"
+            },
+            "topology_network": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topology Network"
+            },
+            "topology_snapshot_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topology Snapshot Id"
+            },
+            "topology_source_status": {
+              "$ref": "#/components/schemas/TraceTopologySourceStatus"
+            },
+            "topology_version": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topology Version"
+            }
+          },
+          "required": [
+            "graph_id",
+            "graph_version",
+            "snapshot_version",
+            "api_version",
+            "schema_version",
+            "builder_version",
+            "analysis_version",
+            "chain",
+            "graph_hash",
+            "created_at",
+            "topology_source_status"
+          ],
+          "title": "TraceGraphMetadataDTO",
+          "type": "object"
+        },
+        "TraceGraphObjectDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "kind": {
+              "title": "Kind",
+              "type": "string"
+            },
+            "label": {
+              "title": "Label",
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "provenance": {
+              "$ref": "#/components/schemas/TraceGraphProvenanceDTO"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "label",
+            "provenance"
+          ],
+          "title": "TraceGraphObjectDTO",
+          "type": "object"
+        },
+        "TraceGraphObservationDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "kind": {
+              "title": "Kind",
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "provenance": {
+              "$ref": "#/components/schemas/TraceGraphProvenanceDTO"
+            },
+            "subject": {
+              "title": "Subject",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "subject",
+            "value",
+            "provenance"
+          ],
+          "title": "TraceGraphObservationDTO",
+          "type": "object"
+        },
+        "TraceGraphProvenanceDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "evidence": {
+              "items": {
+                "$ref": "#/components/schemas/TraceGraphEvidenceReferenceDTO"
+              },
+              "title": "Evidence",
+              "type": "array"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "observations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Observations",
+              "type": "array"
+            },
+            "producer": {
+              "title": "Producer",
+              "type": "string"
+            },
+            "source_relationship_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source Relationship Id"
+            },
+            "stage": {
+              "title": "Stage",
+              "type": "string"
+            },
+            "topology_snapshot_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topology Snapshot Id"
+            }
+          },
+          "required": [
+            "producer",
+            "stage"
+          ],
+          "title": "TraceGraphProvenanceDTO",
+          "type": "object"
+        },
+        "TraceGraphRelationshipDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "confidence": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Confidence"
+            },
+            "direction": {
+              "title": "Direction",
+              "type": "string"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Limitations",
+              "type": "array"
+            },
+            "originating_observation_id": {
+              "title": "Originating Observation Id",
+              "type": "string"
+            },
+            "provenance": {
+              "$ref": "#/components/schemas/TraceGraphProvenanceDTO"
+            },
+            "relationship_type": {
+              "title": "Relationship Type",
+              "type": "string"
+            },
+            "source_id": {
+              "title": "Source Id",
+              "type": "string"
+            },
+            "target_id": {
+              "title": "Target Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "source_id",
+            "target_id",
+            "relationship_type",
+            "direction",
+            "originating_observation_id",
+            "provenance"
+          ],
+          "title": "TraceGraphRelationshipDTO",
+          "type": "object"
+        },
+        "TraceGraphSnapshotDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "graph_id": {
+              "title": "Graph Id",
+              "type": "string"
+            },
+            "metadata": {
+              "$ref": "#/components/schemas/TraceGraphMetadataDTO"
+            },
+            "object_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Object Ids",
+              "type": "array"
+            },
+            "observation_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Observation Ids",
+              "type": "array"
+            },
+            "relationship_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Relationship Ids",
+              "type": "array"
+            },
+            "report_fact_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Report Fact Ids",
+              "type": "array"
+            },
+            "snapshot_id": {
+              "title": "Snapshot Id",
+              "type": "string"
+            },
+            "topology_snapshot_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topology Snapshot Id"
+            }
+          },
+          "required": [
+            "snapshot_id",
+            "graph_id",
+            "metadata",
+            "object_ids",
+            "relationship_ids",
+            "observation_ids",
+            "report_fact_ids"
+          ],
+          "title": "TraceGraphSnapshotDTO",
+          "type": "object"
+        },
+        "TraceProofPacketTopologyReferenceDTO": {
+          "additionalProperties": false,
+          "properties": {
+            "graph_snapshot_id": {
+              "title": "Graph Snapshot Id",
+              "type": "string"
+            },
+            "node_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Node Ids",
+              "type": "array"
+            },
+            "relationship_ids": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Relationship Ids",
+              "type": "array"
+            },
+            "topology_snapshot_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topology Snapshot Id"
+            }
+          },
+          "required": [
+            "graph_snapshot_id",
+            "topology_snapshot_id",
+            "node_ids",
+            "relationship_ids"
+          ],
+          "title": "TraceProofPacketTopologyReferenceDTO",
+          "type": "object"
         },
         "TraceReport": {
           "properties": {
@@ -11298,6 +13510,13 @@
           "title": "TraceScoreBreakdown",
           "type": "object"
         },
+        "TraceSnapshotVersion": {
+          "enum": [
+            "trace-snapshot-v1"
+          ],
+          "title": "TraceSnapshotVersion",
+          "type": "string"
+        },
         "TraceSourceQuality": {
           "enum": [
             "HIGH",
@@ -11465,6 +13684,14 @@
           ],
           "title": "TraceSubmitRequest",
           "type": "object"
+        },
+        "TraceTopologySourceStatus": {
+          "enum": [
+            "authoritative",
+            "topology_source_unavailable"
+          ],
+          "title": "TraceTopologySourceStatus",
+          "type": "string"
         },
         "TraceWatchlistCreate": {
           "properties": {
@@ -13395,6 +15622,91 @@
           "x-access-pass-is-bearer": false
         }
       },
+      "/api/v1/access/checkouts": {
+        "post": {
+          "operationId": "create_access_checkout_api_v1_access_checkouts_post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutCreateRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "201": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CheckoutOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Create an idempotent Checkout from server-owned Offer terms.",
+          "tags": [
+            "proof-of-access"
+          ],
+          "x-access-pass-is-bearer": false
+        }
+      },
+      "/api/v1/access/checkouts/{checkout_id}": {
+        "get": {
+          "operationId": "get_access_checkout_api_v1_access_checkouts__checkout_id__get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "checkout_id",
+              "required": true,
+              "schema": {
+                "title": "Checkout Id",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CheckoutOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Read authoritative Checkout and issuance eligibility.",
+          "tags": [
+            "proof-of-access"
+          ],
+          "x-access-pass-is-bearer": false
+        }
+      },
       "/api/v1/access/delegated-passes": {
         "get": {
           "operationId": "list_delegated_passes_api_v1_access_delegated_passes_get",
@@ -13872,6 +16184,133 @@
           "x-access-pass-is-bearer": false
         }
       },
+      "/api/v1/access/issuance": {
+        "post": {
+          "operationId": "issue_access_api_v1_access_issuance_post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessIssueRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IssuedAccessOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Atomically verify device PoP and issue Access from frozen Checkout terms.",
+          "tags": [
+            "proof-of-access"
+          ],
+          "x-access-pass-is-bearer": false
+        }
+      },
+      "/api/v1/access/issuance/challenges": {
+        "post": {
+          "operationId": "create_issuance_challenge_api_v1_access_issuance_challenges_post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuanceChallengeCreateRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IssuanceChallengeOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Create a device-bound challenge for one eligible Checkout.",
+          "tags": [
+            "proof-of-access"
+          ],
+          "x-access-pass-is-bearer": false
+        }
+      },
+      "/api/v1/access/issued/{grant_id}": {
+        "get": {
+          "operationId": "get_issued_access_api_v1_access_issued__grant_id__get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "grant_id",
+              "required": true,
+              "schema": {
+                "title": "Grant Id",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IssuedAccessOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Read a non-secret issued Access summary.",
+          "tags": [
+            "proof-of-access"
+          ],
+          "x-access-pass-is-bearer": false
+        }
+      },
       "/api/v1/access/lockdown": {
         "post": {
           "operationId": "lockdown_api_v1_access_lockdown_post",
@@ -14075,6 +16514,75 @@
             }
           },
           "summary": "Return effective API and metric limits for the current Access Pass.",
+          "tags": [
+            "proof-of-access"
+          ],
+          "x-access-pass-is-bearer": false
+        }
+      },
+      "/api/v1/access/offers": {
+        "get": {
+          "operationId": "get_access_offers_api_v1_access_offers_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/AccessOfferOut"
+                    },
+                    "title": "Response Get Access Offers Api V1 Access Offers Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "List active server-owned Access Offers.",
+          "tags": [
+            "proof-of-access"
+          ],
+          "x-access-pass-is-bearer": false
+        }
+      },
+      "/api/v1/access/offers/{offer_id}": {
+        "get": {
+          "operationId": "get_access_offer_api_v1_access_offers__offer_id__get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "offer_id",
+              "required": true,
+              "schema": {
+                "title": "Offer Id",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AccessOfferOut"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Read an exact current Access Offer revision.",
           "tags": [
             "proof-of-access"
           ],
@@ -29107,6 +31615,784 @@
           ]
         }
       },
+      "/api/v1/trace/report/{report_id}/evidence/{evidence_id}/export": {
+        "get": {
+          "operationId": "export_trace_evidence",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "evidence_id",
+              "required": true,
+              "schema": {
+                "title": "Evidence Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "snapshot_id",
+              "required": true,
+              "schema": {
+                "title": "Snapshot Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "historical",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Historical",
+                "type": "boolean"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_SafeEvidenceExportDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            }
+          ],
+          "summary": "Export Trace Evidence",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/evidence/{evidence_id}/lineage": {
+        "get": {
+          "operationId": "get_trace_evidence_lineage",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "evidence_id",
+              "required": true,
+              "schema": {
+                "title": "Evidence Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "snapshot_id",
+              "required": true,
+              "schema": {
+                "title": "Snapshot Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "historical",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Historical",
+                "type": "boolean"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_SafeEvidenceLineageDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            }
+          ],
+          "summary": "Get Trace Evidence Lineage",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/evidence/{evidence_id}/replay": {
+        "get": {
+          "operationId": "replay_trace_evidence",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "evidence_id",
+              "required": true,
+              "schema": {
+                "title": "Evidence Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "snapshot_id",
+              "required": true,
+              "schema": {
+                "title": "Snapshot Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "historical",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Historical",
+                "type": "boolean"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_SafeEvidenceReplayDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            }
+          ],
+          "summary": "Replay Trace Evidence",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/evidence/{evidence_id}/verification": {
+        "get": {
+          "operationId": "verify_trace_evidence_identity",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "evidence_id",
+              "required": true,
+              "schema": {
+                "title": "Evidence Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "snapshot_id",
+              "required": true,
+              "schema": {
+                "title": "Snapshot Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "historical",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Historical",
+                "type": "boolean"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_SafeEvidenceVerificationDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            }
+          ],
+          "summary": "Verify Trace Evidence Identity",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/disagreement": {
+        "get": {
+          "operationId": "get_current_trace_disagreement",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_SafeTraceDisagreementCollectionDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Current Trace Disagreement",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/history": {
+        "get": {
+          "operationId": "get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_TraceGraphHistoryDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "404": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TraceGraphError"
+                  }
+                }
+              },
+              "description": "Not Found"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Trace Graph History",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/metadata": {
+        "get": {
+          "operationId": "get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_TraceGraphMetadataDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "404": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TraceGraphError"
+                  }
+                }
+              },
+              "description": "Not Found"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Trace Graph Metadata",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/objects/{object_id}": {
+        "get": {
+          "operationId": "get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "object_id",
+              "required": true,
+              "schema": {
+                "title": "Object Id",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_TraceGraphObjectDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "404": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TraceGraphError"
+                  }
+                }
+              },
+              "description": "Not Found"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Trace Graph Object",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/relationships/{relationship_id}": {
+        "get": {
+          "operationId": "get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "relationship_id",
+              "required": true,
+              "schema": {
+                "title": "Relationship Id",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_TraceGraphRelationshipDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "404": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TraceGraphError"
+                  }
+                }
+              },
+              "description": "Not Found"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Trace Graph Relationship",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/snapshot": {
+        "get": {
+          "operationId": "get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_TraceGraphSnapshotDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "404": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TraceGraphError"
+                  }
+                }
+              },
+              "description": "Not Found"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Trace Graph Snapshot",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/snapshots/{snapshot_id}": {
+        "get": {
+          "operationId": "get_exact_trace_graph_snapshot",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "snapshot_id",
+              "required": true,
+              "schema": {
+                "title": "Snapshot Id",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_TraceGraphDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Exact Trace Graph Snapshot",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/snapshots/{snapshot_id}/disagreement": {
+        "get": {
+          "operationId": "get_historical_trace_disagreement",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "snapshot_id",
+              "required": true,
+              "schema": {
+                "title": "Snapshot Id",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_SafeTraceDisagreementCollectionDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Historical Trace Disagreement",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
+      "/api/v1/trace/report/{report_id}/graph/snapshots/{snapshot_id}/proof-packet": {
+        "get": {
+          "operationId": "get_historical_trace_proof_packet",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "report_id",
+              "required": true,
+              "schema": {
+                "title": "Report Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "path",
+              "name": "snapshot_id",
+              "required": true,
+              "schema": {
+                "title": "Snapshot Id",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseEnvelope_SafeTraceProofPacketDTO_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            }
+          ],
+          "summary": "Get Historical Trace Proof Packet",
+          "tags": [
+            "trace"
+          ]
+        }
+      },
       "/api/v1/trace/report/{report_id}/origin-passport": {
         "get": {
           "operationId": "get_origin_passport_api_v1_trace_report__report_id__origin_passport_get",
@@ -29235,7 +32521,7 @@
       },
       "/api/v1/trace/report/{report_id}/proof-packet": {
         "get": {
-          "operationId": "get_proof_packet_api_v1_trace_report__report_id__proof_packet_get",
+          "operationId": "get_current_trace_proof_packet",
           "parameters": [
             {
               "in": "path",
@@ -29252,7 +32538,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/ResponseEnvelope_dict_str__object__"
+                    "$ref": "#/components/schemas/ResponseEnvelope_SafeTraceProofPacketDTO_"
                   }
                 }
               },
@@ -29269,6 +32555,11 @@
               "description": "Validation Error"
             }
           },
+          "security": [
+            {
+              "BastionProofOfAccessSession": []
+            }
+          ],
           "summary": "Get Proof Packet",
           "tags": [
             "trace"

@@ -284,12 +284,32 @@ def main() -> None:
         "market_history_sources",
         "market_history_timeline",
         "market_similarity_report",
+        "get_current_trace_proof_packet",
+        "get_historical_trace_proof_packet",
+        "get_trace_evidence_lineage",
+        "replay_trace_evidence",
+        "verify_trace_evidence_identity",
+        "export_trace_evidence",
     }
     # Prompt-12 reviewed mutation authority: public Feature-21 submit is a
     # synchronous, server-validated mutation with a required durable
     # Idempotency-Key. It intentionally requires neither PoP nor Human Intent.
     authoritative_mutation_operations = {
         "submit_trace_api_v1_trace_submit_post",
+        "create_access_checkout_api_v1_access_checkouts_post",
+        "create_issuance_challenge_api_v1_access_issuance_challenges_post",
+        "issue_access_api_v1_access_issuance_post",
+    }
+    # D3R reviewed public read authority: strict response schemas, report/snapshot
+    # ownership checks, no mutation, and no operation-specific elevated security.
+    authoritative_public_read_operations = {
+        "get_access_offer_api_v1_access_offers__offer_id__get",
+        "get_access_offers_api_v1_access_offers_get",
+        "get_access_checkout_api_v1_access_checkouts__checkout_id__get",
+        "get_issued_access_api_v1_access_issued__grant_id__get",
+        "get_current_trace_disagreement",
+        "get_exact_trace_graph_snapshot",
+        "get_historical_trace_disagreement",
     }
     for path, item in sorted(spec["paths"].items()):
         for method in METHODS:
@@ -357,6 +377,7 @@ def main() -> None:
                 and not generated_owner
                 and oid not in authoritative_protected_operations
                 and oid not in authoritative_mutation_operations
+                and oid not in authoritative_public_read_operations
             )
             authority = (
                 "DEFERRED_AUTHORITY"

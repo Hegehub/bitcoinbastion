@@ -86,6 +86,7 @@ def compile_operations(
             if parameter.get("in") == "header"
             and str(parameter["name"]).lower().startswith("x-bastion-")
         }
+        access_required = bool(raw.get("security")) or "x-bastion-session" in security_headers
         parameters = tuple(
             CompiledParameter(
                 str(parameter["name"]),
@@ -141,10 +142,10 @@ def compile_operations(
             errors=tuple(errors),
             security_contract_id=(
                 f"access-session:{row['operation_id']}"
-                if "x-bastion-session" in security_headers
+                if access_required
                 else f"public:{row['operation_id']}"
             ),
-            public="x-bastion-session" not in security_headers,
+            public=not access_required,
             mutation_contract_id=None,
             owner_module="bastion_ui.transport.generated_http",
             callable_name=str(row["operation_id"]),

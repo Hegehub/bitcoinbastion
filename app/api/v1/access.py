@@ -18,7 +18,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
-from app.db.models.access import AccessCertificate, AccessDevice, AccessPaymentIntent, ChildApiKey, DelegatedPass, SubscriptionEntitlement
+from app.db.models.access import AccessCertificate, AccessCheckoutSession, AccessDevice, AccessIssuedGrant, AccessPaymentIntent, ChildApiKey, DelegatedPass, SubscriptionEntitlement
 from app.db.session import get_db
 from app.domain.access.plans import PlanCode, normalize_plan_code
 from app.schemas.access_intent import HumanIntentCreateRequest, HumanIntentResponse, HumanIntentSignatureRequest, HumanIntentVerificationResult
@@ -56,6 +56,18 @@ from app.schemas.access import (
     RecoveryStatusResponse,
     SubscriptionEntitlementResponse,
 )
+from app.schemas.access_checkout import (
+    AccessIssueRequest,
+    AccessOfferOut,
+    CheckoutCreateRequest,
+    CheckoutOut,
+    IssuanceChallengeCreateRequest,
+    IssuanceChallengeOut,
+    IssuedAccessOut,
+)
+from app.services.access.checkout_service import AccessCheckoutService
+from app.services.access.offer_catalog import PLAN_PRICES_SATS, get_offer, list_offers
+from app.services.access.issuance_service import AccessIssuanceService
 from app.services.access.metric_catalog import list_locked_metric_groups
 from app.services.access.policy_context import AccessPolicyContext
 from app.services.access.policy_engine import AccessPolicyEngine
@@ -70,16 +82,6 @@ from app.services.access.payments.base import (
 from app.services.access.payments.manual import ManualGrantProvider
 
 router = APIRouter(prefix="/access", tags=["proof-of-access"])
-
-_PLAN_PRICES_SATS: dict[PlanCode, int] = {
-    PlanCode.LITE: 1_000,
-    PlanCode.BASIC: 10_000,
-    PlanCode.PLUS: 50_000,
-    PlanCode.PRO: 250_000,
-    PlanCode.BUSINESS: 1_000_000,
-    PlanCode.ENTERPRISE: 5_000_000,
-}
-
 
 def _http_error(code: str, http_status: int, detail: str | None = None) -> HTTPException:
     return HTTPException(status_code=http_status, detail={"code": code, "message": detail or code})
@@ -254,12 +256,122 @@ def create_payment_intent(
 ) -> AccessPaymentIntentResponse:
     try:
         plan = normalize_plan_code(request.plan_code)
-        amount_sats = request.amount_sats or _PLAN_PRICES_SATS[plan]
+        amount_sats = PLAN_PRICES_SATS[plan]
+        if request.amount_sats is not None and request.amount_sats != amount_sats:
+            raise ValueError("caller_amount_mismatch")
         intent = service.create_payment_intent(plan, request.payment_method, amount_sats, _safe_metadata(request.metadata))
         _commit_service(service)
     except (ValueError, ManualGrantsDisabledError, PaymentProviderDisabledError, PaymentProviderNotConfiguredError) as exc:
         raise _http_error("payment_provider_unavailable", status.HTTP_400_BAD_REQUEST, str(exc)) from exc
     return _payment_intent_response(intent, certificate_available=False)
+
+
+def _offer_out(offer: Any) -> AccessOfferOut:
+    return AccessOfferOut(**asdict(offer))
+
+
+def _checkout_out(checkout: Any) -> CheckoutOut:
+    return CheckoutOut(
+        checkout_id=checkout.id, offer_id=checkout.offer_id,
+        offer_revision_id=checkout.offer_revision_id, plan_code=checkout.plan_code,
+        capability=checkout.capability, scopes=tuple(checkout.scopes_json),
+        amount_sats=checkout.amount_sats, price_unit=checkout.price_unit,
+        duration_days=checkout.duration_days, terms_version=checkout.terms_version,
+        status=checkout.status,
+        issuance_eligible=checkout.status == "eligible",
+        eligibility_reason=checkout.eligibility_reason,
+        payment_intent_id=checkout.payment_intent_id,
+        created_at=checkout.created_at, expires_at=checkout.expires_at,
+    )
+
+
+@router.get("/offers", response_model=list[AccessOfferOut], summary="List active server-owned Access Offers.")
+def get_access_offers() -> list[AccessOfferOut]:
+    return [_offer_out(offer) for offer in list_offers() if offer.availability == "active"]
+
+
+@router.get("/offers/{offer_id}", response_model=AccessOfferOut, summary="Read an exact current Access Offer revision.")
+def get_access_offer(offer_id: str) -> AccessOfferOut:
+    try:
+        return _offer_out(get_offer(offer_id))
+    except ValueError as exc:
+        raise _http_error("offer_not_found", status.HTTP_404_NOT_FOUND) from exc
+
+
+@router.post("/checkouts", response_model=CheckoutOut, status_code=status.HTTP_201_CREATED, summary="Create an idempotent Checkout from server-owned Offer terms.")
+def create_access_checkout(
+    request: CheckoutCreateRequest,
+    db: Annotated[Session, Depends(get_db)],
+    payment_service: Annotated[Any, Depends(get_payment_intent_service)],
+) -> CheckoutOut:
+    service = AccessCheckoutService(db, payment_service)
+    try:
+        checkout = service.create(request.offer_id, request.payment_method, request.idempotency_key)
+        db.commit()
+        return _checkout_out(checkout)
+    except Exception as exc:
+        db.rollback()
+        raise _http_error(_safe_error_code(exc), status.HTTP_400_BAD_REQUEST) from exc
+
+
+@router.get("/checkouts/{checkout_id}", response_model=CheckoutOut, summary="Read authoritative Checkout and issuance eligibility.")
+def get_access_checkout(checkout_id: str, db: Annotated[Session, Depends(get_db)]) -> CheckoutOut:
+    service = AccessCheckoutService(db, get_payment_intent_service(db))
+    try:
+        checkout = service.get(checkout_id)
+        db.commit()
+        return _checkout_out(checkout)
+    except ValueError as exc:
+        db.rollback()
+        raise _http_error(str(exc), status.HTTP_404_NOT_FOUND) from exc
+
+
+@router.post("/issuance/challenges", response_model=IssuanceChallengeOut, summary="Create a device-bound challenge for one eligible Checkout.")
+def create_issuance_challenge(
+    request: IssuanceChallengeCreateRequest,
+    db: Annotated[Session, Depends(get_db)],
+    issuer: Annotated[Any, Depends(get_certificate_issuer)],
+) -> IssuanceChallengeOut:
+    service = AccessIssuanceService(db, issuer)
+    try:
+        challenge = service.create_challenge(request.checkout_id, request.device_public_key)
+        db.commit()
+        return IssuanceChallengeOut(
+            challenge_id=challenge.id, checkout_id=challenge.checkout_id,
+            canonical_payload=service.canonical_payload(challenge),
+            protocol_version=challenge.protocol_version, algorithm="Ed25519",
+            expires_at=challenge.expires_at,
+        )
+    except Exception as exc:
+        db.rollback()
+        raise _http_error(_safe_error_code(exc), status.HTTP_403_FORBIDDEN) from exc
+
+
+@router.post("/issuance", response_model=IssuedAccessOut, summary="Atomically verify device PoP and issue Access from frozen Checkout terms.")
+def issue_access(
+    request: AccessIssueRequest,
+    db: Annotated[Session, Depends(get_db)],
+    issuer: Annotated[Any, Depends(get_certificate_issuer)],
+) -> IssuedAccessOut:
+    service = AccessIssuanceService(db, issuer)
+    try:
+        grant = service.verify_and_issue(request.checkout_id, request.challenge_id, request.signature)
+        db.commit()
+        return _grant_out(grant)
+    except Exception as exc:
+        db.rollback()
+        raise _http_error(_safe_error_code(exc), status.HTTP_403_FORBIDDEN) from exc
+
+
+@router.get("/issued/{grant_id}", response_model=IssuedAccessOut, summary="Read a non-secret issued Access summary.")
+def get_issued_access(
+    grant_id: str,
+    db: Annotated[Session, Depends(get_db)],
+) -> IssuedAccessOut:
+    grant = db.get(AccessIssuedGrant, grant_id)
+    if grant is None:
+        raise _http_error("grant_not_found", status.HTTP_404_NOT_FOUND)
+    return _grant_out(grant)
 
 
 @router.get(
@@ -294,12 +406,15 @@ def issue_certificate(
         certificate = db.execute(select(AccessCertificate).where(AccessCertificate.certificate_fingerprint == result.certificate_fingerprint)).scalar_one()
         _register_initial_device(db, certificate, request)
         valid_from = datetime.now(UTC)
+        payment_intent = db.get(AccessPaymentIntent, request.payment_intent_id)
+        checkout = db.get(AccessCheckoutSession, payment_intent.checkout_id) if payment_intent and payment_intent.checkout_id else None
+        duration_days = checkout.duration_days if checkout else request.subscription_period_days
         entitlement = entitlement_service.issue_entitlement(
             pass_lookup_hash=certificate.pass_lookup_hash,
             certificate_fingerprint=certificate.certificate_fingerprint,
             plan_code=certificate.plan_code,
             valid_from=valid_from,
-            valid_until=valid_from + timedelta(days=request.subscription_period_days),
+            valid_until=valid_from + timedelta(days=duration_days),
             payment_intent_id=request.payment_intent_id,
             metadata={"requested_origin": request.requested_origin} if request.requested_origin else None,
         )
@@ -860,3 +975,19 @@ def _safe_error_code(exc: Exception) -> str:
     if any(secret in text.lower() for secret in ("pass", "token", "private", "seed")):
         return exc.__class__.__name__.replace("Error", "").lower()
     return text
+
+
+def _grant_out(grant: AccessIssuedGrant) -> IssuedAccessOut:
+    return IssuedAccessOut(
+        grant_id=grant.id,
+        checkout_id=grant.checkout_id,
+        offer_revision_id=grant.offer_revision_id,
+        certificate_fingerprint=grant.certificate_fingerprint,
+        device_key_fingerprint=grant.device_key_fingerprint,
+        capability=grant.capability,
+        scopes=tuple(grant.scopes_json),
+        terms_version=grant.terms_version,
+        status=grant.status,
+        issued_at=grant.issued_at,
+        expires_at=grant.expires_at,
+    )

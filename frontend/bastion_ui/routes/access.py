@@ -6,28 +6,33 @@ import reflex as rx
 from bastion_ui.components.auth import (
     dedicated_auth_address_notice,
     lightning_address_card,
-    lnurl_auth_qr_code,
     lnurl_payment_status,
-    subscription_plan_card,
     wallet_auth_method_selector,
     wallet_security_warning,
 )
 from bastion_ui.components.layout.grid import responsive_grid, three_column_grid
 from bastion_ui.components.ui.card import card
+from bastion_ui.domain.access.models import AccessOfferViewModel
 from bastion_ui.routes._shared import link_card, public_page
+from bastion_ui.state.access_acquisition_state import AccessAcquisitionState
 
-PLAN_CODES = (
-    ("Lite", "lite_pass", "Entry access with backend-defined basic capabilities."),
-    ("Basic", "basic_pass", "Basic dashboards and backend-enforced read limits."),
-    ("Plus", "plus_pass", "Standard market and Trace capabilities when entitled."),
-    ("Pro", "pro_pass", "Advanced history, API automation, and stronger recovery policy."),
-    (
-        "Business",
-        "business_pass",
-        "Workspace and PayRegister capabilities governed by effective roles.",
-    ),
-    ("Enterprise", "enterprise_pass", "Deployment-specific limits, quorum, and approval hooks."),
-)
+
+def _offer_card(offer: AccessOfferViewModel) -> rx.Component:
+    return card(
+        rx.text(offer.capability, weight="bold"),
+        rx.text(offer.amount_sats, " ", offer.price_unit),
+        rx.text(offer.duration_days, " days"),
+        rx.text("Terms: ", offer.terms_version),
+        rx.text("Revision: ", offer.revision_id, overflow_wrap="anywhere"),
+        rx.text("Scopes: ", offer.scopes.to_string(), overflow_wrap="anywhere"),
+        rx.foreach(offer.limitations, lambda limitation: rx.text(limitation)),
+        rx.button(
+            "Select this Offer",
+            on_click=AccessAcquisitionState.select_offer(offer.offer_id),
+            aria_label="Select backend Offer " + offer.capability,
+        ),
+        title="Backend Access Offer",
+    )
 
 
 def access_page() -> rx.Component:
@@ -65,7 +70,31 @@ def access_page() -> rx.Component:
 def access_plans_page() -> rx.Component:
     return public_page(
         "Subscription plans",
-        responsive_grid(*(subscription_plan_card(*plan) for plan in PLAN_CODES)),
+        rx.cond(
+            AccessAcquisitionState.offer_status == "loading",
+            rx.text("Loading authoritative Access Offers…", role="status"),
+            rx.cond(
+                AccessAcquisitionState.offers.length() > 0,
+                responsive_grid(rx.foreach(AccessAcquisitionState.offers, _offer_card)),
+                card(
+                    rx.text(
+                        "Access Offers are unavailable. No placeholder pricing or capability was substituted.",
+                        role="alert",
+                    ),
+                    title="Offers unavailable",
+                    variant="safety",
+                ),
+            ),
+        ),
+        rx.cond(
+            AccessAcquisitionState.selected_offer_id != "",
+            rx.button(
+                "Create Checkout",
+                on_click=AccessAcquisitionState.create_checkout,
+                disabled=AccessAcquisitionState.checkout_in_flight,
+                aria_label="Create one Checkout from the selected backend Offer",
+            ),
+        ),
         card(
             rx.text(
                 "Sovereign Security Mode is a high-assurance policy mode, not a simple subscription tier."
@@ -78,24 +107,58 @@ def access_plans_page() -> rx.Component:
 
 def access_checkout_page() -> rx.Component:
     return public_page(
-        "LNURL-pay subscription checkout",
+        "Access Checkout",
+        rx.cond(
+            AccessAcquisitionState.checkout,
+            card(
+                rx.text("Capability: ", AccessAcquisitionState.checkout.capability),
+                rx.text(
+                    "Frozen price: ", AccessAcquisitionState.checkout.amount_sats,
+                    " ", AccessAcquisitionState.checkout.price_unit,
+                ),
+                rx.text("Frozen duration: ", AccessAcquisitionState.checkout.duration_days, " days"),
+                rx.text("Offer revision: ", AccessAcquisitionState.checkout.offer_revision_id),
+                rx.text("Terms: ", AccessAcquisitionState.checkout.terms_version),
+                rx.text(
+                    "Scopes: ",
+                    AccessAcquisitionState.checkout.scopes.to_string(),
+                    overflow_wrap="anywhere",
+                ),
+                rx.text("Status: ", AccessAcquisitionState.checkout.status, role="status"),
+                rx.text(
+                    "Issuance eligibility: ", AccessAcquisitionState.checkout.eligibility_reason,
+                    role="status",
+                ),
+                title="Frozen Checkout terms",
+                subtitle="These values come from the Checkout snapshot, not the current Offer list.",
+            ),
+            rx.text("Loading Checkout…", role="status"),
+        ),
         card(
             rx.text(
-                "Plan · amount in sats · duration · backend-returned metadata · included capability summary"
+                "Issuance proves possession of this browser device's non-extractable Access key. "
+                "It does not prove legal identity or payment by itself."
             ),
-            lnurl_auth_qr_code("LNURL payment request generated by Bastion"),
-            title="Pay from an external Lightning wallet",
-            subtitle="No wallet action starts automatically. Mobile users can use the encoded Lightning link.",
+            rx.cond(
+                AccessAcquisitionState.checkout & AccessAcquisitionState.checkout.issuance_eligible,
+                rx.button(
+                    "Verify device and issue Access",
+                    on_click=AccessAcquisitionState.begin_secure_issuance,
+                    disabled=AccessAcquisitionState.challenge_in_flight
+                    | AccessAcquisitionState.issuance_in_flight,
+                    aria_label="Verify this device key and issue Access once",
+                ),
+                rx.text("Issuance is unavailable until the backend marks Checkout eligible."),
+            ),
+            rx.text("Device security: ", AccessAcquisitionState.security_status, role="status"),
+            rx.text("Issuance: ", AccessAcquisitionState.issuance_status, role="status"),
+            rx.cond(
+                AccessAcquisitionState.safe_error != "",
+                rx.text(AccessAcquisitionState.safe_error, role="alert"),
+            ),
+            title="Device-key possession verification",
         ),
-        lnurl_payment_status(),
-        card(
-            rx.text("payerData.auth: allowed/preferred when requested"),
-            rx.text("identifier and pubkey: optional only"),
-            rx.text("name and email: disabled/optional by default and never auto-filled"),
-            rx.text("Payment note: optional, bounded by commentAllowed, and never authorization."),
-            title="Privacy-first payer data",
-        ),
-        subtitle="Creating an invoice is not payment. Settlement is not activation until the backend issues an entitlement.",
+        subtitle="Payment and eligibility remain backend-owned. No private key leaves the secure provider.",
     )
 
 
@@ -122,20 +185,35 @@ def access_payment_pending_page() -> rx.Component:
 
 def access_success_page() -> rx.Component:
     return public_page(
-        "Bastion access activated",
-        lnurl_payment_status(),
-        card(
-            rx.text("A backend-approved successAction message may be displayed safely."),
-            rx.text(
-                "A successAction URL is shown for deliberate user navigation only after same-origin/allowlist validation. It is never opened automatically."
+        "Bastion Access issued",
+        rx.cond(
+            AccessAcquisitionState.issued_access,
+            card(
+                rx.text("Grant ID: ", AccessAcquisitionState.issued_access.grant_id),
+                rx.text("Capability: ", AccessAcquisitionState.issued_access.capability),
+                rx.text(
+                    "Scopes: ",
+                    AccessAcquisitionState.issued_access.scopes.to_string(),
+                    overflow_wrap="anywhere",
+                ),
+                rx.text("Issued: ", AccessAcquisitionState.issued_access.issued_at.to_string()),
+                rx.text("Expires: ", AccessAcquisitionState.issued_access.expires_at.to_string()),
+                rx.text(
+                    "Device binding: ",
+                    AccessAcquisitionState.issued_access.device_key_fingerprint,
+                    overflow_wrap="anywhere",
+                ),
+                rx.text("Status: ", AccessAcquisitionState.issued_access.status, role="status"),
+                title="Authoritative issued Access",
+                subtitle="This is a non-secret server-side Grant summary. No bearer token is displayed.",
             ),
-            rx.text(
-                "URLs must never contain a session token, Access Pass, recovery material, Device private key, or wallet signature."
-            ),
-            title="Safe success action",
-            variant="safety",
+            rx.text("Loading issued Access…", role="status"),
         ),
-        subtitle="Shown only after backend settlement verification and entitlement activation.",
+        rx.cond(
+            AccessAcquisitionState.safe_error != "",
+            rx.text(AccessAcquisitionState.safe_error, role="alert"),
+        ),
+        subtitle="Refresh and deep links read the existing Grant and never issue again.",
     )
 
 
