@@ -24,7 +24,7 @@ def test_access_routes_are_registered() -> None:
         assert f'PublicRouteSpec("{route}"' in source
 
 
-def test_plan_codes_match_backend_contract() -> None:
+def test_plan_codes_are_not_hard_coded_as_frontend_authority() -> None:
     source = _read("routes/access.py")
     for code in {
         "lite_pass",
@@ -34,7 +34,10 @@ def test_plan_codes_match_backend_contract() -> None:
         "business_pass",
         "enterprise_pass",
     }:
-        assert code in source
+        assert code not in source
+    state = _read("state/access_acquisition_state.py")
+    assert "get_access_offers_api_v1_access_offers_get" in state
+    assert "adapt_access_offer" in state
 
 
 def test_access_nav_replaces_legacy_auth_nav() -> None:

@@ -40,7 +40,7 @@ def test_access_full_happy_path_and_show_once_secret() -> None:
 
         intent = client.post(
             "/api/v1/access/payment-intents",
-            json={"plan_code": "plus_pass", "payment_method": "manual", "amount_sats": 1000},
+            json={"plan_code": "plus_pass", "payment_method": "manual", "amount_sats": 50_000},
         )
         assert intent.status_code == 201
         payment_intent_id = intent.json()["payment_intent_id"]

@@ -59,6 +59,18 @@ class OnchainRepository:
         except SQLAlchemyError:
             return []
 
+    def for_address(self, address: str) -> list[OnchainEvent]:
+        """Return the append-only source facts for one canonical address in chronology order."""
+        stmt = (
+            select(OnchainEvent)
+            .where(OnchainEvent.address == address)
+            .order_by(OnchainEvent.observed_at.asc(), OnchainEvent.id.asc())
+        )
+        try:
+            return list(self.db.execute(stmt).scalars())
+        except SQLAlchemyError:
+            return []
+
     def latest_block_height(self) -> int | None:
         stmt = select(func.max(OnchainEvent.block_height))
         try:

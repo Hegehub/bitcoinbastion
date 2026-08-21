@@ -130,6 +130,28 @@ class AccessCertificateIssuer:
         self.allow_manual_grants = allow_manual_grants
         self.audit_emitter = audit_emitter
 
+    def issue_certificate_for_checkout(
+        self,
+        *,
+        payment_intent: AccessPaymentIntent,
+        device_public_key: str,
+        device_key_fingerprint: str,
+        scopes: list[str],
+        expires_at: datetime,
+    ) -> AccessCertificateIssueResult:
+        """Issue from an already-authorized frozen Checkout context."""
+        if payment_intent.status not in PAID_PAYMENT_STATUSES:
+            raise PaymentNotSettledError("Payment intent is not settled")
+        return self._issue(
+            plan_code=normalize_plan_code(payment_intent.plan_code),
+            device_public_key=device_public_key,
+            device_key_fingerprint=device_key_fingerprint,
+            device_class="browser",
+            payment_intent=payment_intent,
+            scopes_override=scopes,
+            expires_at_override=expires_at,
+        )
+
     def issue_certificate_for_paid_intent(
         self,
         payment_intent_id: int,

@@ -163,6 +163,8 @@ from app.db.models.treasury import (
     TreasuryRequest,
 )
 from app.db.models.bastion_trace import (
+    TraceClaimModel,
+    TraceGraphSnapshotModel,
     TraceEvidence,
     TraceReport,
     TraceSource,
@@ -322,6 +324,8 @@ __all__ = [
     "DeliveryLog",
     "TelegramDeliveryLog",
     "TraceReport",
+    "TraceClaimModel",
+    "TraceGraphSnapshotModel",
     "TraceEvidence",
     "TraceSource",
     "TraceSourceSnapshot",

@@ -29,6 +29,8 @@ def main() -> int:
     env_example = read("frontend/.env.example")
     safety = read("frontend/bastion_ui/security/safety_copy.py") + read("frontend/bastion_ui/components/ui/safety_banner.py")
     command_palette = read("frontend/bastion_ui/components/layout/command_palette.py")
+    command_registry = read("frontend/bastion_ui/command_registry.py")
+    route_topology = read("frontend/bastion_ui/topology.py")
     market_router_present = (ROOT / "app/web/routes.py").exists() or (ROOT / "app/web/market_routes.py").exists()
     result = {
         "status": "implemented",
@@ -37,7 +39,15 @@ def main() -> int:
         "env": {"BB_API_BASE_URL": "BB_API_BASE_URL" in env_example, "BB_REQUEST_TIMEOUT_SECONDS": "BB_REQUEST_TIMEOUT_SECONDS" in env_example},
         "reflex_routes": {route: f'route="{route}"' in app_py for route in REFLEX_ROUTES},
         "safety_copy": {copy: copy in safety for copy in REQUIRED_COPY},
-        "navigation": {"platform": "/platform" in command_palette, "operations": "/operations" in command_palette, "no_products": "/products" not in command_palette, "no_self_host": "/self-host" not in command_palette},
+        "navigation": {
+            # Palette commands are intentionally derived from canonical route metadata;
+            # route paths must not be duplicated in the presentation component.
+            "registry_derived": "from bastion_ui.topology import ROUTES" in command_registry,
+            "platform": '("/platform", "Platform", "platform_page")' in route_topology,
+            "operations": '("/operations", "Operations", "operations_page")' in route_topology,
+            "no_products": "/products" not in command_palette,
+            "no_self_host": "/self-host" not in command_palette,
+        },
         "legacy_nextjs_absent": {
             path: not (ROOT / path).exists() for path in LEGACY_NEXTJS_MARKERS
         },

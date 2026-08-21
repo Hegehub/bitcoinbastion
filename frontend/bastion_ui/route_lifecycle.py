@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 import reflex as rx
 
+from bastion_ui.state.access_acquisition_state import AccessAcquisitionState
 from bastion_ui.state.operations_state import (
     HealthState,
     IncidentsState,
@@ -18,7 +19,10 @@ from bastion_ui.state.prompt9_state import JobsState, MarketOverviewState, Marke
 from bastion_ui.state.prompt10_state import MarketHistoryState
 from bastion_ui.state.prompt11_state import MarketSimilarityState
 from bastion_ui.state.security_shell_state import SecurityShellState
+from bastion_ui.state.trace_evidence_workflow_state import TraceEvidenceWorkflowState
+from bastion_ui.state.trace_proof_packet_state import TraceProofPacketState
 from bastion_ui.state.trace_report_state import TraceReportState
+from bastion_ui.state.trace_topology_state import TraceHistoryState, TraceTopologyState
 from bastion_ui.state.websocket_lab_state import WebSocketLabState
 from bastion_ui.topology import ROUTE_BY_ID
 
@@ -58,6 +62,10 @@ class RouteLifecycleState(rx.State):
             self.request_generation += 1
             events.append(Prompt2StatusState.cancel_status)
             events.append(TraceReportState.invalidate_route)
+            events.extend((TraceTopologyState.invalidate, TraceHistoryState.invalidate))
+            events.append(TraceProofPacketState.invalidate)
+            events.append(TraceEvidenceWorkflowState.invalidate)
+            events.append(AccessAcquisitionState.clear_ephemeral)
             events.extend(
                 (
                     HealthState.invalidate,
@@ -77,10 +85,20 @@ class RouteLifecycleState(rx.State):
             events.append(SecurityShellState.refresh_posture)
         if actions.connect_websocket:
             events.append(WebSocketLabState.connect_provider_health)
-        if route_id in {"trace.report", "trace.proof_packet"}:
+        if route_id in {
+            "trace.report",
+            "trace.history",
+            "trace.proof_packet",
+            "trace.historical_proof_packet",
+        }:
             events.append(TraceReportState.validate_current_route)
         if route_id == "trace.report":
             events.append(TraceReportState.load_trace_report)
+            events.append(TraceTopologyState.load_route)
+        elif route_id == "trace.history":
+            events.append(TraceHistoryState.load_route)
+        elif route_id in {"trace.proof_packet", "trace.historical_proof_packet"}:
+            events.append(TraceProofPacketState.load_route)
         if route_id in {"overview.home", "operations"}:
             events.extend((HealthState.load, ProvidersState.load, StorageState.load))
         elif route_id == "operations.health":
@@ -111,4 +129,6 @@ class RouteLifecycleState(rx.State):
             events.append(MarketHistoryState.load_narratives)
         elif route_id == "market.sources":
             events.append(MarketHistoryState.load_sources)
+        if route_id in {"access", "access.plans", "access.checkout", "access.payment.success"}:
+            events.append(AccessAcquisitionState.load_route)
         return events

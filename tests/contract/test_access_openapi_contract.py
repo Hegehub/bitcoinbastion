@@ -11,6 +11,9 @@ ACCESS_ENDPOINTS = {
     "/api/v1/access/certificates",
     "/api/v1/access/challenges",
     "/api/v1/access/sessions",
+    "/api/v1/access/issuance/challenges",
+    "/api/v1/access/issuance",
+    "/api/v1/access/issued/{grant_id}",
     "/api/v1/access/me",
     "/api/v1/access/me/entitlements",
     "/api/v1/access/me/limits",
@@ -46,6 +49,18 @@ def test_access_openapi_contract() -> None:
     assert "bitcoin_private_key" not in schemas_text
     assert "password" not in schemas_text
     assert "bearer access pass" not in schemas_text
+
+    checkout = spec["components"]["schemas"]["CheckoutCreateRequest"]
+    assert set(checkout["properties"]) == {"offer_id", "payment_method", "idempotency_key"}
+    assert not ({"amount_sats", "duration_days", "capability", "scopes"} & set(checkout["properties"]))
+
+    challenge = spec["components"]["schemas"]["IssuanceChallengeCreateRequest"]
+    assert set(challenge["properties"]) == {"checkout_id", "device_public_key"}
+    issuance = spec["components"]["schemas"]["AccessIssueRequest"]
+    assert set(issuance["properties"]) == {
+        "checkout_id", "challenge_id", "signature", "idempotency_key"
+    }
+    assert not ({"price", "amount_sats", "duration_days", "capability", "scopes", "private_key"} & set(issuance["properties"]))
 
 
 def test_legacy_auth_openapi_is_deprecated_disabled_not_primary_auth() -> None:

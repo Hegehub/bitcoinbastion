@@ -66,6 +66,56 @@ GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_OPERATION = NormalizedOperation(
 async def get_child_api_key_api_v1_access_api_keys__key_id__get(transport: HttpTransport, request: GetChildApiKeyApiV1AccessApiKeysKeyIdGetRequest) -> GetChildApiKeyApiV1AccessApiKeysKeyIdGetSuccess:
     return await transport.invoke(GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_OPERATION, path_parameters={'key_id': str(request.key_id)}, query_parameters={}, body=None, request_headers={})
 
+class CreateAccessCheckoutApiV1AccessCheckoutsPostRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    body: CheckoutCreateRequest
+
+class CreateAccessCheckoutApiV1AccessCheckoutsPostSuccess(RootModel[CheckoutOut]):
+    pass
+
+CreateAccessCheckoutApiV1AccessCheckoutsPostError = SafeTransportError
+
+CREATEACCESSCHECKOUTAPIV1ACCESSCHECKOUTSPOST_SECURITY = SecurityMetadata(
+    identity='public:create_access_checkout_api_v1_access_checkouts_post', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='create_access_checkout_api_v1_access_checkouts_post', review_owner='Stage 1B0-R7',
+)
+CREATEACCESSCHECKOUTAPIV1ACCESSCHECKOUTSPOST_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0010', operation_id='create_access_checkout_api_v1_access_checkouts_post',
+    method='POST', path='/api/v1/access/checkouts', backend_tag='proof-of-access',
+    product='Access', disposition='UI_REQUIRED',
+    success_status=201, response_type=CreateAccessCheckoutApiV1AccessCheckoutsPostSuccess, security=CREATEACCESSCHECKOUTAPIV1ACCESSCHECKOUTSPOST_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:create_access_checkout_api_v1_access_checkouts_post',
+    response_media_type='application/json',
+)
+async def create_access_checkout_api_v1_access_checkouts_post(transport: HttpTransport, request: CreateAccessCheckoutApiV1AccessCheckoutsPostRequest) -> CreateAccessCheckoutApiV1AccessCheckoutsPostSuccess:
+    return await transport.invoke(CREATEACCESSCHECKOUTAPIV1ACCESSCHECKOUTSPOST_OPERATION, path_parameters={}, query_parameters={}, body=request.body.model_dump(mode='json'), request_headers={})
+
+class GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    checkout_id: str
+
+class GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetSuccess(RootModel[CheckoutOut]):
+    pass
+
+GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetError = SafeTransportError
+
+GETACCESSCHECKOUTAPIV1ACCESSCHECKOUTSCHECKOUTIDGET_SECURITY = SecurityMetadata(
+    identity='public:get_access_checkout_api_v1_access_checkouts__checkout_id__get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_access_checkout_api_v1_access_checkouts__checkout_id__get', review_owner='Stage 1B0-R7',
+)
+GETACCESSCHECKOUTAPIV1ACCESSCHECKOUTSCHECKOUTIDGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0011', operation_id='get_access_checkout_api_v1_access_checkouts__checkout_id__get',
+    method='GET', path='/api/v1/access/checkouts/{checkout_id}', backend_tag='proof-of-access',
+    product='Access', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetSuccess, security=GETACCESSCHECKOUTAPIV1ACCESSCHECKOUTSCHECKOUTIDGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_access_checkout_api_v1_access_checkouts__checkout_id__get',
+    response_media_type='application/json',
+)
+async def get_access_checkout_api_v1_access_checkouts__checkout_id__get(transport: HttpTransport, request: GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetRequest) -> GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetSuccess:
+    return await transport.invoke(GETACCESSCHECKOUTAPIV1ACCESSCHECKOUTSCHECKOUTIDGET_OPERATION, path_parameters={'checkout_id': str(request.checkout_id)}, query_parameters={}, body=None, request_headers={})
+
 class ListDelegatedPassesApiV1AccessDelegatedPassesGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
     pass
@@ -81,7 +131,7 @@ LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_SECURITY = SecurityMetadata(
     source_symbol='list_delegated_passes_api_v1_access_delegated_passes_get', review_owner='Stage 1B0-R7',
 )
 LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0010', operation_id='list_delegated_passes_api_v1_access_delegated_passes_get',
+    matrix_id='HTTP-0012', operation_id='list_delegated_passes_api_v1_access_delegated_passes_get',
     method='GET', path='/api/v1/access/delegated-passes', backend_tag='proof-of-access',
     product='Access', disposition='UI_REQUIRED',
     success_status=200, response_type=ListDelegatedPassesApiV1AccessDelegatedPassesGetSuccess, security=LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_SECURITY,
@@ -106,7 +156,7 @@ GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_SECURITY = Security
     source_symbol='get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get', review_owner='Stage 1B0-R7',
 )
 GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0013', operation_id='get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get',
+    matrix_id='HTTP-0015', operation_id='get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get',
     method='GET', path='/api/v1/access/delegated-passes/{delegated_pass_id}', backend_tag='proof-of-access',
     product='Access', disposition='UI_REQUIRED',
     success_status=200, response_type=GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetSuccess, security=GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_SECURITY,
@@ -131,7 +181,7 @@ GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_human_intent_api_v1_access_intents__intent_id__get', review_owner='Stage 1B0-R7',
 )
 GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0016', operation_id='get_human_intent_api_v1_access_intents__intent_id__get',
+    matrix_id='HTTP-0018', operation_id='get_human_intent_api_v1_access_intents__intent_id__get',
     method='GET', path='/api/v1/access/intents/{intent_id}', backend_tag='proof-of-access',
     product='Access', disposition='UI_REQUIRED',
     success_status=200, response_type=GetHumanIntentApiV1AccessIntentsIntentIdGetSuccess, security=GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_SECURITY,
@@ -140,6 +190,81 @@ GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION = NormalizedOperation(
 )
 async def get_human_intent_api_v1_access_intents__intent_id__get(transport: HttpTransport, request: GetHumanIntentApiV1AccessIntentsIntentIdGetRequest) -> GetHumanIntentApiV1AccessIntentsIntentIdGetSuccess:
     return await transport.invoke(GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION, path_parameters={'intent_id': str(request.intent_id)}, query_parameters={}, body=None, request_headers={})
+
+class IssueAccessApiV1AccessIssuancePostRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    body: AccessIssueRequest
+
+class IssueAccessApiV1AccessIssuancePostSuccess(RootModel[IssuedAccessOut]):
+    pass
+
+IssueAccessApiV1AccessIssuancePostError = SafeTransportError
+
+ISSUEACCESSAPIV1ACCESSISSUANCEPOST_SECURITY = SecurityMetadata(
+    identity='public:issue_access_api_v1_access_issuance_post', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='issue_access_api_v1_access_issuance_post', review_owner='Stage 1B0-R7',
+)
+ISSUEACCESSAPIV1ACCESSISSUANCEPOST_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0020', operation_id='issue_access_api_v1_access_issuance_post',
+    method='POST', path='/api/v1/access/issuance', backend_tag='proof-of-access',
+    product='Access', disposition='UI_OPTIONAL',
+    success_status=200, response_type=IssueAccessApiV1AccessIssuancePostSuccess, security=ISSUEACCESSAPIV1ACCESSISSUANCEPOST_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:issue_access_api_v1_access_issuance_post',
+    response_media_type='application/json',
+)
+async def issue_access_api_v1_access_issuance_post(transport: HttpTransport, request: IssueAccessApiV1AccessIssuancePostRequest) -> IssueAccessApiV1AccessIssuancePostSuccess:
+    return await transport.invoke(ISSUEACCESSAPIV1ACCESSISSUANCEPOST_OPERATION, path_parameters={}, query_parameters={}, body=request.body.model_dump(mode='json'), request_headers={})
+
+class CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    body: IssuanceChallengeCreateRequest
+
+class CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostSuccess(RootModel[IssuanceChallengeOut]):
+    pass
+
+CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostError = SafeTransportError
+
+CREATEISSUANCECHALLENGEAPIV1ACCESSISSUANCECHALLENGESPOST_SECURITY = SecurityMetadata(
+    identity='public:create_issuance_challenge_api_v1_access_issuance_challenges_post', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='create_issuance_challenge_api_v1_access_issuance_challenges_post', review_owner='Stage 1B0-R7',
+)
+CREATEISSUANCECHALLENGEAPIV1ACCESSISSUANCECHALLENGESPOST_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0021', operation_id='create_issuance_challenge_api_v1_access_issuance_challenges_post',
+    method='POST', path='/api/v1/access/issuance/challenges', backend_tag='proof-of-access',
+    product='Access', disposition='UI_OPTIONAL',
+    success_status=200, response_type=CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostSuccess, security=CREATEISSUANCECHALLENGEAPIV1ACCESSISSUANCECHALLENGESPOST_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:create_issuance_challenge_api_v1_access_issuance_challenges_post',
+    response_media_type='application/json',
+)
+async def create_issuance_challenge_api_v1_access_issuance_challenges_post(transport: HttpTransport, request: CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostRequest) -> CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostSuccess:
+    return await transport.invoke(CREATEISSUANCECHALLENGEAPIV1ACCESSISSUANCECHALLENGESPOST_OPERATION, path_parameters={}, query_parameters={}, body=request.body.model_dump(mode='json'), request_headers={})
+
+class GetIssuedAccessApiV1AccessIssuedGrantIdGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    grant_id: str
+
+class GetIssuedAccessApiV1AccessIssuedGrantIdGetSuccess(RootModel[IssuedAccessOut]):
+    pass
+
+GetIssuedAccessApiV1AccessIssuedGrantIdGetError = SafeTransportError
+
+GETISSUEDACCESSAPIV1ACCESSISSUEDGRANTIDGET_SECURITY = SecurityMetadata(
+    identity='public:get_issued_access_api_v1_access_issued__grant_id__get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_issued_access_api_v1_access_issued__grant_id__get', review_owner='Stage 1B0-R7',
+)
+GETISSUEDACCESSAPIV1ACCESSISSUEDGRANTIDGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0022', operation_id='get_issued_access_api_v1_access_issued__grant_id__get',
+    method='GET', path='/api/v1/access/issued/{grant_id}', backend_tag='proof-of-access',
+    product='Access', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetIssuedAccessApiV1AccessIssuedGrantIdGetSuccess, security=GETISSUEDACCESSAPIV1ACCESSISSUEDGRANTIDGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_issued_access_api_v1_access_issued__grant_id__get',
+    response_media_type='application/json',
+)
+async def get_issued_access_api_v1_access_issued__grant_id__get(transport: HttpTransport, request: GetIssuedAccessApiV1AccessIssuedGrantIdGetRequest) -> GetIssuedAccessApiV1AccessIssuedGrantIdGetSuccess:
+    return await transport.invoke(GETISSUEDACCESSAPIV1ACCESSISSUEDGRANTIDGET_OPERATION, path_parameters={'grant_id': str(request.grant_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetMeApiV1AccessMeGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -156,7 +281,7 @@ GETMEAPIV1ACCESSMEGET_SECURITY = SecurityMetadata(
     source_symbol='get_me_api_v1_access_me_get', review_owner='Stage 1B0-R7',
 )
 GETMEAPIV1ACCESSMEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0019', operation_id='get_me_api_v1_access_me_get',
+    matrix_id='HTTP-0024', operation_id='get_me_api_v1_access_me_get',
     method='GET', path='/api/v1/access/me', backend_tag='proof-of-access',
     product='Access', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMeApiV1AccessMeGetSuccess, security=GETMEAPIV1ACCESSMEGET_SECURITY,
@@ -181,7 +306,7 @@ GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_SECURITY = SecurityMetadata(
     source_symbol='get_my_entitlements_api_v1_access_me_entitlements_get', review_owner='Stage 1B0-R7',
 )
 GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0020', operation_id='get_my_entitlements_api_v1_access_me_entitlements_get',
+    matrix_id='HTTP-0025', operation_id='get_my_entitlements_api_v1_access_me_entitlements_get',
     method='GET', path='/api/v1/access/me/entitlements', backend_tag='proof-of-access',
     product='Access', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMyEntitlementsApiV1AccessMeEntitlementsGetSuccess, security=GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_SECURITY,
@@ -206,7 +331,7 @@ GETMYLIMITSAPIV1ACCESSMELIMITSGET_SECURITY = SecurityMetadata(
     source_symbol='get_my_limits_api_v1_access_me_limits_get', review_owner='Stage 1B0-R7',
 )
 GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0021', operation_id='get_my_limits_api_v1_access_me_limits_get',
+    matrix_id='HTTP-0026', operation_id='get_my_limits_api_v1_access_me_limits_get',
     method='GET', path='/api/v1/access/me/limits', backend_tag='proof-of-access',
     product='Access', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMyLimitsApiV1AccessMeLimitsGetSuccess, security=GETMYLIMITSAPIV1ACCESSMELIMITSGET_SECURITY,
@@ -215,6 +340,56 @@ GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION = NormalizedOperation(
 )
 async def get_my_limits_api_v1_access_me_limits_get(transport: HttpTransport, request: GetMyLimitsApiV1AccessMeLimitsGetRequest) -> GetMyLimitsApiV1AccessMeLimitsGetSuccess:
     return await transport.invoke(GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
+
+class GetAccessOffersApiV1AccessOffersGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    pass
+
+class GetAccessOffersApiV1AccessOffersGetSuccess(RootModel[list[AccessOfferOut]]):
+    pass
+
+GetAccessOffersApiV1AccessOffersGetError = SafeTransportError
+
+GETACCESSOFFERSAPIV1ACCESSOFFERSGET_SECURITY = SecurityMetadata(
+    identity='public:get_access_offers_api_v1_access_offers_get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_access_offers_api_v1_access_offers_get', review_owner='Stage 1B0-R7',
+)
+GETACCESSOFFERSAPIV1ACCESSOFFERSGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0027', operation_id='get_access_offers_api_v1_access_offers_get',
+    method='GET', path='/api/v1/access/offers', backend_tag='proof-of-access',
+    product='Access', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetAccessOffersApiV1AccessOffersGetSuccess, security=GETACCESSOFFERSAPIV1ACCESSOFFERSGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_access_offers_api_v1_access_offers_get',
+    response_media_type='application/json',
+)
+async def get_access_offers_api_v1_access_offers_get(transport: HttpTransport, request: GetAccessOffersApiV1AccessOffersGetRequest) -> GetAccessOffersApiV1AccessOffersGetSuccess:
+    return await transport.invoke(GETACCESSOFFERSAPIV1ACCESSOFFERSGET_OPERATION, path_parameters={}, query_parameters={}, body=None, request_headers={})
+
+class GetAccessOfferApiV1AccessOffersOfferIdGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    offer_id: str
+
+class GetAccessOfferApiV1AccessOffersOfferIdGetSuccess(RootModel[AccessOfferOut]):
+    pass
+
+GetAccessOfferApiV1AccessOffersOfferIdGetError = SafeTransportError
+
+GETACCESSOFFERAPIV1ACCESSOFFERSOFFERIDGET_SECURITY = SecurityMetadata(
+    identity='public:get_access_offer_api_v1_access_offers__offer_id__get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_access_offer_api_v1_access_offers__offer_id__get', review_owner='Stage 1B0-R7',
+)
+GETACCESSOFFERAPIV1ACCESSOFFERSOFFERIDGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0028', operation_id='get_access_offer_api_v1_access_offers__offer_id__get',
+    method='GET', path='/api/v1/access/offers/{offer_id}', backend_tag='proof-of-access',
+    product='Access', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetAccessOfferApiV1AccessOffersOfferIdGetSuccess, security=GETACCESSOFFERAPIV1ACCESSOFFERSOFFERIDGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_access_offer_api_v1_access_offers__offer_id__get',
+    response_media_type='application/json',
+)
+async def get_access_offer_api_v1_access_offers__offer_id__get(transport: HttpTransport, request: GetAccessOfferApiV1AccessOffersOfferIdGetRequest) -> GetAccessOfferApiV1AccessOffersOfferIdGetSuccess:
+    return await transport.invoke(GETACCESSOFFERAPIV1ACCESSOFFERSOFFERIDGET_OPERATION, path_parameters={'offer_id': str(request.offer_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -231,7 +406,7 @@ GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_SECURITY = Sec
     source_symbol='get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get', review_owner='Stage 1B0-R7',
 )
 GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0023', operation_id='get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get',
+    matrix_id='HTTP-0030', operation_id='get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get',
     method='GET', path='/api/v1/access/payment-intents/{payment_intent_id}', backend_tag='proof-of-access',
     product='Access', disposition='UI_REQUIRED',
     success_status=200, response_type=GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetSuccess, security=GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_SECURITY,
@@ -256,7 +431,7 @@ RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_SECURITY = SecurityM
     source_symbol='recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get', review_owner='Stage 1B0-R7',
 )
 RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0031', operation_id='recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get',
+    matrix_id='HTTP-0038', operation_id='recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get',
     method='GET', path='/api/v1/access/recovery/status/{recovery_attempt_id}', backend_tag='proof-of-access',
     product='Access', disposition='UI_REQUIRED',
     success_status=200, response_type=RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetSuccess, security=RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_SECURITY,
@@ -281,7 +456,7 @@ LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_SECURITY = SecurityMetadata(
     source_symbol='list_addresses_api_v1_business_lightning_addresses_get', review_owner='Stage 1B0-R7',
 )
 LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0041', operation_id='list_addresses_api_v1_business_lightning_addresses_get',
+    matrix_id='HTTP-0048', operation_id='list_addresses_api_v1_business_lightning_addresses_get',
     method='GET', path='/api/v1/business/lightning-addresses', backend_tag='Merchant Lightning Address',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListAddressesApiV1BusinessLightningAddressesGetSuccess, security=LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_SECURITY,
@@ -306,7 +481,7 @@ GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_SECURITY = SecurityMetadat
     source_symbol='get_address_api_v1_business_lightning_addresses__address_id__get', review_owner='Stage 1B0-R7',
 )
 GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0044', operation_id='get_address_api_v1_business_lightning_addresses__address_id__get',
+    matrix_id='HTTP-0051', operation_id='get_address_api_v1_business_lightning_addresses__address_id__get',
     method='GET', path='/api/v1/business/lightning-addresses/{address_id}', backend_tag='Merchant Lightning Address',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetAddressApiV1BusinessLightningAddressesAddressIdGetSuccess, security=GETADDRESSAPIV1BUSINESSLIGHTNINGADDRESSESADDRESSIDGET_SECURITY,
@@ -331,7 +506,7 @@ LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_SECURITY = SecurityMetadata(
     source_symbol='list_domains_api_v1_business_lightning_domains_get', review_owner='Stage 1B0-R7',
 )
 LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0047', operation_id='list_domains_api_v1_business_lightning_domains_get',
+    matrix_id='HTTP-0054', operation_id='list_domains_api_v1_business_lightning_domains_get',
     method='GET', path='/api/v1/business/lightning-domains', backend_tag='Merchant Lightning Address',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListDomainsApiV1BusinessLightningDomainsGetSuccess, security=LISTDOMAINSAPIV1BUSINESSLIGHTNINGDOMAINSGET_SECURITY,
@@ -356,7 +531,7 @@ GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_domain_api_v1_business_lightning_domains__domain_id__get', review_owner='Stage 1B0-R7',
 )
 GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0050', operation_id='get_domain_api_v1_business_lightning_domains__domain_id__get',
+    matrix_id='HTTP-0057', operation_id='get_domain_api_v1_business_lightning_domains__domain_id__get',
     method='GET', path='/api/v1/business/lightning-domains/{domain_id}', backend_tag='Merchant Lightning Address',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetDomainApiV1BusinessLightningDomainsDomainIdGetSuccess, security=GETDOMAINAPIV1BUSINESSLIGHTNINGDOMAINSDOMAINIDGET_SECURITY,
@@ -384,7 +559,7 @@ CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_SECURITY = SecurityMetadata(
     source_symbol='citadel_assessment_api_v1_citadel_assessment_get', review_owner='Stage 1B0-R7',
 )
 CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0053', operation_id='citadel_assessment_api_v1_citadel_assessment_get',
+    matrix_id='HTTP-0060', operation_id='citadel_assessment_api_v1_citadel_assessment_get',
     method='GET', path='/api/v1/citadel/assessment', backend_tag='citadel',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CitadelAssessmentApiV1CitadelAssessmentGetSuccess, security=CITADELASSESSMENTAPIV1CITADELASSESSMENTGET_SECURITY,
@@ -409,7 +584,7 @@ CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_SECURITY = SecurityMetadata(
     source_symbol='citadel_dependencies_api_v1_citadel_dependencies_get', review_owner='Stage 1B0-R7',
 )
 CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0054', operation_id='citadel_dependencies_api_v1_citadel_dependencies_get',
+    matrix_id='HTTP-0061', operation_id='citadel_dependencies_api_v1_citadel_dependencies_get',
     method='GET', path='/api/v1/citadel/dependencies', backend_tag='citadel',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CitadelDependenciesApiV1CitadelDependenciesGetSuccess, security=CITADELDEPENDENCIESAPIV1CITADELDEPENDENCIESGET_SECURITY,
@@ -434,7 +609,7 @@ CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_SECURITY = SecurityMetadata(
     source_symbol='citadel_inheritance_api_v1_citadel_inheritance_get', review_owner='Stage 1B0-R7',
 )
 CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0055', operation_id='citadel_inheritance_api_v1_citadel_inheritance_get',
+    matrix_id='HTTP-0062', operation_id='citadel_inheritance_api_v1_citadel_inheritance_get',
     method='GET', path='/api/v1/citadel/inheritance', backend_tag='citadel',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CitadelInheritanceApiV1CitadelInheritanceGetSuccess, security=CITADELINHERITANCEAPIV1CITADELINHERITANCEGET_SECURITY,
@@ -462,7 +637,7 @@ CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_SECURITY = SecurityMetadata(
     source_symbol='citadel_overview_api_v1_citadel_overview_get', review_owner='Stage 1B0-R7',
 )
 CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0056', operation_id='citadel_overview_api_v1_citadel_overview_get',
+    matrix_id='HTTP-0063', operation_id='citadel_overview_api_v1_citadel_overview_get',
     method='GET', path='/api/v1/citadel/overview', backend_tag='citadel',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CitadelOverviewApiV1CitadelOverviewGetSuccess, security=CITADELOVERVIEWAPIV1CITADELOVERVIEWGET_SECURITY,
@@ -487,7 +662,7 @@ CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_SECURITY = SecurityMetadata(
     source_symbol='citadel_policy_checks_api_v1_citadel_policy_checks_get', review_owner='Stage 1B0-R7',
 )
 CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0057', operation_id='citadel_policy_checks_api_v1_citadel_policy_checks_get',
+    matrix_id='HTTP-0064', operation_id='citadel_policy_checks_api_v1_citadel_policy_checks_get',
     method='GET', path='/api/v1/citadel/policy-checks', backend_tag='citadel',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CitadelPolicyChecksApiV1CitadelPolicyChecksGetSuccess, security=CITADELPOLICYCHECKSAPIV1CITADELPOLICYCHECKSGET_SECURITY,
@@ -512,7 +687,7 @@ CITADELRECOVERYAPIV1CITADELRECOVERYGET_SECURITY = SecurityMetadata(
     source_symbol='citadel_recovery_api_v1_citadel_recovery_get', review_owner='Stage 1B0-R7',
 )
 CITADELRECOVERYAPIV1CITADELRECOVERYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0059', operation_id='citadel_recovery_api_v1_citadel_recovery_get',
+    matrix_id='HTTP-0066', operation_id='citadel_recovery_api_v1_citadel_recovery_get',
     method='GET', path='/api/v1/citadel/recovery', backend_tag='citadel',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CitadelRecoveryApiV1CitadelRecoveryGetSuccess, security=CITADELRECOVERYAPIV1CITADELRECOVERYGET_SECURITY,
@@ -537,7 +712,7 @@ CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_SECURITY = SecurityMetadata(
     source_symbol='citadel_repair_plan_api_v1_citadel_repair_plan_get', review_owner='Stage 1B0-R7',
 )
 CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0060', operation_id='citadel_repair_plan_api_v1_citadel_repair_plan_get',
+    matrix_id='HTTP-0067', operation_id='citadel_repair_plan_api_v1_citadel_repair_plan_get',
     method='GET', path='/api/v1/citadel/repair-plan', backend_tag='citadel',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CitadelRepairPlanApiV1CitadelRepairPlanGetSuccess, security=CITADELREPAIRPLANAPIV1CITADELREPAIRPLANGET_SECURITY,
@@ -562,7 +737,7 @@ LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_SECURITY = SecurityMetadata(
     source_symbol='list_simulations_api_v1_citadel_simulations_get', review_owner='Stage 1B0-R7',
 )
 LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0061', operation_id='list_simulations_api_v1_citadel_simulations_get',
+    matrix_id='HTTP-0068', operation_id='list_simulations_api_v1_citadel_simulations_get',
     method='GET', path='/api/v1/citadel/simulations', backend_tag='citadel',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListSimulationsApiV1CitadelSimulationsGetSuccess, security=LISTSIMULATIONSAPIV1CITADELSIMULATIONSGET_SECURITY,
@@ -587,7 +762,7 @@ LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_SECURITY = SecurityMetadata(
     source_symbol='list_snippets_api_v1_education_snippets_get', review_owner='Stage 1B0-R7',
 )
 LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0063', operation_id='list_snippets_api_v1_education_snippets_get',
+    matrix_id='HTTP-0070', operation_id='list_snippets_api_v1_education_snippets_get',
     method='GET', path='/api/v1/education/snippets', backend_tag='education',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListSnippetsApiV1EducationSnippetsGetSuccess, security=LISTSNIPPETSAPIV1EDUCATIONSNIPPETSGET_SECURITY,
@@ -616,7 +791,7 @@ LISTENTITIESAPIV1ENTITIESGET_SECURITY = SecurityMetadata(
     source_symbol='list_entities_api_v1_entities_get', review_owner='Stage 1B0-R7',
 )
 LISTENTITIESAPIV1ENTITIESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0064', operation_id='list_entities_api_v1_entities_get',
+    matrix_id='HTTP-0071', operation_id='list_entities_api_v1_entities_get',
     method='GET', path='/api/v1/entities', backend_tag='entities',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListEntitiesApiV1EntitiesGetSuccess, security=LISTENTITIESAPIV1ENTITIESGET_SECURITY,
@@ -642,7 +817,7 @@ GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_SECURITY = SecurityMe
     source_symbol='get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0067', operation_id='get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get',
+    matrix_id='HTTP-0074', operation_id='get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get',
     method='GET', path='/api/v1/evidence/market-memory/{event_id}', backend_tag='evidence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMarketMemoryEvidenceApiV1EvidenceMarketMemoryEventIdGetSuccess, security=GETMARKETMEMORYEVIDENCEAPIV1EVIDENCEMARKETMEMORYEVENTIDGET_SECURITY,
@@ -667,7 +842,7 @@ LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_SECURITY = SecurityMetadata(
     source_symbol='list_evidence_packets_api_v1_evidence_packets_get', review_owner='Stage 1B0-R7',
 )
 LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0068', operation_id='list_evidence_packets_api_v1_evidence_packets_get',
+    matrix_id='HTTP-0075', operation_id='list_evidence_packets_api_v1_evidence_packets_get',
     method='GET', path='/api/v1/evidence/packets', backend_tag='evidence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListEvidencePacketsApiV1EvidencePacketsGetSuccess, security=LISTEVIDENCEPACKETSAPIV1EVIDENCEPACKETSGET_SECURITY,
@@ -693,7 +868,7 @@ GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_evidence_packet_api_v1_evidence_packets__packet_id__get', review_owner='Stage 1B0-R7',
 )
 GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0069', operation_id='get_evidence_packet_api_v1_evidence_packets__packet_id__get',
+    matrix_id='HTTP-0076', operation_id='get_evidence_packet_api_v1_evidence_packets__packet_id__get',
     method='GET', path='/api/v1/evidence/packets/{packet_id}', backend_tag='evidence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEvidencePacketApiV1EvidencePacketsPacketIdGetSuccess, security=GETEVIDENCEPACKETAPIV1EVIDENCEPACKETSPACKETIDGET_SECURITY,
@@ -718,7 +893,7 @@ GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_SECUR
     source_symbol='get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get', review_owner='Stage 1B0-R7',
 )
 GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0070', operation_id='get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get',
+    matrix_id='HTTP-0077', operation_id='get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get',
     method='GET', path='/api/v1/evidence/packets/{packet_id}/relationships', backend_tag='evidence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEvidencePacketRelationshipsApiV1EvidencePacketsPacketIdRelationshipsGetSuccess, security=GETEVIDENCEPACKETRELATIONSHIPSAPIV1EVIDENCEPACKETSPACKETIDRELATIONSHIPSGET_SECURITY,
@@ -743,7 +918,7 @@ GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_SECURITY = Secu
     source_symbol='get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get', review_owner='Stage 1B0-R7',
 )
 GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0071', operation_id='get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get',
+    matrix_id='HTTP-0078', operation_id='get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get',
     method='GET', path='/api/v1/evidence/packets/{packet_id}/timeline', backend_tag='evidence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEvidencePacketTimelineApiV1EvidencePacketsPacketIdTimelineGetSuccess, security=GETEVIDENCEPACKETTIMELINEAPIV1EVIDENCEPACKETSPACKETIDTIMELINEGET_SECURITY,
@@ -770,7 +945,7 @@ REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_SECURITY = SecurityMetada
     source_symbol='replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get', review_owner='Stage 1B0-R7',
 )
 REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0072', operation_id='replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get',
+    matrix_id='HTTP-0079', operation_id='replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get',
     method='GET', path='/api/v1/evidence/replay/{entity_type}/{entity_id}', backend_tag='evidence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ReplayEvidenceApiV1EvidenceReplayEntityTypeEntityIdGetSuccess, security=REPLAYEVIDENCEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDGET_SECURITY,
@@ -796,7 +971,7 @@ REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_SECURIT
     source_symbol='replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get', review_owner='Stage 1B0-R7',
 )
 REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0073', operation_id='replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get',
+    matrix_id='HTTP-0080', operation_id='replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get',
     method='GET', path='/api/v1/evidence/replay/{entity_type}/{entity_id}/integrity', backend_tag='evidence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ReplayEvidenceIntegrityApiV1EvidenceReplayEntityTypeEntityIdIntegrityGetSuccess, security=REPLAYEVIDENCEINTEGRITYAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDINTEGRITYGET_SECURITY,
@@ -822,7 +997,7 @@ REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_SECURITY 
     source_symbol='replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get', review_owner='Stage 1B0-R7',
 )
 REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0074', operation_id='replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get',
+    matrix_id='HTTP-0081', operation_id='replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get',
     method='GET', path='/api/v1/evidence/replay/{entity_type}/{entity_id}/timeline', backend_tag='evidence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ReplayEvidenceTimelineApiV1EvidenceReplayEntityTypeEntityIdTimelineGetSuccess, security=REPLAYEVIDENCETIMELINEAPIV1EVIDENCEREPLAYENTITYTYPEENTITYIDTIMELINEGET_SECURITY,
@@ -847,7 +1022,7 @@ HEALTHAPIV1HEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='health_api_v1_health_get', review_owner='Stage 1B0-R7',
 )
 HEALTHAPIV1HEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0076', operation_id='health_api_v1_health_get',
+    matrix_id='HTTP-0083', operation_id='health_api_v1_health_get',
     method='GET', path='/api/v1/health', backend_tag='health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=HealthApiV1HealthGetSuccess, security=HEALTHAPIV1HEALTHGET_SECURITY,
@@ -872,7 +1047,7 @@ DEGRADEDAPIV1HEALTHDEGRADEDGET_SECURITY = SecurityMetadata(
     source_symbol='degraded_api_v1_health_degraded_get', review_owner='Stage 1B0-R7',
 )
 DEGRADEDAPIV1HEALTHDEGRADEDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0077', operation_id='degraded_api_v1_health_degraded_get',
+    matrix_id='HTTP-0084', operation_id='degraded_api_v1_health_degraded_get',
     method='GET', path='/api/v1/health/degraded', backend_tag='health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=DegradedApiV1HealthDegradedGetSuccess, security=DEGRADEDAPIV1HEALTHDEGRADEDGET_SECURITY,
@@ -897,7 +1072,7 @@ JOBSAPIV1HEALTHJOBSGET_SECURITY = SecurityMetadata(
     source_symbol='jobs_api_v1_health_jobs_get', review_owner='Stage 1B0-R7',
 )
 JOBSAPIV1HEALTHJOBSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0078', operation_id='jobs_api_v1_health_jobs_get',
+    matrix_id='HTTP-0085', operation_id='jobs_api_v1_health_jobs_get',
     method='GET', path='/api/v1/health/jobs', backend_tag='health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=JobsApiV1HealthJobsGetSuccess, security=JOBSAPIV1HEALTHJOBSGET_SECURITY,
@@ -922,7 +1097,7 @@ LIVENESSAPIV1HEALTHLIVEGET_SECURITY = SecurityMetadata(
     source_symbol='liveness_api_v1_health_live_get', review_owner='Stage 1B0-R7',
 )
 LIVENESSAPIV1HEALTHLIVEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0079', operation_id='liveness_api_v1_health_live_get',
+    matrix_id='HTTP-0086', operation_id='liveness_api_v1_health_live_get',
     method='GET', path='/api/v1/health/live', backend_tag='health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LivenessApiV1HealthLiveGetSuccess, security=LIVENESSAPIV1HEALTHLIVEGET_SECURITY,
@@ -947,7 +1122,7 @@ PROVIDERSAPIV1HEALTHPROVIDERSGET_SECURITY = SecurityMetadata(
     source_symbol='providers_api_v1_health_providers_get', review_owner='Stage 1B0-R7',
 )
 PROVIDERSAPIV1HEALTHPROVIDERSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0080', operation_id='providers_api_v1_health_providers_get',
+    matrix_id='HTTP-0087', operation_id='providers_api_v1_health_providers_get',
     method='GET', path='/api/v1/health/providers', backend_tag='health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ProvidersApiV1HealthProvidersGetSuccess, security=PROVIDERSAPIV1HEALTHPROVIDERSGET_SECURITY,
@@ -972,7 +1147,7 @@ READINESSAPIV1HEALTHREADYGET_SECURITY = SecurityMetadata(
     source_symbol='readiness_api_v1_health_ready_get', review_owner='Stage 1B0-R7',
 )
 READINESSAPIV1HEALTHREADYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0081', operation_id='readiness_api_v1_health_ready_get',
+    matrix_id='HTTP-0088', operation_id='readiness_api_v1_health_ready_get',
     method='GET', path='/api/v1/health/ready', backend_tag='health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ReadinessApiV1HealthReadyGetSuccess, security=READINESSAPIV1HEALTHREADYGET_SECURITY,
@@ -997,7 +1172,7 @@ RUNTIMEAPIV1HEALTHRUNTIMEGET_SECURITY = SecurityMetadata(
     source_symbol='runtime_api_v1_health_runtime_get', review_owner='Stage 1B0-R7',
 )
 RUNTIMEAPIV1HEALTHRUNTIMEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0082', operation_id='runtime_api_v1_health_runtime_get',
+    matrix_id='HTTP-0089', operation_id='runtime_api_v1_health_runtime_get',
     method='GET', path='/api/v1/health/runtime', backend_tag='health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=RuntimeApiV1HealthRuntimeGetSuccess, security=RUNTIMEAPIV1HEALTHRUNTIMEGET_SECURITY,
@@ -1022,7 +1197,7 @@ SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_SECURITY = SecurityMetadata(
     source_symbol='system_health_api_v1_health_system_get', review_owner='Stage 1B0-R7',
 )
 SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0083', operation_id='system_health_api_v1_health_system_get',
+    matrix_id='HTTP-0090', operation_id='system_health_api_v1_health_system_get',
     method='GET', path='/api/v1/health/system', backend_tag='health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SystemHealthApiV1HealthSystemGetSuccess, security=SYSTEMHEALTHAPIV1HEALTHSYSTEMGET_SECURITY,
@@ -1047,7 +1222,7 @@ GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_SECURITY = SecurityMeta
     source_symbol='get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get', review_owner='Stage 1B0-R7',
 )
 GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0085', operation_id='get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get',
+    matrix_id='HTTP-0092', operation_id='get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleDashboardDtoApiV1IntelligenceCandlesCandleIdGetSuccess, security=GETCANDLEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDGET_SECURITY,
@@ -1073,7 +1248,7 @@ GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_SECURITY = Se
     source_symbol='get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get', review_owner='Stage 1B0-R7',
 )
 GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0086', operation_id='get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get',
+    matrix_id='HTTP-0093', operation_id='get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/attribution', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleAttributionApiV1IntelligenceCandlesCandleIdAttributionGetSuccess, security=GETCANDLEATTRIBUTIONAPIV1INTELLIGENCECANDLESCANDLEIDATTRIBUTIONGET_SECURITY,
@@ -1099,7 +1274,7 @@ GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_SECURITY = Secu
     source_symbol='get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get', review_owner='Stage 1B0-R7',
 )
 GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0087', operation_id='get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get',
+    matrix_id='HTTP-0094', operation_id='get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/candidates', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleCandidatesApiV1IntelligenceCandlesCandleIdCandidatesGetSuccess, security=GETCANDLECANDIDATESAPIV1INTELLIGENCECANDLESCANDLEIDCANDIDATESGET_SECURITY,
@@ -1124,7 +1299,7 @@ GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_SECURITY = SecurityMe
     source_symbol='get_candle_context_api_v1_intelligence_candles__candle_id__context_get', review_owner='Stage 1B0-R7',
 )
 GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0088', operation_id='get_candle_context_api_v1_intelligence_candles__candle_id__context_get',
+    matrix_id='HTTP-0095', operation_id='get_candle_context_api_v1_intelligence_candles__candle_id__context_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/context', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleContextApiV1IntelligenceCandlesCandleIdContextGetSuccess, security=GETCANDLECONTEXTAPIV1INTELLIGENCECANDLESCANDLEIDCONTEXTGET_SECURITY,
@@ -1149,7 +1324,7 @@ GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_SECURITY = 
     source_symbol='get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get', review_owner='Stage 1B0-R7',
 )
 GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0089', operation_id='get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get',
+    matrix_id='HTTP-0096', operation_id='get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/events', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleEventsDashboardDtoApiV1IntelligenceCandlesCandleIdEventsGetSuccess, security=GETCANDLEEVENTSDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVENTSGET_SECURITY,
@@ -1174,7 +1349,7 @@ GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_SECURIT
     source_symbol='get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get', review_owner='Stage 1B0-R7',
 )
 GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0090', operation_id='get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get',
+    matrix_id='HTTP-0097', operation_id='get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/evidence', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleEvidenceDashboardDtoApiV1IntelligenceCandlesCandleIdEvidenceGetSuccess, security=GETCANDLEEVIDENCEDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDEVIDENCEGET_SECURITY,
@@ -1199,7 +1374,7 @@ EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_SECURITY = SecurityMetad
     source_symbol='explain_candle_api_v1_intelligence_candles__candle_id__explain_get', review_owner='Stage 1B0-R7',
 )
 EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0091', operation_id='explain_candle_api_v1_intelligence_candles__candle_id__explain_get',
+    matrix_id='HTTP-0098', operation_id='explain_candle_api_v1_intelligence_candles__candle_id__explain_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/explain', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ExplainCandleApiV1IntelligenceCandlesCandleIdExplainGetSuccess, security=EXPLAINCANDLEAPIV1INTELLIGENCECANDLESCANDLEIDEXPLAINGET_SECURITY,
@@ -1225,7 +1400,7 @@ GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_SECURITY = SecurityMeta
     source_symbol='get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get', review_owner='Stage 1B0-R7',
 )
 GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0092', operation_id='get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get',
+    matrix_id='HTTP-0099', operation_id='get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/replay', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleReplayApiV1IntelligenceCandlesCandleIdReplayGetSuccess, security=GETCANDLEREPLAYAPIV1INTELLIGENCECANDLESCANDLEIDREPLAYGET_SECURITY,
@@ -1251,7 +1426,7 @@ GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_SECURI
     source_symbol='get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get', review_owner='Stage 1B0-R7',
 )
 GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0093', operation_id='get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get',
+    matrix_id='HTTP-0100', operation_id='get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/similar', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleSimilarityDashboardDtoApiV1IntelligenceCandlesCandleIdSimilarGetSuccess, security=GETCANDLESIMILARITYDASHBOARDDTOAPIV1INTELLIGENCECANDLESCANDLEIDSIMILARGET_SECURITY,
@@ -1277,7 +1452,7 @@ GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_SECURITY = Securi
     source_symbol='get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get', review_owner='Stage 1B0-R7',
 )
 GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0094', operation_id='get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get',
+    matrix_id='HTTP-0101', operation_id='get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get',
     method='GET', path='/api/v1/intelligence/candles/{candle_id}/top-events', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleTopEventsApiV1IntelligenceCandlesCandleIdTopEventsGetSuccess, security=GETCANDLETOPEVENTSAPIV1INTELLIGENCECANDLESCANDLEIDTOPEVENTSGET_SECURITY,
@@ -1302,7 +1477,7 @@ GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_SECURITY = SecurityM
     source_symbol='get_event_market_memory_api_v1_intelligence_events__event_id__memory_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0095', operation_id='get_event_market_memory_api_v1_intelligence_events__event_id__memory_get',
+    matrix_id='HTTP-0102', operation_id='get_event_market_memory_api_v1_intelligence_events__event_id__memory_get',
     method='GET', path='/api/v1/intelligence/events/{event_id}/memory', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventMarketMemoryApiV1IntelligenceEventsEventIdMemoryGetSuccess, security=GETEVENTMARKETMEMORYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYGET_SECURITY,
@@ -1328,7 +1503,7 @@ GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_SECURITY
     source_symbol='get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0097', operation_id='get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get',
+    matrix_id='HTTP-0104', operation_id='get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get',
     method='GET', path='/api/v1/intelligence/events/{event_id}/memory/replay', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventMarketMemoryReplayApiV1IntelligenceEventsEventIdMemoryReplayGetSuccess, security=GETEVENTMARKETMEMORYREPLAYAPIV1INTELLIGENCEEVENTSEVENTIDMEMORYREPLAYGET_SECURITY,
@@ -1354,7 +1529,7 @@ GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_SECURITY 
     source_symbol='get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0098', operation_id='get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get',
+    matrix_id='HTTP-0105', operation_id='get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get',
     method='GET', path='/api/v1/intelligence/events/{event_id}/similar', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventMarketMemorySimilarityApiV1IntelligenceEventsEventIdSimilarGetSuccess, security=GETEVENTMARKETMEMORYSIMILARITYAPIV1INTELLIGENCEEVENTSEVENTIDSIMILARGET_SECURITY,
@@ -1379,7 +1554,7 @@ GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_SECURITY =
     source_symbol='get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0099', operation_id='get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get',
+    matrix_id='HTTP-0106', operation_id='get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get',
     method='GET', path='/api/v1/intelligence/events/{event_id}/timeline', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventTimelineDashboardDtoApiV1IntelligenceEventsEventIdTimelineGetSuccess, security=GETEVENTTIMELINEDASHBOARDDTOAPIV1INTELLIGENCEEVENTSEVENTIDTIMELINEGET_SECURITY,
@@ -1404,7 +1579,7 @@ GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_SECURITY = Secu
     source_symbol='get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get', review_owner='Stage 1B0-R7',
 )
 GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0100', operation_id='get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get',
+    matrix_id='HTTP-0107', operation_id='get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get',
     method='GET', path='/api/v1/intelligence/impact/high-confidence', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetHighConfidenceImpactsApiV1IntelligenceImpactHighConfidenceGetSuccess, security=GETHIGHCONFIDENCEIMPACTSAPIV1INTELLIGENCEIMPACTHIGHCONFIDENCEGET_SECURITY,
@@ -1429,7 +1604,7 @@ LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_SECURITY = SecurityMetadata(
     source_symbol='list_narratives_api_v1_intelligence_narratives_get', review_owner='Stage 1B0-R7',
 )
 LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0101', operation_id='list_narratives_api_v1_intelligence_narratives_get',
+    matrix_id='HTTP-0108', operation_id='list_narratives_api_v1_intelligence_narratives_get',
     method='GET', path='/api/v1/intelligence/narratives', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListNarrativesApiV1IntelligenceNarrativesGetSuccess, security=LISTNARRATIVESAPIV1INTELLIGENCENARRATIVESGET_SECURITY,
@@ -1454,7 +1629,7 @@ GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_SECURITY = Security
     source_symbol='get_active_narrative_memory_api_v1_intelligence_narratives_active_get', review_owner='Stage 1B0-R7',
 )
 GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0102', operation_id='get_active_narrative_memory_api_v1_intelligence_narratives_active_get',
+    matrix_id='HTTP-0109', operation_id='get_active_narrative_memory_api_v1_intelligence_narratives_active_get',
     method='GET', path='/api/v1/intelligence/narratives/active', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetActiveNarrativeMemoryApiV1IntelligenceNarrativesActiveGetSuccess, security=GETACTIVENARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESACTIVEGET_SECURITY,
@@ -1479,7 +1654,7 @@ GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_SECURITY = Security
     source_symbol='get_narrative_dominance_api_v1_intelligence_narratives_dominance_get', review_owner='Stage 1B0-R7',
 )
 GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0103', operation_id='get_narrative_dominance_api_v1_intelligence_narratives_dominance_get',
+    matrix_id='HTTP-0110', operation_id='get_narrative_dominance_api_v1_intelligence_narratives_dominance_get',
     method='GET', path='/api/v1/intelligence/narratives/dominance', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetNarrativeDominanceApiV1IntelligenceNarrativesDominanceGetSuccess, security=GETNARRATIVEDOMINANCEAPIV1INTELLIGENCENARRATIVESDOMINANCEGET_SECURITY,
@@ -1504,7 +1679,7 @@ GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_SECURITY = SecurityM
     source_symbol='get_dominant_narratives_api_v1_intelligence_narratives_dominant_get', review_owner='Stage 1B0-R7',
 )
 GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0104', operation_id='get_dominant_narratives_api_v1_intelligence_narratives_dominant_get',
+    matrix_id='HTTP-0111', operation_id='get_dominant_narratives_api_v1_intelligence_narratives_dominant_get',
     method='GET', path='/api/v1/intelligence/narratives/dominant', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetDominantNarrativesApiV1IntelligenceNarrativesDominantGetSuccess, security=GETDOMINANTNARRATIVESAPIV1INTELLIGENCENARRATIVESDOMINANTGET_SECURITY,
@@ -1529,7 +1704,7 @@ GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_SECURITY = SecurityM
     source_symbol='get_emerging_narratives_api_v1_intelligence_narratives_emerging_get', review_owner='Stage 1B0-R7',
 )
 GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0105', operation_id='get_emerging_narratives_api_v1_intelligence_narratives_emerging_get',
+    matrix_id='HTTP-0112', operation_id='get_emerging_narratives_api_v1_intelligence_narratives_emerging_get',
     method='GET', path='/api/v1/intelligence/narratives/emerging', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEmergingNarrativesApiV1IntelligenceNarrativesEmergingGetSuccess, security=GETEMERGINGNARRATIVESAPIV1INTELLIGENCENARRATIVESEMERGINGGET_SECURITY,
@@ -1554,7 +1729,7 @@ GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_SECURITY = SecurityMet
     source_symbol='get_falling_narratives_api_v1_intelligence_narratives_falling_get', review_owner='Stage 1B0-R7',
 )
 GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0106', operation_id='get_falling_narratives_api_v1_intelligence_narratives_falling_get',
+    matrix_id='HTTP-0113', operation_id='get_falling_narratives_api_v1_intelligence_narratives_falling_get',
     method='GET', path='/api/v1/intelligence/narratives/falling', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetFallingNarrativesApiV1IntelligenceNarrativesFallingGetSuccess, security=GETFALLINGNARRATIVESAPIV1INTELLIGENCENARRATIVESFALLINGGET_SECURITY,
@@ -1579,7 +1754,7 @@ GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_SECURITY = SecurityMeta
     source_symbol='get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get', review_owner='Stage 1B0-R7',
 )
 GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0107', operation_id='get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get',
+    matrix_id='HTTP-0114', operation_id='get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get',
     method='GET', path='/api/v1/intelligence/narratives/heatmap', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetNarrativeHeatmapApiV1IntelligenceNarrativesHeatmapGetSuccess, security=GETNARRATIVEHEATMAPAPIV1INTELLIGENCENARRATIVESHEATMAPGET_SECURITY,
@@ -1605,7 +1780,7 @@ GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_SECURITY = SecurityMeta
     source_symbol='get_narrative_history_api_v1_intelligence_narratives_history_get', review_owner='Stage 1B0-R7',
 )
 GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0108', operation_id='get_narrative_history_api_v1_intelligence_narratives_history_get',
+    matrix_id='HTTP-0115', operation_id='get_narrative_history_api_v1_intelligence_narratives_history_get',
     method='GET', path='/api/v1/intelligence/narratives/history', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetNarrativeHistoryApiV1IntelligenceNarrativesHistoryGetSuccess, security=GETNARRATIVEHISTORYAPIV1INTELLIGENCENARRATIVESHISTORYGET_SECURITY,
@@ -1630,7 +1805,7 @@ GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_SECURITY = SecurityMetada
     source_symbol='get_narrative_memory_api_v1_intelligence_narratives_memory_get', review_owner='Stage 1B0-R7',
 )
 GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0109', operation_id='get_narrative_memory_api_v1_intelligence_narratives_memory_get',
+    matrix_id='HTTP-0116', operation_id='get_narrative_memory_api_v1_intelligence_narratives_memory_get',
     method='GET', path='/api/v1/intelligence/narratives/memory', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetNarrativeMemoryApiV1IntelligenceNarrativesMemoryGetSuccess, security=GETNARRATIVEMEMORYAPIV1INTELLIGENCENARRATIVESMEMORYGET_SECURITY,
@@ -1655,7 +1830,7 @@ GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_SECURITY = SecurityMetad
     source_symbol='get_rising_narratives_api_v1_intelligence_narratives_rising_get', review_owner='Stage 1B0-R7',
 )
 GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0110', operation_id='get_rising_narratives_api_v1_intelligence_narratives_rising_get',
+    matrix_id='HTTP-0117', operation_id='get_rising_narratives_api_v1_intelligence_narratives_rising_get',
     method='GET', path='/api/v1/intelligence/narratives/rising', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetRisingNarrativesApiV1IntelligenceNarrativesRisingGetSuccess, security=GETRISINGNARRATIVESAPIV1INTELLIGENCENARRATIVESRISINGGET_SECURITY,
@@ -1680,7 +1855,7 @@ GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_SECURITY = Security
     source_symbol='get_narrative_rotations_api_v1_intelligence_narratives_rotations_get', review_owner='Stage 1B0-R7',
 )
 GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0111', operation_id='get_narrative_rotations_api_v1_intelligence_narratives_rotations_get',
+    matrix_id='HTTP-0118', operation_id='get_narrative_rotations_api_v1_intelligence_narratives_rotations_get',
     method='GET', path='/api/v1/intelligence/narratives/rotations', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetNarrativeRotationsApiV1IntelligenceNarrativesRotationsGetSuccess, security=GETNARRATIVEROTATIONSAPIV1INTELLIGENCENARRATIVESROTATIONSGET_SECURITY,
@@ -1705,7 +1880,7 @@ GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_SECURITY = SecurityMetadata(
     source_symbol='get_top_narratives_api_v1_intelligence_narratives_top_get', review_owner='Stage 1B0-R7',
 )
 GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0112', operation_id='get_top_narratives_api_v1_intelligence_narratives_top_get',
+    matrix_id='HTTP-0119', operation_id='get_top_narratives_api_v1_intelligence_narratives_top_get',
     method='GET', path='/api/v1/intelligence/narratives/top', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetTopNarrativesApiV1IntelligenceNarrativesTopGetSuccess, security=GETTOPNARRATIVESAPIV1INTELLIGENCENARRATIVESTOPGET_SECURITY,
@@ -1730,7 +1905,7 @@ GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_SECURITY = SecurityMetadata(
     source_symbol='get_narrative_api_v1_intelligence_narratives__slug__get', review_owner='Stage 1B0-R7',
 )
 GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0113', operation_id='get_narrative_api_v1_intelligence_narratives__slug__get',
+    matrix_id='HTTP-0120', operation_id='get_narrative_api_v1_intelligence_narratives__slug__get',
     method='GET', path='/api/v1/intelligence/narratives/{slug}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetNarrativeApiV1IntelligenceNarrativesSlugGetSuccess, security=GETNARRATIVEAPIV1INTELLIGENCENARRATIVESSLUGGET_SECURITY,
@@ -1755,7 +1930,7 @@ LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_SECURITY = SecurityMetadata(
     source_symbol='list_market_patterns_api_v1_intelligence_patterns_get', review_owner='Stage 1B0-R7',
 )
 LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0114', operation_id='list_market_patterns_api_v1_intelligence_patterns_get',
+    matrix_id='HTTP-0121', operation_id='list_market_patterns_api_v1_intelligence_patterns_get',
     method='GET', path='/api/v1/intelligence/patterns', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListMarketPatternsApiV1IntelligencePatternsGetSuccess, security=LISTMARKETPATTERNSAPIV1INTELLIGENCEPATTERNSGET_SECURITY,
@@ -1780,7 +1955,7 @@ GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_SECURITY = SecurityMetadat
     source_symbol='get_market_pattern_api_v1_intelligence_patterns__pattern_id__get', review_owner='Stage 1B0-R7',
 )
 GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0115', operation_id='get_market_pattern_api_v1_intelligence_patterns__pattern_id__get',
+    matrix_id='HTTP-0122', operation_id='get_market_pattern_api_v1_intelligence_patterns__pattern_id__get',
     method='GET', path='/api/v1/intelligence/patterns/{pattern_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMarketPatternApiV1IntelligencePatternsPatternIdGetSuccess, security=GETMARKETPATTERNAPIV1INTELLIGENCEPATTERNSPATTERNIDGET_SECURITY,
@@ -1805,7 +1980,7 @@ GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_SECURITY = S
     source_symbol='get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get', review_owner='Stage 1B0-R7',
 )
 GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0116', operation_id='get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get',
+    matrix_id='HTTP-0123', operation_id='get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get',
     method='GET', path='/api/v1/intelligence/patterns/{pattern_id}/history', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMarketPatternHistoryApiV1IntelligencePatternsPatternIdHistoryGetSuccess, security=GETMARKETPATTERNHISTORYAPIV1INTELLIGENCEPATTERNSPATTERNIDHISTORYGET_SECURITY,
@@ -1831,7 +2006,7 @@ GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_SECU
     source_symbol='get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get', review_owner='Stage 1B0-R7',
 )
 GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0117', operation_id='get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get',
+    matrix_id='HTTP-0124', operation_id='get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get',
     method='GET', path='/api/v1/intelligence/patterns/{pattern_id}/occurrences', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMarketPatternOccurrencesApiV1IntelligencePatternsPatternIdOccurrencesGetSuccess, security=GETMARKETPATTERNOCCURRENCESAPIV1INTELLIGENCEPATTERNSPATTERNIDOCCURRENCESGET_SECURITY,
@@ -1856,7 +2031,7 @@ GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILE
     source_symbol='get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get', review_owner='Stage 1B0-R7',
 )
 GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0118', operation_id='get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get',
+    matrix_id='HTTP-0125', operation_id='get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get',
     method='GET', path='/api/v1/intelligence/patterns/{pattern_id}/reaction-profile', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMarketPatternReactionProfileApiV1IntelligencePatternsPatternIdReactionProfileGetSuccess, security=GETMARKETPATTERNREACTIONPROFILEAPIV1INTELLIGENCEPATTERNSPATTERNIDREACTIONPROFILEGET_SECURITY,
@@ -1881,7 +2056,7 @@ GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_SECURI
     source_symbol='get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get', review_owner='Stage 1B0-R7',
 )
 GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0119', operation_id='get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get',
+    matrix_id='HTTP-0126', operation_id='get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get',
     method='GET', path='/api/v1/intelligence/patterns/{pattern_id}/statistics', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetMarketPatternStatisticsApiV1IntelligencePatternsPatternIdStatisticsGetSuccess, security=GETMARKETPATTERNSTATISTICSAPIV1INTELLIGENCEPATTERNSPATTERNIDSTATISTICSGET_SECURITY,
@@ -1906,7 +2081,7 @@ GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_SECURITY 
     source_symbol='get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0120', operation_id='get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get',
+    matrix_id='HTTP-0127', operation_id='get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get',
     method='GET', path='/api/v1/intelligence/reaction-profile/{event_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetFoundationReactionProfileApiV1IntelligenceReactionProfileEventIdGetSuccess, security=GETFOUNDATIONREACTIONPROFILEAPIV1INTELLIGENCEREACTIONPROFILEEVENTIDGET_SECURITY,
@@ -1932,7 +2107,7 @@ GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_SECURITY = Se
     source_symbol='get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0121', operation_id='get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get',
+    matrix_id='HTTP-0128', operation_id='get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get',
     method='GET', path='/api/v1/intelligence/similar-events/{event_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetFoundationSimilarEventsApiV1IntelligenceSimilarEventsEventIdGetSuccess, security=GETFOUNDATIONSIMILAREVENTSAPIV1INTELLIGENCESIMILAREVENTSEVENTIDGET_SECURITY,
@@ -1958,7 +2133,7 @@ GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_SECURI
     source_symbol='get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get', review_owner='Stage 1B0-R7',
 )
 GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0122', operation_id='get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get',
+    matrix_id='HTTP-0129', operation_id='get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get',
     method='GET', path='/api/v1/intelligence/similarity/articles/{article_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleSimilarityReportApiV1IntelligenceSimilarityArticlesArticleIdGetSuccess, security=GETARTICLESIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYARTICLESARTICLEIDGET_SECURITY,
@@ -1984,7 +2159,7 @@ GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_SECURITY = Secur
     source_symbol='get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get', review_owner='Stage 1B0-R7',
 )
 GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0123', operation_id='get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get',
+    matrix_id='HTTP-0130', operation_id='get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get',
     method='GET', path='/api/v1/intelligence/similarity/candle/{candle_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCandleSimilarityApiV1IntelligenceSimilarityCandleCandleIdGetSuccess, security=GETCANDLESIMILARITYAPIV1INTELLIGENCESIMILARITYCANDLECANDLEIDGET_SECURITY,
@@ -2010,7 +2185,7 @@ GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_SECURITY = Security
     source_symbol='get_event_similarity_api_v1_intelligence_similarity_event__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0124', operation_id='get_event_similarity_api_v1_intelligence_similarity_event__event_id__get',
+    matrix_id='HTTP-0131', operation_id='get_event_similarity_api_v1_intelligence_similarity_event__event_id__get',
     method='GET', path='/api/v1/intelligence/similarity/event/{event_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventSimilarityApiV1IntelligenceSimilarityEventEventIdGetSuccess, security=GETEVENTSIMILARITYAPIV1INTELLIGENCESIMILARITYEVENTEVENTIDGET_SECURITY,
@@ -2036,7 +2211,7 @@ GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_SECURITY = S
     source_symbol='get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0125', operation_id='get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get',
+    matrix_id='HTTP-0132', operation_id='get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get',
     method='GET', path='/api/v1/intelligence/similarity/events/{event_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventSimilarityReportApiV1IntelligenceSimilarityEventsEventIdGetSuccess, security=GETEVENTSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYEVENTSEVENTIDGET_SECURITY,
@@ -2062,7 +2237,7 @@ GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_SECURITY = SecurityMe
     source_symbol='get_news_similarity_api_v1_intelligence_similarity_news__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0126', operation_id='get_news_similarity_api_v1_intelligence_similarity_news__event_id__get',
+    matrix_id='HTTP-0133', operation_id='get_news_similarity_api_v1_intelligence_similarity_news__event_id__get',
     method='GET', path='/api/v1/intelligence/similarity/news/{event_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetNewsSimilarityApiV1IntelligenceSimilarityNewsEventIdGetSuccess, security=GETNEWSSIMILARITYAPIV1INTELLIGENCESIMILARITYNEWSEVENTIDGET_SECURITY,
@@ -2088,7 +2263,7 @@ GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_SECURITY 
     source_symbol='get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get', review_owner='Stage 1B0-R7',
 )
 GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0127', operation_id='get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get',
+    matrix_id='HTTP-0134', operation_id='get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get',
     method='GET', path='/api/v1/intelligence/similarity/signals/{signal_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSignalSimilarityReportApiV1IntelligenceSimilaritySignalsSignalIdGetSuccess, security=GETSIGNALSIMILARITYREPORTAPIV1INTELLIGENCESIMILARITYSIGNALSSIGNALIDGET_SECURITY,
@@ -2114,7 +2289,7 @@ GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_SECURITY = S
     source_symbol='get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0128', operation_id='get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get',
+    matrix_id='HTTP-0135', operation_id='get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get',
     method='GET', path='/api/v1/intelligence/similarity/{event_id}', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetHistoricalSimilarityContextApiV1IntelligenceSimilarityEventIdGetSuccess, security=GETHISTORICALSIMILARITYCONTEXTAPIV1INTELLIGENCESIMILARITYEVENTIDGET_SECURITY,
@@ -2140,7 +2315,7 @@ GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_SECUR
     source_symbol='get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get', review_owner='Stage 1B0-R7',
 )
 GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0129', operation_id='get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get',
+    matrix_id='HTTP-0136', operation_id='get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get',
     method='GET', path='/api/v1/intelligence/similarity/{event_id}/matches', backend_tag='intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetHistoricalSimilarityMatchesApiV1IntelligenceSimilarityEventIdMatchesGetSuccess, security=GETHISTORICALSIMILARITYMATCHESAPIV1INTELLIGENCESIMILARITYEVENTIDMATCHESGET_SECURITY,
@@ -2166,7 +2341,7 @@ GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_SECURITY = SecurityMetadata(
     source_symbol='get_timeline_api_v1_intelligence_timeline_get', review_owner='Stage 1B0-R7',
 )
 GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0130', operation_id='get_timeline_api_v1_intelligence_timeline_get',
+    matrix_id='HTTP-0137', operation_id='get_timeline_api_v1_intelligence_timeline_get',
     method='GET', path='/api/v1/intelligence/timeline', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetTimelineApiV1IntelligenceTimelineGetSuccess, security=GETTIMELINEAPIV1INTELLIGENCETIMELINEGET_SECURITY,
@@ -2191,7 +2366,7 @@ GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_SECURITY = Security
     source_symbol='get_context_api_v1_intelligence_timeline_context__timeline_event_id__get', review_owner='Stage 1B0-R7',
 )
 GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0131', operation_id='get_context_api_v1_intelligence_timeline_context__timeline_event_id__get',
+    matrix_id='HTTP-0138', operation_id='get_context_api_v1_intelligence_timeline_context__timeline_event_id__get',
     method='GET', path='/api/v1/intelligence/timeline/context/{timeline_event_id}', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetContextApiV1IntelligenceTimelineContextTimelineEventIdGetSuccess, security=GETCONTEXTAPIV1INTELLIGENCETIMELINECONTEXTTIMELINEEVENTIDGET_SECURITY,
@@ -2218,7 +2393,7 @@ GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_SECURITY = SecurityMetadata(
     source_symbol='get_timeline_day_api_v1_intelligence_timeline_day_get', review_owner='Stage 1B0-R7',
 )
 GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0132', operation_id='get_timeline_day_api_v1_intelligence_timeline_day_get',
+    matrix_id='HTTP-0139', operation_id='get_timeline_day_api_v1_intelligence_timeline_day_get',
     method='GET', path='/api/v1/intelligence/timeline/day', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetTimelineDayApiV1IntelligenceTimelineDayGetSuccess, security=GETTIMELINEDAYAPIV1INTELLIGENCETIMELINEDAYGET_SECURITY,
@@ -2245,7 +2420,7 @@ GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_SECURITY = SecurityMetadata(
     source_symbol='get_timeline_hour_api_v1_intelligence_timeline_hour_get', review_owner='Stage 1B0-R7',
 )
 GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0133', operation_id='get_timeline_hour_api_v1_intelligence_timeline_hour_get',
+    matrix_id='HTTP-0140', operation_id='get_timeline_hour_api_v1_intelligence_timeline_hour_get',
     method='GET', path='/api/v1/intelligence/timeline/hour', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetTimelineHourApiV1IntelligenceTimelineHourGetSuccess, security=GETTIMELINEHOURAPIV1INTELLIGENCETIMELINEHOURGET_SECURITY,
@@ -2270,7 +2445,7 @@ GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_SECURITY = SecurityMetadata(
     source_symbol='get_latest_api_v1_intelligence_timeline_latest_get', review_owner='Stage 1B0-R7',
 )
 GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0134', operation_id='get_latest_api_v1_intelligence_timeline_latest_get',
+    matrix_id='HTTP-0141', operation_id='get_latest_api_v1_intelligence_timeline_latest_get',
     method='GET', path='/api/v1/intelligence/timeline/latest', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetLatestApiV1IntelligenceTimelineLatestGetSuccess, security=GETLATESTAPIV1INTELLIGENCETIMELINELATESTGET_SECURITY,
@@ -2295,7 +2470,7 @@ CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_SECURITY = Securi
     source_symbol='current_narratives_api_v1_intelligence_timeline_narratives_current_get', review_owner='Stage 1B0-R7',
 )
 CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0135', operation_id='current_narratives_api_v1_intelligence_timeline_narratives_current_get',
+    matrix_id='HTTP-0142', operation_id='current_narratives_api_v1_intelligence_timeline_narratives_current_get',
     method='GET', path='/api/v1/intelligence/timeline/narratives/current', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CurrentNarrativesApiV1IntelligenceTimelineNarrativesCurrentGetSuccess, security=CURRENTNARRATIVESAPIV1INTELLIGENCETIMELINENARRATIVESCURRENTGET_SECURITY,
@@ -2320,7 +2495,7 @@ HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_S
     source_symbol='high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get', review_owner='Stage 1B0-R7',
 )
 HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0136', operation_id='high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get',
+    matrix_id='HTTP-0143', operation_id='high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get',
     method='GET', path='/api/v1/intelligence/timeline/news-impacts/high-confidence', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=HighConfidenceNewsImpactsApiV1IntelligenceTimelineNewsImpactsHighConfidenceGetSuccess, security=HIGHCONFIDENCENEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSHIGHCONFIDENCEGET_SECURITY,
@@ -2345,7 +2520,7 @@ RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_SECURITY = Securi
     source_symbol='recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get', review_owner='Stage 1B0-R7',
 )
 RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0137', operation_id='recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get',
+    matrix_id='HTTP-0144', operation_id='recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get',
     method='GET', path='/api/v1/intelligence/timeline/news-impacts/recent', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=RecentNewsImpactsApiV1IntelligenceTimelineNewsImpactsRecentGetSuccess, security=RECENTNEWSIMPACTSAPIV1INTELLIGENCETIMELINENEWSIMPACTSRECENTGET_SECURITY,
@@ -2372,7 +2547,7 @@ GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_SECURITY = SecurityMetadata(
     source_symbol='get_window_api_v1_intelligence_timeline_window_get', review_owner='Stage 1B0-R7',
 )
 GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0138', operation_id='get_window_api_v1_intelligence_timeline_window_get',
+    matrix_id='HTTP-0145', operation_id='get_window_api_v1_intelligence_timeline_window_get',
     method='GET', path='/api/v1/intelligence/timeline/window', backend_tag='intelligence-timeline',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetWindowApiV1IntelligenceTimelineWindowGetSuccess, security=GETWINDOWAPIV1INTELLIGENCETIMELINEWINDOWGET_SECURITY,
@@ -2401,7 +2576,7 @@ CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_SECURITY = SecurityM
     source_symbol='candle_attribution_api_v1_market_time_machine_candle_attribution_get', review_owner='Stage 1B0-R7',
 )
 CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0142', operation_id='candle_attribution_api_v1_market_time_machine_candle_attribution_get',
+    matrix_id='HTTP-0149', operation_id='candle_attribution_api_v1_market_time_machine_candle_attribution_get',
     method='GET', path='/api/v1/market-time-machine/candle-attribution', backend_tag='market-time-machine',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CandleAttributionApiV1MarketTimeMachineCandleAttributionGetSuccess, security=CANDLEATTRIBUTIONAPIV1MARKETTIMEMACHINECANDLEATTRIBUTIONGET_SECURITY,
@@ -2430,7 +2605,7 @@ MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_SECURITY = SecurityMetadata(
     source_symbol='market_events_api_v1_market_time_machine_events_get', review_owner='Stage 1B0-R7',
 )
 MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0143', operation_id='market_events_api_v1_market_time_machine_events_get',
+    matrix_id='HTTP-0150', operation_id='market_events_api_v1_market_time_machine_events_get',
     method='GET', path='/api/v1/market-time-machine/events', backend_tag='market-time-machine',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketEventsApiV1MarketTimeMachineEventsGetSuccess, security=MARKETEVENTSAPIV1MARKETTIMEMACHINEEVENTSGET_SECURITY,
@@ -2459,7 +2634,7 @@ NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='news_impact_api_v1_market_time_machine_news_impact_get', review_owner='Stage 1B0-R7',
 )
 NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0144', operation_id='news_impact_api_v1_market_time_machine_news_impact_get',
+    matrix_id='HTTP-0151', operation_id='news_impact_api_v1_market_time_machine_news_impact_get',
     method='GET', path='/api/v1/market-time-machine/news-impact', backend_tag='market-time-machine',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=NewsImpactApiV1MarketTimeMachineNewsImpactGetSuccess, security=NEWSIMPACTAPIV1MARKETTIMEMACHINENEWSIMPACTGET_SECURITY,
@@ -2487,7 +2662,7 @@ PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_SECURITY = Secur
     source_symbol='provider_degradation_api_v1_market_time_machine_provider_degradation_get', review_owner='Stage 1B0-R7',
 )
 PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0145', operation_id='provider_degradation_api_v1_market_time_machine_provider_degradation_get',
+    matrix_id='HTTP-0152', operation_id='provider_degradation_api_v1_market_time_machine_provider_degradation_get',
     method='GET', path='/api/v1/market-time-machine/provider-degradation', backend_tag='market-time-machine',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ProviderDegradationApiV1MarketTimeMachineProviderDegradationGetSuccess, security=PROVIDERDEGRADATIONAPIV1MARKETTIMEMACHINEPROVIDERDEGRADATIONGET_SECURITY,
@@ -2516,7 +2691,7 @@ REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_SECURITY = SecurityMetad
     source_symbol='reaction_windows_api_v1_market_time_machine_reaction_windows_get', review_owner='Stage 1B0-R7',
 )
 REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0146', operation_id='reaction_windows_api_v1_market_time_machine_reaction_windows_get',
+    matrix_id='HTTP-0153', operation_id='reaction_windows_api_v1_market_time_machine_reaction_windows_get',
     method='GET', path='/api/v1/market-time-machine/reaction-windows', backend_tag='market-time-machine',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ReactionWindowsApiV1MarketTimeMachineReactionWindowsGetSuccess, security=REACTIONWINDOWSAPIV1MARKETTIMEMACHINEREACTIONWINDOWSGET_SECURITY,
@@ -2545,7 +2720,7 @@ REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_SECURITY = SecurityM
     source_symbol='regime_transitions_api_v1_market_time_machine_regime_transitions_get', review_owner='Stage 1B0-R7',
 )
 REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0147', operation_id='regime_transitions_api_v1_market_time_machine_regime_transitions_get',
+    matrix_id='HTTP-0154', operation_id='regime_transitions_api_v1_market_time_machine_regime_transitions_get',
     method='GET', path='/api/v1/market-time-machine/regime-transitions', backend_tag='market-time-machine',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=RegimeTransitionsApiV1MarketTimeMachineRegimeTransitionsGetSuccess, security=REGIMETRANSITIONSAPIV1MARKETTIMEMACHINEREGIMETRANSITIONSGET_SECURITY,
@@ -2574,7 +2749,7 @@ SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_SECURITY = SecurityM
     source_symbol='signal_reliability_api_v1_market_time_machine_signal_reliability_get', review_owner='Stage 1B0-R7',
 )
 SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0148', operation_id='signal_reliability_api_v1_market_time_machine_signal_reliability_get',
+    matrix_id='HTTP-0155', operation_id='signal_reliability_api_v1_market_time_machine_signal_reliability_get',
     method='GET', path='/api/v1/market-time-machine/signal-reliability', backend_tag='market-time-machine',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SignalReliabilityApiV1MarketTimeMachineSignalReliabilityGetSuccess, security=SIGNALRELIABILITYAPIV1MARKETTIMEMACHINESIGNALRELIABILITYGET_SECURITY,
@@ -2602,7 +2777,7 @@ BTCCANDLESAPIV1MARKETBTCCANDLESGET_SECURITY = SecurityMetadata(
     source_symbol='btc_candles_api_v1_market_btc_candles_get', review_owner='Stage 1B0-R7',
 )
 BTCCANDLESAPIV1MARKETBTCCANDLESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0149', operation_id='btc_candles_api_v1_market_btc_candles_get',
+    matrix_id='HTTP-0156', operation_id='btc_candles_api_v1_market_btc_candles_get',
     method='GET', path='/api/v1/market/btc/candles', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcCandlesApiV1MarketBtcCandlesGetSuccess, security=BTCCANDLESAPIV1MARKETBTCCANDLESGET_SECURITY,
@@ -2627,7 +2802,7 @@ BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_SECURITY = SecurityMetadata(
     source_symbol='btc_candles_latest_any_api_v1_market_btc_candles_latest_get', review_owner='Stage 1B0-R7',
 )
 BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0150', operation_id='btc_candles_latest_any_api_v1_market_btc_candles_latest_get',
+    matrix_id='HTTP-0157', operation_id='btc_candles_latest_any_api_v1_market_btc_candles_latest_get',
     method='GET', path='/api/v1/market/btc/candles/latest', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcCandlesLatestAnyApiV1MarketBtcCandlesLatestGetSuccess, security=BTCCANDLESLATESTANYAPIV1MARKETBTCCANDLESLATESTGET_SECURITY,
@@ -2652,7 +2827,7 @@ BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_SECURITY = SecurityMetadata(
     source_symbol='btc_candle_by_id_api_v1_market_btc_candles__candle_id__get', review_owner='Stage 1B0-R7',
 )
 BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0151', operation_id='btc_candle_by_id_api_v1_market_btc_candles__candle_id__get',
+    matrix_id='HTTP-0158', operation_id='btc_candle_by_id_api_v1_market_btc_candles__candle_id__get',
     method='GET', path='/api/v1/market/btc/candles/{candle_id}', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcCandleByIdApiV1MarketBtcCandlesCandleIdGetSuccess, security=BTCCANDLEBYIDAPIV1MARKETBTCCANDLESCANDLEIDGET_SECURITY,
@@ -2677,7 +2852,7 @@ BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_SECURITY = SecurityMet
     source_symbol='btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get', review_owner='Stage 1B0-R7',
 )
 BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0152', operation_id='btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get',
+    matrix_id='HTTP-0159', operation_id='btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get',
     method='GET', path='/api/v1/market/btc/candles/{candle_id}/evidence', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcCandleEvidenceApiV1MarketBtcCandlesCandleIdEvidenceGetSuccess, security=BTCCANDLEEVIDENCEAPIV1MARKETBTCCANDLESCANDLEIDEVIDENCEGET_SECURITY,
@@ -2702,7 +2877,7 @@ BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_SECURITY = SecurityMetad
     source_symbol='btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get', review_owner='Stage 1B0-R7',
 )
 BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0153', operation_id='btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get',
+    matrix_id='HTTP-0160', operation_id='btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get',
     method='GET', path='/api/v1/market/btc/candles/{timeframe}/latest', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcCandlesLatestApiV1MarketBtcCandlesTimeframeLatestGetSuccess, security=BTCCANDLESLATESTAPIV1MARKETBTCCANDLESTIMEFRAMELATESTGET_SECURITY,
@@ -2727,7 +2902,7 @@ BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_SECURITY = SecurityMetadata(
     source_symbol='btc_context_api_v1_market_btc_context_get', review_owner='Stage 1B0-R7',
 )
 BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0154', operation_id='btc_context_api_v1_market_btc_context_get',
+    matrix_id='HTTP-0161', operation_id='btc_context_api_v1_market_btc_context_get',
     method='GET', path='/api/v1/market/btc/context', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcContextApiV1MarketBtcContextGetSuccess, security=BTCCONTEXTAPIV1MARKETBTCCONTEXTGET_SECURITY,
@@ -2752,7 +2927,7 @@ BTCPRICEAPIV1MARKETBTCPRICEGET_SECURITY = SecurityMetadata(
     source_symbol='btc_price_api_v1_market_btc_price_get', review_owner='Stage 1B0-R7',
 )
 BTCPRICEAPIV1MARKETBTCPRICEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0155', operation_id='btc_price_api_v1_market_btc_price_get',
+    matrix_id='HTTP-0162', operation_id='btc_price_api_v1_market_btc_price_get',
     method='GET', path='/api/v1/market/btc/price', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcPriceApiV1MarketBtcPriceGetSuccess, security=BTCPRICEAPIV1MARKETBTCPRICEGET_SECURITY,
@@ -2777,7 +2952,7 @@ BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_SECURITY = SecurityMetadata(
     source_symbol='btc_price_history_api_v1_market_btc_price_history_get', review_owner='Stage 1B0-R7',
 )
 BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0156', operation_id='btc_price_history_api_v1_market_btc_price_history_get',
+    matrix_id='HTTP-0163', operation_id='btc_price_history_api_v1_market_btc_price_history_get',
     method='GET', path='/api/v1/market/btc/price/history', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcPriceHistoryApiV1MarketBtcPriceHistoryGetSuccess, security=BTCPRICEHISTORYAPIV1MARKETBTCPRICEHISTORYGET_SECURITY,
@@ -2802,7 +2977,7 @@ BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_SECURITY = SecurityMetadata(
     source_symbol='btc_providers_api_v1_market_btc_providers_get', review_owner='Stage 1B0-R7',
 )
 BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0157', operation_id='btc_providers_api_v1_market_btc_providers_get',
+    matrix_id='HTTP-0164', operation_id='btc_providers_api_v1_market_btc_providers_get',
     method='GET', path='/api/v1/market/btc/providers', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcProvidersApiV1MarketBtcProvidersGetSuccess, security=BTCPROVIDERSAPIV1MARKETBTCPROVIDERSGET_SECURITY,
@@ -2827,7 +3002,7 @@ BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='btc_providers_health_api_v1_market_btc_providers_health_get', review_owner='Stage 1B0-R7',
 )
 BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0158', operation_id='btc_providers_health_api_v1_market_btc_providers_health_get',
+    matrix_id='HTTP-0165', operation_id='btc_providers_health_api_v1_market_btc_providers_health_get',
     method='GET', path='/api/v1/market/btc/providers/health', backend_tag='market-data',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BtcProvidersHealthApiV1MarketBtcProvidersHealthGetSuccess, security=BTCPROVIDERSHEALTHAPIV1MARKETBTCPROVIDERSHEALTHGET_SECURITY,
@@ -2852,7 +3027,7 @@ MARKETHEALTHAPIV1MARKETHEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='market_health_api_v1_market_health_get', review_owner='Stage 1B0-R7',
 )
 MARKETHEALTHAPIV1MARKETHEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0159', operation_id='market_health_api_v1_market_health_get',
+    matrix_id='HTTP-0166', operation_id='market_health_api_v1_market_health_get',
     method='GET', path='/api/v1/market/health', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketHealthApiV1MarketHealthGetSuccess, security=MARKETHEALTHAPIV1MARKETHEALTHGET_SECURITY,
@@ -2877,7 +3052,7 @@ MARKETHISTORYATTRIBUTIONS_SECURITY = SecurityMetadata(
     source_symbol='market_history_attributions', review_owner='Stage 1B0-R7',
 )
 MARKETHISTORYATTRIBUTIONS_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0160', operation_id='market_history_attributions',
+    matrix_id='HTTP-0167', operation_id='market_history_attributions',
     method='GET', path='/api/v1/market/history/attributions', backend_tag='market-history',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketHistoryAttributionsSuccess, security=MARKETHISTORYATTRIBUTIONS_SECURITY,
@@ -2902,7 +3077,7 @@ MARKETHISTORYNARRATIVES_SECURITY = SecurityMetadata(
     source_symbol='market_history_narratives', review_owner='Stage 1B0-R7',
 )
 MARKETHISTORYNARRATIVES_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0161', operation_id='market_history_narratives',
+    matrix_id='HTTP-0168', operation_id='market_history_narratives',
     method='GET', path='/api/v1/market/history/narratives', backend_tag='market-history',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketHistoryNarrativesSuccess, security=MARKETHISTORYNARRATIVES_SECURITY,
@@ -2927,7 +3102,7 @@ MARKETHISTORYREPLAYEVENT_SECURITY = SecurityMetadata(
     source_symbol='market_history_replay_event', review_owner='Stage 1B0-R7',
 )
 MARKETHISTORYREPLAYEVENT_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0162', operation_id='market_history_replay_event',
+    matrix_id='HTTP-0169', operation_id='market_history_replay_event',
     method='GET', path='/api/v1/market/history/replay/event/{event_id}', backend_tag='market-history',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketHistoryReplayEventSuccess, security=MARKETHISTORYREPLAYEVENT_SECURITY,
@@ -2952,7 +3127,7 @@ MARKETHISTORYSOURCES_SECURITY = SecurityMetadata(
     source_symbol='market_history_sources', review_owner='Stage 1B0-R7',
 )
 MARKETHISTORYSOURCES_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0163', operation_id='market_history_sources',
+    matrix_id='HTTP-0170', operation_id='market_history_sources',
     method='GET', path='/api/v1/market/history/sources', backend_tag='market-history',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketHistorySourcesSuccess, security=MARKETHISTORYSOURCES_SECURITY,
@@ -2978,7 +3153,7 @@ MARKETHISTORYTIMELINE_SECURITY = SecurityMetadata(
     source_symbol='market_history_timeline', review_owner='Stage 1B0-R7',
 )
 MARKETHISTORYTIMELINE_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0164', operation_id='market_history_timeline',
+    matrix_id='HTTP-0171', operation_id='market_history_timeline',
     method='GET', path='/api/v1/market/history/timeline', backend_tag='market-history',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketHistoryTimelineSuccess, security=MARKETHISTORYTIMELINE_SECURITY,
@@ -3003,7 +3178,7 @@ MARKETCURRENTOVERVIEW_SECURITY = SecurityMetadata(
     source_symbol='market_current_overview', review_owner='Stage 1B0-R7',
 )
 MARKETCURRENTOVERVIEW_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0165', operation_id='market_current_overview',
+    matrix_id='HTTP-0172', operation_id='market_current_overview',
     method='GET', path='/api/v1/market/overview', backend_tag='market-data',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketCurrentOverviewSuccess, security=MARKETCURRENTOVERVIEW_SECURITY,
@@ -3028,7 +3203,7 @@ PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='providers_health_api_v1_market_providers_health_get', review_owner='Stage 1B0-R7',
 )
 PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0166', operation_id='providers_health_api_v1_market_providers_health_get',
+    matrix_id='HTTP-0173', operation_id='providers_health_api_v1_market_providers_health_get',
     method='GET', path='/api/v1/market/providers/health', backend_tag='market',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ProvidersHealthApiV1MarketProvidersHealthGetSuccess, security=PROVIDERSHEALTHAPIV1MARKETPROVIDERSHEALTHGET_SECURITY,
@@ -3054,7 +3229,7 @@ MARKETSIMILARITYREPORT_SECURITY = SecurityMetadata(
     source_symbol='market_similarity_report', review_owner='Stage 1B0-R7',
 )
 MARKETSIMILARITYREPORT_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0167', operation_id='market_similarity_report',
+    matrix_id='HTTP-0174', operation_id='market_similarity_report',
     method='GET', path='/api/v1/market/similarity/{event_id}', backend_tag='market-similarity',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=MarketSimilarityReportSuccess, security=MARKETSIMILARITYREPORT_SECURITY,
@@ -3079,7 +3254,7 @@ ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_SECURITY = SecurityMeta
     source_symbol='article_duplicates_api_v1_news_articles__article_id__duplicates_get', review_owner='Stage 1B0-R7',
 )
 ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0174', operation_id='article_duplicates_api_v1_news_articles__article_id__duplicates_get',
+    matrix_id='HTTP-0181', operation_id='article_duplicates_api_v1_news_articles__article_id__duplicates_get',
     method='GET', path='/api/v1/news/articles/{article_id}/duplicates', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ArticleDuplicatesApiV1NewsArticlesArticleIdDuplicatesGetSuccess, security=ARTICLEDUPLICATESAPIV1NEWSARTICLESARTICLEIDDUPLICATESGET_SECURITY,
@@ -3105,7 +3280,7 @@ BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_SECURITY = SecurityMetadata(
     source_symbol='by_sentiment_api_v1_news_by_sentiment__label__get', review_owner='Stage 1B0-R7',
 )
 BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0175', operation_id='by_sentiment_api_v1_news_by_sentiment__label__get',
+    matrix_id='HTTP-0182', operation_id='by_sentiment_api_v1_news_by_sentiment__label__get',
     method='GET', path='/api/v1/news/by-sentiment/{label}', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=BySentimentApiV1NewsBySentimentLabelGetSuccess, security=BYSENTIMENTAPIV1NEWSBYSENTIMENTLABELGET_SECURITY,
@@ -3130,7 +3305,7 @@ LISTCLUSTERSAPIV1NEWSCLUSTERSGET_SECURITY = SecurityMetadata(
     source_symbol='list_clusters_api_v1_news_clusters_get', review_owner='Stage 1B0-R7',
 )
 LISTCLUSTERSAPIV1NEWSCLUSTERSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0176', operation_id='list_clusters_api_v1_news_clusters_get',
+    matrix_id='HTTP-0183', operation_id='list_clusters_api_v1_news_clusters_get',
     method='GET', path='/api/v1/news/clusters', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListClustersApiV1NewsClustersGetSuccess, security=LISTCLUSTERSAPIV1NEWSCLUSTERSGET_SECURITY,
@@ -3155,7 +3330,7 @@ GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_cluster_api_v1_news_clusters__cluster_id__get', review_owner='Stage 1B0-R7',
 )
 GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0177', operation_id='get_cluster_api_v1_news_clusters__cluster_id__get',
+    matrix_id='HTTP-0184', operation_id='get_cluster_api_v1_news_clusters__cluster_id__get',
     method='GET', path='/api/v1/news/clusters/{cluster_id}', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetClusterApiV1NewsClustersClusterIdGetSuccess, security=GETCLUSTERAPIV1NEWSCLUSTERSCLUSTERIDGET_SECURITY,
@@ -3180,7 +3355,7 @@ LISTEVENTSAPIV1NEWSEVENTSGET_SECURITY = SecurityMetadata(
     source_symbol='list_events_api_v1_news_events_get', review_owner='Stage 1B0-R7',
 )
 LISTEVENTSAPIV1NEWSEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0178', operation_id='list_events_api_v1_news_events_get',
+    matrix_id='HTTP-0185', operation_id='list_events_api_v1_news_events_get',
     method='GET', path='/api/v1/news/events', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListEventsApiV1NewsEventsGetSuccess, security=LISTEVENTSAPIV1NEWSEVENTSGET_SECURITY,
@@ -3205,7 +3380,7 @@ HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='high_impact_events_api_v1_news_events_high_impact_get', review_owner='Stage 1B0-R7',
 )
 HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0179', operation_id='high_impact_events_api_v1_news_events_high_impact_get',
+    matrix_id='HTTP-0186', operation_id='high_impact_events_api_v1_news_events_high_impact_get',
     method='GET', path='/api/v1/news/events/high-impact', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=HighImpactEventsApiV1NewsEventsHighImpactGetSuccess, security=HIGHIMPACTEVENTSAPIV1NEWSEVENTSHIGHIMPACTGET_SECURITY,
@@ -3230,7 +3405,7 @@ REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_SECURITY = SecurityMetadata(
     source_symbol='regulatory_events_api_v1_news_events_regulatory_get', review_owner='Stage 1B0-R7',
 )
 REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0180', operation_id='regulatory_events_api_v1_news_events_regulatory_get',
+    matrix_id='HTTP-0187', operation_id='regulatory_events_api_v1_news_events_regulatory_get',
     method='GET', path='/api/v1/news/events/regulatory', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=RegulatoryEventsApiV1NewsEventsRegulatoryGetSuccess, security=REGULATORYEVENTSAPIV1NEWSEVENTSREGULATORYGET_SECURITY,
@@ -3255,7 +3430,7 @@ SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_SECURITY = SecurityMetadata(
     source_symbol='security_events_api_v1_news_events_security_get', review_owner='Stage 1B0-R7',
 )
 SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0181', operation_id='security_events_api_v1_news_events_security_get',
+    matrix_id='HTTP-0188', operation_id='security_events_api_v1_news_events_security_get',
     method='GET', path='/api/v1/news/events/security', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SecurityEventsApiV1NewsEventsSecurityGetSuccess, security=SECURITYEVENTSAPIV1NEWSEVENTSSECURITYGET_SECURITY,
@@ -3280,7 +3455,7 @@ GETEVENTAPIV1NEWSEVENTSEVENTIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_event_api_v1_news_events__event_id__get', review_owner='Stage 1B0-R7',
 )
 GETEVENTAPIV1NEWSEVENTSEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0182', operation_id='get_event_api_v1_news_events__event_id__get',
+    matrix_id='HTTP-0189', operation_id='get_event_api_v1_news_events__event_id__get',
     method='GET', path='/api/v1/news/events/{event_id}', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventApiV1NewsEventsEventIdGetSuccess, security=GETEVENTAPIV1NEWSEVENTSEVENTIDGET_SECURITY,
@@ -3305,7 +3480,7 @@ GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_SECURITY = SecurityMetadata(
     source_symbol='get_event_articles_api_v1_news_events__event_id__articles_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0183', operation_id='get_event_articles_api_v1_news_events__event_id__articles_get',
+    matrix_id='HTTP-0190', operation_id='get_event_articles_api_v1_news_events__event_id__articles_get',
     method='GET', path='/api/v1/news/events/{event_id}/articles', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventArticlesApiV1NewsEventsEventIdArticlesGetSuccess, security=GETEVENTARTICLESAPIV1NEWSEVENTSEVENTIDARTICLESGET_SECURITY,
@@ -3330,7 +3505,7 @@ GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='get_event_impact_api_v1_news_events__event_id__impact_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0184', operation_id='get_event_impact_api_v1_news_events__event_id__impact_get',
+    matrix_id='HTTP-0191', operation_id='get_event_impact_api_v1_news_events__event_id__impact_get',
     method='GET', path='/api/v1/news/events/{event_id}/impact', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventImpactApiV1NewsEventsEventIdImpactGetSuccess, security=GETEVENTIMPACTAPIV1NEWSEVENTSEVENTIDIMPACTGET_SECURITY,
@@ -3355,7 +3530,7 @@ GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_SECURITY = SecurityMetadata(
     source_symbol='get_event_score_api_v1_news_events__event_id__score_get', review_owner='Stage 1B0-R7',
 )
 GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0185', operation_id='get_event_score_api_v1_news_events__event_id__score_get',
+    matrix_id='HTTP-0192', operation_id='get_event_score_api_v1_news_events__event_id__score_get',
     method='GET', path='/api/v1/news/events/{event_id}/score', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetEventScoreApiV1NewsEventsEventIdScoreGetSuccess, security=GETEVENTSCOREAPIV1NEWSEVENTSEVENTIDSCOREGET_SECURITY,
@@ -3380,7 +3555,7 @@ HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='high_impact_news_api_v1_news_high_impact_get', review_owner='Stage 1B0-R7',
 )
 HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0186', operation_id='high_impact_news_api_v1_news_high_impact_get',
+    matrix_id='HTTP-0193', operation_id='high_impact_news_api_v1_news_high_impact_get',
     method='GET', path='/api/v1/news/high-impact', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=HighImpactNewsApiV1NewsHighImpactGetSuccess, security=HIGHIMPACTNEWSAPIV1NEWSHIGHIMPACTGET_SECURITY,
@@ -3405,7 +3580,7 @@ HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_SECURITY = SecurityMetadata(
     source_symbol='high_relevance_api_v1_news_high_relevance_get', review_owner='Stage 1B0-R7',
 )
 HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0187', operation_id='high_relevance_api_v1_news_high_relevance_get',
+    matrix_id='HTTP-0194', operation_id='high_relevance_api_v1_news_high_relevance_get',
     method='GET', path='/api/v1/news/high-relevance', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=HighRelevanceApiV1NewsHighRelevanceGetSuccess, security=HIGHRELEVANCEAPIV1NEWSHIGHRELEVANCEGET_SECURITY,
@@ -3431,7 +3606,7 @@ LATESTNEWSAPIV1NEWSLATESTGET_SECURITY = SecurityMetadata(
     source_symbol='latest_news_api_v1_news_latest_get', review_owner='Stage 1B0-R7',
 )
 LATESTNEWSAPIV1NEWSLATESTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0188', operation_id='latest_news_api_v1_news_latest_get',
+    matrix_id='HTTP-0195', operation_id='latest_news_api_v1_news_latest_get',
     method='GET', path='/api/v1/news/latest', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LatestNewsApiV1NewsLatestGetSuccess, security=LATESTNEWSAPIV1NEWSLATESTGET_SECURITY,
@@ -3456,7 +3631,7 @@ REGULATORYNEWSAPIV1NEWSREGULATORYGET_SECURITY = SecurityMetadata(
     source_symbol='regulatory_news_api_v1_news_regulatory_get', review_owner='Stage 1B0-R7',
 )
 REGULATORYNEWSAPIV1NEWSREGULATORYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0189', operation_id='regulatory_news_api_v1_news_regulatory_get',
+    matrix_id='HTTP-0196', operation_id='regulatory_news_api_v1_news_regulatory_get',
     method='GET', path='/api/v1/news/regulatory', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=RegulatoryNewsApiV1NewsRegulatoryGetSuccess, security=REGULATORYNEWSAPIV1NEWSREGULATORYGET_SECURITY,
@@ -3481,7 +3656,7 @@ SECURITYNEWSAPIV1NEWSSECURITYGET_SECURITY = SecurityMetadata(
     source_symbol='security_news_api_v1_news_security_get', review_owner='Stage 1B0-R7',
 )
 SECURITYNEWSAPIV1NEWSSECURITYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0190', operation_id='security_news_api_v1_news_security_get',
+    matrix_id='HTTP-0197', operation_id='security_news_api_v1_news_security_get',
     method='GET', path='/api/v1/news/security', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SecurityNewsApiV1NewsSecurityGetSuccess, security=SECURITYNEWSAPIV1NEWSSECURITYGET_SECURITY,
@@ -3506,7 +3681,7 @@ LISTSOURCESAPIV1NEWSSOURCESGET_SECURITY = SecurityMetadata(
     source_symbol='list_sources_api_v1_news_sources_get', review_owner='Stage 1B0-R7',
 )
 LISTSOURCESAPIV1NEWSSOURCESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0191', operation_id='list_sources_api_v1_news_sources_get',
+    matrix_id='HTTP-0198', operation_id='list_sources_api_v1_news_sources_get',
     method='GET', path='/api/v1/news/sources', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListSourcesApiV1NewsSourcesGetSuccess, security=LISTSOURCESAPIV1NEWSSOURCESGET_SECURITY,
@@ -3531,7 +3706,7 @@ CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_SECURITY = SecurityMetadata(
     source_symbol='categories_api_v1_news_sources_categories_get', review_owner='Stage 1B0-R7',
 )
 CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0192', operation_id='categories_api_v1_news_sources_categories_get',
+    matrix_id='HTTP-0199', operation_id='categories_api_v1_news_sources_categories_get',
     method='GET', path='/api/v1/news/sources/categories', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=CategoriesApiV1NewsSourcesCategoriesGetSuccess, security=CATEGORIESAPIV1NEWSSOURCESCATEGORIESGET_SECURITY,
@@ -3556,7 +3731,7 @@ SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='sources_health_api_v1_news_sources_health_get', review_owner='Stage 1B0-R7',
 )
 SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0193', operation_id='sources_health_api_v1_news_sources_health_get',
+    matrix_id='HTTP-0200', operation_id='sources_health_api_v1_news_sources_health_get',
     method='GET', path='/api/v1/news/sources/health', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SourcesHealthApiV1NewsSourcesHealthGetSuccess, security=SOURCESHEALTHAPIV1NEWSSOURCESHEALTHGET_SECURITY,
@@ -3582,7 +3757,7 @@ LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_SECURITY = SecurityMetadata(
     source_symbol='list_source_reputation_api_v1_news_sources_reputation_get', review_owner='Stage 1B0-R7',
 )
 LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0194', operation_id='list_source_reputation_api_v1_news_sources_reputation_get',
+    matrix_id='HTTP-0201', operation_id='list_source_reputation_api_v1_news_sources_reputation_get',
     method='GET', path='/api/v1/news/sources/reputation', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListSourceReputationApiV1NewsSourcesReputationGetSuccess, security=LISTSOURCEREPUTATIONAPIV1NEWSSOURCESREPUTATIONGET_SECURITY,
@@ -3607,7 +3782,7 @@ TIERSAPIV1NEWSSOURCESTIERSGET_SECURITY = SecurityMetadata(
     source_symbol='tiers_api_v1_news_sources_tiers_get', review_owner='Stage 1B0-R7',
 )
 TIERSAPIV1NEWSSOURCESTIERSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0196', operation_id='tiers_api_v1_news_sources_tiers_get',
+    matrix_id='HTTP-0203', operation_id='tiers_api_v1_news_sources_tiers_get',
     method='GET', path='/api/v1/news/sources/tiers', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TiersApiV1NewsSourcesTiersGetSuccess, security=TIERSAPIV1NEWSSOURCESTIERSGET_SECURITY,
@@ -3632,7 +3807,7 @@ GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_source_api_v1_news_sources__source_id__get', review_owner='Stage 1B0-R7',
 )
 GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0197', operation_id='get_source_api_v1_news_sources__source_id__get',
+    matrix_id='HTTP-0204', operation_id='get_source_api_v1_news_sources__source_id__get',
     method='GET', path='/api/v1/news/sources/{source_id}', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSourceApiV1NewsSourcesSourceIdGetSuccess, security=GETSOURCEAPIV1NEWSSOURCESSOURCEIDGET_SECURITY,
@@ -3657,7 +3832,7 @@ SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_SECURITY = Sec
     source_symbol='source_confidence_events_api_v1_news_sources__source_id__confidence_events_get', review_owner='Stage 1B0-R7',
 )
 SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0198', operation_id='source_confidence_events_api_v1_news_sources__source_id__confidence_events_get',
+    matrix_id='HTTP-0205', operation_id='source_confidence_events_api_v1_news_sources__source_id__confidence_events_get',
     method='GET', path='/api/v1/news/sources/{source_id}/confidence-events', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SourceConfidenceEventsApiV1NewsSourcesSourceIdConfidenceEventsGetSuccess, security=SOURCECONFIDENCEEVENTSAPIV1NEWSSOURCESSOURCEIDCONFIDENCEEVENTSGET_SECURITY,
@@ -3682,7 +3857,7 @@ SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_SECURITY = SecurityMetadata(
     source_symbol='source_health_api_v1_news_sources__source_id__health_get', review_owner='Stage 1B0-R7',
 )
 SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0199', operation_id='source_health_api_v1_news_sources__source_id__health_get',
+    matrix_id='HTTP-0206', operation_id='source_health_api_v1_news_sources__source_id__health_get',
     method='GET', path='/api/v1/news/sources/{source_id}/health', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SourceHealthApiV1NewsSourcesSourceIdHealthGetSuccess, security=SOURCEHEALTHAPIV1NEWSSOURCESSOURCEIDHEALTHGET_SECURITY,
@@ -3707,7 +3882,7 @@ SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_SECURITY = SecurityMetadata(
     source_symbol='source_snapshots_api_v1_news_sources__source_id__snapshots_get', review_owner='Stage 1B0-R7',
 )
 SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0200', operation_id='source_snapshots_api_v1_news_sources__source_id__snapshots_get',
+    matrix_id='HTTP-0207', operation_id='source_snapshots_api_v1_news_sources__source_id__snapshots_get',
     method='GET', path='/api/v1/news/sources/{source_id}/snapshots', backend_tag='market-intelligence',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SourceSnapshotsApiV1NewsSourcesSourceIdSnapshotsGetSuccess, security=SOURCESNAPSHOTSAPIV1NEWSSOURCESSOURCEIDSNAPSHOTSGET_SECURITY,
@@ -3732,7 +3907,7 @@ GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_SECURITY = SecurityMetadat
     source_symbol='get_article_explanation_api_v1_news__article_id__explanation_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0201', operation_id='get_article_explanation_api_v1_news__article_id__explanation_get',
+    matrix_id='HTTP-0208', operation_id='get_article_explanation_api_v1_news__article_id__explanation_get',
     method='GET', path='/api/v1/news/{article_id}/explanation', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleExplanationApiV1NewsArticleIdExplanationGetSuccess, security=GETARTICLEEXPLANATIONAPIV1NEWSARTICLEIDEXPLANATIONGET_SECURITY,
@@ -3757,7 +3932,7 @@ GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_SECURITY = SecurityMetadata(
     source_symbol='get_article_impact_api_v1_news__article_id__impact_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0202', operation_id='get_article_impact_api_v1_news__article_id__impact_get',
+    matrix_id='HTTP-0209', operation_id='get_article_impact_api_v1_news__article_id__impact_get',
     method='GET', path='/api/v1/news/{article_id}/impact', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleImpactApiV1NewsArticleIdImpactGetSuccess, security=GETARTICLEIMPACTAPIV1NEWSARTICLEIDIMPACTGET_SECURITY,
@@ -3782,7 +3957,7 @@ GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_SECURITY = SecurityMetadata(
     source_symbol='get_article_narratives_api_v1_news__article_id__narratives_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0203', operation_id='get_article_narratives_api_v1_news__article_id__narratives_get',
+    matrix_id='HTTP-0210', operation_id='get_article_narratives_api_v1_news__article_id__narratives_get',
     method='GET', path='/api/v1/news/{article_id}/narratives', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleNarrativesApiV1NewsArticleIdNarrativesGetSuccess, security=GETARTICLENARRATIVESAPIV1NEWSARTICLEIDNARRATIVESGET_SECURITY,
@@ -3807,7 +3982,7 @@ GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_SECURITY = SecurityMetadata(
     source_symbol='get_article_score_api_v1_news__article_id__score_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0204', operation_id='get_article_score_api_v1_news__article_id__score_get',
+    matrix_id='HTTP-0211', operation_id='get_article_score_api_v1_news__article_id__score_get',
     method='GET', path='/api/v1/news/{article_id}/score', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleScoreApiV1NewsArticleIdScoreGetSuccess, security=GETARTICLESCOREAPIV1NEWSARTICLEIDSCOREGET_SECURITY,
@@ -3832,7 +4007,7 @@ GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_SECURITY = SecurityMetadata(
     source_symbol='get_article_scores_api_v1_news__article_id__scores_get', review_owner='Stage 1B0-R7',
 )
 GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0205', operation_id='get_article_scores_api_v1_news__article_id__scores_get',
+    matrix_id='HTTP-0212', operation_id='get_article_scores_api_v1_news__article_id__scores_get',
     method='GET', path='/api/v1/news/{article_id}/scores', backend_tag='news',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetArticleScoresApiV1NewsArticleIdScoresGetSuccess, security=GETARTICLESCORESAPIV1NEWSARTICLEIDSCORESGET_SECURITY,
@@ -3858,7 +4033,7 @@ ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_SECURITY = SecurityMetadata(
     source_symbol='onchain_events_api_v1_onchain_events_get', review_owner='Stage 1B0-R7',
 )
 ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0207', operation_id='onchain_events_api_v1_onchain_events_get',
+    matrix_id='HTTP-0214', operation_id='onchain_events_api_v1_onchain_events_get',
     method='GET', path='/api/v1/onchain/events', backend_tag='onchain',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=OnchainEventsApiV1OnchainEventsGetSuccess, security=ONCHAINEVENTSAPIV1ONCHAINEVENTSGET_SECURITY,
@@ -3886,7 +4061,7 @@ ONCHAINSTATEAPIV1ONCHAINSTATEGET_SECURITY = SecurityMetadata(
     source_symbol='onchain_state_api_v1_onchain_state_get', review_owner='Stage 1B0-R7',
 )
 ONCHAINSTATEAPIV1ONCHAINSTATEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0208', operation_id='onchain_state_api_v1_onchain_state_get',
+    matrix_id='HTTP-0215', operation_id='onchain_state_api_v1_onchain_state_get',
     method='GET', path='/api/v1/onchain/state', backend_tag='onchain',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=OnchainStateApiV1OnchainStateGetSuccess, security=ONCHAINSTATEAPIV1ONCHAINSTATEGET_SECURITY,
@@ -3911,7 +4086,7 @@ OPERATIONSLISTINCIDENTS_SECURITY = SecurityMetadata(
     source_symbol='operations_list_incidents', review_owner='Stage 1B0-R7',
 )
 OPERATIONSLISTINCIDENTS_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0211', operation_id='operations_list_incidents',
+    matrix_id='HTTP-0218', operation_id='operations_list_incidents',
     method='GET', path='/api/v1/operations/incidents', backend_tag='operations',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=OperationsListIncidentsSuccess, security=OPERATIONSLISTINCIDENTS_SECURITY,
@@ -3936,7 +4111,7 @@ OPERATIONSGETINCIDENT_SECURITY = SecurityMetadata(
     source_symbol='operations_get_incident', review_owner='Stage 1B0-R7',
 )
 OPERATIONSGETINCIDENT_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0212', operation_id='operations_get_incident',
+    matrix_id='HTTP-0219', operation_id='operations_get_incident',
     method='GET', path='/api/v1/operations/incidents/{incident_id}', backend_tag='operations',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=OperationsGetIncidentSuccess, security=OPERATIONSGETINCIDENT_SECURITY,
@@ -3961,7 +4136,7 @@ JOBSAPIV1OPERATIONSJOBSGET_SECURITY = SecurityMetadata(
     source_symbol='jobs_api_v1_operations_jobs_get', review_owner='Stage 1B0-R7',
 )
 JOBSAPIV1OPERATIONSJOBSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0213', operation_id='jobs_api_v1_operations_jobs_get',
+    matrix_id='HTTP-0220', operation_id='jobs_api_v1_operations_jobs_get',
     method='GET', path='/api/v1/operations/jobs', backend_tag='operations',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=JobsApiV1OperationsJobsGetSuccess, security=JOBSAPIV1OPERATIONSJOBSGET_SECURITY,
@@ -3986,7 +4161,7 @@ OPERATIONSLISTSLO_SECURITY = SecurityMetadata(
     source_symbol='operations_list_slo', review_owner='Stage 1B0-R7',
 )
 OPERATIONSLISTSLO_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0220', operation_id='operations_list_slo',
+    matrix_id='HTTP-0227', operation_id='operations_list_slo',
     method='GET', path='/api/v1/operations/slo', backend_tag='operations',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=OperationsListSloSuccess, security=OPERATIONSLISTSLO_SECURITY,
@@ -4011,7 +4186,7 @@ PUBLICFEATURESAPIV1PUBLICFEATURESGET_SECURITY = SecurityMetadata(
     source_symbol='public_features_api_v1_public_features_get', review_owner='Stage 1B0-R7',
 )
 PUBLICFEATURESAPIV1PUBLICFEATURESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0256', operation_id='public_features_api_v1_public_features_get',
+    matrix_id='HTTP-0263', operation_id='public_features_api_v1_public_features_get',
     method='GET', path='/api/v1/public/features', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicFeaturesApiV1PublicFeaturesGetSuccess, security=PUBLICFEATURESAPIV1PUBLICFEATURESGET_SECURITY,
@@ -4036,7 +4211,7 @@ PUBLICLANDINGAPIV1PUBLICLANDINGGET_SECURITY = SecurityMetadata(
     source_symbol='public_landing_api_v1_public_landing_get', review_owner='Stage 1B0-R7',
 )
 PUBLICLANDINGAPIV1PUBLICLANDINGGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0257', operation_id='public_landing_api_v1_public_landing_get',
+    matrix_id='HTTP-0264', operation_id='public_landing_api_v1_public_landing_get',
     method='GET', path='/api/v1/public/landing', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicLandingApiV1PublicLandingGetSuccess, security=PUBLICLANDINGAPIV1PUBLICLANDINGGET_SECURITY,
@@ -4061,7 +4236,7 @@ PUBLICROADMAPAPIV1PUBLICROADMAPGET_SECURITY = SecurityMetadata(
     source_symbol='public_roadmap_api_v1_public_roadmap_get', review_owner='Stage 1B0-R7',
 )
 PUBLICROADMAPAPIV1PUBLICROADMAPGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0258', operation_id='public_roadmap_api_v1_public_roadmap_get',
+    matrix_id='HTTP-0265', operation_id='public_roadmap_api_v1_public_roadmap_get',
     method='GET', path='/api/v1/public/roadmap', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicRoadmapApiV1PublicRoadmapGetSuccess, security=PUBLICROADMAPAPIV1PUBLICROADMAPGET_SECURITY,
@@ -4086,7 +4261,7 @@ PUBLICSTATSAPIV1PUBLICSTATSGET_SECURITY = SecurityMetadata(
     source_symbol='public_stats_api_v1_public_stats_get', review_owner='Stage 1B0-R7',
 )
 PUBLICSTATSAPIV1PUBLICSTATSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0259', operation_id='public_stats_api_v1_public_stats_get',
+    matrix_id='HTTP-0266', operation_id='public_stats_api_v1_public_stats_get',
     method='GET', path='/api/v1/public/stats', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicStatsApiV1PublicStatsGetSuccess, security=PUBLICSTATSAPIV1PUBLICSTATSGET_SECURITY,
@@ -4111,7 +4286,7 @@ PUBLICSTATUSAPIV1PUBLICSTATUSGET_SECURITY = SecurityMetadata(
     source_symbol='public_status_api_v1_public_status_get', review_owner='Stage 1B0-R7',
 )
 PUBLICSTATUSAPIV1PUBLICSTATUSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0260', operation_id='public_status_api_v1_public_status_get',
+    matrix_id='HTTP-0267', operation_id='public_status_api_v1_public_status_get',
     method='GET', path='/api/v1/public/status', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicStatusApiV1PublicStatusGetSuccess, security=PUBLICSTATUSAPIV1PUBLICSTATUSGET_SECURITY,
@@ -4136,7 +4311,7 @@ PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_SECURITY = SecurityMetadata
     source_symbol='public_trace_summary_api_v1_public_trace__report_id__summary_get', review_owner='Stage 1B0-R7',
 )
 PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0261', operation_id='public_trace_summary_api_v1_public_trace__report_id__summary_get',
+    matrix_id='HTTP-0268', operation_id='public_trace_summary_api_v1_public_trace__report_id__summary_get',
     method='GET', path='/api/v1/public/trace/{report_id}/summary', backend_tag='public',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=PublicTraceSummaryApiV1PublicTraceReportIdSummaryGetSuccess, security=PUBLICTRACESUMMARYAPIV1PUBLICTRACEREPORTIDSUMMARYGET_SECURITY,
@@ -4161,7 +4336,7 @@ LATESTSIGNALSAPIV1SIGNALSLATESTGET_SECURITY = SecurityMetadata(
     source_symbol='latest_signals_api_v1_signals_latest_get', review_owner='Stage 1B0-R7',
 )
 LATESTSIGNALSAPIV1SIGNALSLATESTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0262', operation_id='latest_signals_api_v1_signals_latest_get',
+    matrix_id='HTTP-0269', operation_id='latest_signals_api_v1_signals_latest_get',
     method='GET', path='/api/v1/signals/latest', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LatestSignalsApiV1SignalsLatestGetSuccess, security=LATESTSIGNALSAPIV1SIGNALSLATESTGET_SECURITY,
@@ -4186,7 +4361,7 @@ NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_SECURITY = SecurityMetada
     source_symbol='news_market_impact_signals_api_v1_signals_news_market_impact_get', review_owner='Stage 1B0-R7',
 )
 NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0263', operation_id='news_market_impact_signals_api_v1_signals_news_market_impact_get',
+    matrix_id='HTTP-0270', operation_id='news_market_impact_signals_api_v1_signals_news_market_impact_get',
     method='GET', path='/api/v1/signals/news-market-impact', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=NewsMarketImpactSignalsApiV1SignalsNewsMarketImpactGetSuccess, security=NEWSMARKETIMPACTSIGNALSAPIV1SIGNALSNEWSMARKETIMPACTGET_SECURITY,
@@ -4213,7 +4388,7 @@ TOPSIGNALSAPIV1SIGNALSTOPGET_SECURITY = SecurityMetadata(
     source_symbol='top_signals_api_v1_signals_top_get', review_owner='Stage 1B0-R7',
 )
 TOPSIGNALSAPIV1SIGNALSTOPGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0264', operation_id='top_signals_api_v1_signals_top_get',
+    matrix_id='HTTP-0271', operation_id='top_signals_api_v1_signals_top_get',
     method='GET', path='/api/v1/signals/top', backend_tag='signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TopSignalsApiV1SignalsTopGetSuccess, security=TOPSIGNALSAPIV1SIGNALSTOPGET_SECURITY,
@@ -4238,7 +4413,7 @@ GETSIGNALAPIV1SIGNALSSIGNALIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_signal_api_v1_signals__signal_id__get', review_owner='Stage 1B0-R7',
 )
 GETSIGNALAPIV1SIGNALSSIGNALIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0265', operation_id='get_signal_api_v1_signals__signal_id__get',
+    matrix_id='HTTP-0272', operation_id='get_signal_api_v1_signals__signal_id__get',
     method='GET', path='/api/v1/signals/{signal_id}', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSignalApiV1SignalsSignalIdGetSuccess, security=GETSIGNALAPIV1SIGNALSSIGNALIDGET_SECURITY,
@@ -4263,7 +4438,7 @@ GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_SECURITY = SecurityMeta
     source_symbol='get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get', review_owner='Stage 1B0-R7',
 )
 GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0266', operation_id='get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get',
+    matrix_id='HTTP-0273', operation_id='get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get',
     method='GET', path='/api/v1/signals/{signal_id}/delivery-logs', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSignalDeliveryLogsApiV1SignalsSignalIdDeliveryLogsGetSuccess, security=GETSIGNALDELIVERYLOGSAPIV1SIGNALSSIGNALIDDELIVERYLOGSGET_SECURITY,
@@ -4288,7 +4463,7 @@ GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_SECURITY = SecurityMetadata(
     source_symbol='get_signal_evidence_api_v1_signals__signal_id__evidence_get', review_owner='Stage 1B0-R7',
 )
 GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0267', operation_id='get_signal_evidence_api_v1_signals__signal_id__evidence_get',
+    matrix_id='HTTP-0274', operation_id='get_signal_evidence_api_v1_signals__signal_id__evidence_get',
     method='GET', path='/api/v1/signals/{signal_id}/evidence', backend_tag='intelligence-signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSignalEvidenceApiV1SignalsSignalIdEvidenceGetSuccess, security=GETSIGNALEVIDENCEAPIV1SIGNALSSIGNALIDEVIDENCEGET_SECURITY,
@@ -4313,7 +4488,7 @@ SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_SECURITY = SecurityMetadata(
     source_symbol='signal_explanation_api_v1_signals__signal_id__explanation_get', review_owner='Stage 1B0-R7',
 )
 SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0268', operation_id='signal_explanation_api_v1_signals__signal_id__explanation_get',
+    matrix_id='HTTP-0275', operation_id='signal_explanation_api_v1_signals__signal_id__explanation_get',
     method='GET', path='/api/v1/signals/{signal_id}/explanation', backend_tag='signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SignalExplanationApiV1SignalsSignalIdExplanationGetSuccess, security=SIGNALEXPLANATIONAPIV1SIGNALSSIGNALIDEXPLANATIONGET_SECURITY,
@@ -4338,7 +4513,7 @@ SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_SECURITY = SecurityM
     source_symbol='signal_recommendations_api_v1_signals__signal_id__recommendations_get', review_owner='Stage 1B0-R7',
 )
 SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0269', operation_id='signal_recommendations_api_v1_signals__signal_id__recommendations_get',
+    matrix_id='HTTP-0276', operation_id='signal_recommendations_api_v1_signals__signal_id__recommendations_get',
     method='GET', path='/api/v1/signals/{signal_id}/recommendations', backend_tag='signals',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=SignalRecommendationsApiV1SignalsSignalIdRecommendationsGetSuccess, security=SIGNALRECOMMENDATIONSAPIV1SIGNALSSIGNALIDRECOMMENDATIONSGET_SECURITY,
@@ -4363,7 +4538,7 @@ STORAGESTATUSAPIV1STORAGESTATUSGET_SECURITY = SecurityMetadata(
     source_symbol='storage_status_api_v1_storage_status_get', review_owner='Stage 1B0-R7',
 )
 STORAGESTATUSAPIV1STORAGESTATUSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0270', operation_id='storage_status_api_v1_storage_status_get',
+    matrix_id='HTTP-0277', operation_id='storage_status_api_v1_storage_status_get',
     method='GET', path='/api/v1/storage/status', backend_tag='storage',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=StorageStatusApiV1StorageStatusGetSuccess, security=STORAGESTATUSAPIV1STORAGESTATUSGET_SECURITY,
@@ -4388,7 +4563,7 @@ TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_SECURITY = SecurityMetad
     source_symbol='timescale_operations_status_api_v1_storage_timescale_status_get', review_owner='Stage 1B0-R7',
 )
 TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0271', operation_id='timescale_operations_status_api_v1_storage_timescale_status_get',
+    matrix_id='HTTP-0278', operation_id='timescale_operations_status_api_v1_storage_timescale_status_get',
     method='GET', path='/api/v1/storage/timescale/status', backend_tag='storage',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=TimescaleOperationsStatusApiV1StorageTimescaleStatusGetSuccess, security=TIMESCALEOPERATIONSSTATUSAPIV1STORAGETIMESCALESTATUSGET_SECURITY,
@@ -4413,7 +4588,7 @@ ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_SECURITY = SecurityMetadata(
     source_symbol='analyze_address_api_v1_trace_address__address__get', review_owner='Stage 1B0-R7',
 )
 ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0272', operation_id='analyze_address_api_v1_trace_address__address__get',
+    matrix_id='HTTP-0279', operation_id='analyze_address_api_v1_trace_address__address__get',
     method='GET', path='/api/v1/trace/address/{address}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=AnalyzeAddressApiV1TraceAddressAddressGetSuccess, security=ANALYZEADDRESSAPIV1TRACEADDRESSADDRESSGET_SECURITY,
@@ -4438,7 +4613,7 @@ TRACEALERTSAPIV1TRACEALERTSGET_SECURITY = SecurityMetadata(
     source_symbol='trace_alerts_api_v1_trace_alerts_get', review_owner='Stage 1B0-R7',
 )
 TRACEALERTSAPIV1TRACEALERTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0273', operation_id='trace_alerts_api_v1_trace_alerts_get',
+    matrix_id='HTTP-0280', operation_id='trace_alerts_api_v1_trace_alerts_get',
     method='GET', path='/api/v1/trace/alerts', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceAlertsApiV1TraceAlertsGetSuccess, security=TRACEALERTSAPIV1TRACEALERTSGET_SECURITY,
@@ -4463,7 +4638,7 @@ TRACEEVENTSAPIV1TRACEEVENTSGET_SECURITY = SecurityMetadata(
     source_symbol='trace_events_api_v1_trace_events_get', review_owner='Stage 1B0-R7',
 )
 TRACEEVENTSAPIV1TRACEEVENTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0286', operation_id='trace_events_api_v1_trace_events_get',
+    matrix_id='HTTP-0293', operation_id='trace_events_api_v1_trace_events_get',
     method='GET', path='/api/v1/trace/events', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceEventsApiV1TraceEventsGetSuccess, security=TRACEEVENTSAPIV1TRACEEVENTSGET_SECURITY,
@@ -4488,7 +4663,7 @@ TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_SECURITY = SecurityMetadata(
     source_symbol='trace_event_api_v1_trace_events__event_id__get', review_owner='Stage 1B0-R7',
 )
 TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0287', operation_id='trace_event_api_v1_trace_events__event_id__get',
+    matrix_id='HTTP-0294', operation_id='trace_event_api_v1_trace_events__event_id__get',
     method='GET', path='/api/v1/trace/events/{event_id}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceEventApiV1TraceEventsEventIdGetSuccess, security=TRACEEVENTAPIV1TRACEEVENTSEVENTIDGET_SECURITY,
@@ -4513,7 +4688,7 @@ LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_SECURITY = SecurityMetadata(
     source_symbol='lite_address_check_api_v1_trace_lite__address__get', review_owner='Stage 1B0-R7',
 )
 LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0288', operation_id='lite_address_check_api_v1_trace_lite__address__get',
+    matrix_id='HTTP-0295', operation_id='lite_address_check_api_v1_trace_lite__address__get',
     method='GET', path='/api/v1/trace/lite/{address}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LiteAddressCheckApiV1TraceLiteAddressGetSuccess, security=LITEADDRESSCHECKAPIV1TRACELITEADDRESSGET_SECURITY,
@@ -4538,7 +4713,7 @@ GETREPORTAPIV1TRACEREPORTREPORTIDGET_SECURITY = SecurityMetadata(
     source_symbol='get_report_api_v1_trace_report__report_id__get', review_owner='Stage 1B0-R7',
 )
 GETREPORTAPIV1TRACEREPORTREPORTIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0292', operation_id='get_report_api_v1_trace_report__report_id__get',
+    matrix_id='HTTP-0299', operation_id='get_report_api_v1_trace_report__report_id__get',
     method='GET', path='/api/v1/trace/report/{report_id}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetReportApiV1TraceReportReportIdGetSuccess, security=GETREPORTAPIV1TRACEREPORTREPORTIDGET_SECURITY,
@@ -4563,7 +4738,7 @@ TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_SECURITY 
     source_symbol='trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get', review_owner='Stage 1B0-R7',
 )
 TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0293', operation_id='trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get',
+    matrix_id='HTTP-0300', operation_id='trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get',
     method='GET', path='/api/v1/trace/report/{report_id}/citadel-contribution', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceCitadelContributionApiV1TraceReportReportIdCitadelContributionGetSuccess, security=TRACECITADELCONTRIBUTIONAPIV1TRACEREPORTREPORTIDCITADELCONTRIBUTIONGET_SECURITY,
@@ -4588,7 +4763,7 @@ GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_SECURITY = Securi
     source_symbol='get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get', review_owner='Stage 1B0-R7',
 )
 GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0294', operation_id='get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get',
+    matrix_id='HTTP-0301', operation_id='get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get',
     method='GET', path='/api/v1/trace/report/{report_id}/counterparty-lens', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetCounterpartyLensApiV1TraceReportReportIdCounterpartyLensGetSuccess, security=GETCOUNTERPARTYLENSAPIV1TRACEREPORTREPORTIDCOUNTERPARTYLENSGET_SECURITY,
@@ -4613,7 +4788,7 @@ GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_SECURITY = SecurityMetadata(
     source_symbol='get_dust_radar_api_v1_trace_report__report_id__dust_radar_get', review_owner='Stage 1B0-R7',
 )
 GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0295', operation_id='get_dust_radar_api_v1_trace_report__report_id__dust_radar_get',
+    matrix_id='HTTP-0302', operation_id='get_dust_radar_api_v1_trace_report__report_id__dust_radar_get',
     method='GET', path='/api/v1/trace/report/{report_id}/dust-radar', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetDustRadarApiV1TraceReportReportIdDustRadarGetSuccess, security=GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_SECURITY,
@@ -4638,7 +4813,7 @@ LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_SECURITY = SecurityMetadata(
     source_symbol='list_evidence_api_v1_trace_report__report_id__evidence_get', review_owner='Stage 1B0-R7',
 )
 LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0296', operation_id='list_evidence_api_v1_trace_report__report_id__evidence_get',
+    matrix_id='HTTP-0303', operation_id='list_evidence_api_v1_trace_report__report_id__evidence_get',
     method='GET', path='/api/v1/trace/report/{report_id}/evidence', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListEvidenceApiV1TraceReportReportIdEvidenceGetSuccess, security=LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_SECURITY,
@@ -4663,7 +4838,7 @@ TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_SECURITY = SecurityMeta
     source_symbol='trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get', review_owner='Stage 1B0-R7',
 )
 TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0297', operation_id='trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get',
+    matrix_id='HTTP-0304', operation_id='trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get',
     method='GET', path='/api/v1/trace/report/{report_id}/evidence-refs', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetSuccess, security=TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_SECURITY,
@@ -4672,6 +4847,348 @@ TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION = NormalizedO
 )
 async def trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get(transport: HttpTransport, request: TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetRequest) -> TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetSuccess:
     return await transport.invoke(TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+
+class ExportTraceEvidenceRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    evidence_id: str
+    snapshot_id: str
+    historical: bool | None = None
+
+class ExportTraceEvidenceSuccess(RootModel[ResponseEnvelopeSafeEvidenceExportDTO]):
+    pass
+
+ExportTraceEvidenceError = SafeTransportError
+
+EXPORTTRACEEVIDENCE_SECURITY = SecurityMetadata(
+    identity='access-session:export_trace_evidence', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='export_trace_evidence', review_owner='Stage 1B0-R7',
+)
+EXPORTTRACEEVIDENCE_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0305', operation_id='export_trace_evidence',
+    method='GET', path='/api/v1/trace/report/{report_id}/evidence/{evidence_id}/export', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=ExportTraceEvidenceSuccess, security=EXPORTTRACEEVIDENCE_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:export_trace_evidence',
+    response_media_type='application/json',
+)
+async def export_trace_evidence(transport: HttpTransport, request: ExportTraceEvidenceRequest) -> ExportTraceEvidenceSuccess:
+    return await transport.invoke(EXPORTTRACEEVIDENCE_OPERATION, path_parameters={'report_id': str(request.report_id), 'evidence_id': str(request.evidence_id)}, query_parameters={'snapshot_id': serialize_query_value(request.snapshot_id), 'historical': serialize_query_value(request.historical)}, body=None, request_headers={})
+
+class GetTraceEvidenceLineageRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    evidence_id: str
+    snapshot_id: str
+    historical: bool | None = None
+
+class GetTraceEvidenceLineageSuccess(RootModel[ResponseEnvelopeSafeEvidenceLineageDTO]):
+    pass
+
+GetTraceEvidenceLineageError = SafeTransportError
+
+GETTRACEEVIDENCELINEAGE_SECURITY = SecurityMetadata(
+    identity='access-session:get_trace_evidence_lineage', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_evidence_lineage', review_owner='Stage 1B0-R7',
+)
+GETTRACEEVIDENCELINEAGE_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0306', operation_id='get_trace_evidence_lineage',
+    method='GET', path='/api/v1/trace/report/{report_id}/evidence/{evidence_id}/lineage', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetTraceEvidenceLineageSuccess, security=GETTRACEEVIDENCELINEAGE_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_evidence_lineage',
+    response_media_type='application/json',
+)
+async def get_trace_evidence_lineage(transport: HttpTransport, request: GetTraceEvidenceLineageRequest) -> GetTraceEvidenceLineageSuccess:
+    return await transport.invoke(GETTRACEEVIDENCELINEAGE_OPERATION, path_parameters={'report_id': str(request.report_id), 'evidence_id': str(request.evidence_id)}, query_parameters={'snapshot_id': serialize_query_value(request.snapshot_id), 'historical': serialize_query_value(request.historical)}, body=None, request_headers={})
+
+class ReplayTraceEvidenceRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    evidence_id: str
+    snapshot_id: str
+    historical: bool | None = None
+
+class ReplayTraceEvidenceSuccess(RootModel[ResponseEnvelopeSafeEvidenceReplayDTO]):
+    pass
+
+ReplayTraceEvidenceError = SafeTransportError
+
+REPLAYTRACEEVIDENCE_SECURITY = SecurityMetadata(
+    identity='access-session:replay_trace_evidence', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='replay_trace_evidence', review_owner='Stage 1B0-R7',
+)
+REPLAYTRACEEVIDENCE_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0307', operation_id='replay_trace_evidence',
+    method='GET', path='/api/v1/trace/report/{report_id}/evidence/{evidence_id}/replay', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=ReplayTraceEvidenceSuccess, security=REPLAYTRACEEVIDENCE_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:replay_trace_evidence',
+    response_media_type='application/json',
+)
+async def replay_trace_evidence(transport: HttpTransport, request: ReplayTraceEvidenceRequest) -> ReplayTraceEvidenceSuccess:
+    return await transport.invoke(REPLAYTRACEEVIDENCE_OPERATION, path_parameters={'report_id': str(request.report_id), 'evidence_id': str(request.evidence_id)}, query_parameters={'snapshot_id': serialize_query_value(request.snapshot_id), 'historical': serialize_query_value(request.historical)}, body=None, request_headers={})
+
+class VerifyTraceEvidenceIdentityRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    evidence_id: str
+    snapshot_id: str
+    historical: bool | None = None
+
+class VerifyTraceEvidenceIdentitySuccess(RootModel[ResponseEnvelopeSafeEvidenceVerificationDTO]):
+    pass
+
+VerifyTraceEvidenceIdentityError = SafeTransportError
+
+VERIFYTRACEEVIDENCEIDENTITY_SECURITY = SecurityMetadata(
+    identity='access-session:verify_trace_evidence_identity', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='verify_trace_evidence_identity', review_owner='Stage 1B0-R7',
+)
+VERIFYTRACEEVIDENCEIDENTITY_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0308', operation_id='verify_trace_evidence_identity',
+    method='GET', path='/api/v1/trace/report/{report_id}/evidence/{evidence_id}/verification', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=VerifyTraceEvidenceIdentitySuccess, security=VERIFYTRACEEVIDENCEIDENTITY_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:verify_trace_evidence_identity',
+    response_media_type='application/json',
+)
+async def verify_trace_evidence_identity(transport: HttpTransport, request: VerifyTraceEvidenceIdentityRequest) -> VerifyTraceEvidenceIdentitySuccess:
+    return await transport.invoke(VERIFYTRACEEVIDENCEIDENTITY_OPERATION, path_parameters={'report_id': str(request.report_id), 'evidence_id': str(request.evidence_id)}, query_parameters={'snapshot_id': serialize_query_value(request.snapshot_id), 'historical': serialize_query_value(request.historical)}, body=None, request_headers={})
+
+class GetCurrentTraceDisagreementRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+
+class GetCurrentTraceDisagreementSuccess(RootModel[ResponseEnvelopeSafeTraceDisagreementCollectionDTO]):
+    pass
+
+GetCurrentTraceDisagreementError = SafeTransportError
+
+GETCURRENTTRACEDISAGREEMENT_SECURITY = SecurityMetadata(
+    identity='public:get_current_trace_disagreement', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_current_trace_disagreement', review_owner='Stage 1B0-R7',
+)
+GETCURRENTTRACEDISAGREEMENT_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0309', operation_id='get_current_trace_disagreement',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/disagreement', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetCurrentTraceDisagreementSuccess, security=GETCURRENTTRACEDISAGREEMENT_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_current_trace_disagreement',
+    response_media_type='application/json',
+)
+async def get_current_trace_disagreement(transport: HttpTransport, request: GetCurrentTraceDisagreementRequest) -> GetCurrentTraceDisagreementSuccess:
+    return await transport.invoke(GETCURRENTTRACEDISAGREEMENT_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+
+class GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetSuccess(RootModel[ResponseEnvelopeTraceGraphHistoryDTO]):
+    pass
+
+GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetError = SafeTransportError
+
+GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0310', operation_id='get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/history', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetSuccess, security=GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get(transport: HttpTransport, request: GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetRequest) -> GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+
+class GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetSuccess(RootModel[ResponseEnvelopeTraceGraphMetadataDTO]):
+    pass
+
+GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetError = SafeTransportError
+
+GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0311', operation_id='get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/metadata', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetSuccess, security=GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get(transport: HttpTransport, request: GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetRequest) -> GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    object_id: str
+
+class GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetSuccess(RootModel[ResponseEnvelopeTraceGraphObjectDTO]):
+    pass
+
+GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetError = SafeTransportError
+
+GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0312', operation_id='get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/objects/{object_id}', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetSuccess, security=GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get(transport: HttpTransport, request: GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetRequest) -> GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_OPERATION, path_parameters={'report_id': str(request.report_id), 'object_id': str(request.object_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    relationship_id: str
+
+class GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetSuccess(RootModel[ResponseEnvelopeTraceGraphRelationshipDTO]):
+    pass
+
+GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetError = SafeTransportError
+
+GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0313', operation_id='get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/relationships/{relationship_id}', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetSuccess, security=GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get(transport: HttpTransport, request: GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetRequest) -> GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_OPERATION, path_parameters={'report_id': str(request.report_id), 'relationship_id': str(request.relationship_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+
+class GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetSuccess(RootModel[ResponseEnvelopeTraceGraphSnapshotDTO]):
+    pass
+
+GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetError = SafeTransportError
+
+GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_SECURITY = SecurityMetadata(
+    identity='public:get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get', review_owner='Stage 1B0-R7',
+)
+GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0314', operation_id='get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/snapshot', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetSuccess, security=GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get',
+    response_media_type='application/json',
+)
+async def get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get(transport: HttpTransport, request: GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetRequest) -> GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetSuccess:
+    return await transport.invoke(GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetExactTraceGraphSnapshotRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    snapshot_id: str
+
+class GetExactTraceGraphSnapshotSuccess(RootModel[ResponseEnvelopeTraceGraphDTO]):
+    pass
+
+GetExactTraceGraphSnapshotError = SafeTransportError
+
+GETEXACTTRACEGRAPHSNAPSHOT_SECURITY = SecurityMetadata(
+    identity='public:get_exact_trace_graph_snapshot', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_exact_trace_graph_snapshot', review_owner='Stage 1B0-R7',
+)
+GETEXACTTRACEGRAPHSNAPSHOT_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0315', operation_id='get_exact_trace_graph_snapshot',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/snapshots/{snapshot_id}', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetExactTraceGraphSnapshotSuccess, security=GETEXACTTRACEGRAPHSNAPSHOT_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_exact_trace_graph_snapshot',
+    response_media_type='application/json',
+)
+async def get_exact_trace_graph_snapshot(transport: HttpTransport, request: GetExactTraceGraphSnapshotRequest) -> GetExactTraceGraphSnapshotSuccess:
+    return await transport.invoke(GETEXACTTRACEGRAPHSNAPSHOT_OPERATION, path_parameters={'report_id': str(request.report_id), 'snapshot_id': str(request.snapshot_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetHistoricalTraceDisagreementRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    snapshot_id: str
+
+class GetHistoricalTraceDisagreementSuccess(RootModel[ResponseEnvelopeSafeTraceDisagreementCollectionDTO]):
+    pass
+
+GetHistoricalTraceDisagreementError = SafeTransportError
+
+GETHISTORICALTRACEDISAGREEMENT_SECURITY = SecurityMetadata(
+    identity='public:get_historical_trace_disagreement', public=True, access_required=False,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_historical_trace_disagreement', review_owner='Stage 1B0-R7',
+)
+GETHISTORICALTRACEDISAGREEMENT_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0316', operation_id='get_historical_trace_disagreement',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/snapshots/{snapshot_id}/disagreement', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetHistoricalTraceDisagreementSuccess, security=GETHISTORICALTRACEDISAGREEMENT_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_historical_trace_disagreement',
+    response_media_type='application/json',
+)
+async def get_historical_trace_disagreement(transport: HttpTransport, request: GetHistoricalTraceDisagreementRequest) -> GetHistoricalTraceDisagreementSuccess:
+    return await transport.invoke(GETHISTORICALTRACEDISAGREEMENT_OPERATION, path_parameters={'report_id': str(request.report_id), 'snapshot_id': str(request.snapshot_id)}, query_parameters={}, body=None, request_headers={})
+
+class GetHistoricalTraceProofPacketRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
+    report_id: int
+    snapshot_id: str
+
+class GetHistoricalTraceProofPacketSuccess(RootModel[ResponseEnvelopeSafeTraceProofPacketDTO]):
+    pass
+
+GetHistoricalTraceProofPacketError = SafeTransportError
+
+GETHISTORICALTRACEPROOFPACKET_SECURITY = SecurityMetadata(
+    identity='access-session:get_historical_trace_proof_packet', public=False, access_required=True,
+    signed_request_required=False, human_intent_required=False,
+    source_symbol='get_historical_trace_proof_packet', review_owner='Stage 1B0-R7',
+)
+GETHISTORICALTRACEPROOFPACKET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0317', operation_id='get_historical_trace_proof_packet',
+    method='GET', path='/api/v1/trace/report/{report_id}/graph/snapshots/{snapshot_id}/proof-packet', backend_tag='trace',
+    product='Core', disposition='UI_REQUIRED',
+    success_status=200, response_type=GetHistoricalTraceProofPacketSuccess, security=GETHISTORICALTRACEPROOFPACKET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_historical_trace_proof_packet',
+    response_media_type='application/json',
+)
+async def get_historical_trace_proof_packet(transport: HttpTransport, request: GetHistoricalTraceProofPacketRequest) -> GetHistoricalTraceProofPacketSuccess:
+    return await transport.invoke(GETHISTORICALTRACEPROOFPACKET_OPERATION, path_parameters={'report_id': str(request.report_id), 'snapshot_id': str(request.snapshot_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetOriginPassportApiV1TraceReportReportIdOriginPassportGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4688,7 +5205,7 @@ GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_SECURITY = SecurityMe
     source_symbol='get_origin_passport_api_v1_trace_report__report_id__origin_passport_get', review_owner='Stage 1B0-R7',
 )
 GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0298', operation_id='get_origin_passport_api_v1_trace_report__report_id__origin_passport_get',
+    matrix_id='HTTP-0318', operation_id='get_origin_passport_api_v1_trace_report__report_id__origin_passport_get',
     method='GET', path='/api/v1/trace/report/{report_id}/origin-passport', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetOriginPassportApiV1TraceReportReportIdOriginPassportGetSuccess, security=GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_SECURITY,
@@ -4713,7 +5230,7 @@ TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_SECURITY = SecurityMetada
     source_symbol='trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get', review_owner='Stage 1B0-R7',
 )
 TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0299', operation_id='trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get',
+    matrix_id='HTTP-0319', operation_id='trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get',
     method='GET', path='/api/v1/trace/report/{report_id}/policy-facts', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetSuccess, security=TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_SECURITY,
@@ -4738,7 +5255,7 @@ GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_SECURITY = SecurityMeta
     source_symbol='get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get', review_owner='Stage 1B0-R7',
 )
 GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0300', operation_id='get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get',
+    matrix_id='HTTP-0320', operation_id='get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get',
     method='GET', path='/api/v1/trace/report/{report_id}/privacy-shield', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetSuccess, security=GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_SECURITY,
@@ -4748,30 +5265,30 @@ GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION = NormalizedO
 async def get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get(transport: HttpTransport, request: GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetRequest) -> GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetSuccess:
     return await transport.invoke(GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
-class GetProofPacketApiV1TraceReportReportIdProofPacketGetRequest(BaseModel):
+class GetCurrentTraceProofPacketRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
     report_id: int
 
-class GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess(RootModel[ResponseEnvelopeDictStrObject]):
+class GetCurrentTraceProofPacketSuccess(RootModel[ResponseEnvelopeSafeTraceProofPacketDTO]):
     pass
 
-GetProofPacketApiV1TraceReportReportIdProofPacketGetError = SafeTransportError
+GetCurrentTraceProofPacketError = SafeTransportError
 
-GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_SECURITY = SecurityMetadata(
-    identity='public:get_proof_packet_api_v1_trace_report__report_id__proof_packet_get', public=True, access_required=False,
+GETCURRENTTRACEPROOFPACKET_SECURITY = SecurityMetadata(
+    identity='access-session:get_current_trace_proof_packet', public=False, access_required=True,
     signed_request_required=False, human_intent_required=False,
-    source_symbol='get_proof_packet_api_v1_trace_report__report_id__proof_packet_get', review_owner='Stage 1B0-R7',
+    source_symbol='get_current_trace_proof_packet', review_owner='Stage 1B0-R7',
 )
-GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0301', operation_id='get_proof_packet_api_v1_trace_report__report_id__proof_packet_get',
+GETCURRENTTRACEPROOFPACKET_OPERATION = NormalizedOperation(
+    matrix_id='HTTP-0321', operation_id='get_current_trace_proof_packet',
     method='GET', path='/api/v1/trace/report/{report_id}/proof-packet', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
-    success_status=200, response_type=GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess, security=GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_SECURITY,
-    retry_safe=True, owner='bastion_ui.transport.generated_http:get_proof_packet_api_v1_trace_report__report_id__proof_packet_get',
+    success_status=200, response_type=GetCurrentTraceProofPacketSuccess, security=GETCURRENTTRACEPROOFPACKET_SECURITY,
+    retry_safe=True, owner='bastion_ui.transport.generated_http:get_current_trace_proof_packet',
     response_media_type='application/json',
 )
-async def get_proof_packet_api_v1_trace_report__report_id__proof_packet_get(transport: HttpTransport, request: GetProofPacketApiV1TraceReportReportIdProofPacketGetRequest) -> GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess:
-    return await transport.invoke(GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
+async def get_current_trace_proof_packet(transport: HttpTransport, request: GetCurrentTraceProofPacketRequest) -> GetCurrentTraceProofPacketSuccess:
+    return await transport.invoke(GETCURRENTTRACEPROOFPACKET_OPERATION, path_parameters={'report_id': str(request.report_id)}, query_parameters={}, body=None, request_headers={})
 
 class GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True, frozen=True)
@@ -4788,7 +5305,7 @@ GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_SECURITY 
     source_symbol='get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get', review_owner='Stage 1B0-R7',
 )
 GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0302', operation_id='get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get',
+    matrix_id='HTTP-0322', operation_id='get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get',
     method='GET', path='/api/v1/trace/report/{report_id}/provider-disagreement', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetSuccess, security=GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_SECURITY,
@@ -4813,7 +5330,7 @@ GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_SECURITY = SecurityMeta
     source_symbol='get_source_summary_api_v1_trace_report__report_id__source_summary_get', review_owner='Stage 1B0-R7',
 )
 GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0303', operation_id='get_source_summary_api_v1_trace_report__report_id__source_summary_get',
+    matrix_id='HTTP-0323', operation_id='get_source_summary_api_v1_trace_report__report_id__source_summary_get',
     method='GET', path='/api/v1/trace/report/{report_id}/source-summary', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetSuccess, security=GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_SECURITY,
@@ -4838,7 +5355,7 @@ GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_SECURITY = SecurityMetadata
     source_symbol='get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get', review_owner='Stage 1B0-R7',
 )
 GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0304', operation_id='get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get',
+    matrix_id='HTTP-0324', operation_id='get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get',
     method='GET', path='/api/v1/trace/report/{report_id}/utxo-hygiene', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetSuccess, security=GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_SECURITY,
@@ -4863,7 +5380,7 @@ LISTSOURCESAPIV1TRACESOURCESGET_SECURITY = SecurityMetadata(
     source_symbol='list_sources_api_v1_trace_sources_get', review_owner='Stage 1B0-R7',
 )
 LISTSOURCESAPIV1TRACESOURCESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0305', operation_id='list_sources_api_v1_trace_sources_get',
+    matrix_id='HTTP-0325', operation_id='list_sources_api_v1_trace_sources_get',
     method='GET', path='/api/v1/trace/sources', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListSourcesApiV1TraceSourcesGetSuccess, security=LISTSOURCESAPIV1TRACESOURCESGET_SECURITY,
@@ -4888,7 +5405,7 @@ GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_SECURITY = SecurityMetadata(
     source_symbol='get_source_api_v1_trace_sources__source_name__get', review_owner='Stage 1B0-R7',
 )
 GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0306', operation_id='get_source_api_v1_trace_sources__source_name__get',
+    matrix_id='HTTP-0326', operation_id='get_source_api_v1_trace_sources__source_name__get',
     method='GET', path='/api/v1/trace/sources/{source_name}', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=GetSourceApiV1TraceSourcesSourceNameGetSuccess, security=GETSOURCEAPIV1TRACESOURCESSOURCENAMEGET_SECURITY,
@@ -4913,7 +5430,7 @@ TRACESTATUSAPIV1TRACESTATUSGET_SECURITY = SecurityMetadata(
     source_symbol='trace_status_api_v1_trace_status_get', review_owner='Stage 1B0-R7',
 )
 TRACESTATUSAPIV1TRACESTATUSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0307', operation_id='trace_status_api_v1_trace_status_get',
+    matrix_id='HTTP-0327', operation_id='trace_status_api_v1_trace_status_get',
     method='GET', path='/api/v1/trace/status', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=TraceStatusApiV1TraceStatusGetSuccess, security=TRACESTATUSAPIV1TRACESTATUSGET_SECURITY,
@@ -4939,7 +5456,7 @@ SUBMITTRACEAPIV1TRACESUBMITPOST_SECURITY = SecurityMetadata(
     source_symbol='submit_trace_api_v1_trace_submit_post', review_owner='Stage 1B0-R7',
 )
 SUBMITTRACEAPIV1TRACESUBMITPOST_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0308', operation_id='submit_trace_api_v1_trace_submit_post',
+    matrix_id='HTTP-0328', operation_id='submit_trace_api_v1_trace_submit_post',
     method='POST', path='/api/v1/trace/submit', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=201, response_type=SubmitTraceApiV1TraceSubmitPostSuccess, security=SUBMITTRACEAPIV1TRACESUBMITPOST_SECURITY,
@@ -4964,7 +5481,7 @@ LISTWATCHLISTAPIV1TRACEWATCHLISTGET_SECURITY = SecurityMetadata(
     source_symbol='list_watchlist_api_v1_trace_watchlist_get', review_owner='Stage 1B0-R7',
 )
 LISTWATCHLISTAPIV1TRACEWATCHLISTGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0310', operation_id='list_watchlist_api_v1_trace_watchlist_get',
+    matrix_id='HTTP-0330', operation_id='list_watchlist_api_v1_trace_watchlist_get',
     method='GET', path='/api/v1/trace/watchlist', backend_tag='trace',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ListWatchlistApiV1TraceWatchlistGetSuccess, security=LISTWATCHLISTAPIV1TRACEWATCHLISTGET_SECURITY,
@@ -4989,7 +5506,7 @@ DEPENDENCIESHEALTHDEPENDENCIESGET_SECURITY = SecurityMetadata(
     source_symbol='dependencies_health_dependencies_get', review_owner='Stage 1B0-R7',
 )
 DEPENDENCIESHEALTHDEPENDENCIESGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0352', operation_id='dependencies_health_dependencies_get',
+    matrix_id='HTTP-0372', operation_id='dependencies_health_dependencies_get',
     method='GET', path='/health/dependencies', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=DependenciesHealthDependenciesGetSuccess, security=DEPENDENCIESHEALTHDEPENDENCIESGET_SECURITY,
@@ -5014,7 +5531,7 @@ INTELLIGENCEHEALTHINTELLIGENCEGET_SECURITY = SecurityMetadata(
     source_symbol='intelligence_health_intelligence_get', review_owner='Stage 1B0-R7',
 )
 INTELLIGENCEHEALTHINTELLIGENCEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0353', operation_id='intelligence_health_intelligence_get',
+    matrix_id='HTTP-0373', operation_id='intelligence_health_intelligence_get',
     method='GET', path='/health/intelligence', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=IntelligenceHealthIntelligenceGetSuccess, security=INTELLIGENCEHEALTHINTELLIGENCEGET_SECURITY,
@@ -5039,7 +5556,7 @@ LIVEHEALTHLIVEGET_SECURITY = SecurityMetadata(
     source_symbol='live_health_live_get', review_owner='Stage 1B0-R7',
 )
 LIVEHEALTHLIVEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0354', operation_id='live_health_live_get',
+    matrix_id='HTTP-0374', operation_id='live_health_live_get',
     method='GET', path='/health/live', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=LiveHealthLiveGetSuccess, security=LIVEHEALTHLIVEGET_SECURITY,
@@ -5064,7 +5581,7 @@ OPERATIONSHEALTHOPERATIONSGET_SECURITY = SecurityMetadata(
     source_symbol='operations_health_operations_get', review_owner='Stage 1B0-R7',
 )
 OPERATIONSHEALTHOPERATIONSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0355', operation_id='operations_health_operations_get',
+    matrix_id='HTTP-0375', operation_id='operations_health_operations_get',
     method='GET', path='/health/operations', backend_tag='root-health',
     product='Operator Console', disposition='UI_REQUIRED',
     success_status=200, response_type=OperationsHealthOperationsGetSuccess, security=OPERATIONSHEALTHOPERATIONSGET_SECURITY,
@@ -5089,7 +5606,7 @@ PROVIDERSHEALTHPROVIDERSGET_SECURITY = SecurityMetadata(
     source_symbol='providers_health_providers_get', review_owner='Stage 1B0-R7',
 )
 PROVIDERSHEALTHPROVIDERSGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0356', operation_id='providers_health_providers_get',
+    matrix_id='HTTP-0376', operation_id='providers_health_providers_get',
     method='GET', path='/health/providers', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ProvidersHealthProvidersGetSuccess, security=PROVIDERSHEALTHPROVIDERSGET_SECURITY,
@@ -5114,7 +5631,7 @@ READYHEALTHREADYGET_SECURITY = SecurityMetadata(
     source_symbol='ready_health_ready_get', review_owner='Stage 1B0-R7',
 )
 READYHEALTHREADYGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0357', operation_id='ready_health_ready_get',
+    matrix_id='HTTP-0377', operation_id='ready_health_ready_get',
     method='GET', path='/health/ready', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=ReadyHealthReadyGetSuccess, security=READYHEALTHREADYGET_SECURITY,
@@ -5139,7 +5656,7 @@ STARTUPHEALTHSTARTUPGET_SECURITY = SecurityMetadata(
     source_symbol='startup_health_startup_get', review_owner='Stage 1B0-R7',
 )
 STARTUPHEALTHSTARTUPGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0358', operation_id='startup_health_startup_get',
+    matrix_id='HTTP-0378', operation_id='startup_health_startup_get',
     method='GET', path='/health/startup', backend_tag='root-health',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=StartupHealthStartupGetSuccess, security=STARTUPHEALTHSTARTUPGET_SECURITY,
@@ -5164,7 +5681,7 @@ WEBCANDLEDTOWEBCANDLECANDLEIDGET_SECURITY = SecurityMetadata(
     source_symbol='web_candle_dto_web_candle__candle_id__get', review_owner='Stage 1B0-R7',
 )
 WEBCANDLEDTOWEBCANDLECANDLEIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0373', operation_id='web_candle_dto_web_candle__candle_id__get',
+    matrix_id='HTTP-0393', operation_id='web_candle_dto_web_candle__candle_id__get',
     method='GET', path='/web/candle/{candle_id}', backend_tag='market-intelligence-web',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=WebCandleDtoWebCandleCandleIdGetSuccess, security=WEBCANDLEDTOWEBCANDLECANDLEIDGET_SECURITY,
@@ -5189,7 +5706,7 @@ WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_SECURITY = SecurityMetadata(
     source_symbol='web_evidence_dto_web_evidence__packet_id__get', review_owner='Stage 1B0-R7',
 )
 WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0374', operation_id='web_evidence_dto_web_evidence__packet_id__get',
+    matrix_id='HTTP-0394', operation_id='web_evidence_dto_web_evidence__packet_id__get',
     method='GET', path='/web/evidence/{packet_id}', backend_tag='market-intelligence-web',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=WebEvidenceDtoWebEvidencePacketIdGetSuccess, security=WEBEVIDENCEDTOWEBEVIDENCEPACKETIDGET_SECURITY,
@@ -5214,7 +5731,7 @@ WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_SECURITY = SecurityMetadata(
     source_symbol='web_market_time_machine_dto_web_market_time_machine_get', review_owner='Stage 1B0-R7',
 )
 WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0375', operation_id='web_market_time_machine_dto_web_market_time_machine_get',
+    matrix_id='HTTP-0395', operation_id='web_market_time_machine_dto_web_market_time_machine_get',
     method='GET', path='/web/market-time-machine', backend_tag='market-intelligence-web',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=WebMarketTimeMachineDtoWebMarketTimeMachineGetSuccess, security=WEBMARKETTIMEMACHINEDTOWEBMARKETTIMEMACHINEGET_SECURITY,
@@ -5243,7 +5760,7 @@ WEBTIMELINEDTOWEBTIMELINEGET_SECURITY = SecurityMetadata(
     source_symbol='web_timeline_dto_web_timeline_get', review_owner='Stage 1B0-R7',
 )
 WEBTIMELINEDTOWEBTIMELINEGET_OPERATION = NormalizedOperation(
-    matrix_id='HTTP-0380', operation_id='web_timeline_dto_web_timeline_get',
+    matrix_id='HTTP-0400', operation_id='web_timeline_dto_web_timeline_get',
     method='GET', path='/web/timeline', backend_tag='market-intelligence-web',
     product='Core', disposition='UI_REQUIRED',
     success_status=200, response_type=WebTimelineDtoWebTimelineGetSuccess, security=WEBTIMELINEDTOWEBTIMELINEGET_SECURITY,
@@ -5253,226 +5770,253 @@ WEBTIMELINEDTOWEBTIMELINEGET_OPERATION = NormalizedOperation(
 async def web_timeline_dto_web_timeline_get(transport: HttpTransport, request: WebTimelineDtoWebTimelineGetRequest) -> WebTimelineDtoWebTimelineGetSuccess:
     return await transport.invoke(WEBTIMELINEDTOWEBTIMELINEGET_OPERATION, path_parameters={}, query_parameters={'filter': serialize_query_value(request.filter), 'page': serialize_query_value(request.page), 'page_size': serialize_query_value(request.page_size), 'sort': serialize_query_value(request.sort), 'window': serialize_query_value(request.window)}, body=None, request_headers={})
 
-SOURCE_HEAD = '8f51ff96f1820f59a4dcb853e623ecd822b9bbfe'
+SOURCE_HEAD = 'baf70f4d65bf1dd04732cde7275dda49fbda1403'
 
 OWNERSHIP = {
     'list_child_api_keys_api_v1_access_api_keys_get': ('HTTP-0002', 'bastion_ui.transport.generated_http', 'list_child_api_keys_api_v1_access_api_keys_get'),
     'get_child_api_key_api_v1_access_api_keys__key_id__get': ('HTTP-0005', 'bastion_ui.transport.generated_http', 'get_child_api_key_api_v1_access_api_keys__key_id__get'),
-    'list_delegated_passes_api_v1_access_delegated_passes_get': ('HTTP-0010', 'bastion_ui.transport.generated_http', 'list_delegated_passes_api_v1_access_delegated_passes_get'),
-    'get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get': ('HTTP-0013', 'bastion_ui.transport.generated_http', 'get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get'),
-    'get_human_intent_api_v1_access_intents__intent_id__get': ('HTTP-0016', 'bastion_ui.transport.generated_http', 'get_human_intent_api_v1_access_intents__intent_id__get'),
-    'get_me_api_v1_access_me_get': ('HTTP-0019', 'bastion_ui.transport.generated_http', 'get_me_api_v1_access_me_get'),
-    'get_my_entitlements_api_v1_access_me_entitlements_get': ('HTTP-0020', 'bastion_ui.transport.generated_http', 'get_my_entitlements_api_v1_access_me_entitlements_get'),
-    'get_my_limits_api_v1_access_me_limits_get': ('HTTP-0021', 'bastion_ui.transport.generated_http', 'get_my_limits_api_v1_access_me_limits_get'),
-    'get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get': ('HTTP-0023', 'bastion_ui.transport.generated_http', 'get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get'),
-    'recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get': ('HTTP-0031', 'bastion_ui.transport.generated_http', 'recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get'),
-    'list_addresses_api_v1_business_lightning_addresses_get': ('HTTP-0041', 'bastion_ui.transport.generated_http', 'list_addresses_api_v1_business_lightning_addresses_get'),
-    'get_address_api_v1_business_lightning_addresses__address_id__get': ('HTTP-0044', 'bastion_ui.transport.generated_http', 'get_address_api_v1_business_lightning_addresses__address_id__get'),
-    'list_domains_api_v1_business_lightning_domains_get': ('HTTP-0047', 'bastion_ui.transport.generated_http', 'list_domains_api_v1_business_lightning_domains_get'),
-    'get_domain_api_v1_business_lightning_domains__domain_id__get': ('HTTP-0050', 'bastion_ui.transport.generated_http', 'get_domain_api_v1_business_lightning_domains__domain_id__get'),
-    'citadel_assessment_api_v1_citadel_assessment_get': ('HTTP-0053', 'bastion_ui.transport.generated_http', 'citadel_assessment_api_v1_citadel_assessment_get'),
-    'citadel_dependencies_api_v1_citadel_dependencies_get': ('HTTP-0054', 'bastion_ui.transport.generated_http', 'citadel_dependencies_api_v1_citadel_dependencies_get'),
-    'citadel_inheritance_api_v1_citadel_inheritance_get': ('HTTP-0055', 'bastion_ui.transport.generated_http', 'citadel_inheritance_api_v1_citadel_inheritance_get'),
-    'citadel_overview_api_v1_citadel_overview_get': ('HTTP-0056', 'bastion_ui.transport.generated_http', 'citadel_overview_api_v1_citadel_overview_get'),
-    'citadel_policy_checks_api_v1_citadel_policy_checks_get': ('HTTP-0057', 'bastion_ui.transport.generated_http', 'citadel_policy_checks_api_v1_citadel_policy_checks_get'),
-    'citadel_recovery_api_v1_citadel_recovery_get': ('HTTP-0059', 'bastion_ui.transport.generated_http', 'citadel_recovery_api_v1_citadel_recovery_get'),
-    'citadel_repair_plan_api_v1_citadel_repair_plan_get': ('HTTP-0060', 'bastion_ui.transport.generated_http', 'citadel_repair_plan_api_v1_citadel_repair_plan_get'),
-    'list_simulations_api_v1_citadel_simulations_get': ('HTTP-0061', 'bastion_ui.transport.generated_http', 'list_simulations_api_v1_citadel_simulations_get'),
-    'list_snippets_api_v1_education_snippets_get': ('HTTP-0063', 'bastion_ui.transport.generated_http', 'list_snippets_api_v1_education_snippets_get'),
-    'list_entities_api_v1_entities_get': ('HTTP-0064', 'bastion_ui.transport.generated_http', 'list_entities_api_v1_entities_get'),
-    'get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get': ('HTTP-0067', 'bastion_ui.transport.generated_http', 'get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get'),
-    'list_evidence_packets_api_v1_evidence_packets_get': ('HTTP-0068', 'bastion_ui.transport.generated_http', 'list_evidence_packets_api_v1_evidence_packets_get'),
-    'get_evidence_packet_api_v1_evidence_packets__packet_id__get': ('HTTP-0069', 'bastion_ui.transport.generated_http', 'get_evidence_packet_api_v1_evidence_packets__packet_id__get'),
-    'get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get': ('HTTP-0070', 'bastion_ui.transport.generated_http', 'get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get'),
-    'get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get': ('HTTP-0071', 'bastion_ui.transport.generated_http', 'get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get'),
-    'replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get': ('HTTP-0072', 'bastion_ui.transport.generated_http', 'replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get'),
-    'replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get': ('HTTP-0073', 'bastion_ui.transport.generated_http', 'replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get'),
-    'replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get': ('HTTP-0074', 'bastion_ui.transport.generated_http', 'replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get'),
-    'health_api_v1_health_get': ('HTTP-0076', 'bastion_ui.transport.generated_http', 'health_api_v1_health_get'),
-    'degraded_api_v1_health_degraded_get': ('HTTP-0077', 'bastion_ui.transport.generated_http', 'degraded_api_v1_health_degraded_get'),
-    'jobs_api_v1_health_jobs_get': ('HTTP-0078', 'bastion_ui.transport.generated_http', 'jobs_api_v1_health_jobs_get'),
-    'liveness_api_v1_health_live_get': ('HTTP-0079', 'bastion_ui.transport.generated_http', 'liveness_api_v1_health_live_get'),
-    'providers_api_v1_health_providers_get': ('HTTP-0080', 'bastion_ui.transport.generated_http', 'providers_api_v1_health_providers_get'),
-    'readiness_api_v1_health_ready_get': ('HTTP-0081', 'bastion_ui.transport.generated_http', 'readiness_api_v1_health_ready_get'),
-    'runtime_api_v1_health_runtime_get': ('HTTP-0082', 'bastion_ui.transport.generated_http', 'runtime_api_v1_health_runtime_get'),
-    'system_health_api_v1_health_system_get': ('HTTP-0083', 'bastion_ui.transport.generated_http', 'system_health_api_v1_health_system_get'),
-    'get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get': ('HTTP-0085', 'bastion_ui.transport.generated_http', 'get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get'),
-    'get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get': ('HTTP-0086', 'bastion_ui.transport.generated_http', 'get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get'),
-    'get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get': ('HTTP-0087', 'bastion_ui.transport.generated_http', 'get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get'),
-    'get_candle_context_api_v1_intelligence_candles__candle_id__context_get': ('HTTP-0088', 'bastion_ui.transport.generated_http', 'get_candle_context_api_v1_intelligence_candles__candle_id__context_get'),
-    'get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get': ('HTTP-0089', 'bastion_ui.transport.generated_http', 'get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get'),
-    'get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get': ('HTTP-0090', 'bastion_ui.transport.generated_http', 'get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get'),
-    'explain_candle_api_v1_intelligence_candles__candle_id__explain_get': ('HTTP-0091', 'bastion_ui.transport.generated_http', 'explain_candle_api_v1_intelligence_candles__candle_id__explain_get'),
-    'get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get': ('HTTP-0092', 'bastion_ui.transport.generated_http', 'get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get'),
-    'get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get': ('HTTP-0093', 'bastion_ui.transport.generated_http', 'get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get'),
-    'get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get': ('HTTP-0094', 'bastion_ui.transport.generated_http', 'get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get'),
-    'get_event_market_memory_api_v1_intelligence_events__event_id__memory_get': ('HTTP-0095', 'bastion_ui.transport.generated_http', 'get_event_market_memory_api_v1_intelligence_events__event_id__memory_get'),
-    'get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get': ('HTTP-0097', 'bastion_ui.transport.generated_http', 'get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get'),
-    'get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get': ('HTTP-0098', 'bastion_ui.transport.generated_http', 'get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get'),
-    'get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get': ('HTTP-0099', 'bastion_ui.transport.generated_http', 'get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get'),
-    'get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get': ('HTTP-0100', 'bastion_ui.transport.generated_http', 'get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get'),
-    'list_narratives_api_v1_intelligence_narratives_get': ('HTTP-0101', 'bastion_ui.transport.generated_http', 'list_narratives_api_v1_intelligence_narratives_get'),
-    'get_active_narrative_memory_api_v1_intelligence_narratives_active_get': ('HTTP-0102', 'bastion_ui.transport.generated_http', 'get_active_narrative_memory_api_v1_intelligence_narratives_active_get'),
-    'get_narrative_dominance_api_v1_intelligence_narratives_dominance_get': ('HTTP-0103', 'bastion_ui.transport.generated_http', 'get_narrative_dominance_api_v1_intelligence_narratives_dominance_get'),
-    'get_dominant_narratives_api_v1_intelligence_narratives_dominant_get': ('HTTP-0104', 'bastion_ui.transport.generated_http', 'get_dominant_narratives_api_v1_intelligence_narratives_dominant_get'),
-    'get_emerging_narratives_api_v1_intelligence_narratives_emerging_get': ('HTTP-0105', 'bastion_ui.transport.generated_http', 'get_emerging_narratives_api_v1_intelligence_narratives_emerging_get'),
-    'get_falling_narratives_api_v1_intelligence_narratives_falling_get': ('HTTP-0106', 'bastion_ui.transport.generated_http', 'get_falling_narratives_api_v1_intelligence_narratives_falling_get'),
-    'get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get': ('HTTP-0107', 'bastion_ui.transport.generated_http', 'get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get'),
-    'get_narrative_history_api_v1_intelligence_narratives_history_get': ('HTTP-0108', 'bastion_ui.transport.generated_http', 'get_narrative_history_api_v1_intelligence_narratives_history_get'),
-    'get_narrative_memory_api_v1_intelligence_narratives_memory_get': ('HTTP-0109', 'bastion_ui.transport.generated_http', 'get_narrative_memory_api_v1_intelligence_narratives_memory_get'),
-    'get_rising_narratives_api_v1_intelligence_narratives_rising_get': ('HTTP-0110', 'bastion_ui.transport.generated_http', 'get_rising_narratives_api_v1_intelligence_narratives_rising_get'),
-    'get_narrative_rotations_api_v1_intelligence_narratives_rotations_get': ('HTTP-0111', 'bastion_ui.transport.generated_http', 'get_narrative_rotations_api_v1_intelligence_narratives_rotations_get'),
-    'get_top_narratives_api_v1_intelligence_narratives_top_get': ('HTTP-0112', 'bastion_ui.transport.generated_http', 'get_top_narratives_api_v1_intelligence_narratives_top_get'),
-    'get_narrative_api_v1_intelligence_narratives__slug__get': ('HTTP-0113', 'bastion_ui.transport.generated_http', 'get_narrative_api_v1_intelligence_narratives__slug__get'),
-    'list_market_patterns_api_v1_intelligence_patterns_get': ('HTTP-0114', 'bastion_ui.transport.generated_http', 'list_market_patterns_api_v1_intelligence_patterns_get'),
-    'get_market_pattern_api_v1_intelligence_patterns__pattern_id__get': ('HTTP-0115', 'bastion_ui.transport.generated_http', 'get_market_pattern_api_v1_intelligence_patterns__pattern_id__get'),
-    'get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get': ('HTTP-0116', 'bastion_ui.transport.generated_http', 'get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get'),
-    'get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get': ('HTTP-0117', 'bastion_ui.transport.generated_http', 'get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get'),
-    'get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get': ('HTTP-0118', 'bastion_ui.transport.generated_http', 'get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get'),
-    'get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get': ('HTTP-0119', 'bastion_ui.transport.generated_http', 'get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get'),
-    'get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get': ('HTTP-0120', 'bastion_ui.transport.generated_http', 'get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get'),
-    'get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get': ('HTTP-0121', 'bastion_ui.transport.generated_http', 'get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get'),
-    'get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get': ('HTTP-0122', 'bastion_ui.transport.generated_http', 'get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get'),
-    'get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get': ('HTTP-0123', 'bastion_ui.transport.generated_http', 'get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get'),
-    'get_event_similarity_api_v1_intelligence_similarity_event__event_id__get': ('HTTP-0124', 'bastion_ui.transport.generated_http', 'get_event_similarity_api_v1_intelligence_similarity_event__event_id__get'),
-    'get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get': ('HTTP-0125', 'bastion_ui.transport.generated_http', 'get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get'),
-    'get_news_similarity_api_v1_intelligence_similarity_news__event_id__get': ('HTTP-0126', 'bastion_ui.transport.generated_http', 'get_news_similarity_api_v1_intelligence_similarity_news__event_id__get'),
-    'get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get': ('HTTP-0127', 'bastion_ui.transport.generated_http', 'get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get'),
-    'get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get': ('HTTP-0128', 'bastion_ui.transport.generated_http', 'get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get'),
-    'get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get': ('HTTP-0129', 'bastion_ui.transport.generated_http', 'get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get'),
-    'get_timeline_api_v1_intelligence_timeline_get': ('HTTP-0130', 'bastion_ui.transport.generated_http', 'get_timeline_api_v1_intelligence_timeline_get'),
-    'get_context_api_v1_intelligence_timeline_context__timeline_event_id__get': ('HTTP-0131', 'bastion_ui.transport.generated_http', 'get_context_api_v1_intelligence_timeline_context__timeline_event_id__get'),
-    'get_timeline_day_api_v1_intelligence_timeline_day_get': ('HTTP-0132', 'bastion_ui.transport.generated_http', 'get_timeline_day_api_v1_intelligence_timeline_day_get'),
-    'get_timeline_hour_api_v1_intelligence_timeline_hour_get': ('HTTP-0133', 'bastion_ui.transport.generated_http', 'get_timeline_hour_api_v1_intelligence_timeline_hour_get'),
-    'get_latest_api_v1_intelligence_timeline_latest_get': ('HTTP-0134', 'bastion_ui.transport.generated_http', 'get_latest_api_v1_intelligence_timeline_latest_get'),
-    'current_narratives_api_v1_intelligence_timeline_narratives_current_get': ('HTTP-0135', 'bastion_ui.transport.generated_http', 'current_narratives_api_v1_intelligence_timeline_narratives_current_get'),
-    'high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get': ('HTTP-0136', 'bastion_ui.transport.generated_http', 'high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get'),
-    'recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get': ('HTTP-0137', 'bastion_ui.transport.generated_http', 'recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get'),
-    'get_window_api_v1_intelligence_timeline_window_get': ('HTTP-0138', 'bastion_ui.transport.generated_http', 'get_window_api_v1_intelligence_timeline_window_get'),
-    'candle_attribution_api_v1_market_time_machine_candle_attribution_get': ('HTTP-0142', 'bastion_ui.transport.generated_http', 'candle_attribution_api_v1_market_time_machine_candle_attribution_get'),
-    'market_events_api_v1_market_time_machine_events_get': ('HTTP-0143', 'bastion_ui.transport.generated_http', 'market_events_api_v1_market_time_machine_events_get'),
-    'news_impact_api_v1_market_time_machine_news_impact_get': ('HTTP-0144', 'bastion_ui.transport.generated_http', 'news_impact_api_v1_market_time_machine_news_impact_get'),
-    'provider_degradation_api_v1_market_time_machine_provider_degradation_get': ('HTTP-0145', 'bastion_ui.transport.generated_http', 'provider_degradation_api_v1_market_time_machine_provider_degradation_get'),
-    'reaction_windows_api_v1_market_time_machine_reaction_windows_get': ('HTTP-0146', 'bastion_ui.transport.generated_http', 'reaction_windows_api_v1_market_time_machine_reaction_windows_get'),
-    'regime_transitions_api_v1_market_time_machine_regime_transitions_get': ('HTTP-0147', 'bastion_ui.transport.generated_http', 'regime_transitions_api_v1_market_time_machine_regime_transitions_get'),
-    'signal_reliability_api_v1_market_time_machine_signal_reliability_get': ('HTTP-0148', 'bastion_ui.transport.generated_http', 'signal_reliability_api_v1_market_time_machine_signal_reliability_get'),
-    'btc_candles_api_v1_market_btc_candles_get': ('HTTP-0149', 'bastion_ui.transport.generated_http', 'btc_candles_api_v1_market_btc_candles_get'),
-    'btc_candles_latest_any_api_v1_market_btc_candles_latest_get': ('HTTP-0150', 'bastion_ui.transport.generated_http', 'btc_candles_latest_any_api_v1_market_btc_candles_latest_get'),
-    'btc_candle_by_id_api_v1_market_btc_candles__candle_id__get': ('HTTP-0151', 'bastion_ui.transport.generated_http', 'btc_candle_by_id_api_v1_market_btc_candles__candle_id__get'),
-    'btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get': ('HTTP-0152', 'bastion_ui.transport.generated_http', 'btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get'),
-    'btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get': ('HTTP-0153', 'bastion_ui.transport.generated_http', 'btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get'),
-    'btc_context_api_v1_market_btc_context_get': ('HTTP-0154', 'bastion_ui.transport.generated_http', 'btc_context_api_v1_market_btc_context_get'),
-    'btc_price_api_v1_market_btc_price_get': ('HTTP-0155', 'bastion_ui.transport.generated_http', 'btc_price_api_v1_market_btc_price_get'),
-    'btc_price_history_api_v1_market_btc_price_history_get': ('HTTP-0156', 'bastion_ui.transport.generated_http', 'btc_price_history_api_v1_market_btc_price_history_get'),
-    'btc_providers_api_v1_market_btc_providers_get': ('HTTP-0157', 'bastion_ui.transport.generated_http', 'btc_providers_api_v1_market_btc_providers_get'),
-    'btc_providers_health_api_v1_market_btc_providers_health_get': ('HTTP-0158', 'bastion_ui.transport.generated_http', 'btc_providers_health_api_v1_market_btc_providers_health_get'),
-    'market_health_api_v1_market_health_get': ('HTTP-0159', 'bastion_ui.transport.generated_http', 'market_health_api_v1_market_health_get'),
-    'market_history_attributions': ('HTTP-0160', 'bastion_ui.transport.generated_http', 'market_history_attributions'),
-    'market_history_narratives': ('HTTP-0161', 'bastion_ui.transport.generated_http', 'market_history_narratives'),
-    'market_history_replay_event': ('HTTP-0162', 'bastion_ui.transport.generated_http', 'market_history_replay_event'),
-    'market_history_sources': ('HTTP-0163', 'bastion_ui.transport.generated_http', 'market_history_sources'),
-    'market_history_timeline': ('HTTP-0164', 'bastion_ui.transport.generated_http', 'market_history_timeline'),
-    'market_current_overview': ('HTTP-0165', 'bastion_ui.transport.generated_http', 'market_current_overview'),
-    'providers_health_api_v1_market_providers_health_get': ('HTTP-0166', 'bastion_ui.transport.generated_http', 'providers_health_api_v1_market_providers_health_get'),
-    'market_similarity_report': ('HTTP-0167', 'bastion_ui.transport.generated_http', 'market_similarity_report'),
-    'article_duplicates_api_v1_news_articles__article_id__duplicates_get': ('HTTP-0174', 'bastion_ui.transport.generated_http', 'article_duplicates_api_v1_news_articles__article_id__duplicates_get'),
-    'by_sentiment_api_v1_news_by_sentiment__label__get': ('HTTP-0175', 'bastion_ui.transport.generated_http', 'by_sentiment_api_v1_news_by_sentiment__label__get'),
-    'list_clusters_api_v1_news_clusters_get': ('HTTP-0176', 'bastion_ui.transport.generated_http', 'list_clusters_api_v1_news_clusters_get'),
-    'get_cluster_api_v1_news_clusters__cluster_id__get': ('HTTP-0177', 'bastion_ui.transport.generated_http', 'get_cluster_api_v1_news_clusters__cluster_id__get'),
-    'list_events_api_v1_news_events_get': ('HTTP-0178', 'bastion_ui.transport.generated_http', 'list_events_api_v1_news_events_get'),
-    'high_impact_events_api_v1_news_events_high_impact_get': ('HTTP-0179', 'bastion_ui.transport.generated_http', 'high_impact_events_api_v1_news_events_high_impact_get'),
-    'regulatory_events_api_v1_news_events_regulatory_get': ('HTTP-0180', 'bastion_ui.transport.generated_http', 'regulatory_events_api_v1_news_events_regulatory_get'),
-    'security_events_api_v1_news_events_security_get': ('HTTP-0181', 'bastion_ui.transport.generated_http', 'security_events_api_v1_news_events_security_get'),
-    'get_event_api_v1_news_events__event_id__get': ('HTTP-0182', 'bastion_ui.transport.generated_http', 'get_event_api_v1_news_events__event_id__get'),
-    'get_event_articles_api_v1_news_events__event_id__articles_get': ('HTTP-0183', 'bastion_ui.transport.generated_http', 'get_event_articles_api_v1_news_events__event_id__articles_get'),
-    'get_event_impact_api_v1_news_events__event_id__impact_get': ('HTTP-0184', 'bastion_ui.transport.generated_http', 'get_event_impact_api_v1_news_events__event_id__impact_get'),
-    'get_event_score_api_v1_news_events__event_id__score_get': ('HTTP-0185', 'bastion_ui.transport.generated_http', 'get_event_score_api_v1_news_events__event_id__score_get'),
-    'high_impact_news_api_v1_news_high_impact_get': ('HTTP-0186', 'bastion_ui.transport.generated_http', 'high_impact_news_api_v1_news_high_impact_get'),
-    'high_relevance_api_v1_news_high_relevance_get': ('HTTP-0187', 'bastion_ui.transport.generated_http', 'high_relevance_api_v1_news_high_relevance_get'),
-    'latest_news_api_v1_news_latest_get': ('HTTP-0188', 'bastion_ui.transport.generated_http', 'latest_news_api_v1_news_latest_get'),
-    'regulatory_news_api_v1_news_regulatory_get': ('HTTP-0189', 'bastion_ui.transport.generated_http', 'regulatory_news_api_v1_news_regulatory_get'),
-    'security_news_api_v1_news_security_get': ('HTTP-0190', 'bastion_ui.transport.generated_http', 'security_news_api_v1_news_security_get'),
-    'list_sources_api_v1_news_sources_get': ('HTTP-0191', 'bastion_ui.transport.generated_http', 'list_sources_api_v1_news_sources_get'),
-    'categories_api_v1_news_sources_categories_get': ('HTTP-0192', 'bastion_ui.transport.generated_http', 'categories_api_v1_news_sources_categories_get'),
-    'sources_health_api_v1_news_sources_health_get': ('HTTP-0193', 'bastion_ui.transport.generated_http', 'sources_health_api_v1_news_sources_health_get'),
-    'list_source_reputation_api_v1_news_sources_reputation_get': ('HTTP-0194', 'bastion_ui.transport.generated_http', 'list_source_reputation_api_v1_news_sources_reputation_get'),
-    'tiers_api_v1_news_sources_tiers_get': ('HTTP-0196', 'bastion_ui.transport.generated_http', 'tiers_api_v1_news_sources_tiers_get'),
-    'get_source_api_v1_news_sources__source_id__get': ('HTTP-0197', 'bastion_ui.transport.generated_http', 'get_source_api_v1_news_sources__source_id__get'),
-    'source_confidence_events_api_v1_news_sources__source_id__confidence_events_get': ('HTTP-0198', 'bastion_ui.transport.generated_http', 'source_confidence_events_api_v1_news_sources__source_id__confidence_events_get'),
-    'source_health_api_v1_news_sources__source_id__health_get': ('HTTP-0199', 'bastion_ui.transport.generated_http', 'source_health_api_v1_news_sources__source_id__health_get'),
-    'source_snapshots_api_v1_news_sources__source_id__snapshots_get': ('HTTP-0200', 'bastion_ui.transport.generated_http', 'source_snapshots_api_v1_news_sources__source_id__snapshots_get'),
-    'get_article_explanation_api_v1_news__article_id__explanation_get': ('HTTP-0201', 'bastion_ui.transport.generated_http', 'get_article_explanation_api_v1_news__article_id__explanation_get'),
-    'get_article_impact_api_v1_news__article_id__impact_get': ('HTTP-0202', 'bastion_ui.transport.generated_http', 'get_article_impact_api_v1_news__article_id__impact_get'),
-    'get_article_narratives_api_v1_news__article_id__narratives_get': ('HTTP-0203', 'bastion_ui.transport.generated_http', 'get_article_narratives_api_v1_news__article_id__narratives_get'),
-    'get_article_score_api_v1_news__article_id__score_get': ('HTTP-0204', 'bastion_ui.transport.generated_http', 'get_article_score_api_v1_news__article_id__score_get'),
-    'get_article_scores_api_v1_news__article_id__scores_get': ('HTTP-0205', 'bastion_ui.transport.generated_http', 'get_article_scores_api_v1_news__article_id__scores_get'),
-    'onchain_events_api_v1_onchain_events_get': ('HTTP-0207', 'bastion_ui.transport.generated_http', 'onchain_events_api_v1_onchain_events_get'),
-    'onchain_state_api_v1_onchain_state_get': ('HTTP-0208', 'bastion_ui.transport.generated_http', 'onchain_state_api_v1_onchain_state_get'),
-    'operations_list_incidents': ('HTTP-0211', 'bastion_ui.transport.generated_http', 'operations_list_incidents'),
-    'operations_get_incident': ('HTTP-0212', 'bastion_ui.transport.generated_http', 'operations_get_incident'),
-    'jobs_api_v1_operations_jobs_get': ('HTTP-0213', 'bastion_ui.transport.generated_http', 'jobs_api_v1_operations_jobs_get'),
-    'operations_list_slo': ('HTTP-0220', 'bastion_ui.transport.generated_http', 'operations_list_slo'),
-    'public_features_api_v1_public_features_get': ('HTTP-0256', 'bastion_ui.transport.generated_http', 'public_features_api_v1_public_features_get'),
-    'public_landing_api_v1_public_landing_get': ('HTTP-0257', 'bastion_ui.transport.generated_http', 'public_landing_api_v1_public_landing_get'),
-    'public_roadmap_api_v1_public_roadmap_get': ('HTTP-0258', 'bastion_ui.transport.generated_http', 'public_roadmap_api_v1_public_roadmap_get'),
-    'public_stats_api_v1_public_stats_get': ('HTTP-0259', 'bastion_ui.transport.generated_http', 'public_stats_api_v1_public_stats_get'),
-    'public_status_api_v1_public_status_get': ('HTTP-0260', 'bastion_ui.transport.generated_http', 'public_status_api_v1_public_status_get'),
-    'public_trace_summary_api_v1_public_trace__report_id__summary_get': ('HTTP-0261', 'bastion_ui.transport.generated_http', 'public_trace_summary_api_v1_public_trace__report_id__summary_get'),
-    'latest_signals_api_v1_signals_latest_get': ('HTTP-0262', 'bastion_ui.transport.generated_http', 'latest_signals_api_v1_signals_latest_get'),
-    'news_market_impact_signals_api_v1_signals_news_market_impact_get': ('HTTP-0263', 'bastion_ui.transport.generated_http', 'news_market_impact_signals_api_v1_signals_news_market_impact_get'),
-    'top_signals_api_v1_signals_top_get': ('HTTP-0264', 'bastion_ui.transport.generated_http', 'top_signals_api_v1_signals_top_get'),
-    'get_signal_api_v1_signals__signal_id__get': ('HTTP-0265', 'bastion_ui.transport.generated_http', 'get_signal_api_v1_signals__signal_id__get'),
-    'get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get': ('HTTP-0266', 'bastion_ui.transport.generated_http', 'get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get'),
-    'get_signal_evidence_api_v1_signals__signal_id__evidence_get': ('HTTP-0267', 'bastion_ui.transport.generated_http', 'get_signal_evidence_api_v1_signals__signal_id__evidence_get'),
-    'signal_explanation_api_v1_signals__signal_id__explanation_get': ('HTTP-0268', 'bastion_ui.transport.generated_http', 'signal_explanation_api_v1_signals__signal_id__explanation_get'),
-    'signal_recommendations_api_v1_signals__signal_id__recommendations_get': ('HTTP-0269', 'bastion_ui.transport.generated_http', 'signal_recommendations_api_v1_signals__signal_id__recommendations_get'),
-    'storage_status_api_v1_storage_status_get': ('HTTP-0270', 'bastion_ui.transport.generated_http', 'storage_status_api_v1_storage_status_get'),
-    'timescale_operations_status_api_v1_storage_timescale_status_get': ('HTTP-0271', 'bastion_ui.transport.generated_http', 'timescale_operations_status_api_v1_storage_timescale_status_get'),
-    'analyze_address_api_v1_trace_address__address__get': ('HTTP-0272', 'bastion_ui.transport.generated_http', 'analyze_address_api_v1_trace_address__address__get'),
-    'trace_alerts_api_v1_trace_alerts_get': ('HTTP-0273', 'bastion_ui.transport.generated_http', 'trace_alerts_api_v1_trace_alerts_get'),
-    'trace_events_api_v1_trace_events_get': ('HTTP-0286', 'bastion_ui.transport.generated_http', 'trace_events_api_v1_trace_events_get'),
-    'trace_event_api_v1_trace_events__event_id__get': ('HTTP-0287', 'bastion_ui.transport.generated_http', 'trace_event_api_v1_trace_events__event_id__get'),
-    'lite_address_check_api_v1_trace_lite__address__get': ('HTTP-0288', 'bastion_ui.transport.generated_http', 'lite_address_check_api_v1_trace_lite__address__get'),
-    'get_report_api_v1_trace_report__report_id__get': ('HTTP-0292', 'bastion_ui.transport.generated_http', 'get_report_api_v1_trace_report__report_id__get'),
-    'trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get': ('HTTP-0293', 'bastion_ui.transport.generated_http', 'trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get'),
-    'get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get': ('HTTP-0294', 'bastion_ui.transport.generated_http', 'get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get'),
-    'get_dust_radar_api_v1_trace_report__report_id__dust_radar_get': ('HTTP-0295', 'bastion_ui.transport.generated_http', 'get_dust_radar_api_v1_trace_report__report_id__dust_radar_get'),
-    'list_evidence_api_v1_trace_report__report_id__evidence_get': ('HTTP-0296', 'bastion_ui.transport.generated_http', 'list_evidence_api_v1_trace_report__report_id__evidence_get'),
-    'trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get': ('HTTP-0297', 'bastion_ui.transport.generated_http', 'trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get'),
-    'get_origin_passport_api_v1_trace_report__report_id__origin_passport_get': ('HTTP-0298', 'bastion_ui.transport.generated_http', 'get_origin_passport_api_v1_trace_report__report_id__origin_passport_get'),
-    'trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get': ('HTTP-0299', 'bastion_ui.transport.generated_http', 'trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get'),
-    'get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get': ('HTTP-0300', 'bastion_ui.transport.generated_http', 'get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get'),
-    'get_proof_packet_api_v1_trace_report__report_id__proof_packet_get': ('HTTP-0301', 'bastion_ui.transport.generated_http', 'get_proof_packet_api_v1_trace_report__report_id__proof_packet_get'),
-    'get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get': ('HTTP-0302', 'bastion_ui.transport.generated_http', 'get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get'),
-    'get_source_summary_api_v1_trace_report__report_id__source_summary_get': ('HTTP-0303', 'bastion_ui.transport.generated_http', 'get_source_summary_api_v1_trace_report__report_id__source_summary_get'),
-    'get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get': ('HTTP-0304', 'bastion_ui.transport.generated_http', 'get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get'),
-    'list_sources_api_v1_trace_sources_get': ('HTTP-0305', 'bastion_ui.transport.generated_http', 'list_sources_api_v1_trace_sources_get'),
-    'get_source_api_v1_trace_sources__source_name__get': ('HTTP-0306', 'bastion_ui.transport.generated_http', 'get_source_api_v1_trace_sources__source_name__get'),
-    'trace_status_api_v1_trace_status_get': ('HTTP-0307', 'bastion_ui.transport.generated_http', 'trace_status_api_v1_trace_status_get'),
-    'submit_trace_api_v1_trace_submit_post': ('HTTP-0308', 'bastion_ui.transport.generated_http', 'submit_trace_api_v1_trace_submit_post'),
-    'list_watchlist_api_v1_trace_watchlist_get': ('HTTP-0310', 'bastion_ui.transport.generated_http', 'list_watchlist_api_v1_trace_watchlist_get'),
-    'dependencies_health_dependencies_get': ('HTTP-0352', 'bastion_ui.transport.generated_http', 'dependencies_health_dependencies_get'),
-    'intelligence_health_intelligence_get': ('HTTP-0353', 'bastion_ui.transport.generated_http', 'intelligence_health_intelligence_get'),
-    'live_health_live_get': ('HTTP-0354', 'bastion_ui.transport.generated_http', 'live_health_live_get'),
-    'operations_health_operations_get': ('HTTP-0355', 'bastion_ui.transport.generated_http', 'operations_health_operations_get'),
-    'providers_health_providers_get': ('HTTP-0356', 'bastion_ui.transport.generated_http', 'providers_health_providers_get'),
-    'ready_health_ready_get': ('HTTP-0357', 'bastion_ui.transport.generated_http', 'ready_health_ready_get'),
-    'startup_health_startup_get': ('HTTP-0358', 'bastion_ui.transport.generated_http', 'startup_health_startup_get'),
-    'web_candle_dto_web_candle__candle_id__get': ('HTTP-0373', 'bastion_ui.transport.generated_http', 'web_candle_dto_web_candle__candle_id__get'),
-    'web_evidence_dto_web_evidence__packet_id__get': ('HTTP-0374', 'bastion_ui.transport.generated_http', 'web_evidence_dto_web_evidence__packet_id__get'),
-    'web_market_time_machine_dto_web_market_time_machine_get': ('HTTP-0375', 'bastion_ui.transport.generated_http', 'web_market_time_machine_dto_web_market_time_machine_get'),
-    'web_timeline_dto_web_timeline_get': ('HTTP-0380', 'bastion_ui.transport.generated_http', 'web_timeline_dto_web_timeline_get'),
+    'create_access_checkout_api_v1_access_checkouts_post': ('HTTP-0010', 'bastion_ui.transport.generated_http', 'create_access_checkout_api_v1_access_checkouts_post'),
+    'get_access_checkout_api_v1_access_checkouts__checkout_id__get': ('HTTP-0011', 'bastion_ui.transport.generated_http', 'get_access_checkout_api_v1_access_checkouts__checkout_id__get'),
+    'list_delegated_passes_api_v1_access_delegated_passes_get': ('HTTP-0012', 'bastion_ui.transport.generated_http', 'list_delegated_passes_api_v1_access_delegated_passes_get'),
+    'get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get': ('HTTP-0015', 'bastion_ui.transport.generated_http', 'get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get'),
+    'get_human_intent_api_v1_access_intents__intent_id__get': ('HTTP-0018', 'bastion_ui.transport.generated_http', 'get_human_intent_api_v1_access_intents__intent_id__get'),
+    'issue_access_api_v1_access_issuance_post': ('HTTP-0020', 'bastion_ui.transport.generated_http', 'issue_access_api_v1_access_issuance_post'),
+    'create_issuance_challenge_api_v1_access_issuance_challenges_post': ('HTTP-0021', 'bastion_ui.transport.generated_http', 'create_issuance_challenge_api_v1_access_issuance_challenges_post'),
+    'get_issued_access_api_v1_access_issued__grant_id__get': ('HTTP-0022', 'bastion_ui.transport.generated_http', 'get_issued_access_api_v1_access_issued__grant_id__get'),
+    'get_me_api_v1_access_me_get': ('HTTP-0024', 'bastion_ui.transport.generated_http', 'get_me_api_v1_access_me_get'),
+    'get_my_entitlements_api_v1_access_me_entitlements_get': ('HTTP-0025', 'bastion_ui.transport.generated_http', 'get_my_entitlements_api_v1_access_me_entitlements_get'),
+    'get_my_limits_api_v1_access_me_limits_get': ('HTTP-0026', 'bastion_ui.transport.generated_http', 'get_my_limits_api_v1_access_me_limits_get'),
+    'get_access_offers_api_v1_access_offers_get': ('HTTP-0027', 'bastion_ui.transport.generated_http', 'get_access_offers_api_v1_access_offers_get'),
+    'get_access_offer_api_v1_access_offers__offer_id__get': ('HTTP-0028', 'bastion_ui.transport.generated_http', 'get_access_offer_api_v1_access_offers__offer_id__get'),
+    'get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get': ('HTTP-0030', 'bastion_ui.transport.generated_http', 'get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get'),
+    'recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get': ('HTTP-0038', 'bastion_ui.transport.generated_http', 'recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get'),
+    'list_addresses_api_v1_business_lightning_addresses_get': ('HTTP-0048', 'bastion_ui.transport.generated_http', 'list_addresses_api_v1_business_lightning_addresses_get'),
+    'get_address_api_v1_business_lightning_addresses__address_id__get': ('HTTP-0051', 'bastion_ui.transport.generated_http', 'get_address_api_v1_business_lightning_addresses__address_id__get'),
+    'list_domains_api_v1_business_lightning_domains_get': ('HTTP-0054', 'bastion_ui.transport.generated_http', 'list_domains_api_v1_business_lightning_domains_get'),
+    'get_domain_api_v1_business_lightning_domains__domain_id__get': ('HTTP-0057', 'bastion_ui.transport.generated_http', 'get_domain_api_v1_business_lightning_domains__domain_id__get'),
+    'citadel_assessment_api_v1_citadel_assessment_get': ('HTTP-0060', 'bastion_ui.transport.generated_http', 'citadel_assessment_api_v1_citadel_assessment_get'),
+    'citadel_dependencies_api_v1_citadel_dependencies_get': ('HTTP-0061', 'bastion_ui.transport.generated_http', 'citadel_dependencies_api_v1_citadel_dependencies_get'),
+    'citadel_inheritance_api_v1_citadel_inheritance_get': ('HTTP-0062', 'bastion_ui.transport.generated_http', 'citadel_inheritance_api_v1_citadel_inheritance_get'),
+    'citadel_overview_api_v1_citadel_overview_get': ('HTTP-0063', 'bastion_ui.transport.generated_http', 'citadel_overview_api_v1_citadel_overview_get'),
+    'citadel_policy_checks_api_v1_citadel_policy_checks_get': ('HTTP-0064', 'bastion_ui.transport.generated_http', 'citadel_policy_checks_api_v1_citadel_policy_checks_get'),
+    'citadel_recovery_api_v1_citadel_recovery_get': ('HTTP-0066', 'bastion_ui.transport.generated_http', 'citadel_recovery_api_v1_citadel_recovery_get'),
+    'citadel_repair_plan_api_v1_citadel_repair_plan_get': ('HTTP-0067', 'bastion_ui.transport.generated_http', 'citadel_repair_plan_api_v1_citadel_repair_plan_get'),
+    'list_simulations_api_v1_citadel_simulations_get': ('HTTP-0068', 'bastion_ui.transport.generated_http', 'list_simulations_api_v1_citadel_simulations_get'),
+    'list_snippets_api_v1_education_snippets_get': ('HTTP-0070', 'bastion_ui.transport.generated_http', 'list_snippets_api_v1_education_snippets_get'),
+    'list_entities_api_v1_entities_get': ('HTTP-0071', 'bastion_ui.transport.generated_http', 'list_entities_api_v1_entities_get'),
+    'get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get': ('HTTP-0074', 'bastion_ui.transport.generated_http', 'get_market_memory_evidence_api_v1_evidence_market_memory__event_id__get'),
+    'list_evidence_packets_api_v1_evidence_packets_get': ('HTTP-0075', 'bastion_ui.transport.generated_http', 'list_evidence_packets_api_v1_evidence_packets_get'),
+    'get_evidence_packet_api_v1_evidence_packets__packet_id__get': ('HTTP-0076', 'bastion_ui.transport.generated_http', 'get_evidence_packet_api_v1_evidence_packets__packet_id__get'),
+    'get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get': ('HTTP-0077', 'bastion_ui.transport.generated_http', 'get_evidence_packet_relationships_api_v1_evidence_packets__packet_id__relationships_get'),
+    'get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get': ('HTTP-0078', 'bastion_ui.transport.generated_http', 'get_evidence_packet_timeline_api_v1_evidence_packets__packet_id__timeline_get'),
+    'replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get': ('HTTP-0079', 'bastion_ui.transport.generated_http', 'replay_evidence_api_v1_evidence_replay__entity_type___entity_id__get'),
+    'replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get': ('HTTP-0080', 'bastion_ui.transport.generated_http', 'replay_evidence_integrity_api_v1_evidence_replay__entity_type___entity_id__integrity_get'),
+    'replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get': ('HTTP-0081', 'bastion_ui.transport.generated_http', 'replay_evidence_timeline_api_v1_evidence_replay__entity_type___entity_id__timeline_get'),
+    'health_api_v1_health_get': ('HTTP-0083', 'bastion_ui.transport.generated_http', 'health_api_v1_health_get'),
+    'degraded_api_v1_health_degraded_get': ('HTTP-0084', 'bastion_ui.transport.generated_http', 'degraded_api_v1_health_degraded_get'),
+    'jobs_api_v1_health_jobs_get': ('HTTP-0085', 'bastion_ui.transport.generated_http', 'jobs_api_v1_health_jobs_get'),
+    'liveness_api_v1_health_live_get': ('HTTP-0086', 'bastion_ui.transport.generated_http', 'liveness_api_v1_health_live_get'),
+    'providers_api_v1_health_providers_get': ('HTTP-0087', 'bastion_ui.transport.generated_http', 'providers_api_v1_health_providers_get'),
+    'readiness_api_v1_health_ready_get': ('HTTP-0088', 'bastion_ui.transport.generated_http', 'readiness_api_v1_health_ready_get'),
+    'runtime_api_v1_health_runtime_get': ('HTTP-0089', 'bastion_ui.transport.generated_http', 'runtime_api_v1_health_runtime_get'),
+    'system_health_api_v1_health_system_get': ('HTTP-0090', 'bastion_ui.transport.generated_http', 'system_health_api_v1_health_system_get'),
+    'get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get': ('HTTP-0092', 'bastion_ui.transport.generated_http', 'get_candle_dashboard_dto_api_v1_intelligence_candles__candle_id__get'),
+    'get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get': ('HTTP-0093', 'bastion_ui.transport.generated_http', 'get_candle_attribution_api_v1_intelligence_candles__candle_id__attribution_get'),
+    'get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get': ('HTTP-0094', 'bastion_ui.transport.generated_http', 'get_candle_candidates_api_v1_intelligence_candles__candle_id__candidates_get'),
+    'get_candle_context_api_v1_intelligence_candles__candle_id__context_get': ('HTTP-0095', 'bastion_ui.transport.generated_http', 'get_candle_context_api_v1_intelligence_candles__candle_id__context_get'),
+    'get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get': ('HTTP-0096', 'bastion_ui.transport.generated_http', 'get_candle_events_dashboard_dto_api_v1_intelligence_candles__candle_id__events_get'),
+    'get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get': ('HTTP-0097', 'bastion_ui.transport.generated_http', 'get_candle_evidence_dashboard_dto_api_v1_intelligence_candles__candle_id__evidence_get'),
+    'explain_candle_api_v1_intelligence_candles__candle_id__explain_get': ('HTTP-0098', 'bastion_ui.transport.generated_http', 'explain_candle_api_v1_intelligence_candles__candle_id__explain_get'),
+    'get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get': ('HTTP-0099', 'bastion_ui.transport.generated_http', 'get_candle_replay_api_v1_intelligence_candles__candle_id__replay_get'),
+    'get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get': ('HTTP-0100', 'bastion_ui.transport.generated_http', 'get_candle_similarity_dashboard_dto_api_v1_intelligence_candles__candle_id__similar_get'),
+    'get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get': ('HTTP-0101', 'bastion_ui.transport.generated_http', 'get_candle_top_events_api_v1_intelligence_candles__candle_id__top_events_get'),
+    'get_event_market_memory_api_v1_intelligence_events__event_id__memory_get': ('HTTP-0102', 'bastion_ui.transport.generated_http', 'get_event_market_memory_api_v1_intelligence_events__event_id__memory_get'),
+    'get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get': ('HTTP-0104', 'bastion_ui.transport.generated_http', 'get_event_market_memory_replay_api_v1_intelligence_events__event_id__memory_replay_get'),
+    'get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get': ('HTTP-0105', 'bastion_ui.transport.generated_http', 'get_event_market_memory_similarity_api_v1_intelligence_events__event_id__similar_get'),
+    'get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get': ('HTTP-0106', 'bastion_ui.transport.generated_http', 'get_event_timeline_dashboard_dto_api_v1_intelligence_events__event_id__timeline_get'),
+    'get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get': ('HTTP-0107', 'bastion_ui.transport.generated_http', 'get_high_confidence_impacts_api_v1_intelligence_impact_high_confidence_get'),
+    'list_narratives_api_v1_intelligence_narratives_get': ('HTTP-0108', 'bastion_ui.transport.generated_http', 'list_narratives_api_v1_intelligence_narratives_get'),
+    'get_active_narrative_memory_api_v1_intelligence_narratives_active_get': ('HTTP-0109', 'bastion_ui.transport.generated_http', 'get_active_narrative_memory_api_v1_intelligence_narratives_active_get'),
+    'get_narrative_dominance_api_v1_intelligence_narratives_dominance_get': ('HTTP-0110', 'bastion_ui.transport.generated_http', 'get_narrative_dominance_api_v1_intelligence_narratives_dominance_get'),
+    'get_dominant_narratives_api_v1_intelligence_narratives_dominant_get': ('HTTP-0111', 'bastion_ui.transport.generated_http', 'get_dominant_narratives_api_v1_intelligence_narratives_dominant_get'),
+    'get_emerging_narratives_api_v1_intelligence_narratives_emerging_get': ('HTTP-0112', 'bastion_ui.transport.generated_http', 'get_emerging_narratives_api_v1_intelligence_narratives_emerging_get'),
+    'get_falling_narratives_api_v1_intelligence_narratives_falling_get': ('HTTP-0113', 'bastion_ui.transport.generated_http', 'get_falling_narratives_api_v1_intelligence_narratives_falling_get'),
+    'get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get': ('HTTP-0114', 'bastion_ui.transport.generated_http', 'get_narrative_heatmap_api_v1_intelligence_narratives_heatmap_get'),
+    'get_narrative_history_api_v1_intelligence_narratives_history_get': ('HTTP-0115', 'bastion_ui.transport.generated_http', 'get_narrative_history_api_v1_intelligence_narratives_history_get'),
+    'get_narrative_memory_api_v1_intelligence_narratives_memory_get': ('HTTP-0116', 'bastion_ui.transport.generated_http', 'get_narrative_memory_api_v1_intelligence_narratives_memory_get'),
+    'get_rising_narratives_api_v1_intelligence_narratives_rising_get': ('HTTP-0117', 'bastion_ui.transport.generated_http', 'get_rising_narratives_api_v1_intelligence_narratives_rising_get'),
+    'get_narrative_rotations_api_v1_intelligence_narratives_rotations_get': ('HTTP-0118', 'bastion_ui.transport.generated_http', 'get_narrative_rotations_api_v1_intelligence_narratives_rotations_get'),
+    'get_top_narratives_api_v1_intelligence_narratives_top_get': ('HTTP-0119', 'bastion_ui.transport.generated_http', 'get_top_narratives_api_v1_intelligence_narratives_top_get'),
+    'get_narrative_api_v1_intelligence_narratives__slug__get': ('HTTP-0120', 'bastion_ui.transport.generated_http', 'get_narrative_api_v1_intelligence_narratives__slug__get'),
+    'list_market_patterns_api_v1_intelligence_patterns_get': ('HTTP-0121', 'bastion_ui.transport.generated_http', 'list_market_patterns_api_v1_intelligence_patterns_get'),
+    'get_market_pattern_api_v1_intelligence_patterns__pattern_id__get': ('HTTP-0122', 'bastion_ui.transport.generated_http', 'get_market_pattern_api_v1_intelligence_patterns__pattern_id__get'),
+    'get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get': ('HTTP-0123', 'bastion_ui.transport.generated_http', 'get_market_pattern_history_api_v1_intelligence_patterns__pattern_id__history_get'),
+    'get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get': ('HTTP-0124', 'bastion_ui.transport.generated_http', 'get_market_pattern_occurrences_api_v1_intelligence_patterns__pattern_id__occurrences_get'),
+    'get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get': ('HTTP-0125', 'bastion_ui.transport.generated_http', 'get_market_pattern_reaction_profile_api_v1_intelligence_patterns__pattern_id__reaction_profile_get'),
+    'get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get': ('HTTP-0126', 'bastion_ui.transport.generated_http', 'get_market_pattern_statistics_api_v1_intelligence_patterns__pattern_id__statistics_get'),
+    'get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get': ('HTTP-0127', 'bastion_ui.transport.generated_http', 'get_foundation_reaction_profile_api_v1_intelligence_reaction_profile__event_id__get'),
+    'get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get': ('HTTP-0128', 'bastion_ui.transport.generated_http', 'get_foundation_similar_events_api_v1_intelligence_similar_events__event_id__get'),
+    'get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get': ('HTTP-0129', 'bastion_ui.transport.generated_http', 'get_article_similarity_report_api_v1_intelligence_similarity_articles__article_id__get'),
+    'get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get': ('HTTP-0130', 'bastion_ui.transport.generated_http', 'get_candle_similarity_api_v1_intelligence_similarity_candle__candle_id__get'),
+    'get_event_similarity_api_v1_intelligence_similarity_event__event_id__get': ('HTTP-0131', 'bastion_ui.transport.generated_http', 'get_event_similarity_api_v1_intelligence_similarity_event__event_id__get'),
+    'get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get': ('HTTP-0132', 'bastion_ui.transport.generated_http', 'get_event_similarity_report_api_v1_intelligence_similarity_events__event_id__get'),
+    'get_news_similarity_api_v1_intelligence_similarity_news__event_id__get': ('HTTP-0133', 'bastion_ui.transport.generated_http', 'get_news_similarity_api_v1_intelligence_similarity_news__event_id__get'),
+    'get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get': ('HTTP-0134', 'bastion_ui.transport.generated_http', 'get_signal_similarity_report_api_v1_intelligence_similarity_signals__signal_id__get'),
+    'get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get': ('HTTP-0135', 'bastion_ui.transport.generated_http', 'get_historical_similarity_context_api_v1_intelligence_similarity__event_id__get'),
+    'get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get': ('HTTP-0136', 'bastion_ui.transport.generated_http', 'get_historical_similarity_matches_api_v1_intelligence_similarity__event_id__matches_get'),
+    'get_timeline_api_v1_intelligence_timeline_get': ('HTTP-0137', 'bastion_ui.transport.generated_http', 'get_timeline_api_v1_intelligence_timeline_get'),
+    'get_context_api_v1_intelligence_timeline_context__timeline_event_id__get': ('HTTP-0138', 'bastion_ui.transport.generated_http', 'get_context_api_v1_intelligence_timeline_context__timeline_event_id__get'),
+    'get_timeline_day_api_v1_intelligence_timeline_day_get': ('HTTP-0139', 'bastion_ui.transport.generated_http', 'get_timeline_day_api_v1_intelligence_timeline_day_get'),
+    'get_timeline_hour_api_v1_intelligence_timeline_hour_get': ('HTTP-0140', 'bastion_ui.transport.generated_http', 'get_timeline_hour_api_v1_intelligence_timeline_hour_get'),
+    'get_latest_api_v1_intelligence_timeline_latest_get': ('HTTP-0141', 'bastion_ui.transport.generated_http', 'get_latest_api_v1_intelligence_timeline_latest_get'),
+    'current_narratives_api_v1_intelligence_timeline_narratives_current_get': ('HTTP-0142', 'bastion_ui.transport.generated_http', 'current_narratives_api_v1_intelligence_timeline_narratives_current_get'),
+    'high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get': ('HTTP-0143', 'bastion_ui.transport.generated_http', 'high_confidence_news_impacts_api_v1_intelligence_timeline_news_impacts_high_confidence_get'),
+    'recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get': ('HTTP-0144', 'bastion_ui.transport.generated_http', 'recent_news_impacts_api_v1_intelligence_timeline_news_impacts_recent_get'),
+    'get_window_api_v1_intelligence_timeline_window_get': ('HTTP-0145', 'bastion_ui.transport.generated_http', 'get_window_api_v1_intelligence_timeline_window_get'),
+    'candle_attribution_api_v1_market_time_machine_candle_attribution_get': ('HTTP-0149', 'bastion_ui.transport.generated_http', 'candle_attribution_api_v1_market_time_machine_candle_attribution_get'),
+    'market_events_api_v1_market_time_machine_events_get': ('HTTP-0150', 'bastion_ui.transport.generated_http', 'market_events_api_v1_market_time_machine_events_get'),
+    'news_impact_api_v1_market_time_machine_news_impact_get': ('HTTP-0151', 'bastion_ui.transport.generated_http', 'news_impact_api_v1_market_time_machine_news_impact_get'),
+    'provider_degradation_api_v1_market_time_machine_provider_degradation_get': ('HTTP-0152', 'bastion_ui.transport.generated_http', 'provider_degradation_api_v1_market_time_machine_provider_degradation_get'),
+    'reaction_windows_api_v1_market_time_machine_reaction_windows_get': ('HTTP-0153', 'bastion_ui.transport.generated_http', 'reaction_windows_api_v1_market_time_machine_reaction_windows_get'),
+    'regime_transitions_api_v1_market_time_machine_regime_transitions_get': ('HTTP-0154', 'bastion_ui.transport.generated_http', 'regime_transitions_api_v1_market_time_machine_regime_transitions_get'),
+    'signal_reliability_api_v1_market_time_machine_signal_reliability_get': ('HTTP-0155', 'bastion_ui.transport.generated_http', 'signal_reliability_api_v1_market_time_machine_signal_reliability_get'),
+    'btc_candles_api_v1_market_btc_candles_get': ('HTTP-0156', 'bastion_ui.transport.generated_http', 'btc_candles_api_v1_market_btc_candles_get'),
+    'btc_candles_latest_any_api_v1_market_btc_candles_latest_get': ('HTTP-0157', 'bastion_ui.transport.generated_http', 'btc_candles_latest_any_api_v1_market_btc_candles_latest_get'),
+    'btc_candle_by_id_api_v1_market_btc_candles__candle_id__get': ('HTTP-0158', 'bastion_ui.transport.generated_http', 'btc_candle_by_id_api_v1_market_btc_candles__candle_id__get'),
+    'btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get': ('HTTP-0159', 'bastion_ui.transport.generated_http', 'btc_candle_evidence_api_v1_market_btc_candles__candle_id__evidence_get'),
+    'btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get': ('HTTP-0160', 'bastion_ui.transport.generated_http', 'btc_candles_latest_api_v1_market_btc_candles__timeframe__latest_get'),
+    'btc_context_api_v1_market_btc_context_get': ('HTTP-0161', 'bastion_ui.transport.generated_http', 'btc_context_api_v1_market_btc_context_get'),
+    'btc_price_api_v1_market_btc_price_get': ('HTTP-0162', 'bastion_ui.transport.generated_http', 'btc_price_api_v1_market_btc_price_get'),
+    'btc_price_history_api_v1_market_btc_price_history_get': ('HTTP-0163', 'bastion_ui.transport.generated_http', 'btc_price_history_api_v1_market_btc_price_history_get'),
+    'btc_providers_api_v1_market_btc_providers_get': ('HTTP-0164', 'bastion_ui.transport.generated_http', 'btc_providers_api_v1_market_btc_providers_get'),
+    'btc_providers_health_api_v1_market_btc_providers_health_get': ('HTTP-0165', 'bastion_ui.transport.generated_http', 'btc_providers_health_api_v1_market_btc_providers_health_get'),
+    'market_health_api_v1_market_health_get': ('HTTP-0166', 'bastion_ui.transport.generated_http', 'market_health_api_v1_market_health_get'),
+    'market_history_attributions': ('HTTP-0167', 'bastion_ui.transport.generated_http', 'market_history_attributions'),
+    'market_history_narratives': ('HTTP-0168', 'bastion_ui.transport.generated_http', 'market_history_narratives'),
+    'market_history_replay_event': ('HTTP-0169', 'bastion_ui.transport.generated_http', 'market_history_replay_event'),
+    'market_history_sources': ('HTTP-0170', 'bastion_ui.transport.generated_http', 'market_history_sources'),
+    'market_history_timeline': ('HTTP-0171', 'bastion_ui.transport.generated_http', 'market_history_timeline'),
+    'market_current_overview': ('HTTP-0172', 'bastion_ui.transport.generated_http', 'market_current_overview'),
+    'providers_health_api_v1_market_providers_health_get': ('HTTP-0173', 'bastion_ui.transport.generated_http', 'providers_health_api_v1_market_providers_health_get'),
+    'market_similarity_report': ('HTTP-0174', 'bastion_ui.transport.generated_http', 'market_similarity_report'),
+    'article_duplicates_api_v1_news_articles__article_id__duplicates_get': ('HTTP-0181', 'bastion_ui.transport.generated_http', 'article_duplicates_api_v1_news_articles__article_id__duplicates_get'),
+    'by_sentiment_api_v1_news_by_sentiment__label__get': ('HTTP-0182', 'bastion_ui.transport.generated_http', 'by_sentiment_api_v1_news_by_sentiment__label__get'),
+    'list_clusters_api_v1_news_clusters_get': ('HTTP-0183', 'bastion_ui.transport.generated_http', 'list_clusters_api_v1_news_clusters_get'),
+    'get_cluster_api_v1_news_clusters__cluster_id__get': ('HTTP-0184', 'bastion_ui.transport.generated_http', 'get_cluster_api_v1_news_clusters__cluster_id__get'),
+    'list_events_api_v1_news_events_get': ('HTTP-0185', 'bastion_ui.transport.generated_http', 'list_events_api_v1_news_events_get'),
+    'high_impact_events_api_v1_news_events_high_impact_get': ('HTTP-0186', 'bastion_ui.transport.generated_http', 'high_impact_events_api_v1_news_events_high_impact_get'),
+    'regulatory_events_api_v1_news_events_regulatory_get': ('HTTP-0187', 'bastion_ui.transport.generated_http', 'regulatory_events_api_v1_news_events_regulatory_get'),
+    'security_events_api_v1_news_events_security_get': ('HTTP-0188', 'bastion_ui.transport.generated_http', 'security_events_api_v1_news_events_security_get'),
+    'get_event_api_v1_news_events__event_id__get': ('HTTP-0189', 'bastion_ui.transport.generated_http', 'get_event_api_v1_news_events__event_id__get'),
+    'get_event_articles_api_v1_news_events__event_id__articles_get': ('HTTP-0190', 'bastion_ui.transport.generated_http', 'get_event_articles_api_v1_news_events__event_id__articles_get'),
+    'get_event_impact_api_v1_news_events__event_id__impact_get': ('HTTP-0191', 'bastion_ui.transport.generated_http', 'get_event_impact_api_v1_news_events__event_id__impact_get'),
+    'get_event_score_api_v1_news_events__event_id__score_get': ('HTTP-0192', 'bastion_ui.transport.generated_http', 'get_event_score_api_v1_news_events__event_id__score_get'),
+    'high_impact_news_api_v1_news_high_impact_get': ('HTTP-0193', 'bastion_ui.transport.generated_http', 'high_impact_news_api_v1_news_high_impact_get'),
+    'high_relevance_api_v1_news_high_relevance_get': ('HTTP-0194', 'bastion_ui.transport.generated_http', 'high_relevance_api_v1_news_high_relevance_get'),
+    'latest_news_api_v1_news_latest_get': ('HTTP-0195', 'bastion_ui.transport.generated_http', 'latest_news_api_v1_news_latest_get'),
+    'regulatory_news_api_v1_news_regulatory_get': ('HTTP-0196', 'bastion_ui.transport.generated_http', 'regulatory_news_api_v1_news_regulatory_get'),
+    'security_news_api_v1_news_security_get': ('HTTP-0197', 'bastion_ui.transport.generated_http', 'security_news_api_v1_news_security_get'),
+    'list_sources_api_v1_news_sources_get': ('HTTP-0198', 'bastion_ui.transport.generated_http', 'list_sources_api_v1_news_sources_get'),
+    'categories_api_v1_news_sources_categories_get': ('HTTP-0199', 'bastion_ui.transport.generated_http', 'categories_api_v1_news_sources_categories_get'),
+    'sources_health_api_v1_news_sources_health_get': ('HTTP-0200', 'bastion_ui.transport.generated_http', 'sources_health_api_v1_news_sources_health_get'),
+    'list_source_reputation_api_v1_news_sources_reputation_get': ('HTTP-0201', 'bastion_ui.transport.generated_http', 'list_source_reputation_api_v1_news_sources_reputation_get'),
+    'tiers_api_v1_news_sources_tiers_get': ('HTTP-0203', 'bastion_ui.transport.generated_http', 'tiers_api_v1_news_sources_tiers_get'),
+    'get_source_api_v1_news_sources__source_id__get': ('HTTP-0204', 'bastion_ui.transport.generated_http', 'get_source_api_v1_news_sources__source_id__get'),
+    'source_confidence_events_api_v1_news_sources__source_id__confidence_events_get': ('HTTP-0205', 'bastion_ui.transport.generated_http', 'source_confidence_events_api_v1_news_sources__source_id__confidence_events_get'),
+    'source_health_api_v1_news_sources__source_id__health_get': ('HTTP-0206', 'bastion_ui.transport.generated_http', 'source_health_api_v1_news_sources__source_id__health_get'),
+    'source_snapshots_api_v1_news_sources__source_id__snapshots_get': ('HTTP-0207', 'bastion_ui.transport.generated_http', 'source_snapshots_api_v1_news_sources__source_id__snapshots_get'),
+    'get_article_explanation_api_v1_news__article_id__explanation_get': ('HTTP-0208', 'bastion_ui.transport.generated_http', 'get_article_explanation_api_v1_news__article_id__explanation_get'),
+    'get_article_impact_api_v1_news__article_id__impact_get': ('HTTP-0209', 'bastion_ui.transport.generated_http', 'get_article_impact_api_v1_news__article_id__impact_get'),
+    'get_article_narratives_api_v1_news__article_id__narratives_get': ('HTTP-0210', 'bastion_ui.transport.generated_http', 'get_article_narratives_api_v1_news__article_id__narratives_get'),
+    'get_article_score_api_v1_news__article_id__score_get': ('HTTP-0211', 'bastion_ui.transport.generated_http', 'get_article_score_api_v1_news__article_id__score_get'),
+    'get_article_scores_api_v1_news__article_id__scores_get': ('HTTP-0212', 'bastion_ui.transport.generated_http', 'get_article_scores_api_v1_news__article_id__scores_get'),
+    'onchain_events_api_v1_onchain_events_get': ('HTTP-0214', 'bastion_ui.transport.generated_http', 'onchain_events_api_v1_onchain_events_get'),
+    'onchain_state_api_v1_onchain_state_get': ('HTTP-0215', 'bastion_ui.transport.generated_http', 'onchain_state_api_v1_onchain_state_get'),
+    'operations_list_incidents': ('HTTP-0218', 'bastion_ui.transport.generated_http', 'operations_list_incidents'),
+    'operations_get_incident': ('HTTP-0219', 'bastion_ui.transport.generated_http', 'operations_get_incident'),
+    'jobs_api_v1_operations_jobs_get': ('HTTP-0220', 'bastion_ui.transport.generated_http', 'jobs_api_v1_operations_jobs_get'),
+    'operations_list_slo': ('HTTP-0227', 'bastion_ui.transport.generated_http', 'operations_list_slo'),
+    'public_features_api_v1_public_features_get': ('HTTP-0263', 'bastion_ui.transport.generated_http', 'public_features_api_v1_public_features_get'),
+    'public_landing_api_v1_public_landing_get': ('HTTP-0264', 'bastion_ui.transport.generated_http', 'public_landing_api_v1_public_landing_get'),
+    'public_roadmap_api_v1_public_roadmap_get': ('HTTP-0265', 'bastion_ui.transport.generated_http', 'public_roadmap_api_v1_public_roadmap_get'),
+    'public_stats_api_v1_public_stats_get': ('HTTP-0266', 'bastion_ui.transport.generated_http', 'public_stats_api_v1_public_stats_get'),
+    'public_status_api_v1_public_status_get': ('HTTP-0267', 'bastion_ui.transport.generated_http', 'public_status_api_v1_public_status_get'),
+    'public_trace_summary_api_v1_public_trace__report_id__summary_get': ('HTTP-0268', 'bastion_ui.transport.generated_http', 'public_trace_summary_api_v1_public_trace__report_id__summary_get'),
+    'latest_signals_api_v1_signals_latest_get': ('HTTP-0269', 'bastion_ui.transport.generated_http', 'latest_signals_api_v1_signals_latest_get'),
+    'news_market_impact_signals_api_v1_signals_news_market_impact_get': ('HTTP-0270', 'bastion_ui.transport.generated_http', 'news_market_impact_signals_api_v1_signals_news_market_impact_get'),
+    'top_signals_api_v1_signals_top_get': ('HTTP-0271', 'bastion_ui.transport.generated_http', 'top_signals_api_v1_signals_top_get'),
+    'get_signal_api_v1_signals__signal_id__get': ('HTTP-0272', 'bastion_ui.transport.generated_http', 'get_signal_api_v1_signals__signal_id__get'),
+    'get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get': ('HTTP-0273', 'bastion_ui.transport.generated_http', 'get_signal_delivery_logs_api_v1_signals__signal_id__delivery_logs_get'),
+    'get_signal_evidence_api_v1_signals__signal_id__evidence_get': ('HTTP-0274', 'bastion_ui.transport.generated_http', 'get_signal_evidence_api_v1_signals__signal_id__evidence_get'),
+    'signal_explanation_api_v1_signals__signal_id__explanation_get': ('HTTP-0275', 'bastion_ui.transport.generated_http', 'signal_explanation_api_v1_signals__signal_id__explanation_get'),
+    'signal_recommendations_api_v1_signals__signal_id__recommendations_get': ('HTTP-0276', 'bastion_ui.transport.generated_http', 'signal_recommendations_api_v1_signals__signal_id__recommendations_get'),
+    'storage_status_api_v1_storage_status_get': ('HTTP-0277', 'bastion_ui.transport.generated_http', 'storage_status_api_v1_storage_status_get'),
+    'timescale_operations_status_api_v1_storage_timescale_status_get': ('HTTP-0278', 'bastion_ui.transport.generated_http', 'timescale_operations_status_api_v1_storage_timescale_status_get'),
+    'analyze_address_api_v1_trace_address__address__get': ('HTTP-0279', 'bastion_ui.transport.generated_http', 'analyze_address_api_v1_trace_address__address__get'),
+    'trace_alerts_api_v1_trace_alerts_get': ('HTTP-0280', 'bastion_ui.transport.generated_http', 'trace_alerts_api_v1_trace_alerts_get'),
+    'trace_events_api_v1_trace_events_get': ('HTTP-0293', 'bastion_ui.transport.generated_http', 'trace_events_api_v1_trace_events_get'),
+    'trace_event_api_v1_trace_events__event_id__get': ('HTTP-0294', 'bastion_ui.transport.generated_http', 'trace_event_api_v1_trace_events__event_id__get'),
+    'lite_address_check_api_v1_trace_lite__address__get': ('HTTP-0295', 'bastion_ui.transport.generated_http', 'lite_address_check_api_v1_trace_lite__address__get'),
+    'get_report_api_v1_trace_report__report_id__get': ('HTTP-0299', 'bastion_ui.transport.generated_http', 'get_report_api_v1_trace_report__report_id__get'),
+    'trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get': ('HTTP-0300', 'bastion_ui.transport.generated_http', 'trace_citadel_contribution_api_v1_trace_report__report_id__citadel_contribution_get'),
+    'get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get': ('HTTP-0301', 'bastion_ui.transport.generated_http', 'get_counterparty_lens_api_v1_trace_report__report_id__counterparty_lens_get'),
+    'get_dust_radar_api_v1_trace_report__report_id__dust_radar_get': ('HTTP-0302', 'bastion_ui.transport.generated_http', 'get_dust_radar_api_v1_trace_report__report_id__dust_radar_get'),
+    'list_evidence_api_v1_trace_report__report_id__evidence_get': ('HTTP-0303', 'bastion_ui.transport.generated_http', 'list_evidence_api_v1_trace_report__report_id__evidence_get'),
+    'trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get': ('HTTP-0304', 'bastion_ui.transport.generated_http', 'trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get'),
+    'export_trace_evidence': ('HTTP-0305', 'bastion_ui.transport.generated_http', 'export_trace_evidence'),
+    'get_trace_evidence_lineage': ('HTTP-0306', 'bastion_ui.transport.generated_http', 'get_trace_evidence_lineage'),
+    'replay_trace_evidence': ('HTTP-0307', 'bastion_ui.transport.generated_http', 'replay_trace_evidence'),
+    'verify_trace_evidence_identity': ('HTTP-0308', 'bastion_ui.transport.generated_http', 'verify_trace_evidence_identity'),
+    'get_current_trace_disagreement': ('HTTP-0309', 'bastion_ui.transport.generated_http', 'get_current_trace_disagreement'),
+    'get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get': ('HTTP-0310', 'bastion_ui.transport.generated_http', 'get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get'),
+    'get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get': ('HTTP-0311', 'bastion_ui.transport.generated_http', 'get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get'),
+    'get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get': ('HTTP-0312', 'bastion_ui.transport.generated_http', 'get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get'),
+    'get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get': ('HTTP-0313', 'bastion_ui.transport.generated_http', 'get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get'),
+    'get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get': ('HTTP-0314', 'bastion_ui.transport.generated_http', 'get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get'),
+    'get_exact_trace_graph_snapshot': ('HTTP-0315', 'bastion_ui.transport.generated_http', 'get_exact_trace_graph_snapshot'),
+    'get_historical_trace_disagreement': ('HTTP-0316', 'bastion_ui.transport.generated_http', 'get_historical_trace_disagreement'),
+    'get_historical_trace_proof_packet': ('HTTP-0317', 'bastion_ui.transport.generated_http', 'get_historical_trace_proof_packet'),
+    'get_origin_passport_api_v1_trace_report__report_id__origin_passport_get': ('HTTP-0318', 'bastion_ui.transport.generated_http', 'get_origin_passport_api_v1_trace_report__report_id__origin_passport_get'),
+    'trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get': ('HTTP-0319', 'bastion_ui.transport.generated_http', 'trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get'),
+    'get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get': ('HTTP-0320', 'bastion_ui.transport.generated_http', 'get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get'),
+    'get_current_trace_proof_packet': ('HTTP-0321', 'bastion_ui.transport.generated_http', 'get_current_trace_proof_packet'),
+    'get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get': ('HTTP-0322', 'bastion_ui.transport.generated_http', 'get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get'),
+    'get_source_summary_api_v1_trace_report__report_id__source_summary_get': ('HTTP-0323', 'bastion_ui.transport.generated_http', 'get_source_summary_api_v1_trace_report__report_id__source_summary_get'),
+    'get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get': ('HTTP-0324', 'bastion_ui.transport.generated_http', 'get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get'),
+    'list_sources_api_v1_trace_sources_get': ('HTTP-0325', 'bastion_ui.transport.generated_http', 'list_sources_api_v1_trace_sources_get'),
+    'get_source_api_v1_trace_sources__source_name__get': ('HTTP-0326', 'bastion_ui.transport.generated_http', 'get_source_api_v1_trace_sources__source_name__get'),
+    'trace_status_api_v1_trace_status_get': ('HTTP-0327', 'bastion_ui.transport.generated_http', 'trace_status_api_v1_trace_status_get'),
+    'submit_trace_api_v1_trace_submit_post': ('HTTP-0328', 'bastion_ui.transport.generated_http', 'submit_trace_api_v1_trace_submit_post'),
+    'list_watchlist_api_v1_trace_watchlist_get': ('HTTP-0330', 'bastion_ui.transport.generated_http', 'list_watchlist_api_v1_trace_watchlist_get'),
+    'dependencies_health_dependencies_get': ('HTTP-0372', 'bastion_ui.transport.generated_http', 'dependencies_health_dependencies_get'),
+    'intelligence_health_intelligence_get': ('HTTP-0373', 'bastion_ui.transport.generated_http', 'intelligence_health_intelligence_get'),
+    'live_health_live_get': ('HTTP-0374', 'bastion_ui.transport.generated_http', 'live_health_live_get'),
+    'operations_health_operations_get': ('HTTP-0375', 'bastion_ui.transport.generated_http', 'operations_health_operations_get'),
+    'providers_health_providers_get': ('HTTP-0376', 'bastion_ui.transport.generated_http', 'providers_health_providers_get'),
+    'ready_health_ready_get': ('HTTP-0377', 'bastion_ui.transport.generated_http', 'ready_health_ready_get'),
+    'startup_health_startup_get': ('HTTP-0378', 'bastion_ui.transport.generated_http', 'startup_health_startup_get'),
+    'web_candle_dto_web_candle__candle_id__get': ('HTTP-0393', 'bastion_ui.transport.generated_http', 'web_candle_dto_web_candle__candle_id__get'),
+    'web_evidence_dto_web_evidence__packet_id__get': ('HTTP-0394', 'bastion_ui.transport.generated_http', 'web_evidence_dto_web_evidence__packet_id__get'),
+    'web_market_time_machine_dto_web_market_time_machine_get': ('HTTP-0395', 'bastion_ui.transport.generated_http', 'web_market_time_machine_dto_web_market_time_machine_get'),
+    'web_timeline_dto_web_timeline_get': ('HTTP-0400', 'bastion_ui.transport.generated_http', 'web_timeline_dto_web_timeline_get'),
 }
 
 FEATURE_53 = (
     ContractRegistryEntry(registry_id='http:list_child_api_keys_api_v1_access_api_keys_get', source_head=SOURCE_HEAD, operation=LISTCHILDAPIKEYSAPIV1ACCESSAPIKEYSGET_OPERATION, request_schema='ListChildApiKeysApiV1AccessApiKeysGetRequest', success_schema='ListChildApiKeysApiV1AccessApiKeysGetSuccess', error_schema='ListChildApiKeysApiV1AccessApiKeysGetError'),
     ContractRegistryEntry(registry_id='http:get_child_api_key_api_v1_access_api_keys__key_id__get', source_head=SOURCE_HEAD, operation=GETCHILDAPIKEYAPIV1ACCESSAPIKEYSKEYIDGET_OPERATION, request_schema='GetChildApiKeyApiV1AccessApiKeysKeyIdGetRequest', success_schema='GetChildApiKeyApiV1AccessApiKeysKeyIdGetSuccess', error_schema='GetChildApiKeyApiV1AccessApiKeysKeyIdGetError'),
+    ContractRegistryEntry(registry_id='http:create_access_checkout_api_v1_access_checkouts_post', source_head=SOURCE_HEAD, operation=CREATEACCESSCHECKOUTAPIV1ACCESSCHECKOUTSPOST_OPERATION, request_schema='CreateAccessCheckoutApiV1AccessCheckoutsPostRequest', success_schema='CreateAccessCheckoutApiV1AccessCheckoutsPostSuccess', error_schema='CreateAccessCheckoutApiV1AccessCheckoutsPostError'),
+    ContractRegistryEntry(registry_id='http:get_access_checkout_api_v1_access_checkouts__checkout_id__get', source_head=SOURCE_HEAD, operation=GETACCESSCHECKOUTAPIV1ACCESSCHECKOUTSCHECKOUTIDGET_OPERATION, request_schema='GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetRequest', success_schema='GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetSuccess', error_schema='GetAccessCheckoutApiV1AccessCheckoutsCheckoutIdGetError'),
     ContractRegistryEntry(registry_id='http:list_delegated_passes_api_v1_access_delegated_passes_get', source_head=SOURCE_HEAD, operation=LISTDELEGATEDPASSESAPIV1ACCESSDELEGATEDPASSESGET_OPERATION, request_schema='ListDelegatedPassesApiV1AccessDelegatedPassesGetRequest', success_schema='ListDelegatedPassesApiV1AccessDelegatedPassesGetSuccess', error_schema='ListDelegatedPassesApiV1AccessDelegatedPassesGetError'),
     ContractRegistryEntry(registry_id='http:get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get', source_head=SOURCE_HEAD, operation=GETDELEGATEDPASSAPIV1ACCESSDELEGATEDPASSESDELEGATEDPASSIDGET_OPERATION, request_schema='GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetRequest', success_schema='GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetSuccess', error_schema='GetDelegatedPassApiV1AccessDelegatedPassesDelegatedPassIdGetError'),
     ContractRegistryEntry(registry_id='http:get_human_intent_api_v1_access_intents__intent_id__get', source_head=SOURCE_HEAD, operation=GETHUMANINTENTAPIV1ACCESSINTENTSINTENTIDGET_OPERATION, request_schema='GetHumanIntentApiV1AccessIntentsIntentIdGetRequest', success_schema='GetHumanIntentApiV1AccessIntentsIntentIdGetSuccess', error_schema='GetHumanIntentApiV1AccessIntentsIntentIdGetError'),
+    ContractRegistryEntry(registry_id='http:issue_access_api_v1_access_issuance_post', source_head=SOURCE_HEAD, operation=ISSUEACCESSAPIV1ACCESSISSUANCEPOST_OPERATION, request_schema='IssueAccessApiV1AccessIssuancePostRequest', success_schema='IssueAccessApiV1AccessIssuancePostSuccess', error_schema='IssueAccessApiV1AccessIssuancePostError'),
+    ContractRegistryEntry(registry_id='http:create_issuance_challenge_api_v1_access_issuance_challenges_post', source_head=SOURCE_HEAD, operation=CREATEISSUANCECHALLENGEAPIV1ACCESSISSUANCECHALLENGESPOST_OPERATION, request_schema='CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostRequest', success_schema='CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostSuccess', error_schema='CreateIssuanceChallengeApiV1AccessIssuanceChallengesPostError'),
+    ContractRegistryEntry(registry_id='http:get_issued_access_api_v1_access_issued__grant_id__get', source_head=SOURCE_HEAD, operation=GETISSUEDACCESSAPIV1ACCESSISSUEDGRANTIDGET_OPERATION, request_schema='GetIssuedAccessApiV1AccessIssuedGrantIdGetRequest', success_schema='GetIssuedAccessApiV1AccessIssuedGrantIdGetSuccess', error_schema='GetIssuedAccessApiV1AccessIssuedGrantIdGetError'),
     ContractRegistryEntry(registry_id='http:get_me_api_v1_access_me_get', source_head=SOURCE_HEAD, operation=GETMEAPIV1ACCESSMEGET_OPERATION, request_schema='GetMeApiV1AccessMeGetRequest', success_schema='GetMeApiV1AccessMeGetSuccess', error_schema='GetMeApiV1AccessMeGetError'),
     ContractRegistryEntry(registry_id='http:get_my_entitlements_api_v1_access_me_entitlements_get', source_head=SOURCE_HEAD, operation=GETMYENTITLEMENTSAPIV1ACCESSMEENTITLEMENTSGET_OPERATION, request_schema='GetMyEntitlementsApiV1AccessMeEntitlementsGetRequest', success_schema='GetMyEntitlementsApiV1AccessMeEntitlementsGetSuccess', error_schema='GetMyEntitlementsApiV1AccessMeEntitlementsGetError'),
     ContractRegistryEntry(registry_id='http:get_my_limits_api_v1_access_me_limits_get', source_head=SOURCE_HEAD, operation=GETMYLIMITSAPIV1ACCESSMELIMITSGET_OPERATION, request_schema='GetMyLimitsApiV1AccessMeLimitsGetRequest', success_schema='GetMyLimitsApiV1AccessMeLimitsGetSuccess', error_schema='GetMyLimitsApiV1AccessMeLimitsGetError'),
+    ContractRegistryEntry(registry_id='http:get_access_offers_api_v1_access_offers_get', source_head=SOURCE_HEAD, operation=GETACCESSOFFERSAPIV1ACCESSOFFERSGET_OPERATION, request_schema='GetAccessOffersApiV1AccessOffersGetRequest', success_schema='GetAccessOffersApiV1AccessOffersGetSuccess', error_schema='GetAccessOffersApiV1AccessOffersGetError'),
+    ContractRegistryEntry(registry_id='http:get_access_offer_api_v1_access_offers__offer_id__get', source_head=SOURCE_HEAD, operation=GETACCESSOFFERAPIV1ACCESSOFFERSOFFERIDGET_OPERATION, request_schema='GetAccessOfferApiV1AccessOffersOfferIdGetRequest', success_schema='GetAccessOfferApiV1AccessOffersOfferIdGetSuccess', error_schema='GetAccessOfferApiV1AccessOffersOfferIdGetError'),
     ContractRegistryEntry(registry_id='http:get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get', source_head=SOURCE_HEAD, operation=GETPAYMENTINTENTSTATUSAPIV1ACCESSPAYMENTINTENTSPAYMENTINTENTIDGET_OPERATION, request_schema='GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetRequest', success_schema='GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetSuccess', error_schema='GetPaymentIntentStatusApiV1AccessPaymentIntentsPaymentIntentIdGetError'),
     ContractRegistryEntry(registry_id='http:recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get', source_head=SOURCE_HEAD, operation=RECOVERYSTATUSAPIV1ACCESSRECOVERYSTATUSRECOVERYATTEMPTIDGET_OPERATION, request_schema='RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetRequest', success_schema='RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetSuccess', error_schema='RecoveryStatusApiV1AccessRecoveryStatusRecoveryAttemptIdGetError'),
     ContractRegistryEntry(registry_id='http:list_addresses_api_v1_business_lightning_addresses_get', source_head=SOURCE_HEAD, operation=LISTADDRESSESAPIV1BUSINESSLIGHTNINGADDRESSESGET_OPERATION, request_schema='ListAddressesApiV1BusinessLightningAddressesGetRequest', success_schema='ListAddressesApiV1BusinessLightningAddressesGetSuccess', error_schema='ListAddressesApiV1BusinessLightningAddressesGetError'),
@@ -5648,10 +6192,23 @@ FEATURE_53 = (
     ContractRegistryEntry(registry_id='http:get_dust_radar_api_v1_trace_report__report_id__dust_radar_get', source_head=SOURCE_HEAD, operation=GETDUSTRADARAPIV1TRACEREPORTREPORTIDDUSTRADARGET_OPERATION, request_schema='GetDustRadarApiV1TraceReportReportIdDustRadarGetRequest', success_schema='GetDustRadarApiV1TraceReportReportIdDustRadarGetSuccess', error_schema='GetDustRadarApiV1TraceReportReportIdDustRadarGetError'),
     ContractRegistryEntry(registry_id='http:list_evidence_api_v1_trace_report__report_id__evidence_get', source_head=SOURCE_HEAD, operation=LISTEVIDENCEAPIV1TRACEREPORTREPORTIDEVIDENCEGET_OPERATION, request_schema='ListEvidenceApiV1TraceReportReportIdEvidenceGetRequest', success_schema='ListEvidenceApiV1TraceReportReportIdEvidenceGetSuccess', error_schema='ListEvidenceApiV1TraceReportReportIdEvidenceGetError'),
     ContractRegistryEntry(registry_id='http:trace_evidence_refs_api_v1_trace_report__report_id__evidence_refs_get', source_head=SOURCE_HEAD, operation=TRACEEVIDENCEREFSAPIV1TRACEREPORTREPORTIDEVIDENCEREFSGET_OPERATION, request_schema='TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetRequest', success_schema='TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetSuccess', error_schema='TraceEvidenceRefsApiV1TraceReportReportIdEvidenceRefsGetError'),
+    ContractRegistryEntry(registry_id='http:export_trace_evidence', source_head=SOURCE_HEAD, operation=EXPORTTRACEEVIDENCE_OPERATION, request_schema='ExportTraceEvidenceRequest', success_schema='ExportTraceEvidenceSuccess', error_schema='ExportTraceEvidenceError'),
+    ContractRegistryEntry(registry_id='http:get_trace_evidence_lineage', source_head=SOURCE_HEAD, operation=GETTRACEEVIDENCELINEAGE_OPERATION, request_schema='GetTraceEvidenceLineageRequest', success_schema='GetTraceEvidenceLineageSuccess', error_schema='GetTraceEvidenceLineageError'),
+    ContractRegistryEntry(registry_id='http:replay_trace_evidence', source_head=SOURCE_HEAD, operation=REPLAYTRACEEVIDENCE_OPERATION, request_schema='ReplayTraceEvidenceRequest', success_schema='ReplayTraceEvidenceSuccess', error_schema='ReplayTraceEvidenceError'),
+    ContractRegistryEntry(registry_id='http:verify_trace_evidence_identity', source_head=SOURCE_HEAD, operation=VERIFYTRACEEVIDENCEIDENTITY_OPERATION, request_schema='VerifyTraceEvidenceIdentityRequest', success_schema='VerifyTraceEvidenceIdentitySuccess', error_schema='VerifyTraceEvidenceIdentityError'),
+    ContractRegistryEntry(registry_id='http:get_current_trace_disagreement', source_head=SOURCE_HEAD, operation=GETCURRENTTRACEDISAGREEMENT_OPERATION, request_schema='GetCurrentTraceDisagreementRequest', success_schema='GetCurrentTraceDisagreementSuccess', error_schema='GetCurrentTraceDisagreementError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_history_api_v1_trace_report__report_id__graph_history_get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHHISTORYAPIV1TRACEREPORTREPORTIDGRAPHHISTORYGET_OPERATION, request_schema='GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetRequest', success_schema='GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetSuccess', error_schema='GetTraceGraphHistoryApiV1TraceReportReportIdGraphHistoryGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_metadata_api_v1_trace_report__report_id__graph_metadata_get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHMETADATAAPIV1TRACEREPORTREPORTIDGRAPHMETADATAGET_OPERATION, request_schema='GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetRequest', success_schema='GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetSuccess', error_schema='GetTraceGraphMetadataApiV1TraceReportReportIdGraphMetadataGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_object_api_v1_trace_report__report_id__graph_objects__object_id__get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHOBJECTAPIV1TRACEREPORTREPORTIDGRAPHOBJECTSOBJECTIDGET_OPERATION, request_schema='GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetRequest', success_schema='GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetSuccess', error_schema='GetTraceGraphObjectApiV1TraceReportReportIdGraphObjectsObjectIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_relationship_api_v1_trace_report__report_id__graph_relationships__relationship_id__get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHRELATIONSHIPAPIV1TRACEREPORTREPORTIDGRAPHRELATIONSHIPSRELATIONSHIPIDGET_OPERATION, request_schema='GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetRequest', success_schema='GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetSuccess', error_schema='GetTraceGraphRelationshipApiV1TraceReportReportIdGraphRelationshipsRelationshipIdGetError'),
+    ContractRegistryEntry(registry_id='http:get_trace_graph_snapshot_api_v1_trace_report__report_id__graph_snapshot_get', source_head=SOURCE_HEAD, operation=GETTRACEGRAPHSNAPSHOTAPIV1TRACEREPORTREPORTIDGRAPHSNAPSHOTGET_OPERATION, request_schema='GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetRequest', success_schema='GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetSuccess', error_schema='GetTraceGraphSnapshotApiV1TraceReportReportIdGraphSnapshotGetError'),
+    ContractRegistryEntry(registry_id='http:get_exact_trace_graph_snapshot', source_head=SOURCE_HEAD, operation=GETEXACTTRACEGRAPHSNAPSHOT_OPERATION, request_schema='GetExactTraceGraphSnapshotRequest', success_schema='GetExactTraceGraphSnapshotSuccess', error_schema='GetExactTraceGraphSnapshotError'),
+    ContractRegistryEntry(registry_id='http:get_historical_trace_disagreement', source_head=SOURCE_HEAD, operation=GETHISTORICALTRACEDISAGREEMENT_OPERATION, request_schema='GetHistoricalTraceDisagreementRequest', success_schema='GetHistoricalTraceDisagreementSuccess', error_schema='GetHistoricalTraceDisagreementError'),
+    ContractRegistryEntry(registry_id='http:get_historical_trace_proof_packet', source_head=SOURCE_HEAD, operation=GETHISTORICALTRACEPROOFPACKET_OPERATION, request_schema='GetHistoricalTraceProofPacketRequest', success_schema='GetHistoricalTraceProofPacketSuccess', error_schema='GetHistoricalTraceProofPacketError'),
     ContractRegistryEntry(registry_id='http:get_origin_passport_api_v1_trace_report__report_id__origin_passport_get', source_head=SOURCE_HEAD, operation=GETORIGINPASSPORTAPIV1TRACEREPORTREPORTIDORIGINPASSPORTGET_OPERATION, request_schema='GetOriginPassportApiV1TraceReportReportIdOriginPassportGetRequest', success_schema='GetOriginPassportApiV1TraceReportReportIdOriginPassportGetSuccess', error_schema='GetOriginPassportApiV1TraceReportReportIdOriginPassportGetError'),
     ContractRegistryEntry(registry_id='http:trace_policy_facts_api_v1_trace_report__report_id__policy_facts_get', source_head=SOURCE_HEAD, operation=TRACEPOLICYFACTSAPIV1TRACEREPORTREPORTIDPOLICYFACTSGET_OPERATION, request_schema='TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetRequest', success_schema='TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetSuccess', error_schema='TracePolicyFactsApiV1TraceReportReportIdPolicyFactsGetError'),
     ContractRegistryEntry(registry_id='http:get_privacy_shield_api_v1_trace_report__report_id__privacy_shield_get', source_head=SOURCE_HEAD, operation=GETPRIVACYSHIELDAPIV1TRACEREPORTREPORTIDPRIVACYSHIELDGET_OPERATION, request_schema='GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetRequest', success_schema='GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetSuccess', error_schema='GetPrivacyShieldApiV1TraceReportReportIdPrivacyShieldGetError'),
-    ContractRegistryEntry(registry_id='http:get_proof_packet_api_v1_trace_report__report_id__proof_packet_get', source_head=SOURCE_HEAD, operation=GETPROOFPACKETAPIV1TRACEREPORTREPORTIDPROOFPACKETGET_OPERATION, request_schema='GetProofPacketApiV1TraceReportReportIdProofPacketGetRequest', success_schema='GetProofPacketApiV1TraceReportReportIdProofPacketGetSuccess', error_schema='GetProofPacketApiV1TraceReportReportIdProofPacketGetError'),
+    ContractRegistryEntry(registry_id='http:get_current_trace_proof_packet', source_head=SOURCE_HEAD, operation=GETCURRENTTRACEPROOFPACKET_OPERATION, request_schema='GetCurrentTraceProofPacketRequest', success_schema='GetCurrentTraceProofPacketSuccess', error_schema='GetCurrentTraceProofPacketError'),
     ContractRegistryEntry(registry_id='http:get_provider_disagreement_api_v1_trace_report__report_id__provider_disagreement_get', source_head=SOURCE_HEAD, operation=GETPROVIDERDISAGREEMENTAPIV1TRACEREPORTREPORTIDPROVIDERDISAGREEMENTGET_OPERATION, request_schema='GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetRequest', success_schema='GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetSuccess', error_schema='GetProviderDisagreementApiV1TraceReportReportIdProviderDisagreementGetError'),
     ContractRegistryEntry(registry_id='http:get_source_summary_api_v1_trace_report__report_id__source_summary_get', source_head=SOURCE_HEAD, operation=GETSOURCESUMMARYAPIV1TRACEREPORTREPORTIDSOURCESUMMARYGET_OPERATION, request_schema='GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetRequest', success_schema='GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetSuccess', error_schema='GetSourceSummaryApiV1TraceReportReportIdSourceSummaryGetError'),
     ContractRegistryEntry(registry_id='http:get_utxo_hygiene_api_v1_trace_report__report_id__utxo_hygiene_get', source_head=SOURCE_HEAD, operation=GETUTXOHYGIENEAPIV1TRACEREPORTREPORTIDUTXOHYGIENEGET_OPERATION, request_schema='GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetRequest', success_schema='GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetSuccess', error_schema='GetUtxoHygieneApiV1TraceReportReportIdUtxoHygieneGetError'),

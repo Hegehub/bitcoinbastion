@@ -11,6 +11,7 @@ from app.db.models.bastion_trace import (
     TraceReport,
 )
 from app.db.repositories.bastion_trace_repository import BastionTraceRepository
+from app.db.repositories.onchain_repository import OnchainRepository
 from app.schemas.bastion_trace import (
     OriginPassport,
     PaymentContextRiskReport,
@@ -71,6 +72,11 @@ from app.services.bastion_trace.trace_metrics import (
 from app.services.bastion_trace.trace_runtime_events import create_event, get_event, list_events
 from app.services.bastion_trace.trace_alerts import create_alert, list_alerts
 from app.services.bastion_trace.trace_status import make_status
+from app.services.bastion_trace.graph.report_projection import TraceReportGraphProjectionService
+from app.services.bastion_trace.claims.collector import TraceClaimCollector
+from app.services.bastion_trace.claims.persistence import TraceClaimRepository
+from app.services.bastion_trace.claims.producers import TraceClaimProductionContext
+from app.services.bitcoin_observations.producer import BitcoinObservationProducer
 from app.services.events.domain_event_publisher import publish_domain_event
 
 _LIMITATIONS = [
@@ -136,7 +142,7 @@ class TraceService:
         source_names = [s.source_name for s in sources]
         independence = EvidenceIndependenceService().calculate(source_names)
         disagreement = ProviderDisagreementService().detect_disagreement(
-            ["unknown"], [scoring.band.value]
+            [], []
         )
         passport: OriginPassport = build_origin_passport(normalized, [], disagreement, independence)
         privacy = PrivacyShieldService().build_privacy_shield(normalized, None, None)
@@ -185,6 +191,22 @@ class TraceService:
             evidence_refs_json=json.dumps([]),
         )
         saved = self.repo.save_report(report)
+        source_events = tuple(OnchainRepository(self.repo.db).for_address(normalized))
+        observations = tuple(
+            observation
+            for event in source_events
+            for observation in BitcoinObservationProducer().from_onchain_event(event).observations
+        )
+        claim_collection = TraceClaimCollector().collect(
+            TraceClaimProductionContext(
+                capture_id=f"trace_report:{saved.id}",
+                address=normalized,
+                evaluated_at=saved.created_at,
+                scoring=scoring,
+                observations=observations,
+            )
+        )
+        TraceClaimRepository(self.repo.db).add_claims(saved.id, claim_collection.claims)
         TRACE_REPORTS.labels(tier="core", status="created").inc()
         TRACE_SCORE_BAND.labels(tier="core", band=scoring.band.value).inc()
         TRACE_CONF.labels(tier="core").set(float(breakdown.confidence))
@@ -214,7 +236,7 @@ class TraceService:
         self.repo.save_counterparty_lens(saved.id, lens.model_dump(mode="json"))
         self._publish_trace_report_created(saved, breakdown, scoring)
 
-        return TraceReportSchema(
+        report_schema = TraceReportSchema(
             id=saved.id,
             address=normalized,
             trace_score=scoring.final_score,
@@ -235,6 +257,9 @@ class TraceService:
             no_custody=True,
             created_at=saved.created_at,
         )
+        projector = TraceReportGraphProjectionService()
+        graph = projector.build_graph_for_report(report_schema)
+        return projector.project_compatible_report(report_schema, graph)
 
     def get_origin_passport(self, report_id: int) -> dict[str, object] | None:
         report = self.repo.get_report(report_id)

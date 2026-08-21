@@ -21,6 +21,7 @@ dev = [
     "respx",
     "ruff",
     "mypy",
+    "axe-playwright-python",
 ]
 
 [tool.ruff]

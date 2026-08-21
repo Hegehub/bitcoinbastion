@@ -30,9 +30,9 @@ def test_runtime_components_compile_without_python_any() -> None:
         except SchemaCompileError as exc:
             failures[name] = str(exc)
 
-    assert len(compiled) == 286
+    assert len(compiled) == len(components)
     assert failures == {}
-    assert len(compiler.dependency_graph()) == 286
+    assert len(compiler.dependency_graph()) == len(components)
 
 
 def test_anyof_preserves_nullable_and_union_branches() -> None:

@@ -28,9 +28,15 @@ def test_authority_triage_fails_closed_and_assigns_exactly_one_http_owner() -> N
         assert row["authority_reentry_condition"]
 
     authoritative = ownership["authoritative_http_operations"]
-    assert len(authoritative) == 194
+    expected_authoritative = {
+        row["operation_id"]
+        for row in operations
+        if row["authority_status"] == "AUTHORITATIVE_NOW"
+        and row["disposition"] in {"UI_REQUIRED", "UI_OPTIONAL"}
+    }
+    assert {row["operation_id"] for row in authoritative} == expected_authoritative
     assert ownership["blocked_http_candidates"] == []
-    assert len({row["owner"] for row in authoritative}) == 194
+    assert len({row["owner"] for row in authoritative}) == len(authoritative)
     assert not any(row["path"].startswith("/api/v1/auth/") for row in authoritative)
 
 

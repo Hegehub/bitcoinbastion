@@ -35,6 +35,36 @@ from app.schemas.bastion_trace import (
     TraceWatchlistCreate,
     TraceWatchlistEntry,
 )
+from app.schemas.trace_graph import (
+    TraceGraphDTO,
+    TraceGraphHistoryDTO,
+    TraceGraphMetadataDTO,
+    TraceGraphObjectDTO,
+    TraceGraphRelationshipDTO,
+    TraceGraphSnapshotDTO,
+    TraceGraphError,
+)
+from app.schemas.trace_disagreement import SafeTraceDisagreementCollectionDTO
+from app.schemas.trace_proof_packet import SafeTraceProofPacketDTO
+from app.schemas.trace_evidence_workflow import (
+    SafeEvidenceExportDTO,
+    SafeEvidenceLineageDTO,
+    SafeEvidenceReplayDTO,
+    SafeEvidenceVerificationDTO,
+)
+from app.services.bastion_trace.graph.api_projection import TraceGraphApiProjectionService
+from app.services.bastion_trace.graph.persistence import TraceGraphSnapshotRepository
+from app.services.bastion_trace.disagreement.api_projection import TraceDisagreementApiProjection
+from app.services.bastion_trace.disagreement.history import TraceHistoricalDisagreementService
+from app.services.bastion_trace.claims.persistence import TraceClaimRepository
+from app.services.bastion_trace.proof_packet import TraceProofPacket, TraceProofPacketAssembler
+from app.services.bastion_trace.proof_packet_projection import TraceProofPacketApiProjection
+from app.services.bastion_trace.evidence_workflow import (
+    EvidenceNotFoundError,
+    TraceEvidenceWorkflowService,
+)
+from app.db.repositories.onchain_repository import OnchainRepository
+from app.services.bitcoin_topology.pipeline import BitcoinTopologyPipeline
 from app.services.bastion_trace.trace_service import TraceService
 
 router = APIRouter(prefix="/trace", tags=["trace"])
@@ -129,6 +159,143 @@ def get_report(report_id: int, db: Session = Depends(db_session)) -> ResponseEnv
     )
 
 
+def _graph_projection_or_404(report_id: int, db: Session) -> TraceGraphDTO:
+    repo = BastionTraceRepository(db)
+    report = repo.get_report(report_id)
+    if report is None:
+        raise HTTPException(status_code=404, detail="Trace graph not found")
+    events = tuple(OnchainRepository(db).for_address(report.address))
+    topology_snapshot = BitcoinTopologyPipeline().snapshot_for_events(events)
+    graph = TraceGraphApiProjectionService().graph_for_report_model(report, topology_snapshot)
+    return TraceGraphSnapshotRepository(db).capture(report_id, graph)
+
+
+@router.get(
+    "/report/{report_id}/graph/metadata",
+    response_model=ResponseEnvelope[TraceGraphMetadataDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_metadata(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphMetadataDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    return ResponseEnvelope(data=graph.metadata)
+
+
+@router.get(
+    "/report/{report_id}/graph/snapshot",
+    response_model=ResponseEnvelope[TraceGraphSnapshotDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_snapshot(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphSnapshotDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    return ResponseEnvelope(data=graph.snapshot)
+
+
+@router.get(
+    "/report/{report_id}/graph/history",
+    response_model=ResponseEnvelope[TraceGraphHistoryDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_history(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphHistoryDTO]:
+    repo = BastionTraceRepository(db)
+    report = repo.get_report(report_id)
+    if report is None:
+        raise HTTPException(status_code=404, detail="Trace graph not found")
+    snapshots = TraceGraphSnapshotRepository(db)
+    if not snapshots.is_available():
+        return ResponseEnvelope(data=TraceGraphHistoryDTO(graph_id="", entries=[]))
+    # Honest legacy materialization: each immutable source-fact prefix receives a
+    # new persisted identity. Idempotency prevents duplicate canonical snapshots.
+    events = tuple(OnchainRepository(db).for_address(report.address))
+    topology_history = BitcoinTopologyPipeline().history_for_events(events)
+    projection = TraceGraphApiProjectionService()
+    for topology_snapshot in topology_history.snapshots:
+        snapshots.capture(report_id, projection.graph_for_report_model(report, topology_snapshot))
+    if not topology_history.snapshots:
+        snapshots.capture(report_id, projection.graph_for_report_model(report))
+    history = snapshots.history(report_id)
+    return ResponseEnvelope(data=history)
+
+
+@router.get(
+    "/report/{report_id}/graph/snapshots/{snapshot_id}",
+    response_model=ResponseEnvelope[TraceGraphDTO],
+    operation_id="get_exact_trace_graph_snapshot",
+)
+def get_exact_trace_graph_snapshot(
+    report_id: int, snapshot_id: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphDTO]:
+    graph = TraceGraphSnapshotRepository(db).exact(report_id, snapshot_id)
+    if graph is None:
+        raise HTTPException(status_code=404, detail="Trace graph snapshot not found")
+    return ResponseEnvelope(data=graph)
+
+
+@router.get(
+    "/report/{report_id}/graph/snapshots/{snapshot_id}/disagreement",
+    response_model=ResponseEnvelope[SafeTraceDisagreementCollectionDTO],
+    operation_id="get_historical_trace_disagreement",
+)
+def get_historical_trace_disagreement(
+    report_id: int, snapshot_id: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[SafeTraceDisagreementCollectionDTO]:
+    graph = TraceGraphSnapshotRepository(db).exact(report_id, snapshot_id)
+    if graph is None:
+        raise HTTPException(status_code=404, detail="Trace graph snapshot not found")
+    evaluations = TraceHistoricalDisagreementService(db).for_report(report_id)
+    return ResponseEnvelope(data=TraceDisagreementApiProjection().collection(snapshot_id, evaluations))
+
+
+@router.get(
+    "/report/{report_id}/graph/disagreement",
+    response_model=ResponseEnvelope[SafeTraceDisagreementCollectionDTO],
+    operation_id="get_current_trace_disagreement",
+)
+def get_current_trace_disagreement(
+    report_id: int, db: Session = Depends(db_session)
+) -> ResponseEnvelope[SafeTraceDisagreementCollectionDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    evaluations = TraceHistoricalDisagreementService(db).for_report(report_id)
+    return ResponseEnvelope(
+        data=TraceDisagreementApiProjection().collection(graph.snapshot.snapshot_id, evaluations)
+    )
+
+
+@router.get(
+    "/report/{report_id}/graph/objects/{object_id}",
+    response_model=ResponseEnvelope[TraceGraphObjectDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_object(
+    report_id: int, object_id: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphObjectDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    for item in graph.objects:
+        if item.id == object_id:
+            return ResponseEnvelope(data=item)
+    raise HTTPException(status_code=404, detail="Trace graph object not found")
+
+
+@router.get(
+    "/report/{report_id}/graph/relationships/{relationship_id}",
+    response_model=ResponseEnvelope[TraceGraphRelationshipDTO],
+    responses={404: {"model": TraceGraphError}},
+)
+def get_trace_graph_relationship(
+    report_id: int, relationship_id: str, db: Session = Depends(db_session)
+) -> ResponseEnvelope[TraceGraphRelationshipDTO]:
+    graph = _graph_projection_or_404(report_id, db)
+    for item in graph.relationships:
+        if item.id == relationship_id:
+            return ResponseEnvelope(data=item)
+    raise HTTPException(status_code=404, detail="Trace graph relationship not found")
+
+
 @router.get("/report/{report_id}/evidence", response_model=ResponseEnvelope[list[TraceEvidence]])
 def list_evidence(
     report_id: int, db: Session = Depends(db_session)
@@ -153,62 +320,170 @@ def list_evidence(
     return ResponseEnvelope(data=items)
 
 
-@router.get("/report/{report_id}/proof-packet", response_model=ResponseEnvelope[dict[str, object]])
+def _proof_packet_domain_or_404(
+    report_id: int, snapshot_id: str | None, historical: bool, db: Session
+) -> TraceProofPacket:
+    report = BastionTraceRepository(db).get_report(report_id)
+    if report is None:
+        raise HTTPException(status_code=404, detail="Trace report not found")
+    snapshots = TraceGraphSnapshotRepository(db)
+    if snapshot_id is None:
+        history = snapshots.history(report_id)
+        if not history.entries:
+            _graph_projection_or_404(report_id, db)
+            history = snapshots.history(report_id)
+        if not history.entries:
+            raise HTTPException(status_code=404, detail="Trace graph snapshot not found")
+        snapshot_id = history.entries[-1].snapshot_id
+    graph = snapshots.exact(report_id, snapshot_id)
+    if graph is None:
+        raise HTTPException(status_code=404, detail="Trace graph snapshot not found")
+    claims = TraceClaimRepository(db).load_claims_for_report(report_id)
+    disagreements = TraceHistoricalDisagreementService(db).for_report(report_id)
+    return TraceProofPacketAssembler().assemble(
+        trace_id=report_id,
+        subject=report.address,
+        claim_capture_id=f"trace_report:{report_id}",
+        graph=graph,
+        claims=claims,
+        disagreements=disagreements,
+        historical=historical,
+    )
+
+
+def _proof_packet_or_404(
+    report_id: int, snapshot_id: str | None, historical: bool, db: Session
+) -> SafeTraceProofPacketDTO:
+    return TraceProofPacketApiProjection().project(
+        _proof_packet_domain_or_404(report_id, snapshot_id, historical, db)
+    )
+
+
+def _evidence_workflow_or_404(
+    *, report_id: int, snapshot_id: str, evidence_id: str, historical: bool, db: Session,
+    operation: str,
+) -> object:
+    packet = _proof_packet_domain_or_404(report_id, snapshot_id, historical, db)
+    service = TraceEvidenceWorkflowService()
+    try:
+        return getattr(service, operation)(packet, evidence_id)
+    except EvidenceNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="Trace Evidence not found") from exc
+
+
+@router.get(
+    "/report/{report_id}/proof-packet",
+    response_model=ResponseEnvelope[SafeTraceProofPacketDTO],
+    operation_id="get_current_trace_proof_packet",
+    openapi_extra={"security": [{"BastionProofOfAccessSession": []}]},
+)
 def get_proof_packet(
     report_id: int,
     access_context: AccessContext = Depends(require_scope("evidence:packet:create")),
     db: Session = Depends(db_session),
-) -> ResponseEnvelope[dict[str, object]]:
-    repo = BastionTraceRepository(db)
-    report = repo.get_report(report_id)
-    if report is None:
-        raise HTTPException(status_code=404, detail="Trace report not found")
-    report_refs = json.loads(report.evidence_refs_json or "[]")
-    evidence_refs = [
-        {
-            "id": item.id,
-            "evidence_ref": item.evidence_ref,
-            "evidence_type": item.evidence_type,
-            "source_name": item.source_name,
-            "source_type": item.source_type,
-            "confidence": item.confidence,
-            "freshness_days": item.freshness_days,
-            "description": item.description,
-            "limitations": json.loads(item.limitations_json or "[]"),
-            "created_at": item.created_at.isoformat() if item.created_at else None,
-        }
-        for item in repo.list_evidence(report_id)
-    ]
-    return ResponseEnvelope(
-        data={
-            "report_id": report_id,
-            "address": report.address,
-            "trace_band": report.trace_band,
-            "trace_score": report.trace_score,
-            "confidence": report.confidence,
-            "advisory_only": True,
-            "not_legal_verification": True,
-            "not_bitcoin_consensus_proof": True,
-            "no_custody": True,
-            "signed": False,
-            "signature_available": False,
-            "signature_status": "unsigned",
-            "packet_type": "application_level_evidence_summary",
-            "evidence_refs": evidence_refs,
-            "report_evidence_refs": report_refs,
-            "limitations": [
-                "Proof packet is an application-level evidence summary.",
-                "This is not Bitcoin consensus proof.",
-                "This is not legal verification.",
-                "Cryptographic signing is not available unless explicitly configured.",
-            ],
-            "operator_guidance": [
-                "Use this packet as advisory evidence context only.",
-                "Verify counterparties and evidence independently before operational decisions.",
-            ],
-            "created_at": report.created_at.isoformat() if report.created_at else None,
-        }
-    )
+) -> ResponseEnvelope[SafeTraceProofPacketDTO]:
+    del access_context
+    return ResponseEnvelope(data=_proof_packet_or_404(report_id, None, False, db))
+
+
+@router.get(
+    "/report/{report_id}/graph/snapshots/{snapshot_id}/proof-packet",
+    response_model=ResponseEnvelope[SafeTraceProofPacketDTO],
+    operation_id="get_historical_trace_proof_packet",
+    openapi_extra={"security": [{"BastionProofOfAccessSession": []}]},
+)
+def get_historical_trace_proof_packet(
+    report_id: int,
+    snapshot_id: str,
+    access_context: AccessContext = Depends(require_scope("evidence:packet:create")),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[SafeTraceProofPacketDTO]:
+    del access_context
+    return ResponseEnvelope(data=_proof_packet_or_404(report_id, snapshot_id, True, db))
+
+
+@router.get(
+    "/report/{report_id}/evidence/{evidence_id}/lineage",
+    response_model=ResponseEnvelope[SafeEvidenceLineageDTO],
+    operation_id="get_trace_evidence_lineage",
+    openapi_extra={"security": [{"BastionProofOfAccessSession": []}]},
+)
+def get_trace_evidence_lineage(
+    report_id: int,
+    evidence_id: str,
+    snapshot_id: str,
+    historical: bool = False,
+    access_context: AccessContext = Depends(require_scope("evidence:packet:create")),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[SafeEvidenceLineageDTO]:
+    del access_context
+    return ResponseEnvelope(data=_evidence_workflow_or_404(
+        report_id=report_id, snapshot_id=snapshot_id, evidence_id=evidence_id,
+        historical=historical, db=db, operation="lineage",
+    ))
+
+
+@router.get(
+    "/report/{report_id}/evidence/{evidence_id}/replay",
+    response_model=ResponseEnvelope[SafeEvidenceReplayDTO],
+    operation_id="replay_trace_evidence",
+    openapi_extra={"security": [{"BastionProofOfAccessSession": []}]},
+)
+def replay_trace_evidence(
+    report_id: int,
+    evidence_id: str,
+    snapshot_id: str,
+    historical: bool = False,
+    access_context: AccessContext = Depends(require_scope("evidence:packet:create")),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[SafeEvidenceReplayDTO]:
+    del access_context
+    return ResponseEnvelope(data=_evidence_workflow_or_404(
+        report_id=report_id, snapshot_id=snapshot_id, evidence_id=evidence_id,
+        historical=historical, db=db, operation="replay",
+    ))
+
+
+@router.get(
+    "/report/{report_id}/evidence/{evidence_id}/verification",
+    response_model=ResponseEnvelope[SafeEvidenceVerificationDTO],
+    operation_id="verify_trace_evidence_identity",
+    openapi_extra={"security": [{"BastionProofOfAccessSession": []}]},
+)
+def verify_trace_evidence_identity(
+    report_id: int,
+    evidence_id: str,
+    snapshot_id: str,
+    historical: bool = False,
+    access_context: AccessContext = Depends(require_scope("evidence:packet:create")),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[SafeEvidenceVerificationDTO]:
+    del access_context
+    return ResponseEnvelope(data=_evidence_workflow_or_404(
+        report_id=report_id, snapshot_id=snapshot_id, evidence_id=evidence_id,
+        historical=historical, db=db, operation="verification",
+    ))
+
+
+@router.get(
+    "/report/{report_id}/evidence/{evidence_id}/export",
+    response_model=ResponseEnvelope[SafeEvidenceExportDTO],
+    operation_id="export_trace_evidence",
+    openapi_extra={"security": [{"BastionProofOfAccessSession": []}]},
+)
+def export_trace_evidence(
+    report_id: int,
+    evidence_id: str,
+    snapshot_id: str,
+    historical: bool = False,
+    access_context: AccessContext = Depends(require_scope("evidence:packet:create")),
+    db: Session = Depends(db_session),
+) -> ResponseEnvelope[SafeEvidenceExportDTO]:
+    del access_context
+    return ResponseEnvelope(data=_evidence_workflow_or_404(
+        report_id=report_id, snapshot_id=snapshot_id, evidence_id=evidence_id,
+        historical=historical, db=db, operation="export",
+    ))
 
 
 @router.get("/sources", response_model=ResponseEnvelope[list[TraceSourceStatus]])

@@ -1,14 +1,21 @@
 {
-  "literal_count": 235,
+  "literal_count": 255,
   "matched": [
     "/api/v1/access/api-keys",
     "/api/v1/access/api-keys/{param}",
+    "/api/v1/access/checkouts",
+    "/api/v1/access/checkouts/{param}",
     "/api/v1/access/delegated-passes",
     "/api/v1/access/delegated-passes/{param}",
     "/api/v1/access/intents/{param}",
+    "/api/v1/access/issuance",
+    "/api/v1/access/issuance/challenges",
+    "/api/v1/access/issued/{param}",
     "/api/v1/access/me",
     "/api/v1/access/me/entitlements",
     "/api/v1/access/me/limits",
+    "/api/v1/access/offers",
+    "/api/v1/access/offers/{param}",
     "/api/v1/access/payment-intents/{param}",
     "/api/v1/access/recovery/status/{param}",
     "/api/v1/business/lightning-addresses",
@@ -185,6 +192,19 @@
     "/api/v1/trace/report/{param}/dust-radar",
     "/api/v1/trace/report/{param}/evidence",
     "/api/v1/trace/report/{param}/evidence-refs",
+    "/api/v1/trace/report/{param}/evidence/{param}/export",
+    "/api/v1/trace/report/{param}/evidence/{param}/lineage",
+    "/api/v1/trace/report/{param}/evidence/{param}/replay",
+    "/api/v1/trace/report/{param}/evidence/{param}/verification",
+    "/api/v1/trace/report/{param}/graph/disagreement",
+    "/api/v1/trace/report/{param}/graph/history",
+    "/api/v1/trace/report/{param}/graph/metadata",
+    "/api/v1/trace/report/{param}/graph/objects/{param}",
+    "/api/v1/trace/report/{param}/graph/relationships/{param}",
+    "/api/v1/trace/report/{param}/graph/snapshot",
+    "/api/v1/trace/report/{param}/graph/snapshots/{param}",
+    "/api/v1/trace/report/{param}/graph/snapshots/{param}/disagreement",
+    "/api/v1/trace/report/{param}/graph/snapshots/{param}/proof-packet",
     "/api/v1/trace/report/{param}/origin-passport",
     "/api/v1/trace/report/{param}/policy-facts",
     "/api/v1/trace/report/{param}/privacy-shield",
@@ -222,12 +242,18 @@
     "/v1/lnurl/pay/subscriptions",
     "/v1/lnurl/withdraw/requests"
   ],
-  "matched_count": 220,
+  "matched_count": 240,
   "sources": {
     "/api/v1/access/api-keys": [
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/access/api-keys/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/checkouts": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/checkouts/{param}": [
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/access/delegated-passes": [
@@ -239,6 +265,15 @@
     "/api/v1/access/intents/{param}": [
       "frontend/bastion_ui/transport/generated_http.py"
     ],
+    "/api/v1/access/issuance": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/issuance/challenges": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/issued/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
     "/api/v1/access/me": [
       "frontend/bastion_ui/transport/generated_http.py"
     ],
@@ -246,6 +281,12 @@
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/access/me/limits": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/offers": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/access/offers/{param}": [
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/access/payment-intents/{param}": [
@@ -848,6 +889,45 @@
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/evidence-refs": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/evidence/{param}/export": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/evidence/{param}/lineage": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/evidence/{param}/replay": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/evidence/{param}/verification": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/disagreement": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/history": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/metadata": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/objects/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/relationships/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/snapshot": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/snapshots/{param}": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/snapshots/{param}/disagreement": [
+      "frontend/bastion_ui/transport/generated_http.py"
+    ],
+    "/api/v1/trace/report/{param}/graph/snapshots/{param}/proof-packet": [
       "frontend/bastion_ui/transport/generated_http.py"
     ],
     "/api/v1/trace/report/{param}/origin-passport": [

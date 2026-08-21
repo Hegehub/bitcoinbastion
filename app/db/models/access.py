@@ -146,6 +146,70 @@ class AccessPaymentIntent(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow, onupdate=utcnow)
     paid_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    checkout_id: Mapped[str | None] = mapped_column(
+        ForeignKey("access_checkout_sessions.id"), nullable=True, unique=True, index=True
+    )
+
+
+class AccessCheckoutSession(Base):
+    """Persistent immutable-terms bridge between an Offer and future issuance."""
+
+    __tablename__ = "access_checkout_sessions"
+
+    id: Mapped[str] = mapped_column(String(96), primary_key=True)
+    idempotency_key_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True)
+    offer_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    offer_revision_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    plan_code: Mapped[str] = mapped_column(String(40), nullable=False)
+    capability: Mapped[str] = mapped_column(String(80), nullable=False)
+    scopes_json: Mapped[JsonList] = mapped_column(_JSON, nullable=False, default=list)
+    amount_sats: Mapped[int] = mapped_column(Integer, nullable=False)
+    price_unit: Mapped[str] = mapped_column(String(16), nullable=False)
+    duration_days: Mapped[int] = mapped_column(Integer, nullable=False)
+    terms_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    eligibility_reason: Mapped[str] = mapped_column(String(48), nullable=False)
+    payment_intent_id: Mapped[int | None] = mapped_column(Integer, nullable=True, unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+
+
+class AccessIssuanceChallenge(Base):
+    """One-time device proof bound to one frozen checkout."""
+
+    __tablename__ = "access_issuance_challenges"
+
+    id: Mapped[str] = mapped_column(String(96), primary_key=True)
+    checkout_id: Mapped[str] = mapped_column(ForeignKey("access_checkout_sessions.id"), nullable=False, index=True)
+    device_public_key: Mapped[str] = mapped_column(Text, nullable=False)
+    device_key_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    payload_json: Mapped[JsonDict] = mapped_column(_JSON, nullable=False)
+    payload_hash: Mapped[str] = mapped_column(String(128), nullable=False, unique=True)
+    protocol_version: Mapped[str] = mapped_column(String(32), nullable=False)
+    operation: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class AccessIssuedGrant(Base):
+    """Non-secret issued Access authority; exactly one grant per checkout."""
+
+    __tablename__ = "access_issued_grants"
+
+    id: Mapped[str] = mapped_column(String(96), primary_key=True)
+    checkout_id: Mapped[str] = mapped_column(ForeignKey("access_checkout_sessions.id"), nullable=False, unique=True)
+    offer_revision_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    certificate_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, unique=True)
+    device_key_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    capability: Mapped[str] = mapped_column(String(80), nullable=False)
+    scopes_json: Mapped[JsonList] = mapped_column(_JSON, nullable=False)
+    terms_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False)
+    issued_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
 
 class AccessCertificate(Base):

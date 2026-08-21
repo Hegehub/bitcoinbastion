@@ -15,17 +15,21 @@ sys.path.insert(0, str(ROOT / "frontend"))
 from bastion_ui.transport import generated_http, generated_schemas  # noqa: E402
 
 
-NAMED_MATRIX_IDS = {
-    "HTTP-0002",
-    "HTTP-0005",
-    "HTTP-0010",
-    "HTTP-0013",
-    "HTTP-0019",
-    "HTTP-0020",
-    "HTTP-0023",
-    "HTTP-0031",
+NAMED_OPERATIONS = {
+    "list_child_api_keys_api_v1_access_api_keys_get",
+    "get_child_api_key_api_v1_access_api_keys__key_id__get",
+    "list_delegated_passes_api_v1_access_delegated_passes_get",
+    "get_delegated_pass_api_v1_access_delegated_passes__delegated_pass_id__get",
+    "get_me_api_v1_access_me_get",
+    "get_my_entitlements_api_v1_access_me_entitlements_get",
+    "get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get",
+    "recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get",
 }
-PROTECTED_NAMED_IDS = NAMED_MATRIX_IDS - {"HTTP-0023", "HTTP-0031"}
+PUBLIC_NAMED_OPERATIONS = {
+    "get_payment_intent_status_api_v1_access_payment_intents__payment_intent_id__get",
+    "recovery_status_api_v1_access_recovery_status__recovery_attempt_id__get",
+}
+PROTECTED_NAMED_OPERATIONS = NAMED_OPERATIONS - PUBLIC_NAMED_OPERATIONS
 
 
 def test_closed_empty_validation_context_is_strict() -> None:
@@ -41,11 +45,12 @@ def test_closed_empty_validation_context_is_strict() -> None:
 
 
 def test_all_active_operations_have_one_owner_and_feature53_entry() -> None:
-    assert len(generated_http.OWNERSHIP) == 194
-    assert len(generated_http.FEATURE_53) == 194
-    assert len(set(generated_http.OWNERSHIP)) == 194
-    assert {value[0] for value in generated_http.OWNERSHIP.values()} >= NAMED_MATRIX_IDS
-    assert len({entry.registry_id for entry in generated_http.FEATURE_53}) == 194
+    operation_count = len(generated_http.OWNERSHIP)
+    assert operation_count > 0
+    assert len(generated_http.FEATURE_53) == operation_count
+    assert len(set(generated_http.OWNERSHIP)) == operation_count
+    assert set(generated_http.OWNERSHIP) >= NAMED_OPERATIONS
+    assert len({entry.registry_id for entry in generated_http.FEATURE_53}) == operation_count
     matrix = json.loads(
         (ROOT / "docs/frontend/migration/00_openapi_frontend_rendering_matrix.json").read_text()
     )
@@ -73,7 +78,7 @@ def test_every_generated_registry_symbol_resolves() -> None:
 
 def test_access_security_headers_are_transport_injected_not_request_fields() -> None:
     for entry in generated_http.FEATURE_53:
-        if entry.operation.matrix_id not in PROTECTED_NAMED_IDS:
+        if entry.operation.operation_id not in PROTECTED_NAMED_OPERATIONS:
             continue
         request = getattr(generated_http, entry.request_schema)
         assert "X_Bastion_Session" not in request.model_fields
@@ -84,8 +89,11 @@ def test_access_security_headers_are_transport_injected_not_request_fields() -> 
 def test_generated_manifest_has_no_missing_or_orphan_canonical_files() -> None:
     transport = ROOT / "frontend/bastion_ui/transport"
     manifest = json.loads((transport / "generated_manifest.json").read_text())
-    assert manifest["operation_count"] == 194
-    assert manifest["schema_count"] == 286
+    assert manifest["operation_count"] == len(generated_http.OWNERSHIP)
+    openapi = json.loads(
+        (ROOT / "docs/frontend/migration/00_OPENAPI_SNAPSHOT.json").read_text()
+    )
+    assert manifest["schema_count"] == openapi["counts"]["schemas"]
     for name, digest in manifest["files"].items():
         assert hashlib.sha256((transport / name).read_bytes()).hexdigest() == digest
     tracked = set(manifest["files"])
